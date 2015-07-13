@@ -37,10 +37,18 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_labels")
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("api_task_labels_get", parameters={"id" = "expr(object.getId())"})
+ * )
  */
 class LabelTask extends NotifyPropertyChangeEntity
 {
@@ -49,13 +57,15 @@ class LabelTask extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @Serializer\Expose()
+     * @Assert\NotBlank()
      */
     protected $label;
 
@@ -63,6 +73,8 @@ class LabelTask extends NotifyPropertyChangeEntity
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @Serializer\Expose()
+     * @Assert\NotNull()
      */
     protected $task;
 
@@ -97,7 +109,6 @@ class LabelTask extends NotifyPropertyChangeEntity
     {
         $label       = trim($label);
         $label       = str_replace(',', '', $label);
-        $this->label = $label;
         $this->setModelField('label', $label);
     }
 
@@ -114,7 +125,6 @@ class LabelTask extends NotifyPropertyChangeEntity
      */
     public function setTask(Task $task)
     {
-        $this->task = $task;
         $this->setModelField('task', $task);
     }
 }

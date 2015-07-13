@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -161,8 +162,23 @@ class Task extends NotifyPropertyChangeEntity
      */
     protected $urgency = 5;
 
+    /**
+     * @var TaskSubtask[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskSubtask", mappedBy="task")
+     * @Serializer\Expose()
+     */
+    protected $subtasks;
+
+    /**
+     * @var LabelTask[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task")
+     * @Serializer\Expose()
+     */
+    protected $labels;
+
     public function __construct()
     {
+        $this->subtasks = new ArrayCollection();
         $this->setDateCreated(new \DateTime());
     }
 
@@ -279,11 +295,26 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return TaskSubtask[]|ArrayCollection
+     */
+    public function getSubtasks()
+    {
+        return $this->subtasks;
+    }
+
+    /**
+     * @return LabelTask[]|ArrayCollection
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
      * @param string $title
      */
     public function setTitle($title)
     {
-        $this->title = $title;
         $this->setModelField('title', $title);
     }
 
@@ -292,7 +323,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setDone($is_done)
     {
-        $this->is_done = $is_done;
         $this->setModelField('status', $is_done);
     }
 
@@ -301,7 +331,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setPercentComplete($percent_complete)
     {
-        $this->percent_complete = $percent_complete;
         $this->setModelField('percent_complete', $percent_complete);
     }
 
@@ -310,7 +339,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     protected function setDateCreated(\DateTime $date_created)
     {
-        $this->date_created = $date_created;
         $this->setModelField('date_created', $date_created);
     }
 
@@ -319,7 +347,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setTaskType($task_type)
     {
-        $this->task_type = $task_type;
         $this->setModelField('task_type', $task_type);
     }
 
@@ -328,7 +355,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setDateDue($date_due)
     {
-        $this->date_due = $date_due;
         $this->setModelField('date_due', $date_due);
     }
 
@@ -337,7 +363,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setDateEventStart($date_event_start)
     {
-        $this->date_event_start = $date_event_start;
         $this->setModelField('date_event_start', $date_event_start);
     }
 
@@ -346,7 +371,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setDateEventEnd($date_event_end)
     {
-        $this->date_event_end = $date_event_end;
         $this->setModelField('date_event_end', $date_event_end);
     }
 
@@ -355,7 +379,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setCreator($creator)
     {
-        $this->creator = $creator;
         $this->setModelField('creator', $creator);
     }
 
@@ -364,7 +387,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setVisibility($visibility)
     {
-        $this->visibility = $visibility;
         $this->setModelField('visibility', $visibility);
     }
 
@@ -373,7 +395,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setProject($project)
     {
-        $this->project = $project;
         $this->setModelField('project', $project);
     }
 
@@ -382,7 +403,6 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setList($list)
     {
-        $this->list = $list;
         $this->setModelField('list', $list);
     }
 
@@ -391,7 +411,24 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setUrgency($urgency)
     {
-        $this->urgency = $urgency;
         $this->setModelField('urgency', $urgency);
+    }
+
+    /**
+     * @param TaskSubtask $subtask
+     */
+    public function addSubtask(TaskSubtask $subtask)
+    {
+        $this->subtasks->add($subtask);
+        $this->setModelField('task', $subtask);
+    }
+
+    /**
+     * @param LabelTask $label
+     */
+    public function addLabel(LabelTask $label)
+    {
+        $this->labels->add($label);
+        $this->setModelField('label', $label);
     }
 }

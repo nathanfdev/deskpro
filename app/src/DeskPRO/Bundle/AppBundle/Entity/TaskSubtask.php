@@ -66,6 +66,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @var string
      * @ORM\Column(type="string")
      * @Serializer\Expose()
+     * @Assert\NotBlank()
      */
     protected $title;
 
@@ -81,6 +82,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true)
      * @Serializer\Expose()
+     * @Assert\NotNull()
      */
     protected $task;
 
@@ -96,6 +98,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=true)
      * @Serializer\Expose()
+     * @Assert\NotNull()
      */
     protected $creator;
 
@@ -113,9 +116,10 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     protected $date_completed = null;
 
-    public function __construct()
+    public function __construct(Person $person)
     {
-        $this->date_created = new \DateTime();
+        $this->setModelField('date_created', new \DateTime());
+        $this->setCreator($person);
     }
 
     /**
@@ -139,7 +143,6 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     public function setCreator(Person $creator)
     {
-        $this->creator = $creator;
         $this->setModelField('creator', $creator);
     }
 
@@ -156,7 +159,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
     }
 
     /**
@@ -170,9 +173,9 @@ class TaskSubtask extends NotifyPropertyChangeEntity
     /**
      * @param boolean $done
      */
-    public function setDone($done)
+    public function setIsDone($done)
     {
-        $this->is_done = $done;
+        $this->setModelField('is_done', $done);
         $this->setDateCompleted(new \DateTime());
     }
 
@@ -189,7 +192,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     public function setTask($task)
     {
-        $this->task = $task;
+        $this->setModelField('task', $task);
     }
 
     /**
@@ -205,7 +208,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     public function setDisplayOrder($display_order)
     {
-        $this->display_order = $display_order;
+        $this->setModelField('display_order', $display_order);
     }
 
     /**
@@ -221,6 +224,6 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     public function setDateCompleted($date_completed)
     {
-        $this->date_completed = $date_completed;
+        $this->setModelField('date_completed', $date_completed);
     }
 }

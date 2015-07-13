@@ -128,7 +128,6 @@ class TaskProject extends NotifyPropertyChangeEntity
      */
     public function setTitle($title)
     {
-        $this->title = $title;
         $this->setModelField('title', $title);
     }
 

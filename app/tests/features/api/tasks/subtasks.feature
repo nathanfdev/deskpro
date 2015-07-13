@@ -8,11 +8,21 @@ Feature: /subtasks endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: Successfully create a task
+  Scenario: Successfully set-up a parent task
+    When I send a POST request to "/api/v2/tasks" with body:
+    """
+{
+  "title": "Parent task"
+}
+    """
+    Then the response status code should be 201
+
+  Scenario: Successfully create a subtask
     When I send a POST request to "/api/v2/subtasks" with body:
     """
 {
-  "title": "My test subtask"
+  "title": "My test subtask",
+  "task": 1
 }
     """
     Then the response should be in JSON
@@ -29,6 +39,7 @@ Feature: /subtasks endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test subtask"
+    And the JSON node "data.is_done" should be equal to 0
     And the JSON node "data.links.self" should be equal to "/api/v2/subtasks/1"
 
   Scenario: I GET subtasks
@@ -44,11 +55,24 @@ Feature: /subtasks endpoint
     And the JSON node "data[0].title" should be equal to "My test subtask"
     And the JSON node "data[0].links.self" should be equal to "/api/v2/subtasks/1"
 
+  Scenario: I GET subtasks for a particular task
+    When I send a GET request to "/api/v2/tasks/1/subtasks"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "meta" should exist
+    And the JSON node "meta.count" should be equal to 1
+    And the JSON node "meta.page" should be equal to 1
+    And the JSON node "meta.total_pages" should be equal to 1
+    And the JSON node "meta.total_count" should be equal to 1
+    And the JSON node "data" should exist
+    And the JSON node "data[0].title" should be equal to "My test subtask"
+    And the JSON node "data[0].links.self" should be equal to "/api/v2/subtasks/1"
+
   Scenario: I modify a subtask
     When I send a PUT request to "/api/v2/subtasks/1" with body:
     """
 {
-  "title": "New subtask title"
+  "is_done": true
 }
     """
     Then the response should be in JSON
@@ -60,8 +84,29 @@ Feature: /subtasks endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.title" should be equal to "New subtask title"
+    And the JSON node "data.is_done" should be equal to true
     And the JSON node "data.links.self" should be equal to "/api/v2/subtasks/1"
+
+  Scenario: I try to remove the title from the subtask
+    When I send a PUT request to "/api/v2/subtasks/1" with body:
+    """
+{
+  "title": null
+}
+    """
+
+    Then the response should be in JSON
+    And the response status code should be 400
+
+  Scenario: I try to POST a bad subtask without a parent task
+    When I send a POST request to "/api/v2/subtasks" with body:
+    """
+{
+  "title": "Task without parent"
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
 
   Scenario: I DELETE a single task
     When I send a DELETE request to "/api/v2/subtasks/1"

@@ -38,14 +38,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TaskSubtaskType extends AbstractType
+class TaskLabelType extends AbstractType
 {
     /**
      * @return string
      */
     public function getName()
     {
-        return 'subtask';
+        return 'task_label';
     }
 
     /**
@@ -56,19 +56,11 @@ class TaskSubtaskType extends AbstractType
     {
         $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder->add(
-                'title',
+                'label',
                 'text',
                 array(
-                    'description' => 'the task title',
+                    'description' => 'the label',
                     'required' => true,
-                )
-            )
-            ->add(
-                'is_done',
-                'checkbox',
-                array(
-                    'description' => 'the task status',
-                    'required' => false,
                 )
             )
             ->add(
@@ -79,14 +71,6 @@ class TaskSubtaskType extends AbstractType
                     'property' => 'title',
                     'required' => true,
                 )
-            )
-            ->add(
-                'display_order',
-                'integer',
-                array(
-                    'description' => 'the order of the subtask',
-                    'required' => false,
-                )
             );
     }
 
@@ -96,7 +80,7 @@ class TaskSubtaskType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskSubtask',
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\LabelTask',
         ));
     }
 }

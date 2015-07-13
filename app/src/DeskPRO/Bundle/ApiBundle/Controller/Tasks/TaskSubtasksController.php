@@ -45,6 +45,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -151,7 +152,7 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
      */
     public function postAction(Request $request)
     {
-        $subtask = new TaskSubtask();
+        $subtask = new TaskSubtask($this->getUser());
         return $this->handleFormSubmission($request, $subtask);
     }
 
@@ -245,6 +246,7 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
     {
         $status = $subtask->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
+        /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'subtask', $subtask)->getForm();
 
         $submitted = $request->request->all();
