@@ -131,7 +131,7 @@ services:
             tags:
                 ticket_filter:
                     name: php_ticket_checker_compiler
-                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserRepliesTerm\TicketUrgencyTerm'
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserRepliesTerm\TicketNumUserRepliesTerm'
     
     term_engine.php_ticket_checker.compiler.ticket_num_agent_replies:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies\PhpTicketNumAgentRepliesTermCompiler
@@ -139,7 +139,15 @@ services:
             tags:
                 ticket_filter:
                     name: php_ticket_checker_compiler
-                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentRepliesTerm\TicketUrgencyTerm'
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentRepliesTerm\TicketNumAgentRepliesTerm'
+    
+    term_engine.php_ticket_checker.compiler.ticket_date_resolved:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved\PhpTicketDateResolvedTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolvedTerm\TicketDateResolvedTerm'
 
     #
     # VISITORS

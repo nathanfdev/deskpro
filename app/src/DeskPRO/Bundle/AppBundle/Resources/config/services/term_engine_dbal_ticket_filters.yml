@@ -161,7 +161,15 @@ services:
         tags:
             ticket_filter:
                 name: dbal_ticket_filter_compiler
-                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies\TicketUrgencyTerm'
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies\TicketNumAgentRepliesTerm'
+
+    term_engine.dbal_ticket_filters.compiler.ticket_date_resolved:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved\DbalTicketDateResolvedTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved\TicketDateResolvedTerm'
 
     #
     # VISITORS
