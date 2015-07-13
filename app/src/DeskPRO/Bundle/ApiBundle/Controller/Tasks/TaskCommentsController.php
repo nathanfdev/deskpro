@@ -38,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -53,11 +53,11 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class TasksController extends BaseController implements ClassResourceInterface
+class TaskCommentsController extends BaseController implements ClassResourceInterface
 {
     /**
      * @ApiDoc(
-     *      description="get a list of tasks",
+     *      description="get a list of comments",
      *      parameters={
      *          {
      *              "name"="page",
@@ -78,18 +78,18 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          200="Success"
      *      }
      * )
-     * @Get("/tasks", name="api_tasks")
+     * @Get("/task_comments", name="api_task_comments")
      * @param Request $request
      * @return View
      */
     public function cgetAction(Request $request)
     {
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findAll();
+        $comments = $this->getDoctrine()->getManager()->getRepository('App:TaskComment')->findAll();
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($tasks));
+        $pager = new Pagerfanta(new ArrayAdapter($comments));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -101,12 +101,12 @@ class TasksController extends BaseController implements ClassResourceInterface
 
     /**
      * @ApiDoc(
-     *      description="get a task",
+     *      description="get a comment",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the task",
+     *              "description"="the id of the comment",
      *              "dataType"="integer"
      *          }
      *      },
@@ -114,37 +114,37 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskComment"
      * )
-     * @Get("/tasks/{id}", name="api_tasks_get")
+     * @Get("/task_comments/{id}", name="api_task_comments_get")
      * @param int $id
      * @return View
      */
     public function getAction($id)
     {
-        $task = $this->getTask($id);
+        $comment = $this->getTaskComment($id);
 
-        if (empty($task)) {
+        if (empty($comment)) {
             throw $this->createNotFoundException();
         }
 
         return View::create(
-            $this->createRepresentation($task),
+            $this->createRepresentation($comment),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
-     *      description="create a new task",
-     *      input={"class"="task", "name"=""},
+     *      description="create a new comment",
+     *      input={"class"="comment", "name"=""},
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskComment"
      * )
-     * @Post("/tasks", name="api_tasks_post")
+     * @Post("/task_comments", name="api_task_comments_post")
      * @param Request $request
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
@@ -152,13 +152,13 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function postAction(Request $request)
     {
-        $task = new Task($this->getUser());
-        return $this->handleFormSubmission($request, $task);
+        $comment = new TaskComment($this->getUser());
+        return $this->handleFormSubmission($request, $comment);
     }
 
     /**
      * @APIDoc(
-     *      description="update a task",
+     *      description="update a comment",
      *      requirements={
      *          {
      *              "name"="id",
@@ -167,14 +167,14 @@ class TasksController extends BaseController implements ClassResourceInterface
      *              "dataType"="integer"
      *          }
      *      },
-     *      input={"class"="task", "name"=""},
+     *      input={"class"="comment", "name"=""},
      *      statusCodes={
      *          204="Updated",
      *          400="Bad Request",
      *          404="Not Found"
      *      }
      * )
-     * @Put("/tasks/{id}", name="api_tasks_put")
+     * @Put("/task_comments/{id}", name="api_task_comments_put")
      * @param Request $request
      * @param $id
      * @throws WrappedApiErrorException
@@ -182,14 +182,14 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function putAction(Request $request, $id)
     {
-        $task = $this->getTask($id);
+        $comment = $this->getTaskComment($id);
 
-        return $this->handleFormSubmission($request, $task);
+        return $this->handleFormSubmission($request, $comment);
     }
 
     /**
      * @APIDoc(
-     *      description="delete a task",
+     *      description="delete a comment",
      *      requirements={
      *          {
      *              "name"="id",
@@ -203,14 +203,14 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/tasks/{id}", name="api_tasks_delete")
+     * @Delete("/task_comments/{id}", name="api_task_comments_delete")
      * @param $id
      * @return View
      */
     public function deleteAction($id)
     {
-        $task = $this->getTask($id);
-        $this->getDoctrine()->getManager()->remove($task);
+        $comment = $this->getTaskComment($id);
+        $this->getDoctrine()->getManager()->remove($comment);
         $this->getDoctrine()->getManager()->flush();
 
         return View::create(
@@ -220,217 +220,34 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * @APIDoc(
-     *      description="get subtasks for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/tasks/{id}/subtasks", name="api_tasks_subtasks_get")
-     *
-     * @param Request $request
-     * @param $id
-     * @return View
-     */
-    public function getSubtasksAction(Request $request, $id)
-    {
-        $task = $this->getTask($id);
-
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-
-        $subtasks = $task->getSubtasks();
-
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($subtasks->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->createRepresentation($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @APIDoc(
-     *      description="get labels for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/tasks/{id}/labels", name="api_tasks_labels_get")
-     *
-     * @param Request $request
-     * @param $id
-     * @return View
-     */
-    public function getLabelsAction(Request $request, $id)
-    {
-        $task = $this->getTask($id);
-
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-
-        $labels = $task->getLabels();
-
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($labels->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->createRepresentation($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @APIDoc(
-     *      description="get comments for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/tasks/{id}/comments", name="api_tasks_comments_get")
-     *
-     * @param Request $request
-     * @param $id
-     * @return View
-     */
-    public function getCommentsAction(Request $request, $id)
-    {
-        $task = $this->getTask($id);
-
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-
-        $comments = $task->getComments();
-
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($comments->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->createRepresentation($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
      * @param int $id
-     * @return Task
+     * @return TaskComment
      */
-    protected function getTask($id)
+    protected function getTaskComment($id)
     {
         $id = (int) $id;
-        $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find($id);
+        $comment = $this->getDoctrine()->getManager()->getRepository('App:TaskComment')->find($id);
 
-        if (!$task) {
+        if (!$comment) {
             throw $this->createNotFoundException();
         }
 
-        return $task;
+        return $comment;
     }
 
     /**
      * Will be abstracted for use by other controllers
      * @param Request $request
-     * @param Task $task
+     * @param TaskComment $comment
      * @return View
      * @throws WrappedApiErrorException
      */
-    protected function handleFormSubmission(Request $request, Task $task)
+    protected function handleFormSubmission(Request $request, TaskComment $comment)
     {
-        $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        $status = $comment->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'task_comment', $comment)->getForm();
 
         $submitted = $request->request->all();
 
@@ -446,13 +263,13 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($task);
+            $this->getDoctrine()->getManager()->persist($comment);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
+            $location = $this->generateUrl('api_task_comments_get', array('id' => $comment->getId()));
 
             return View::create(
-                $this->createRepresentation($task),
+                $this->createRepresentation($comment),
                 $status,
                 array(
                     'Location' => $location,

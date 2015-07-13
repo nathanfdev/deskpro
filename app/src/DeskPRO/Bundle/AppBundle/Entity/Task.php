@@ -176,9 +176,20 @@ class Task extends NotifyPropertyChangeEntity
      */
     protected $labels;
 
-    public function __construct()
+    /**
+     * @var TaskComment[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskComment", mappedBy="task")
+     * @Serializer\Expose()
+     */
+    protected $comments;
+
+    /**
+     * @param Person $creator
+     */
+    public function __construct(Person $creator)
     {
         $this->subtasks = new ArrayCollection();
+        $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }
 
@@ -311,6 +322,14 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return TaskComment[]|ArrayCollection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
      * @param string $title
      */
     public function setTitle($title)
@@ -430,5 +449,14 @@ class Task extends NotifyPropertyChangeEntity
     {
         $this->labels->add($label);
         $this->setModelField('label', $label);
+    }
+
+    /**
+     * @param TaskComment $comment
+     */
+    public function addComment(TaskComment $comment)
+    {
+        $this->comments->add($comment);
+        $this->setModelField('comment', $comment);
     }
 }

@@ -38,10 +38,19 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_comments_new")
+ *
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("api_task_comments_get", parameters={"id" = "expr(object.getId())"})
+ * )
  */
 class TaskComment extends NotifyPropertyChangeEntity
 {
@@ -50,7 +59,7 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -58,26 +67,42 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @var Person
 	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @Assert\NotNull
+     * @Serializer\Expose()
      */
     protected $person;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @Serializer\Expose()
      */
     protected $date_created;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Serializer\Expose()
      */
     protected $comment;
 
     /**
-     * Construct
+     * @var Task
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @Assert\NotNull
+     * @Serializer\Expose()
      */
-    public function __construct()
+    protected $task;
+
+    /**
+     * Construct
+     * @param Person $person
+     */
+    public function __construct(Person $person)
     {
+        $this->setPerson($person);
         $this->setDateCreated(new \DateTime);
     }
 
@@ -102,7 +127,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      */
     public function setPerson(Person $person)
     {
-        $this->person = $person;
         $this->setModelField('person', $person);
     }
 
@@ -119,7 +143,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      */
     public function setDateCreated(\DateTime $date_created)
     {
-        $this->date_created = $date_created;
         $this->setModelField('date_created', $date_created);
     }
 
@@ -136,7 +159,22 @@ class TaskComment extends NotifyPropertyChangeEntity
      */
     public function setComment($comment)
     {
-        $this->comment = $comment;
         $this->setModelField('comment', $comment);
+    }
+
+    /**
+     * @return Task
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function setTask(Task $task)
+    {
+        $this->setModelField('task', $task);
     }
 }
