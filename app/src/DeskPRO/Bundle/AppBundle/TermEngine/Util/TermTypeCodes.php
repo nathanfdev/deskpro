@@ -71,14 +71,25 @@ class TermTypeCodes
      */
     public static function getTermClassForTypeCode($term_type_code)
     {
-        $term_class = 'DeskPRO\\Bundle\\AppBundle\\TermEngine\\Term\\' . ucfirst(
-                Strings::underscoreToCamelCase(
-                    $term_type_code
-                )
-            ) . 'Term';
+        $term_class_name = ucfirst(
+            Strings::underscoreToCamelCase(
+                $term_type_code
+            )
+        );
+        $term_class = sprintf(
+            'DeskPRO\\Bundle\\AppBundle\\TermEngine\\Term\\%s\\%sTerm',
+            $term_class_name,
+            $term_class_name
+        );
 
         if (!class_exists($term_class)) {
-            throw new TermTypeDoesNotExistException($term_type_code);
+            $term_class = sprintf(
+                'DeskPRO\\Bundle\\AppBundle\\TermEngine\\Term\\%sTerm',
+                $term_class_name
+            );
+            if (!class_exists($term_class)) {
+                throw new TermTypeDoesNotExistException($term_type_code);
+            }
         }
 
         return $term_class;
