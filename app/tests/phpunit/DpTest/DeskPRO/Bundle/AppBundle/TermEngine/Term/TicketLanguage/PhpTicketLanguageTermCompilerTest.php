@@ -35,8 +35,7 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
@@ -48,15 +47,15 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
     public function setUp()
     {
-        $this->term_compiler = $this->get('term_engine.php_ticket_checker.compiler.ticket_participant');
+        $this->term_compiler = $this->get('term_engine.php_ticket_checker.compiler.ticket_language');
     }
 
 
     public function testCompileIs()
     {
-        $term = new TicketParticipantTerm(
+        $term = new TicketLanguageTerm(
             array(
-                'person_ids' => array(4, 9)
+                'language' => 'eng'
             )
         );
 
@@ -64,13 +63,13 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(true);
+        $ticket->getLanguage()->willReturn((object)array('lang_code' => 'eng'));
         $this->assertTicketCheck(
             $php_check,
             true,
             $ticket
         );
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(false);
+        $ticket->getLanguage()->willReturn((object)array('lang_code' => 'ger'));
         $this->assertTicketCheck(
             $php_check,
             false,
@@ -80,9 +79,9 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
     public function testCompileIsNot()
     {
-        $term = new TicketParticipantTerm(
+        $term = new TicketLanguageTerm(
             array(
-                'person_ids' => array(4, 9)
+                'language' => 'eng'
             ),
             TermInterface::OP_NOT
         );
@@ -91,13 +90,13 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(true);
+        $ticket->getLanguage()->willReturn((object)array('lang_code' => 'eng'));
         $this->assertTicketCheck(
             $php_check,
             false,
             $ticket
         );
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(false);
+        $ticket->getLanguage()->willReturn((object)array('lang_code' => 'ger'));
         $this->assertTicketCheck(
             $php_check,
             true,

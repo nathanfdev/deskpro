@@ -55,7 +55,7 @@ class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
             '{languages}.id = ticket.language_id'
         );
 
-        $query_part->setParameter('lang_codes', $term->getOption('language'));
+        $query_part->setParameter('language', $term->getOption('language'));
 
         $query_part->setWhereString(sprintf('{languages}.lang_code %s :language', $isser));
 

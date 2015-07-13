@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\DbalTicketParticipantTermCompiler;
 
 class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
@@ -67,7 +66,7 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
         $this->assertParameters(
             $query_part,
             array(
-                'lang_codes' => 'eng'
+                'language' => 'eng'
             )
         );
         $this->assertUniqueJoins(
@@ -81,64 +80,34 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
             )
         );
     }
-    /*
+    
     public function testCompileIsNOT()
     {
-        $term = new TicketParticipantTerm(
+        $term = new TicketLanguageTerm(
             array(
-                'person_ids' => array(14)
+                'language' => 'ger'
             ),
             TermInterface::OP_NOT
         );
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, '{participants}.person_id NOT IN (:person_ids)');
+        $this->assertWhere($query_part, '{languages}.lang_code != :language');
         $this->assertParameters(
             $query_part,
             array(
-                'person_ids' => array(14)
+                'language' => 'ger'
             )
         );
         $this->assertUniqueJoins(
             $query_part,
             array(
-                'participants' => array(
-                    'table' => 'tickets_participants',
-                    'on' => '{participants}.ticket_id = ticket.id',
+                'languages' => array(
+                    'table' => 'tickets_languages',
+                    'on' => '{languages}.id = ticket.language_id',
                     'type' => DbalQuery::JOIN_LEFT
                 )
             )
         );
     }
-
-    public function testCompileWithME()
-    {
-        $term = new TicketParticipantTerm(
-            array(
-                'person_ids' => array(10, TicketParticipantTerm::ID_ME)
-            )
-        );
-
-        $query_part = $this->term_compiler->compile($term);
-
-        $this->assertWhere($query_part, '{participants}.person_id IN (:person_ids)');
-        $this->assertParameters(
-            $query_part,
-            array(
-                'person_ids' => array(10, new TermEngineExpression('agent.getId()'))
-            )
-        );
-        $this->assertUniqueJoins(
-            $query_part,
-            array(
-                'participants' => array(
-                    'table' => 'tickets_participants',
-                    'on' => '{participants}.ticket_id = ticket.id',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
-            )
-        );
-    }
-    */
 }

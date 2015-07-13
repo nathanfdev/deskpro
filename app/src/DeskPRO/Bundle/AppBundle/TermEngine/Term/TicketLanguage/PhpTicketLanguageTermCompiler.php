@@ -52,10 +52,10 @@ class PhpTicketLanguageTermCompiler extends AbstractPhpTermCompiler
         $lang_code = $term->getOption('language');
         
         return new PhpCheck(
-            'check_contains(ticket.getLanguage().lang_code, :op, :lang_code)',
+            'check_contains(ticket.getLanguage().lang_code, :op, :language)',
             array(
                 'op' => $op,
-                'lang_code' => $lang_code
+                'language' => $lang_code
             )
         );
     }

@@ -109,7 +109,7 @@ services:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\TicketCustomDataTerm'
     
-    term_engine.php_ticket_filters.compiler.ticket_language:
+    term_engine.php_ticket_checker.compiler.ticket_language:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\PhpTicketLanguageTermCompiler
             parent: term_engine.php_ticket_checker.term_compiler
             tags:
