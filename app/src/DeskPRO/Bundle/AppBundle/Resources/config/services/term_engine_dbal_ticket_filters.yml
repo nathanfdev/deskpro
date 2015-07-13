@@ -146,7 +146,14 @@ services:
             ticket_filter:
                 name: dbal_ticket_filter_compiler
                 term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\TicketUrgencyTerm'
-
+    
+    term_engine.dbal_ticket_filters.compiler.ticket_num_user_replies:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserReplies\DbalTicketNumUserRepliesTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserReplies\TicketUrgencyTerm'
 
     #
     # VISITORS
