@@ -1,0 +1,114 @@
+<?php
+/**************************************************************************\
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail;
+
+use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractDbalTicketFilterTermCompilerTest;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\DbalPersonEmailTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+
+class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
+{
+    /**
+     * @var DbalPersonEmailTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
+    {
+        $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.person_email');
+    }
+
+    public function testCompileIs()
+    {
+        $term = new PersonEmailTerm(
+            array(
+                'email' => 'chris.tickner@deskpro.com'
+            )
+        );
+
+        $query_part = $this->term_compiler->compile($term);
+
+        $this->assertJoins(
+            $query_part,
+            array(
+                'people_emails' => array(
+                    'table' => 'people_emails',
+                    'on' => 'ticket.person_id = people_emails.person_id',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
+        );
+        $this->assertParameters(
+            $query_part,
+            array(
+                'email' => 'chris.tickner@deskpro.com'
+            )
+        );
+        $this->assertWhere($query_part, 'people_emails.email = :email');
+        $this->assertNoUniqueJoins($query_part);
+    }
+
+    public function testCompileIsNot()
+    {
+        $term = new PersonEmailTerm(
+            array(
+                'email' => 'chris.tickner@deskpro.com'
+            ),
+            TermInterface::OP_NOT
+        );
+
+        $query_part = $this->term_compiler->compile($term);
+
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'email_join' => array(
+                    'table' => 'people_emails',
+                    'on' => 'ticket.person_id = {email_join}.person_id AND {email_join}.email = :email',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
+        );
+        $this->assertParameters(
+            $query_part,
+            array(
+                'email' => 'chris.tickner@deskpro.com'
+            )
+        );
+        $this->assertWhere($query_part, '{email_join}.id IS NULL');
+        $this->assertNoJoins($query_part);
+    }
+}
