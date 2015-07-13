@@ -8,6 +8,7 @@ import { Provider } from 'redux/react';
 
 import * as app_stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Stores/index";
 import * as ticket_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Stores/index";
+import * as task_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Stores/index";
 
 import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
 
@@ -17,7 +18,7 @@ export default class AgentApp {
   }
 
   start() {
-    const store = composeStores(Object.assign({}, app_stores, ticket_stores));
+    const store = composeStores(Object.assign({}, app_stores, ticket_stores, task_stores));
     const dispatcher = createDispatcher(
       store,
       getState => [thunkMiddleware(getState), promiseMiddleware]

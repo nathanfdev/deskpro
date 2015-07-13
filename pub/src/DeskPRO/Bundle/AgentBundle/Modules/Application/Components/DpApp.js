@@ -14,6 +14,9 @@ import AppFrameWrapper from "./AppFrameWrapper";
 import TicketsNavFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/TicketsNavFrame";
 import TicketsListFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/TicketsListFrame";
 
+import TasksNavFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TasksNavFrame";
+import TasksListFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TasksListFrame";
+
 @connect(state => ({
   user: state.user,
   dp_window: state.dp_window
@@ -25,16 +28,17 @@ export default class DpApp extends React.Component {
 
     return (<div className="dp-window">
         <Header user={user} />
-
         <AppSwitcher switchApp={actions.setActiveApp} activeAppId={dp_window.activeAppId} />
 
         <NavFrame activeAppId={dp_window.activeAppId}>
           <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsNavFrame /></AppFrameWrapper>
+          <AppFrameWrapper appId="tasks" activeAppId={dp_window.activeAppId}><TasksNavFrame /></AppFrameWrapper>
         </NavFrame>
 
         <div className="dp-content-outer-frame">
           <ListFrame>
             <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsListFrame /></AppFrameWrapper>
+            <AppFrameWrapper appId="tasks" activeAppId={dp_window.activeAppId}><TasksListFrame /></AppFrameWrapper>
           </ListFrame>
           <TabFrame />
         </div>
