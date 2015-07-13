@@ -148,6 +148,14 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolvedTerm\TicketDateResolvedTerm'
+    
+    term_engine.php_ticket_checker.compiler.ticket_date_archived:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateArchived\PhpTicketDateArchivedTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateArchivedTerm\TicketDateArchivedTerm'
 
     #
     # VISITORS
