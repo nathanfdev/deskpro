@@ -393,7 +393,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 $data = array_merge($data, $stats_fetcher->getStats());
             } catch (\Exception $e) {}
         }
-        
+
         \Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
     }
 }
