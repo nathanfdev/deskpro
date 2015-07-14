@@ -83,6 +83,14 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
     {
         return $this->helper_pool->getHelper('date');
     }
+    
+    /**
+     * @return PhpStringHelper
+     */
+    public function getStringHelper()
+    {
+        return $this->helper_pool->getHelper('string');
+    }
 
     public function turnArrayIntoPhpArrayString(array $values = array())
     {

@@ -47,15 +47,10 @@ class PhpTicketRefTermCompiler extends AbstractPhpTermCompiler
      */
     protected function doCompile(TermInterface $term)
     {
-        $op = $term->getOp();
-        $ref = $term->getOption('ref');
-
-        return new PhpCheck(
-            'check_contains(ticket.ref, :op, :ref)',
-            array(
-                'op' => $op,
-                'ref' => $ref
-            )
+        return $this->getStringHelper()->buildQueryPart(
+            'ticket.ref',
+            $term->getOp(),
+            $term->getOption('ref')
         );
     }
 }

@@ -42,19 +42,10 @@ class DbalTicketRefTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
-
-        $op = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
-        $query_part->setParameter('ref', $term->getOption('ref'));
-
-        $where = sprintf(
-            'ticket.ref %s (:ref)',
-            $isser
-        );
-
-        $query_part->setWhereString(
-            $where
+        $query_part = $this->getStringHelper()->buildQueryPart(
+            'ticket.ref',
+            $term->getOp(),
+            $term->getOption('ref'),
         );
 
         $this->logQueryPart($query_part);

@@ -241,4 +241,10 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpDateHelper
         tags:
             - { name: php_term_engine_helper }
+            
+    term_engine.php.string_helper:
+        parent: term_engine.php.abstract_helper
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpStringHelper
+        tags:
+            - { name: php_term_engine_helper }
     
