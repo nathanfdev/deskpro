@@ -50,9 +50,9 @@ class PhpTicketFlaggedTermCompiler extends AbstractPhpTermCompiler
     {
         $op = $term->getOp();
         $color = $term->getOption('flag');
-        
+
         return new PhpCheck(
-            'check_contains(helper_pool.getHelper(\'agent\').getFlags(ticket, agent) , :op, :flag)',
+            'check_contains(helper_pool.getHelper(\'agent\').getFlags(ticket, agent), :op, :flag)',
             array(
                 'op' => $op,
                 'flag' => $color

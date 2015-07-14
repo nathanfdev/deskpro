@@ -68,5 +68,7 @@ class PhpAgentHelper extends AbstractPhpHelper
         foreach($flags as $flag) {
             $colors[] = $flag->color;
         }
+
+        return $colors;
     }
 }

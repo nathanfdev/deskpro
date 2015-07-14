@@ -44,18 +44,10 @@ class TicketFlaggedTerm extends AbstractTerm
 {
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'flag' => ''
-            )
-        );
-
         $resolver->setConstraints(
             array(
-                new PrimaryKeyExists(
-                    array(
-                        'table' => 'tickets_flagged',
-                    )
+                'flag' => array(
+                    new Assert\NotBlank(),
                 )
             )
         );

@@ -33,107 +33,100 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged;
 
-use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 
 class PhpTicketFlaggedTermCompilerTest extends AbstractPhpTermCompilerTest
 {
     /**
-     * @var PhpTicketStatusTermCompiler
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\PhpTicketFlaggedTermCompiler
      */
     protected $term_compiler;
-    protected $helper_pool;
+
+
 
     public function setUp()
     {
         $this->term_compiler = $this->get('term_engine.php_ticket_checker.compiler.ticket_flagged');
-        $this->helper_pool = $this->get('term_engine.php.helper_pool');
     }
+
+    /**
+     * @param PhpCheck $check
+     * @param array $variables
+     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool|object
+     */
+    protected function makeHelperPool(PhpCheck $check, array $variables)
+    {
+        $color = isset($variables['flag']) ? $variables['flag'] : 'blue';
+
+        $agent_helper = \Mockery::mock('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpAgentHelper')
+            ->shouldReceive('getFlags')
+            ->andReturn($color)
+            ->shouldReceive('checkContains')
+            ->andReturn(true)
+            ->mock();
+
+        $helper_pool_real = $this->get('term_engine.php.helper_pool');
+        $helper_pool = \Mockery::mock($helper_pool_real)
+            ->shouldReceive('getHelper')->with('agent')->andReturn($agent_helper)
+            ->shouldReceive('getHelper')->andReturnUsing(array($helper_pool_real, 'getHelper'))
+            ->mock();
+
+        return $helper_pool;
+    }
+
 
     public function testCompileIs()
     {
-        $ticket = $this->createTicketProphecy();
-
-        $helper = (object)array(
-            'getFlags' => function($ticket, $agent_id) {
-                die('koin');
-                return array(
-                    'blue',
-                );
-            }
-        );
-        
-        $term = new TicketFlaggedTerm(
-            array(
-                'flag' => 'blue',
-            )
-        );
+        $term = new TicketFlaggedTerm(array(
+            'flag' => 'blue',
+        ));
 
         $php_check = $this->term_compiler->compile($term);
-
-        $helper = \Mockery::mock('stdClass')
-            ->shouldReceive('getFlags')
-            ->andReturn(array('blue'))
-            ->mock();
-
-        $my_helper_pool = $this->get('term_engine.php.helper_pool');
-        $this->helper_pool = \Mockery::mock($my_helper_pool)
-            ->shouldReceive('getHelper')
-            ->with('agent')
-            ->andReturn($helper)
-            ->shouldReceive('getHelper')
-            ->with('method_check')
-            ->passthru()
-            ->mock();
-
+        $ticket = $this->createTicketProphecy();
         $this->assertTicketCheck(
             $php_check,
             true,
-            $ticket
+            $ticket,
+            array('flag' => 'blue')
         );
+
         $this->assertTicketCheck(
             $php_check,
             false,
-            $ticket
+            $ticket,
+            array('flag' => 'red')
         );
     }
-    /*
+
     public function testCompileIsNot()
     {
-        $term = new TicketFlaggedTerm(
-            array(
-                'flag' => 'blue'
-            ),
-            TermInterface::OP_NOT
-        );
+        $term = new TicketFlaggedTerm(array(
+            'flag' => 'blue',
+        ), TermInterface::OP_NOT);
 
         $php_check = $this->term_compiler->compile($term);
-
         $ticket = $this->createTicketProphecy();
-
-        $ticket->getLanguage()->willReturn((object)array('lang_code' => 'eng'));
         $this->assertTicketCheck(
             $php_check,
             false,
-            $ticket
+            $ticket,
+            array('flag' => 'blue')
         );
-        $ticket->getLanguage()->willReturn((object)array('lang_code' => 'ger'));
+
         $this->assertTicketCheck(
             $php_check,
             true,
-            $ticket
+            $ticket,
+            array('flag' => 'red')
         );
     }
-    */
 
     protected function createTicketProphecy()
     {
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
-        $ticket->getId()->willReturn(4);
-
         return $ticket;
     }
 }
