@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
@@ -191,6 +192,14 @@ class Task extends NotifyPropertyChangeEntity
     protected $attachments;
 
     /**
+     * @var Ticket
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
+     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
+     * @Serializer\Expose()
+     */
+    protected $ticket;
+
+    /**
      * @param Person $creator
      */
     public function __construct(Person $creator)
@@ -345,6 +354,14 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
      * @param string $title
      */
     public function setTitle($title)
@@ -482,5 +499,13 @@ class Task extends NotifyPropertyChangeEntity
     {
         $this->attachments->add($attachment);
         $this->setModelField('attachment', $attachment);
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->setModelField('ticket', $ticket);
     }
 }
