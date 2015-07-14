@@ -198,6 +198,15 @@ class DbalQueryPart
     {
         $this->where = (string)$where;
     }
+    
+    /**
+     * Retrieves the where string of this query part.
+     * @return string
+     */
+    public function getWhereString()
+    {
+        return $this->where;
+    }
 
     /**
      * Get all current parameters with the correct name (in the case of renames it

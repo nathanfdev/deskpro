@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalJoinedHelper extends AbstractDbalHelper
 {
-
     /**
      * An identifier for this helper
      *
@@ -49,24 +48,9 @@ class DbalJoinedHelper extends AbstractDbalHelper
     {
         return 'joined';
     }
-
-    /**
-     * @param $field_name
-     * @param $op
-     * @param array $num
-     * @param null $num2
-     * @return DbalQueryPart
-     */
-    public function buildQueryPart($field_name, $join_table, $join_clause, $op, $input = false, $unique = true)
+    
+    protected function applyWhere(DbalQueryPart $part, $field_name, $op, $input)
     {
-        $part = new DbalQueryPart();
-        
-        if ($unique) {
-            $part->addUniqueJoin($join_table, $join_table, $join_clause);
-        } else {
-            $part->addJoin($join_table, $join_clause);
-        }
-        
         $fields = $field_name;
         if (!is_array($field_name)) {
             $fields = array($field_name => $input);
@@ -85,7 +69,7 @@ class DbalJoinedHelper extends AbstractDbalHelper
                 $sql_op = (TermInterface::OP_NOT_HAS === $op) ? 'NOT IN' : 'IN';
             }
             
-            $where[] =  sprintf('%s %s :input%d', $field, $sql_op, $iter);
+            $where[] = sprintf('%s %s :input%d', $field, $sql_op, $iter);
             $values[sprintf('input%d', $iter)] = $value;
             $iter++;
         }
@@ -97,7 +81,81 @@ class DbalJoinedHelper extends AbstractDbalHelper
         
         $part->setWhereString(implode($flat_operator, $where));
         $part->setParameters($values);
+        
+        return $part;
+    }
 
+
+    /**
+     * @param mixed $field_name
+     * @param $op
+     * @param array $num
+     * @param null $num2
+     * @return DbalQueryPart
+     */
+    public function buildQueryPart($field_name, $join_table, $join_clause, $op, $input = false, $unique = true)
+    {
+        $part = new DbalQueryPart();
+        
+        if ($unique) {
+            $part->addUniqueJoin($join_table, $join_table, $join_clause);
+        } else {
+            $part->addJoin($join_table, $join_clause);
+        }
+        
+        return $this->applyWhere($part, $field_name, $op, $input);
+    }
+    
+    /**
+     * @param mixed $field_name
+     * @param $op
+     * @param array $num
+     * @param null $num2
+     * @return DbalQueryPart
+     */
+    public function buildMultiJoinQueryPart($field_name, $joins, $op, $input = false, $unique = true)
+    {
+        $part = new DbalQueryPart();
+        
+        foreach($joins as $join_table => $join_clause) {
+            if ($unique) {
+                $part->addUniqueJoin($join_table, $join_table, $join_clause);
+            } else {
+                $part->addJoin($join_table, $join_clause);
+            }
+        }
+        
+        return $this->applyWhere($part, $field_name, $op, $input);
+    }
+    
+    /**
+     * Join multiple query parts
+     * @param array $joins is an array of tablename => clause for the main join
+     * @param array $query_parts is an array of DbalQueryPart which will be merged into the join.
+     * @return DbalQueryPart
+     */
+    public function buildJoinedQueryParts(array $joins, array $query_parts)
+    {
+        $part = new DbalQueryPart();
+        
+        foreach($joins as $join_table => $join_clause) {
+            if ($unique) {
+                $part->addUniqueJoin($join_table, $join_table, $join_clause);
+            } else {
+                $part->addJoin($join_table, $join_clause);
+            }
+        }
+        
+        $where = array();
+        $values = array();
+        foreach($query_parts as $query_part) {
+            $where[] = $query_part->getWhereString();
+            $values = array_merge($values, $query_part->getParameters());
+        }
+        
+        $part->setWhereString(implode('AND', $where));
+        $part->setParameters($values);
+        
         return $part;
     }
 }
