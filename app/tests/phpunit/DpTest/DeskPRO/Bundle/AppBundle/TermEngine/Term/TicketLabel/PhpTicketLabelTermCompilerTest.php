@@ -31,71 +31,84 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
+namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalNumericHelper;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStringHelper;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
+use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
-use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
-use Monolog\Logger;
-use Psr\Log\LoggerInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 
-abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
+class PhpTicketLabelTermCompilerTest extends AbstractPhpTermCompilerTest
 {
-    public function logQueryPart(DbalQueryPart $part)
+    /**
+     * @var PhpTicketStatusTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
     {
-        $this->logDebug('Constructed QueryPart', array(
-            'where' => $part->getWhereString(),
-            'params' => $part->getParameters(),
-            'joins' => $part->getJoins(),
-            'unique_joins' => $part->getUniqueJoins()
-        ));
+        $this->term_compiler = $this->get('term_engine.php_ticket_checker.compiler.ticket_label');
     }
 
-    /**
-     * @return DbalEntityHelper
-     */
-    public function getEntityHelper()
+    public function testCompileHas()
     {
-        return $this->helper_pool->getHelper('entity');
-    }
+        $ticket = $this->createTicketProphecy();
+        
+        $term = new TicketLabelTerm(
+            array(
+                'label' => 'blue',
+            )
+        );
 
-    /**
-     * @return DbalStringHelper
-     */
-    public function getStringHelper()
-    {
-        return $this->helper_pool->getHelper('string');
-    }
+        $php_check = $this->term_compiler->compile($term);
 
-    /**
-     * @return DbalDateHelper
-     */
-    public function getDateHelper()
-    {
-        return $this->helper_pool->getHelper('date');
+        $ticket->findLabelByString("blue")->willReturn(true);
+        $this->assertTicketCheck(
+            $php_check,
+            true,
+            $ticket
+        );
+        $ticket->findLabelByString("blue")->willReturn(null);
+        $this->assertTicketCheck(
+            $php_check,
+            false,
+            $ticket
+        );
     }
     
-    /**
-     * @return DbalJoinedHelper
-     */
-    public function getJoinedHelper()
+    public function testCompileHasNot()
     {
-        return $this->helper_pool->getHelper('joined');
+        $ticket = $this->createTicketProphecy();
+        
+        $term = new TicketLabelTerm(
+            array(
+                'label' => 'blue',
+            ),
+            TermInterface::OP_NOT_HAS
+        );
+
+        $php_check = $this->term_compiler->compile($term);
+
+        $ticket->findLabelByString("blue")->willReturn(true);
+        $this->assertTicketCheck(
+            $php_check,
+            false,
+            $ticket
+        );
+        $ticket->findLabelByString("blue")->willReturn(null);
+        $this->assertTicketCheck(
+            $php_check,
+            true,
+            $ticket
+        );
     }
 
-    /**
-     * @return DbalNumericHelper
-     */
-    public function getNumericHelper()
+    protected function createTicketProphecy()
     {
-        return $this->helper_pool->getHelper('numeric');
+        $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(4);
+
+        return $ticket;
     }
 }
