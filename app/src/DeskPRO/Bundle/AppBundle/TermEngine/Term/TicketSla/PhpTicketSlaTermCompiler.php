@@ -31,27 +31,40 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla\TicketSlaTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 
-class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
+class PhpTicketSlaTermCompiler extends AbstractPhpTermCompiler
 {
-    public function doCompile(TermInterface $term)
+    /**
+     * Take a term and return a PhpCheck representing the term's query conditions.
+     *
+     * @param TermInterface $term
+     * @return PhpCheck
+     */
+    protected function doCompile(TermInterface $term)
     {
-        $query_part = $this->getJoinedHelper()->buildQueryPart(
-            'labels_tickets.label',
-            'labels_tickets',
-            'tickets.id = labels_tickets.ticket_id',
-            $term->getOp(),
-            $term->getOption('label')
-        );
+        $op = $term->getOp();
         
-        return $query_part;
+        $expressions = array();
+        $values = array( 'op' => $op );
+        
+        if ($term->hasOption('sla')) {
+            $expressions[]= 'check_contains(ticket.ticket_slas, :op, :sla)';
+            $values['sla'] = $term->getOption('sla');
+        }
+        if ($term->hasOption('status')) {
+            $expressions[] = 'check_contains(ticket.ticket_slas, :op, :status)';
+            $values['status'] = $term->getOption('sla');
+        }
+
+        return new PhpCheck(
+            implode(' and ', $expressions),
+            $values
+        );
     }
 }

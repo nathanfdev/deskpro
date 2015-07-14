@@ -31,27 +31,40 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla\TicketSlaTerm;
 
-class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
+class DbalTicketSlaTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)
     {
-        $query_part = $this->getJoinedHelper()->buildQueryPart(
-            'labels_tickets.label',
-            'labels_tickets',
-            'tickets.id = labels_tickets.ticket_id',
-            $term->getOp(),
-            $term->getOption('label')
-        );
+        $slas = $term->hasOption('sla') ? $term->getOption('sla') : false;
+        $statuses = $term->hasOption('status') ? $term->getOption('status') : false;
         
+        $fields = array();
+        
+        if ($slas) {
+            $fields['ticket_slas.sla_id'] = $slas;
+        }
+        if ($statuses) {
+            $fields['ticket_slas.sla_status'] = $statuses;
+        }
+        
+        $query_part = $this->getJoinedHelper()->buildQueryPart(
+            $fields,
+            'ticket_slas',
+            'tickets.id = ticket_slas.ticket_id',
+            $term->getOp()
+        );
+
+        $this->logQueryPart($query_part);
+
         return $query_part;
     }
 }

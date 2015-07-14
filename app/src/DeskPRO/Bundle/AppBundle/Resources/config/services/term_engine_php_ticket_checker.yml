@@ -229,6 +229,14 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabelTerm\TicketLabelTerm'
+    
+    term_engine.php_ticket_checker.compiler.ticket_sla:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla\PhpTicketSlaTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_sla:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSlaTerm\TicketSlaTerm'
 
     #
     # VISITORS

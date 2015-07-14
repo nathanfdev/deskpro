@@ -31,27 +31,51 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
+use Symfony\Component\Validator\Constraints as Assert;
+use Application\DeskPRO\Entity\TicketSla;
 
-class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
+
+class TicketSlaTerm extends AbstractTerm
 {
-    public function doCompile(TermInterface $term)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $query_part = $this->getJoinedHelper()->buildQueryPart(
-            'labels_tickets.label',
-            'labels_tickets',
-            'tickets.id = labels_tickets.ticket_id',
-            $term->getOp(),
-            $term->getOption('label')
+        $resolver->setConstraints(
+            array(
+                'sla' => array(
+                    new Assert\Type('array'),
+                    new Assert\All(array(
+                        new Assert\NotBlank(),
+                        new Assert\Type('integer')
+                    ))
+                ),
+                'status' => array(
+                    new Assert\Type('array'),
+                    new Assert\All(array(
+                        new Assert\NotBlank(),
+                        new Assert\Choice(array(
+                            TicketSla::STATUS_OK,
+                            TicketSla::STATUS_WARNING,
+                            TicketSla::STATUS_FAIL,
+                        ))
+                    ))
+                )
+            )
         );
-        
-        return $query_part;
+    }
+
+    public function getSupportedOps()
+    {
+        return array(TermInterface::OP_HAS, TermInterface::OP_NOT_HAS);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_HAS;
     }
 }

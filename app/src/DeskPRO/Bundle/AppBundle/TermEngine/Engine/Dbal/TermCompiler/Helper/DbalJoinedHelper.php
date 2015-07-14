@@ -57,15 +57,46 @@ class DbalJoinedHelper extends AbstractDbalHelper
      * @param null $num2
      * @return DbalQueryPart
      */
-    public function buildQueryPart($field_name, $join_table, $join_clause, $op, $input)
+    public function buildQueryPart($field_name, $join_table, $join_clause, $op, $input = false, $unique = true)
     {
         $part = new DbalQueryPart();
         
-        $sql_op = (TermInterface::OP_NOT_HAS === $op) ? '!=' : '=';
+        if ($unique) {
+            $part->addUniqueJoin($join_table, $join_table, $join_clause);
+        } else {
+            $part->addJoin($join_table, $join_clause);
+        }
         
-        $part->addUniqueJoin($join_table, $join_table, $join_clause);        
-        $part->setWhereString(sprintf('%s %s :input', $field_name, $sql_op));
-        $part->setParameter('input', $input);
+        $fields = $field_name;
+        if (!is_array($field_name)) {
+            $fields = array($field_name => $input);
+        }
+        
+        $where = array();
+        $values = array();
+        $iter = 0;
+        foreach($fields as $field => $value) {
+            if ($field == '%OP') {
+                continue;
+            }
+            
+            $sql_op = (TermInterface::OP_NOT_HAS === $op) ? '!=' : '=';
+            if(is_array($value)) {
+                $sql_op = (TermInterface::OP_NOT_HAS === $op) ? 'NOT IN' : 'IN';
+            }
+            
+            $where[] =  sprintf('%s %s :input%d', $field, $sql_op, $iter);
+            $values[sprintf('input%d', $iter)] = $value;
+            $iter++;
+        }
+        
+        $flat_operator = ' AND ';
+        if (isset($fields['%OP']) && 'OR' == $fields['%OP']) {
+            $flat_operator = ' OR ';
+        }
+        
+        $part->setWhereString(implode($flat_operator, $where));
+        $part->setParameters($values);
 
         return $part;
     }

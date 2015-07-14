@@ -60,11 +60,11 @@ class DbalTicketLabelTermCompilerTest extends AbstractDbalTicketFilterTermCompil
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'labels_tickets.label = :input');
+        $this->assertWhere($query_part, 'labels_tickets.label = :input0');
         $this->assertParameters(
             $query_part,
             array(
-                'input' => 'blue',
+                'input0' => 'blue',
             )
         );
         $this->assertUniqueJoins(
@@ -88,11 +88,11 @@ class DbalTicketLabelTermCompilerTest extends AbstractDbalTicketFilterTermCompil
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'labels_tickets.label != :input');
+        $this->assertWhere($query_part, 'labels_tickets.label != :input0');
         $this->assertParameters(
             $query_part,
             array(
-                'input' => 'blue',
+                'input0' => 'blue',
             )
         );
         $this->assertUniqueJoins(

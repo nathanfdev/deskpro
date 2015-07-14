@@ -234,6 +234,14 @@ services:
             ticket_filter:
                 name: dbal_ticket_filter_compiler
                 term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm'
+              
+    term_engine.dbal_ticket_filters.compiler.ticket_sla:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla\DbalTicketSlaTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla\TicketSlaTerm'
 
     #
     # VISITORS
