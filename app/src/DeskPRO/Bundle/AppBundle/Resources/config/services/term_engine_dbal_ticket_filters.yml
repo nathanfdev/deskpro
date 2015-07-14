@@ -307,3 +307,10 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalJoinedHelper
         tags:
             - { name: dbal_term_engine_helper }
+    
+    term_engine.dbal.custom_field:
+        parent: term_engine.dbal.abstract_helper
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalCustomFieldHelper
+        arguments: [@term_engine.dbal.joined_helper]
+        tags:
+            - { name: dbal_term_engine_helper }
