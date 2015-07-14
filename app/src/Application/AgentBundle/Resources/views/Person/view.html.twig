@@ -201,15 +201,20 @@ pageMeta.baseId = '{{ baseId }}';
 {{ dp_app_loc(baseId, 'header.after') }}
 {{ dp_app_loc(baseId, 'main.before') }}
 
-<table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
-	<section class="content-col">
-		{% include 'AgentBundle:Person:view-content-col.html.twig' %}
-	</section>
-</td><td valign="top">
-	<section class="property-col">
-		{% include 'AgentBundle:Person:view-property-col.html.twig' %}
-	</section>
-</td></tr></table>
+<table class="layout-table" cellspacing="0" cellpadding="0" width="100%">
+    <tr>
+        <td valign="top" width="60%">
+            <section class="content-col">
+                {% include 'AgentBundle:Person:view-content-col.html.twig' %}
+            </section>
+        </td>
+        <td valign="top" width="40%">
+            <section class="property-col">
+                {% include 'AgentBundle:Person:view-property-col.html.twig' %}
+            </section>
+        </td>
+    </tr>
+</table>
 
 {{ dp_app_loc(baseId, 'main.after') }}
 {{ dp_app_loc(baseId, 'footer') }}

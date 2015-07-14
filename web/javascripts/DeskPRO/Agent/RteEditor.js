@@ -50,7 +50,8 @@ DeskPRO.Agent.RteEditor = {
           if (n.attr('style')) {
             el.attr('style', n.attr('style'));
           }
-          if (n.attr('color') && !el.css('color')) {
+          if (n.attr('color')) {
+            el.attr('color', n.attr('color'));
             el.css('color', n.attr('color'));
           }
 
