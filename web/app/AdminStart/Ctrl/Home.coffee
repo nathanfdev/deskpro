@@ -20,6 +20,8 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
         @$scope.opt.timezone = tz.name()
       else
         console.log("Could not detect timezone")
+
+      $('body').addClass('done-load');
       return
 
     saveAndContinue: (isValid) ->
