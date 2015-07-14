@@ -464,6 +464,67 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @APIDoc(
+     *      description="get attached links for a task",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the task",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      parameters={
+     *          {
+     *              "name"="page",
+     *              "requirement"="\d+",
+     *              "description"="the page you are requesting",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="count",
+     *              "requirement"="\d+",
+     *              "description"="results per page",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/tasks/{id}/linked_items", name="api_tasks_links_get")
+     *
+     * @param Request $request
+     * @param $id
+     * @return View
+     */
+    public function getLinksAction(Request $request, $id)
+    {
+        $task = $this->getTask($id);
+
+        if (empty($task)) {
+            throw $this->createNotFoundException();
+        }
+
+        $links = $task->getLinkedItems();
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+
+        $pager = new Pagerfanta(new ArrayAdapter($links->toArray()));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return View::create(
+            $this->createRepresentation($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @param int $id
      * @return Task
      */

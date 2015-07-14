@@ -38,13 +38,14 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -52,11 +53,11 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ProjectMembersController extends BaseController implements ClassResourceInterface
+class TaskLinkedItemsController extends BaseController implements ClassResourceInterface
 {
     /**
      * @ApiDoc(
-     *      description="get a list of members",
+     *      description="get a list of links",
      *      parameters={
      *          {
      *              "name"="page",
@@ -77,17 +78,18 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      *          200="Success"
      *      }
      * )
-     * @Get("/project_members", name="api_project_members")
+     * @Get("/task_links", name="api_task_links")
      * @param Request $request
      * @return View
      */
     public function cgetAction(Request $request)
     {
-        $members = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findAll();
+        $task_links = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->findAll();
+
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($members));
+        $pager = new Pagerfanta(new ArrayAdapter($task_links));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -99,12 +101,12 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
 
     /**
      * @ApiDoc(
-     *      description="get a member",
+     *      description="get a link",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the member",
+     *              "description"="the id of the link",
      *              "dataType"="integer"
      *          }
      *      },
@@ -112,37 +114,37 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem"
      * )
-     * @Get("/project_members/{id}", name="api_project_members_get")
+     * @Get("/task_links/{id}", name="api_task_links_get")
      * @param int $id
      * @return View
      */
     public function getAction($id)
     {
-        $member = $this->getProjectMember($id);
+        $link = $this->getLink($id);
 
-        if (empty($member)) {
+        if (empty($link)) {
             throw $this->createNotFoundException();
         }
 
         return View::create(
-            $this->createRepresentation($member),
+            $this->createRepresentation($link),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
-     *      description="create a new member",
-     *      input={"class"="member", "name"=""},
+     *      description="create a new link",
+     *      input={"class"="task_link", "name"=""},
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem"
      * )
-     * @Post("/project_members", name="api_project_members_post")
+     * @Post("/task_links", name="api_task_links_post")
      * @param Request $request
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
@@ -150,32 +152,29 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      */
     public function postAction(Request $request)
     {
-        $member = new ProjectMember();
-        return $this->handleFormSubmission($request, $member);
+        $link = new TaskLinkedItem($this->getUser());
+        return $this->handleFormSubmission($request, $link);
     }
 
     /**
      * @APIDoc(
-     *      description="update a member",
+     *      description="update a link",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the member",
+     *              "description"="the id of the link",
      *              "dataType"="integer"
      *          }
      *      },
-     *      input={"class"="member", "name"=""},
+     *      input={"class"="task_link", "name"=""},
      *      statusCodes={
      *          204="Updated",
      *          400="Bad Request",
      *          404="Not Found"
      *      }
      * )
-     *
-     * @TODO: Make sure this works with changing member types e.g. person -> team
-     *
-     * @Put("/project_members/{id}", name="api_project_members_put")
+     * @Put("/task_links/{id}", name="api_task_links_put")
      * @param Request $request
      * @param $id
      * @throws WrappedApiErrorException
@@ -183,19 +182,19 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      */
     public function putAction(Request $request, $id)
     {
-        $member = $this->getProjectMember($id);
+        $link = $this->getLink($id);
 
-        return $this->handleFormSubmission($request, $member);
+        return $this->handleFormSubmission($request, $link);
     }
 
     /**
      * @APIDoc(
-     *      description="delete a member",
+     *      description="delete a link",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the member",
+     *              "description"="the id of the task",
      *              "dataType"="integer"
      *          }
      *      },
@@ -204,14 +203,14 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/project_members/{id}", name="api_projectmembers_delete")
+     * @Delete("/task_links/{id}", name="api_task_links_delete")
      * @param $id
      * @return View
      */
     public function deleteAction($id)
     {
-        $member = $this->getProjectMember($id);
-        $this->getDoctrine()->getManager()->remove($member);
+        $link = $this->getLink($id);
+        $this->getDoctrine()->getManager()->remove($link);
         $this->getDoctrine()->getManager()->flush();
 
         return View::create(
@@ -221,89 +220,37 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
     }
 
     /**
-     * @APIDoc(
-     *      description="get tasks for a member",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the member",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/project_members/{id}/tasks", name="api_project_members_tasks_get")
-     * @param Request $request
      * @param int $id
-     * @return View
+     * @return TaskLinkedItem
      */
-    public function getTasksAction(Request $request, $id)
+    protected function getLink($id)
     {
         $id = (int) $id;
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(array('member' => $id));
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
+        $link = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->find($id);
 
-        $pager = new Pagerfanta(new ArrayAdapter($tasks));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->createRepresentation($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @param int $id
-     * @return ProjectMember
-     */
-    protected function getProjectMember($id)
-    {
-        $id = (int) $id;
-        $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->find($id);
-
-        if (!$member) {
+        if (!$link) {
             throw $this->createNotFoundException();
         }
 
-        return $member;
+        return $link;
     }
 
     /**
      * Will be abstracted for use by other controllers
      * @param Request $request
-     * @param ProjectMember $member
+     * @param TaskLinkedItem $link
      * @return View
      * @throws WrappedApiErrorException
      */
-    protected function handleFormSubmission(Request $request, ProjectMember $member)
+    protected function handleFormSubmission(Request $request, TaskLinkedItem $link)
     {
-        $status = $member->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        $status = $link->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'projectmember', $member)->getForm();
+        /** @var Form $form */
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'task_link', $link)->getForm();
 
         $submitted = $request->request->all();
-        $submitted = $this->cleanMemberTypes($submitted);
+        $submitted = $this->cleanLinkTypes($submitted);
 
         try {
             $form->submit($submitted, $request->getMethod() !== 'PUT');
@@ -317,13 +264,13 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
         }
 
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($member);
+            $this->getDoctrine()->getManager()->persist($link);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
+            $location = $this->generateUrl('api_task_links_get', array('id' => $link->getId()));
 
             return View::create(
-                $this->createRepresentation($member),
+                $this->createRepresentation($link),
                 $status,
                 array(
                     'Location' => $location,
@@ -335,13 +282,13 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
     }
 
     /**
-     * Cleans up the submitted array so that we only have one person, team or department
+     * Cleans up the submitted array so that we only have one ticket, article or chat
      * @param array $submitted
      * @return array
      */
-    private function cleanMemberTypes(array $submitted)
+    private function cleanLinkTypes(array $submitted)
     {
-        $types = array('person', 'team', 'department');
+        $types = array('article', 'ticket', 'chat');
         $cleaned = false;
 
         foreach ($types as $type) {

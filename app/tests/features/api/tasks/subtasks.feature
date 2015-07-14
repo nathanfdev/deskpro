@@ -8,15 +8,6 @@ Feature: /subtasks endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: Successfully set-up a parent task
-    When I send a POST request to "/api/v2/tasks" with body:
-    """
-{
-  "title": "Parent task"
-}
-    """
-    Then the response status code should be 201
-
   Scenario: Successfully create a subtask
     When I send a POST request to "/api/v2/subtasks" with body:
     """

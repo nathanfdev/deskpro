@@ -34,27 +34,26 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\AgentTeam as Team;
-use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="project_members")
+ * @ORM\Table(name="task_links")
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
- *      href=@Hateoas\Route("api_project_members_get", parameters={"id" = "expr(object.getId())"})
+ *      href=@Hateoas\Route("api_task_links_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
-class ProjectMember extends NotifyPropertyChangeEntity
+class TaskLinkedItem extends NotifyPropertyChangeEntity
 {
     /**
      * @var int
@@ -66,36 +65,36 @@ class ProjectMember extends NotifyPropertyChangeEntity
     protected $id = null;
 
     /**
-     * @var Project
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * @var Task
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      * @Serializer\Expose()
      */
-    protected $project;
+    protected $task;
 
     /**
-     * @var Person
-	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true)
+     * @var Ticket
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
+     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
      * @Serializer\Expose()
      */
-    protected $person;
+    protected $ticket;
 
     /**
-     * @var Team
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
-     * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true)
+     * @var ChatConversation
+	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
+     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
      * @Serializer\Expose()
      */
-    protected $team;
+    protected $chat;
 
     /**
-     * @var Department
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true)
+     * @var Article
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
+     * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
      * @Serializer\Expose()
      */
-    protected $department;
+    protected $article;
 
     /**
      * @return int
@@ -106,72 +105,72 @@ class ProjectMember extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return Project
+     * @return Task
      */
-    public function getProject()
+    public function getTask()
     {
-    	return $this->project;
+        return $this->task;
     }
 
     /**
-     * @param Project $project
+     * @param Task $task
      */
-    public function setProject(Project $project)
+    public function setTask(Task $task)
     {
-        $this->setModelField('project', $project);
+        $this->setModelField('task', $task);
     }
 
     /**
-     * @return Person
+     * @return Ticket
      */
-    public function getPerson()
+    public function getTicket()
     {
-        return $this->person;
+        return $this->ticket;
     }
 
     /**
-     * @param Person $person
+     * @param Ticket $ticket
      */
-    public function setPerson(Person $person = null)
+    public function setTicket(Ticket $ticket)
     {
-        $this->team = null;
-        $this->department = null;
-        $this->setModelField('person', $person);
+        $this->chat = null;
+        $this->article = null;
+        $this->setModelField('ticket', $ticket);
     }
 
     /**
-     * @return Team
+     * @return ChatConversation
      */
-    public function getTeam()
+    public function getChat()
     {
-        return $this->team;
+        return $this->chat;
     }
 
     /**
-     * @param Team $team
+     * @param ChatConversation $chat
      */
-    public function setTeam(Team $team = null)
+    public function setChat(ChatConversation $chat)
     {
-        $this->department = null;
-        $this->person = null;
-        $this->setModelField('team', $team);
+        $this->ticket = null;
+        $this->article = null;
+        $this->setModelField('chat', $chat);
     }
 
     /**
-     * @return Department
+     * @return Article
      */
-    public function getDepartment()
+    public function getArticle()
     {
-        return $this->department;
+        return $this->article;
     }
 
     /**
-     * @param Department $department
+     * @param Article $article
      */
-    public function setDepartment(Department $department = null)
+    public function setArticle(Article $article)
     {
-        $this->team = null;
-        $this->person = null;
-        $this->setModelField('department', $department);
+        $this->ticket = null;
+        $this->chat = null;
+        $this->setModelField('article', $article);
     }
 }

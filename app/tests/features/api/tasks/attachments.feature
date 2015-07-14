@@ -8,15 +8,6 @@ Feature: /task_attachments endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: Successfully set-up an example task
-    When I send a POST request to "/api/v2/tasks" with body:
-    """
-{
-  "title": "Example task"
-}
-    """
-    Then the response status code should be 201
-
   Scenario: Successfully create an attachment
     When I send a POST request to "/api/v2/task_attachments" with body:
     """

@@ -48,7 +48,6 @@ Feature: /project_members endpoint
     When I send a PUT request to "/api/v2/project_members/1" with body:
     """
 {
-"person" : null,
   "team": 1
 }
     """

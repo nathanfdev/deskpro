@@ -192,12 +192,11 @@ class Task extends NotifyPropertyChangeEntity
     protected $attachments;
 
     /**
-     * @var Ticket
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
-     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
+     * @var TaskLinkedItem[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskLinkedItem", mappedBy="task")
      * @Serializer\Expose()
      */
-    protected $ticket;
+    protected $linked_items;
 
     /**
      * @param Person $creator
@@ -354,11 +353,11 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return Ticket
+     * @return TaskLinkedItem[]|ArrayCollection
      */
-    public function getTicket()
+    public function getLinkedItems()
     {
-        return $this->ticket;
+        return $this->linked_items;
     }
 
     /**
@@ -502,10 +501,11 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param Ticket $ticket
+     * @param TaskLinkedItem $linked_item
      */
-    public function setTicket(Ticket $ticket)
+    public function addLinkedItem(TaskLinkedItem $linked_item)
     {
-        $this->setModelField('ticket', $ticket);
+        $this->linked_items->add($linked_item);
+        $this->setModelField('linked_item', $linked_item);
     }
 }

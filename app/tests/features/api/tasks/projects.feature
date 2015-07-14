@@ -80,7 +80,7 @@ Feature: /projects endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "Test project task"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/tasks/1"
+    And the JSON node "data[0].links.self" should be equal to "/api/v2/tasks/2"
 
   Scenario: I DELETE a single project
     When I send a DELETE request to "/api/v2/projects/1"
