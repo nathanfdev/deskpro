@@ -220,6 +220,67 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
     }
 
     /**
+     * @APIDoc(
+     *      description="get attachments for a comment",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the comment",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      parameters={
+     *          {
+     *              "name"="page",
+     *              "requirement"="\d+",
+     *              "description"="the page you are requesting",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="count",
+     *              "requirement"="\d+",
+     *              "description"="results per page",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/comments/{id}/attachments", name="api_comments_attachments_get")
+     *
+     * @param Request $request
+     * @param int $id
+     * @return View
+     */
+    public function getAttachmentsAction(Request $request, $id)
+    {
+        $comment = $this->getTaskComment($id);
+
+        if (empty($comment)) {
+            throw $this->createNotFoundException();
+        }
+
+        $attachments = $comment->getAttachments();
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+
+        $pager = new Pagerfanta(new ArrayAdapter($attachments->toArray()));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return View::create(
+            $this->createRepresentation($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @param int $id
      * @return TaskComment
      */

@@ -403,6 +403,67 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @APIDoc(
+     *      description="get attachments for a task",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the task",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      parameters={
+     *          {
+     *              "name"="page",
+     *              "requirement"="\d+",
+     *              "description"="the page you are requesting",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="count",
+     *              "requirement"="\d+",
+     *              "description"="results per page",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/tasks/{id}/attachments", name="api_tasks_attachments_get")
+     *
+     * @param Request $request
+     * @param $id
+     * @return View
+     */
+    public function getAttachmentsAction(Request $request, $id)
+    {
+        $task = $this->getTask($id);
+
+        if (empty($task)) {
+            throw $this->createNotFoundException();
+        }
+
+        $comments = $task->getAttachments();
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+
+        $pager = new Pagerfanta(new ArrayAdapter($comments->toArray()));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return View::create(
+            $this->createRepresentation($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @param int $id
      * @return Task
      */

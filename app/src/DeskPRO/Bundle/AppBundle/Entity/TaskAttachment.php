@@ -76,6 +76,7 @@ class TaskAttachment extends NotifyPropertyChangeEntity
      * @var TaskComment
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskComment")
      * @ORM\JoinColumn(name="task_comment_id", referencedColumnName="id")
+     * @Serializer\Expose()
      */
     protected $comment;
 
@@ -83,6 +84,7 @@ class TaskAttachment extends NotifyPropertyChangeEntity
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @Serializer\Expose()
      */
     protected $person;
 
@@ -90,18 +92,21 @@ class TaskAttachment extends NotifyPropertyChangeEntity
      * @var Blob
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob")
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id")
+     * @Serializer\Expose()
      */
     protected $blob;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @Serializer\Expose()
      */
     protected $date_created;
 
-    public function __construct()
+    public function __construct(Person $person)
     {
         $this->setDateCreated(new \DateTime());
+        $this->setPerson($person);
     }
 
     /**

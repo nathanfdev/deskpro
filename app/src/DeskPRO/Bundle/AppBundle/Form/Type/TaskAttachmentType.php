@@ -56,19 +56,11 @@ class TaskAttachmentType extends AbstractType
     {
         $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder->add(
-                'label',
-                'text',
-                array(
-                    'description' => 'the label',
-                    'required' => true,
-                )
-            )
-            ->add(
-                'person',
+                'task',
                 'entity',
                 array(
-                    'class' => 'DeskPRO:Person',
-                    'property' => 'name',
+                    'class' => 'App:Task',
+                    'property' => 'title',
                     'required' => true,
                 )
             )

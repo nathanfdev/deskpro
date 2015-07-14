@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -95,6 +96,13 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @Serializer\Expose()
      */
     protected $task;
+
+    /**
+     * @var TaskAttachment[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskAttachment", mappedBy="task")
+     * @Serializer\Expose()
+     */
+    protected $attachments;
 
     /**
      * Construct
@@ -176,5 +184,22 @@ class TaskComment extends NotifyPropertyChangeEntity
     public function setTask(Task $task)
     {
         $this->setModelField('task', $task);
+    }
+
+    /**
+     * @return TaskAttachment[]|ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * @param TaskAttachment $attachment
+     */
+    public function addAttachment(TaskAttachment $attachment)
+    {
+        $this->attachments->add($attachment);
+        $this->setModelField('attachment', $attachment);
     }
 }

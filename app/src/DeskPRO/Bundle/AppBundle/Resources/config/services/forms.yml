@@ -26,6 +26,11 @@ services:
       tags:
           - { name: form.type, alias: task }
 
+  form.task_attachment:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskAttachmentType
+      tags:
+          - { name: form.type, alias: task_attachment }
+
   form.task_comment:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TaskCommentType
       tags:

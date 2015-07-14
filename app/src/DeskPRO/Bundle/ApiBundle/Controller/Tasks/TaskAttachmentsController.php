@@ -40,7 +40,6 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
-use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -57,7 +56,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
 {
     /**
      * @ApiDoc(
-     *      description="get a list of task_labels",
+     *      description="get a list of attachments",
      *      parameters={
      *          {
      *              "name"="page",
@@ -78,18 +77,18 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      *          200="Success"
      *      }
      * )
-     * @Get("/task_labels", name="api_task_labels")
+     * @Get("/task_attachments", name="api_task_attachments")
      * @param Request $request
      * @return View
      */
     public function cgetAction(Request $request)
     {
-        $task_labels = $this->getDoctrine()->getManager()->getRepository('App:TaskAttachment')->findAll();
+        $task_attachments = $this->getDoctrine()->getManager()->getRepository('App:TaskAttachment')->findAll();
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($task_labels));
+        $pager = new Pagerfanta(new ArrayAdapter($task_attachments));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -101,12 +100,12 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
 
     /**
      * @ApiDoc(
-     *      description="get a label",
+     *      description="get a attachment",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the label",
+     *              "description"="the id of the attachment",
      *              "dataType"="integer"
      *          }
      *      },
@@ -116,13 +115,13 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
      * )
-     * @Get("/task_labels/{id}", name="api_task_labels_get")
+     * @Get("/task_attachments/{id}", name="api_task_attachments_get")
      * @param int $id
      * @return View
      */
     public function getAction($id)
     {
-        $attachment = $this->getLabel($id);
+        $attachment = $this->getAttachment($id);
 
         if (empty($attachment)) {
             throw $this->createNotFoundException();
@@ -136,15 +135,15 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
 
     /**
      * @ApiDoc(
-     *      description="create a new label",
-     *      input={"class"="task_label", "name"=""},
+     *      description="create a new attachment",
+     *      input={"class"="task_attachment", "name"=""},
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
      * )
-     * @Post("/task_labels", name="api_task_labels_post")
+     * @Post("/task_attachments", name="api_task_attachments_post")
      * @param Request $request
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
@@ -158,7 +157,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
 
     /**
      * @APIDoc(
-     *      description="delete a label",
+     *      description="delete an attachment",
      *      requirements={
      *          {
      *              "name"="id",
@@ -172,13 +171,13 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/task_labels/{id}", name="api_task_labels_delete")
+     * @Delete("/task_attachments/{id}", name="api_task_attachments_delete")
      * @param $id
      * @return View
      */
     public function deleteAction($id)
     {
-        $attachment = $this->getLabel($id);
+        $attachment = $this->getAttachment($id);
         $this->getDoctrine()->getManager()->remove($attachment);
         $this->getDoctrine()->getManager()->flush();
 
@@ -192,7 +191,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      * @param int $id
      * @return TaskAttachment
      */
-    protected function getLabel($id)
+    protected function getAttachment($id)
     {
         $id = (int) $id;
         $attachment = $this->getDoctrine()->getManager()->getRepository('App:TaskAttachment')->find($id);
@@ -216,7 +215,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
         $status = $attachment->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task_label', $attachment)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'task_attachment', $attachment)->getForm();
 
         $submitted = $request->request->all();
 
@@ -232,7 +231,10 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
         }
 
         if ($form->isValid()) {
-            $bs = $this->getContainer()->getBlobStorage();
+
+            /** @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage $bs */
+            $bs = $this->container->getBlobStorage();
+
             $file_string = base64_decode($submitted['file']);
             $file_name = $submitted['filename'];
             $content_type = $submitted['content_type'];
@@ -244,7 +246,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
             $this->getDoctrine()->getManager()->persist($attachment);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_task_labels_get', array('id' => $attachment->getId()));
+            $location = $this->generateUrl('api_task_attachments_get', array('id' => $attachment->getId()));
 
             return View::create(
                 $this->createRepresentation($attachment),

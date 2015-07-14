@@ -184,6 +184,13 @@ class Task extends NotifyPropertyChangeEntity
     protected $comments;
 
     /**
+     * @var TaskAttachment[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskAttachment", mappedBy="task")
+     * @Serializer\Expose()
+     */
+    protected $attachments;
+
+    /**
      * @param Person $creator
      */
     public function __construct(Person $creator)
@@ -330,6 +337,14 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return TaskAttachment[]|ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
      * @param string $title
      */
     public function setTitle($title)
@@ -458,5 +473,14 @@ class Task extends NotifyPropertyChangeEntity
     {
         $this->comments->add($comment);
         $this->setModelField('comment', $comment);
+    }
+
+    /**
+     * @param TaskAttachment $attachment
+     */
+    public function addAttachment(TaskAttachment $attachment)
+    {
+        $this->attachments->add($attachment);
+        $this->setModelField('attachment', $attachment);
     }
 }
