@@ -213,6 +213,14 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm\TicketSubjectTerm'
+    
+    term_engine.php_ticket_checker.compiler.ticket_flagged:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\PhpTicketFlaggedTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlaggedTerm\TicketFlaggedTerm'
 
     #
     # VISITORS
@@ -255,4 +263,12 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpStringHelper
         tags:
             - { name: php_term_engine_helper }
+    
+    term_engine.php.agent_helper:
+        parent: term_engine.php.abstract_helper
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpAgentHelper
+        arguments: [@doctrine.orm.default_entity_manager]
+        tags:
+            - { name: php_term_engine_helper }
+    
     

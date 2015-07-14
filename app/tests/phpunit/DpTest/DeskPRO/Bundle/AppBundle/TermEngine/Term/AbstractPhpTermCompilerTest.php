@@ -50,6 +50,7 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
      * @var Logger
      */
     static $logger;
+    protected $helper_pool;
 
     protected function makChecker(PhpCheck $check, array $variables)
     {
@@ -59,7 +60,9 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
         //
 
         $lang = $this->get('term_engine.expression_language');
-        $helper_pool = $this->get('term_engine.php.helper_pool');
+        if (!$this->helper_pool) {            
+            $this->helper_pool = $this->get('term_engine.php.helper_pool');
+        }
 
         $agent = $this->prophesize('Application\DeskPRO\Entity\Person');
         $agent->getId()->willReturn(2); // in these tests, ME is always agent id=2
@@ -79,7 +82,7 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
             static::$logger->pushHandler(new NullHandler());
         }
 
-        $checker = new TicketChecker($check, $context, $lang, $helper_pool, static::$logger);
+        $checker = new TicketChecker($check, $context, $lang, $this->helper_pool, static::$logger);
 
         return $checker;
     }

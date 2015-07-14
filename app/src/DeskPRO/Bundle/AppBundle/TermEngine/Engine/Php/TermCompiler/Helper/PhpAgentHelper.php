@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,77 +31,42 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 
-abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
+class PhpAgentHelper extends AbstractPhpHelper
 {
+    protected $em;
+    
+    public function __construct(LoggerInterface $logger, EntityManager $em)
+    {
+        parent::__construct($logger);
+        $this->em = $em;
+    }
+
     /**
-     * Must return a PhpCheck
+     * An identifier for this helper
      *
-     * @param TermInterface $term
-     * @return PhpCheck
+     * @return string
      */
-    public function compile(TermInterface $term)
+    public function getId()
     {
-        $check = parent::compile($term);
-
-        $this->logCheck($check);
-
-        return $check;
+        return 'agent';
     }
 
-    public function logCheck(PhpCheck $check)
-    {
-        $this->logDebug(
-            'Constructed PhpCheck',
-            array(
-                'expression' => $check->getExpression(),
-                'vars' => $check->getVariables()
-            )
-        );
-    }
 
-    /**
-     * @return MethodCheckHelper
-     */
-    public function getMethodCheckHelper()
+    public function getFlags($ticket, $agent_id)
     {
-        return $this->helper_pool->getHelper('method_check');
-    }
-    
-    /**
-     * @return PhpDateHelper
-     */
-    public function getDateHelper()
-    {
-        return $this->helper_pool->getHelper('date');
-    }
-    
-    /**
-     * @return PhpStringHelper
-     */
-    public function getStringHelper()
-    {
-        return $this->helper_pool->getHelper('string');
-    }
-    
-    /**
-     * @return PhpAgentHelper
-     */
-    public function getAgentHelper()
-    {
-        return $this->helper_pool->getHelper('agent');
-    }
-
-    public function turnArrayIntoPhpArrayString(array $values = array())
-    {
-        return 'array(' . implode(',', $values) . ')';
+        $flags = $this->em->getRepository('DeskPRO:TicketFlagged')->findBy(array('ticket_id' => $ticket->getId(), 'person_id' => $agent_id));
+        
+        $colors = array();
+        foreach($flags as $flag) {
+            $colors[] = $flag->color;
+        }
     }
 }
