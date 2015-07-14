@@ -205,6 +205,14 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystemTerm\TicketCreationSystemTerm'
+    
+    term_engine.php_ticket_checker.compiler.ticket_subject:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject\PhpTicketSubjectTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm\TicketSubjectTerm'
 
     #
     # VISITORS
