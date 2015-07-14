@@ -90,7 +90,7 @@ class PhpStringHelper extends AbstractPhpHelper
             // All regex-based matching logic.
             if ($wildcard_prefix || $wildcard_postfix
                 || TermInterface::OP_HAS === $op || TermInterface::OP_NOT_HAS === $op) {
-                $regex = ':string' . $k;
+                $regex = preg_quote($string);
                 if ($wildcard_prefix) {
                     $regex.= '$';
                 }
@@ -121,10 +121,10 @@ class PhpStringHelper extends AbstractPhpHelper
                     $real_op,
                     $k
                 );
+                $values['string' . $k] = $string;
             }
             
             $parts[] = $sub_expression;
-            $values['string' . $k] = $string;
         }
 
         $and_or = (TermInterface::OP_NOT === $op || TermInterface::OP_NOT_HAS === $op) ? ' and ' : ' or ';
