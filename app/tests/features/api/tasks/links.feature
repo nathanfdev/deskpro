@@ -24,6 +24,17 @@ Feature: /task_links endpoint
     And the JSON node "data.links" should exist
     And the JSON node "data.links.self" should be equal to "/api/v2/task_links/1"
 
+  Scenario: I try to link the same article to the same task
+    When I send a POST request to "/api/v2/task_links" with body:
+    """
+{
+  "task": 1,
+  "article": 1
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+
   Scenario: I GET a single member
     When I send a GET request to "/api/v2/task_links/1"
     Then the response should be in JSON

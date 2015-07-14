@@ -38,10 +38,13 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_starred")
+ * @Serializer\ExclusionPolicy("ALL")
+ *
  */
 class TaskStarred extends NotifyPropertyChangeEntity
 {
@@ -50,14 +53,17 @@ class TaskStarred extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var Person
 	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
      */
     protected $person;
 

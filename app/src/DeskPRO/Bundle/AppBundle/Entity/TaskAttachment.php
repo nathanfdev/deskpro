@@ -66,7 +66,7 @@ class TaskAttachment extends NotifyPropertyChangeEntity
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Serializer\Expose()
      * @Assert\NotNull()
      */
@@ -75,7 +75,7 @@ class TaskAttachment extends NotifyPropertyChangeEntity
     /**
      * @var TaskComment
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskComment")
-     * @ORM\JoinColumn(name="task_comment_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_comment_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      * @Serializer\Expose()
      */
     protected $comment;

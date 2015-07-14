@@ -38,10 +38,12 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_log")
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class TaskLog extends NotifyPropertyChangeEntity
 {
@@ -50,7 +52,7 @@ class TaskLog extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -58,41 +60,50 @@ class TaskLog extends NotifyPropertyChangeEntity
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
      */
     protected $person;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @Serializer\Expose()
      */
     protected $action_type;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
+     * @Serializer\Expose()
      */
     protected $id_object;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
+     * @Serializer\Expose()
      */
     protected $id_before;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
+     * @Serializer\Expose()
      */
     protected $id_after;
 
     /**
      * @var array
+     * @Serializer\Expose()
      */
     protected $details = array();
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @Serializer\Expose()
      */
     protected $date_created;
 
@@ -100,6 +111,7 @@ class TaskLog extends NotifyPropertyChangeEntity
      * @var TaskLog
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLog")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @Serializer\Expose()
      */
     protected $parent;
 
@@ -107,6 +119,7 @@ class TaskLog extends NotifyPropertyChangeEntity
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @Serializer\Expose()
      */
     protected $task;
 

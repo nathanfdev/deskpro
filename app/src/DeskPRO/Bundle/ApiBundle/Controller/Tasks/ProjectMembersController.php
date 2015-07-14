@@ -45,6 +45,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -173,8 +174,6 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      *      }
      * )
      *
-     * @TODO: Make sure this works with changing member types e.g. person -> team
-     *
      * @Put("/project_members/{id}", name="api_project_members_put")
      * @param Request $request
      * @param $id
@@ -300,6 +299,7 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
     {
         $status = $member->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
+        /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'projectmember', $member)->getForm();
 
         $submitted = $request->request->all();

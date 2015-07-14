@@ -251,7 +251,7 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
      *      }
      * )
      *
-     * @Get("/comments/{id}/attachments", name="api_comments_attachments_get")
+     * @Get("/task_comments/{id}/attachments", name="api_task_comments_attachments_get")
      *
      * @param Request $request
      * @param int $id

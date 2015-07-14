@@ -65,6 +65,7 @@ class TaskProject extends NotifyPropertyChangeEntity
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      * @Serializer\Expose()
      */
     protected $title;

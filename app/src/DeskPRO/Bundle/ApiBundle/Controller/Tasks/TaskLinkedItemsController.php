@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
+use Doctrine\DBAL\DBALException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
@@ -264,8 +265,13 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
         }
 
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($link);
-            $this->getDoctrine()->getManager()->flush();
+            // Try and gracefully handle integrity constraint failures
+            try {
+                $this->getDoctrine()->getManager()->persist($link);
+                $this->getDoctrine()->getManager()->flush();
+            } catch (DBALException $e) {
+                throw new InvalidFormException($form);
+            }
 
             $location = $this->generateUrl('api_task_links_get', array('id' => $link->getId()));
 
@@ -277,6 +283,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
                 )
             );
         }
+
 
         throw new InvalidFormException($form);
     }

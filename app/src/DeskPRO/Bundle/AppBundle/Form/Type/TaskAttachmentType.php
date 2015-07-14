@@ -65,6 +65,15 @@ class TaskAttachmentType extends AbstractType
                 )
             )
             ->add(
+                'comment',
+                'entity',
+                array(
+                    'class' => 'App:TaskComment',
+                    'property' => 'comment',
+                    'required' => false,
+                )
+            )
+            ->add(
                 'file',
                 'text',
                 array(

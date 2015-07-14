@@ -34,7 +34,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Ticket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
@@ -90,6 +89,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @Assert\NotNull()
      * @Serializer\Expose()
      */
     protected $date_created;
@@ -127,6 +127,8 @@ class Task extends NotifyPropertyChangeEntity
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id")
+     * @Assert\NotNull()
+     * @Assert\Valid()
      * @Serializer\Expose()
      */ 
     protected $creator;
@@ -150,7 +152,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @var TaskList
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList")
-     * @ORM\JoinColumn(name="list_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="list_id", referencedColumnName="id", onDelete="CASCADE")
      * @Serializer\Expose()
      */
     protected $list;

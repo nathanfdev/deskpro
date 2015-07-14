@@ -68,7 +68,9 @@ class ProjectMember extends NotifyPropertyChangeEntity
     /**
      * @var Project
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
+     * @Assert\NotNull()
+     * @Assert\Valid()
      * @Serializer\Expose()
      */
     protected $project;
@@ -76,7 +78,7 @@ class ProjectMember extends NotifyPropertyChangeEntity
     /**
      * @var Person
 	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Serializer\Expose()
      */
     protected $person;
@@ -84,7 +86,7 @@ class ProjectMember extends NotifyPropertyChangeEntity
     /**
      * @var Team
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
-     * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Serializer\Expose()
      */
     protected $team;
@@ -92,7 +94,7 @@ class ProjectMember extends NotifyPropertyChangeEntity
     /**
      * @var Department
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Serializer\Expose()
      */
     protected $department;

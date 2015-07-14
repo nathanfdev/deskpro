@@ -43,6 +43,15 @@ class ProjectMemberType extends AbstractType
                     'property' => 'name',
                     'required' => false,
                 )
+            )
+            ->add(
+                'project',
+                'entity',
+                array(
+                    'class' => 'App:TaskProject',
+                    'property' => 'title',
+                    'required' => true,
+                )
             );
     }
 

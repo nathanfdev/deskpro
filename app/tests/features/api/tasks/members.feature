@@ -6,13 +6,20 @@ Feature: /project_members endpoint
   Background:
     Given I install the api data set
     And my request is authenticated
+    And I send a POST request to "/api/v2/projects" with body:
+    """
+{
+  "title": "Test project"
+}
+    """
 
   @reinstall
   Scenario: Successfully create a project member
     When I send a POST request to "/api/v2/project_members" with body:
     """
 {
-  "person": 1
+  "person": 1,
+  "project": 1
 }
     """
     Then the response should be in JSON

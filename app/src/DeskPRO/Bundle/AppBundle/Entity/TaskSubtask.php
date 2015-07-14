@@ -80,15 +80,17 @@ class TaskSubtask extends NotifyPropertyChangeEntity
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true)
-     * @Serializer\Expose()
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
      */
     protected $task;
 
     /**
      * @var \DateTime
      * @Orm\Column(type="datetime", nullable=true)
+     * @Assert\NotNull()
      * @Serializer\Expose()
      */
     protected $date_created;
@@ -97,8 +99,9 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=true)
-     * @Serializer\Expose()
      * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
      */
     protected $creator;
 

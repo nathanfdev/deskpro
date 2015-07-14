@@ -64,17 +64,18 @@ class LabelTask extends NotifyPropertyChangeEntity
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @Serializer\Expose()
      * @Assert\NotBlank()
+     * @Serializer\Expose()
      */
     protected $label;
 
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
-     * @Serializer\Expose()
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
      */
     protected $task;
 

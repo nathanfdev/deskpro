@@ -45,7 +45,12 @@ use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="task_links")
+ * @ORM\Table(name="task_links", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="ticket_unique", columns={"task_id", "ticket_id"}),
+ *      @ORM\UniqueConstraint(name="chat_unique", columns={"task_id", "chat_id"}),
+ *      @ORM\UniqueConstraint(name="article_unique", columns={"task_id", "article_id"})
+ *  }
+ * )
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
@@ -68,6 +73,7 @@ class TaskLinkedItem extends NotifyPropertyChangeEntity
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @Assert\NotNull()
      * @Serializer\Expose()
      */
     protected $task;

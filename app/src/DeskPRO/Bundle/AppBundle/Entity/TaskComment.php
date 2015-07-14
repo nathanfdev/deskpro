@@ -69,6 +69,7 @@ class TaskComment extends NotifyPropertyChangeEntity
 	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @Assert\NotNull
+     * @Assert\Valid()
      * @Serializer\Expose()
      */
     protected $person;
@@ -76,6 +77,7 @@ class TaskComment extends NotifyPropertyChangeEntity
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @Assert\NotNull()
      * @Serializer\Expose()
      */
     protected $date_created;
@@ -93,6 +95,7 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      * @Assert\NotNull
+     * @Assert\Valid()
      * @Serializer\Expose()
      */
     protected $task;
@@ -110,6 +113,7 @@ class TaskComment extends NotifyPropertyChangeEntity
      */
     public function __construct(Person $person)
     {
+        $this->attachments = new ArrayCollection();
         $this->setPerson($person);
         $this->setDateCreated(new \DateTime);
     }
