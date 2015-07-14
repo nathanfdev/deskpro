@@ -11,7 +11,7 @@
 	'agent.deal.enter_note_'                                               => 'Faire une note...',
 	'agent.deal.new_task_kbd_k'                                            => 'Nouvelle(s) tâche(s)',
 	'agent.deal.pending_review'                                            => 'Révision en attente:',
-	'agent.deal.persons'                                                   => 'Personnes',
+	'agent.deal.persons'                                                   => 'Utilisateurs',
 	'agent.deal.probability'                                               => 'Probabilité',
 	'agent.deal.stage'                                                     => 'Etape',
 	'agent.deal.value_x'                                                   => 'Valeur X',

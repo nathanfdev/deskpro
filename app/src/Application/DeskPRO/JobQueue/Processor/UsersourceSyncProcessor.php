@@ -110,7 +110,16 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             static::$aborted = false;
             static::$count = 0;
 
-            static::$max_memory_usage = min(Env::getMemoryLimit(), 500 * 1024 * 1024) * 0.8;
+            // set max memory for the job
+            // we use 500MB as an absolute max base memory, and we only use up to 80% of that
+            // if the php.ini is set to lower than 500MB, that is ok, we still only use 80% of that.
+            $five_hundred_mb = 500 * 1024 * 1024;
+            $max_memory = Env::getMemoryLimit();
+            if ($max_memory < 0) { // unlimited
+                $max_memory = $five_hundred_mb;
+            }
+            static::$max_memory_usage = min($max_memory, $five_hundred_mb) * 0.8;
+
             if (1 == $data['phase']) {
                 $return = $this->runPhaseOne($data);
                 return $return;
