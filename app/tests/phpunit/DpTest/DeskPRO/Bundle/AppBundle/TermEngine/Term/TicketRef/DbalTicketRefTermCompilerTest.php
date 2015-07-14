@@ -67,14 +67,12 @@ class DbalTicketRefTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertParameters(
             $query_part,
             array(
-                'ref' => array(
-                    'XXX-111-XXX',
-                    'ZZZ-222-ZZZ'
-                )
+                'string0' => 'XXX-111-XXX',
+                'string1' => 'ZZZ-222-ZZZ'
             )
         );
 
-        $this->assertWhere($query_part, 'ticket.ref IN (:ref)');
+        $this->assertWhere($query_part, 'ticket.ref = :string0 OR ticket.ref = :string1');
         $this->assertNoJoins($query_part);
         $this->assertNoUniqueJoins($query_part);
     }
@@ -96,14 +94,12 @@ class DbalTicketRefTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertParameters(
             $query_part,
             array(
-                'ref' => array(
-                    'XXX-111-XXX',
-                    'ZZZ-222-ZZZ'
-                )
+                'string0' => 'XXX-111-XXX',
+                'string1' => 'ZZZ-222-ZZZ'
             )
         );
 
-        $this->assertWhere($query_part, 'ticket.ref NOT IN (:ref)');
+        $this->assertWhere($query_part, 'ticket.ref != :string0 AND ticket.ref != :string1');
         $this->assertNoJoins($query_part);
         $this->assertNoUniqueJoins($query_part);
     }
