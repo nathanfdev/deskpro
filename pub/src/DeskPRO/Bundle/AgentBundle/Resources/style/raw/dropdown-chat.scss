@@ -1,0 +1,142 @@
+
+// Chat Dropdown
+
+.chat-dropdown {
+  @include corner-top;
+  display: none;
+  left: 60px;
+  background: #f5f6f7;
+  width: 300px;
+  color: #575757;
+  z-index: 999;
+
+  .your-chat-status {
+    padding: 10px;
+    font-weight: 600;
+    border-bottom: 1px solid #d9dadb;
+
+    a {
+      display: inline-block;
+      border-radius: 2px;
+      line-height: 1em;
+      padding: 3px 8px;
+      color: #d1d2d3;
+      margin-left: 5px;
+
+      i { margin-right: 3px; }
+      .fa-circle { font-size: 0.8em; top: -1px; }
+    }
+
+    a.status-online {
+      background: #62ad8c;
+      color: #fff;
+    }
+  }
+
+
+  .chat-meta {
+    margin-bottom: 5px;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 1.1em;
+    border-bottom: 1px solid #d9dadb;
+
+    .sort-by-department {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      font-size: 0.85em;
+      font-weight: 600;
+      padding: 3px;
+      text-decoration: none;
+      color: #ababab;
+      display: inline-block;
+      line-height: 1em;
+      margin-left: 3px;
+
+      &:hover { background: #fff; }
+    }
+  }
+
+
+  .volume {
+    color: #808080;
+    text-align: right;
+    text-decoration: none;
+
+    i {
+      margin-left: 0;
+      font-size: 1.3em !important;
+    }
+  }
+
+  footer {
+    .button {
+      background: #dcddde;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      color: #979797;
+      padding: 7px 10px;
+
+      i {
+        font-size: 1em;
+        position: relative;
+        top: -1px;
+      }
+    }
+
+    .button-right {
+      float: right;
+    }
+  }
+
+  ul.user-chat-list {
+    @extend %flat-list;
+    margin: 5px 5px;
+    max-height: 350px;
+    overflow-y: scroll;
+
+    > li {
+      position: relative;
+      margin-bottom: 5px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      &:last-child { border-bottom: 0px; margin-bottom: 0px; padding-bottom: 0px; }
+
+      span {
+        line-height: 1em;
+      }
+
+      > a {
+        display: block;
+        padding-left: 40px;
+        text-decoration: none;
+        color: #707070;
+      }
+
+      .chat-avatar {
+        position: absolute;
+        left: 10px;
+        box-shadow: none;
+        margin: 0px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .user {
+        display: block;
+        font-size: 1em;
+        &:hover { color: $text-color; }
+      }
+
+      .meta {
+        display: inline-block;
+        color: #b3b3b3;
+        font-size: 0.85em;
+        font-weight: 400;
+        &:hover {
+          color: $text-color;
+        }
+      }
+    }
+  }
+
+}

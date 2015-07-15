@@ -38,7 +38,7 @@ npm install
 echo ".. done"
 
 echo ">> Building new web assets"
-gulp
+bin/gulp
 echo ".. done"
 echo
 

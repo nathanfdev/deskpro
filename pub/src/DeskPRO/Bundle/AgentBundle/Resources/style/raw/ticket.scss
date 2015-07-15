@@ -1,0 +1,412 @@
+// Main ticket list container
+.ticket-history {
+  position: relative;
+  padding: 10px;
+
+  .ticket-history-header {
+    h1 {
+      font-size: 1.3em;
+      font-weight: 300;
+    }
+  }
+}
+
+
+
+
+// Single ticket container
+.ticket-box {
+  position: relative;
+  padding-left: 55px;
+  margin-bottom: 20px;
+
+  .header {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.85em;
+    color: $silver;
+    margin-bottom: 10px;
+
+    // Set the type of message
+    .type { color: #62ad8c; }
+    .type.type-user { color: #4681b2; }
+    .type.type-note { color: #979797; }
+
+    .from {
+      color: #979797;
+      .icon {
+        display: inline-block;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+        width: 16px;
+        height: 16px;
+        background: #cecece;
+        border-radius: 2px;
+        color: #ededed;
+        text-align: center;
+        margin-right: 3px;
+
+        i {
+          top: 3px;
+          font-size: 9px;
+        }
+      }
+
+      &.from-facebook {
+        .icon {
+          background: #4862a4;
+          color: #fff;
+          i { top: 3px;}
+        }
+      }
+    }
+
+    .from-ip {
+      display: inline-block;
+      background: #f1f1f1;
+      line-height: 8px;
+      padding: 4px 6px;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      color: #b1b1b1;
+      margin-left: 3px;
+
+      img {
+        max-height: 10px;
+        vertical-align: middle;
+        margin-right: 3px;
+      }
+    }
+
+    .fa-angle-right, .fa-long-arrow-right {
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+  }
+
+  .header-controls {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+
+    a {
+      color: $silver;
+      display: inline-block;
+      height: 20px;
+      border-radius: 2px;
+      border: 1px solid #cfcfcf;
+      text-align: center;
+      line-height: 1em;
+      vertical-align: top;
+      padding-top: 4px;
+      padding-left: 5px;
+      padding-right: 5px;
+      text-decoration: none;
+      position: relative;
+      top: -1px;
+    }
+
+    a:hover { color: darken($silver, 15%); }
+
+    i, span {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    span {
+      font-size: 0.85em;
+      font-weight: bold;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+// The ticket's contents (message text, quoted, attachements)
+.ticket-content-container {
+
+  .chat-avatar {
+    width: 16px;
+    height: 16px;
+    margin-left: 0px;
+    margin-right: 2px;
+    top: -1px;
+  }
+
+  .email { opacity: 0.75; }
+
+  .people {
+    color: #717171;
+    height: 34px;
+    padding-left: 10px;
+    border-bottom: 1px solid #e1e1e1;
+    @extend %whitespace;
+
+    .ticket-id {
+      font-size: 0.75em;
+      font-weight: bold;
+      float: right;
+      position: relative;
+      top: 7px;
+      right: 10px;
+      color: $silver;
+    }
+
+    .agent {// Place the creator's avatar on the timeline
+      position: relative;
+      .chat-avatar {
+        position: absolute;
+        left: -35px;
+        z-index: 201;
+        @include timeline-cover;
+      }
+    }
+
+    span {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 18px;
+    }
+
+    .divider {
+      width: 1px;
+      height: 34px;
+      background: #e1e1e1;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
+
+  // CC and BCC
+  .cc, .bcc {
+    border-bottom: 1px solid #e1e1e1;
+    padding: 5px 10px;
+    font-size: 0.9em;
+    color: #868686;
+
+    .context {
+      display: inline-block;
+      min-width: 30px;
+      text-align: right;
+      color: #cecece;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 0.85em;
+      margin-right: 5px;
+    }
+  }
+}
+
+
+// The message
+.ticket-text {
+  background: #f1f1f1;
+  padding: 10px;
+  font-size: 0.9em;
+  line-height: 1.7em;
+  p { color: #676767; }
+}
+
+// What's quoted
+.quoted-message {
+  @extend .ticket-text;
+  border-top: 1px dashed rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  font-style: italic;
+  background: #f8f8f8;
+
+  p {
+    font-size: 0.95em;
+    opacity: 0.8;
+  }
+}
+
+
+// Small button to expand/contract quoted message
+.quoted-message-control {
+  display: inline-block;
+  vertical-align: middle;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.7em;
+  color: #9e9e9e;
+  margin-bottom: 5px;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  // icon
+  .quoted-message-icon {
+    display: inline-block;
+    width: 20px;
+    height: 12px;
+    background: #fcfcfc;
+    border: 1px solid #e4e4e4;
+    border-radius: 2px;
+    position: relative;
+    top: -1px;
+    text-align: center;
+    margin-right: 4px;
+
+    span {
+      display: inline-block;
+      vertical-align: middle;
+      width: 3px;
+      height: 3px;
+      border-radius: 19px;
+      background: #c4c4c4;
+      margin: 4px 1px;
+    }
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      border: 4px solid rgba(0, 0, 0, 0);
+      border-top: 4px solid #e4e4e4;
+      bottom: -8px;
+      left: 6px;
+    }
+  }
+}
+
+.ticket-attachements {
+  background: #f6f6f6;
+  padding: 10px;
+  color: #676767;
+  padding-top: 0px;
+  ul { @extend %flat-list; }
+  li { margin: 5px 0px; }
+
+  .title {
+    position: relative;
+    top: -3px;
+  }
+
+  .file-tag {
+    line-height: 1em;
+    background: #dddddd;
+    color: darken(#dddddd, 20%);
+    display: inline-block;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 0.7em;
+    font-weight: bold;
+    margin-right: 3px;
+  }
+
+  .thumb-tag {
+    border-radius: 4px;
+    border: 2px solid #4681b2;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 3px;
+  }
+
+  a {
+    color: #919191;
+    text-decoration: underline;
+    font-size: 0.9em;
+  }
+
+  .file-size {
+    font-size: 0.7em;
+    color: #cacaca;
+  }
+}
+
+// Show full message link
+.show-full-ticket-message {
+  display: block;
+  position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 0.7em;
+  color: #707070;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  outline: 0;
+
+  hr {
+    background: #d8d8d8;
+    position: absolute;
+    top: 50%;
+    z-index: 98;
+  }
+
+  i { margin-right: 5px; }
+
+  span { color: #989898; }
+
+  .box {// Here to hide the line behind it
+    background: #f1f1f1;
+    display: inline-block;
+    position: relative;
+    z-index: 99;
+    padding-right: 10px;
+    outline: 0;
+  }
+}
+
+.show-full-ticket-message:hover {
+  opacity: 0.5;
+}
+
+.hidden-text {
+  height: 0px;
+  overflow: hidden;
+  transition: all 1s ease;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Container types for different events/messages (changes the background, bottom border)
+.ticket-content-container.ticket-content-user-message {
+  border: 1px solid #62ad8c;
+  border-bottom: 12px solid #62ad8c;
+}
+
+.ticket-content-container.ticket-content-agent-message {
+  border: 1px solid #4681b2;
+  border-bottom: 12px solid #4681b2;
+}
+
+.ticket-content-container.ticket-content-agent-note {
+  border: 1px solid #e5dfa7;
+  border-bottom: 12px solid #e5dfa7;
+  background: #f4eeba;
+
+  .people {
+    border-bottom: 0px;
+
+    .divider { background: #f4eeba; }
+  }
+
+  .ticket-text {
+    padding-top: 0px;
+    background: none;
+  }
+}

@@ -1,0 +1,50 @@
+.sidebar-apps {
+  position: fixed;
+  bottom: 0px;
+  background: #e1e6eb;
+  border-top: 1px solid $global-border;
+  width: 100%;
+  width: 220px;
+  z-index: 99;
+  text-align: center;
+
+  .title {
+    text-transform: uppercase;
+    margin: 8px;
+    font-weight: 800;
+    font-size: 0.9em;
+    color: #646464;
+  }
+
+  .app {
+    display: inline-block;
+    width: 30%;
+    margin-bottom: 10px;
+    position: relative;
+    text-align: center;
+
+    a {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border-radius: 2px;
+      border-bottom: 1px solid #b4b8bc;
+      background: #f0f3f5;
+
+    }
+
+    span {
+      margin-top: 5px;
+      display: block;
+      position: relative;
+      color: #333;
+    }
+
+    i {
+      position: relative;
+      top: 16px;
+      font-size: 1.4em;
+      color: #abacac;
+    }
+  }
+}

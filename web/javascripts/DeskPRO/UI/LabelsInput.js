@@ -61,7 +61,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		if (!tagSource) tagSource = [];
 
 		this.input.on('change', function() {
-			self.fireEvent('change', self.getLabels());
+			self.fireEvent('change', [self.getLabels()]);
 		});
 
 		var allowNew = !(this.input[0] && 'SELECT' !== this.input.tagName && 1 !== this.input.data('allow-new'));

@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\AppBundle;
 
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AssetPackagePass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
@@ -55,6 +56,7 @@ class AppBundle extends Bundle
 
         $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
         $container->addCompilerPass(new TermEnginePass());
+        $container->addCompilerPass(new AssetPackagePass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
         $security = $container->getExtension('security');

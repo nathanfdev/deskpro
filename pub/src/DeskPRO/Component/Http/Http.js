@@ -15,6 +15,15 @@ export default class Http {
     };
 
     this.interceptors = [];
+    this.resultResolvers = [];
+    this.init();
+  }
+
+  /**
+   * Called during constructor. Meant as a hook point for sub-classes.
+   */
+  init() {
+    // add stuff
   }
 
   /**
@@ -55,17 +64,26 @@ export default class Http {
   }
 
   /**
+   * A result resolver is run after interceptors. This allows you to re-define the actual result passed
+   * back from making a result. E.g., usually this would be an HttpResponse, but maybe you want to change this.
+   *
+   * Note that these are basically the same as interceptors. The difference is that the return result of a ResultResolver
+   * is not expected to be an HttpResponse.
+   *
+   * @param {ResultResolver} resultResolver
+   */
+  addResultResolver(resultResolver) {
+    this.resultResolvers.push(resultResolver);
+  }
+
+  /**
    * For request types that submit data (POST, PUT, PATCH), submit a JSON-encoded
    * payload instead of encoding it as a form.
    *
    * @param {Boolean} on Turn it on or off
    */
   enableJsonPayloads(on = true) {
-    if (on) {
-      this.setDefaultConfig('jsonPayload', true);
-    } else {
-      this.setDefaultConfig('jsonPayload', false);
-    }
+    this.setDefaultConfig('jsonPayload', !!on);
   }
 
   /**
@@ -131,18 +149,18 @@ export default class Http {
       return new Promise((ajaxResolve, ajaxReject) => {
         this.ajaxFn(config).done((data, textStatus, jqXHR) => {
           let r = new HttpResponse(jqXHR, textStatus, config, data);
-          if (config.transformRequest) {
-            ajaxResolve(config.transformRequest(r));
-          } else {
-            ajaxResolve(r);
+          if (config.transformResponse) {
+            r = config.transformResponse(r);
           }
+
+          ajaxResolve(r);
         }).fail((jqXHR, textStatus, errorThrown) => {
           let r = new HttpResponse(jqXHR, textStatus, config, null);
-          if (config.transformRequest) {
-            ajaxReject(config.transformRequest(r));
-          } else {
-            ajaxReject(r);
+          if (config.transformResponse) {
+            r = config.transformResponse(r);
           }
+
+          ajaxReject(r);
         });
       });
     };
@@ -159,9 +177,31 @@ export default class Http {
       }
     });
 
+    this.resultResolvers.forEach(i => {
+      if (i.response || i.responseError) {
+        chain.push(this._getBoundInterceptor(i.response, i), this._getBoundInterceptor(i.responseError, i));
+      }
+    });
+
     while (chain.length) {
       promise = promise.then(chain.shift(), chain.shift());
     }
+
+    // helper success method where data is first
+    promise.success = (fn) => {
+      promise.then((res) => {
+        fn(res.getData(), res);
+      });
+      return promise;
+    };
+
+    // helper error method where data is first
+    promise.error = (fn) => {
+      promise.then(null, (res) => {
+        fn(res.getData(), res);
+      });
+      return promise;
+    };
 
     return promise;
   }

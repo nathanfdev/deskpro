@@ -372,7 +372,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var newcount = $('#dp_notify_list_' + listType).find('li').length;
 
 		var ev = { notif: this, type: type, op: op, count: newcount };
-		this.fireEvent('beforeModCount', ev);
+		this.fireEvent('beforeModCount', [ev]);
 
 		this.notifsBadge.text(newcount).data('count', newcount);
 
@@ -399,6 +399,6 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		$('#dp_header_notify_wrap').find('.notify-count').text(newcount);
 
-		this.fireEvent('modCount', ev);
+		this.fireEvent('modCount', [ev]);
 	}
 });

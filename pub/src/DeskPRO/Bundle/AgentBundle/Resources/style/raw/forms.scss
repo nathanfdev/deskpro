@@ -1,0 +1,205 @@
+// Get rid of the the glow on focused inputs (chrome)
+textarea, input { outline: none; }
+
+input, button {
+  font-family: Lato, "proxima nova";
+  font-size: 1em;
+}
+
+input {
+  @include placeholder {
+    font-style: italic;
+    color: #9f9f9f;
+  }
+}
+
+
+// Smaller text for form explanations
+.form-text {
+  font-size: 0.9em;
+  opacity: 0.5;
+  font-style: italic;
+  position: relative;
+  top: 2px;
+}
+
+
+// Extra text box
+.form-blurb.on-inline {
+  margin-left: 22.75%;
+
+  @include media($tablet) {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+
+}
+
+.form-blurb p {
+  line-height: 1.6em;
+  font-size: 0.95em;
+  color: #787878;
+}
+
+// Noted text in a paragraph
+.note {
+  background: #ffdf93;
+  color: #4a402b;
+  padding: 1px 4px;
+  padding-bottom: 2px;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+a.note {
+  text-decoration: underline;
+}
+
+// Noted paragraph
+.note-paragraph {
+  padding: 10px;
+  background: #eef8fa;
+
+  hr { margin: 10px 0px; }
+  @include media($tablet) { margin-bottom: 20px; }
+}
+
+.content .form-header {
+  margin-bottom: 20px;
+}
+
+.row { @include clearfix; }
+
+form {
+  margin-bottom: 0px;
+
+  .bucket {
+    margin-bottom: 10px;
+    padding-right: 10px;
+  }
+
+  .bucket-half {
+    @extend .bucket;
+    width: 50%;
+    float: left;
+  }
+
+  .bucket-third {
+    @extend .bucket;
+    width: 65%;
+    float: left;
+
+  }
+
+  .bucket-two-thirds {
+    @extend .bucket;
+    width: 35%;
+    float: left;
+  }
+
+
+  .inline-input {
+    @include clearfix;
+
+    label, .label, input {
+      float: left;
+      width: 50%;
+      display: block;
+      margin-right: 0px;
+    }
+
+
+    label, .label {
+      width: 35%;
+      text-align: right;
+      padding-right: 10px;
+    }
+
+    input { width: 65%; }
+  }
+
+
+  .form-section {
+    @include clearfix;
+    margin-bottom: 10px;
+  }
+
+  label, .label {
+    display: block;
+    font-size: 0.95em;
+    margin: 10px 5px 10px 0px;
+    color: #737373;
+
+    a {
+      margin-left: 10px;
+      opacity: 0.3;
+    }
+  }
+
+  [type="text"], [type="password"], [type="email"] {
+    border: 1px solid #bdbdbd;
+    border-radius: 2px;
+    display: block;
+    width: 100%;
+    padding: 10px 5px;
+  }
+
+  [type="button"], [type="submit"], button {
+    border: 1px solid #4681b2;
+    background: #4681b2;
+    color: #fff;
+    border-radius: 2px;
+    padding: 10px 15px;
+  }
+
+
+  // responsive stuff for form containers
+
+
+  @include media($tablet) {
+    .bucket {
+      margin-bottom: 0px;
+    }
+
+    .bucket-half, .bucket-third, .bucket-two-thirds {
+      display: block;
+      width: 100%;
+      float: none;
+
+    }
+
+    .inline-input {
+      label, .label {
+        display: block;
+        width: 100%;
+        float: none;
+        text-align: left;
+      }
+
+      input {
+        width: 100%;
+      }
+    }
+
+    .form-text {
+      margin-bottom: 10px;
+    }
+
+    button, .button, [type="submit"] {
+      margin-top: 10px;
+    }
+
+  }
+  // End responsive stuff
+
+}
+
+
+
+
+
+.form-footer {
+  hr {
+    margin-bottom: 20px;
+  }
+}

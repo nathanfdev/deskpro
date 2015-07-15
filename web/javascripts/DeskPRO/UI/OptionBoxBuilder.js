@@ -133,7 +133,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 
 			selectEl.on('change', function() {
 				var evData = {select: this, stopDefault: false};
-				self.fireEvent('selectChange', evData);
+				self.fireEvent('selectChange', [evData]);
 				if (evData.stopDefault) return;
 
 				var opt = $('option:selected', this);
