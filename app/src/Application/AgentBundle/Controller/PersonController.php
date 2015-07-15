@@ -150,15 +150,13 @@ class PersonController extends AbstractController
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
 
-	    $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
-		    'type' => new PhoneNumberType(),
-		    'allow_add' => true,
-		    'allow_delete' => true,
-		    'options' => array(
-			    'label' => false,
-                'show_phone_label' => true
-		    ),
-	    ))->createView();
+	    $contact_data['phone_numbers'] = array_map(function(Entity\PhoneNumber $phone) {
+            return array(
+                'contact_type' => 'phone',
+                'number' => $phone->getPhoneNumber(),
+                'country_calling_code' => '',
+            );
+        }, $person->phone_numbers ? $person->phone_numbers->toArray() : array());
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         if ($session) {
