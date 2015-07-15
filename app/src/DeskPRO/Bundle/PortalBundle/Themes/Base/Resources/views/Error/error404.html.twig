@@ -3,10 +3,11 @@
 {% block inner_content %}
     <article class="news kb-article">
         <header>
-            <h1>Not Found</h1>
+            <h1>{{ phrase('portal.error.404-title') }}</h1>
 
             <div class="article-meta">
-                <p>Sorry, but we couldn't find this page.</p>
+                <p>{{ phrase('portal.error.404-desc') }}</p>
+                <p>{{ phrase('portal.error.contact') }}</p>
             </div>
         </header>
     </article>

@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpTests\TestBundle\DataSet;
+namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\Brand;
 

@@ -40,11 +40,7 @@ class Build1400056732 extends AbstractBuild
     {
         $db = $this->container->getDb();
 
-        $set = new TemplateSet(
-            $this->container->getEm(),
-            $this->container->get('twig'),
-            $this->container->getSystemService('style')
-        );
+        $set = $this->container->get('templating.email.template_set');
 
         #------------------------------
         # Rename templates

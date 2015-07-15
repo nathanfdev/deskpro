@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 
 use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -65,7 +66,8 @@ class ErrorController extends AbstractController
             $this->get('security.token_storage')->setToken(new AnonymousToken('anon.', 'anon.'));
         }
 
-        if ($this->container->getParameter('kernel.debug')) {
+        // if the message is "Something has intentionally gone wrong." its the dev route /_error/{code} being vistited for a test
+        if ($this->container->getParameter('kernel.debug') && $exception->getMessage() !== 'Something has intentionally gone wrong.') {
             return $this->render('TwigBundle:Exception:exception_full.html.twig', array(
                 'status_code' => $code,
                 'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
@@ -75,9 +77,12 @@ class ErrorController extends AbstractController
             ));
         }
 
+        $request = Request::createFromGlobals();
+        $base_url = $request->getBaseUrl();
         return $this->renderThemeView(
             $template,
             array(
+                'base_url' => $base_url,
                 'status_code' => $code,
                 'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
                 'exception' => $exception

@@ -31,11 +31,11 @@
  * @package DeskPRO
  */
 
-namespace DpTests\TestBundle\Factory;
+namespace DpTestSrc\TestBundle\Factory;
 
 use Doctrine\ORM\EntityManager;
 use Faker\Generator;
-use DpTests\TestBundle\Factory\Builder\PersonTestBuilder;
+use DpTestSrc\TestBundle\Factory\Builder\PersonTestBuilder;
 
 /**
  * This is a service available in tests that lets you easily create a person

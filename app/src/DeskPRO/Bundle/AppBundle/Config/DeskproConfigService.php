@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\Config;
 
 use Monolog\Logger;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * This is meant to be used in the container as a way of using expressions to get at some of our dynamic config
@@ -89,5 +90,23 @@ class DeskproConfigService
         }
 
         return $log_level;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBuildNumber()
+    {
+        return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $default
+     * @return mixed
+     */
+    public function getConfigValue($k, $default = null)
+    {
+        return dp_get_config($k, $default);
     }
 }

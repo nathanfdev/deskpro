@@ -1694,7 +1694,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Render a custom field.
      *
-     * @depreciated
+     * @deprecated
      */
     public function renderCustomField($field_id, $context = 'html')
     {
@@ -2295,6 +2295,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getPictureUrl($size = 80, $secure = null, $default = false)
     {
+        return ''; //TODO
+        
         // Null means detect
         if ($secure === null and App::isWebRequest()) {
             $request = App::getRequest();

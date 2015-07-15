@@ -29,10 +29,10 @@
  * DeskPRO.
  */
 
-namespace DpTest\Sms;
+namespace DpTest\Orb\Sms;
 
 use DpTest\DeskProTestCase;
-use DpTestingMocks\SmsNullProvider;
+use DpTestSrc\TestBundle\Mock\SmsNullProvider;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
 

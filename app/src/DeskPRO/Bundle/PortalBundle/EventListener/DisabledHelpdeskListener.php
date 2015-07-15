@@ -39,12 +39,17 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class DisabledHelpdeskListener implements EventSubscriberInterface
 {
+    public static $whitelisted_route_names = array(
+        'user_context_hash'
+    );
+
     /**
      * @var SettingsResolver
      */
@@ -71,12 +76,22 @@ class DisabledHelpdeskListener implements EventSubscriberInterface
     {
         return array(
             // make sure this priority is AFTER the BrandDetectionListener so we capture brand settings
-            KernelEvents::REQUEST => array('onRequest', 33)
+            // AND it also must be AFTER the RouterListener so we can whitelist routes
+            KernelEvents::REQUEST => array('onRequest', 31)
         );
     }
 
     public function onRequest(GetResponseEvent $event)
     {
+        if (!$event->isMasterRequest()) {
+            // we only make this decision on master requests. sub requests are never "offline".
+            return;
+        }
+
+        if ($this->isWhitelisted($event->getRequest())) {
+            return;
+        }
+
         $brand = $this->brand_stack->getActive();
         $brand_disabled = $brand->getSetting('core.helpdesk_disabled', false);
 
@@ -84,7 +99,14 @@ class DisabledHelpdeskListener implements EventSubscriberInterface
 
         if ($globally_disabled || $brand_disabled) {
             // we can always use brand settings here, because they inherit global in case brand specific is not set
-            $event->setResponse(new Response($brand->getSetting('core.helpdesk_disabled_message')));
+            $event->setResponse(new Response('<!--PORTAL_OFFLINE-->' . $brand->getSetting('core.helpdesk_disabled_message')));
         }
+    }
+
+    protected function isWhitelisted(Request $request)
+    {
+        $route_name = $request->attributes->get('_route');
+
+        return in_array($route_name, self::$whitelisted_route_names);
     }
 }

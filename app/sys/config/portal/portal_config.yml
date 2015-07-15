@@ -7,6 +7,7 @@ parameters:
   portal.session.name: sess_data
   doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
   templating.globals.class: DeskPRO\Bundle\AppBundle\Twig\GlobalVariables
+  monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
 
 framework:
     esi:             { enabled: true }
@@ -21,6 +22,9 @@ framework:
     validation:      { enable_annotations: false }
     templating:
         engines: ['twig']
+        assets_base_urls: "SET_IN_ASSET_PACKAGE_PASS"
+        packages:
+          app_assets: { base_url: "SET_IN_ASSET_PACKAGE_PASS" }
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies:

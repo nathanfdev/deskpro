@@ -35,6 +35,8 @@ namespace Application\DeskPRO\ResourceScanner;
 
 /**
  * Scans the filesystem for an array of all templates.
+ *
+ * NOTE: (July 2015): I don't know if this is actively used or not because we haven't started the admin UI for new-portal
  */
 class TemplateFiles
 {
@@ -77,6 +79,7 @@ class TemplateFiles
         $paths = array(
             'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
             'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+            'EmailBundle'       => DP_ROOT.'/src/Application/EmailBundle/Resources/views',
         );
 
         $tpl_info = array();
@@ -142,7 +145,7 @@ class TemplateFiles
         $map = array();
 
         foreach ($raw_map as $k => $info) {
-            if (strpos($k, 'DeskPRO:emails_agent:') !== false || strpos($k, 'DeskPRO:emails_common:') !== false || strpos($k, 'DeskPRO:emails_user:') !== false) {
+            if (strpos($k, 'DeskPRO:emails_agent:') !== false || strpos($k, 'DeskPRO:emails_common:') !== false || strpos($k, 'DeskPRO:emails_user:') !== false || strpos($k, 'EmailBundle:') !== false) {
                 $map[$k] = $info;
             }
         }

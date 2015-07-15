@@ -321,13 +321,9 @@ class KernelBooter
                     header('Location: '.$request->getBasePath().'/index.php/install/');
                     exit;
                 }
-                if (!$debug) {
-                    KernelErrorHandler::logException($e);
-                }
+                KernelErrorHandler::logException($e);
             } catch (\Exception $e) {
-                if (!$debug) {
-                    KernelErrorHandler::logException($e);
-                }
+                KernelErrorHandler::logException($e);
             }
 
             exit;

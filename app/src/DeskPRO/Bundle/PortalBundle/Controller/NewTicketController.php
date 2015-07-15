@@ -115,8 +115,9 @@ class NewTicketController extends AbstractController
 
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
-                    if (!$person->isUser()) { // not a user, redirect home
-                        return $this->redirectToRoute('portal_index');
+                    if (!$person->isUser()) { // not a user, redirect to thank you
+                        $this->get('portal_email_sender')->sendNewTicketGuestThankYou($ticket);
+                        return $this->redirectToRoute('portal_new_ticket_guest_thank_you');
                     }
 
                     // is a user, redirect to ticket view (will ask to login if not already)
@@ -150,6 +151,21 @@ class NewTicketController extends AbstractController
                 'rerendering_saved' => $rerendering_saved,
                 'breadcrumbs' => $breadcrumbs,
                 'page_title' => $this->createPageTitle()->newticket()
+            )
+        );
+    }
+
+    /**
+     * @Route("/new-ticket/thank-you", name="portal_new_ticket_guest_thank_you")
+     * @Security("is_granted('USE_TICKETS')")
+     * @PageHttpCache()
+     */
+    public function guestThankYouAction()
+    {
+        return $this->renderThemeView(
+            'Theme:NewTicket:guest_thank_you.html.twig', array(
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildNewTicketGuestThankYou(),
+                'page_title' => $this->createPageTitle()->newticketGuestThankYou()
             )
         );
     }

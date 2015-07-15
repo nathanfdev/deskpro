@@ -40,6 +40,7 @@
     'portal.general.nav-register'           => 'Register',
     'portal.general.nav-login'              => 'Login',
     'portal.general.nav-reset-password' => 'Reset Password',
+    'portal.general.nav-set-password' => 'Set Password',
     'portal.general.nav-quick-jump' => 'Quick Jump',
     'portal.general.top' => 'Top',
     'portal.general.rerender-form' => 'Please review this form before you submit it.',
