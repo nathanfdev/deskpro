@@ -43,16 +43,6 @@ use Pagerfanta\Pagerfanta;
 class FeedbackDataService extends AbstractDataService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @return bool
      */
     public function hasAny()

@@ -41,14 +41,34 @@ use Symfony\Component\Form\FormInterface;
 
 class ApiViewRepresentationFactory
 {
+    /** @const DATATYPE_STANDARD Standard and sort of unknown datatype. */
+    const DATATYPE_STANDARD = 1;
+    /** @const DATATYPE_GROUPED_COUNT Provided data is an array resulting from a grouped count query. */
+    const DATATYPE_GROUPED_COUNT = 2;
+
     /**
      * @param mixed $data
+     * @param integer $datatype is one of the datatype class constants that describes the type of data provided
      * @return StandardRepresentation
      */
-    public function createRepresentation($data)
+    public function createRepresentation($data, $datatype = self::DATATYPE_STANDARD)
     {
         if (!$data instanceof Pagerfanta) {
-            $representation = new StandardRepresentation($data);
+            if (self::DATATYPE_GROUPED_COUNT === $datatype) {
+                $representation = $this->serializeGroupedCount($data);
+            } else if (is_array($data)) {
+                $representation = new StandardRepresentation($data, array(
+                    'count' => count($data),
+                    'total_count' => count($data),
+                ));
+            } else if (is_object($data) && method_exists($data, 'count')) { // A bit of duck-typing.
+                $representation = new StandardRepresentation($data, array(
+                    'count' => $data->count(),
+                    'total_count' => $data->count(),
+                ));
+            } else {
+                $representation = new StandardRepresentation($data);
+            }
         } else {
             $results = $data->getCurrentPageResults();
             $results = (array)$results;
@@ -65,7 +85,6 @@ class ApiViewRepresentationFactory
                 $meta
             );
         }
-
 
         return $representation;
     }
@@ -93,5 +112,73 @@ class ApiViewRepresentationFactory
         }
 
         return new ErrorRepresentation($status, $code, $message, $errors_data);
+    }
+
+    /**
+     * Serializes a grouped count array.
+     * @param mixed $data is the grouped count's data.
+     * @return StandardRepresentation an ordered and ready-to-eat representation of the grouped count.
+     */
+    protected function serializeGroupedCount($data)
+    {
+        $repr = $this->serializeSingleGroupedCount($data);
+        return new StandardRepresentation($repr['data'], array(
+            'count' => $repr['total'],
+            'total_count' => $repr['total'],
+        ));
+    }
+
+    protected function serializeSingleGroupedCount($data, $group = null, array $group_values = null)
+    {
+        if(!$data) {
+            return null;
+        }
+
+        // Let's inspect the headers.
+        $groups = array_keys($data[0]);
+        array_shift($groups); // Removing the count column.
+        $group_id = array_search($group, $groups);
+
+        if (!$group) {
+            $group_id = 0;
+            $group = $groups[$group_id];
+        }
+
+        $total = 0;
+        $grouped_count = array();
+        foreach($data as $count_row) {
+            if ($group_values) {
+                foreach($group_values as $key => $value) {
+                    if (!array_key_exists($key, $count_row) || $count_row[$key] != $value) {
+                        continue 2;
+                    }
+                }
+            }
+
+            if (!isset($grouped_count[$count_row[$group]])) {
+                $grouped_count[$count_row[$group]] = array(
+                    'count'  => $count_row['count'],
+                    $group   => $count_row[$group]
+                );
+                if (count($groups) > $group_id + 1) {
+                    $my_group_values = $group_values;
+                    $my_group_values[$group] = $count_row[$group];
+
+                    $sub_counts = $this->serializeSingleGroupedCount($data, $groups[$group_id + 1], $my_group_values);
+                    $grouped_count[$count_row[$group]]['groups'] = $sub_counts['data'];
+                    $grouped_count[$count_row[$group]]['count'] = $sub_counts['total'];
+                    $total+= $sub_counts['total'];
+                } else {
+                    $total+= $count_row['count'];
+                }
+            } else {
+                continue; // We've already processed this one.
+            }
+        }
+
+        return array(
+            'total' => $total,
+            'data'  => array_values($grouped_count)
+        );
     }
 }

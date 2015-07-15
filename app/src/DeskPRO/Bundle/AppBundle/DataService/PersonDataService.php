@@ -38,16 +38,6 @@ use Doctrine\ORM\EntityManager;
 class PersonDataService extends AbstractDataService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @param mixed $person right now only ID is useful
      *
      * @return Person|null

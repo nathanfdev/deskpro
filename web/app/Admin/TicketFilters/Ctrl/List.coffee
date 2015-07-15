@@ -10,12 +10,19 @@ define [
 
     init: ->
       @list = []
-      @filterData = @DataService.get('TicketFilters')
+      @viewList = []
+      @filterSetData = @DataService.get('TicketFilterSets')
+      @filterViewData = @DataService.get('TicketFilterViews')
       @$scope.display_filter = {
         type:  "all",
         agent: "0",
         team:  "0"
       }
+      @$scope.foobar = {
+        addingNewFilterSet: false,
+        new_filterset_name: ""
+      }
+      @$scope.addFilterSet = @addFilterSet
 
       @$scope.$watch('display_filter', =>
         @updateFilterList()
@@ -30,31 +37,29 @@ define [
           orders = []
           $list.find('li').each(->
             id = parseInt($(this).data('id'))
-            console.log(id)
 
             if id
               orders.push(id)
           )
 
-          @filterData.saveDisplayOrder(orders).then( =>
+          @filterSetData.saveDisplayOrder(orders).then( =>
             @pingElement('display_orders')
           )
       }
 
     initialLoad: ->
-      promise = @filterData.loadList()
-      promise.then( (list) =>
-
+      # Promises, promises...
+      @filterSetData.loadList().then( (list) =>
         @list = list
-
-        if @$state.current.name == 'tickets.ticket_filters'
-          if @list[0]
-            @$state.go('tickets.ticket_filters.edit', { id: @list[0].id })
-          else
-            @$state.go('tickets.ticket_filters.create')
+        @updateFilterList()
       )
-
-      data_promise = @Api.sendDataGet({
+      @filterViewData.loadList().then( (list) =>
+        @viewList = list
+        @updateFilterViewList()
+      )
+      
+      ###
+      promises.push(@Api.sendDataGet({
         agents: '/agents',
         teams: '/agent_teams'
       }).then( (res) =>
@@ -63,16 +68,11 @@ define [
 
         if not @teams[0]
           @teams = null
-      )
-
-      bothPromise = @$q.all([promise, data_promise])
-      bothPromise.then(=>
-        @updateFilterList()
-      )
-
-      return bothPromise;
-
+      ))
+      ###
+      
     updateFilterList: ->
+      ###
       filterList = []
       display_filter = @$scope.display_filter
 
@@ -93,9 +93,30 @@ define [
             filterList = @list.filter((x) -> !x.is_global && x.agent_team && x.agent_team.id == teamId)
           else
             filterList = @list.filter((x) -> !x.is_global && x.agent_team)
+      ###
 
-      @$scope.filterList = filterList
+      @$scope.filterList = @list
+    
+    updateFilterViewList: =>
+      @$scope.filterViewList = @viewList
 
+    ###
+    # Add a brand new filter set.
+    ###
+    addFilterSet: =>
+      filterSet = @filterSetData.blank()
+      filterSet.title = @$scope.foobar.new_filterset_name
+      @filterSetData.saveTicketFilterSet(filterSet).then(
+        (data) =>
+          @$scope.filterList.push(data.data)
+          @$scope.foobar.new_filterset_name = ""
+          @$scope.foobar.addingNewFilterSet = false
+          @$state.go('tickets.ticket_filters.edit', { id: data.data.id })
+      ,
+        (data) =>
+          console.log "failure"
+      )
+        
     ###
     # Show the delete dlg
     ###
@@ -108,7 +129,7 @@ define [
           break
 
       inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketFilters/delete-modal.html'),
+        templateUrl: @getTemplatePath('TicketFilterSets/delete-modal.html'),
         controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
           $scope.confirm = ->
             $modalInstance.close();
@@ -119,9 +140,9 @@ define [
       });
 
       inst.result.then( =>
-        @filterData.deleteFilterId(filter.id).then(=>
-          if @$state.current.name == 'tickets.ticket_filters.edit' and parseInt(@$state.params.id) == filter.id
-            @$state.go('tickets.ticket_filters')
+        @filterSetData.deleteFilterId(filter.id).then(=>
+          if @$state.current.name == 'tickets.ticket_filter_sets.edit' and parseInt(@$state.params.id) == filter.id
+            @$state.go('tickets.ticket_filter_sets')
         )
       )
 

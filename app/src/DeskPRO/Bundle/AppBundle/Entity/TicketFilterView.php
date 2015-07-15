@@ -55,6 +55,12 @@ class TicketFilterView extends NotifyPropertyChangeEntity
 
     /**
      * @var string
+     * @ORM\Column(name="title", type="string", length=64)
+     */
+    protected $title;
+
+    /**
+     * @var string
      * @ORM\Column(name="type", type="string", length=10)
      */
     protected $type;
@@ -89,6 +95,12 @@ class TicketFilterView extends NotifyPropertyChangeEntity
      * @ORM\Column(name="options", type="json_array")
      */
     protected $options;
+    
+    /**
+     * @var int
+     * @ORM\Column(name="display_order", type="integer")
+     */
+    protected $display_order;
 
     public function __construct()
     {

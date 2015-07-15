@@ -33,17 +33,11 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
 
-
-use Aws\CloudWatch\Exception\InvalidFormatException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -52,10 +46,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 
-class FiltersController extends BaseController implements ClassResourceInterface
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+
+use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Delete;
+
+class FiltersController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -101,6 +102,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Get("/ticket_filters/{id}", name="get_ticket_filters")
+     *
      * @ApiDoc(
      *      description="get a filter",
      *      requirements={
@@ -135,6 +138,49 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Get("/ticket_filters/{id}/count")
+     */
+    public function getTicketsCountAction(Request $request, $id)
+    {
+        $filters = $this->get('data.filters');
+        $filter = $filters->getFilter($id);
+
+        if (!$filter) {
+            throw $this->createNotFoundException();
+        }
+
+        // Let's retrieve the tickets for this filter.
+        $engine = $this->get('term_engine.dbal_ticket_filters.engine');
+        $conn = $this->get('database_connection');
+
+        $context = new TermEngineContext($this->getUser());
+        // Applying the group-by clauses.
+        $groupby = $request->query->get('group_by');
+        if ($groupby) {
+            $context->addGroupByFromString($groupby);
+        }
+
+        $tickets_query = $engine->evaluate($filter, $context);
+
+        if ($groupby) {
+            $view_factory = $this->get('api_view_representation_factory');
+            return View::create(
+                $view_factory->createRepresentation($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
+                Response::HTTP_OK
+            );
+        } else {
+            return View::create(
+                $this->createRepresentation(array(
+                    'count' => $tickets_query->fetchCount()
+                )),
+                Response::HTTP_OK
+            );
+        }
+    }
+
+    /**
+     * @Post("/ticket_filters", name="post_ticket_filters")
+     *
      * @ApiDoc(
      *      description="create a filter",
      *      input={"class"="filter","name"=""},
@@ -155,6 +201,48 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @ApiDoc(
+     *      description="Reorder filters.",
+     *      input={"Array"},
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Post("/ticket_filters/display_order", name="api_ticket_filters_display_order_post")
+     */
+    public function postReorderAction(Request $request)
+    {
+        $data = $request->request->all();
+        
+        if (!is_array($data) || !isset($data['display_order'])) {
+            throw new NotFoundHttpException();
+        }
+        
+        $results = array();
+        foreach ($data['display_order'] as $order => $filter_id) {
+            $filter = $this->getEm()->find('App:TicketFilter', $filter_id);
+            
+            if (!$filter) {
+                continue;
+            }
+            
+            $filter->setDisplayOrder($order);
+            $this->getEm()->persist($filter);
+            $results[$order] = $filter_id;
+        }
+        
+        $this->getEm()->flush();
+        
+        return View::create(
+            $this->createRepresentation($results),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Put("/ticket_filters/{id}", name="put_ticket_filters")
+     *
      * @ApiDoc(
      *      description="modify a filter",
      *      requirements={
@@ -188,6 +276,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Delete("/ticket_filters/{id}")
+     *
      * @ApiDoc(
      *      description="delete a filter",
      *      requirements={
@@ -259,5 +349,12 @@ class FiltersController extends BaseController implements ClassResourceInterface
         }
 
         throw new InvalidFormException($form); // let our listeners generate the form error response
+    }
+    
+
+    // A bit of comfort.
+    protected function getEm()
+    {
+        return $this->getDoctrine()->getManager();
     }
 }

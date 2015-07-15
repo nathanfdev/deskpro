@@ -1,0 +1,149 @@
+
+.user-signature-settings {
+  color: #6e6e6f;
+
+  p { color: #848484; }
+
+  .add-new-signature {
+    display: inline-block;
+    text-decoration: none;
+    margin-bottom: 10px;
+    color: #626263;
+
+    span {
+      border: 1px solid #dcddde;
+      border-radius: 2px;
+      font-size: 1.4em;
+      display: inline-block;
+      padding: 5px;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      margin-right: 8px;
+      position: relative;
+      top: 2px;
+
+      i {
+        color: #aeafb0;
+      }
+    }
+  }
+
+  .single-signature, .multiple-signatures {
+    margin-top: 20px;
+    max-height: 540px;
+    overflow-y: scroll;
+  }
+
+  .signature {
+    margin-top: 20px;
+    border: 1px dashed rgba(0, 0, 0, 0);
+  }
+
+  .signature.moving {
+    opacity: 0.5;
+    border: 1px dashed #cecece;
+  }
+
+  textarea {
+    @include placeholder {
+      font-style: italic;
+      opacity: 0.2;
+    }
+
+    resize: vertical;
+    background: #fff;
+    border: 1px solid #bdbdbd;
+    border-radius: 2px;
+    padding: 9px 10px;
+    width: 100%;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    border-top: 0px;
+    min-height: 80px;
+    margin-bottom: 10px;
+  }
+
+  .textarea-tagalong {
+    background: #f2f2f2;
+    min-height: 30px;
+    border: 1px solid #bdbdbd;
+    border-bottom: 0px;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+    margin-top: 10px;
+  }
+
+  .signature-controls {
+    strong {
+      margin-right: 5px;
+    }
+  }
+
+  .signature-move, .signature-delete {
+    display: inline-block;
+    padding: 8px;
+    border: 1px solid #dcddde;
+    border-radius: 2px;
+    color: #aeafb0;
+    margin-right: 10px;
+
+    &:hover {
+      color: #333;
+    }
+  }
+
+  .signature-move {
+    cursor: move;
+  }
+
+  .signature-delete {
+    float: right;
+    margin-right: 0px;
+  }
+}
+
+
+.select-signature-type {
+  margin-top: 15px;
+  margin-bottom: 15px;
+
+  a {
+    display: inline-block;
+    text-decoration: none;
+    margin-right: 20px;
+    color: #6e6e6f;
+
+    outline: none;
+    -moz-outline-style: none;
+  }
+
+  .disc {
+    text-align: center;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border: 1px solid #c8ccd0;
+    vertical-align: top;
+  }
+
+  .selected {
+    color: #333;
+
+    .disc {
+      background: #e1e6eb;
+      text-align: center;
+
+      &:before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #b4b8bc;
+        border-radius: 19px;
+        margin-top: 3px;
+      }
+    }
+  }
+
+}

@@ -607,6 +607,20 @@ define(function() {
 		controller: 'Admin_TicketFilters_Ctrl_Edit'
 	});
 
+	routes.push({
+		id: 'tickets.ticket_filters.edit.single_filter',
+		url: '/filter/{filter_id:[0-9]+}',
+		templateName: 'TicketFilters/edit_single.html',
+		controller: 'Admin_TicketFilters_Ctrl_EditSingle'
+	});
+  
+  routes.push({
+    id: 'tickets.ticket_filters.edit_view',
+    url: '/view/{id:[0-9]+}',
+    templateName: 'TicketFilterViews/edit.html',
+    controller: 'Admin_TicketFilters_Ctrl_EditView'
+  })
+
 	//###
 	//# Satisfaction
 	//###
@@ -1507,7 +1521,7 @@ define(function() {
     templateName: 'Portal/portal-editor.html',
     controller: 'Admin_Portal_Ctrl_PortalEditor'
   });
-  
+
   //###
   //# Portal Settings
   //###

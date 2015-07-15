@@ -60,7 +60,6 @@ Feature: API Authentication
     And the JSON node "data.auth_method" should be equal to "agent_session"
     And the JSON node "data.person_id" should be equal to 2
     And I should have an authenticated token with the role ROLE_API
-    And the JSON node "data.app_id" should not exist
 
   @reinstall
   Scenario: I have a valid agent session ID and it's an app request via X-DeskPRO-App-ID header
@@ -147,4 +146,3 @@ Feature: API Authentication
     Then the JSON node "status" should be equal to 401
     Then the JSON node "code" should be equal to "invalid_api_token"
     And the JSON node "message" should be equal to "Invalid API token."
-

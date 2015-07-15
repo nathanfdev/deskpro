@@ -1,0 +1,31 @@
+// Notifications
+.notifications {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+}
+
+.notification-button {
+  @extend %top-bar-container;
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  .title {
+    display: inline-block;
+    margin-top: $text-top-margin;
+  }
+
+  i { margin-right: 4px; }
+
+
+  .notification-count {
+    @extend .chat-bubble;
+    right: -6px;
+    top: -6px;
+
+    &:before { display: none; }
+  }
+
+  &:hover { background: #32628b; }
+}

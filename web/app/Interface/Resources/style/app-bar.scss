@@ -1,0 +1,48 @@
+// Temporary for presentation]
+.app-bar {
+  text-align: center;
+  a {
+    display: block;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 1.5em;
+    color: #858585;
+    position: relative;
+    text-decoration: none;
+
+    &:hover {
+      color: #fff;
+    }
+
+    .bubble {
+      display: inline-block;
+      background: #ff5460;
+      color: #fff;
+      border: 2px solid #2b2f34;
+      border-radius: 199px;
+      font-size: 8px;
+      padding: 3px;
+      min-width: 20px;
+      height: 20px;
+      padding-right: 4px;
+      font-weight: 400;
+      position: absolute;
+      z-index: 999;
+      top: 5px;
+      left: 30px;
+      text-align: center;
+    }
+  }
+
+  a.active {
+    color: #4681b2;
+    background: #1e2124;
+  }
+
+  ul {
+    @extend %flat-list;
+    font-size: 1.1em;
+  }
+
+}

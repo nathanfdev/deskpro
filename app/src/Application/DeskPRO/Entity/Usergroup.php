@@ -40,6 +40,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
+use Swagger\Annotations as SWG;
+
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *

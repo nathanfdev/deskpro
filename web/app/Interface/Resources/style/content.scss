@@ -1,8 +1,7 @@
 .content-wrapper {
-  position: absolute !important;
-  width: 100%;
+    position: absolute !important;
+    width: 100%;
 }
-
 
 .setup {
   padding: 20px;
@@ -129,7 +128,7 @@
       text-transform: uppercase;
       line-height: 1em;
       padding: 10px 10px;
-      border-radius: 140px;
+      border-radius: 199px;
       margin-bottom: 15px;
       position: relative;
 
@@ -139,7 +138,7 @@
         top: 6px;
         left: 6px;
         background: rgba(255, 255, 255, 0.3);
-        border-radius: 140px;
+        border-radius: 199px;
         text-align: center;
         padding: 4px;
       }
@@ -234,18 +233,6 @@
   text-decoration: none;
   padding: 4px;
   margin-right: 5px;
-
-  &.switch-off {
-    background: #dcdcdc;
-    color:rgba(0, 0, 0, 0.2);
-  }
-
-  &.switch-on {
-    .off-text, .off-icon { display: none; }
-  }
-  &.switch-off {
-    .on-text, .on-icon { display: none; }
-  }
 }
 
 .on-off-inlet {
@@ -276,6 +263,11 @@
   i {
     top: 4px;
   }
+}
+
+.on-off-disabled {
+  background: #dcdcdc;
+  color:rgba(0, 0, 0, 0.2);
 }
 
 
@@ -339,3 +331,23 @@
     border: 1px solid #dcdcdc;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

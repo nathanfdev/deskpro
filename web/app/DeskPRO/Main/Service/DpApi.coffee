@@ -5,6 +5,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
       @api_token = api_token
       @api_url   = api_url.replace(/\/$/, '')
 
+    ###
+    * Retrieve the full endpoint URL.
+    ###
+    _getEndpointUrl: (endpoint) ->
+        "#{@api_url}/#{endpoint}"
+
     ###*
     * Format an endpoint with GET params to a full URL string.
       *
@@ -14,7 +20,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
     ###
     formatUrl: (endpoint, params = null) ->
       endpoint = endpoint.replace(/^\//, '')
-      url = "#{@api_url}/#{endpoint}"
+      url = @_getEndpointUrl(endpoint)
 
       if params
         if url.indexOf('?') == -1

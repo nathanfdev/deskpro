@@ -53,7 +53,7 @@ class AuthContext extends BaseContext
         $this->persistAndFlush($api_token);
 
         if ($api_token->id != $id) {
-            throw new \Exception('expected id (' . $id . ') is not correct. please check database.');
+            throw new \Exception('expected api token id (' . $id . ') is not correct. please check database.');
         }
     }
 
@@ -69,7 +69,7 @@ class AuthContext extends BaseContext
         $this->persistAndFlush($key);
 
         if ($key->id != $id) {
-            throw new \Exception('expected id ('.$id.') is not correct. please check database.');
+            throw new \Exception('expected api key id ('.$id.') does not match ('.$key->id.'). please check database.');
         }
     }
 

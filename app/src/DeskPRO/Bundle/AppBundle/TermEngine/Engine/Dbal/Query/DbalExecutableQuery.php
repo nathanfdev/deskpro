@@ -190,9 +190,12 @@ class DbalExecutableQuery
         $query->setSelectPart('COUNT(*) AS count');
 
         // group by
-        foreach ($this->group_by as $alias => $group) {
-            $query->addSelectPart(sprintf('%s AS %s', $group, $alias));
-            $query->addGroupBy($alias);
+        if (count($this->group_by) > 0) {
+            $query->setGroupWithRollup(false);
+            foreach ($this->group_by as $alias => $group) {
+                $query->addSelectPart(sprintf('%s AS %s', $group, $alias));
+                $query->addGroupBy($alias);
+            }
         }
 
         // various WHERE manipulations

@@ -12,107 +12,66 @@ define [
 
     init: ->
       @filterId = parseInt(@$stateParams.id || 0)
+      @filterSetData = @DataService.get('TicketFilterSets')
       @filterData = @DataService.get('TicketFilters')
-      @filter = null
-
+      @filterset = null
       @filter_criteria = {}
       @criteriaTypeDef = @dpObTypesDefTicketFilter
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
-
-    initialLoad: ->
-      p = @filterData.loadEditFilterData(@filterId).then( (data) =>
-        @agents = data.agents
-        @teams = data.teams
-        if not @teams[0]
-          @teams = null
-
-        if data.filter
-          @filter = data.filter
-        else
-          @filter = {
-            is_global: true
-          }
-      )
-
-      p2 = @criteriaTypeDef.loadDataOptions().then(=>
-        @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
-      )
-
-      return @$q.all([p, p2]).then(=>
-        @form = @getFormFromModel(@filter)
-
-        @filter_criteria = {}
-        if @filter.terms
-          for term in @filter.terms.terms
-            rowId = Util.uid('term')
-            @filter_criteria[rowId] = term
-      )
-
-    getFormFromModel: (filterModel) ->
-      form = {}
-      form.title = filterModel.title || ''
-
-      if filterModel.is_global
-        form.perm_type = 'global'
-      else if filterModel.agent_team and @teams[0]
-        form.perm_type = 'team'
-      else
-        form.perm_type = 'agent'
-
-      if @filter.person
-        form.agent_id = @filter.person.id + ""
-      else
-        form.agent_id = @agents[0].id + ""
-
-      form.team_id = null
-      if @teams
-        if @filter.agent_team
-          form.team_id = @filter.agent_team.id + ""
-        else
-          form.team_id = @teams[0].id + ""
-
-      return form
-
-    saveForm: ->
-      if not @$scope.form_props.$valid then return
-
-      if @filterId
-        method = 'POST'
-        url = "/ticket_filters/#{@filterId}"
-      else
-        method = 'PUT'
-        url = "/ticket_filters"
-
-      postData = {
-        filter: {
-          title: @form.title,
-          is_global:     @form.perm_type == 'global',
-          person_id:     if @form.perm_type == 'agent' then parseInt(@form.agent_id) || null else null,
-          agent_team_id: if @form.perm_type == 'team' then parseInt(@form.team_id) || null else null
+      @$scope.formstate = {
+        editingFilterSetTitle: false,
+        filterset: {
+          title: null,
+          is_default: false
         }
       }
-      postData.filter.terms = @filter_criteria
+      
+      @sortedListOptions = {
+        axis: 'y',
+        handle: '.drag-handle',
+        update: (ev, data) =>
+          $list = data.item.closest('ul')
 
-      @sendFormSaveApiCall(method, url, postData).then( (res) =>
-        @Growl.success(@getRegisteredMessage('saved_filter'))
+          orders = []
+          $list.find('li').each(->
+            id = parseInt($(this).data('id'))
 
-        @filter.title = @form.title
-        if res.data.filter_id
-          @filter.id = res.data.filter_id
+            if id
+              orders.push(id)
+          )
 
-        @filter.is_global = @form.perm_type == 'global'
-        @filter.person = null
-        @filter.agent_team = null
+          @filterData.saveDisplayOrder(orders).then( =>
+            @pingElement('display_orders')
+          )
+      }
 
-        if @form.perm_type == 'agent'
-          @filter.person = @agents.filter((x) => x.id == parseInt(@form.agent_id))[0]
-        if @form.perm_type == 'team'
-          @filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
+    initialLoad: ->
+      p = @filterSetData.loadEditFilterSetData(@filterId).then( (data) =>
+        if data.filters.length == 0
+          @$state.go('tickets.ticket_filters.edit.single_filter', { id: data.id, filter_id: 0 })
+        
+        console.log data
+        
+        @filterset = data
+        @$scope.formstate.filterset.title = data.title
+        @$scope.formstate.filterset.is_default = data.is_default
+      )
+      
+    changedFilterDefault: ->
+      @filterset.title = @$scope.formstate.filterset.title
+      # This event fires before the custom control changes the model.
+      @filterset.is_default = !@$scope.formstate.filterset.is_default
+      
+      @filterSetData.saveTicketFilterSet(@filterset).then(=>
+        # Nothing
+      )
 
-        @filterData.mergeDataModel(@filter)
-
-        if !@filterId
-          @$state.go('tickets.ticket_filters.gocreate')
+    saveFilterSet: ->
+      @filterset.title = @$scope.formstate.filterset.title
+      @filterset.is_default = @$scope.formstate.filterset.is_default
+      
+      @filterSetData.saveTicketFilterSet(@filterset).then(=>
+        @$scope.formstate.editingFilterSetTitle = false
       )
 
   Admin_TicketFilters_Ctrl_Edit.EXPORT_CTRL()

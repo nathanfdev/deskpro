@@ -66,6 +66,7 @@ class TicketFilterSet extends NotifyPropertyChangeEntity
     /**
      * @var TicketFilter[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", mappedBy="filter_set")
+     * @ORM\OrderBy({"display_order" = "ASC"})
      */
     protected $filters;
 
@@ -164,12 +165,12 @@ class TicketFilterSet extends NotifyPropertyChangeEntity
         $this->setModelField('display_order', (int)$display_order);
     }
 
-    public function isDefault()
+    public function getIsDefault()
     {
         return $this->is_default === true;
     }
 
-    public function setDefault($default)
+    public function setIsDefault($default)
     {
         $this->setModelField('is_default', (bool)$default);
     }

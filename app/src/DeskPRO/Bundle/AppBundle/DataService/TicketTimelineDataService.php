@@ -41,16 +41,6 @@ use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
 class TicketTimelineDataService extends AbstractDataService
 {
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @param Ticket $ticket
      * @return Line\LineInterface[]
      */

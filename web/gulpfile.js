@@ -196,6 +196,15 @@ gulp.task('coffee', ['clean'], function() {
   ]);
 });
 
+gulp.task('dirty-coffee', function() {
+  return deskpro.taskGen.coffeeScript([
+    './app/Admin*/**/*.coffee',
+    './app/Agent*/**/*.coffee',
+    './app/Reports*/**/*.coffee',
+    './app/DeskPRO*/**/*.coffee'
+  ]);
+});
+
 //------------------------------
 // Copy JS
 //------------------------------

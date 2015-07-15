@@ -38,7 +38,6 @@ use Aws\CloudWatch\Exception\InvalidFormatException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,11 +57,9 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 /**
  * API access to TicketFilterSet entities.
  */
-class TicketFilterSetsController extends BaseController implements ClassResourceInterface
+class TicketFilterSetsController extends BaseController
 {
     /**
-     * @Get("/ticket_filter_sets", name="all_ticket_filter_sets")
-     *
      * @ApiDoc(
      *      description="Get the list of ticket filter sets available",
      *      statusCodes={
@@ -76,7 +73,7 @@ class TicketFilterSetsController extends BaseController implements ClassResource
     {
         $sets = $this->getEm()
             ->getRepository('App:TicketFilterSet')
-            ->findAll();
+            ->findBy(array(), array('display_order' => 'ASC'));
 
         return View::create(
             $this->createRepresentation($sets),
@@ -137,15 +134,86 @@ class TicketFilterSetsController extends BaseController implements ClassResource
 
         return $this->handleFormSubmission($request, $set);
     }
+    
+    /**
+     * @ApiDoc(
+     *      description="Edit an existing filter set",
+     *      input={"class"="ticket_filter_set", "name"=""},
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request",
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
+     * )
+     *
+     * @Put("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_put")
+     */
+    public function putAction(Request $request, $id)
+    {
+        $set = $this->getEm()->find('App:TicketFilterSet', $id);
+        
+        if (!$set) {
+            throw new NotFoundHttpException();
+        } else {
+            return $this->handleFormSubmission($request, $set);
+        }
+    }
+    
+    /**
+     * @ApiDoc(
+     *      description="Reorder filter sets.",
+     *      input={"Array"},
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Post("/ticket_filter_sets/display_order", name="api_ticket_filter_sets_display_order_post")
+     */
+    public function postReorderAction(Request $request)
+    {
+        $data = $request->request->all();
+        
+        if (!is_array($data) || !isset($data['display_order'])) {
+            throw new NotFoundHttpException();
+        }
+        
+        $results = array();
+        foreach ($data['display_order'] as $order => $filter_set_id) {
+            $filter_set = $this->getEm()->find('App:TicketFilterSet', $filter_set_id);
+            
+            if (!$filter_set) {
+                continue;
+            }
+            
+            $filter_set->setDisplayOrder($order);
+            $this->getEm()->persist($filter_set);
+            $results[$order] = $filter_set_id;
+        }
+        
+        $this->getEm()->flush();
+        
+        return View::create(
+            $this->createRepresentation($results),
+            Response::HTTP_OK
+        );
+    }
 
     protected function handleFormSubmission(Request $request, TicketFilterSet $set)
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        
         $form = $this->get('form.factory')
             ->createNamedBuilder(null, 'filter_set', $set)
             ->getForm();
 
-        $form->submit($request->request->all(), 'PUT' !== $request->getMethod());
+        $submitted = $request->request->all();
+        
+        if(array_key_exists('is_default', $submitted)) {
+            $submitted['is_default'] = $submitted['is_default'] == true;
+        }
+        
+        $form->submit($submitted, 'PUT' !== $request->getMethod());
 
         if ($form->isValid()) {
             $this->getEm()->persist($set);
@@ -159,6 +227,9 @@ class TicketFilterSetsController extends BaseController implements ClassResource
                 )
             );
         } else {
+            foreach($form->getErrors() as $error) {
+                echo $error->getMessage() . "\n";
+            }
             throw new InvalidFormException($form); // let our listeners generate the form error response
         }
     }

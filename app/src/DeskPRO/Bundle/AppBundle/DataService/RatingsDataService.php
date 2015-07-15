@@ -38,16 +38,6 @@ use Doctrine\ORM\EntityManager;
 class RatingsDataService extends AbstractDataService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @param int|null|Rating $rating
      *
      * @return Rating|null

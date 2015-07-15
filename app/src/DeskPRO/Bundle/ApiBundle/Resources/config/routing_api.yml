@@ -1,7 +1,1 @@
-sandbox_widgets:
-    type: rest
-    resource: DeskPRO\Bundle\ApiBundle\Controller\Sandbox\SandboxWidgetsController
-
-api_controllers:
-    type: annotation
-    resource: "@ApiBundle/Controller"
+# Nothing here. It's all automated through annotations.

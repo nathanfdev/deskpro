@@ -17,7 +17,6 @@ Feature: API Errors
     Then the JSON node "status" should be equal to 400
     Then the JSON node "code" should be equal to "invalid_json_body"
     And the JSON node "message" should be equal to "The request JSON body is not valid JSON."
-    And the JSON node "errors" should not exist
 
   Scenario: Invalid JSONP callbacks result in an error
     When I send a GET request to "/api/v2/sandbox_widgets?callback=function"
@@ -26,7 +25,6 @@ Feature: API Errors
     And the JSON node "status" should be equal to 400
     And the JSON node "code" should be equal to "invalid_jsonp_callback"
     And the JSON node "message" should be equal to "The JSONP callback parameter is invalid. Please use a JSONP callback is is not a Javascript reserved word."
-    And the JSON node "errors" should not exist
 
   Scenario: Request non-existent resource
     When I send a GET request to "/api/v2/sandbox_widgets/124"
@@ -35,7 +33,6 @@ Feature: API Errors
     And the JSON node "status" should be equal to 404
     And the JSON node "code" should be equal to "not_found"
     And the JSON node "message" should be equal to "The requested resource was not found."
-    And the JSON node "errors" should not exist
 
   Scenario: Make an invalid POST
     When I send a POST request to "/api/v2/sandbox_widgets" with body:

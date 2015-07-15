@@ -48,6 +48,14 @@ class FilterSetType extends AbstractType
         $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder
             ->add(
+                'id',
+                'integer',
+                array(
+                    'description' => 'Object ID',
+                    'required' => false
+                )
+            )
+            ->add(
                 'title',
                 'text',
                 array(
@@ -61,7 +69,16 @@ class FilterSetType extends AbstractType
                     'description' => 'the display order',
                     'required' => false
                 )
-            );
+            )
+            ->add(
+                'is_default',
+                'checkbox',
+                array(
+                    'description' => 'is part of the default filter set collection',
+                    'required' => false
+                )
+            )
+            ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

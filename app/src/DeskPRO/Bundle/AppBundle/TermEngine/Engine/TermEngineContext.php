@@ -34,6 +34,8 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
+use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketGroupingColumnException;
 
 class TermEngineContext
 {
@@ -42,9 +44,15 @@ class TermEngineContext
      */
     protected $agent;
 
+    /**
+     * @var [TicketGrouping]
+     */
+    protected $groupings;
+
     public function __construct(Person $agent)
     {
         $this->agent = $agent;
+        $this->groupings = array();
     }
 
     /**
@@ -61,5 +69,45 @@ class TermEngineContext
     public function setAgent(Person $agent)
     {
         $this->agent = $agent;
+    }
+
+    /**
+     * Adds a group-by clause to the resulting query.
+     */
+    public function addGroupBy(TicketGrouping $group_by)
+    {
+        $this->groupings[] = $group_by;
+
+        return $this;
+    }
+
+    /**
+     * Adds group by from a string.
+     * @param string $group_by_string is a string of comma-separated columns to group the tickets by.
+     * @return itself.
+     */
+    public function addGroupByFromString($group_by_string)
+    {
+        $group_bys = explode(',', $group_by_string);
+        foreach($group_bys as $group_by) {
+            $grouping = null;
+            try {
+                $grouping = TicketGrouping::fromString($group_by);
+            } catch (UnknownTicketGroupingColumnException $e) {
+                continue;
+            }
+            $this->addGroupBy($grouping);
+        }
+
+        return $this;
+    }
+
+    /**
+     * public function getGroupBys
+     * @return Array [TicketGrouping]
+     */
+    public function getGroupBys()
+    {
+        return $this->groupings;
     }
 }

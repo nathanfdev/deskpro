@@ -225,3 +225,39 @@ Feature: /filters endpoint
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "Big Test"
     And the JSON node "data.term.type" should be equal to "composite"
+
+  @reinstall
+  Scenario: Successfully create the All filter
+    When I send a POST request to "/api/v2/ticket_filters" with body:
+    """
+    {
+      "title": "All",
+      "term": {
+        "type": "ticket_status",
+        "op": "is",
+        "options": {
+          "status": [
+            "awaiting_user",
+            "awaiting_agent"
+          ]
+        }
+      },
+      "display_order": 0
+    }
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the header "Location" should be equal to "/api/v2/ticket_filters/1"
+
+  Scenario: Get the count of tickets from a filter
+    When I send a GET request to "/api/v2/ticket_filters/1/count?group_by=agent,department"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "meta" should exist
+    And the JSON node "data[0].count" should be equal to "2"
+    And the JSON node "data[0].agent" should be equal to "1"
+    And the JSON node "data[0].groups" should exist
+    And the JSON node "data[0].groups[0].count" should be equal to "1"
+    And the JSON node "data[0].groups[0].department" should be equal to "1"
+    And the JSON node "meta.count" should be equal to "3"

@@ -40,16 +40,6 @@ use Pagerfanta\Pagerfanta;
 class FiltersDataService extends AbstractDataService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @param int|null|Filter $filter
      *
      * @return Filter|null
