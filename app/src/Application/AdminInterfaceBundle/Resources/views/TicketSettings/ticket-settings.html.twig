@@ -61,6 +61,16 @@
 									by CC'ing them.
 								</span>
 							</div>
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.email_reply_as_note" />
+									<h4>Process email replies as notes instead of ticket replies</h4>
+								</label>
+								<span class="help-block">
+									Upon reception of an agent's email referring to an existing ticket, create a new
+									reply to the ticket if disabled, or add a private note if enabled.
+								</span>
+							</div>
 							<div class="inner-group" dp-error-class="form_props.size_num">
 								<label>
 									<h4>Maximum email size</h4>

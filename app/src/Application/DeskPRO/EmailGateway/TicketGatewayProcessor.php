@@ -427,7 +427,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($ticket && $person) {
             App::$container->getTicketManager()->markAsManaged($ticket);
-
             return $this->runReply($ticket_email);
         } else {
             return $this->runNew($ticket_email, $reply_as_new);
@@ -435,6 +434,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
+     * Create a publicly visible reply to a ticket from an email.
+     *
      * @param  TicketIncomingEmail                            $ticket_email
      * @return \Application\DeskPRO\Entity\TicketMessage|null
      */

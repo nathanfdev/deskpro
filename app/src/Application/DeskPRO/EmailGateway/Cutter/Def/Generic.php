@@ -306,20 +306,14 @@ class Generic implements ForwardDef, QuoteDef
             $pos = strpos($body, 'DP_TOP_MARK_USER');
             if ($pos === false) {
                 // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
-                $langs = App::getDataService('Language')->getAll();
-                foreach ($langs as $l) {
-                    $re = preg_quote(App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l), '#');
-                    $matches = null;
-                    if (preg_match('#===(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*===#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
-                        $pos = $matches[0][1];
-                        break;
-                    }
-
-                    // Detect encoded ='s if text was mangled
-                    if (preg_match('#=3D=3D=3D(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*=3D=3D=3D#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
-                        $pos = $matches[0][1];
-                        break;
-                    }
+                $matches = array();
+                if (preg_match(
+                        '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*.+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
+                        $body,
+                        $matches,
+                        \PREG_OFFSET_CAPTURE
+                )) {
+                    $pos = $matches[0][1];
                 }
 
                 if ($pos === false) {
