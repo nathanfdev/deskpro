@@ -145,6 +145,14 @@ interface TermInterface
     public function getOptions();
 
     /**
+     * Checks if an option exists within the collection.
+     *
+     * @param string $options option name
+     * @return bool
+     */
+    public function hasOption($option);
+
+    /**
      * Get a RESOLVED option value.
      *
      * Note that it will actually resolve the options before passing you your option.

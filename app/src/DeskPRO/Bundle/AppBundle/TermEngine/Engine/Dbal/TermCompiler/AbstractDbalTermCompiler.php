@@ -82,6 +82,14 @@ abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
     {
         return $this->helper_pool->getHelper('date');
     }
+    
+    /**
+     * @return DbalJoinedHelper
+     */
+    public function getJoinedHelper()
+    {
+        return $this->helper_pool->getHelper('joined');
+    }
 
     /**
      * @return DbalNumericHelper

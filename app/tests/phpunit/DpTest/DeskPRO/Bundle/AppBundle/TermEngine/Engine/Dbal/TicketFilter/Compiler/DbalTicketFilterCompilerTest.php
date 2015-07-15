@@ -36,13 +36,13 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Co
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\AgentTeamTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\ApiTestCase;
 

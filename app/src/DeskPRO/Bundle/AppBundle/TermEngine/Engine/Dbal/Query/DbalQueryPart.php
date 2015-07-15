@@ -134,6 +134,16 @@ class DbalQueryPart
     {
         $this->parameters[$name] = $value;
     }
+    
+    /**
+     * Establish all the query parameters to use in a WHERE/JOIN string at once.
+     *
+     * @param array $params is the list of parameters in the key => value pair form.
+     */
+    public function setParameters(array $params)
+    {
+        $this->parameters = $params;
+    }
 
     /**
      * A simple join uses the table name as the alias. You can use the table name in

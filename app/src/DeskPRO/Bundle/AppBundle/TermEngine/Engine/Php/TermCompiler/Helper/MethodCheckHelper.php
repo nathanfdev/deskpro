@@ -75,6 +75,35 @@ class MethodCheckHelper implements TermCompilerHelperInterface
 
         return !in_array($real_val, $contains);
     }
+    
+    protected function canTraverse($thing)
+    {
+        return (is_array($thing) || (is_object($thing) && $thing instanceof \Traversable));
+    }
+    
+    public function checkTraverse($val, $property_name, $op, $target)
+    {
+        if ($this->canTraverse($val)) {
+            return false;
+        }
+        
+        foreach ($val as $key => $value) {
+            if($key == $property_name) {
+                if (TermInterface::OP_NOT === $op || TermInterface::OP_NOT_HAS === $op) {
+                    return $value != $target;
+                } else {
+                    return $value == $target;
+                }
+            } elseif ($this->canTraverse($value)) {
+                $result = $this->checkTraverse($value, $property_name, $op, $target);
+                if ($result === false || $result === true) {
+                    return $result;
+                }
+            }
+        }
+        
+        return null;
+    }
 
     public function checkCustomField(Ticket $ticket, $field_id, $op, $values, $input)
     {

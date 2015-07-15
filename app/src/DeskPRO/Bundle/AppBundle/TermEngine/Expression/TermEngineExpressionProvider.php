@@ -93,6 +93,21 @@ class TermEngineExpressionProvider implements ExpressionFunctionProviderInterfac
                 }
             ),
             new ExpressionFunction(
+                'check_traverse',
+                function ($arguments, $input, $prop_name, $op, $target) {
+                    return sprintf(
+                        '$helper_pool->getHelper(\'method_check\')->checkTraverse(%s, %s, %s, %s)',
+                        $input,
+                        $prop_name,
+                        $op,
+                        $target
+                    );
+                },
+                function ($arguments, $input, $op) {
+                    return $arguments['helper_pool']->getHelper('method_check')->checkContains($input, $op);
+                }
+            ),
+            new ExpressionFunction(
                 'custom_field_check',
                 function ($arguments, $ticket, $field_id, $op, $values, $input) {
                     return sprintf(
