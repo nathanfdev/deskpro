@@ -134,7 +134,8 @@ gulp.task('clean', function (cb) {
 });
 
 gulp.task('default', ['clean'], function (cb) {
-  runSeq(['bundle', 'sass'], cb);
+  //todo 'sass' needed for portal, but is breaking the build right now
+  runSeq(['bundle'], cb);
 });
 
 gulp.task('prod', ['clean', 'priv:start-prod'], function (cb) {

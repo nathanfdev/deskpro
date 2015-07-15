@@ -1,0 +1,12 @@
+#!/bin/bash
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
+
+echo ">> Cleaning pub..."
+rm -rf $DIR_ROOT/pub/build
+rm -rf $DIR_ROOT/pub/node_modules
+echo ".. done"
+
+echo ">> Installing deps..."
+cd $DIR_ROOT/pub
+npm install
+echo ".. done"
