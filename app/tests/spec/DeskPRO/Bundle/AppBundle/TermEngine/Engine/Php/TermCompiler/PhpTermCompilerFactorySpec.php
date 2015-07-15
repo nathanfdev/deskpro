@@ -33,14 +33,14 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\DbalAgentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DbalDepartmentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\PhpAgentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\PhpTicketStatusTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -57,8 +57,8 @@ class PhpTermCompilerFactorySpec extends ObjectBehavior
     {
         $this->beConstructedWith(
             array(
-                'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm' => $agent_compiler,
-                'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm' => $status_compiler,
+                'DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm' => $agent_compiler,
+                'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm' => $status_compiler,
             )
         );
     }
@@ -68,7 +68,7 @@ class PhpTermCompilerFactorySpec extends ObjectBehavior
         PhpTicketStatusTermCompiler $status_compiler
     )
     {
-        $this->getCompiler(New AgentTerm())->shouldBe($agent_compiler);
+        $this->getCompiler(new AgentTerm())->shouldBe($agent_compiler);
         $this->getCompiler(new TicketStatusTerm())->shouldBe($status_compiler);
     }
 

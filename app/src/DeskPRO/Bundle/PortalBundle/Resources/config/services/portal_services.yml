@@ -18,6 +18,9 @@ services:
       tags:
         - { name: pagerfanta.view, alias: deskpro }
 
+  portal_mailer:
+      class: DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender
+
   portal_mode_factory:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
 

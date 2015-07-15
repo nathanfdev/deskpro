@@ -36,36 +36,65 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketId\TicketIdTerm
  */
-class PersonEmailTermSpec extends ObjectBehavior
+class TicketIdTermSpec extends ObjectBehavior
 {
-    function it_has_default_op_is()
+    function it_is_a_term()
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
+        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
     }
 
-    function it_allows_op_change()
+    public function it_defaults_to_is_op()
+    {
+        $this->getOp()->shouldReturn(TermInterface::OP_IS);
+    }
+
+    public function it_lets_you_change_the_op()
     {
         $this->setOp(TermInterface::OP_NOT);
 
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
+        $this->getOp()->shouldReturn(TermInterface::OP_NOT);
+    }
+
+    public function it_defines_its_supported_options()
+    {
+        $this->getSupportedOps()->shouldBe(
+            array(
+                TermInterface::OP_IS,
+                TermInterface::OP_NOT,
+                TermInterface::OP_GT,
+                TermInterface::OP_GTE,
+                TermInterface::OP_LT,
+                TermInterface::OP_LTE,
+                TermInterface::OP_NOT_RANGE,
+                TermInterface::OP_RANGE
+            )
+        );
     }
 
     function it_defines_its_options()
     {
         $resolver = $this->getOptionsResolver();
-        $resolver->isDefined('email')->shouldBe(true);
+        $resolver->isDefined('num')->shouldBe(true);
+        $resolver->isDefined('num2')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
             array(
-                'email' => array(
-                    new Assert\NotBlank(),
-                    new Assert\Email()
+                'num' => array( // an array of numerics
+                    new Assert\NotNull(),
+                    new Assert\Type('array'),
+                    new Assert\All(
+                        array(
+                            'constraints' =>
+                                new Assert\Type('numeric')
+                        )
+                    )
+                ),
+                'num2' => array( // a numeric or null
+                    new Assert\Type('numeric')
                 )
             )
         );

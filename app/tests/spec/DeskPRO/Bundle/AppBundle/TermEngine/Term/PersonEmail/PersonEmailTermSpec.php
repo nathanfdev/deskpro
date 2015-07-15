@@ -34,28 +34,17 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm
  */
-class TicketCustomDataTermSpec extends ObjectBehavior
+class PersonEmailTermSpec extends ObjectBehavior
 {
-    function let()
-    {
-        $this->setOption('field_id', 1);
-    }
-
-    function it_is_a_term()
-    {
-        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
-    }
-
     function it_has_default_op_is()
     {
         $this->getOp()->shouldBe(TermInterface::OP_IS);
@@ -71,18 +60,12 @@ class TicketCustomDataTermSpec extends ObjectBehavior
     function it_defines_its_options()
     {
         $resolver = $this->getOptionsResolver();
-        $resolver->isDefined('input')->shouldBe(true);
-        $resolver->isDefined('values')->shouldBe(true);
-        $resolver->isDefined('field_id')->shouldBe(true);
+        $resolver->isDefined('email')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
             array(
-                'field_id' => array(
+                'email' => array(
                     new Assert\NotBlank(),
-                    new PrimaryKeyExists(
-                        array(
-                            'table' => 'custom_def_ticket'
-                        )
-                    )
+                    new Assert\Email()
                 )
             )
         );

@@ -36,7 +36,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Comp
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerFactory;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\PhpAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 use PhpSpec\ObjectBehavior;

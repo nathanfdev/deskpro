@@ -31,17 +31,17 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject\TicketSubjectTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject\TicketSubjectTerm
  */
 class TicketSubjectTermSpec extends ObjectBehavior
 {

@@ -33,9 +33,9 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Util;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
@@ -53,10 +53,10 @@ class TermTypeCodesSpec extends ObjectBehavior
         $this->getTermTypeCode(new TicketStatusTerm())->shouldBe('ticket_status');
 
         // and back again
-        $this->getTermClassForTypeCode('agent')->shouldBe('DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm');
+        $this->getTermClassForTypeCode('agent')->shouldBe('DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm');
         $this->getTermClassForTypeCode('composite')->shouldBe('DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm');
         $this->getTermClassForTypeCode('ticket_status')->shouldBe(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm'
+            'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm'
         );
     }
 }

@@ -33,10 +33,10 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Util;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -122,7 +122,7 @@ class TermToJsonConverterSpec extends ObjectBehavior
 
         $term1 = $terms[0];
 
-        $term1->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm');
+        $term1->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm');
         $term1->getOp()->shouldBe(TermInterface::OP_NOT);
         $term1->getRawOptions()->shouldBe(
             array(
@@ -132,7 +132,7 @@ class TermToJsonConverterSpec extends ObjectBehavior
 
         $term2 = $terms[1];
 
-        $term2->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm');
+        $term2->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm');
         $term2->getOp()->shouldBe(TermInterface::OP_IS);
         $term2->getRawOptions()->shouldBe(
             array(
@@ -212,7 +212,7 @@ class TermToJsonConverterSpec extends ObjectBehavior
 
         $term1 = $terms[0];
 
-        $term1->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm');
+        $term1->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm');
         $term1->getOp()->shouldBe(TermInterface::OP_NOT);
         $term1->getRawOptions()->shouldBe(
             array(
@@ -222,7 +222,7 @@ class TermToJsonConverterSpec extends ObjectBehavior
 
         $term2 = $terms[1];
 
-        $term2->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm');
+        $term2->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm');
         $term2->getOp()->shouldBe(TermInterface::OP_IS);
         $term2->getRawOptions()->shouldBe(
             array(
