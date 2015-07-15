@@ -1313,26 +1313,6 @@ class Strings
 
         $qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 
-        // Unwrap divs
-        do {
-            $changed = false;
-            $qp->top()->find('div');
-            foreach ($qp as $div) {
-                if (!trim($div->text())) {
-                    $changed = true;
-                    $children = $div->branch();
-                    $children->children();
-                    foreach ($children as $child) {
-                        @$div->before($child);
-                    }
-                    @$div->remove();
-                    break;
-                }
-            }
-
-            $qp->top();
-        } while ($changed);
-
         ob_start();
         $qp->writeXHTML();
         $html = ob_get_clean();

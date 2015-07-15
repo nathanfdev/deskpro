@@ -189,6 +189,8 @@ class HtmlPurifier implements CleanerPlugin
                 }
             }
 
+            $value = preg_replace('#<div[^>]*display\s*:\s*inline[^>]*>(.*?)</div>#', '<span>\\1</span>', $value);
+
             // Email do a bunch of processing with DOMDocument which messes with HTML Entities
             // There are bugs with different versions of libxml where entites are not properly
             // decoded, or the DOMDocument->substituteEntities not being honoured etc.
