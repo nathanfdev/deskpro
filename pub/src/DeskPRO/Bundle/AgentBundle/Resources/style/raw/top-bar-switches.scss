@@ -44,7 +44,7 @@
   }
 
   // specific chat icons
-  //.button.button-chat-off { @include retina-image('../img/icon-chat-off', 12px 10px); }
+  .button.button-chat-off { @include retina-image('../img/icon-chat-off', 12px 10px); }
   .button.button-chat-on { @include retina-image('../img/icon-chat', 12px 10px); }
   &:hover { background: #32628b; }
 }

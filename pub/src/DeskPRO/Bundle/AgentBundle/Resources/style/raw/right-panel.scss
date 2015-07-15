@@ -1,24 +1,30 @@
 .ticket-properties.editing-ticket {
 
+
+
   [type="text"] {
     @include placeholder {
-      color: #b7c4cf;
+      color: #aab6c1;
+      font-size: 12px;
     }
-    width: 200px;
+    width: 100%;
     background: #daeaf7;
     border: 1px solid #4681b2;
     border-radius: 2px;
     font-size: 1em;
     padding: 5px;
+    padding-right: 30px;
     height: 28px;
   }
 
   form {
+    position: relative;
     .fa-search {
       position: absolute;
-      right: 25px;
-      top: 17px;
+      right: 10px;
+      top: 7px;
       color: #aab6c1;
+      font-size: 12px;
     }
   }
 }
@@ -35,195 +41,11 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-// General styles for the ticket properties bar
-
-.ticket-properties {
-  background: #f8f8f8;
-  border-bottom: 1px solid #d8d8d8;
-  position: relative;
-  z-index: 199;
-  font-size: 0.9em;
-  padding-left: 10px;
-  @include clearfix;
-
-  .org-avatar, .chat-avatar {
-    margin-left: 0px;
-    margin-right: 3px;
-    box-shadow: none;
-    &.default {
-      background: #e9eaeb;
-      text-align: center;
-      i {
-        top: 7px;
-        color: #a3a3a4;
-      }
-    }
-  }
-
-  .channel-avatar {
-    text-align: center;
-    box-shadow: none;
-    i { top: 7px; font-size: 1.2em; margin: 0; }
-  }
-
-  .email {
-    margin-top: 4px;
-    opacity: 0.5;
-  }
-
-  // The skewed line divider
-  .line {
-    display: inline-block;
-    width: 1px;
-    height: 46px;
-    position: absolute;
-    right: -10px;
-    top: 0px;
-
-    background: #d9d9d9;
-    margin-left: 10px;
-    margin-right: 10px;
-
-    -moz-transform: skewX(10deg);
-    -webkit-transform: skewX(10deg);
-    -o-transform: skewX(10deg);
-    -ms-transform: skewX(10deg);
-    transform: skewX(10deg);
-  }
-
-  .ticket-ref {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 110px;
-    text-align: right;
-    padding-top: 10px;
-    padding-right: 10px;
-    font-size: 9px;
-    text-transform: uppercase;
-    font-weight: bold;
-    line-height: 1.5em;
-    color: $silver;
-    &:hover { color: #333; }
-  }
-}
-
-// Overall structure
-.ticket-properties {
-
-  a {
-    color: #878787;
-    text-decoration: none;
-    &:hover {
-      color: #5a5a5a;
-      i { color: #5a5a5a; }
-    }
-  }
-
-  // The three main containers
-  .the-org, .the-person, .the-ticket {
-    float: left;
-    position: relative;
-    padding-top: 9px;
-    padding-bottom: 9px;
-
-    .bucket-avatar, .bucket-title, .bucket-icon {
-      float: left;
-      display: block;
-    }
-
-    .bucket-avatar { width: 35px; }
-
-    .bucket-title {
-      .title {
-        display: block;
-        @extend %whitespace;
-        padding-top: 8px;
-      }
-    }
-
-    .bucket-icon {
-      width: 10px;
-      color: #c0c0c0;
-      padding-top: 7px;
-    }
-  }
-
-  .the-org {
-    display: block;
-    height: 46px;
-    width: 120px;
-    margin-right: 20px;
-    position: relative;
-    .bucket-title { width: 65px; }
-
-    &.editing {
-      width: 60px;
-
-      .bucket-title {
-        width: auto; color: $silver;
-        .title { padding-left: 3px; }
-      }
-      .bucket-icon { display: none; }
-    }
-  }
-
-  .the-person {
-    display: block;
-    width: 250px;
-    height: 46px;
-    margin-right: 21px;
-    position: relative;
-
-    .bucket-title {
-      width: 145px;
-
-      .title {
-        padding-top: 0px;
-        padding-right: 5px;
-      }
-    }
-
-    &.editing {
-      .bucket-title { width: auto; }
-      .bucket-icon { display: none; }
-    }
-  }
 
 
-  .the-ticket {
-    display: block;
-    position: relative;
-    padding-left: 35px;
 
-    .bucket-avatar {
-      width: 35px;
-      position: absolute;
-      left: 0px;
-      top: 9px;
-    }
 
-    .bucket-title {
-      width: 100%;
 
-      .title {
-        font-size: 1.2em;
-        display: block;
-        width: 100%;
-        min-height: 24px;
-        padding-top: 4px;
-        @extend %whitespace;
-      }
-    }
-
-    &.editing {
-      padding-left: 0px;
-      [type="text"] {
-        width: 100%;
-      }
-    }
-  }
-}
 
 
 
@@ -387,7 +209,7 @@
       padding: 5px;
       background: #f9f9f9;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-      z-index: 399;
+      z-index: 499;
 
       form {
         [type="text"] {
@@ -495,7 +317,6 @@
 
 
 .ticket-tabs {
-  border-bottom: 1px solid #c3c6cc;
 
   ul { @extend %flat-list; }
   li {
@@ -576,9 +397,8 @@
 
   .chats-tab {
     text-transform: uppercase;
-    color: #ccd7e4;
-    background: #4681b2;
-    border-bottom: 1px solid #4681b2;
+    color: #fff;
+    background: #62ad8c;
 
     .chats-tab-title {
       position: relative;
@@ -595,7 +415,7 @@
       height: 16px;
       vertical-align: top;
       font-size: 0.8em;
-      color: #96a6b8;
+      color: #fff;
 
       i { margin-left: 3px; }
     }
@@ -607,6 +427,10 @@
       margin-right: 1px;
       vertical-align: top;
     }
+  }
+
+  .chats-tab.active {
+
   }
 
   .open-ticket {
@@ -633,12 +457,10 @@
 
   .open-ticket.active {
     border-bottom: 1px solid rgba(0, 0, 0, 0);
-    background: #62ad8c;
+    background: #4681b2;
     color: #fff;
 
-    .chat-avatar {
-      opacity: 1;
-    }
+    .chat-avatar { opacity: 1; }
 
     .open-ticket-title {
       color: #e9f1ed;
@@ -646,8 +468,9 @@
     }
 
     .open-ticket-owner {
-      color: #457560;
-      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.25);
+      color: #fff;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+      opacity: 0.8;
 
     }
   }

@@ -4,6 +4,14 @@
   height: $inner-top-bar-height;
   position: absolute;
   right: 5px;
+
+  .notification-button {
+    position: relative;
+    margin-right: 2px;
+    .notification-count {
+      right: -3px;
+    }
+  }
 }
 
 .user-options-button {
@@ -12,6 +20,7 @@
   position: relative;
   color: #fff;
   display: inline-block;
+  vertical-align: top;
 
   .user-photo {
     display: inline-block;

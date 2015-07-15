@@ -1,6 +1,100 @@
 // Sidebar contains all the styles for the filter sidebar on the left.
 //
 
+
+// Sidebar title with the page title, collapse icon etc
+.sidebar-title {
+  background: #fff;
+  width: 100%;
+  height: 50px;
+  padding-top: 10px;
+  padding-left: 10px;
+  position: relative;
+  border-bottom: 1px solid #dbddde;
+
+  z-index: 299;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+  .sidebar-type-icon {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: 2px;// to align with the slider butto nand bulk edit checkbox
+    border: 1px solid #e4e4e4;
+    border-radius: 2px;
+    width: 26px;
+    height: 26px;
+    margin-right: 10px;
+    text-align: center;
+
+    > .fa {
+      position: relative;
+      top: 5px;
+      color: #c9c9c9;
+    }
+
+    .help {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: -9px;
+      right: -9px;
+      border-radius: 19px;
+      background: #ededed;
+      color: #a5a5a5;
+      text-align: center;
+      border: 2px solid #fff;
+      font-size: 10px;
+      i { top: 1px; }
+    }
+
+    .help:hover {
+      background: darken(#ededed, 10%);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+
+  h1 {
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #737373;
+  }
+
+  hr {
+    display: inline-block;
+    vertical-align: middle;
+    width: 60px;
+    margin-left: 10px;
+  }
+
+  .slider-control {
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 12px;
+    border: 1px solid #e2e5e8;
+    border-radius: 2px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+    border-right: 0px;
+    width: 26px;
+    height: 26px;
+    @include retina-image('../img/icon-collapse', 11px 12px);
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  .slider-control:hover {
+    border: 1px solid darken(#e2e5e8, 10%);
+    border-right: 0px;
+  }
+}
+
+
 .sidebar {
   background: $sidebar-background;
   font-weight: 400;
@@ -36,19 +130,32 @@
 
 // Section title
 .list-sidebar-title {
-  background: #ebebeb;
+  background: #eef1f3;
   border-radius: 2px;
-  padding: 3px 7px;
-  border: 1px solid $global-border;
-  color: #8e8e8e;
-  text-transform: uppercase;
+  padding: 5px 12px;
+  border-top: 1px solid #dce4ea;
+  border-bottom: 1px solid #dce4ea;
+  color: #7f8081;
   font-size: 0.9em;
   font-weight: 600;
-  margin: 20px 5px 5px 5px;
+  margin: 20px 0px 5px 0px;
+  position: relative;
+
   &:first-child { margin-top: 10px; }
 
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 15px;
+    background: #3c6e98;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
   // Single icon
-  .sidebar-title-settings {
+  /* .sidebar-title-settings {
     float: right;
     position: relative;
     top: 2px;
@@ -56,28 +163,44 @@
     opacity: 0.25;
 
     &:hover { opacity: 0.75; }
+  } */
+
+  .title-down {
+    margin-left: 4px;
+    color: #c8cacc;
+    position: relative;
+    top: 1px;
+  }
+
+  .title-down:hover {
+    color: #333;
   }
 
   // Controls on the title (me/all buttons on the side of the title)
   .controls {
-    float: right;
+    position: absolute;
+    top: 3px;
+    right: 5px;
     font-weight: 800;
     font-size: 10px;
 
     a {
+      text-transform: uppercase;
       display: inline-block;
       line-height: 1em;
       padding: 3px 5px;
       font-size: 0.9em;
       vertical-align: top;
       margin-left: 5px;
-      border: 1px solid $global-border;
-      color: $global-border;
+      border: 1px solid #d6d8da;
+      border-radius: 2px;
+      color: #acacac;
     }
 
     a:hover, a.active {
-      color: $top-bar-blue;
-      background: #fff;
+      color: #fff;
+      border: 1px solid $top-bar-blue;
+      background: $top-bar-blue;
     }
   }
 
@@ -224,14 +347,12 @@
   @extend %inline-list;
   font-weight: 800;
   font-size: 0.75em;
-  overflow: hidden;
-
   background: #e7e7e7;
   cursor: default;
   height: 24px;
   z-index: 199;
-  border-bottom: 1px solid #d1d4d6;
   margin-bottom: 5px;
+  border-bottom: 1px solid #d1d4d6;
 
   li {
     display: block;
@@ -240,51 +361,29 @@
     height: 24px;
   }
 
-  .sidebar-collapse {
-    width: 10%;
-    background: #f9f9f9;
-    border-bottom: 1px solid #d1d4d6;
-    background-repeat: no-repeat;
-    background-position: center center;
-    @include retina-image('../img/icon-collapse', 11px 12px);
-
-    a {
-      color: #c8c9ca;
-      border-right: 0px;
-    }
-
-    &:hover {
-      background-color: #e8e8e8;
-      background-repeat: no-repeat;
-      background-position: center center;
-      @include retina-image('../img/icon-collapse', 11px 12px);
-      color: #333;
-    }
-  }
-
   a {
     display: block;
+    height: 24px;
+    padding-top: 5px;
     position: relative;
-    padding: 6px 5px;
     color: #7f7f7f;
     text-transform: uppercase;
     text-align: center;
     outline: none;
-
     border-right: 1px solid #d1d4d6;
   }
 
   li.active, li:hover {
-    background: #f5f6f7;
+    background: #f8f8f8;
     top: 2px;
     z-index: 999;
-    border-bottom: 1px solid #f5f6f7;
+    border-bottom: 1px solid #f8f8f8;
     a { color: #3c6e98; }
   }
 
   li:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid #d1d4d6;
+    background: #f8f8f8;
+      background: #f8f8f8;
   }
 }
 

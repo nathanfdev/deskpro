@@ -1,0 +1,358 @@
+.add-app-space {
+  padding-right: 260px;
+}
+
+
+.deskpro-app {
+  position: absolute;
+  right: 10px;
+  top: 50px;
+  width: 260px;
+  background: #cecece;
+  z-index: 499;
+  color: #4681b2;
+  border: 3px solid #4681b2;
+  background: #f1f1f1;
+  overflow-y: scroll;
+
+  &.deskpro-app-no-view {
+    .deskpro-app-major-buttons {
+      opacity: 0.4;
+    }
+
+    .no-info {
+      h1 {
+        display: block;
+        margin: 50px 0px;
+        font-size: 0.9em;
+        opacity: 0.5;
+        text-align: center;
+      }
+    }
+  }
+
+
+
+
+
+
+  .deskpro-app-content {
+    margin: 10px 10px;
+  }
+
+
+  .button {
+    display: block;
+    background: #4681b2;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 2px;
+    line-height: 1em;
+    padding: 10px;
+    text-align: center;
+
+    &:hover {
+      background: darken(#4681b2, 10%);
+    }
+  }
+
+  h1 {
+    text-transform: uppercase;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #6194bf;
+    display: block;
+    margin: 10px 0px;
+    margin-top: 20px;
+  }
+
+  .app-item-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    margin-top: 10px;
+    margin-left: 5px;
+
+    li {
+      display: block;
+      margin: 5px 0px;
+    }
+
+    li:before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 19px;
+      background: #4681b2;
+      margin-top: -6px;
+      margin-right: 5px;
+    }
+  }
+
+  form {
+    label {
+      padding: 0px;
+      margin: 0px;
+      margin-bottom: 5px;
+      margin-top: 10px;
+      color: inherit;
+    }
+
+    [type="text"] {
+      line-height: 1em;
+      padding: 7px 10px;
+    }
+
+    .select-dropdown {
+      padding: 7px 10px;
+      line-height: 1em;
+      display: block;
+      background: #fff;
+      border: 1px solid #bdbdbd;
+      border-bottom: 2px solid #bdbdbd;
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+      padding-right: 20px;
+
+      .down-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #6f6a6a;
+
+      }
+    }
+
+    .radio-collection {
+      margin-top: 10px;
+    }
+
+    a.radio-button {
+      text-decoration: none;
+      display: inline-block;
+      line-height: 1em;
+      margin-right: 15px;
+
+      .radio-disc {
+        display: inline-block;
+        vertical-align: middle;
+        width: 11px;
+        height: 11px;
+        border: 2px solid #4681b2;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+        margin-right: 3px;
+      }
+
+      .radio-title {
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0;
+        padding: 0;
+        line-height: 1em;
+        color: #7e9fc0;
+      }
+
+      &.radio-button-selected {
+        .radio-disc {
+          background: #90b3d1;
+          border: 3px solid #4681b2;
+        }
+      }
+    }
+
+    .checkbox-collection {
+      margin-top: 10px;
+      margin-bottom: 10px;
+
+      .checkbox-button {
+        display: inline-block;
+        margin: 2px 0px;
+        color: inherit;
+        font-size: 0.95em;
+      }
+
+      .checkbox {
+        margin-right: 5px;
+        background: #fff;
+        border: 1px solid #4681b2;
+        color: #4681b2;
+      }
+    }
+    .table-container {
+      width: 100%;
+      overflow: scroll;
+    }
+
+    table {
+      border-collapse: 0px;
+      font-size: 0.85em;
+      background: #ffffff;
+      border: 1px solid #b7bdc5;
+      color: #5f8db8;
+
+      tr {
+        border-bottom: 1px solid #b7bdc5;
+      }
+
+      td {
+        line-height: 1em;
+        padding: 8px 5px;
+        border-right: 1px solid #b7bdc5;
+      }
+
+      thead {
+        font-size: 1.1em;
+        tr {
+          td {
+            border-right: 1px solid rgba(0, 0, 0, 0)
+          }
+        }
+      }
+    }
+  }
+
+
+}
+
+
+
+.deskpro-app-header {
+  margin: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #cecece;
+  color: #4681b2;
+
+  .app-avatar {
+    border-radius: 2px;
+    border: 0px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    background-color: #205081;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-decoration: none;
+    margin-right: 3px;
+  }
+
+  .app-title {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .deskpro-app-controls {
+    display: block;
+    height: 26px;
+    position: absolute;
+    right: 0px;
+    background: #fff;
+    border: 1px solid #dadcdf;
+    border-radius: 2px;
+    border-right: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    top: 7px;
+
+    a, hr {
+      float: left;
+    }
+
+    hr {
+      width: 1px;
+      height: 24px;
+      background: #dadcdf;
+    }
+
+    a {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      text-align: center;
+      color: #4681b2;
+
+      i { top: 5px; }
+    }
+
+    a.hide {
+      background-repeat: none;
+      background-position: center center;
+
+      span {
+        display: inline-block;
+        width: 11px;
+        height: 12px;
+        margin-top: 5px;
+        @include retina-image('../img/icon-collapse', 11px 12px);
+      }
+
+    }
+  }
+}
+
+
+
+.deskpro-app-major-buttons {
+  margin: 0px 10px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #cecece;
+
+  ul {
+    @include clearfix();
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+
+  li {
+    display: block;
+    float: left;
+    text-align: center;
+    padding: 0px;
+    width: 33.3%;
+
+    .icon {
+      display: inline-block;
+      width: 42px;
+      height: 42px;
+      background: #4681b2;
+      text-align: center;
+      border-radius: 2px;
+      color: #fff;
+      margin-bottom: 5px;
+
+
+      i {
+        top: 12px;
+        font-size: 1.6em;
+      }
+    }
+
+    .title {
+      display: block;
+      font-size: 0.95em;
+      color: #aabbd0;
+    }
+
+    a {
+      color: #4681b2;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+
+    a:hover {
+      .icon {
+        background: darken(#4681b2, 10%);
+      }
+      .title {
+        color: #4681b2;
+      }
+    }
+  }
+}
