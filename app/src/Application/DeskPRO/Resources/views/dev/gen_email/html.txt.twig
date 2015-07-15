@@ -17,12 +17,12 @@ Content-Disposition: inline
 
 {% if as_reply %}
   {% if as_agent %}
-    === {{ phrase('agent.emails.reply_above_line') }} [http://deskpro.com/l/reply] ===
+    === {{ phrase('agent.emails.reply_above_line') }} [https://www.deskpro.com/go/reply] ===
     {% if app.getSetting('core_tickets.email_reply_as_note') %}
     --- Your reply will be added as a private agent note
     {% else %}
     --- Your reply will be sent to the user {{ person.getDisplayContact }} and
-	--- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com>
+    --- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com>
     {% endif %}
 
 
@@ -41,12 +41,12 @@ Content-Disposition: inline
 {% if as_reply %}
   <br/><br/>
   {% if as_agent %}
-    === <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} [<a href="http://deskpro.com/l/reply">{{ phrase('agent.chrome.link_help') }}</a>] ===<br />
+    === <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} [<a href="https://www.deskpro.com/go/reply">{{ phrase('agent.chrome.link_help') }}</a>] ===<br />
     {% if app.getSetting('core_tickets.email_reply_as_note') %}
     --- Your reply will be added as a private agent note<br />
     {% else %}
     --- Your reply will be sent to the user {{ person.getDisplayContact }} and<br />
-	--- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com><br /><br />
+    --- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com><br /><br />
     {% endif %}
   {% else %}
     <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
