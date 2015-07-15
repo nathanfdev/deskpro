@@ -1,0 +1,221 @@
+<?php
+
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at https://www.deskpro.com/eula/                            |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @category Entities
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Application\DeskPRO\Entity\Person;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="task_log")
+ * @Serializer\ExclusionPolicy("ALL")
+ */
+class TaskLog extends NotifyPropertyChangeEntity
+{
+    /**
+     * @var int
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Serializer\Expose()
+     */
+    protected $id = null;
+
+    /**
+     * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
+     */
+    protected $person;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     * @Serializer\Expose()
+     */
+    protected $action_type;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     * @Serializer\Expose()
+     */
+    protected $id_object;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     * @Serializer\Expose()
+     */
+    protected $id_before;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     * @Serializer\Expose()
+     */
+    protected $id_after;
+
+    /**
+     * @var array
+     * @Serializer\Expose()
+     */
+    protected $details = array();
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime")
+     * @Serializer\Expose()
+     */
+    protected $date_created;
+
+    /**
+     * @var TaskLog
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLog")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @Serializer\Expose()
+     */
+    protected $parent;
+
+    /**
+     * @var Task
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
+     */
+    protected $task;
+
+    public function __construct()
+    {
+        $this->setModelField('date_created', new \DateTime());
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDetails()
+    {
+        return $this->details;
+    }
+
+    /**
+     * @param array $details
+     */
+    public function setDetails(array $details)
+    {
+        if (isset($details['id_before'])) {
+            $this['id_before'] = $details['id_before'];
+            unset($details['id_before']);
+        }
+        if (isset($details['id_after'])) {
+            $this['id_after'] = $details['id_after'];
+            unset($details['id_after']);
+        }
+        if (isset($details['id_object'])) {
+            $this['id_object'] = $details['id_object'];
+            unset($details['id_object']);
+        }
+
+        $this->setModelField('details', $details);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setDetailItem($name, $value)
+    {
+        $details        = $this->details;
+        $details[$name] = $value;
+
+        $this->setModelField('details', $details);
+    }
+
+    /**
+     * @return Task
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function setTask(Task $task)
+    {
+        $this->setModelField('task', $task);
+    }
+}

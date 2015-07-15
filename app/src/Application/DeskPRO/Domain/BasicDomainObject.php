@@ -41,9 +41,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * The basic entitiy class.
+ * @Serializer\ExclusionPolicy("ALL")
  */
 abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 {

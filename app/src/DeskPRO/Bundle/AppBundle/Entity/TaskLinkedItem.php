@@ -1,0 +1,183 @@
+<?php
+
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at https://www.deskpro.com/eula/                            |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @category Entities
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Ticket;
+use Doctrine\ORM\Mapping as ORM;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="task_links", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="ticket_unique", columns={"task_id", "ticket_id"}),
+ *      @ORM\UniqueConstraint(name="chat_unique", columns={"task_id", "chat_id"}),
+ *      @ORM\UniqueConstraint(name="article_unique", columns={"task_id", "article_id"})
+ *  }
+ * )
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("api_task_links_get", parameters={"id" = "expr(object.getId())"})
+ * )
+ */
+class TaskLinkedItem extends NotifyPropertyChangeEntity
+{
+    /**
+     * @var int
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     * @Serializer\Expose()
+     */
+    protected $id = null;
+
+    /**
+     * @var Task
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
+     */
+    protected $task;
+
+    /**
+     * @var Ticket
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
+     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
+     * @Serializer\Expose()
+     */
+    protected $ticket;
+
+    /**
+     * @var ChatConversation
+	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
+     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
+     * @Serializer\Expose()
+     */
+    protected $chat;
+
+    /**
+     * @var Article
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
+     * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
+     * @Serializer\Expose()
+     */
+    protected $article;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return Task
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function setTask(Task $task)
+    {
+        $this->setModelField('task', $task);
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->chat = null;
+        $this->article = null;
+        $this->setModelField('ticket', $ticket);
+    }
+
+    /**
+     * @return ChatConversation
+     */
+    public function getChat()
+    {
+        return $this->chat;
+    }
+
+    /**
+     * @param ChatConversation $chat
+     */
+    public function setChat(ChatConversation $chat)
+    {
+        $this->ticket = null;
+        $this->article = null;
+        $this->setModelField('chat', $chat);
+    }
+
+    /**
+     * @return Article
+     */
+    public function getArticle()
+    {
+        return $this->article;
+    }
+
+    /**
+     * @param Article $article
+     */
+    public function setArticle(Article $article)
+    {
+        $this->ticket = null;
+        $this->chat = null;
+        $this->setModelField('article', $article);
+    }
+}

@@ -50,6 +50,7 @@ use Orb\Util\Util;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * A "person" is a record in the database that stores information about a person.
@@ -108,6 +109,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @property \DateTime $date_password_set
  * @property \DateTime $date_picture_check
  * @property string $browser
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable, EquatableInterface
 {
@@ -124,6 +126,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The unique ID.
      *
      * @var int
+     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -254,6 +257,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The users name (best guess from other sources etc).
      *
      * @var string
+     * @Serializer\Expose()
      */
     protected $name = '';
 

@@ -32,6 +32,7 @@
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -101,11 +102,31 @@ class ApiDb extends AbstractDbSet
         $team->name = "test team";
         $ticket_def = new CustomDefTicket();
         $ticket_def->title = "def";
+
+        // Create a basic task
+        $task = new Task($admin);
+        $task->setTitle("A demo task");
+
+        // Create a new knowledge base article
+        $article = new Article();
+        $article->slug = 'test';
+        $article->title = 'A test article';
+        $article->content = 'This is a test article';
+        $article->view_count = 0;
+        $article->total_rating = 0;
+        $article->num_comments = 0;
+        $article->num_ratings = 0;
+        $article->status = 'published';
+        $article->date_created = new \DateTime();
+
+        // Persist them in the entity manager
         $em->persist($ticket_def);
         $em->persist($team);
         $em->persist($dep1);
         $em->persist($dep2);
         $em->persist($brand);
+        $em->persist($task);
+        $em->persist($article);
         $em->flush();
 
         $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
@@ -123,6 +144,55 @@ class ApiDb extends AbstractDbSet
         }
 
         $this->getEm()->flush();
+
+        // Create a ticket in the DB manually
+        $this->getDb()->exec(
+            "
+            INSERT INTO `tickets`
+            (
+            `ref`,
+            `auth`,
+            `sent_to_address`,
+            `email_account_address`,
+            `creation_system`,
+            `creation_system_option`,
+            `ticket_hash`,
+            `status`,
+            `is_hold`,
+            `urgency`,
+            `count_agent_replies`,
+            `count_user_replies`,
+            `date_created`,
+            `date_status`,
+            `total_user_waiting`,
+            `total_to_first_reply`,
+            `has_attachments`,
+            `subject`,
+            `original_subject`
+            )
+            VALUES
+                ('QMOI-7218-PQGI',
+                'SPMGCS2PRX32YNG',
+                '',
+                '',
+                'web.agent.portal',
+                '',
+                'none',
+                'awaiting_user',
+                0,
+                1,
+                1,
+                0,
+                '" . date('Y-m-d H:i:s') . "',
+                '" . date('Y-m-d H:i:s') . "',
+                0,
+                0,
+                0,
+                'Test',
+                'Test'
+                );
+            "
+        );
 
         $this->getDb()->exec(
             "
