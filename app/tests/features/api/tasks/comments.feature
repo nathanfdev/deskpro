@@ -97,6 +97,9 @@ Feature: /task_comments endpoint
     """
     Then the response should be in JSON
     And the response status code should be 400
+    And the JSON node "errors" should exist
+    And the JSON node "errors.fields.task.errors" should exist
+    And the JSON node "errors.fields.task.errors[0].code" should be equal to "required"
 
   Scenario: I DELETE a single task
     When I send a DELETE request to "/api/v2/task_comments/1"

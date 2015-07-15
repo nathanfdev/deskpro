@@ -34,6 +34,7 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskStarred;
 use DpTest\PortalTestCase;
 use Symfony\Component\Validator\Validation;
@@ -50,6 +51,7 @@ class TaskStarredTest extends PortalTestCase
 
         $starred = new TaskStarred();
         $starred->setPerson($this->getUser());
+        $starred->setTask($this->getTask());
 
         $errors = $validator->validate($starred);
 
@@ -59,11 +61,12 @@ class TaskStarredTest extends PortalTestCase
     /**
      * Test what happens when no person is attached
      */
-    public function testInvalidTitle()
+    public function testInvalidPerson()
     {
         $validator = $this->getValidator();
 
         $starred = new TaskStarred();
+        $starred->setTask($this->getTask());
 
         $errors = $validator->validate($starred);
 
@@ -71,6 +74,25 @@ class TaskStarredTest extends PortalTestCase
         $constraint = $errors[0]->getConstraint();
 
         $this->assertEquals('person', $errors[0]->getPropertyPath());
+        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotNull', $constraint);
+    }
+
+    /**
+     * Test what happens when no task is attached
+     */
+    public function testInvalidTask()
+    {
+        $validator = $this->getValidator();
+
+        $starred = new TaskStarred();
+        $starred->setPerson($this->getUser());
+
+        $errors = $validator->validate($starred);
+
+        $this->assertGreaterThan(0, count($errors));
+        $constraint = $errors[0]->getConstraint();
+
+        $this->assertEquals('task', $errors[0]->getPropertyPath());
         $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotNull', $constraint);
     }
 
@@ -83,6 +105,17 @@ class TaskStarredTest extends PortalTestCase
         $person->setEmail('example@example.com');
         $person->setName('Test User');
         return $person;
+    }
+
+    /**
+     * Get an example task
+     * @return Task
+     */
+    private function getTask()
+    {
+        $task = new Task($this->getUser());
+        $task->setTitle('test task');
+        return $task;
     }
 
     /**

@@ -42,7 +42,10 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="task_starred")
+ * @ORM\Table(name="task_starred", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="starred_unique", columns={"task_id", "person_id"})
+ *  }
+ * )
  * @Serializer\ExclusionPolicy("ALL")
  *
  */
@@ -52,10 +55,20 @@ class TaskStarred extends NotifyPropertyChangeEntity
      * @var int
      * @ORM\Id()
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue()
      * @Serializer\Expose()
      */
     protected $id = null;
+
+    /**
+     * @var Task
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
+     */
+    protected $task;
 
     /**
      * @var Person
@@ -76,6 +89,22 @@ class TaskStarred extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return Task
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function setTask(Task $task)
+    {
+        $this->setModelField('task', $task);
+    }
+
+    /**
      * @return Person
      */
     public function getPerson()
@@ -88,7 +117,6 @@ class TaskStarred extends NotifyPropertyChangeEntity
      */
     public function setPerson(Person $person)
     {
-        $this->person = $person;
         $this->setModelField('person', $person);
     }
 }
