@@ -139,7 +139,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			cancel: false
 		};
 
-		this.fireEvent('beforeTabSwitch', eventData);
+		this.fireEvent('beforeTabSwitch', [eventData]);
 
 		if (eventData.cancel) {
 			return;
@@ -174,7 +174,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 				this.lastActiveTabContent.data('tab-on-show')(eventData);
 			}
 
-			this.fireEvent('tabSwitch', eventData);
+			this.fireEvent('tabSwitch', [eventData]);
 
 			if (this.lastActiveTabContent.data('load-url') && !this.lastActiveTabContent.data('tab-loaded')) {
 				this._triggerTabAjaxLoad(this.lastActiveTab, this.lastActiveTabContent, eventData);
@@ -226,7 +226,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		delete eventData['cancel'];
 
-		this.fireEvent('beforeTabLoad', eventData);
+		this.fireEvent('beforeTabLoad', [eventData]);
 		if (eventData.cancel) {
 			return;
 		}
@@ -237,7 +237,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			dataType: 'html',
 			success: function(html) {
 				delete eventData['cancel'];
-				self.fireEvent('beforeTabLoaded', eventData);
+				self.fireEvent('beforeTabLoaded', [eventData]);
 				if (eventData.cancel) {
 					return;
 				}
@@ -245,7 +245,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 				contentEl.html(html);
 				eventData.tabContent = self.getContentElFromTab(tabEl);
 
-				self.fireEvent('tabLoaded', eventData);
+				self.fireEvent('tabLoaded', [eventData]);
 			}
 		})
 	},

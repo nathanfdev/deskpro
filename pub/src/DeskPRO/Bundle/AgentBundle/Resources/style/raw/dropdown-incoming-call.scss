@@ -1,0 +1,285 @@
+.incoming-call-dropdown {
+  @include corner-top;
+  z-index: 299;
+  left: 0px;
+  width: 440px;
+  background: #f5f6f7;
+  display: none;
+
+  .call-header {
+    background: #e8e9ea;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .call-icon {
+    margin: 10px;
+    margin-top: 15px;
+    display: inline-block;
+    width: 65px;
+    height: 65px;
+    text-align: center;
+    background: #fff;
+    border: 4px solid #dadada;
+    border-radius: 199px;
+    position: relative;
+
+    i {
+      top: 14px;
+      font-size: 33px;
+      color: #cbcbcb;
+    }
+
+    &:before, &:after {
+      content: "";
+      display: block;
+      height: 1px;
+      width: 120px;
+      position: absolute;
+      top: 27px;
+      background: #dcddde;
+    }
+
+    &:before { left: -140px; }
+    &:after { right: -140px; }
+  }
+
+  .call-timer {
+    position: absolute;
+    top: -5px;
+    right: -60px;
+    background: #dcddde;
+    display: inline-block;
+    border-radius: 2px;
+    color: #abacad;
+    padding: 3px 7px;
+    font-weight: 600;
+    font-size: 0.85em;
+
+    i { font-size: 1.2em; top: 0px; color: #abacad; }
+
+    &:before {
+      content: "";
+      display: block;
+      width: 0px;
+      height: 0px;
+      border: 4px solid rgba(0, 0, 0, 0);
+      border-bottom: 4px solid #dcddde;
+      border-right: 3px solid #dcddde;
+      position: absolute;
+      left: -6px;
+      bottom: 0px;
+    }
+  }
+
+
+
+
+
+  .inc-text {
+    font-size: 0.9em;
+    color: #b6b6b6;
+    text-shadow: 1px 1px 1px #fff;
+  }
+
+  .caller-title {
+    margin-top: 10px;
+    font-size: 1.2em;
+    color: #a5a5a5;
+    font-weight: 600;
+    text-shadow: 1px 1px 1px #fff;
+  }
+
+  .caller-avatar {
+    margin-top: 10px;
+  }
+
+  .caller-details {
+    margin-top: 10px;
+    font-size: 1em;
+    color: #999999;
+    font-weight: 600;
+    text-shadow: 1px 1px 1px #fff;
+  }
+
+
+  .phone-number {
+    font-size: 20px;
+    margin-top: 5px;
+    font-weight: 600;
+    color: #686869;
+    text-shadow: 1px 1px 1px #fff;
+    position: relative;
+
+    span {
+      color: #c6c6c6;
+    }
+
+    .country-name {
+      position: relative;
+      top: 1px;
+      color: inherit;
+    }
+
+    .country-flag {
+      background: #f8f8f9;
+      border-radius: 2px;
+      border-bottom: 2px solid #dcddde;
+      font-size: 11px;
+      color: #acacad;
+      padding: 2px;
+      position: absolute;
+      margin-left: 8px;
+      margin-top: 3px;
+      padding-right: 7px;
+
+      &:before {
+        content: "";
+        display: block;
+        width: 0px;
+        height: 0px;
+        border: 3px solid rgba(0, 0, 0, 0);
+        border-right: 3px solid #fff;
+        position: absolute;
+        left: -6px;
+        top: 6px;
+      }
+
+      img {
+        vertical-align: middle;
+        position: relative;
+        top: 0px;
+        height: 9px;
+        margin: 3px;
+      }
+    }
+  }
+
+  .call-actions {
+    @include clearfix();
+    margin: 0px 10px;
+    position: relative;
+    top: 18px;
+  }
+
+  .take-call, .decline-call {
+    display: inline-block;
+    line-height: 1em;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 1.2em;
+    height: 36px;
+    padding-top: 7px;
+    position: relative;
+
+    i {
+      padding: 4px 6px;
+      background: rgba(0, 0, 0, 0);
+    }
+
+    .button-extras {
+      height: 36px;
+      width: 36px;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      background: rgba(0, 0, 0, 0.2);
+      margin-left: 20px;
+
+      i {
+        margin-top: 7px;
+      }
+    }
+  }
+
+  .take-call-dropdown {
+    position: absolute;
+    top: 40px;
+    text-align: left;
+    background: #e8e9ea;
+    z-index: 199;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+    ul {
+      list-style: none;
+      padding: 0px;
+      margin: 0px;
+
+      li {
+        border-bottom: 1px solid #dcddde;
+      }
+
+      span.dropdown-icon {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        color: #fff;
+        text-align: center;
+        background: #84ab3d;
+        border-radius: 2px;
+        vertical-align: middle;
+        margin-right: 5px;
+        position: relative;
+        top: -1px;
+
+        i { top: 3px; }
+      }
+
+      a, span.form-option {
+        display: block;
+        padding: 10px;
+        color: #7f8080;
+      }
+
+      a:hover {
+        color: #333;
+      }
+    }
+
+    form {
+      @include clearfix();
+      display: block;
+      padding: 0px 10px 10px 10px;
+
+      input {
+        float: left;
+        border: 0px;
+        background: #dcddde;
+        border-radius: 2px;
+      }
+
+      [type="text"] {
+        width: 77%;
+        margin-right: 3%;
+      }
+
+      [type="submit"] {
+        width: 20%;
+        background: #d0d1d2;
+        color: #a2a2a3;
+      }
+    }
+  }
+  .take-call {
+    background: #93be44;
+    padding-right: 0px;
+    float: left;
+    padding-right: 80px;
+
+    .fa-phone {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      margin-right: 40px;
+      left: 7px;
+    }
+  }
+
+  .decline-call {
+    float: right;
+    background: #898989;
+    font-size: 1em;
+    padding-right: 20px;
+    padding-left: 10px;
+  }
+}

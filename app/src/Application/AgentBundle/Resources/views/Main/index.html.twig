@@ -232,8 +232,8 @@
 </div>{# /dp_window #}
 
 <audio preload="preload">
-	<source src="{{ asset('/sounds/new-chat.mp3') }}" />
-	<source src="{{ asset('/sounds/new-chat.ogg') }}" />
+	<source src="{{ asset('sounds/new-chat.mp3') }}" />
+	<source src="{{ asset('sounds/new-chat.ogg') }}" />
 </audio>
 <div id="volume_controls_back"></div>
 <div id="volume_controls">
@@ -258,8 +258,6 @@
 
 {{ js_error_tracking('agent_interface') }}
 {% include 'AgentBundle:Main:resources.html.twig' with {'in_body': true} %}
-{% include 'AgentBundle:Settings:settings-window.html.twig' %}
-{% include 'AgentBundle:MediaManager:media-window.html.twig' %}
 {% include 'AgentBundle:Main:page-init.html.twig' %}
 
 {% include 'AgentBundle:Main:custom-page-init.html.twig' %}
