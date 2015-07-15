@@ -66,7 +66,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
      * @Serializer\Expose()
      */
     protected $title;

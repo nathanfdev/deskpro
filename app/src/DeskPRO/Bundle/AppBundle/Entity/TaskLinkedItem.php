@@ -74,6 +74,7 @@ class TaskLinkedItem extends NotifyPropertyChangeEntity
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Serializer\Expose()
      */
     protected $task;

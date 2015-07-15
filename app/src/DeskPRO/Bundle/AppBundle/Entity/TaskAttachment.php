@@ -67,8 +67,9 @@ class TaskAttachment extends NotifyPropertyChangeEntity
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
-     * @Serializer\Expose()
      * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Serializer\Expose()
      */
     protected $task;
 

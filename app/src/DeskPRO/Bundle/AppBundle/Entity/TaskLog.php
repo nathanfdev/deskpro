@@ -119,6 +119,8 @@ class TaskLog extends NotifyPropertyChangeEntity
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @Assert\NotNull()
+     * @Assert\Valid()
      * @Serializer\Expose()
      */
     protected $task;
@@ -149,7 +151,6 @@ class TaskLog extends NotifyPropertyChangeEntity
      */
     public function setPerson(Person $person)
     {
-        $this->person = $person;
         $this->setModelField('person', $person);
     }
 
@@ -200,5 +201,21 @@ class TaskLog extends NotifyPropertyChangeEntity
         $details[$name] = $value;
 
         $this->setModelField('details', $details);
+    }
+
+    /**
+     * @return Task
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function setTask(Task $task)
+    {
+        $this->setModelField('task', $task);
     }
 }

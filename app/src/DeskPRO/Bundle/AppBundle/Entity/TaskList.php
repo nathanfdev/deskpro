@@ -53,13 +53,13 @@ class TaskList extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Assert\NotNull()
      * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var string
+     * @Assert\NotBlank()
      */
     protected $title;
 
