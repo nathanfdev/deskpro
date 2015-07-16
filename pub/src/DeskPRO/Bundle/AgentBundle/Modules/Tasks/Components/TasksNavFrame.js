@@ -8,8 +8,8 @@ import TaskNavPeople from "../Components/TaskNavPeople";
 import TaskNavLabels from "../Components/TaskNavLabels";
 
 @connect(state => ({
-    task_list: state.task_list,
-    project_list: state.project_list
+    taskList: state.taskList,
+    projectList: state.projectList
 }))
 export default class TasksNavFrame extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ export default class TasksNavFrame extends React.Component {
     }
 
     render() {
-        const { task_list, project_list } = this.props;
+        const { taskList, projectList } = this.props;
 
         return (<section className="task-nav-frame">
             <div className="sidebar-wrapper" id="sidebar-wrapper">
@@ -50,9 +50,9 @@ export default class TasksNavFrame extends React.Component {
                     </div>
 
                     <div className="sidebar-list sidebar-list-filters">
-                        <TaskNavGroups taskList={task_list} />
+                        <TaskNavGroups taskList={taskList} />
 
-                        <TaskNavProjects projectList={project_list} />
+                        <TaskNavProjects projectList={projectList} />
 
                         <TaskNavPeople />
 
