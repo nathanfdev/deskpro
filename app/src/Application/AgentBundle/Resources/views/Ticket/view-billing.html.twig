@@ -76,7 +76,10 @@
 {% for field in billing_fields_new %}
 <tr>
 	<th>{{ field.title }}</th>
-	<td>{{ render_custom_field_form(field) }}</td>
+	<td>
+        <ul id="{{ baseId }}_billing_save_errors" class="form-errors" style="display: none;"></ul>
+        {{ render_custom_field_form(field) }}
+    </td>
 </tr>
 {% endfor %}
 <tr>

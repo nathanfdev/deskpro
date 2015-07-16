@@ -2469,7 +2469,7 @@ class TicketController extends AbstractController
             foreach ($field_manager->getFields() as $field) {
                 $errors = $field->getHandler()->validateFormData($custom_fields);
                 foreach ($errors as $code) {
-                    $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ' ' . preg_replace('#^(.*?)\.#', '', $code);
+                    $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
                     $is_valid = false;
                 }
             }
@@ -2531,14 +2531,14 @@ class TicketController extends AbstractController
         foreach ($field_manager->getFields() as $field) {
             $errors = $field->getHandler()->validateFormData($custom_fields);
             foreach ($errors as $code) {
-                $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ' ' . preg_replace('#^(.*?)\.#', '', $code);
+                $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
                 $is_valid = false;
             }
         }
         if (!$is_valid) {
             return $this->createJsonResponse(array(
                 'success' => false,
-                'errors' => $invalid_custom_fields,
+                'invalid_custom_fields' => $invalid_custom_fields,
             ));
         }
 

@@ -1,20 +1,13 @@
 <tr data-charge="{{ charge.toArray() | json_encode() }}">
+
 	<td>
 		{% if charge.charge_time %}
-			<span id="billing_inputs_edit_{{ charge.id }}" class="billing-form-time visible-edit-mode">
-				<input type="text" id="billing_hours_edit_{{ charge.id }}" name="hours" size="2" placeholder="H" style="max-width: 20%">:
-				<input type="text" id="billing_minutes_edit_{{ charge.id }}" name="minutes" size="2" placeholder="M" maxlength="2" style="max-width: 20%">:
-				<input type="text" id="billing_seconds_edit_{{ charge.id }}" name="seconds" size="2" placeholder="S" maxlength="2" style="max-width: 20%">
-			</span>
-			<span class="hidden-edit-mode">
+			<span>
 				{{ charge.charge_time|time_length }}
 			</span>
 		{% endif %}
 		{% if charge.amount %}
-			<span class="visible-edit-mode">
-				<input type="text" id="billing_amount_edit_{{ charge.id }}" name="amount" size="7" placeholder="0.00" class="billing-form-amount" value="{{ charge.amount|number_format(2) }}">
-			</span>
-			<span class="hidden-edit-mode">
+			<span>
 				{{ charge.amount|number_format(2) }}
 			</span> {{ app.getSetting('core_tickets.billing_currency') }}
 		{% endif %}
@@ -24,11 +17,7 @@
 
 	{% for f in billing_fields[charge.id] %}
 		<td>
-
-			<span class="visible-edit-mode">
-				{{ render_custom_field_form(f) }}
-			</span>
-			<span class="hidden-edit-mode">
+			<span>
 				{{ render_custom_field(f) }}
 			</span>
 		</td>
@@ -38,5 +27,49 @@
     <td class="edit"><span class="hidden-edit-mode"><a class="billing-edit">Edit</a></span><span class="visible-edit-mode"><a href="{{ path('agent_ticket_editcharge', {ticket_id: ticket.id, charge_id: charge.id}) }}" class="billing-edit-save">Save</a> | <a class="billing-edit-discard">Discard</a></span></td>
     <td class="delete"><a href="{{ path('agent_ticket_chargedelete', {ticket_id: ticket.id, charge_id: charge.id, security_token: security_token('delete_charge'), '_rt': security_token('request_token', 10800)}) }}" class="billing-delete">{{ phrase('agent.general.delete') }}</a></td>
   {% endif %}
-
 </tr>
+<tr style="display: none;" class="ticket-charge-edit-errors-{{ charge.id }}">
+    <td colspan="{{ 6 + billing_fields[charge.id]|length }}">
+        <ul class="form-errors"></ul>
+    </td>
+</tr>
+<tr style="display: none;" class="ticket-charge-edit-{{ charge.id }}">
+    <td></td>
+    <td colspan="{{ 2 + billing_fields[charge.id]|length }}">
+        <ul class="form-errors" style="display: none;"></ul>
+        <ul class="billing-types">
+            {% if charge.amount %}
+                <li>
+                    <span>
+                        <input type="text" id="billing_amount_edit_{{ charge.id }}" name="amount" size="7" placeholder="0.00" class="billing-form-amount" value="{{ charge.amount|number_format(2) }}">
+                    </span>{{ app.getSetting('core_tickets.billing_currency') }}
+                </li>
+            {% endif %}
+            {% if charge.charge_time %}
+                <li>
+                    <span id="billing_inputs_edit_{{ charge.id }}" class="billing-form-time">
+                        <input type="text" id="billing_hours_edit_{{ charge.id }}" name="hours" size="2" placeholder="H" style="max-width: 20%">:
+                        <input type="text" id="billing_minutes_edit_{{ charge.id }}" name="minutes" size="2" placeholder="M" maxlength="2" style="max-width: 20%">:
+                        <input type="text" id="billing_seconds_edit_{{ charge.id }}" name="seconds" size="2" placeholder="S" maxlength="2" style="max-width: 20%">
+                    </span>
+                </li>
+            {% endif %}
+        </ul>
+    </td>
+    {% if ticket_perms.modify_billing %}
+    <td class="edit">
+        <span><a href="{{ path('agent_ticket_editcharge', {ticket_id: ticket.id, charge_id: charge.id}) }}" class="billing-edit-save" data-charge-id="{{ charge.id }}">Save</a> | <a class="billing-edit-discard" data-charge-id="{{ charge.id }}">Discard</a></span>
+    </td>
+    <td class="delete">
+        <a href="{{ path('agent_ticket_chargedelete', {ticket_id: ticket.id, charge_id: charge.id, security_token: security_token('delete_charge'), '_rt': security_token('request_token', 10800)}) }}" class="billing-delete" data-charge-id="{{ charge.id }}">{{ phrase('agent.general.delete') }}</a>
+    </td>
+    {% endif %}
+</tr>
+{% for field in billing_fields[charge.id] %}
+    <tr class="ticket-charge-edit-{{ charge.id }}" style="display: none;">
+        <th>{{ field.title }}</th>
+        <td colspan="{{ 4 + billing_fields[charge.id]|length }}">
+            {{ render_custom_field_form(field) }}
+        </td>
+    </tr>
+{% endfor %}
