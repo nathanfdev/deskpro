@@ -213,13 +213,14 @@ class ProcessReply extends ProcessAbstract
         }
 
         if ($this->person->is_agent) {
-            if (App::getSetting('core_tickets.email_reply_as_note') || isset($this->ticket_email->reply_actions['is_note'])) {
-                $message['is_agent_note'] = true;
-                $this->ticket->email_reader_action = 'agent_note';
-            }
-            if (isset($this->ticket_email->reply_actions['is_reply'])) {
+            if (!$email_info->agent_reply_as_note || isset($this->ticket_email->reply_actions['is_reply'])) {
+                $this->logMessage("Reply mode: reply");
                 $message['is_agent_note'] = false;
                 $this->ticket->email_reader_action = 'agent_reply';
+            } else {
+                $this->logMessage("Reply mode: note");
+                $message['is_agent_note'] = true;
+                $this->ticket->email_reader_action = 'agent_note';
             }
         }
 

@@ -82,6 +82,11 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
      */
     public $charset_error;
 
+    /**
+     * @var bool
+     */
+    public $agent_reply_as_note = true;
+
 
     /**
      * @param Ticket              $ticket
