@@ -16,7 +16,13 @@
 	<th>{{ phrase('agent.tickets.billing_chargetime') }}</th>
 	<th>{{ phrase('agent.general.agent') }}</th>
 	<th>{{ phrase('agent.general.date') }}</th>
-	<th>{{ phrase('agent.general.comment') }}</th>
+
+	{% if ticket.charges|length %}
+		{% for f in billing_fields[ticket.charges[0].id] %}
+			<th>{{ f.title }}</th>
+		{% endfor %}
+	{% endif %}
+
   {% if ticket_perms.modify_billing %}
     <th style="min-width: 70px">&nbsp;</th>
     <th style="max-width: 20px">&nbsp;</th>
@@ -66,10 +72,13 @@
 		<input type="hidden" id="{{ baseId }}_billing_id_hidden" name="billing_id" value="" />
 	</td>
 </tr>
+
+{% for field in billing_fields_new %}
 <tr>
-	<th>{{ phrase('agent.general.comment') }}</th>
-	<td><input type="text" id="{{ baseId }}_billing_comment" name="billing_comment" style="width: 98%" maxlength="255" /></td>
+	<th>{{ field.title }}</th>
+	<td>{{ render_custom_field_form(field) }}</td>
 </tr>
+{% endfor %}
 <tr>
 	<th>&nbsp;</th>
 	<td>

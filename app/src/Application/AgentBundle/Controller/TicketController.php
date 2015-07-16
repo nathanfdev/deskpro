@@ -123,6 +123,7 @@ class TicketController extends AbstractController
         $field_manager = $this->container->getTicketFieldManager();
         $person_field_manager = $this->container->getPersonFieldManager();
         $org_field_manager = $this->container->getOrgFieldManager();
+
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
         $person_fields_group = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
         $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $person_fields_group);
@@ -130,6 +131,16 @@ class TicketController extends AbstractController
         $custom_org_fields = $ticket->person->organization
             ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $org_fields_group)
             : array();
+
+        if (App::getSetting('core_tickets.enable_billing')) {
+            $billing_field_manager = $this->container->getBillingFieldManager();
+            $billing_fields_new = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge());
+            $billing_fields = array();
+
+            foreach ($ticket->charges as $charge) {
+                $billing_fields[$charge['id']] = $billing_field_manager->getDisplayArrayForObject($charge);
+            }
+        }
 
         // new custom fields
         $new_field_manager = $this->container->getCustomFieldManager();
@@ -403,6 +414,11 @@ class TicketController extends AbstractController
             'addable_slas'               => $addable_slas,
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
         );
+
+        if (App::getSetting('core_tickets.enable_billing')) {
+            $vars['billing_fields_new'] = $billing_fields_new;
+            $vars['billing_fields'] = $billing_fields;
+        }
 
         if($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
@@ -2444,17 +2460,44 @@ class TicketController extends AbstractController
 
         $charge = $ticket->addCharge($this->person, $time, $amount, $comment);
         if ($charge) {
+
+            $field_manager = $this->container->getBillingFieldManager();
+            $custom_fields = @$_POST['custom_fields'] ?: array();
+
+            $invalid_custom_fields = array();
+            $is_valid = true;
+            foreach ($field_manager->getFields() as $field) {
+                $errors = $field->getHandler()->validateFormData($custom_fields);
+                foreach ($errors as $code) {
+                    $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ' ' . preg_replace('#^(.*?)\.#', '', $code);
+                    $is_valid = false;
+                }
+            }
+            if (!$is_valid) {
+                return $this->createJsonResponse(array(
+                    'inserted' => false,
+                    'invalid_custom_fields' => $invalid_custom_fields,
+                ));
+            }
+
             $this->em->persist($ticket);
             $this->em->flush();
+            if (!empty($custom_fields)) {
+                $field_manager->saveFormToObject($custom_fields, $charge);
+            }
+            $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
             return $this->createJsonResponse(array(
                 'inserted' => true,
                 'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                     'ticket_perms' => $this->_getTicketPerms($ticket),
                     'ticket' => $ticket,
-                    'charge' => $charge
+                    'charge' => $charge,
+                    'billing_fields' => $billing_fields,
+                    'ticket_perms' => $this->_getTicketPerms($ticket),
                 ))
             ));
+
         } else {
             return $this->createJsonResponse(array('inserted' => false));
         }
@@ -2476,7 +2519,26 @@ class TicketController extends AbstractController
 
         if (!$charge) {
             return $this->createJsonResponse(array(
-                'success' => false
+                'success' => false,
+            ));
+        }
+
+        $field_manager = $this->container->getBillingFieldManager();
+        $custom_fields = @$_POST['custom_fields'] ?: array();
+
+        $invalid_custom_fields = array();
+        $is_valid = true;
+        foreach ($field_manager->getFields() as $field) {
+            $errors = $field->getHandler()->validateFormData($custom_fields);
+            foreach ($errors as $code) {
+                $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ' ' . preg_replace('#^(.*?)\.#', '', $code);
+                $is_valid = false;
+            }
+        }
+        if (!$is_valid) {
+            return $this->createJsonResponse(array(
+                'success' => false,
+                'errors' => $invalid_custom_fields,
             ));
         }
 
@@ -2520,11 +2582,18 @@ class TicketController extends AbstractController
         $this->em->persist($ticket_log);
         $this->em->flush();
 
+        if (!empty($custom_fields)) {
+            $field_manager->saveFormToObject($custom_fields, $charge);
+        }
+        $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
+
         return $this->createJsonResponse(array(
             'updated'	=> true,
             'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                 'ticket' => $ticket,
-                'charge' => $charge
+                'charge' => $charge,
+                'billing_fields' => $billing_fields,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
             ))
         ));
 
@@ -3483,14 +3552,8 @@ class TicketController extends AbstractController
 
         $manager = $this->container->getCustomFieldManager();
         $new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
-        $custom_person_fields = array();
-        $custom_org_fields = array();
-        if ($ticket->person) {
-            $custom_person_fields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($ticket->person);
-            if ($org = $ticket->person->organization) {
-                $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
-                $custom_org_fields = $this->container->getOrgFieldManager()->getDisplayArrayForObject($org);
-            }
+        if ($ticket->person && ($org = $ticket->person->organization)) {
+            $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
         }
 
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
