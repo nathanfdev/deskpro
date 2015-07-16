@@ -16,7 +16,7 @@
 {% if app.getSetting('core_tickets.email_reply_as_note') %}
 --- {{ phrase('agent.emails.reply_is_as_note') }}<br />
 {% else %}
---- {{ phrase('agent.emails.reply_sent_to_user', {user: person.getDisplayContact }) }}<br />
+--- {{ phrase('agent.emails.reply_sent_to_user', {user: ticket.person.getDisplayContact }) }}<br />
 {% if ticket.userParticipants | length > 0 %}
 --- {{ phrase('agent.emails.reply_sent_to_ccs', {count: ticket.userParticipants|length}) }} {% for p in ticket.userParticipants %}{{p.displayContact}}{% if not loop.last %}, {% endif %}{% endfor %}<br />
 {% endif %}
