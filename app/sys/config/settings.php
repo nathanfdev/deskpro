@@ -533,7 +533,7 @@
     /**
      * True to add email replies as notes instead of ticket replies.
      */
-    'core_tickets.email_reply_as_note' => false,
+    'core_tickets.email_reply_as_note' => true,
 
     ####################################################################################################################
     # core_misc
