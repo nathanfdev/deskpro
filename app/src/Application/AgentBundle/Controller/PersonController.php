@@ -150,13 +150,16 @@ class PersonController extends AbstractController
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
 
-	    $contact_data['phone_numbers'] = array_map(function(Entity\PhoneNumber $phone) {
-            return array(
-                'contact_type' => 'phone',
-                'number' => $phone->getPhoneNumber(),
-                'country_calling_code' => '',
-            );
-        }, $person->phone_numbers ? $person->phone_numbers->toArray() : array());
+        $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
+            'type' => new PhoneNumberType(),
+            'allow_add' => true,
+            'allow_delete' => true,
+            'options' => array(
+                'label' => false,
+                'show_phone_label' => true
+            ),
+        ))->createView();
+
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         if ($session) {
@@ -252,21 +255,10 @@ class PersonController extends AbstractController
 
             foreach($contact_data as $c_data) {
                 foreach($c_data as $data) {
+                    if (!isset($data['contact_type'])) {
+                        continue;
+                    }
                     switch($data['contact_type']) {
-                        case 'phone':
-                            if(empty($data['number']))
-                                break;
-
-                            $tel = '';
-
-                            if(!empty($data['country_calling_code']))
-                                $tel .= '+'.$data['country_calling_code'].'-';
-
-
-                            $tel .= $data['number'];
-
-                            $vcard->addTelephone($tel);
-                            break;
                         case 'website':
                             $vcard->setURL($data['url']);
                             break;
@@ -283,6 +275,10 @@ class PersonController extends AbstractController
                             break;
                     }
                 }
+            }
+
+            foreach ($person->phone_numbers as $phone) {
+                $vcard->addTelephone($phone->getPhoneNumber()->__toString());
             }
 
             $response->setContent($vcard->fetch());
