@@ -2,15 +2,15 @@ import ActionTypes from "../Actions/ActionTypes";
 import { handleActions } from "redux-actions";
 
 const initialState = {
-	taskList: null,
-    taskCount: 0
+	projectList: null,
+    projectCount: 0
 };
 
 const r = handleActions({
-	[ActionTypes.LOAD_TASKS]: (state, action) => ({
+	[ActionTypes.LOAD_PROJECTS]: (state, action) => ({
         ...state,
-        taskList: action.payload.data,
-        taskCount: action.payload.meta.total_count
+        projectList: action.payload.data,
+        projectCount: action.payload.meta.total_count
     })
 }, initialState);
 
