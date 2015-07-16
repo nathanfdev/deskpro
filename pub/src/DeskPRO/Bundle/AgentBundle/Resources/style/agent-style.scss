@@ -62,6 +62,8 @@ $tab-frame-width: 55%;
     bottom: 0;
     width: $nav-frame-width;
     z-index: 100;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .dp-content-outer-frame {
@@ -71,6 +73,8 @@ $tab-frame-width: 55%;
     bottom: 0;
     right: 0;
     z-index: 95;
+    height: auto;
+    overflow: hidden;
   }
 
   .dp-list-frame {
@@ -81,6 +85,8 @@ $tab-frame-width: 55%;
     width: $list-frame-width;
     background: #f8f8f8;
     border-right: 1px solid darken(#f8f8f8, 10%);
+    height: auto;
+    overflow-y: auto;
   }
 
   .dp-tab-frame {
