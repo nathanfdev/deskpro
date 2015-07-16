@@ -33,6 +33,10 @@ $tab-frame-width: 55%;
     z-index: 100;
   }
 
+  .app-bar {
+    overflow: hidden;
+  }
+
   .dp-app-switcher {
     @extend .app-bar-wrapper;
     float: none;
