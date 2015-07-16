@@ -654,9 +654,6 @@ class TicketSearch extends SearcherAbstract
             $table = 'tickets_search_active';
         }
 
-        $sql = "SELECT tickets.id AS ticket_id FROM $table AS tickets ";
-        $sql2 = "SELECT tickets.id AS ticket_id FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
-
         #------------------------------
         # Standard for permissions
         #------------------------------
@@ -778,6 +775,13 @@ class TicketSearch extends SearcherAbstract
 
         if ($this->is_filter_search && !$this->is_archive) {
             $where .= " AND tickets.status NOT IN ('archived', 'hidden') ";
+        }
+
+        $sql = "SELECT tickets.id AS ticket_id FROM $table AS tickets ";
+        $sql2 = "SELECT tickets.id AS ticket_id FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
+
+        if (!$with_part_union) {
+            $sql = "SELECT COUNT(DISTINCT tickets.id) FROM $table AS tickets ";
         }
 
         $sql .= " $sql_joins ";
