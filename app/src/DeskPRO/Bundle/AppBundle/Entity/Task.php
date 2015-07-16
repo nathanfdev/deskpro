@@ -201,6 +201,13 @@ class Task extends NotifyPropertyChangeEntity
     protected $linked_items;
 
     /**
+     * @var TaskAssignment[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskAssignment", mappedBy="task")
+     * @Serializer\Expose()
+     */
+    protected $assigned;
+
+    /**
      * @param Person $creator
      */
     public function __construct(Person $creator)

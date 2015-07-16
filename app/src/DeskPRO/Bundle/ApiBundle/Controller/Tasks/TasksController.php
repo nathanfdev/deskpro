@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
+use Doctrine\ORM\EntityManager;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
@@ -84,7 +85,14 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findAll();
+        $em = $this->getDoctrine()->getManager();
+        $filter = $this->getFilter($request);
+
+        if (!empty($filter)) {
+            $tasks = $this->getByAssignment($em, $filter);
+        } else {
+            $tasks = $em->getRepository('App:Task')->findAll();
+        }
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
@@ -583,5 +591,62 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         throw new InvalidFormException($form);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    protected function getFilter(Request $request)
+    {
+        $filter = array();
+
+        $allowedFilters = array(
+            'assigned' => 'person',
+            'assigned_team' => 'team',
+            'assigned_department' => 'department'
+        );
+
+        foreach($request->query->all() as $item => $value) {
+            if (in_array($item, array_keys($allowedFilters))) {
+
+                // Clean the IDs, including those in a comma-separated string
+                $ids = explode(',', $value);
+                $ids = array_map(function($id) {
+                    return (int) $id;
+                }, $ids);
+                $value = implode(',', $ids);
+
+                $filter[$allowedFilters[$item]] = ($value === 'null') ? null : $value;
+            }
+        }
+
+        return $filter;
+    }
+
+    /**
+     * @param $em
+     * @param $filter
+     * @return mixed
+     */
+    protected function getByAssignment($em, $filter)
+    {
+        /** @var EntityManager $em */
+        $query = $em->createQueryBuilder()->select('t')
+            ->from('App:Task', 't')
+            ->leftJoin('t.assigned', 'a');
+
+        // Loop through to set where query
+        foreach ($filter as $field => $value) {
+            $term = (strpos($value, ',') !== false) ? 'IN (:' . $field . ')' : ' = :' . $field;
+            $query = $query->andWhere('a.' . $field . ' ' . $term);
+        }
+
+        // Loop through to set parameters;
+        foreach ($filter as $field => $value) {
+            $query = $query->setParameter($field, $value);
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

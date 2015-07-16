@@ -9,13 +9,16 @@ import TaskNavLabels from "../Components/TaskNavLabels";
 
 @connect(state => ({
     taskList: state.taskList,
-    projectList: state.projectList
+    projectList: state.projectList,
+    user: state.user
 }))
 export default class TasksNavFrame extends React.Component {
     constructor(props) {
         super(props);
 
         const { dispatch } = this.props;
+
+        console.log(this.props);
 
         dispatch(TaskActions.loadTasks());
         dispatch(TaskActions.loadProjects());
@@ -40,7 +43,7 @@ export default class TasksNavFrame extends React.Component {
 
                     <div className="sidebar-title">
                         <span className="sidebar-type-icon">
-                            <i className="fa fa-envelope-o"/>
+                            <i className="fa fa-check-square-o"/>
                             <span className="help"><i className="fa fa-question"/></span>
                         </span>
 
