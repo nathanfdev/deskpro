@@ -37,12 +37,12 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm
  */
 class TicketStatusTermSpec extends ObjectBehavior
 {

@@ -33,6 +33,7 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\CustomDefTicket;

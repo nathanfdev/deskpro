@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository")
@@ -67,8 +68,30 @@ class TicketFilterSet extends NotifyPropertyChangeEntity
      * @var TicketFilter[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", mappedBy="filter_set")
      * @ORM\OrderBy({"display_order" = "ASC"})
+     * @Serializer\Exclude()
      */
     protected $filters;
+    
+    /**
+     * Returns the filters in the set as an array of filter ids.
+     * @return array the filter IDs attached.
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("filters")
+     */
+    public function getFiltersIds()
+    {
+        if (!$this->filters) {
+            return array();
+        }
+        
+        $my_ids = array();
+        foreach($this->filters as $filter) {
+            $my_ids[] = $filter->getId();
+        }
+        
+        return $my_ids;
+    }
 
     /**
      * @var bool

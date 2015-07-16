@@ -37,15 +37,20 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\TicketCustomDataTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\TicketCustomDataTerm
  */
-class AgentTeamTermSpec extends ObjectBehavior
+class TicketCustomDataTermSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->setOption('field_id', 1);
+    }
+
     function it_is_a_term()
     {
         $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
@@ -66,16 +71,16 @@ class AgentTeamTermSpec extends ObjectBehavior
     function it_defines_its_options()
     {
         $resolver = $this->getOptionsResolver();
-        $resolver->isDefined('agent_team_ids')->shouldBe(true);
+        $resolver->isDefined('input')->shouldBe(true);
+        $resolver->isDefined('values')->shouldBe(true);
+        $resolver->isDefined('field_id')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
             array(
-                'agent_team_ids' => array(
+                'field_id' => array(
                     new Assert\NotBlank(),
-                    new Assert\Type('array'),
                     new PrimaryKeyExists(
                         array(
-                            'table' => 'agent_teams',
-                            'excluded_values' => array(AgentTeamTerm::TEAM_ID_ME)
+                            'table' => 'custom_def_ticket'
                         )
                     )
                 )

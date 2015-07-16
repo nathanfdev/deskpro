@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterViewRepository")
@@ -68,15 +69,42 @@ class TicketFilterView extends NotifyPropertyChangeEntity
     /**
      * @var TicketFilter
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", inversedBy="filter_views")
+     * @Serializer\Exclude()
      */
     protected $filter;
+    
+    /**
+     * Returns the filter.
+     * @return in the filter ID attached.
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("filter")
+     */
+    public function getFilterId()
+    {
+        return $this->filter->getId();
+    }
 
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id")
+     * @Serializer\Exclude()
      */
     protected $agent;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("agent")
+     */
+    public function getAgentId()
+    {
+        if ($this->agent) {
+            return $this->agent->getId();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @var array

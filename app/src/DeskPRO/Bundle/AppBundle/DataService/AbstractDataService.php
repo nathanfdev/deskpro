@@ -57,7 +57,7 @@ class AbstractDataService
     /**
      * @var EntityManager
      */
-    private $em;
+    protected $em;
 
     public function __construct(EntityManager $em)
     {

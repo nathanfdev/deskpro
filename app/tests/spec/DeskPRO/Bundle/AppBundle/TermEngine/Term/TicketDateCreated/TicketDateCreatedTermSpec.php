@@ -34,49 +34,64 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreatedTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreatedTerm
  */
-class DepartmentTermSpec extends ObjectBehavior
+class TicketDateCreatedTermSpec extends ObjectBehavior
 {
     function it_is_a_term()
     {
         $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
     }
 
-    function it_has_default_op_is()
+    public function it_defaults_to_is_op()
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
+        $this->getOp()->shouldReturn(TermInterface::OP_IS);
     }
 
-    function it_allows_op_change()
+    public function it_lets_you_change_the_op()
     {
         $this->setOp(TermInterface::OP_NOT);
 
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
+        $this->getOp()->shouldReturn(TermInterface::OP_NOT);
+    }
+
+    public function it_defines_its_supported_options()
+    {
+        $this->getSupportedOps()->shouldBe(
+            array(
+                TermInterface::OP_IS,
+                TermInterface::OP_NOT,
+                TermInterface::OP_GT,
+                TermInterface::OP_GTE,
+                TermInterface::OP_LT,
+                TermInterface::OP_LTE,
+                TermInterface::OP_NOT_RANGE,
+                TermInterface::OP_RANGE
+            )
+        );
     }
 
     function it_defines_its_options()
     {
         $resolver = $this->getOptionsResolver();
-        $resolver->isDefined('department_ids')->shouldBe(true);
+        $resolver->isDefined('date')->shouldBe(true);
+        $resolver->isDefined('date2')->shouldBe(true);
+        $resolver->isDefined('ignore_time')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
             array(
-                'department_ids' => array(
-                    new Assert\NotBlank(),
-                    new Assert\Type('array'),
-                    new PrimaryKeyExists(
-                        array(
-                            'table' => 'departments'
-                        )
-                    )
+                'date' => array(
+                    new Assert\NotNull(),
+                    new Assert\DateTime()
+                ),
+                'date2' => array(
+                    new Assert\DateTime()
                 )
             )
         );

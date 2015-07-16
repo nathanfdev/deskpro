@@ -37,49 +37,50 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm
  */
-class TicketParticipantTermSpec extends ObjectBehavior
+class AgentTermSpec extends ObjectBehavior
 {
     function it_is_a_term()
     {
         $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
     }
 
-    function it_has_default_op_is()
-    {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
-    }
-
-    function it_allows_op_change()
-    {
-        $this->setOp(TermInterface::OP_NOT);
-
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
-    }
-
     function it_defines_its_options()
     {
         $resolver = $this->getOptionsResolver();
-        $resolver->isDefined('person_ids')->shouldBe(true);
+        $resolver->isDefined('agent_ids')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
             array(
-                'person_ids' => array(
-                    new Assert\NotBlank(),
-                    new Assert\Type('array'),
+                'agent_ids' => array(
+                    new NotBlank(),
+                    new Type('array'),
                     new PrimaryKeyExists(
                         array(
                             'table' => 'people',
-                            'excluded_values' => array(TicketParticipantTerm::ID_ME)
+                            'excluded_values' => AgentTerm::ID_ME
                         )
                     )
                 )
             )
         );
+    }
+
+    public function it_defaults_to_is_op()
+    {
+        $this->getOp()->shouldReturn(TermInterface::OP_IS);
+    }
+
+    public function it_lets_you_change_the_op()
+    {
+        $this->setOp(TermInterface::OP_NOT);
+
+        $this->getOp()->shouldReturn(TermInterface::OP_NOT);
     }
 }

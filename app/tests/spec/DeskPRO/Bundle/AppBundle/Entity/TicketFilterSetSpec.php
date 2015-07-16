@@ -82,18 +82,18 @@ class TicketFilterSetSpec extends ObjectBehavior
 
     function it_initializes_by_not_being_a_default_filter_set()
     {
-        $this->isDefault()->shouldBe(false);
+        $this->getIsDefault()->shouldBe(false);
     }
 
     function it_can_be_toggled_on_and_off_default_status()
     {
-        $this->setDefault(true);
+        $this->setIsDefault(true);
 
-        $this->isDefault()->shouldBe(true);
+        $this->getIsDefault()->shouldBe(true);
 
-        $this->setDefault(false);
+        $this->setIsDefault(false);
 
-        $this->isDefault()->shouldBe(false);
+        $this->getIsDefault()->shouldBe(false);
     }
 
     function it_initialized_with_no_agents_and_shared()

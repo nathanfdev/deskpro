@@ -83,9 +83,18 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $task;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("task")
+     */
+    public function getTaskId()
+    {
+        return $this->task ? $this->task->getId() : null;
+    }
 
     /**
      * @var \DateTime
