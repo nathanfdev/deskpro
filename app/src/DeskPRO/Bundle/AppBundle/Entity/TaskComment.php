@@ -70,9 +70,18 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @Assert\NotNull
      * @Assert\Valid()
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $person;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("person")
+     */
+    public function getPersonId()
+    {
+        return $this->person ? $this->person->getId() : null;
+    }
 
     /**
      * @var \DateTime
@@ -96,9 +105,18 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      * @Assert\NotNull
      * @Assert\Valid()
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $task;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("task")
+     */
+    public function getTaskId()
+    {
+        return $this->task ? $this->task->getId() : null;
+    }
 
     /**
      * @var TaskAttachment[]|ArrayCollection
@@ -106,6 +124,24 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @Serializer\Expose()
      */
     protected $attachments;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("attachments")
+     */
+    public function getAttachmentsId()
+    {
+        if (!$this->attachments) {
+            return array();
+        }
+        
+        $attachments = array();
+        foreach($this->attachments as $attachment) {
+            $attachments[] = $attachment->getId();
+        }
+        
+        return $attachments;
+    }
 
     /**
      * Construct

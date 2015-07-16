@@ -75,9 +75,22 @@ class LabelTask extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $task;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("task")
+     */
+    public function getTaskId()
+    {
+        if ($this->task) {
+            return $this->task->getId();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @return string

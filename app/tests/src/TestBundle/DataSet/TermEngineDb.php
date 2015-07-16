@@ -41,9 +41,9 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\TicketCustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 

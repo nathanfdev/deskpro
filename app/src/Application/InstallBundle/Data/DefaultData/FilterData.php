@@ -60,7 +60,7 @@ class FilterData extends AbstractDefaultData
 
         $filter_set = new TicketFilterSet();
         $filter_set->setTitle('Awaiting Agent');
-        $filter_set->setDefault(true);
+        $filter_set->setIsDefault(true);
 
 
         // my tickets

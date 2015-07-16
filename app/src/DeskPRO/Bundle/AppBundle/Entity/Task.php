@@ -54,6 +54,10 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Task extends NotifyPropertyChangeEntity
 {
+    const VISIBILITY_PRIVATE = 'private';
+    
+    const TYPE_TASK = 'task';
+    
     /**
      * @var int
      * @ORM\Id()
@@ -77,7 +81,7 @@ class Task extends NotifyPropertyChangeEntity
      * @ORM\Column(type="boolean", nullable=true)
      * @Serializer\Expose()
      */
-    protected $is_done = 'incomplete';
+    protected $is_done = false;
 
     /**
      * @var int
@@ -100,7 +104,7 @@ class Task extends NotifyPropertyChangeEntity
      * @ORM\Column(type="string")
      * @Serializer\Expose()
      */
-    protected $task_type = 'task';
+    protected $task_type = self::TYPE_TASK;
 
     /**
      * @var \DateTime
@@ -129,9 +133,22 @@ class Task extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */ 
     protected $creator;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("creator")
+     */
+    public function getCreatorId()
+    {
+        if ($this->creator) {
+            return $this->creator->getId();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Project, public or private
@@ -139,23 +156,49 @@ class Task extends NotifyPropertyChangeEntity
      * @ORM\Column(type="string")
      * @Serializer\Expose()
      */
-    protected $visibility = 'private';
+    protected $visibility = self::VISIBILITY_PRIVATE;
 
     /**
      * @var TaskProject
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $project;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("project")
+     */
+    public function getProjectId()
+    {
+        if ($this->project) {
+            return $this->project->getId();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @var TaskList
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList")
      * @ORM\JoinColumn(name="list_id", referencedColumnName="id", onDelete="CASCADE")
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $list;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("list")
+     */
+    public function getListId()
+    {
+        if ($this->list) {
+            return $this->list->getId();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Between 1 and 10
@@ -168,9 +211,27 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @var TaskSubtask[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskSubtask", mappedBy="task")
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $subtasks;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("subtasks")
+     */
+    public function getSubTasksId()
+    {
+        if (!$this->subtasks) {
+            return array();
+        }
+        
+        $subtasks = array();
+        foreach($this->subtasks as $task) {
+            $subtasks[] = $task->getId();
+        }
+        
+        return $subtasks;
+    }
 
     /**
      * @var LabelTask[]|ArrayCollection
@@ -182,16 +243,50 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @var TaskComment[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskComment", mappedBy="task")
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $comments;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("comments")
+     */
+    public function getCommentIds()
+    {
+        if (!$this->comments) {
+            return array();
+        }
+        
+        $comments = array();
+        foreach($this->comments as $comment) {
+            $comments[] = $comment->getId();
+        }
+        return $comments;
+    }
 
     /**
      * @var TaskAttachment[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskAttachment", mappedBy="task")
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $attachments;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("attachments")
+     */
+    public function getAttachmentsIds()
+    {
+        if (!$this->attachments) {
+            return array();
+        }
+        
+        $attachments = array();
+        foreach($this->attachments as $attachment) {
+            $attachments[] = $attachment->getId();
+        }
+        return $attachments;
+    }
 
     /**
      * @var TaskLinkedItem[]|ArrayCollection

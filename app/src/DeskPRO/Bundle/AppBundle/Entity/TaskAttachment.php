@@ -85,9 +85,18 @@ class TaskAttachment extends NotifyPropertyChangeEntity
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     * @Serializer\Expose()
+     * @Serializer\Exclude()
      */
     protected $person;
+    
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("person")
+     */
+    public function getPersonId()
+    {
+        return $this->person ? $this->person->getId() : null;
+    }
 
     /**
      * @var Blob
