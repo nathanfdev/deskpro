@@ -404,12 +404,14 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			page.LOADING_TYPENAME = routeData.forTypename;
 		}
 
-		var id = this.addTab(page);
+		var existTab = null;
 		if (page.meta && page.meta.routeUrl) {
-			var existTab = this.findTabByRouteUrl(page.meta.routeUrl);
-			if (existTab && this.getActiveTab() === existTab) {
-				this.activateTabById(id);
-			}
+			existTab = this.findTabByRouteUrl(page.meta.routeUrl);
+		}
+
+		var id = this.addTab(page);
+		if (existTab && this.getActiveTab() === existTab) {
+			// nothing, dont focus it
 		} else {
 			this.activateTabById(id);
 		}
