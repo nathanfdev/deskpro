@@ -108,6 +108,11 @@ class TicketIncomingEmailMessage
      */
     private $mode;
 
+    /**
+     * @var bool
+     */
+    public $agent_reply_as_note = true;
+
 
     /**
      * @param                     $mode
@@ -480,6 +485,28 @@ class TicketIncomingEmailMessage
 
         if ($is_text && $did_html_trim) {
             $this->body_full = Strings::text2html($ticket_email->email_body_text, 'plaintext-email');
+        }
+
+        $pos_as_note  = strpos($this->body_raw, 'DP_NEWMSG_AS_NOTE');
+        $pos_as_reply = strpos($this->body_raw, 'DP_NEWMSG_AS_REPLY');
+
+        if ($pos_as_note) {
+            $this->logMessage("Found DP_NEWMSG_AS_NOTE flag at $pos_as_note");
+        } else {
+            $pos_as_note = 9999999;
+        }
+        if ($pos_as_reply) {
+            $this->logMessage("Found DP_NEWMSG_AS_REPLY flag at $pos_as_note");
+        } else {
+            $pos_as_reply = 9999999;
+        }
+
+        if ($pos_as_reply < $pos_as_note) {
+            $this->logMessage("agent_reply_as_note = false -- acting as reply");
+            $this->agent_reply_as_note = false;
+        } else {
+            $this->logMessage("agent_reply_as_note = true -- acting as note");
+            $this->agent_reply_as_note = true;
         }
     }
 

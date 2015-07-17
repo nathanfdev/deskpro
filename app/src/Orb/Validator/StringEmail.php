@@ -37,6 +37,7 @@ namespace Orb\Validator;
 class StringEmail extends AbstractValidator implements StaticValidator
 {
     const MAX_LEN = 255;
+    const OPT_REJECT_EXAMPLE = 'reject_example';
 
     /**
      * @param $value
@@ -47,6 +48,19 @@ class StringEmail extends AbstractValidator implements StaticValidator
         $validator = new self();
 
         return $validator->isValid($value);
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public static function isExampleEmail($value)
+    {
+        if (preg_match('#@(.*?\.)?example\.(com|net|org)$#i', $value) || preg_match('#@(.*?\.)?(test|example|invalid)$#i', $value)) {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -97,6 +111,13 @@ class StringEmail extends AbstractValidator implements StaticValidator
             $this->addError('bad_email_domain');
 
             return false;
+        }
+
+        if ($this->getOption(self::OPT_REJECT_EXAMPLE, false)) {
+            if (self::isExampleEmail($value)) {
+                $this->addError('is_example_email');
+                return false;
+            }
         }
 
         return true;

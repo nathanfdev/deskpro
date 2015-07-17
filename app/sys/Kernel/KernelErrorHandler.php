@@ -174,7 +174,7 @@ class KernelErrorHandler
             return;
         }
 
-        $GLOBALS['DP_LAST_ERROR'] = array('type' => 'exception', 'exception' => get_class($exception), 'message' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getFile());
+        $GLOBALS['DP_LAST_ERROR'] = array('type' => 'exception', 'exception' => get_class($exception), 'message' => substr($exception->getMessage(), 0, 500), 'file' => $exception->getFile(), 'line' => $exception->getFile());
 
         self::$is_handling_exception = true;
 
@@ -365,8 +365,9 @@ class KernelErrorHandler
         $str = array();
         if ($errinfo['type'] == 'exception') {
             $e = $errinfo['exception'];
-            $line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
-            $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $e->getMessage());
+            $message = substr($e->getMessage(), 0, 500);
+            $line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $message);
+            $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $message);
             $str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
             $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
             $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
@@ -460,7 +461,7 @@ class KernelErrorHandler
         ) {
 
             if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
-                $line = "There has been a MySQL error: " . $errinfo['exception']->getMessage();
+                $line = "There has been a MySQL error: " . substr($errinfo['exception']->getMessage(), 0, 500);
             }
 
             $fallback_send = true;
@@ -550,7 +551,7 @@ class KernelErrorHandler
     public static function getExceptionInfo(\Exception $exception)
     {
         $errno   = $exception->getCode();
-        $errstr  = self::stripPathPrefix($exception->getMessage());
+        $errstr  = substr(self::stripPathPrefix($exception->getMessage()), 0, 500);
         $errfile = self::stripPathPrefix($exception->getFile());
         $errline = $exception->getLine();
 

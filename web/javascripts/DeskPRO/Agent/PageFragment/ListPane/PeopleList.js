@@ -239,27 +239,29 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 					return person.labels && person.labels.length > 0;
 				case 'person_username':
 					return person.person_username && person.person_username.length > 0;
+        case 'num_tickets':
+          return true;
 				default:
 					if (0 !== field.indexOf('person_fields')) return false;
-					return !!person[field];
+          return undefined !== person[field];
 			}
 		};
 
-        $scope.getDisplayableFields = function() {
-            var fields = [];
-            self.fixed_fields.each(function(v){
-                fields.push(v);
-            });
-            $scope.displayFields.each(function(v){
-                if (fields.indexOf(v) > -1) return;
-                fields.push(v);
-            });
-            return fields;
-        };
+    $scope.getDisplayableFields = function () {
+      var fields = [];
+      self.fixed_fields.each(function (v) {
+        fields.push(v);
+      });
+      $scope.displayFields.each(function (v) {
+        if (fields.indexOf(v) > -1) return;
+        fields.push(v);
+      });
+      return fields;
+    };
 
-        $scope.getFieldDisplayName = function(field){
-            return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
-        };
+    $scope.getFieldDisplayName = function (field) {
+      return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
+    };
 
 		$scope.$watch('persons', this.fillListItems.bind(this));
 
