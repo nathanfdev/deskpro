@@ -1,5 +1,7 @@
-import ticket_list from "./ticket_list";
+import filter_sets_list from "./filter_sets_list";
+import tickets_list from "./tickets_list";
 
 export default {
-	ticket_list
+	filter_sets_list,
+	tickets_list
 };

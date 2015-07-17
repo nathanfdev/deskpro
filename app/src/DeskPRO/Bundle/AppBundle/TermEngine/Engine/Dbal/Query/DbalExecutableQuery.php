@@ -107,6 +107,42 @@ class DbalExecutableQuery
     }
 
     /**
+     * Fetches all the paged tickets in an array like: [Ticket, Ticket]
+     *
+     * @return array
+     */
+    public function fetchAll()
+    {
+        $timer = new SimpleTimer();
+
+        $this->log(Logger::DEBUG, 'fetchIds() called');
+
+        $query = clone $this->query;
+        // pagination
+        if ($this->count) {
+            $this->log(Logger::DEBUG, 'adding pagination to query', array('page' => $this->page, 'count' => $this->count));
+            $query->setPage($this->page);
+            $query->setLimit($this->count);
+        }
+
+        // ordering
+        foreach ($this->order_by as $order_by => $direction) {
+            $this->log(Logger::DEBUG, 'add order by', array('by' => $order_by, 'dir' => $direction));
+            $query->addOrderBy($order_by, $direction);
+        }
+
+        // various WHERE manipulations
+        $this->manipulateWhere($query);
+        $stmt = $this->execute($query);
+        $all = $stmt->fetchAll();
+
+        $this->log(Logger::DEBUG, 'row count', array('count' => $stmt->rowCount()));
+        $this->log(Logger::DEBUG, 'finished fetechAll()', array('time' => $timer->getElapsedTime()));
+
+        return $all;
+    }
+
+    /**
      * Fetches the entity ids like: [ [ 'id' => 1 ], [ 'id' => 2 ] ]
      *
      * @return array
