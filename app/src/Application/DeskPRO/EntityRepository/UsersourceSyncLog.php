@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\Usersource as UsersourceEntity;
 use Application\DeskPRO\Entity\UsersourceSyncLog as UsersourceSyncLogEntity;
 
 class UsersourceSyncLog extends AbstractEntityRepository
@@ -43,11 +43,11 @@ class UsersourceSyncLog extends AbstractEntityRepository
      * Use this for reporting on if a sync job is in progress or not, and it lets you
      * get information on the last sync.
      *
-     * @param Usersource $usersource
+     * @param UsersourceEntity $usersource
      * @return UsersourceSyncLogEntity|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getLastStartedLogForUsersource(Usersource $usersource)
+    public function getLastStartedLogForUsersource(UsersourceEntity $usersource)
     {
         // get the most recently started UsersourceSyncLog for this usersource
         return $this->createQueryBuilder('log')
@@ -63,11 +63,11 @@ class UsersourceSyncLog extends AbstractEntityRepository
      * This is the method that the SyncManager uses to fetch or create a log
      * for a running sync usersource to use.
      *
-     * @param Usersource $usersource
+     * @param UsersourceEntity $usersource
      * @return UsersourceSyncLogEntity|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getOrCreateLogInProgressForUsersource(Usersource $usersource)
+    public function getOrCreateLogInProgressForUsersource(UsersourceEntity $usersource)
     {
         // get the most recently started UsersourceSyncLog for this usersource
         $in_progress = $this->createQueryBuilder('log')
@@ -105,7 +105,7 @@ class UsersourceSyncLog extends AbstractEntityRepository
         $this->_em->flush($log);
     }
 
-    public function createNewLog(Usersource $usersource)
+    public function createNewLog(UsersourceEntity $usersource)
     {
         $new = new UsersourceSyncLogEntity();
         $new->setUsersource($usersource);

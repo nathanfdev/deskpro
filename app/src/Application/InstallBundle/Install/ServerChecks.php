@@ -566,7 +566,6 @@ class ServerChecks
         #------------------------------
         # LDAP check
         #------------------------------
-
         if ($type == 'ldap_check' || $type == 'all') {
             $this->getLogger()->log("[CHECK] Checking if LDAP is available", Logger::DEBUG);
             if (function_exists('ldap_connect')) {
@@ -578,6 +577,25 @@ class ServerChecks
                     'message' => $msg,
                     'level'   => 'recommended',
                 );
+            }
+        }
+
+        #------------------------------
+        # LDAP max links check
+        #------------------------------
+
+        if ($type == 'ldap_max_limit' || $type == 'all') {
+            $this->getLogger()->log("[CHECK] Checking if LDAP ldap.max_links setting is low", Logger::DEBUG);
+            $ldap_conn_limit = @ini_get('ldap.max_links');
+            if ($ldap_conn_limit != '-1' && (int)$ldap_conn_limit < 5) {
+                $msg = "We recommend changing the ldap.max_links setting to \"-1\" or to a value above 5.";
+                $this->getLogger()->log("$msg", Logger::INFO);
+                $this->server_errors['ldap_max_limit'] = array(
+                    'message' => $msg,
+                    'level' => 'recommended'
+                );
+            } else {
+                $this->getLogger()->log("[OK] LDAP max links is not too low", Logger::DEBUG);
             }
         }
 

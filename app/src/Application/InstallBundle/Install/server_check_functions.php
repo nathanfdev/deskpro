@@ -85,6 +85,11 @@ function deskpro_install_check_reqs()
         $errors['ldap_check'] = 'recommended';
     }
 
+    $ldap_conn_limit = @ini_get('ldap.max_links');
+    if ($ldap_conn_limit != '-1' && (int) $ldap_conn_limit < 5) {
+        $errors['ldap_max_limit'] = 'recommended';
+    }
+
     return $errors;
 }
 

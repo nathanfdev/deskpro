@@ -116,8 +116,12 @@ class SyncerHelper
             }
         }
 
-        // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
-        LoginProcessor::tryAutoAgent($usersource, $person);
+        // we only attempt an agent promotion during sync if the helpdesk has less than 500 agents
+        $count = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
+        if ($count < 500) {
+            // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
+            LoginProcessor::tryAutoAgent($usersource, $person);
+        }
 
         return $person;
     }

@@ -36,7 +36,7 @@ class GeneratorFactory
         /** @var GeneratorConfig $config */
         $config = $container->get('deskpro.import.config');
 
-        $exporter = $config->getExporterFactory($container)->createExporter($config->getReaderConfig());
+        $exporter = $config->getExporterFactory($container)->createExporter($container, $config->getReaderConfig());
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
             if (!$config->getExporterBatchConfig()) {
                 $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());

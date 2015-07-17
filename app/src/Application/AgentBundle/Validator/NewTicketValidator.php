@@ -122,6 +122,7 @@ class NewTicketValidator extends AbstractValidator
         if ($item->hasCriteria() && !$item->getCriteria()->isTicketMatch($this->mock_ticket)) {
             return;
         }
+        $translator = App::getTranslator();
 
         switch ($item->getFieldType()) {
             case 'product':
@@ -183,8 +184,12 @@ class NewTicketValidator extends AbstractValidator
                         }
                         foreach ($errors as $code) {
                             $title = $field->getTitle();
-                            $str   = "Please correct $title";
-                            $code  = str_replace('field_'.$field->getId().'.', '', $code);
+                            $str = "Please correct $title";
+                            $code = str_replace('field_' . $field->getId() . '.', '', $code);
+
+                            if ($translator->hasPhrase('user.error.form_' . $code)) {
+                                $str = $translator->phrase('user.error.form_' . $code);
+                            }
                             switch ($code) {
                                 case 'required':
                                     $str = "$title is required";

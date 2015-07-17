@@ -69,7 +69,7 @@ abstract class SearcherAbstract implements PersonContextInterface
      *
      * @var bool
      */
-    protected $used_person_context = false;
+    protected $used_person_context = 0;
 
     /**
      * Array of terms we've set.
@@ -137,8 +137,8 @@ abstract class SearcherAbstract implements PersonContextInterface
     public function needsPersonContext()
     {
         $this->getSqlParts();
-
-        return $this->used_person_context;
+        return $this->used_person_context > 0;
+    }
     }
 
     /**
@@ -343,7 +343,26 @@ abstract class SearcherAbstract implements PersonContextInterface
      */
     public function addTerm($term, $op, $data)
     {
-        $this->terms[] = array($term, $op, $data);
+        $term_type = '';
+        $term_id = '';
+        $mode = 0;
+
+        // mini-parser to turn "term[123]" into "term" and "123"
+        // its here to avoid a preg_match call which can add a few ms
+        // when this is called thousands of times.
+        // a micro-opt as part of FilterChangeDetector
+        for ($i = 0, $len = strlen($term); $i < $len; $i++) {
+            if ($term[$i] === '[') {
+                $mode = 1;
+            } else if ($term[$i] === ']') {
+            } else if ($mode === 0) {
+                $term_type .= $term[$i];
+            } else {
+                $term_id .= $term[$i];
+            }
+        }
+
+        $this->terms[] = array($term, $op, $data, $term_type, $term_id);
     }
 
     /**
@@ -355,7 +374,22 @@ abstract class SearcherAbstract implements PersonContextInterface
      */
     public function addAnyTerm($term, $op, $data)
     {
-        $this->terms_any[] = array($term, $op, $data);
+        $term_type = '';
+        $term_id = '';
+        $mode = 0;
+
+        for ($i = 0, $len = strlen($term); $i < $len; $i++) {
+            if ($term[$i] === '[') {
+                $mode = 1;
+            } else if ($term[$i] === ']') {
+            } else if ($mode === 0) {
+                $term_type .= $term[$i];
+            } else {
+                $term_id .= $term[$i];
+            }
+        }
+
+        $this->terms[] = array($term, $op, $data, $term_type, $term_id);
     }
 
     /**
@@ -1082,14 +1116,14 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($c === 0) {
                 $unassigned = true;
             } elseif ($c == -1) {
-                $this->used_person_context = true;
+                $this->used_person_context++;
                 if ($this->getPersonContext()) {
                     $agent_ids[] = $this->getPersonContext()->getId();
                 } else {
                     $agent_ids[] = -1;
                 }
             } elseif ($c == -2) {
-                $this->used_person_context = true;
+                $this->used_person_context++;
                 if ($this->getPersonContext()) {
                     $not_id = $this->getPersonContext()->getId();
                 } else {
@@ -1127,13 +1161,13 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($c === 0) {
                 $no_team = true;
             } elseif ($c == -1) {
-                $this->used_person_context = true;
+                $this->used_person_context++;
                 if ($agent) {
                     $team_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
                 }
                 $team_ids[] = -1;
             } elseif ($c == -2) {
-                $this->used_person_context = true;
+                $this->used_person_context++;
                 if ($agent) {
                     $not_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
                 }

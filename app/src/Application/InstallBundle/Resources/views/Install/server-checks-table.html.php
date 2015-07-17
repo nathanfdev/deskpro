@@ -341,6 +341,25 @@
     </td>
 </tr>
 
+
+<tr>
+    <td>
+        <?php $failed = false ?>
+        <?php if (!isset($errors['ldap_max_limit'])): ?>
+        <span class="label success" style="float:right">OK</span>
+        <?php else: $failed = true; $failed_phpini = true; ?>
+        <span class="label warning" style="float:right">WARNING</span>
+        <?php endif ?>
+        Check that PHP's <a href="http://php.net/manual/en/ldap.configuration.php#ini.ldap.max_links">ldap.max_links</a> setting is not too low
+        <?php if ($failed): ?>
+        <div class="alert-message block-message error">
+            We have detected the <code><a href="http://php.net/manual/en/ldap.configuration.php#ini.ldap.max_links">ldap.max_link</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?> contains a value that is too low.
+            If you plan on using the LDAP features of DeskPRO, we recommend a setting of 5 or higher (or, "-1" for unlimited).
+        </div>
+        <?php endif ?>
+    </td>
+</tr>
+
 <tr>
     <td>
         <?php $failed = false ?>

@@ -63,6 +63,8 @@ class JIRA
         'comment',
         'resolution',
         'duedate',
+        'components',
+        'versions',
     );
 
     protected $allowed_custom = array(

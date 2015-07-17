@@ -6,10 +6,9 @@ DIR_WEB_BOWER=$DIR_ROOT/web/bower_components
 DIR_WEB_NODE=$DIR_ROOT/web/node_modules
 
 ########################################################################################################################
-# DeskPRO
+# DESKPRO
 ########################################################################################################################
 
-rm -rm $DIR_ROOT/dev
 rm $DIR_ROOT/data/logs/deskpro.dev.log
 
 ########################################################################################################################
@@ -24,7 +23,7 @@ find . -type d \( \
     -o -iname "doc" \
     -o -iname "examples" \
     -o -iname "Tests" \
-\) -exec rm -rfv {} \;
+\) -exec rm -rf {} \;
 
 find . -type f \( \
     -name ".gitignore" \
@@ -67,89 +66,89 @@ find . -type f \( \
     -o -iname "Rakefile" \
     -o -iname "Gemfile" \
     -o -iname "Vagrantfile" \
-\) -exec rm -rfvv {} \;
+\) -exec rm -rf {} \;
 
 cd $DIR_VENDOR/aws/aws-sdk-php
-rm -rfv build/
-rm -rfv test_services.json.dist
+rm -rf build/
+rm -rf test_services.json.dist
 
 cd $DIR_VENDOR/codeception/codeception
-rm -rfv package/
+rm -rf package/
 
 cd $DIR_VENDOR/codeception/codeception
-rm -rfv package/
+rm -rf package/
 
 cd $DIR_VENDOR/doctrine/common
-rm -rfv UPGRADE_TO_2_1 UPGRADE_TO_2_2
+rm -rf UPGRADE_TO_2_1 UPGRADE_TO_2_2
 
 cd $DIR_VENDOR/doctrine/orm
-rm -rfv run-all.sh
+rm -rf run-all.sh
 
 cd $DIR_VENDOR/fabpot/goutte
-rm -rfv box.json
+rm -rf box.json
 
 cd $DIR_VENDOR/facebook/webdriver
-rm -rfv example.php
+rm -rf example.php
 
 cd $DIR_VENDOR/guzzle/guzzle
-rm -rfv phing/
-rm -rfv phar-stub.php
+rm -rf phing/
+rm -rf phar-stub.php
 
 cd $DIR_VENDOR/kriswallsmith/assetic
-rm -rfv CHANGELOG-1.0.md CHANGELOG-1.1.md
+rm -rf CHANGELOG-1.0.md CHANGELOG-1.1.md
 
 cd $DIR_VENDOR/lightopenid/lightopenid
-rm -rfv provider/example-mysql.php provider/example.php example-google.php example.php
+rm -rf provider/example-mysql.php provider/example.php example-google.php example.php
 
 cd $DIR_VENDOR/pda/pheanstalk
-rm -rfv scripts/
+rm -rf scripts/
 
 cd $DIR_VENDOR/pdepend/pdepend
-rm -rfv scripts/
+rm -rf scripts/
 
 cd $DIR_VENDOR/phpmd/phpmd
-rm -rfv AUTHORS.rst
+rm -rf AUTHORS.rst
 
 cd $DIR_VENDOR/phpunit/php-code-coverage
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/phpunit/php-file-iterator
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/phpunit/php-text-template
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/phpunit/php-timer
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/phpunit/php-token-stream
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/phpunit/phpunit
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/phpunit/phpunit-mock-objects
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/satooshi/php-coveralls
-rm -rfv build/
+rm -rf build/
 
 cd $DIR_VENDOR/swiftmailer/swiftmailer
-rm -rfv notes/ test-suite/
-rm -rfv create_pear_package.php package.xml.tpl README.git
+rm -rf notes/ test-suite/
+rm -rf create_pear_package.php package.xml.tpl README.git
 
 cd $DIR_VENDOR/symfony/symfony
-rm -rfv autoload.php.dist CHANGELOG-2.2.md CHANGELOG-2.3.md CHANGELOG-2.4.md CONTRIBUTING.md CONTRIBUTORS.md UPGRADE-2.1.md UPGRADE-2.2.md UPGRADE-2.3.md UPGRADE-2.4.md UPGRADE-3.0.md
+rm -rf autoload.php.dist CHANGELOG-2.2.md CHANGELOG-2.3.md CHANGELOG-2.4.md CONTRIBUTING.md CONTRIBUTORS.md UPGRADE-2.1.md UPGRADE-2.2.md UPGRADE-2.3.md UPGRADE-2.4.md UPGRADE-3.0.md
 
 cd $DIR_VENDOR/zendframework/zendframework
-rm -rfv README-GIT.md
+rm -rf README-GIT.md
 
 cd $DIR_VENDOR/friendsofsymfony/elastica-bundle
-rm -rfv Resources/doc
-rm -rfv CHANGELOG-2.0.md CHANGELOG-2.1.md CHANGELOG-3.0.md UPGRADE-3.0.md
+rm -rf Resources/doc
+rm -rf CHANGELOG-2.0.md CHANGELOG-2.1.md CHANGELOG-3.0.md UPGRADE-3.0.md
 
 cd $DIR_VENDOR/zircote/swagger-php
-rm -rfv swagger.phar
+rm -rf swagger.phar
 
 ########################################################################################################################
 # JS Vendors
@@ -159,7 +158,7 @@ cd $DIR_WEB_BOWER
 find . -type d \( \
     -name ".git" \
     -o -iname "docs" \
-\) -exec rm -rfv {} \;
+\) -exec rm -rf {} \;
 
 find . -type f \( \
     -name "bower.json" \
@@ -193,69 +192,69 @@ find . -type f \( \
     -o -name "*.bat" \
     -o -name "CNAME" \
     -o -name "components.html" \
-\) -exec rm -rfv {} \;
+\) -exec rm -rf {} \;
 
 cd $DIR_WEB_BOWER/ace-builds
-rm -rfv demo/ kitchen-sink/ src/ src-min/ src-noconflict/ textarea/
-rm -rfv editor.html kitchen-sink-req.html kitchen-sink.html scrollable-page.html
+rm -rf demo/ kitchen-sink/ src/ src-min/ src-noconflict/ textarea/
+rm -rf editor.html kitchen-sink-req.html kitchen-sink.html scrollable-page.html
 
 cd $DIR_WEB_BOWER/angular
-rm -rfv angular-csp.css angular.min.js.gzip README.md
+rm -rf angular-csp.css angular.min.js.gzip README.md
 
 cd $DIR_WEB_BOWER/angular-grid
-rm -rfv config/ lib/ plugins/ scripts/ src/ test/ workbench/
-rm -rfv conf.js
+rm -rf config/ lib/ plugins/ scripts/ src/ test/ workbench/
+rm -rf conf.js
 
 cd $DIR_WEB_BOWER/angular-slider
-rm -rfv src/
+rm -rf src/
 
 cd $DIR_WEB_BOWER/angular-ui-router
-rm -rfv config/ lib/ release/doc sample/ src/ test/
+rm -rf config/ lib/ release/doc sample/ src/ test/
 
 cd $DIR_WEB_BOWER/angular-ui-select2
-rm -rfv docs/ test/
+rm -rf docs/ test/
 
 cd $DIR_WEB_BOWER/animate.css
-rm -rfv source/
+rm -rf source/
 
 cd $DIR_WEB_BOWER/bootstrap
-rm -rfv _includes/ _layouts/ dist/ docs-assets/ examples/
-rm -rfv _config.yml about.html browserstack.json css.html customize.html DOCS-LICENSE getting-started.html index.html javascript.html
+rm -rf _includes/ _layouts/ dist/ docs-assets/ examples/
+rm -rf _config.yml about.html browserstack.json css.html customize.html DOCS-LICENSE getting-started.html index.html javascript.html
 
 cd $DIR_WEB_BOWER/font-awesome
-rm -rfv scss/ src/
-rm -rfv _config.yml
+rm -rf scss/ src/
+rm -rf _config.yml
 
 cd $DIR_WEB_BOWER/jquery
-rm -rfv jquery-migrate.js jquery-migrate.min.js
+rm -rf jquery-migrate.js jquery-migrate.min.js
 
 cd $DIR_WEB_BOWER/jquery-ui
 mv ui/minified/jquery-ui.min.js /tmp/jquery-ui.min.js
 mv ui/minified/i18n/jquery-ui-i18n.min.js /tmp/jquery-ui-i18n.min.js
-rm -rfv ui/minified/*.js
-rm -rfv ui/minified/i18n/*.js
-rm -rfv ui/*.js
-rm -rfv ui/i18n
+rm -rf ui/minified/*.js
+rm -rf ui/minified/i18n/*.js
+rm -rf ui/*.js
+rm -rf ui/i18n
 mv /tmp/jquery-ui-i18n.min.js ui/minified/i18n/jquery-ui-i18n.min.js
 mv /tmp/jquery-ui.min.js ui/minified/jquery-ui.min.js
 
 cd $DIR_WEB_BOWER/jquery-ui/themes
-rm -rfv black-tie/ blitzer/ cupertino/ dark-hive/ dot-luv/ eggplant/ excite-bike/ flick/ hot-sneaks/ humanity/ le-frog/ mint-choc/ overcast/ pepper-grinder/ redmond/ smoothness/ south-street/ start/ sunny/ swanky-purse/ trontastic/ ui-darkness/ vader/
+rm -rf black-tie/ blitzer/ cupertino/ dark-hive/ dot-luv/ eggplant/ excite-bike/ flick/ hot-sneaks/ humanity/ le-frog/ mint-choc/ overcast/ pepper-grinder/ redmond/ smoothness/ south-street/ start/ sunny/ swanky-purse/ trontastic/ ui-darkness/ vader/
 
 cd $DIR_WEB_BOWER/requirejs
-rm -rfv dist/
-rm -rfv index.html tasks.txt testBaseUrl.js
+rm -rf dist/
+rm -rf index.html tasks.txt testBaseUrl.js
 
 cd $DIR_WEB_BOWER/stacktrace
-rm -rfv gradle/ test
-rm -rfv stacktrace-bookmarklet.js
+rm -rf gradle/ test
+rm -rf stacktrace-bookmarklet.js
 
 cd $DIR_WEB_BOWER/underscore
-rm -rfv docs/ test/
-rm -rfv favicon.ico index.html
+rm -rf docs/ test/
+rm -rf favicon.ico index.html
 
 cd $DIR_WEB_BOWER/ng-clip
-rm -rfv example
+rm -rf example
 
 ########################################################################################################################
 # node

@@ -109,7 +109,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			})
 		});
 
-		$('.DateTime.customfield', this.wrapper).each(function(){
+    $('.DateTime.customfield input', this.wrapper).each(function () {
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -434,6 +434,35 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				target.slideDown('fast');
 			}
 		});
+
+    /**
+     * Note
+     */
+    var $toggle = this.getEl('message_toggle')
+      , $input = this.el.find('input[name="options[notify_user]"]')
+      , replyAsState = this.getEl('reply_as_type').data('type')
+      , emailCheckboxState = true
+      ;
+
+    $toggle.children('li').on('click', function(){
+      $toggle.children('li').removeClass('on');
+      $(this).addClass('on');
+
+      if ($(this).data('is-note')) {
+
+        emailCheckboxState = $input.prop('checked');
+        replyAsState = self.getEl('reply_as_type').data('type');
+
+        $input.prop('checked', false).parent().hide();
+        self.shortcutReplySetAwaitingAgent();
+
+      } else {
+
+        $input.prop('checked', emailCheckboxState).parent().show();
+        self.setReplyAsOptionName(replyAsState);
+
+      }
+    });
 	},
 
 	setReplyAsOptionName: function(name) {
@@ -596,6 +625,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
+    formData.push({
+      name: 'is_note',
+      value: this.getEl('message_toggle').children('li.on').data('is-note') || ''
+    });
 
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on').hide();

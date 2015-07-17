@@ -35,6 +35,8 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
 use Guzzle\Http\Client as HttpClient;
+use Guzzle\Http\Exception\ClientErrorResponseException;
+use Guzzle\Http\Exception\ServerErrorResponseException;
 use Orb\Util\Strings;
 
 /**
@@ -64,6 +66,11 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
+     * @var TicketsMapper
+     */
+    private $tickets_mapper;
+
+    /**
      * @var HttpClient
      */
     private $http_client;
@@ -74,12 +81,18 @@ final class Tickets extends AbstractParser
      * @param ZenDeskReaderInterface       $reader
      * @param TicketPeopleStorageInterface $people_storage
      * @param HttpClient                   $http_client
+     * @param TicketsMapper                $tickets_mapper
      */
-    public function __construct(ZenDeskReaderInterface $reader, TicketPeopleStorageInterface $people_storage, HttpClient $http_client)
-    {
+    public function __construct(
+        ZenDeskReaderInterface       $reader,
+        TicketPeopleStorageInterface $people_storage,
+        TicketsMapper                $tickets_mapper,
+        HttpClient                   $http_client
+    ) {
         parent::__construct($reader);
 
         $this->tickets_people = $people_storage;
+        $this->tickets_mapper = $tickets_mapper;
         $this->http_client    = $http_client;
     }
 
@@ -153,10 +166,10 @@ final class Tickets extends AbstractParser
                 throw new SkippingException(sprintf('Unable to get submitter email by id %s', $ticket['submitter_id']));
             }
 
-            $ref = $this->getBatchConfig()->getTicketRef($ticket['id']);
+            $ref = $this->tickets_mapper->findRefByOldId($ticket['id']);
             if ( ! $ref) {
                 $ref = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
-                $this->getBatchConfig()->addTicketRef($ticket['id'], $ref);
+                $this->tickets_mapper->saveMapping($ticket['id'], $ref);
             }
 
             $entity = new Entity\Ticket();
@@ -172,6 +185,7 @@ final class Tickets extends AbstractParser
                 ->setOrganization($this->getOrganizationName($ticket['organization_id']))
                 ->setPriority($this->exportPriority($ticket['priority']))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
+                ->setLogMessage(sprintf('Imported from ZenDesk (old ticket ID #%s)', $ticket['id']))
             ;
 
             switch ($ticket['status']) {
@@ -235,27 +249,6 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket message entity
-     *
-     * @param array  $ticket
-     * @param string $person_email
-     *
-     * @return Entity\TicketMessage
-     */
-    public function exportMessage(array $ticket, $person_email)
-    {
-        $entity = new Entity\TicketMessage();
-        $entity
-            ->setDestination('message_' . $ticket['id'])
-            ->setOid($ticket['id'])
-            ->setPersonEmail($person_email)
-            ->setMessageText($ticket['description'])
-            ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']));
-
-        return $entity;
-    }
-
-    /**
      * Returns a ticket comments entity
      *
      * @param array $ticket
@@ -267,12 +260,13 @@ final class Tickets extends AbstractParser
 
         foreach ($ticket['comments'] as $comment) {
             if (empty($comment['author_id'])) {
-                $this->logError(sprintf('No comment author'));
+                $this->logError(sprintf('Comment #%d without author_id, skipping', $comment['id']));
                 continue;
             }
+
             $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
             if ( ! $author_email) {
-                $this->logError(sprintf('Unable to get comment author #%d', $ticket['author_id']));
+                $this->logError(sprintf('Unable to get comment author #%d, skipping', $comment['author_id']));
                 continue;
             }
 
@@ -338,18 +332,39 @@ final class Tickets extends AbstractParser
     private function exportAttachment(array $attachment)
     {
         if ($this->isAttachmentValid($attachment)) {
-            $http_request = $this->http_client->get($attachment['content_url']);
+            try {
+                $request = $this->http_client->get($attachment['content_url']);
+                $entity  = new Entity\Attachment();
+                $entity
+                    ->setDestination('attachment_' . $attachment['id'])
+                    ->setOid($attachment['id'])
+                    ->setBlobData(base64_encode($request->send()->getBody(true)))
+                    ->setFileName($attachment['file_name'])
+                    ->setContentType($attachment['content_type'])
+                ;
 
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination('attachment_' . $attachment['id'])
-                ->setOid($attachment['id'])
-                ->setBlobData(base64_encode($http_request->send()->getBody(true)))
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-            ;
+                return $entity;
 
-            return $entity;
+            } catch (ClientErrorResponseException $e) {
+                $this->logError(sprintf('Unable to download attachment #%s', $attachment['id']));
+                $this->logError($e->getMessage());
+
+                $response = $e->getResponse();
+                if ($response) {
+                    $this->logError(sprintf('Status code: %s', $response->getStatusCode()));
+                    $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
+                }
+
+            } catch (ServerErrorResponseException $e) {
+                $this->logError(sprintf('Unable to download attachment #%s', $attachment['id']));
+                $this->logError($e->getMessage());
+
+                $response = $e->getResponse();
+                if ($response) {
+                    $this->logError(sprintf('Status code: %s', $response->getStatusCode()));
+                    $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
+                }
+            }
         }
 
         return null;
@@ -374,17 +389,18 @@ final class Tickets extends AbstractParser
                 $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
             }
 
-            $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
-            if (count($tickets)) {
+            $response = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
+            if (count($response)) {
                 // ZenDesk API does not allow to get ticket comments in a single request
                 // We have to load comments for each ticket separately
-                foreach ($tickets as &$ticket) {
+                foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
                         $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
                         $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
+
+                        $tickets[] = $ticket;
                     } else {
-                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping comments', $ticket['id']));
-                        $ticket['comments'] = array();
+                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping', $ticket['id']));
                     }
                 }
 

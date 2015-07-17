@@ -47,6 +47,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
@@ -3507,7 +3508,7 @@ class TicketController extends AbstractController
         ));
     }
 
-    public function newSaveAction()
+    public function newSaveAction(Request $request)
     {
         if (!$this->person->hasPerm('agent_tickets.create')) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -3526,7 +3527,12 @@ class TicketController extends AbstractController
         $formType = new \Application\AgentBundle\Form\Type\NewTicket();
         $form     = $this->get('form.factory')->create($formType, $newticket);
 
-        if ($this->get('request')->getMethod() == 'POST') {
+        if ($request->getMethod() === 'POST') {
+
+            if ($request->get('is_note')) {
+                $newticket->is_note = true;
+            }
+
             $action_type = $this->in->getString('options.action');
             $macro_id    = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
             if ($macro_id) {
@@ -3561,7 +3567,7 @@ class TicketController extends AbstractController
                 }
             }
 
-            $form->handleRequest($this->get('request'));
+            $form->handleRequest($request);
             $form->isValid();
 
             #------------------------------

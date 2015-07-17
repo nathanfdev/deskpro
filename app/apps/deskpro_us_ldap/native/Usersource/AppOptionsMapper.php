@@ -72,10 +72,15 @@ class AppOptionsMapper
         switch ($settings->get('secure')) {
             case 'ssl':
                 $options['useSsl'] = true;
+                $options['useStartTls'] = false;
                 break;
             case 'tls':
                 $options['useStartTls'] = true;
+                $options['useSsl'] = false;
                 break;
+            default:
+                $options['useStartTls'] = false;
+                $options['useSsl'] = false;
         }
 
         if (!$options['port']) {

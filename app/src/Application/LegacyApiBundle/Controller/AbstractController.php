@@ -36,6 +36,7 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -666,11 +667,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 'error_code'    => 404,
                 'error_message' => $e->getMessage() ?: 'Not Found',
             ), 404);
+        } elseif ($e instanceof AccessDeniedHttpException) {
+            return $this->createApiResponse(array(
+                'error_code' => 403,
+                'error_message' => $e->getMessage() ?: 'Access Denied',
+            ), 403);
         } elseif ($e instanceof AccessDeniedException) {
             return $this->createApiResponse(array(
                 'error_code'    => 403,
                 'error_message' => $e->getMessage() ?: 'Access Denied',
-            ), 404);
+            ), 403);
         } else {
             KernelErrorHandler::logException($e);
 

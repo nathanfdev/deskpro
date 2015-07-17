@@ -79,10 +79,9 @@ class JobSupervisor
                 $rule->check();
             } catch (JobSupervisorException $e) {
                 if (!$rule->attemptToFix()) {
-                    $this->reportViolation($e);
+                    $this->reportUnresolvedViolation($e);
                 } else {
-                    // fixed, silently log the violation and that it was resolved by the rule
-                    KernelErrorHandler::logException($e);
+                    $this->reportFixedViolation($e);
                 }
             } catch (\Exception $e) {
                 // something terribly wrong happened because we shouldn't be here, we should probably do something now
@@ -92,9 +91,16 @@ class JobSupervisor
         }
     }
 
-    public function reportViolation(JobSupervisorException $e)
+    public function reportUnresolvedViolation(JobSupervisorException $e)
     {
         KernelErrorHandler::logException($e);
+    }
+
+    public function reportFixedViolation(JobSupervisorException $e)
+    {
+        if ($e->canReport()) {
+            KernelErrorHandler::logException($e);
+        }
     }
 
     public function addRule(JobSupervisorRuleInterface $rule)

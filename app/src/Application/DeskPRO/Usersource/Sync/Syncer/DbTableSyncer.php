@@ -43,7 +43,7 @@ use Symfony\Component\Validator\Constraints\EmailValidator;
 
 class DbTableSyncer extends AbstractSyncer
 {
-    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         /** @var \Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck $adapter */
         $adapter = $this->getAdapter($usersource);
@@ -139,6 +139,11 @@ class DbTableSyncer extends AbstractSyncer
 
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
+
+        // detach
+        $person->clear();
+        $this->helper->getEm()->detach($person);
+        $this->helper->getEm()->detach($assoc);
 
         return true;
     }

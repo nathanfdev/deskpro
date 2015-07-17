@@ -169,6 +169,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($ch);
         fflush($fp);
         fclose($fp);
