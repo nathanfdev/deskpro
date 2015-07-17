@@ -239,11 +239,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
-    public function setPerson(Person $person)
-    {
-        $this->setModelField('person', $person);
-    }
-    
     public function setTicketId($id)
     {
         $this->setModelField('ticket', App::getEntityRepository('DeskPRO:Ticket')->find($id));

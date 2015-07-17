@@ -32,10 +32,10 @@
  * @subpackage ApiBundle
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\MultiPermissions;
-use Application\ApiBundle\PermissionStrategy\SuperKeyPermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\Ticket as Ticket;

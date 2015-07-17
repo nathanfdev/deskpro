@@ -26,7 +26,7 @@
  * \**************************************************************************/
 
 
-namespace Application\ApiBundle\Form\CustomField\Type;
+namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
 
 use Symfony\Component\Form\AbstractType;

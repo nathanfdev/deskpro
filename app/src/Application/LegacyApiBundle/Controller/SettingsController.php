@@ -31,10 +31,10 @@
  * @package DeskPRO
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\Form\CustomField\Type\PersonStartType;
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\HttpFoundation\Request;
