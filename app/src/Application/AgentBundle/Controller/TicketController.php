@@ -2509,7 +2509,7 @@ class TicketController extends AbstractController
 
                 foreach ($changes as $change) {
                     if (0 !== strpos($change->getField(), 'custom_data.')) continue;
-                    $details[$change->getField()] = $method->invoke($obj, $change);
+                    $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
                 }
                 $ticket_log->details = $details;
             }
@@ -2599,13 +2599,17 @@ class TicketController extends AbstractController
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'modify_billing';
         $ticket_log->id_object   = $charge->id;
-        $ticket_log->details     = array(
-            'charge_id'    => $charge->id,
-            'old_amount'   => $old_amount,
-            'old_time'     => $old_time,
-            'new_amount'   => $charge->amount,
-            'new_time'	   => $charge->charge_time,
-        );
+        $details = array();
+
+        if ($old_amount !== $charge->amount) {
+            $details['old_amount'] = $old_amount;
+            $details['new_amount'] = $charge->amount;
+        }
+
+        if ($old_time !== $charge->charge_time) {
+            $details['old_time'] = $old_time;
+            $details['new_time'] = $charge->charge_time;
+        }
 
         if (!empty($custom_fields)) {
             $field_manager->saveFormToObject($custom_fields, $charge);
@@ -2616,21 +2620,22 @@ class TicketController extends AbstractController
             $obj = unserialize($serialized);
             $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
             $method->setAccessible(true);
-            $details = $ticket_log->details;
 
             foreach ($changes as $change) {
                 foreach ($changes as $change) {
                     if (0 !== strpos($change->getField(), 'custom_data.')) continue;
-                    $details[$change->getField()] = $method->invoke($obj, $change);
+                    $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
                 }
             }
-            $ticket_log->details = $details;
         }
 
-        $this->em->persist($ticket_log);
+        if ($details) {
+            $details['charge_id'] = $charge->id;
+            $ticket_log->details = $details;
+            $this->em->persist($ticket_log);
+        }
+
         $this->em->flush();
-
-
         $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
         return $this->createJsonResponse(array(
@@ -2686,7 +2691,7 @@ class TicketController extends AbstractController
         foreach ($changes as $change) {
             foreach ($changes as $change) {
                 if (0 !== strpos($change->getField(), 'custom_data.')) continue;
-                $details[$change->getField()] = $method->invoke($obj, $change);
+                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
             }
         }
         $ticket_log->details = $details;
