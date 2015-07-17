@@ -37,6 +37,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
 use Application\DeskPRO\Debug\Data\TicketFilterData;
@@ -2479,7 +2480,11 @@ class TicketController extends AbstractController
         $invalid_custom_fields = array();
         $is_valid = true;
         foreach ($field_manager->getFields() as $field) {
-            $errors = $field->getHandler()->validateFormData($custom_fields);
+            $errors = $field->getHandler()->validateFormData(
+                $custom_fields,
+                HandlerAbstract::CONTEXT_AGENT,
+                array('exist_ticket' => $ticket)
+            );
             foreach ($errors as $code) {
                 $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
                 $is_valid = false;
@@ -2556,7 +2561,11 @@ class TicketController extends AbstractController
         $invalid_custom_fields = array();
         $is_valid = true;
         foreach ($field_manager->getFields() as $field) {
-            $errors = $field->getHandler()->validateFormData($custom_fields);
+            $errors = $field->getHandler()->validateFormData(
+                $custom_fields,
+                HandlerAbstract::CONTEXT_AGENT,
+                array('exist_ticket' => $ticket)
+            );
             foreach ($errors as $code) {
                 $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
                 $is_valid = false;
