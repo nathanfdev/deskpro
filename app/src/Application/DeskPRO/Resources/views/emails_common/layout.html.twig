@@ -46,7 +46,7 @@
 	{{ layout.replycode(ticket.access_code) }}
 {% endif %}
 
-<!--{{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}-->
+{% if tplvars.agent_reply_above_line %}<!--{{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}-->{% endif %}
 
 </td></tr></table>
 
