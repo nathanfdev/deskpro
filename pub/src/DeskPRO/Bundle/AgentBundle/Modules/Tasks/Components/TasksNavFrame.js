@@ -10,6 +10,7 @@ import TaskNavLabels from "../Components/TaskNavLabels";
 @connect(state => ({
     taskList: state.taskList,
     projectList: state.projectList,
+    agentList:state.agentList,
     user: state.user
 }))
 export default class TasksNavFrame extends React.Component {
@@ -25,10 +26,11 @@ export default class TasksNavFrame extends React.Component {
         dispatch(TaskActions.loadDepartmentTasks());
         dispatch(TaskActions.loadDelegatedTasks());
         dispatch(TaskActions.loadUnassignedTasks());
+        dispatch(TaskActions.loadAgents());
     }
 
     render() {
-        const { taskList, projectList } = this.props;
+        const { taskList, projectList, agentList } = this.props;
 
         return (<section className="task-nav-frame">
             <div className="sidebar-wrapper" id="sidebar-wrapper">
@@ -60,7 +62,7 @@ export default class TasksNavFrame extends React.Component {
 
                         <TaskNavProjects projectList={projectList} />
 
-                        <TaskNavPeople />
+                        <TaskNavPeople agentList={agentList} />
 
                         <TaskNavLabels />
 

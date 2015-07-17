@@ -1,66 +1,29 @@
 import React from "react";
 
+import * as TaskActions from "../Actions/TaskListActions";
+
 export default class TasksNavPeople extends React.Component {
     render() {
+        const {agentList} = this.props;
+
+        console.log(agentList);
+
         return (<section className="tasks-nav-people">
             <div className="list-sidebar-title">People <a href="#" className="title-down"><i
                 className="fa fa-caret-down"/></a></div>
-                <ul>
-                    <li>
+                <ul>{agentList.agentList ? agentList.agentList.map(function(object) {
+                    return <li key={object.id}>
                         <div className="list-counter-bucket">
                             <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">0</a>
+                               onclick="showFilterOptions(this); return false;">{object.assigned_tasks.length}</a>
                         </div>
                         <a href="#" className="item" onmouseover="toggleCountBucket(this);">
                                         <span className="list-icon"><span
                                             styles={{backgroundImage: 'url(./img/avatar6.png)'}} className="avatar"/></span>
-                            Harrison Newman
+                            {object.name}
                         </a>
-                    </li>
-                    <li>
-                        <div className="list-counter-bucket">
-                            <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">0</a>
-                        </div>
-                        <a href="#" className="item" onmouseover="toggleCountBucket(this);">
-                                        <span className="list-icon"><span
-                                            styles={{backgroundImage: 'url(./img/avatar5.png)'}} className="avatar"/></span>
-                            Tyler Weston
-                        </a>
-                    </li>
-                    <li>
-                        <div className="list-counter-bucket">
-                            <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">0</a>
-                        </div>
-                        <a href="#" className="item" onmouseover="toggleCountBucket(this);">
-                                        <span className="list-icon"><span
-                                            styles={{backgroundImage: 'url(./img/avatar4.jpg)'}} className="avatar"/></span>
-                            Ellis Glover
-                        </a>
-                    </li>
-                    <li>
-                        <div className="list-counter-bucket">
-                            <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">0</a>
-                        </div>
-                        <a href="#" className="item" onmouseover="toggleCountBucket(this);">
-                                        <span className="list-icon"><span
-                                            styles={{backgroundImage: 'url(./img/avatar3.jpg)'}} className="avatar"/></span>
-                            David Benson
-                        </a>
-                    </li>
-                    <li>
-                        <div className="list-counter-bucket">
-                            <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">0</a>
-                        </div>
-                        <a href="#" className="item" onmouseover="toggleCountBucket(this);">
-                                        <span className="list-icon"><span
-                                            styles={{backgroundImage: 'url(./img/avatar2.png)'}} className="avatar"/></span>
-                            Demi Carroll
-                        </a>
-                    </li>
+                    </li>;
+                }) : ''}
                 </ul>
                 </section>);
     }

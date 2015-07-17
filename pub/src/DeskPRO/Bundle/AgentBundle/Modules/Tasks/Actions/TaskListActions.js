@@ -10,6 +10,7 @@ export const setLoadedTeamTasks = createAction(ActionTypes.LOAD_TEAM_TASKS);
 export const setLoadedDepartmentTasks = createAction(ActionTypes.LOAD_DEPARTMENT_TASKS);
 export const setLoadedDelegatedTasks = createAction(ActionTypes.LOAD_DELEGATED_TASKS);
 export const setLoadedUnassignedTasks = createAction(ActionTypes.LOAD_UNASSIGNED_TASKS);
+export const setLoadedAgents = createAction(ActionTypes.LOAD_AGENTS);
 
 // TODO
 
@@ -93,6 +94,18 @@ export const loadUnassignedTasks = () => {
 
         Promise.all(promises).then((values) => {
             dispatch(setLoadedUnassignedTasks(values[0].getData()));
+        });
+    }
+};
+
+export const loadAgents = () => {
+    return dispatch => {
+        let promises = [];
+
+        promises.push(DpApi.sendGet('DP_API/people?is_agent=1&not_me=1'));
+
+        Promise.all(promises).then((values) => {
+            dispatch(setLoadedAgents(values[0].getData()));
         });
     }
 };
