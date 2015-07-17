@@ -1,64 +1,20 @@
 import React from "react";
 
+import TicketsTabFilterSetList from "./TicketsTabFilterSetList";
+
 export default class TicketsTabFilters extends React.Component {
-  renderFilters(filters, loadFilterTickets) {
-    if(!filters) {
-      return {
-        filters: '',
-        count: 0
-      };
-    }
-
-    return {
-      filters: filters.map((filter) => {
-        return (
-          <li>
-            <div className="list-counter-bucket"><a href="#" className="list-counter">#</a></div>
-            <a href="#" onClick={() => loadFilterTickets(filter.id)} className="item">{filter.title}</a>
-          </li>
-        );
-      }),
-      count: filters.length
-    };
-  }
-
-  renderFilterSets(filter_sets, loadFilterTickets) {
-    if(!filter_sets) {
-      return '';
-    }
-
-    return filter_sets.map((filter_set) => {
-      let filters = this.renderFilters(filter_set.filters, loadFilterTickets);
-      return (
-        <li className="counter-display">
-          <div className="list-counter-bucket">
-            {filters.count > 0 ? <a className="list-counter-dropdown active" href="#">&nbsp;<i className="fa fa-angle-down"></i></a> : ''}
-            <a href="#" className="list-counter active">{filters.count}</a>
-          </div>
-          <a href="#" className="item">{filter_set.title}</a>
-
-          <ul className="with-connectors">
-            {filters.filters}
-          </ul>
-        </li>
-      );
-    });
-  }
-
   render() {
-    const { filterSetsList, loadFilterTickets } = this.props;
-    
-    let filterSets = this.renderFilterSets(
-      filterSetsList.filter_sets_list,
-      loadFilterTickets
-    );
-    
+    const { filterSetsList, filterSetsCounts, loadFilterTickets, dispatch } = this.props;
     return (
       <div className="sidebar-list sidebar-list-filters">
         <div className="list-sidebar-title">Inbox</div>
         <ul>
       
-          {filterSets}
+          <TicketsTabFilterSetList
+            filterSetsList={filterSetsList}
+            filterSetsCounts={filterSetsCounts}
+            loadFilterTickets={loadFilterTickets}
+            dispatch={dispatch} />
       
       
           <li className="counter-display">

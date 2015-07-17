@@ -9,7 +9,8 @@ import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/TicketsListActions";
 
 @connect(state => ({
-  filter_sets_list: state.filter_sets_list
+  filter_sets_list: state.filter_sets_list,
+  filter_sets_counts: state.filter_sets_counts,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
@@ -20,6 +21,7 @@ export default class TicketsNavContent extends React.Component {
     
     const { dispatch } = this.props;
     dispatch(TicketActions.loadFilterSets());
+    dispatch(TicketActions.loadFilterSetsCounts());
   }
   
   changeTab(newTab) {
@@ -45,7 +47,7 @@ export default class TicketsNavContent extends React.Component {
   }
   
   render() {
-    const { filter_sets_list, dispatch } = this.props;
+    const { filter_sets_list, filter_sets_counts, dispatch } = this.props;
     
     let tab = null;
     switch(this.state.showTab) {
@@ -57,7 +59,11 @@ export default class TicketsNavContent extends React.Component {
       break;
     case "filters":
     default:
-      tab = <TicketsTabFilters filterSetsList={filter_sets_list} {...bindActionCreators(TicketActions, dispatch)} />
+      tab = <TicketsTabFilters
+              filterSetsList={filter_sets_list}
+              filterSetsCounts={filter_sets_counts}
+              {...bindActionCreators(TicketActions, dispatch)}
+              {...this.props} />
       break;
     }
     

@@ -172,7 +172,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
 
     if (config.entry['DeskPRO_AgentBundle']) {
-      config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/only-dev-server');
+      config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/dev-server');
       config.entry['DeskPRO_AgentBundle'].unshift('webpack-dev-server/client?http://localhost:9666');
     }
   }

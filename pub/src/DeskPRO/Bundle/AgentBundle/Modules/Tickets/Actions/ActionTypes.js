@@ -5,4 +5,6 @@ export default keyMirror({
   LOAD_FILTER_SETS: null,
   LOAD_TICKETS: null,
   TICKETS_SELECT_FILTER: null,
+  LOAD_FILTER_COUNTS: null,
+  LOAD_FILTER_SET_FILTERS: null,
 });

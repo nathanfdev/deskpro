@@ -18,8 +18,6 @@ export default class TasksNavFrame extends React.Component {
 
         const { dispatch } = this.props;
 
-        console.log(this.props);
-
         dispatch(TaskActions.loadTasks());
         dispatch(TaskActions.loadProjects());
     }
