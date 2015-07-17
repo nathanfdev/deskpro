@@ -313,3 +313,9 @@ if ($quick) {
 
 echo " DONE ".sprintf("%.f", microtime(true)-$time);
 echo "\n";
+
+#####################################################################
+
+//TODO this is a dev flag on new-agent, must be removed for gold
+echo "TODO THIS SHOLUD BE REMOVED\n";
+passthru("chmod -R 0777 " . escapeshellarg(DP_ROOT.'/sys/cache'));
