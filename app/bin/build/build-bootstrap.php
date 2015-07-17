@@ -36,64 +36,6 @@ $files = array(
     'Symfony\\Component\\Config\\ConfigCache',
     // cannot be included as commands are discovered based on the path to this class via Reflection
     //'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle',
-
-    'Twig_Extension_Core',
-
-    'Orb\Util\ClassLoader',
-
-    'Orb\\Helper\\HelperManager',
-    'Orb\\Helper\\ShortCallableInterface',
-
-    'Orb\\Input\\Cleaner\\Cleaner',
-    'Orb\\Input\\Reader\\Reader',
-    'Orb\\Input\\Reader\\Source\\ArrayVal',
-    'Orb\\Input\\Reader\\Source\\SourceInterface',
-    'Orb\\Input\\Reader\\Source\\Superglobal',
-
-    'Orb\\Templating\\Engine\\PhpVarEngine',
-    'Orb\\Templating\\Engine\\PhpVarJsonEngine',
-
-    'Orb\\Util\\Arrays',
-    'Orb\\Util\\CapabilityInformerInterface',
-    'Orb\\Util\\ChainCaller',
-    'Orb\\Util\\Dates',
-    'Orb\\Util\\Numbers',
-    'Orb\\Util\\Strings',
-    'Orb\\Util\\Util',
-    'Orb\\Util\\Web',
-
-    'Application\\DeskPRO\\App',
-    'Application\\DeskPRO\\DBAL\\Connection',
-    'Application\\DeskPRO\\DBAL\\ConnectionFactory',
-    'Application\\DeskPRO\\DBAL\\DoctrineEvent',
-    'Application\\DeskPRO\\Domain\\BasicDomainObject',
-    'Application\\DeskPRO\\Domain\\ChangeTracker',
-    'Application\\DeskPRO\\Domain\\DomainObject',
-    'Application\\DeskPRO\\HttpFoundation\\Cookie',
-    'Application\\DeskPRO\\HttpFoundation\\Request',
-
-    'Application\\DeskPRO\\ORM\\Util\\Util',
-    'Application\\DeskPRO\\ORM\\CollectionHelper',
-    'Application\\DeskPRO\\ORM\\QueryPartial',
-
-    'Application\\DeskPRO\\Settings\\Settings',
-
-    'Application\\DeskPRO\\Templating\\Asset\\UrlPackage',
-    'Application\\DeskPRO\\Templating\\GlobalVariables',
-
-    'Application\\DeskPRO\\Translate\\Loader\\DbLoader',
-    'Application\\DeskPRO\\Translate\\Loader\\LoaderInterface',
-    'Application\\DeskPRO\\Translate\\Loader\\SystemLoader',
-    'Application\\DeskPRO\\Translate\\DelegatePhrase',
-    'Application\\DeskPRO\\Translate\\DelegatePhraseInterface',
-    'Application\\DeskPRO\\Translate\\DephrasifyTemplate',
-    'Application\\DeskPRO\\Translate\\HasPhraseName',
-    'Application\\DeskPRO\\Translate\\ObjectPhraseNamer',
-    'Application\\DeskPRO\\Translate\\SystemLanguage',
-    'Application\\DeskPRO\\Translate\\Translate',
-
-    'Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension',
-    'Application\\DeskPRO\\Twig\\Loader\\HybridLoader',
 );
 
 $finder = new \Symfony\Component\Finder\Finder();
