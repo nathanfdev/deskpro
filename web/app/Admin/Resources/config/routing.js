@@ -801,14 +801,14 @@ define(function() {
   routes.push({
     id: 'tickets.timelog_billing_fields.create',
     url: '/create',
-    templateName: 'CustomFields/Common/edit.html',
+    templateName: 'CustomFields/Billing/edit.html',
     controller: 'Admin_CustomFields_Billing_Ctrl_Edit'
   });
 
   routes.push({
     id: 'tickets.timelog_billing_fields.edit',
     url: '/{id:[0-9]+}',
-    templateName: 'CustomFields/Common/edit.html',
+    templateName: 'CustomFields/Billing/edit.html',
     controller: 'Admin_CustomFields_Billing_Ctrl_Edit'
   });
 
