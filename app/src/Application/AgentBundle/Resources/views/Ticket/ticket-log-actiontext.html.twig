@@ -538,7 +538,7 @@
         Created: <span class="new-val">{{ log.details.new_created | date('fulltime', app.user.timezone)}}</span><br />
     {% endif %}
     {% for v in log.details.custom_data if v.value_before or v.value_after %}
-        {{ v.field_name }}: <span class="new-val">{{ v.value_before }}</span><br />
+        {{ v.field_name }}: <span class="new-val">{{ v.value_after }}</span><br/>
     {% endfor %}
 
     View old data <span class="new-val expand" data-set=".set-billing-modify">click to expand</span>
@@ -567,7 +567,7 @@
             Created: <span class="old-val">{{ log.details.old_created | date('fulltime', app.user.timezone)}}</span><br />
         {% endif %}
         {% for v in log.details.custom_data if v.value_before or v.value_after %}
-            {{ v.field_name }}: <span class="old-val">{{ v.value_after }}</span><br />
+            {{ v.field_name }}: <span class="old-val">{{ v.value_before }}</span><br/>
         {% endfor %}
     </div>
 {% elseif log.action_type == 'changed_participants' or log.action_type == 'changed_agent_participants' or log.action_type == 'changed_user_participants' %}
