@@ -12,7 +12,7 @@ export default class TasksNavGroups extends React.Component {
                         <li>
                             <div className="list-counter-bucket">
                                 <a className="list-counter" href="#"
-                                   onclick="showFilterOptions(this); return false;">12</a>
+                                   onclick="showFilterOptions(this); return false;">{taskList.myTaskCount}</a>
                             </div>
                             <a href="#" className="item" onmouseover="toggleCountBucket(this);">My Tasks</a>
                         </li>
@@ -20,7 +20,7 @@ export default class TasksNavGroups extends React.Component {
                         <li>
                             <div className="list-counter-bucket">
                                 <a href="#" className="list-counter"
-                                   onclick="showFilterOptions(this); return false;">34</a>
+                                   onclick="showFilterOptions(this); return false;">{taskList.teamTaskCount}</a>
                             </div>
                             <a href="#" className="item">My Team Tasks</a>
                         </li>
@@ -28,7 +28,15 @@ export default class TasksNavGroups extends React.Component {
                         <li>
                             <div className="list-counter-bucket">
                                 <a href="#" className="list-counter"
-                                   onclick="showFilterOptions(this); return false;">9</a>
+                                   onclick="showFilterOptions(this); return false;">{taskList.deptTaskCount}</a>
+                            </div>
+                            <a href="#" className="item">My Department Tasks</a>
+                        </li>
+
+                        <li>
+                            <div className="list-counter-bucket">
+                                <a href="#" className="list-counter"
+                                   onclick="showFilterOptions(this); return false;">{taskList.delegatedTaskCount}</a>
                             </div>
                             <a href="#" className="item">Delegated Tasks</a>
                         </li>
@@ -36,7 +44,7 @@ export default class TasksNavGroups extends React.Component {
                         <li>
                             <div className="list-counter-bucket">
                                 <a href="#" className="list-counter"
-                                   onclick="showFilterOptions(this); return false;">132</a>
+                                   onclick="showFilterOptions(this); return false;">{taskList.unassignedTaskCount}</a>
                             </div>
                             <a href="#" className="item">Unassigned Tasks</a>
                         </li>
