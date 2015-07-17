@@ -28,6 +28,41 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
 		var billingRows = this.getEl('billing_rows');
 
+    var initDateTimePicker = function(){
+      $('input.DateTime:not(.datetimepickerinit), .DateTime input:not(.datetimepickerinit)', wrap).each(function () {
+        $(this).addClass('datetimepickerinit');
+        $(this).datetimepicker({
+          format: 'YYYY-MM-DD HH:mm',
+          widgetParent: $(this).parent().css('position', 'relative'),
+          icons: {
+            time: 'fa fa-clock-o',
+            date: 'fa fa-calendar-o',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right'
+          }
+        });
+      });
+
+      $('.Date input:not(.datetimepickerinit)', wrap).each(function () {
+        $(this).addClass('datetimepickerinit');
+        $(this).datetimepicker({
+          format: 'YYYY-MM-DD',
+          widgetParent: $(this).parent().css('position', 'relative'),
+          icons: {
+            time: 'fa fa-clock-o',
+            date: 'fa fa-calendar-o',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right'
+          }
+        });
+      });
+    };
+    initDateTimePicker();
+
 		typeInputs.change(function() { self.updateBillingForm(true); });
 		this.updateBillingForm(true);
 
@@ -71,6 +106,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				if (json.inserted && self.addBillingRow) {
 					self.addBillingRow(json.html);
 					self.resetBillingForm();
+          initDateTimePicker();
 				} else if(json.invalid_custom_fields) {
 					$err.children().remove();
 					for (var i in json.invalid_custom_fields) {
@@ -138,6 +174,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				if (json.updated && json.html) {
 					wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
 					wrap.find('tr#ticket-charge-row-' + id).replaceWith(json.html);
+          initDateTimePicker();
 				}else if(json.invalid_custom_fields) {
 					var $err = wrap.find('.ticket-charge-edit-errors-' + id).show().find('.form-errors');
 					$err.children().remove();

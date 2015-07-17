@@ -99,7 +99,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this['date_created'] = new \DateTime();
+        $this['date_created'] = new \DateTime('now', new \DateTimeZone('UTC'));
         $this->custom_data = new ArrayCollection();
     }
 

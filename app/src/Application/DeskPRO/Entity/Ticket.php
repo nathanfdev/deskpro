@@ -1219,7 +1219,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * @param  string            $comment
      * @return TicketCharge|null
      */
-    public function addCharge(Person $agent, $time, $amount = null, $comment = '')
+    public function addCharge(Person $agent, $time, $amount = null)
     {
         if ($time !== null) {
             $time = intval($time);
@@ -1241,7 +1241,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $charge = new TicketCharge();
         $charge->charge_time = $time;
         $charge->amount = $amount;
-        $charge->comment = strval($comment);
         $charge->ticket = $this;
         $charge->person = $this->person;
         $charge->organization = $this->organization;

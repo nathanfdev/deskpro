@@ -13,7 +13,7 @@
 		{% endif %}
 	</td>
 	<td>{{ charge.agent.name }}</td>
-	<td><time class="timeago" datetime="{{charge.date_created|date('c', 'UTC')}}">{{charge.date_created|date('fulltime')}}</time></td>
+	<td><time class="timeago" datetime="{{charge.date_created|date('c', app.user.timezone)}}">{{charge.date_created|date('fulltime', app.user.timezone)}}</time></td>
 
 	{% for f in billing_fields[charge.id] %}
 		<td>
@@ -62,6 +62,11 @@
                     </span>
                 </li>
             {% endif %}
+            <li>
+                <span>
+                    <input type="text" class="DateTime" name="date_created" value="{{ charge.date_created|date('Y-m-d H:i', app.user.timezone) }}" />
+                </span>
+            </li>
         </ul>
     </td>
     {% if ticket_perms.modify_billing %}

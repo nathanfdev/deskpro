@@ -2456,10 +2456,14 @@ class TicketController extends AbstractController
             );
         }
 
-        $comment = $this->in->getString('billing_comment');
+        if (!$charge = $ticket->addCharge($this->person, $time, $amount)) {
+            return $this->createJsonResponse(array('inserted' => false));
+        }
 
-        $charge = $ticket->addCharge($this->person, $time, $amount, $comment);
         $ticket_log = new TicketLog();
+        $this->em->persist($charge);
+        $this->em->persist($ticket_log);
+
         $ticket_log->ticket      = $ticket;
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'new_billing';
@@ -2469,72 +2473,63 @@ class TicketController extends AbstractController
             'new_time'	   => $charge->charge_time,
         );
 
-        $this->em->persist($charge);
-        $this->em->persist($ticket_log);
+        $field_manager = $this->container->getBillingFieldManager();
+        $custom_fields = @$_POST['custom_fields'] ?: array();
 
-        if ($charge) {
-
-            $field_manager = $this->container->getBillingFieldManager();
-            $custom_fields = @$_POST['custom_fields'] ?: array();
-
-            $invalid_custom_fields = array();
-            $is_valid = true;
-            foreach ($field_manager->getFields() as $field) {
-                $errors = $field->getHandler()->validateFormData($custom_fields);
-                foreach ($errors as $code) {
-                    $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
-                    $is_valid = false;
-                }
+        $invalid_custom_fields = array();
+        $is_valid = true;
+        foreach ($field_manager->getFields() as $field) {
+            $errors = $field->getHandler()->validateFormData($custom_fields);
+            foreach ($errors as $code) {
+                $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
+                $is_valid = false;
             }
-            if (!$is_valid) {
-                return $this->createJsonResponse(array(
-                    'inserted' => false,
-                    'invalid_custom_fields' => $invalid_custom_fields,
-                ));
-            }
-
-            $this->em->persist($ticket);
-            $this->em->flush();
-
-            if (!empty($custom_fields)) {
-                $field_manager->saveFormToObject($custom_fields, $charge);
-                $changes = $charge->getStateChangeRecorder()->getChanges();
-
-                $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
-                $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
-                $obj = unserialize($serialized);
-                $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
-                $method->setAccessible(true);
-                $details = $ticket_log->details;
-
-                foreach ($changes as $change) {
-                    if (0 !== strpos($change->getField(), 'custom_data.')) continue;
-                    $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
-                }
-                $ticket_log->details = $details;
-            }
-            $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
-
-            // todo need a transaction joined with above
-            $details = $ticket_log->details;
-            $details['charge_id'] = $charge->id;
-            $ticket_log->details = $details;
-            $this->em->flush();
-
-            return $this->createJsonResponse(array(
-                'inserted' => true,
-                'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
-                    'ticket_perms' => $this->_getTicketPerms($ticket),
-                    'ticket' => $ticket,
-                    'charge' => $charge,
-                    'billing_fields' => $billing_fields,
-                    'ticket_perms' => $this->_getTicketPerms($ticket),
-                ))
-            ));
-
-        } else {
-            return $this->createJsonResponse(array('inserted' => false));
         }
+        if (!$is_valid) {
+            return $this->createJsonResponse(array(
+                'inserted' => false,
+                'invalid_custom_fields' => $invalid_custom_fields,
+            ));
+        }
+
+        $this->em->persist($ticket);
+        $this->em->flush();
+
+        if (!empty($custom_fields)) {
+            $field_manager->saveFormToObject($custom_fields, $charge);
+            $changes = $charge->getStateChangeRecorder()->getChanges();
+
+            $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+            $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+            $obj = unserialize($serialized);
+            $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+            $method->setAccessible(true);
+            $details = $ticket_log->details;
+
+            foreach ($changes as $change) {
+                if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+            }
+            $ticket_log->details = $details;
+        }
+        $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
+
+        // todo need a transaction joined with above
+        $details = $ticket_log->details;
+        $details['charge_id'] = $charge->id;
+        $ticket_log->details = $details;
+        $this->em->flush();
+
+        return $this->createJsonResponse(array(
+            'inserted' => true,
+            'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+                'ticket' => $ticket,
+                'charge' => $charge,
+                'billing_fields' => $billing_fields,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+            ))
+        ));
     }
 
     ############################################################################
@@ -2585,9 +2580,6 @@ class TicketController extends AbstractController
             + $this->in->getUint('seconds')
         );
 
-        $comment = $this->in->getString('billing_comment');
-
-        $charge->comment = $comment;
         if ($charge->charge_time) {
             $charge->charge_time = $time;
         } else {
@@ -2600,6 +2592,21 @@ class TicketController extends AbstractController
         $ticket_log->action_type = 'modify_billing';
         $ticket_log->id_object   = $charge->id;
         $details = array();
+
+        if ($created = $this->in->getString('date_created')) {
+            try {
+                $dt = new \DateTime($created, new \DateTimeZone($this->person->getTimezone()));
+                $dt->setTimezone(new \DateTimeZone('UTC'));
+                $details['old_created'] = $charge->date_created;
+                $details['new_created'] = $dt;
+                $charge->date_created = $dt;
+
+            } catch(\Exception $e) {
+                return $this->createJsonResponse(array(
+                    'success' => false,
+                ));
+            }
+        }
 
         if ($old_amount !== $charge->amount) {
             $details['old_amount'] = $old_amount;
@@ -2674,6 +2681,7 @@ class TicketController extends AbstractController
             'charge_id'    => $charge->id,
             'old_amount'   => $charge->amount,
             'old_time'     => $charge->charge_time,
+            'old_created'  => $charge->date_created,
         );
         foreach ($charge->custom_data as $data) {
             /** @var $data Entity\CustomDataBilling */
