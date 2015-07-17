@@ -139,7 +139,6 @@ abstract class SearcherAbstract implements PersonContextInterface
         $this->getSqlParts();
         return $this->used_person_context > 0;
     }
-    }
 
     /**
      * @param Logger $logger
