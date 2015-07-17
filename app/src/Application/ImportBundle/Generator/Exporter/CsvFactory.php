@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\Csv\CsvReader;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Csv data exporter factory
@@ -42,7 +43,7 @@ class CsvFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(BaseConfig $config)
+    static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
         /** @var CsvReaderInterface $reader */
         $reader = new CsvReader($config);

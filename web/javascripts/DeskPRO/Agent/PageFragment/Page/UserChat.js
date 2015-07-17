@@ -954,7 +954,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
         };
 
     promise = promises.shift();
-    promise && $.when(promise).then(handle, handle);
+    if (promise) {
+      $.when(promise).then(handle, handle)
+    } else {
+      doSend();
+    }
 	},
 
 	sendInvite: function(agent_id) {

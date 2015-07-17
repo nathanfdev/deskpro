@@ -604,20 +604,54 @@ class TasksController extends BaseController implements ClassResourceInterface
         $allowedFilters = array(
             'assigned' => 'person',
             'assigned_team' => 'team',
-            'assigned_department' => 'department'
+            'assigned_department' => 'department',
+            'creator' => 'creator',
         );
 
         foreach($request->query->all() as $item => $value) {
             if (in_array($item, array_keys($allowedFilters))) {
+                // Add a NOT indicator
+                $not = false;
+                if (strpos($value, 'not_') === 0) {
+                    $not = true;
+                    $value = substr($value, 4);
+                }
 
-                // Clean the IDs, including those in a comma-separated string
-                $ids = explode(',', $value);
-                $ids = array_map(function($id) {
-                    return (int) $id;
-                }, $ids);
-                $value = implode(',', $ids);
+                // Default to null
+                $returnValue = null;
 
-                $filter[$allowedFilters[$item]] = ($value === 'null') ? null : $value;
+                // If the value is set to 'me', get the current user's ID, teams and departments
+                if ($value === 'me') {
+                    $user = $this->getUser();
+                    switch($allowedFilters[$item]) {
+                        case 'team':
+                            $returnValue = implode(',', $user->getTeamIds());
+                            break;
+                        case 'department':
+                            // TODO perm_check
+                            $user->loadHelper('AgentPermissions');
+                            $returnValue = implode(',', $user->getAllowedDepartments());
+                            break;
+                        default:
+                            $returnValue = $user->getId();
+                    }
+                } else {
+                    if (!empty($value) && $value !== 'null') {
+                        // Clean the IDs, including those in a comma-separated string
+                        $ids = explode(',', $value);
+                        $ids = array_map(function($id) {
+                            return (int) $id;
+                        }, $ids);
+                        $returnValue = implode(',', $ids);
+                    }
+                }
+
+                // Add the not indicator back to the output
+                if ($not) {
+                    $returnValue = 'not_' . $returnValue;
+                }
+
+                $filter[$allowedFilters[$item]] = $returnValue;
             }
         }
 
@@ -631,6 +665,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     protected function getByAssignment($em, $filter)
     {
+        // Get the entity manager for tasks, and join the assigned table
         /** @var EntityManager $em */
         $query = $em->createQueryBuilder()->select('t')
             ->from('App:Task', 't')
@@ -638,15 +673,40 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         // Loop through to set where query
         foreach ($filter as $field => $value) {
-            $term = (strpos($value, ',') !== false) ? 'IN (:' . $field . ')' : ' = :' . $field;
-            $query = $query->andWhere('a.' . $field . ' ' . $term);
+
+            // Work out whether there was a "not" indicator
+            $not = false;
+            if (strpos($value, 'not_') === 0) {
+                $not = true;
+                $value = substr($value, 4);
+            }
+
+            // Default to checking if null (or not null)
+            $term = $not ? 'is NOT NULL' : 'is NULL';
+
+            if (!is_null($value)) {
+                // Otherwise, if it's an array check if it's in (or not in) the array
+                $term = $not ? 'NOT IN (:' . $field . ')' : 'IN (:' . $field . ')';
+
+                // If we don't have an array, check if it equals (or doesn't equal)
+                if (strpos($value, ',') === false) {
+                    $term = $not ? '!= :' : '= :';
+                    $term .= $field;
+                }
+
+                // Set the parameter
+                $query = $query->setParameter($field, $value);
+            }
+
+            // If the field is creator, we need the correct table
+            $table = $field === 'creator' ? 't.' : 'a.';
+
+            // Add the where clause to the query
+            $query = $query->andWhere($table . $field . ' ' . $term);
         }
 
-        // Loop through to set parameters;
-        foreach ($filter as $field => $value) {
-            $query = $query->setParameter($field, $value);
-        }
+        $query = $query->getQuery();
 
-        return $query->getQuery()->getResult();
+        return $query->getResult();
     }
 }

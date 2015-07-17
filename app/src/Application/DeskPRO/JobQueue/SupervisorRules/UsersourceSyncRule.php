@@ -87,7 +87,10 @@ class UsersourceSyncRule extends AbstractSupervisorRule
             }
         } else {
             // no sync jobs running or scheduled, fail the check
-            throw new JobSupervisorException('usersource sync is not scheduled to run');
+            $e = new JobSupervisorException('usersource sync is not scheduled to run');
+            $e->markDoNotReportIfFixed();
+
+            throw $e;
         }
     }
 

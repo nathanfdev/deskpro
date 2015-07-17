@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -50,6 +51,7 @@ use Orb\Util\Util;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -134,6 +136,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The users profile picture.
      *
      * @var \Application\DeskPRO\Entity\Blob
+     * @Serializer\Expose()
      */
     protected $picture_blob = null;
 
@@ -543,6 +546,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $cdc;
 
     /**
+     * @var TaskAssignment[]|ArrayCollection
+     * @Serializer\Expose()
+     */
+    protected $assigned_tasks;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -619,6 +628,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->department_permissions = new ArrayCollection();
         $this->teams = new ArrayCollection();
         $this->notes = new ArrayCollection();
+        $this->assigned_tasks = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -3066,6 +3076,23 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
     }
 
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Entity\TaskAssignment[]|ArrayCollection
+     */
+    public function getAssignedTasks()
+    {
+        return $this->assigned_tasks;
+    }
+
+    /**
+     * @param TaskAssignment $assignment
+     */
+    public function addAssignedTask(TaskAssignment $assignment)
+    {
+        $this->assigned_tasks->add($assignment);
+        $this->setModelField('assigned_tasks', $assignment);
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -3717,6 +3744,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             array(
                 'fieldName' => 'department_permissions',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+                'mappedBy' => 'person',
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName' => 'assigned_tasks',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAssignment',
                 'mappedBy' => 'person',
             )
         );

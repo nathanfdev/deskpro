@@ -51,17 +51,27 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         $this->setName('dp:install');
         $this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Unused (exists for legacy)");
-        $this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "The initial admin email");
-        $this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "The initial admin password");
+        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, "The initial admin email");
+        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, "The initial admin password");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //TODO remove for prod
+        echo "TODO chmod'ing cache dir, remove this in prod\n";
+        passthru("chmod -R 0777 " . escapeshellarg(DP_ROOT.'/sys/cache'));
+
         if (!$this->ensureNotInstalled()) {
             exit;
         }
 
-        if (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
+        $is_user = true;
+        if (!$input->getOption('admin-email') && !$input->getOption('admin-password')) {
+            $input->setOption('admin-email', 'admin@example.com');
+            $input->setOption('admin-password', Strings::random());
+            $is_user = false;
+
+        } elseif (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
             echo "Please specify --admin-email and --admin-password\n";
 
             return 1;
@@ -158,6 +168,14 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $this->getOrm()->persist($agent);
         $this->getOrm()->flush();
+
+        if (!$is_user) {
+            $label = new Entity\LabelPerson();
+            $label['label'] = 'not_user';
+            $agent->addLabel($label);
+            $this->getOrm()->persist($label);
+            $this->getOrm()->flush();
+        }
 
         $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
 

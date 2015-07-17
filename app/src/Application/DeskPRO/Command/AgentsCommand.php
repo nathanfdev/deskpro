@@ -58,7 +58,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     protected function configure()
     {
         $this->setName('dp:agents');
-        $this->addArgument('action', InputArgument::OPTIONAL, 'The action to perform: reset-password, make-admin, make-billing, whitelist-ip', 'list');
+        $this->addArgument('action', InputArgument::OPTIONAL, 'The action to perform: reset-password, make-admin, make-agent, make-billing, whitelist-ip', 'list');
         $this->addOption('value', 'u', InputOption::VALUE_REQUIRED, 'Optionally supply the value to set (for reset-password or whitelist-ip)', null);
         $this->addOption('agent-email', 'm', InputOption::VALUE_REQUIRED, 'Agent email address', null);
         $this->addOption('agent-id', 'd', InputOption::VALUE_REQUIRED, 'Agent ID', null);
@@ -73,19 +73,19 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     }
 
     /**
-     * @param string $caption
-     *
+     * @param  string                                  $caption
+     * @param  bool                                    $require_agent
      * @return \Application\DeskPRO\Entity\Person|null
      */
-    private function askForAgent($caption)
+    private function askForAgent($caption, $require_agent = true)
     {
         $helper = $this->getHelper('dialog');
 
         $email = $helper->ask($this->output, "$caption> ", '');
         $agent = $this->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
-        if (!$agent || !$agent->can_agent) {
-            $this->output->writeln("<error>There is no agent with that email address.</error>");
+        if (!$agent || ($require_agent && !$agent->can_agent)) {
+            $this->output->writeln("<error>There is no person with that email address.</error>");
 
             return;
         }
@@ -94,11 +94,11 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     }
 
     /**
-     * @param string $caption
-     *
+     * @param  string                                  $caption
+     * @param  bool                                    $require_agent
      * @return \Application\DeskPRO\Entity\Person|null
      */
-    private function getAgentFromInput($caption)
+    private function getAgentFromInput($caption, $require_agent = true)
     {
         $input_id    = $this->input->getOption('agent-id');
         $input_email = $this->input->getOption('agent-email');
@@ -114,12 +114,12 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
                 $agent = $this->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($input_email);
             }
 
-            if (!$agent || !$agent->can_agent) {
+            if (!$agent || ($require_agent && !$agent->can_agent)) {
                 if ($input_id) {
-                    $this->output->writeln("<error>There is no agent with that ID.</error>");
+                    $this->output->writeln("<error>There is no person with that ID.</error>");
                 }
                 if ($input_email) {
-                    $this->output->writeln("<error>There is no agent with that email address.</error>");
+                    $this->output->writeln("<error>There is no person with that email address.</error>");
                 }
 
                 return;
@@ -129,7 +129,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
             return $agent;
         } else {
-            return $this->askForAgent($caption);
+            return $this->askForAgent($caption, $require_agent);
         }
     }
 
@@ -149,6 +149,8 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
                 return $this->resetPasswordAction();
             case 'make-admin':
                 return $this->makeAdminAction();
+            case 'make-agent':
+                return $this->makeAgentAction();
             case 'make-billing':
                 return $this->makeBillingAction();
             case 'whitelist-ip':
@@ -214,6 +216,31 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         $this->getContainer()->getEm()->flush();
 
         $this->output->writeln("The password for {$agent->display_name} <$agent->email_address> has been reset.");
+
+        return 0;
+    }
+
+    /**
+     * @return int
+     */
+    private function makeAgentAction()
+    {
+        $agent = $this->getAgentFromInput("Enter the email address of the user you want to promote to an agent", false);
+        if (!$agent) {
+            return 1;
+        }
+
+        if ($agent->is_agent) {
+            $this->output->writeln("{$agent->display_name} <$agent->email_address> is already an agent");
+            return 0;
+        }
+
+        $agent->is_agent = true;
+        $agent->can_admin = true;
+        $this->getContainer()->getEm()->persist($agent);
+        $this->getContainer()->getEm()->flush();
+
+        $this->output->writeln("{$agent->display_name} <$agent->email_address> has been promoted to agent");
 
         return 0;
     }

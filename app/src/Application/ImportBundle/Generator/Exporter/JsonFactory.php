@@ -29,7 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\Json\JsonReader;
-use Application\ImportBundle\Reader\Json\JsonReaderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Json data exporter factory
@@ -42,7 +42,7 @@ class JsonFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(BaseConfig $config)
+    static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
         $reader = new JsonReader($config);
         $parsers = new Parser\Collection();

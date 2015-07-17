@@ -1889,28 +1889,39 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1430576963'
 	),
 
-	1433777718 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1433777718.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1433777718'
 	1432745383 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/05/Build1432745383.php',
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1432745383'
 	),
 
-	1434098064 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1434098064.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1434098064'
 	1433180212 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1433180212.php',
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1433180212'
 	),
 
-	1434551245 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1434551245.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1434551245'
 	1433515837 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1433515837.php',
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1433515837'
+	),
+
+	1433777718 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1433777718.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1433777718'
+	),
+
+	1434098064 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1434098064.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1434098064'
+	),
+
+	1434551245 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1434551245.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1434551245'
+	),
+
+	1435155110 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1435155110.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1435155110'
 	),
 
 );

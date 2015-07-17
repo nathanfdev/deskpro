@@ -1075,7 +1075,7 @@ define [
 
     getCheckOrgId: (options = {}) ->
       options.propName = 'id'
-      options.operators = ['is', 'not']
+      options.operators = ['is', 'not', 'isset', 'not_isset']
       options.url = '/organizations'
       options.map = (data) ->
         id: data.organization?.id

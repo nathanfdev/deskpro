@@ -34,8 +34,12 @@
 					<tbody>
 					<tr>
 						<td>{{ ng_var('sync_log.date_start | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
-						<td>{{ ng_var('sync_log.status') }} <i class="spinner-flat"
-															   ng-if="sync_log.status == 'pending'"></i></td>
+						<td>{{ ng_var('sync_log.status') }}
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="right"
+								  tooltip="{{ phrase('admin.usersources.sync_error_tooltip') }}"
+								  ng-show="sync_log.status == 'connection error'">
+								<i class="fa fa-question"></i></span>
+							<i class="spinner-flat" ng-if="sync_log.status == 'pending'"></i></td>
 						<td>{{ ng_var('sync_log.phase_1_time_readable') }}</td>
 						<td>{{ ng_var('sync_log.record_count') }}</td>
 					</tr>
@@ -55,8 +59,14 @@
 					<tbody>
 					<tr>
 						<td>{{ ng_var('sync_log.date_start | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
-						<td>{{ ng_var('sync_log.status') }} <i class="spinner-flat"
-															   ng-if="sync_log.status == 'pending'"></i></td>
+						<td>
+							{{ ng_var('sync_log.status') }}
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="right"
+								  tooltip="{{ phrase('admin.usersources.sync_error_tooltip') }}"
+								  ng-show="sync_log.status == 'connection error'">
+								<i class="fa fa-question"></i></span>
+							<i class="spinner-flat" ng-if="sync_log.status == 'pending'"></i>
+						</td>
 						<td>{{ ng_var('sync_log.phase_1_time_readable') }} <i class="spinner-flat"
 																			  ng-if="sync_log.phase_1_time_readable == 'running now'"></i></td>
 						<td>{{ ng_var('sync_log.date_phase_2_start | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>

@@ -27,16 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Entity;
 use DateTimeZone;
 
 /**
- * People json file parser.
+ * People json file parser
  *
  * Class People
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class People extends AbstractParser
 {
@@ -75,11 +76,13 @@ final class People extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
@@ -92,10 +95,9 @@ final class People extends AbstractParser
     }
 
     /**
-     * Returns a person entity.
+     * Returns a person entity
      *
      * @param array $person
-     *
      * @return Entity\Person|null
      */
     private function exportPerson(array $person)
@@ -103,7 +105,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('ticket_'.$person['oid'])
+                ->setDestination('person_' . $person['oid'])
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])
@@ -135,18 +137,18 @@ final class People extends AbstractParser
 
             $custom_fields = $this->exportCustomFields($person['custom_fields']);
             foreach ($custom_fields as $custom_field) {
-                /* @var Entity\CustomField $custom_field */
+                /** @var Entity\CustomField $custom_field */
                 $entity->addCustomField($custom_field);
             }
 
             return $entity;
         }
 
-        return;
+        return null;
     }
 
     /**
-     * Returns record type reader config.
+     * Returns record type reader config
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
@@ -156,10 +158,9 @@ final class People extends AbstractParser
     }
 
     /**
-     * Check if person has all required columns.
+     * Check if person has all required columns
      *
      * @param array $person
-     *
      * @return bool
      */
     private function isPersonValid(array $person)

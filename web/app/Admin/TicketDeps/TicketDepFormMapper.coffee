@@ -50,7 +50,7 @@ define [
             form.trigger_actions.SendUserEmail.enabled = true
             form.trigger_actions.SendUserEmail.options = act.options
 
-            if ['helpdesk_name', 'site_name'].indexOf(form.trigger_actions.SendUserEmail.options.from_name) == -1
+            if ['helpdesk_name', 'site_name', 'performer'].indexOf(form.trigger_actions.SendUserEmail.options.from_name) == -1
               form.trigger_actions.SendUserEmail.options.from_name_custom = form.trigger_actions.SendUserEmail.options.from_name
               form.trigger_actions.SendUserEmail.options.from_name = 'custom'
 

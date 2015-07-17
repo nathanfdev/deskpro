@@ -115,6 +115,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      */
     public function __construct(Person $person)
     {
+        // TODO: Implement a better caching system. At the moment caching actually *hurts* performance
+        // which is why it's being disabled here:
+        $GLOBALS['DP_CONFIG']['disable_permissions_cache'] = true;
+
         $this->person = $person;
 
         $agent_data = App::$container->getAgentData();
@@ -316,7 +320,14 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     {
         $namel = strtolower($name);
 
-        if (preg_match('#Checker$#', $name)) {
+        if (isset($this->loaders[$namel])) {
+            return $this->loaders[$namel];
+        }
+        if (isset($this->checkers[$namel])) {
+            return $this->checkers[$namel];
+        }
+
+        if (substr($name, -7) === 'Checker') {
             if (!isset($this->checkers[$namel])) {
                 $class = 'Application\\DeskPRO\\People\\PermissionChecker\\'.$name;
                 if (!$class) {
@@ -347,7 +358,15 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      */
     public function hasPerm($name)
     {
-        if ($this->admin_god_mode && in_array($name, array('articles.use', 'feedback.use', 'downloads.use', 'news.use', 'chat.use'))) {
+        static $god_mode_names = array(
+            'articles.use' => true,
+            'feedback.use' => true,
+            'downloads.use' => true,
+            'news.use' => true,
+            'chat.use' => true
+        );
+
+        if ($this->admin_god_mode && isset($god_mode_names[$name])) {
             return true;
         }
 

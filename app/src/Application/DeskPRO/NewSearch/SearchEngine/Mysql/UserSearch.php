@@ -243,6 +243,7 @@ class UserSearch implements UserSearchInterface
                     (tickets.person_id = ?
                     OR tickets_participants.person_id = ?
                     OR tickets.organization_id = ?)
+                    AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     AND ($search_places)
                 ORDER BY tickets.date_status DESC, tickets.date_created DESC
                 LIMIT $limit
@@ -263,6 +264,7 @@ class UserSearch implements UserSearchInterface
                 WHERE
                     (tickets.person_id = ?
                     OR tickets_participants.person_id = ?)
+                    AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     AND ($search_places)
                 ORDER BY tickets.date_status DESC, tickets.date_created DESC
                 LIMIT $limit

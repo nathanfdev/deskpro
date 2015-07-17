@@ -5,6 +5,9 @@ export default keyMirror({
     LOAD_PROJECTS: null,
     LOAD_MY_TASKS: null,
     LOAD_TEAM_TASKS: null,
+    LOAD_DEPARTMENT_TASKS: null,
     LOAD_DELEGATED_TASKS: null,
-    LOAD_UNASSIGNED_TASKS: null
+    LOAD_UNASSIGNED_TASKS: null,
+    LOAD_AGENTS: null,
+    LOAD_LABELS: null
 });

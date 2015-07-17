@@ -116,7 +116,7 @@ class SyncManager implements SyncerInterface
         return false;
     }
 
-    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         if ($this->isSyncable($usersource) && $syncer = $this->getSyncerForUsersource($usersource)) {
             return $syncer->refreshAll($usersource, $cursor, $pause_check);
@@ -331,5 +331,13 @@ class SyncManager implements SyncerInterface
         } else {
             $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array());
         }
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEm()
+    {
+        return $this->em;
     }
 }

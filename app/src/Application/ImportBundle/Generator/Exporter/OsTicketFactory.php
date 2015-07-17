@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * OsTicket data exporter factory
@@ -41,7 +42,7 @@ class OsTicketFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(BaseConfig $config)
+    static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
         $reader = OsTicketReaderFactory::createReader($config);
         $parsers = new Parser\Collection();

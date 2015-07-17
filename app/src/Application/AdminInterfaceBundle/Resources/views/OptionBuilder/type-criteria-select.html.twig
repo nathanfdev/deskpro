@@ -30,7 +30,7 @@
 					</select>
 					<select
 						ng-if="!multiselect"
-						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched'"
+						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched' || model.op == 'isset' || model.op == 'not_isset'"
 						ui-select2
 						ng-model="model.value"
 						style="min-width: 140px"
@@ -39,7 +39,7 @@
 					</select>
 					<select
 						ng-if="multiselect"
-						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched'"
+						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched' || model.op == 'isset' || model.op == 'not_isset'"
 						multiple
 						ui-select2
 						ng-model="model.value"
