@@ -6,17 +6,15 @@ export default class TasksNavLabels extends React.Component {
     render() {
         const {labelList} = this.props;
 
-        return (<section className="sidebar-list tasks-nav-labels">
+        return (<section className="sidebar-list sidebar-list-labels tasks-nav-labels">
             <div className="list-sidebar-title">
                 Labels
             </div>
 
-            <ul>{labelList.labelList ? labelList.labelList.map(function(object) {
-                return <li key={object.id}>
-                    <a href="#" className="item"><i className="fa fa-tag"/> {object.label}</a>
-                </li>;
+            <div className="sidebar-label-list">{labelList.labelList ? labelList.labelList.map(function(object) {
+                return <a href="#" className="item-label" key={object.id}>{object.label}</a>;
             }) : ''}
-            </ul>
-                </section>);
+            </div>
+        </section>);
     }
 }
