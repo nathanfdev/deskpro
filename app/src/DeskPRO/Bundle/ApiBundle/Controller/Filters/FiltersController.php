@@ -48,6 +48,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Pagerfanta;
+
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 
@@ -214,26 +217,26 @@ class FiltersController extends BaseController
     public function postReorderAction(Request $request)
     {
         $data = $request->request->all();
-        
+
         if (!is_array($data) || !isset($data['display_order'])) {
             throw new NotFoundHttpException();
         }
-        
+
         $results = array();
         foreach ($data['display_order'] as $order => $filter_id) {
             $filter = $this->getEm()->find('App:TicketFilter', $filter_id);
-            
+
             if (!$filter) {
                 continue;
             }
-            
+
             $filter->setDisplayOrder($order);
             $this->getEm()->persist($filter);
             $results[$order] = $filter_id;
         }
-        
+
         $this->getEm()->flush();
-        
+
         return View::create(
             $this->createRepresentation($results),
             Response::HTTP_OK
@@ -273,6 +276,55 @@ class FiltersController extends BaseController
         }
 
         return $this->handleFormSubmission($request, $filter);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get a list of filters",
+     *      parameters={
+     *          {
+     *              "name"="page",
+     *              "requirement"="\d+",
+     *              "description"="the page you are requesting",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="count",
+     *              "requirement"="\d+",
+     *              "description"="results per page",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/ticket_filters/{id}/tickets", name="api_ticket_filter_tickets_get")
+     */
+    public function getTicketFilterTickets(Request $request, $id)
+    {
+        $filters = $this->get('data.filters');
+        $filter = $filters->getFilter($id);
+
+        if (!$filter) {
+            throw $this->createNotFoundException();
+        }
+
+        // Let's retrieve the tickets for this filter.
+        $engine = $this->get('term_engine.dbal_ticket_filters.engine');
+        $context = new TermEngineContext($this->getUser());
+        $tickets_query = $engine->evaluate($filter, $context);
+
+        $tickets_query->setCount($request->query->get('count', 10));
+        $tickets_query->setPage($request->query->get('page', 1));
+
+        return View::create(
+            $this->createRepresentation($tickets_query->fetchAll()),
+            Response::HTTP_OK
+        );
     }
 
     /**
