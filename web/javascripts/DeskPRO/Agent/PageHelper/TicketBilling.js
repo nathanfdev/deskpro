@@ -59,7 +59,9 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 		this.getEl('billing_save').click(function() {
 			progress.show();
-			self.getEl('billing_save_errors').hide();
+      var $err = self.getEl('billing_save_errors').hide()
+        , id = $(this).data('charge-id')
+        ;
 			$.ajax({
 				url: $(this).data('submit-url'),
 				data: form.find('input, textarea, select').serialize(),
@@ -70,7 +72,6 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 					self.addBillingRow(json.html);
 					self.resetBillingForm();
 				} else if(json.invalid_custom_fields) {
-					var $err = self.getEl('billing_save_errors');
 					$err.children().remove();
 					for (var i in json.invalid_custom_fields) {
 						$err.append('<li>' + json.invalid_custom_fields[i] + '</li>');
@@ -83,7 +84,9 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		});
 
 		wrap.on('click', 'a.billing-delete', function(e) {
-			var $tr = $(this).closest('tr');
+			var id = $(this).data('charge-id')
+        , table = $(this).closest('table')
+        ;
 			e.preventDefault();
 
 			if (confirm(billingRows.data('delete-confirm'))) {
@@ -93,13 +96,8 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 					dataType: 'json'
 				}).done(function (json) {
 					if (json.success) {
-						$tr.siblings('.ticket-charge-edit-' + $tr.data('charge').id).remove();
-						$tr.siblings('.ticket-charge-edit-errors' + $tr.data('charge').id).remove();
-						var table = $this.closest('table');
-
-						$(this).closest('tr').remove();
-						if (!table.find('tbody tr').length)
-						{
+						wrap.find('tr.ticket-charge-edit-' + id + ', tr#ticket-charge-row-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
+						if (!table.find('tbody tr').length) {
 							table.hide();
 						}
 					}
@@ -109,26 +107,27 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 		wrap.on('click', 'a.billing-edit', function(e) {
 			e.preventDefault();
-			var row = $(this).closest('tr'),
-					charge = row.data('charge');
-			row.hide().siblings('.ticket-charge-edit-' + charge.id).show();
-			self.populateForm(row.siblings('.ticket-charge-edit-' + charge.id), charge);
+      var id = $(this).data('charge-id')
+        , charge = wrap.find('tr#ticket-charge-row-' + id).hide().data('charge')
+        ;
+      self.populateForm(wrap.find('.ticket-charge-edit-' + id).show(), charge);
 			return false;
 		});
 
 		wrap.on('click', 'a.billing-edit-discard', function(e) {
 			e.preventDefault();
-			var $tr = $(this).closest('tr').prev().prev().show();
-			$tr.siblings('.ticket-charge-edit-' + $(this).data('charge-id')).hide();
+      var id = $(this).data('charge-id');
+      wrap.find('tr#ticket-charge-row-' + id).show();
+      wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).hide();
 			return false;
 		});
 
 		wrap.on('click', 'a.billing-edit-save', function(e) {
 			e.preventDefault();
-			var id = $(this).data('charge-id');
-			var $tr = $(this).closest('tr').prev(),
-			$form = $tr.siblings('.ticket-charge-edit-' + id);
-			$tr.siblings('.ticket-charge-edit-errors-' + id).hide();
+			var id = $(this).data('charge-id')
+        , $form = wrap.find('.ticket-charge-edit-' + id)
+        ;
+			wrap.find('.ticket-charge-edit-errors-' + id).hide();
 
 			$.ajax({
 				url: $(this).attr('href'),
@@ -137,15 +136,15 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				dataType: 'json'
 			}).done(function(json) {
 				if (json.updated && json.html) {
-					$tr.siblings('.ticket-charge-edit-' + id).remove();
-					$tr.replaceWith(json.html);
+					wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
+					wrap.find('tr#ticket-charge-row-' + id).replaceWith(json.html);
 				}else if(json.invalid_custom_fields) {
 					var $err = wrap.find('.ticket-charge-edit-errors-' + id).show().find('.form-errors');
 					$err.children().remove();
 					for (var i in json.invalid_custom_fields) {
 						$err.append('<li>' + json.invalid_custom_fields[i] + '</li>');
 					}
-					console.log($err);
+          $err.show();
 				}
 
 			}).always(function() {

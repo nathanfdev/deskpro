@@ -1,4 +1,4 @@
-<tr data-charge="{{ charge.toArray() | json_encode() }}">
+<tr id="ticket-charge-row-{{ charge.id }}" data-charge="{{ charge.toArray() | json_encode() }}">
 
 	<td>
 		{% if charge.charge_time %}
@@ -24,8 +24,16 @@
 	{% endfor %}
 
   {% if ticket_perms.modify_billing %}
-    <td class="edit"><span class="hidden-edit-mode"><a class="billing-edit">Edit</a></span><span class="visible-edit-mode"><a href="{{ path('agent_ticket_editcharge', {ticket_id: ticket.id, charge_id: charge.id}) }}" class="billing-edit-save">Save</a> | <a class="billing-edit-discard">Discard</a></span></td>
-    <td class="delete"><a href="{{ path('agent_ticket_chargedelete', {ticket_id: ticket.id, charge_id: charge.id, security_token: security_token('delete_charge'), '_rt': security_token('request_token', 10800)}) }}" class="billing-delete">{{ phrase('agent.general.delete') }}</a></td>
+        <td class="edit">
+            <span>
+                <a class="billing-edit" data-charge-id="{{ charge.id }}">Edit</a>
+            </span>
+        </td>
+        <td class="delete">
+            <a href="{{ path('agent_ticket_chargedelete', {ticket_id: ticket.id, charge_id: charge.id, security_token: security_token('delete_charge'), '_rt': security_token('request_token', 10800)}) }}" class="billing-delete" data-charge-id="{{ charge.id }}">
+                {{ phrase('agent.general.delete') }}
+            </a>
+        </td>
   {% endif %}
 </tr>
 <tr style="display: none;" class="ticket-charge-edit-errors-{{ charge.id }}">
@@ -61,7 +69,9 @@
         <span><a href="{{ path('agent_ticket_editcharge', {ticket_id: ticket.id, charge_id: charge.id}) }}" class="billing-edit-save" data-charge-id="{{ charge.id }}">Save</a> | <a class="billing-edit-discard" data-charge-id="{{ charge.id }}">Discard</a></span>
     </td>
     <td class="delete">
-        <a href="{{ path('agent_ticket_chargedelete', {ticket_id: ticket.id, charge_id: charge.id, security_token: security_token('delete_charge'), '_rt': security_token('request_token', 10800)}) }}" class="billing-delete" data-charge-id="{{ charge.id }}">{{ phrase('agent.general.delete') }}</a>
+        <a href="{{ path('agent_ticket_chargedelete', {ticket_id: ticket.id, charge_id: charge.id, security_token: security_token('delete_charge'), '_rt': security_token('request_token', 10800)}) }}" class="billing-delete" data-charge-id="{{ charge.id }}">
+            {{ phrase('agent.general.delete') }}
+        </a>
     </td>
     {% endif %}
 </tr>
