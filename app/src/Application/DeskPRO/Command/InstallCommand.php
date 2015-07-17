@@ -57,6 +57,10 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //TODO remove for prod
+        echo "TODO chmod'ing cache dir, remove this in prod\n";
+        passthru("chmod -R 0777 " . escapeshellarg(DP_ROOT.'/sys/cache'));
+
         if (!$this->ensureNotInstalled()) {
             exit;
         }
