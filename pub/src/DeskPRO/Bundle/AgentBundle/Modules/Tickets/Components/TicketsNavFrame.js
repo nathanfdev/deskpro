@@ -1,28 +1,25 @@
 import React from "react";
 
-import * as TicketActions from "../Actions/TicketsListActions";
-
-import { connect } from 'redux/react';
-
 import TicketsTabFilters from "./TicketsTabFilters";
 import TicketsTabLabels from "./TicketsTabLabels";
 import TicketsTabFlags from "./TicketsTabFlags";
 
-/* @connect(state => {
+import { connect } from 'redux/react';
+import { bindActionCreators } from 'redux';
+import * as TicketActions from "../Actions/TicketsListActions";
+
+@connect(state => ({
   filter_sets_list: state.filter_sets_list
-})*/
-export default class TicketsNavFrame extends React.Component {
+}))
+export default class TicketsNavContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showTab: "filters"
     };
     
-    console.log(this.props);
-    
-    //const { dispatch } = this.props;
-    
-    //dispatch(TicketActions.loadTicketSets());
+    const { dispatch } = this.props;
+    dispatch(TicketActions.loadFilterSets());
   }
   
   changeTab(newTab) {
@@ -48,6 +45,8 @@ export default class TicketsNavFrame extends React.Component {
   }
   
   render() {
+    const { filter_sets_list, dispatch } = this.props;
+    
     let tab = null;
     switch(this.state.showTab) {
     case "labels":
@@ -58,7 +57,7 @@ export default class TicketsNavFrame extends React.Component {
       break;
     case "filters":
     default:
-      tab = <TicketsTabFilters />
+      tab = <TicketsTabFilters filterSetsList={filter_sets_list} {...bindActionCreators(TicketActions, dispatch)} />
       break;
     }
     
@@ -80,9 +79,9 @@ export default class TicketsNavFrame extends React.Component {
             {this.renderTab('labels', 'Labels')}
             {this.renderTab('flags', 'Flags')}
           </ul>
-      
+    
           {tab}
-      
+    
         </aside>
       </section>
     );

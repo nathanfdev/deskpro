@@ -199,6 +199,78 @@ class TicketFilterSetsController extends BaseController
         );
     }
 
+    /**
+     * @ApiDoc(
+     *      description="get a filter set count",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="group_by",
+     *              "requirement"=".+",
+     *              "description"="the grouping order you want",
+     *              "dataType"="string",
+     *              "required"=false
+     *          },
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     * )
+     * @Get("/ticket_filter_sets/{id}/count")
+     */
+    public function getTicketsCountAction(Request $request, $id)
+    {
+        $set = $this->getEm()->find('App:TicketFilterSet', $id);
+
+        if (!$set) {
+            throw $this->createNotFoundException();
+        }
+
+        $total = 0;
+
+        $filters = $this->get('data.filters');
+        $filter = $filters->getFilter($id);
+        foreach($set->filters as $filter) {
+
+        }
+
+
+        // Let's retrieve the tickets for this filter.
+        $engine = $this->get('term_engine.dbal_ticket_filters.engine');
+        $conn = $this->get('database_connection');
+
+        $context = new TermEngineContext($this->getUser());
+        // Applying the group-by clauses.
+        $groupby = $request->query->get('group_by');
+        if ($groupby) {
+            $context->addGroupByFromString($groupby);
+        }
+
+        $tickets_query = $engine->evaluate($filter, $context);
+
+        if ($groupby) {
+            $view_factory = $this->get('api_view_representation_factory');
+            return View::create(
+                $view_factory->createRepresentation($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
+                Response::HTTP_OK
+            );
+        } else {
+            return View::create(
+                $this->createRepresentation(array(
+                    'count' => $tickets_query->fetchCount()
+                )),
+                Response::HTTP_OK
+            );
+        }
+    }
+
     protected function handleFormSubmission(Request $request, TicketFilterSet $set)
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;

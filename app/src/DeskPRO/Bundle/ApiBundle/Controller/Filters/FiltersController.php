@@ -141,6 +141,29 @@ class FiltersController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="get a filter's count",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="group_by",
+     *              "requirement"=".+",
+     *              "description"="the grouping order you want",
+     *              "dataType"="string",
+     *              "required"=false
+     *          },
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     * )
      * @Get("/ticket_filters/{id}/count")
      */
     public function getTicketsCountAction(Request $request, $id)
