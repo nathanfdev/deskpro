@@ -2517,6 +2517,7 @@ class TicketController extends AbstractController
         // todo need a transaction joined with above
         $details = $ticket_log->details;
         $details['charge_id'] = $charge->id;
+        $ticket_log->id_object = $charge->id;
         $ticket_log->details = $details;
         $this->em->flush();
 
