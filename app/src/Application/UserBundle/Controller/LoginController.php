@@ -1070,8 +1070,11 @@ HTML;
         $message = $this->container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
         $message->setTo($email, $person->getDisplayName());
+        $this->container->getTranslator()->setDefaultPersonContext($person);
+        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+            $message->prepare();
+        });
         $this->container->getMailer()->send($message);
-        $this->container->getTranslator()->setDefaultPersonContext($this->person);
 
         if ($_format == 'json') {
             return $this->createJsonResponse(array('success' => 1));
