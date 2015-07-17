@@ -95,7 +95,6 @@ class PeopleController extends BaseController implements ClassResourceInterface
             $people = $em->getRepository('DeskPRO:Person')->findAll();
         }
 
-
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 

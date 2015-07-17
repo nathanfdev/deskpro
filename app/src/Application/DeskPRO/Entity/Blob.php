@@ -39,6 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * A blob is just a pointer to data.
@@ -62,6 +63,7 @@ use Orb\Util\Strings;
  * @property int $dim_h
  * @property \DateTime $date_created
  * @property bool $is_temp
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -71,6 +73,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var int
+     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -326,6 +329,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Get the standard download URL for this blob.
+     *
+     * @Serializer\VirtualProperty
      *
      * @param bool $absolute
      *

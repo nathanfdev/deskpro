@@ -6,9 +6,8 @@ export default class TasksNavProjects extends React.Component {
     render() {
         const {projectList} = this.props;
 
-        return (<section className="tasks-nav-projects">
-                <div className="list-sidebar-title">Projects <a href="#" className="title-down"><i
-                    className="fa fa-caret-down"/></a></div>
+        return (<section className="sidebar-list tasks-nav-projects">
+                <div className="list-sidebar-title">Projects</div>
                 <ul>{projectList.projectList ? projectList.projectList.map(function(object) {
                     return <li key={object.id}>
                         <div className="list-counter-bucket">

@@ -8,5 +8,6 @@ export default keyMirror({
     LOAD_DEPARTMENT_TASKS: null,
     LOAD_DELEGATED_TASKS: null,
     LOAD_UNASSIGNED_TASKS: null,
-    LOAD_AGENTS: null
+    LOAD_AGENTS: null,
+    LOAD_LABELS: null
 });

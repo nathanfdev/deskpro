@@ -136,6 +136,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The users profile picture.
      *
      * @var \Application\DeskPRO\Entity\Blob
+     * @Serializer\Expose()
      */
     protected $picture_blob = null;
 
@@ -627,7 +628,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->department_permissions = new ArrayCollection();
         $this->teams = new ArrayCollection();
         $this->notes = new ArrayCollection();
-        $this->assigned = new ArrayCollection();
+        $this->assigned_tasks = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);

@@ -11,6 +11,7 @@ export const setLoadedDepartmentTasks = createAction(ActionTypes.LOAD_DEPARTMENT
 export const setLoadedDelegatedTasks = createAction(ActionTypes.LOAD_DELEGATED_TASKS);
 export const setLoadedUnassignedTasks = createAction(ActionTypes.LOAD_UNASSIGNED_TASKS);
 export const setLoadedAgents = createAction(ActionTypes.LOAD_AGENTS);
+export const setLoadedLabels = createAction(ActionTypes.LOAD_LABELS);
 
 // TODO
 
@@ -106,6 +107,18 @@ export const loadAgents = () => {
 
         Promise.all(promises).then((values) => {
             dispatch(setLoadedAgents(values[0].getData()));
+        });
+    }
+};
+
+export const loadLabels = () => {
+    return dispatch => {
+        let promises = [];
+
+        promises.push(DpApi.sendGet('DP_API/task_labels'));
+
+        Promise.all(promises).then((values) => {
+            dispatch(setLoadedLabels(values[0].getData()));
         });
     }
 };

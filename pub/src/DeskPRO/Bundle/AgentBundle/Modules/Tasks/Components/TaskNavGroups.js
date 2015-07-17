@@ -5,9 +5,8 @@ import * as TaskActions from "../Actions/TaskListActions";
 export default class TasksNavGroups extends React.Component {
     render() {
         const {taskList} = this.props;
-        return (<section className="tasks-nav-groups">
-                    <div className="list-sidebar-title">Tasks <a href="#" className="title-down"><i
-                        className="fa fa-caret-down"/></a></div>
+        return (<section className="sidebar-list tasks-nav-groups">
+                    <div className="list-sidebar-title">Tasks</div>
                     <ul>
                         <li>
                             <div className="list-counter-bucket">
