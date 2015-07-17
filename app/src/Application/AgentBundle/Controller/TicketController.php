@@ -2459,6 +2459,19 @@ class TicketController extends AbstractController
         $comment = $this->in->getString('billing_comment');
 
         $charge = $ticket->addCharge($this->person, $time, $amount, $comment);
+        $ticket_log = new TicketLog();
+        $ticket_log->ticket      = $ticket;
+        $ticket_log->person      = $this->person;
+        $ticket_log->action_type = 'new_billing';
+        $ticket_log->id_object   = $charge->id;
+        $ticket_log->details     = array(
+            'new_amount'   => $charge->amount,
+            'new_time'	   => $charge->charge_time,
+        );
+
+        $this->em->persist($charge);
+        $this->em->persist($ticket_log);
+
         if ($charge) {
 
             $field_manager = $this->container->getBillingFieldManager();
@@ -2482,10 +2495,31 @@ class TicketController extends AbstractController
 
             $this->em->persist($ticket);
             $this->em->flush();
+
             if (!empty($custom_fields)) {
                 $field_manager->saveFormToObject($custom_fields, $charge);
+                $changes = $charge->getStateChangeRecorder()->getChanges();
+
+                $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+                $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+                $obj = unserialize($serialized);
+                $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+                $method->setAccessible(true);
+                $details = $ticket_log->details;
+
+                foreach ($changes as $change) {
+                    if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                    $details[$change->getField()] = $method->invoke($obj, $change);
+                }
+                $ticket_log->details = $details;
             }
             $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
+
+            // todo need a transaction joined with above
+            $details = $ticket_log->details;
+            $details['charge_id'] = $charge->id;
+            $ticket_log->details = $details;
+            $this->em->flush();
 
             return $this->createJsonResponse(array(
                 'inserted' => true,
@@ -2511,11 +2545,8 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify_billing');
 
-        $charge = $this->em->createQuery('
-            SELECT c
-            FROM DeskPRO:TicketCharge c
-            WHERE c.ticket = ?0 AND c.id = ?1
-        ')->setParameters(array($ticket, $charge_id))->getOneOrNullResult();
+        /** @var Entity\TicketCharge $charge */
+        $charge = $this->em->getRepository('DeskPRO:TicketCharge')->findOneBy(array('ticket' => $ticket, 'id' => $charge_id));
 
         if (!$charge) {
             return $this->createJsonResponse(array(
@@ -2574,17 +2605,32 @@ class TicketController extends AbstractController
             'old_time'     => $old_time,
             'new_amount'   => $charge->amount,
             'new_time'	   => $charge->charge_time,
-            'old_comment'  => $old_comment,
-            'new_comment'  => $charge->comment
         );
-
-        $this->em->persist($charge);
-        $this->em->persist($ticket_log);
-        $this->em->flush();
 
         if (!empty($custom_fields)) {
             $field_manager->saveFormToObject($custom_fields, $charge);
+            $changes = $charge->getStateChangeRecorder()->getChanges();
+
+            $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+            $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+            $obj = unserialize($serialized);
+            $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+            $method->setAccessible(true);
+            $details = $ticket_log->details;
+
+            foreach ($changes as $change) {
+                foreach ($changes as $change) {
+                    if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                    $details[$change->getField()] = $method->invoke($obj, $change);
+                }
+            }
+            $ticket_log->details = $details;
         }
+
+        $this->em->persist($ticket_log);
+        $this->em->flush();
+
+
         $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
         return $this->createJsonResponse(array(
@@ -2605,11 +2651,8 @@ class TicketController extends AbstractController
 
         $this->ensureAuthToken('delete_charge', $security_token);
 
-        $charge = $this->em->createQuery('
-            SELECT c
-            FROM DeskPRO:TicketCharge c
-            WHERE c.ticket = ?0 AND c.id = ?1
-        ')->setParameters(array($ticket, $charge_id))->getOneOrNullResult();
+        /** @var Entity\TicketCharge $charge */
+        $charge = $this->em->getRepository('DeskPRO:TicketCharge')->findOneBy(array('ticket' => $ticket, 'id' => $charge_id));
 
         if (!$charge) {
             return $this->createJsonResponse(array(
@@ -2617,6 +2660,38 @@ class TicketController extends AbstractController
             ));
         }
 
+        $ticket_log = new TicketLog();
+        $ticket_log->ticket      = $ticket;
+        $ticket_log->person      = $this->person;
+        $ticket_log->action_type = 'delete_billing';
+        $ticket_log->id_object   = $charge->id;
+        $ticket_log->details     = array(
+            'charge_id'    => $charge->id,
+            'old_amount'   => $charge->amount,
+            'old_time'     => $charge->charge_time,
+        );
+        foreach ($charge->custom_data as $data) {
+            /** @var $data Entity\CustomDataBilling */
+            $charge->getStateChangeRecorder()->record('custom_data.'.$data['root_field']['id'], $data, null, true);
+        }
+
+        $changes = $charge->getStateChangeRecorder()->getChanges();
+        $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+        $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+        $obj = unserialize($serialized);
+        $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+        $method->setAccessible(true);
+        $details = $ticket_log->details;
+
+        foreach ($changes as $change) {
+            foreach ($changes as $change) {
+                if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                $details[$change->getField()] = $method->invoke($obj, $change);
+            }
+        }
+        $ticket_log->details = $details;
+
+        $this->em->persist($ticket_log);
         $this->em->remove($charge);
         $this->em->flush();
 

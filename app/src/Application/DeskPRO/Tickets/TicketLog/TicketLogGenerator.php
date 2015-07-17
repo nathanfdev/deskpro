@@ -262,6 +262,7 @@ class TicketLogGenerator
                 break;
 
             case 'custom_field':
+            case 'custom_data':
                 return array(
                     'action_type'  => 'changed_custom_field',
                     'value_before' => $old ? $old['value'] : null,

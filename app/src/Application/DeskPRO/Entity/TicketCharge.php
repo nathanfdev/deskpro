@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -124,7 +125,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         return null;
     }
 
-    public function removeCustomDataForField(CustomDefBilling $field)
+    public function removeCustomDataForField($field)
     {
         $parent_id = null;
         $field_id = $field['id'];
@@ -132,11 +133,22 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
             $parent_id = $field->parent['id'];
         }
 
+        $change = false;
         foreach ($this->custom_data as $data) {
             if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+                $change = true;
                 $this->custom_data->removeElement($data);
-                $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
             }
+        }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
 
@@ -165,11 +177,25 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
             $custom_data['field'] = $field;
         }
 
+        $field = $custom_data->field;
+        if ($field->parent) {
+            foreach ($this->custom_data as $d) {
+                if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
+                    $this->custom_data->removeElement($d);
+                }
+            }
+        }
+
+        $this->custom_data->removeElement($custom_data);
+
         if ($value === null) {
             $this->custom_data->removeElement($custom_data);
-            $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
             return null;
+        }
+
+        if ($field->getTypeName() == 'choice') {
+
         }
 
         $custom_data[$value_type] = $value;
@@ -177,6 +203,8 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         if ($is_new) {
             $this->addCustomData($custom_data);
         }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
 
         return $custom_data;
     }
@@ -189,8 +217,22 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
     public function addCustomData(CustomDataBilling $data)
     {
         $this->custom_data->add($data);
-        $data->ticket_charge = $this;
-        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+        $data['ticket_charge'] = $this;
+
+        $field = $data->field;
+        $parent_id = null;
+        $field_id = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
+
+        if ($parent_id) {
+            $this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
+        } else {
+            $this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -207,7 +249,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         $value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
         $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
 
-        return trim($rendered);
+        return $rendered;
     }
 
     /**
@@ -245,12 +287,12 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
             return null;
         }
 
-        $ticket_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-        $ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $ticket_field_defs);
+        $field_defs = App::getApi('custom_fields.billing')->getEnabledFields();
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $field_defs);
 
-        $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray(
-            $ticket_field_defs,
-            $ticket_data_structured
+        $custom_fields = App::getApi('custom_fields.billing')->getFieldsDisplayArray(
+            $field_defs,
+            $data_structured
         );
 
         $custom_fields = array_pop($custom_fields);
