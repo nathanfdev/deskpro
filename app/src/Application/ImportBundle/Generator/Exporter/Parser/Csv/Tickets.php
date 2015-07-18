@@ -129,7 +129,7 @@ final class Tickets extends AbstractParser
                 ->setSubject($ticket['subject'])
                 ->setPersonEmail($ticket['user'])
                 ->setAgentEmail($ticket['agent'])
-                ->setStatus($ticket['status'] ?: DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
+                ->setStatus($ticket['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
                 ->setDateCreated($this->getFromStringOrCurrentDateTime(@$ticket['date_created']));
 
             return $entity;

@@ -85,6 +85,16 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
 
         $ticket = $this->getContent('1/tickets/ticket_145.json');
         $this->assertCount(5, $ticket['custom_fields']);
+
+        // Checking for articles
+        $this->assertContains('Entity `article_num_0` parsed successfully!', $output);
+        $this->assertContains('Entity `article_num_1` parsed successfully!', $output);
+
+        $article = $this->getContent('1/articles/article_num_0.json');
+        $this->assertCount(2, $article['custom_fields']);
+
+        $article = $this->getContent('1/articles/article_num_1.json');
+        $this->assertCount(2, $article['custom_fields']);
     }
 
     /**
