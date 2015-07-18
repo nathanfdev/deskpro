@@ -189,6 +189,7 @@ class CsvTest extends \DpIntegrationTestCase
             '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
             '--batch'       => true,
+            '--verbose'     => true,
         ));
 
         $this->checkDbEmpty();
