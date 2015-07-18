@@ -310,4 +310,57 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         return $this->hasRequiredColumns($custom_field, $columns);
     }
+
+    /**
+     * Returns a collection of inline custom fields
+     *
+     * @param string $destination
+     * @param array  $entity
+     *
+     * @return Entity\Collection
+     */
+    protected function exportInlineCustomFields($destination, array $entity)
+    {
+        $collection    = new Entity\Collection();
+        $custom_fields = $this->parseInlineCustomFields($entity);
+
+        foreach ($custom_fields as $num => $custom_field) {
+            $entity = new Entity\CustomField();
+            $entity
+                ->setOid($custom_field['property'])
+                ->setDestination($destination)
+                ->setKey($custom_field['field_name'])
+                ->setValue($custom_field['value'])
+            ;
+
+            $collection->attach($entity);
+
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Parses inline custom fields from entity
+     *
+     * @param array $entity
+     * @return array
+     */
+    protected function parseInlineCustomFields(array $entity)
+    {
+        $properties    = array_keys($entity);
+        $custom_fields = array();
+
+        foreach ($properties as $property) {
+            if (preg_match('/^custom "([^"]+)"$/', $property, $matches)) {
+                $custom_fields[] = array(
+                    'property'   => $property,
+                    'field_name' => $matches[1],
+                    'value'      => $entity[$property],
+                );
+            }
+        }
+
+        return $custom_fields;
+    }
 }

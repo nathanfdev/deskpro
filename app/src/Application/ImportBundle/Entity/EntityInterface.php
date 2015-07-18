@@ -66,7 +66,7 @@ interface EntityInterface
     /**
      * Get entity oid
      *
-     * @return int
+     * @return int|string
      */
     public function getOid();
 

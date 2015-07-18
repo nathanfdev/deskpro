@@ -57,9 +57,27 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
         ));
 
         $output = $command_tester->getDisplay();
-        echo $output;exit;
+        $this->assertContains('Entity `person_joe.smith@example.com` parsed successfully!', $output);
+        $this->assertContains('Entity `person_angry.customer@example.com` parsed successfully!', $output);
+        $this->assertContains('Entity `person_some@email.tld` parsed successfully!', $output);
+        $this->assertContains('Custom field of entity `person_joe.smith@example.com` parsed successfully!', $output);
 
-        $this->helper->seeFileFound('1/people/person_3.json');
+        $this->helper->seeFileFound('1/people/person_some@email.tld.json');
         $this->helper->seeInThisFile('Some Customer');
+
+        $this->helper->seeFileFound('1/people/person_joe.smith@example.com.json');
+        $this->helper->seeInThisFile('Joe Smith');
+
+        $person = $this->getContent('1/people/person_joe.smith@example.com.json');
+        $this->assertCount(5, $person['custom_fields']);
+    }
+
+    /**
+     * @param string $filename
+     * @return array
+     */
+    private function getContent($filename)
+    {
+        return json_decode(file_get_contents($filename), true);
     }
 }
