@@ -89,6 +89,11 @@ final class Tickets extends AbstractParser
                         }
                     }
 
+                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $ticket);
+                    foreach ($inline_custom_fields as $custom_field_entity) {
+                        $entity->addCustomField($custom_field_entity);
+                    }
+
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {

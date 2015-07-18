@@ -57,6 +57,8 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
         ));
 
         $output = $command_tester->getDisplay();
+
+        // Checking for people
         $this->assertContains('Entity `person_joe.smith@example.com` parsed successfully!', $output);
         $this->assertContains('Entity `person_angry.customer@example.com` parsed successfully!', $output);
         $this->assertContains('Entity `person_some@email.tld` parsed successfully!', $output);
@@ -70,6 +72,19 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
 
         $person = $this->getContent('1/people/person_joe.smith@example.com.json');
         $this->assertCount(5, $person['custom_fields']);
+
+        $person = $this->getContent('1/people/person_angry.customer@example.com.json');
+        $this->assertCount(2, $person['custom_fields']);
+
+        // Checking for tickets
+        $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
+        $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
+
+        $ticket = $this->getContent('1/tickets/ticket_144.json');
+        $this->assertCount(4, $ticket['custom_fields']);
+
+        $ticket = $this->getContent('1/tickets/ticket_145.json');
+        $this->assertCount(5, $ticket['custom_fields']);
     }
 
     /**
