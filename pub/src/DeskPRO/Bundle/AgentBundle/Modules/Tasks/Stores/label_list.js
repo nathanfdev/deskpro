@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const r = handleActions({
-	[ActionTypes.LOAD_LABELS]: function(state, action) {
+	[ActionTypes.TASKS_LOAD_LABELS]: function(state, action) {
         let payload = action.payload.data;
 
         let sortedLabels = {};

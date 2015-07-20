@@ -1,13 +1,13 @@
 import keyMirror from 'react/lib/keyMirror';
 
 export default keyMirror({
-    LOAD_TASKS: null,
-    LOAD_PROJECTS: null,
-    LOAD_MY_TASKS: null,
-    LOAD_TEAM_TASKS: null,
-    LOAD_DEPARTMENT_TASKS: null,
-    LOAD_DELEGATED_TASKS: null,
-    LOAD_UNASSIGNED_TASKS: null,
-    LOAD_AGENTS: null,
-    LOAD_LABELS: null
+    TASKS_LOAD_TASKS: null,
+    TASKS_LOAD_PROJECTS: null,
+    TASKS_LOAD_MY_TASKS: null,
+    TASKS_LOAD_TEAM_TASKS: null,
+    TASKS_LOAD_DEPARTMENT_TASKS: null,
+    TASKS_LOAD_DELEGATED_TASKS: null,
+    TASKS_LOAD_UNASSIGNED_TASKS: null,
+    TASKS_LOAD_AGENTS: null,
+    TASKS_LOAD_LABELS: null
 });
