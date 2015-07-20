@@ -70,11 +70,39 @@ class TicketLabelsController extends BaseController
      */
     public function cgetAction()
     {
-        $flags = $this->get('data.ticketlabels');
+        $labels = $this->get('data.ticketlabels');
 
         return View::create(
-            $this->createRepresentation($flags->getLabels()),
+            $this->createRepresentation($labels->getLabels()),
             Response::HTTP_OK
         );
+    }
+    
+    /**
+     * Retrieve the tickets with the given label.
+     * @Get("/ticket_labels/{name}/tickets", name="api_ticket_labels_tickets")
+     */
+    public function getLabelTicketsAction($name)
+    {
+        $repo = $this->getEm()->getRepository('DeskPRO:LabelTicket');
+        $labels = $repo->findBy(['label' => $name]);
+        
+        $tickets = [];
+        foreach($labels as $label) {
+            $tickets[$label->ticket->getId()] = $label->ticket;
+        }
+        
+        
+        
+        return View::create(
+            $this->createRepresentation(array_values($tickets)),
+            Response::HTTP_OK
+        );
+    }
+    
+    // A bit of comfort.
+    protected function getEm()
+    {
+        return $this->getDoctrine()->getManager();
     }
 }

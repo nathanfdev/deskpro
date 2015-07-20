@@ -55,7 +55,7 @@ export default class TicketsNavContent extends React.Component {
     let tab = null;
     switch(this.state.showTab) {
     case "labels":
-      tab = <TicketsTabLabels labelsList={labels_list} />
+      tab = <TicketsTabLabels labelsList={labels_list} dispatch={dispatch} />
       break;
     case "stars":
       tab = <TicketsTabStars />

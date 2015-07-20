@@ -1,12 +1,14 @@
 import React from "react";
 
+import * as LabelActions from "../../Actions/LabelsListActions";
+
 export default class TicketsTabLabels extends React.Component {
   render() {
-    const { labelsList } = this.props;
+    const { labelsList, dispatch } = this.props;
     
     const labels = labelsList.labels_list.map(letter => {
       const my_labels = letter.labels.map(label => (
-        <a href="#" className="item-label">{label}</a>
+        <a href="#" className="item-label" onClick={() => dispatch(LabelActions.loadLabelTickets(label))}>{label}</a>
       ));
       
       return (
