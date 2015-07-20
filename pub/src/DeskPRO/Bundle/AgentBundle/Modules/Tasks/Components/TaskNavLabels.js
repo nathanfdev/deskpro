@@ -11,9 +11,16 @@ export default class TasksNavLabels extends React.Component {
                 Labels
             </div>
 
-            <div className="sidebar-label-list">{labelList.labelList ? labelList.labelList.map(function(object) {
-                return <a href="#" className="item-label" key={object.id}>{object.label}</a>;
-            }) : ''}
+            <div className="sidebar-label-list sidebar-list">
+                <ul>{labelList.labelCharacters ? labelList.labelCharacters.map(function(object) {
+                    return (<li key={object}>
+                        <span className="labelCharacter">{object}</span>
+                        {labelList.labelList[object] ? labelList.labelList[object].map(function(label) {
+                            return <a href="#" className="item-label" key={label.id}>{label.label}</a>
+                        }): ''}
+                    </li>)
+
+                }) : ''}</ul>
             </div>
         </section>);
     }

@@ -449,6 +449,15 @@
     }
   }
 
+  .labelCharacter {
+    font-weight: 700;
+    color: #979797;
+  }
+
+  .item-label {
+    margin-left: 5px;
+  }
+
   a.item.item-strong {
     font-weight: 700;
     border-bottom: 1px solid $sidebar-divider;
