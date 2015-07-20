@@ -2479,6 +2479,7 @@ class TicketController extends AbstractController
 
         $invalid_custom_fields = array();
         $is_valid = true;
+        $trans = $this->container->getTranslator();
         foreach ($field_manager->getFields() as $field) {
             $errors = $field->getHandler()->validateFormData(
                 $custom_fields,
@@ -2486,7 +2487,9 @@ class TicketController extends AbstractController
                 array('exist_ticket' => $ticket)
             );
             foreach ($errors as $code) {
-                $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
+                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$trans->getPhraseText(
+                        preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
+                    );
                 $is_valid = false;
             }
         }
@@ -2560,6 +2563,7 @@ class TicketController extends AbstractController
 
         $invalid_custom_fields = array();
         $is_valid = true;
+        $trans = $this->container->getTranslator();
         foreach ($field_manager->getFields() as $field) {
             $errors = $field->getHandler()->validateFormData(
                 $custom_fields,
@@ -2567,7 +2571,9 @@ class TicketController extends AbstractController
                 array('exist_ticket' => $ticket)
             );
             foreach ($errors as $code) {
-                $invalid_custom_fields['field_' . $field->getId()] = $field['title'] . ': ' . preg_replace('#^(.*?)\.#', '', $code);
+                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$trans->phrase(
+                        preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
+                    );
                 $is_valid = false;
             }
         }
