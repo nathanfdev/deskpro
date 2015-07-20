@@ -3,7 +3,7 @@ import { handleActions } from "redux-actions";
 
 const initialState = {
 	sidebar_hover: {
-    open: true,
+    open: false,
     show_mode: 'filter_group',
   }
 };
