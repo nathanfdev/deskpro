@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const r = handleActions({
-	[ActionTypes.LOAD_AGENTS]: (state, action) => ({
+	[ActionTypes.TASKS_LOAD_AGENTS]: (state, action) => ({
         ...state,
         agentList: action.payload.data,
         agentCount: action.payload.meta.total_count

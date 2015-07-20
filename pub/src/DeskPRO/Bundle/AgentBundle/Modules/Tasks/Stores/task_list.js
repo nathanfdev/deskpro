@@ -12,28 +12,28 @@ const initialState = {
 };
 
 const r = handleActions({
-	[ActionTypes.LOAD_TASKS]: (state, action) => ({
+	[ActionTypes.TASKS_LOAD_TASKS]: (state, action) => ({
         ...state,
         taskList: action.payload.data,
         taskCount: action.payload.meta.total_count
     }),
-    [ActionTypes.LOAD_MY_TASKS]: (state, action) => ({
+    [ActionTypes.TASKS_LOAD_MY_TASKS]: (state, action) => ({
         ...state,
         myTaskCount: action.payload.meta.total_count
     }),
-    [ActionTypes.LOAD_TEAM_TASKS]: (state, action) => ({
+    [ActionTypes.TASKS_LOAD_TEAM_TASKS]: (state, action) => ({
         ...state,
         teamTaskCount: action.payload.meta.total_count
     }),
-    [ActionTypes.LOAD_DEPARTMENT_TASKS]: (state, action) => ({
+    [ActionTypes.TASKS_LOAD_DEPARTMENT_TASKS]: (state, action) => ({
         ...state,
         deptTaskCount: action.payload.meta.total_count
     }),
-    [ActionTypes.LOAD_DELEGATED_TASKS]: (state, action) => ({
+    [ActionTypes.TASKS_LOAD_DELEGATED_TASKS]: (state, action) => ({
         ...state,
         delegatedTaskCount: action.payload.meta.total_count
     }),
-    [ActionTypes.LOAD_UNASSIGNED_TASKS]: (state, action) => ({
+    [ActionTypes.TASKS_LOAD_UNASSIGNED_TASKS]: (state, action) => ({
         ...state,
         unassignedTaskCount: action.payload.meta.total_count
     })

@@ -6,6 +6,8 @@ import TaskNavGroups from "../Components/TaskNavGroups";
 import TaskNavProjects from "../Components/TaskNavProjects";
 import TaskNavPeople from "../Components/TaskNavPeople";
 import TaskNavLabels from "../Components/TaskNavLabels";
+import TaskCreateHover from "../Components/TaskCreateHover";
+import ComponentRootWrapper from "../Components/ComponentRootWrapper";
 
 @connect(state => ({
     taskList: state.taskList,

@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const r = handleActions({
-	[ActionTypes.LOAD_PROJECTS]: (state, action) => ({
+	[ActionTypes.TASKS_LOAD_PROJECTS]: (state, action) => ({
         ...state,
         projectList: action.payload.data,
         projectCount: action.payload.meta.total_count

@@ -3,15 +3,15 @@ import { createAction } from "redux-actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import ActionTypes from "./ActionTypes";
 
-export const setLoadedTasks = createAction(ActionTypes.LOAD_TASKS);
-export const setLoadedProjects = createAction(ActionTypes.LOAD_PROJECTS);
-export const setLoadedMyTasks = createAction(ActionTypes.LOAD_MY_TASKS);
-export const setLoadedTeamTasks = createAction(ActionTypes.LOAD_TEAM_TASKS);
-export const setLoadedDepartmentTasks = createAction(ActionTypes.LOAD_DEPARTMENT_TASKS);
-export const setLoadedDelegatedTasks = createAction(ActionTypes.LOAD_DELEGATED_TASKS);
-export const setLoadedUnassignedTasks = createAction(ActionTypes.LOAD_UNASSIGNED_TASKS);
-export const setLoadedAgents = createAction(ActionTypes.LOAD_AGENTS);
-export const setLoadedLabels = createAction(ActionTypes.LOAD_LABELS);
+export const setLoadedTasks = createAction(ActionTypes.TASKS_LOAD_TASKS);
+export const setLoadedProjects = createAction(ActionTypes.TASKS_LOAD_PROJECTS);
+export const setLoadedMyTasks = createAction(ActionTypes.TASKS_LOAD_MY_TASKS);
+export const setLoadedTeamTasks = createAction(ActionTypes.TASKS_LOAD_TEAM_TASKS);
+export const setLoadedDepartmentTasks = createAction(ActionTypes.TASKS_LOAD_DEPARTMENT_TASKS);
+export const setLoadedDelegatedTasks = createAction(ActionTypes.TASKS_LOAD_DELEGATED_TASKS);
+export const setLoadedUnassignedTasks = createAction(ActionTypes.TASKS_LOAD_UNASSIGNED_TASKS);
+export const setLoadedAgents = createAction(ActionTypes.TASKS_LOAD_AGENTS);
+export const setLoadedLabels = createAction(ActionTypes.TASKS_LOAD_LABELS);
 
 // TODO
 
