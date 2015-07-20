@@ -2437,6 +2437,21 @@ class TicketController extends AbstractController
         ));
     }
 
+    public function ticketChargeFormAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+        $billing_field_manager = $this->container->getBillingFieldManager();
+        $billing_fields_new = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge());
+
+        return $this->render(
+            'AgentBundle:Ticket:view-billing-form.html.twig',
+            array(
+                'billing_fields_new' => $billing_fields_new,
+                'ticket' => $ticket,
+            )
+        );
+    }
+
     ############################################################################
     # add-charge
     ############################################################################

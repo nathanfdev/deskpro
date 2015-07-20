@@ -262,7 +262,9 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 	resetBillingForm: function() {
 		var form = this.getEl('billing_form');
 
-		this.getEl('billing_amount').val('');
+		$.get(form.data('refresh-url'), function (data) {
+			form.replaceWith(data);
+		});
 
 		if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
 			this.startBillingTimer(true);

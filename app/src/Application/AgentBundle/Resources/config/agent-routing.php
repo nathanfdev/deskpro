@@ -1105,6 +1105,15 @@ $collection->create('agent_ticket_chargedelete', array(
     'requirements'  => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
 ));
 
+$collection->create(
+    'agent_ticket_chargeform',
+    array(
+        'path' => '/ticket/{ticket_id}/charge/form',
+        'controller' => 'AgentBundle:Ticket:ticketChargeForm',
+        'requirements' => array('ticket_id' => '\\d+'),
+    )
+);
+
 $collection->create('agent_ticket_addsla', array(
     'path'          => '/ticket/{ticket_id}/add-sla',
     'controller'    => 'AgentBundle:Ticket:addSla',
