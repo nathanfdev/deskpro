@@ -9,7 +9,7 @@ const initialState = {
 };
 
 const r = handleActions({
-  [ActionTypes.LOAD_FILTER_SET_FILTERS]: (state, action) => ({
+  [ActionTypes.TICKETS_LOAD_FILTER_SET_FILTERS]: (state, action) => ({
     ...state,
     filter_set_filters_list: action.payload
   }),

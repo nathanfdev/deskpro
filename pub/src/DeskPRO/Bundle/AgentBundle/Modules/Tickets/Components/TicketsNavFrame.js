@@ -7,21 +7,24 @@ import TicketsTabFlags from "./StarsTab/TicketsTabStars";
 import { connect } from 'redux/react';
 import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/TicketsListActions";
+import * as LabelActions from "../Actions/LabelsListActions";
 
 @connect(state => ({
   filter_sets_list: state.filter_sets_list,
   filter_sets_counts: state.filter_sets_counts,
+  labels_list: state.labels_list,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showTab: "filters"
+      showTab: "labels"
     };
     
     const { dispatch } = this.props;
     dispatch(TicketActions.loadFilterSets());
     dispatch(TicketActions.loadFilterSetsCounts());
+    dispatch(LabelActions.loadLabels());
   }
   
   changeTab(newTab) {
@@ -47,12 +50,12 @@ export default class TicketsNavContent extends React.Component {
   }
   
   render() {
-    const { filter_sets_list, filter_sets_counts, dispatch } = this.props;
+    const { filter_sets_list, filter_sets_counts, labels_list, dispatch } = this.props;
     
     let tab = null;
     switch(this.state.showTab) {
     case "labels":
-      tab = <TicketsTabLabels />
+      tab = <TicketsTabLabels labelsList={labels_list} />
       break;
     case "stars":
       tab = <TicketsTabStars />

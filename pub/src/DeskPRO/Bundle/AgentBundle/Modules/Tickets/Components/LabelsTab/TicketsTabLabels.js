@@ -2,8 +2,17 @@ import React from "react";
 
 export default class TicketsTabLabels extends React.Component {
   render() {
+    const { labelsList } = this.props;
+    
+    const labels = labelsList.labels_list.map((label_name) => (
+      <li>{label_name}</li>
+    ));
+    
     return (
       <div className="sidebar-list sidebar-list-labels" >
+      <ul>
+        {labels}
+      </ul>
         <div className="list-sidebar-label-view">
           <a href="#" className="active">Count</a>
           <a href="#">Alphabet</a>

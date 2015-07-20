@@ -6,7 +6,7 @@ const initialState = {
 };
 
 const r = handleActions({
-  [ActionTypes.LOAD_TICKETS]: (state, action) => ({
+  [ActionTypes.TICKETS_LOAD_TICKETS]: (state, action) => ({
     ...state,
     tickets_list: action.payload.data
   }),

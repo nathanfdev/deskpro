@@ -4,11 +4,11 @@ import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import ActionTypes from "./ActionTypes";
 
 export const changeTab = createAction(ActionTypes.TICKETS_CHANGE_TAB);
-export const setLoadedFilterSets = createAction(ActionTypes.LOAD_FILTER_SETS);
+export const setLoadedFilterSets = createAction(ActionTypes.TICKETS_LOAD_FILTER_SETS);
 export const selectTicketFilter = createAction(ActionTypes.TICKETS_SELECT_FILTER);
-export const setLoadedTickets = createAction(ActionTypes.LOAD_TICKETS);
-export const setLoadedFilterSetsCounts = createAction(ActionTypes.LOAD_FILTER_COUNTS);
-export const setLoadedFilterSetFilters = createAction(ActionTypes.LOAD_FILTER_SET_FILTERS);
+export const setLoadedTickets = createAction(ActionTypes.TICKETS_LOAD_TICKETS);
+export const setLoadedFilterSetsCounts = createAction(ActionTypes.TICKETS_LOAD_FILTER_COUNTS);
+export const setLoadedFilterSetFilters = createAction(ActionTypes.TICKETS_LOAD_FILTER_SET_FILTERS);
 
 export const loadFilterSets = () => {
   return dispatch => {

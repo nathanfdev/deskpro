@@ -6,7 +6,7 @@ const initialState = {
 };
 
 const r = handleActions({
-  [ActionTypes.LOAD_FILTER_COUNTS]: (state, action) => ({
+  [ActionTypes.TICKETS_LOAD_FILTER_COUNTS]: (state, action) => ({
     ...state,
     filter_sets_counts: action.payload.data
   }),
