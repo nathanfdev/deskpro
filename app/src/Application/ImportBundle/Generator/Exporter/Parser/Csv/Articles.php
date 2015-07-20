@@ -70,13 +70,18 @@ final class Articles extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportArticle($article);
+                $entity = $this->exportArticle($num, $article);
                 if ($entity) {
                     foreach ($custom_fields as $custom_field_entity) {
                         /** @var Entity\CustomField $custom_field_entity */
                         if ($entity->getDestination() === $custom_field_entity->getDestination()) {
                             $entity->addCustomField($custom_field_entity);
                         }
+                    }
+
+                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $article);
+                    foreach ($inline_custom_fields as $custom_field_entity) {
+                        $entity->addCustomField($custom_field_entity);
                     }
 
                     $collection->attach($entity);
@@ -99,24 +104,28 @@ final class Articles extends AbstractParser
     /**
      * Returns an article entity
      *
+     * @param int   $num
      * @param array $article
+     *
      * @return Entity\Article|null
      */
-    private function exportArticle(array $article)
+    private function exportArticle($num, array $article)
     {
         if ($this->isArticleValid($article)) {
-            $entity = new Entity\Article();
+            $article_id = isset($article['id']) ? $article['id'] : 'num_' . $num;
+            $entity     = new Entity\Article();
             $entity
                 ->setRawData($article)
-                ->setDestination(self::ARTICLE_PREFIX . $article['id'])
-                ->setOid($article['id'])
+                ->setDestination(self::ARTICLE_PREFIX . $article_id)
+                ->setOid($article_id)
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
                 ->setContent($article['content'])
                 ->setSlug($article['slug'])
                 ->setLanguage($article['language'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']))
-                ->setStatus($article['status']);
+                ->setStatus($article['status'])
+            ;
 
             if ($article['label']) {
                 $entity->addLabel($article['label']);
@@ -150,7 +159,6 @@ final class Articles extends AbstractParser
     private function isArticleValid(array $article)
     {
         $columns = array(
-            'id',
             'person',
             'title',
             'content',

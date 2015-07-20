@@ -80,6 +80,11 @@ final class People extends AbstractParser
                         }
                     }
 
+                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $person);
+                    foreach ($inline_custom_fields as $custom_field_entity) {
+                        $entity->addCustomField($custom_field_entity);
+                    }
+
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
@@ -106,11 +111,12 @@ final class People extends AbstractParser
     private function exportPerson(array $person)
     {
         if ($this->isPersonValid($person)) {
-            $entity = new Entity\Person();
+            $person_id = $this->getPersonId($person);
+            $entity    = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination(self::PERSON_PREFIX . $person['id'])
-                ->setOid($person['id'])
+                ->setDestination(self::PERSON_PREFIX . $person_id)
+                ->setOid($person_id)
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])
                 ->setDateCreated(new DateTime())
@@ -142,7 +148,6 @@ final class People extends AbstractParser
     private function isPersonValid(array $person)
     {
         $columns = array(
-            'id',
             'name',
             'email',
         );
@@ -179,5 +184,16 @@ final class People extends AbstractParser
     private function isAgent(array $person)
     {
         return isset($person['is_agent']) && $this->isBooleanTrue($person['is_agent']);
+    }
+
+    /**
+     * Person id could be get from id or email column
+     *
+     * @param array $person
+     * @return int|string
+     */
+    private function getPersonId(array $person)
+    {
+        return isset($person['id']) ? $person['id'] : $person['email'];
     }
 }
