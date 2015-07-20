@@ -685,3 +685,15 @@ a.item.urgent {
 
   a.list-counter.faded { background: none; }
 }
+
+.collapse {
+  transition: max-height 0.25s ease-in-out;
+  overflow: hidden;
+  
+  &.open {
+    max-height: 1000px;
+  }
+  &.closed {
+    max-height: 0px;
+  }
+}
