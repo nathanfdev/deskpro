@@ -1,6 +1,27 @@
 .sidebar {
   .sidebar-label-list {
     padding: 0px 5px;
+    border-bottom: 1px solid #dcddde;
+    
+    &:first-child {
+      border-top: 1px solid #dcddde;
+    }
+    
+    .letter, .letter-labels {
+      padding-top: 5px;
+    }
+    
+    .letter {
+      width: 10%;
+      float: left;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .letter-labels {
+      width: 90%;
+      margin-left: 10%;
+      border-left: 1px solid #dcddde;
+    }
   }
 
 

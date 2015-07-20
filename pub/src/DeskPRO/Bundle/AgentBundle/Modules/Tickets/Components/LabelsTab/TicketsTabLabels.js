@@ -4,31 +4,28 @@ export default class TicketsTabLabels extends React.Component {
   render() {
     const { labelsList } = this.props;
     
-    const labels = labelsList.labels_list.map((label_name) => (
-      <li>{label_name}</li>
-    ));
+    const labels = labelsList.labels_list.map(letter => {
+      const my_labels = letter.labels.map(label => (
+        <a href="#" className="item-label">{label}</a>
+      ));
+      
+      return (
+        <div className="sidebar-label-list">
+          <div className="letter">{letter.letter}</div>
+          <div className="letter-labels">
+            {my_labels}
+          </div>
+        </div>
+      );
+    });
     
     return (
       <div className="sidebar-list sidebar-list-labels" >
-      <ul>
         {labels}
-      </ul>
-        <div className="list-sidebar-label-view">
-          <a href="#" className="active">Count</a>
-          <a href="#">Alphabet</a>
-          <a href="#">Ipsum</a>
-        </div>
-        <div className="sidebar-label-list">
-          <a href="#" className="item-label">android</a>
-          <a href="#" className="item-label">ios</a>
-          <a href="#" className="item-label">nexus 6</a>
-          <a href="#" className="item-label">android tablet</a>
-          <a href="#" className="item-label">update</a>
-          <a href="#" className="item-label">patch</a>
 
+        <div className="list-sidebar-label-view">
           <a href="#" className="add-new">Create a new label</a>
         </div>
-
       </div>
     );
   }
