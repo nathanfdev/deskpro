@@ -19,7 +19,7 @@ export default class TicketsNavContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showTab: "stars"
+      showTab: "filters"
     };
     
     const { dispatch } = this.props;
