@@ -1684,10 +1684,35 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
+        $tm = $this->container->getTicketManager();
+        $tm->markAsManaged($ticket);
+
+        $old_val = $message->is_agent_note;
         $message->is_agent_note = $this->in->getBool('is_note');
 
-        $this->em->persist($message);
-        $this->em->flush();
+        // When converting to a reply, we act as though this is a new
+        // agent reply and pass it through newreply triggers
+        if ($message->is_agent_note != $old_val) {
+            $this->em->persist($message);
+            $this->em->flush();
+
+            $ticket->getStateChangeRecorder()->recordData('message_note_status', array(
+                'message_id'    => $message->id,
+                'is_agent_note' => $message->is_agent_note
+            ));
+
+            $ticket_context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+            $tm->saveTicket($ticket, $ticket_context);
+
+            // fake this as a new message so things like notifications are sent through to the user
+            if (!$message->is_agent_note) {
+                $ticket->resetStateChangeRecorder();
+                $ticket_context = $tm->createAgentExecutorContext($message->person, 'newreply', 'web');
+                $ticket->getStateChangeRecorder()->recordData('free', array('message' => 'This message was converted from a note into a reply by ' . $this->person->getDisplayContact()));
+                $ticket->getStateChangeRecorder()->record('message', null, $message);
+                $tm->saveTicket($ticket, $ticket_context);
+            }
+        }
 
         return $this->createJsonResponse(array(
             'message_id' => $message->getId(),

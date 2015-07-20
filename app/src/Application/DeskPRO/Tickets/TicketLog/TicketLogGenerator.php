@@ -638,6 +638,14 @@ class TicketLogGenerator
 
                 return $log_data;
 
+            case 'message_note_status':
+                $log_data = array();
+                $log_data['action_type']    = 'message_note_status';
+                $log_data['message_id']     = $new['message_id'];
+                $log_data['was_agent_note'] = !$new['is_agent_note'];
+                $log_data['is_agent_note']  = $new['is_agent_note'];
+                return $log_data;
+
             case 'webhook':
                 $data = $change instanceof ChangeData ? $change->getData() : array();
                 $data['action_type'] = 'webhook';
