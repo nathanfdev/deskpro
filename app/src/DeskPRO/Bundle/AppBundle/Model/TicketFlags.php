@@ -93,7 +93,7 @@ class TicketFlags
      * @return a list of tickets.
      * @throws UnknownTicketFlagException
      */
-    public function getAllTicketsForFlag($person_id, $flag_name)
+    public function getAllRecordsForFlag($person_id, $flag_name)
     {
         if (!$this->flagIsValid($flag_name)) {
             throw new UnknownTicketFlagException();
@@ -103,5 +103,28 @@ class TicketFlags
             'color' => $flag_name,
             'person_id' => $person_id,
         ));
+    }
+    
+    /**
+     * Gets all the tickets matching a flag.
+     * @param int $person_id is the ID of the person whos has the flag.
+     * @param string the flag name.
+     * @return a list of tickets.
+     * @throws UnknownTicketFlagException
+     */
+    public function getAllTicketsForFlag($person_id, $flag_name)
+    {
+        if (!$this->flagIsValid($flag_name)) {
+            throw new UnknownTicketFlagException();
+        }
+
+        $records = $this->getAllRecordsForFlag($person_id, $flag_name);
+        $tickets_repo = $this->getEm()->getRepository('DeskPRO:Ticket');
+        $tickets = [];
+        foreach($records as $record) {
+            $tickets[] = $tickets_repo->find(['id' => $record->ticket_id]);
+        }
+        
+        return $tickets;
     }
 }

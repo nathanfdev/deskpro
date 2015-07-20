@@ -9,4 +9,6 @@ export default keyMirror({
   TICKETS_LOAD_FILTER_SET_FILTERS: null,
   
   TICKETS_LOAD_TICKET_LABELS: null,
+  
+  TICKETS_LOAD_TICKET_STAR_COUNTS: null,
 });

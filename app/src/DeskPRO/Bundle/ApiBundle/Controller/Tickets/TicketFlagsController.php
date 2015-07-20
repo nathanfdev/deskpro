@@ -66,7 +66,7 @@ class TicketFlagsController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_flags", name="api_ticket_flags")
+     * @Get("/ticket_stars", name="api_ticket_flags")
      */
     public function cgetAction()
     {
@@ -79,22 +79,70 @@ class TicketFlagsController extends BaseController
 
     /**
      * @ApiDoc(
+     *      description="get the counts of tickets marked with each star",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/ticket_stars/all/counts", name="api_ticket_flag_all_counts")
+     */
+    public function getTicketFlagsCounts()
+    {
+        $flags_service = $this->get('data.ticketflags');
+        
+        $counts = [];
+        foreach($flags_service->getFlags() as $flag) {
+            $counts[] = [
+                'star' => $flag,
+                'count' => count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flag)),
+            ];
+        }
+
+        return View::create(
+            $this->createRepresentation($counts),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
      *      description="get the count of tickets marked with each flag",
      *      statusCodes={
      *          200="Success"
      *      }
      * )
      *
-     * @Get("/ticket_flags/{flag}/count", name="api_ticket_flag_count")
+     * @Get("/ticket_stars/{star}/count", name="api_ticket_flag_count")
      */
-    public function getTicketFlagCount($flag)
+    public function getTicketFlagCount($star)
     {
-        $tickets = $this->get('data.ticketflags')->getAllTicketsForFlag($this->getUser()->getId(), $flag);
+        $tickets = $this->get('data.ticketflags')->getAllRecordsForFlag($this->getUser()->getId(), $star);
 
         return View::create(
             $this->createRepresentation(array(
                 'count' => count($tickets),
             )),
+            Response::HTTP_OK
+        );
+    }
+    
+    /**
+     * @ApiDoc(
+     *      description="get the tickets for a star",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
+     */
+    public function getTicketFlagTickets($star)
+    {
+        $tickets = $this->get('data.ticketflags')->getAllTicketsForFlag($this->getUser()->getId(), $star);
+
+        return View::create(
+            $this->createRepresentation($tickets),
             Response::HTTP_OK
         );
     }

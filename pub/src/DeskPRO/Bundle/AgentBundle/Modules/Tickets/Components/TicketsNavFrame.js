@@ -2,7 +2,7 @@ import React from "react";
 
 import TicketsTabFilters from "./FiltersTab/TicketsTabFilters";
 import TicketsTabLabels from "./LabelsTab/TicketsTabLabels";
-import TicketsTabFlags from "./StarsTab/TicketsTabStars";
+import TicketsTabStars from "./StarsTab/TicketsTabStars";
 
 import { connect } from 'redux/react';
 import { bindActionCreators } from 'redux';
@@ -13,12 +13,13 @@ import * as LabelActions from "../Actions/LabelsListActions";
   filter_sets_list: state.filter_sets_list,
   filter_sets_counts: state.filter_sets_counts,
   labels_list: state.labels_list,
+  stars_counts: state.stars_counts,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showTab: "labels"
+      showTab: "stars"
     };
     
     const { dispatch } = this.props;
@@ -50,7 +51,13 @@ export default class TicketsNavContent extends React.Component {
   }
   
   render() {
-    const { filter_sets_list, filter_sets_counts, labels_list, dispatch } = this.props;
+    const {
+      filter_sets_list,
+      filter_sets_counts,
+      labels_list,
+      stars_counts,
+      dispatch
+    } = this.props;
     
     let tab = null;
     switch(this.state.showTab) {
@@ -58,7 +65,7 @@ export default class TicketsNavContent extends React.Component {
       tab = <TicketsTabLabels labelsList={labels_list} dispatch={dispatch} />
       break;
     case "stars":
-      tab = <TicketsTabStars />
+      tab = <TicketsTabStars dispatch={dispatch} starsCounts={stars_counts} />
       break;
     case "filters":
     default:
