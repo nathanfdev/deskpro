@@ -3953,27 +3953,50 @@ class TicketController extends AbstractController
 
                     if ($amount || $time) {
                         if ($charge = $ticket->addCharge($this->person, $time, $amount)) {
+
+                            $this->em->persist($charge);
                             $this->em->persist($ticket);
+                            $this->em->flush();
+
+                            $ticket_log = new TicketLog();
+                            $ticket_log->ticket = $ticket;
+                            $ticket_log->person = $this->person;
+                            $ticket_log->action_type = 'new_billing';
+                            $ticket_log->details = array(
+                                'new_amount' => $charge->amount,
+                                'new_time' => $charge->charge_time,
+                            );
+                            $this->em->persist($ticket_log);
+
 
                             if (!empty($post_billing_fields)) {
                                 $billing_field_manager->saveFormToObject($post_billing_fields, $charge);
-//                                $changes = $charge->getStateChangeRecorder()->getChanges();
-//
-//                                $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
-//                                $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
-//                                $obj = unserialize($serialized);
-//                                $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
-//                                $method->setAccessible(true);
-//
-//                                foreach ($changes as $change) {
-//                                    foreach ($changes as $change) {
-//                                        if (0 !== strpos($change->getField(), 'custom_data.')) continue;
-//                                        $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
-//                                    }
-//                                }
+                                $changes = $charge->getStateChangeRecorder()->getChanges();
+
+                                $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+                                $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+                                $obj = unserialize($serialized);
+                                $method = new \ReflectionMethod(
+                                    'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange'
+                                );
+                                $method->setAccessible(true);
+                                $details = $ticket_log->details;
+
+                                foreach ($changes as $change) {
+                                    foreach ($changes as $change) {
+                                        if (0 !== strpos($change->getField(), 'custom_data.')) {
+                                            continue;
+                                        }
+                                        $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+                                    }
+                                }
                             }
 
-                            $this->em->flush($charge);
+
+                            $details['charge_id'] = $charge->id;
+                            $ticket_log->id_object = $charge->id;
+                            $ticket_log->details = $details;
+                            $this->em->flush();
                         }
                     }
                 }
