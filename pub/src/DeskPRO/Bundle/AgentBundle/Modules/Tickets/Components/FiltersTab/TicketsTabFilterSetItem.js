@@ -48,10 +48,10 @@ export default class TicketsTabFilterSetItem extends React.Component {
       const classes = this.state.open ? 'fa fa-angle-down' : 'fa fa-angle-right';
       expandButton = (
         <div className="list-counter-bucket">
-          <a href="#" className="list-counter active" onClick={() => this.expandClick()}>{totalTickets}</a>
           <a className="list-counter-dropdown active" href="#" onClick={() => this.expandClick()}>
             &nbsp;<i className={classes}></i>
           </a>
+          <a href="#" className="list-counter active" onClick={() => this.expandClick()}>{totalTickets}</a>
         </div>
       );
     }
