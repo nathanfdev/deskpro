@@ -34,6 +34,8 @@
 
 namespace Orb\Util;
 
+use DeskPRO\Kernel\KernelErrorHandler;
+
 /**
  * Utility class to work with a set of work hours/days/holidays
  * to calculate time lengths and thresholds.
@@ -119,6 +121,15 @@ class WorkHoursSet implements WorkHoursInterface
 
         if (!$any || !Arrays::removeFalsey($work_days_array)) {
             $work_days_array = array(null, true, true, true, true, true, true, true);
+        }
+        if ($work_start > $work_end) {
+            $tmp = $work_start;
+            $work_start = $work_end;
+            $work_end = $tmp;
+        }
+        if (!$work_start && !$work_end) {
+            $work_start = 32400;
+            $work_end = 64860;
         }
 
         $this->work_start = $work_start;
@@ -275,8 +286,16 @@ class WorkHoursSet implements WorkHoursInterface
         $adjust = ($backwards ? '-1 day' : '+1 day');
 
         $has_adjusted = false;
+        $iter_cnt = 0;
 
         do {
+            // inf loop protection -- fallback, sholudn't happen
+            if ($iter_cnt++ > 200) {
+                $e = new \RuntimeException("Infinite getNextWorkDayStart for days:" . print_r($this->work_days, true) . " and time: " . $this->work_start);
+                KernelErrorHandler::logException($e);
+                return $date;
+            }
+
             list($dow, $year, $month, $day, $hours, $minutes, $seconds) = explode('|', $work_date->format('w|Y|n|j|G|i|s'));
             $dow = intval($dow);
             $year = intval($year);
