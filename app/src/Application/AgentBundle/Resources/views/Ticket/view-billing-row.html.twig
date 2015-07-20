@@ -13,7 +13,11 @@
 		{% endif %}
 	</td>
 	<td>{{ charge.agent.name }}</td>
-	<td><time class="timeago" datetime="{{charge.date_created|date('c', app.user.timezone)}}">{{charge.date_created|date('fulltime', app.user.timezone)}}</time></td>
+    <td>
+        {#{{charge.date_created|date('c', 'UTC')}}#}
+        <time class="timeago"
+              datetime="{{ charge.date_created|date('c', 'UTC') }}">{{ charge.date_created|date('fulltime', app.user.timezone) }}</time>
+    </td>
 
 	{% for f in billing_fields[charge.id] %}
 		<td>
