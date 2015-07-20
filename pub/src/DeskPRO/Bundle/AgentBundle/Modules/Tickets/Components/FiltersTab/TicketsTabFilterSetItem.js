@@ -18,6 +18,7 @@ export default class TicketsTabFilterSetItem extends React.Component {
     };
     
     this.filters = [];
+    this.filterCounts = null;
     this.filterSetId = filterSet.id;
     dispatch(TicketActions.loadFiltersInSet(filterSet.id));
   }
@@ -41,32 +42,30 @@ export default class TicketsTabFilterSetItem extends React.Component {
     
     if(filter_set_filters_list.filter_set_filters_list.filter_set_id == this.filterSetId) {
       this.filters = filter_set_filters_list.filter_set_filters_list.filters;
-    }
-    
-    let expandButton = '';
-    if(this.filters.length > 0 && totalTickets > 0) {
-      const classes = this.state.open ? 'fa fa-angle-down' : 'fa fa-angle-right';
-      expandButton = (
-        <div className="list-counter-bucket">
-          <a className="list-counter-dropdown active" href="#" onClick={() => this.expandClick()}>
-            &nbsp;<i className={classes}></i>
-          </a>
-          <a href="#" className="list-counter active" onClick={() => this.expandClick()}>{totalTickets}</a>
-        </div>
-      );
+      this.filterCounts = filterCounts;
     }
     
     const filtersClassName = 'with-connectors collapse ' + (this.state.open ? 'open' : 'closed');
+    let filter_list = null;
+    if(this.filterCounts === null) {
+      filter_list = (
+        <span>Loading&hellip;</span>
+      );
+    } else {
+      filter_list = (
+        <TicketsTabFilterList
+          filtersList={this.filters}
+          filterSet={filterSet}
+          filterCounts={this.filterCounts}
+          loadFilterTickets={loadFilterTickets} />
+      );
+    }
     
     return (
-      <li key={filterSet.id} className="counter-display with-collapsible-sublist">
-        {expandButton}
-        <a href="#" className="item">{filterSet.title}</a>
-
-        <ul className={filtersClassName}>
-          <TicketsTabFilterList filtersList={this.filters} filterSet={filterSet} filterCounts={filterCounts} loadFilterTickets={loadFilterTickets} />
-        </ul>
-      </li>
+      <div className="list-filter-set">
+        <h3 className="list-sidebar-title">{filterSet.title}</h3>
+        {filter_list}
+      </div>
     );
   }
 }

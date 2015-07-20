@@ -1,22 +1,41 @@
 import React from "react";
 
-import TicketsTabFilterSetList from "./TicketsTabFilterSetList";
+import TicketsTabFilterSetItem from "./TicketsTabFilterSetItem";
 
 export default class TicketsTabFilters extends React.Component {
   render() {
     const { filterSetsList, filterSetsCounts, loadFilterTickets, dispatch } = this.props;
+    
+    const filtersets = filterSetsList.filter_sets_list.map(filter_set => {
+      let total = 0;
+      let my_filter_counts = null;
+      if(typeof filterSetsCounts.filter_sets_counts !== 'undefined') {
+        for(let k in filterSetsCounts.filter_sets_counts) {
+          if(filterSetsCounts.filter_sets_counts[k].filter_set == filter_set.id) {
+            total = filterSetsCounts.filter_sets_counts[k].count;
+            my_filter_counts = filterSetsCounts.filter_sets_counts[k].filters;
+            break;
+          }
+        }
+      }
+      return (
+        <TicketsTabFilterSetItem
+          filterSetsList={filterSetsList}
+          filterSetsCounts={filterSetsCounts}
+          loadFilterTickets={loadFilterTickets}
+          filterSet={filter_set}
+          totalTickets={total}
+          filterCounts={my_filter_counts}
+          {...this.props} />
+      );
+    });
+    
     return (
       <div className="sidebar-list sidebar-list-filters">
-        <div className="list-sidebar-title">Inbox</div>
+      
+        {filtersets}
+      
         <ul>
-      
-          <TicketsTabFilterSetList
-            filterSetsList={filterSetsList}
-            filterSetsCounts={filterSetsCounts}
-            loadFilterTickets={loadFilterTickets}
-            dispatch={dispatch} />
-      
-      
           <li className="counter-display">
             <div className="list-counter-bucket">
               <a className="list-counter-dropdown active" onclick="showFilterOptions(this); return false;" href="#">&nbsp;<i className="fa fa-angle-down"></i></a>

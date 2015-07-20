@@ -404,10 +404,10 @@
     position: relative;
   }
 
-  > ul {
+  ul {
     margin-left: 0px;
 
-    > li {
+    .sidebar-item {
       border-bottom: 1px solid $sidebar-divider;
       margin-left: 0px;
       > .item { padding-left: 12px; }
