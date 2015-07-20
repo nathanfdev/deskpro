@@ -1,5 +1,5 @@
 import React from "react";
-import * as TicketActions from "../Actions/TicketsListActions";
+import * as TicketActions from "../../Actions/TicketsListActions";
 
 import TicketsTabFilterSetItem from "./TicketsTabFilterSetItem";
 

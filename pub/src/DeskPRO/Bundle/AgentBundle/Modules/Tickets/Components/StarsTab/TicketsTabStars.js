@@ -1,6 +1,6 @@
 import React from "react";
 
-export default class TicketsTabFlags extends React.Component {
+export default class TicketsTabStars extends React.Component {
   render() {
     return (
       <div className="sidebar-list sidebar-list-flags" >

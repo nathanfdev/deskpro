@@ -1,8 +1,8 @@
 import React from "react";
 
-import TicketsTabFilters from "./TicketsTabFilters";
-import TicketsTabLabels from "./TicketsTabLabels";
-import TicketsTabFlags from "./TicketsTabFlags";
+import TicketsTabFilters from "./FiltersTab/TicketsTabFilters";
+import TicketsTabLabels from "./LabelsTab/TicketsTabLabels";
+import TicketsTabFlags from "./StarsTab/TicketsTabStars";
 
 import { connect } from 'redux/react';
 import { bindActionCreators } from 'redux';
@@ -54,8 +54,8 @@ export default class TicketsNavContent extends React.Component {
     case "labels":
       tab = <TicketsTabLabels />
       break;
-    case "flags":
-      tab = <TicketsTabFlags />
+    case "stars":
+      tab = <TicketsTabStars />
       break;
     case "filters":
     default:
@@ -83,7 +83,7 @@ export default class TicketsNavContent extends React.Component {
           <ul className="tabs sidebar-tabs">
             {this.renderTab('filters', 'Filters')}
             {this.renderTab('labels', 'Labels')}
-            {this.renderTab('flags', 'Flags')}
+            {this.renderTab('stars', 'Stars')}
           </ul>
     
           {tab}

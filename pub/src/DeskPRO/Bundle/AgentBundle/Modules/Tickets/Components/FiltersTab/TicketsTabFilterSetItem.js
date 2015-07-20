@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from 'redux/react';
-import * as TicketActions from "../Actions/TicketsListActions";
+import * as TicketActions from "../../Actions/TicketsListActions";
 
 import TicketsTabFilterList from "./TicketsTabFilterList";
 
