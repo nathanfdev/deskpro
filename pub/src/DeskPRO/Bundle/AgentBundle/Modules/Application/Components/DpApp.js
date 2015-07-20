@@ -17,6 +17,8 @@ import TicketsListFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Compone
 import TasksNavFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TasksNavFrame";
 import TasksListFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TasksListFrame";
 
+import TicketsSidebarHoverFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/TicketsSidebarHoverFrame";
+
 @connect(state => ({
   user: state.user,
   dp_window: state.dp_window
@@ -29,6 +31,8 @@ export default class DpApp extends React.Component {
     return (<div className="dp-window">
         <Header user={user} />
         <AppSwitcher switchApp={actions.setActiveApp} activeAppId={dp_window.activeAppId} />
+
+        <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsSidebarHoverFrame /></AppFrameWrapper>
 
         <NavFrame activeAppId={dp_window.activeAppId}>
           <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsNavFrame /></AppFrameWrapper>

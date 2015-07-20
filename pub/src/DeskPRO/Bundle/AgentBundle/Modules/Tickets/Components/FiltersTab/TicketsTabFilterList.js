@@ -1,8 +1,17 @@
 import React from "react";
 
+import * as SidebarHoverActions from "../../Actions/SidebarHoverActions";
+
 export default class TicketsTabFilterList extends React.Component {
   render() {
-    const { filtersList, filterSet, filterCounts, loadFilterTickets } = this.props;
+    const {
+      filtersList,
+      filterSet,
+      filterCounts,
+      loadFilterTickets,
+      showFilterGroupingOptions,
+      dispatch,
+    } = this.props;
     let totalTickets = 0;
     let expandButton = '';
 
@@ -19,7 +28,7 @@ export default class TicketsTabFilterList extends React.Component {
         const classes = 'fa fa-angle-down';
         expandButton = (
           <div className="list-counter-bucket">
-            <a className="list-counter-dropdown active" href="#">
+            <a className="list-counter-dropdown active" onClick={() => dispatch(SidebarHoverActions.showFilterGroupingOptions())} href="#">
               &nbsp;<i className={classes}></i>
             </a>
             <a href="#" className="list-counter active">{count}</a>

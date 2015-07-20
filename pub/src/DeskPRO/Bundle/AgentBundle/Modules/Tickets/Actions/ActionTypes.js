@@ -8,7 +8,12 @@ export default keyMirror({
   TICKETS_LOAD_FILTER_COUNTS: null,
   TICKETS_LOAD_FILTER_SET_FILTERS: null,
   
+  // Labels
   TICKETS_LOAD_TICKET_LABELS: null,
   
+  // Stars
   TICKETS_LOAD_TICKET_STAR_COUNTS: null,
+  
+  // Hover sidebar
+  TICKETS_SIDEBAR_HOVER_FILTER_GROUPING_OPTIONS: null,
 });

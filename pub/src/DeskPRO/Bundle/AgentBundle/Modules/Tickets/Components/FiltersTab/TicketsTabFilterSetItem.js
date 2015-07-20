@@ -38,7 +38,15 @@ export default class TicketsTabFilterSetItem extends React.Component {
   }
   
   render() {
-    const { filter_set_filters_list, filterSet, loadFilterTickets, totalTickets, filterCounts } = this.props;
+    const {
+      filter_set_filters_list,
+      filterSet,
+      loadFilterTickets,
+      totalTickets,
+      filterCounts,
+      showFilterGroupingOptions,
+      dispatch,
+    } = this.props;
     
     if(filter_set_filters_list.filter_set_filters_list.filter_set_id == this.filterSetId) {
       this.filters = filter_set_filters_list.filter_set_filters_list.filters;
@@ -57,7 +65,9 @@ export default class TicketsTabFilterSetItem extends React.Component {
           filtersList={this.filters}
           filterSet={filterSet}
           filterCounts={this.filterCounts}
-          loadFilterTickets={loadFilterTickets} />
+          loadFilterTickets={loadFilterTickets}
+          showFilterGroupingOptions={showFilterGroupingOptions}
+          dispatch={dispatch} />
       );
     }
     
