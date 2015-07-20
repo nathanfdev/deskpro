@@ -71,6 +71,7 @@ use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
@@ -3665,6 +3666,10 @@ class TicketController extends AbstractController
         $field_manager = $this->container->getTicketFieldManager();
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
+        $billing_field_manager = $this->container->getBillingFieldManager();
+        $group = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
+        $billing_fields = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
         $page = $layouts->getLayout($ticket->department ? $ticket->department['id'] : 0);
         $layout = LayoutDisplay::createFromLayout($page, LayoutDisplay::NEW_TICKET);
@@ -3686,6 +3691,7 @@ class TicketController extends AbstractController
             'ticket_options'         => $ticket_options,
             'custom_fields'          => $custom_fields,
             'new_custom_fields'      => $new_custom_fields->createView(),
+            'billing_fields' => $billing_fields,
         ));
     }
 
@@ -3835,15 +3841,35 @@ class TicketController extends AbstractController
             $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
             $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
+            $newticket->billing_fields = $this->request->request->get('billing_fields', array());
             $newticket->status = $set_status;
             $validator->setLayout($layout);
             $newticket->setLayout($layout);
 
-            if (!$validator->isValid($newticket)) {
+            $all_billing_errors = array();
+            if ($post_billing_fields = $request->get('billing_fields', array())) {
+                $billing_field_manager = $this->container->getBillingFieldManager();
+
+                foreach ($billing_field_manager->getFields() as $field) {
+                    $billing_errors = $field->getHandler()->validateFormData(
+                        $post_billing_fields,
+                        HandlerAbstract::CONTEXT_AGENT
+                    );
+                    foreach ($billing_errors as $code) {
+                        $all_billing_errors[] = $field['title'].': '.$trans->getPhraseText(
+                                preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
+                            );
+                    }
+                }
+            }
+
+
+            if (!$validator->isValid($newticket) || $all_billing_errors) {
                 $free = array();
                 foreach ($validator->getErrorsInfo() as $info) {
                     $free[] = $info['message'];
                 }
+                $free = array_merge($free, $all_billing_errors);
 
                 return $this->createJsonResponse(array('error' => true, 'error_codes' => array('free' => true), 'error_messages' => $free));
             }
@@ -3926,10 +3952,28 @@ class TicketController extends AbstractController
                     }
 
                     if ($amount || $time) {
-                        $charge = $ticket->addCharge($this->person, $time, $amount, $this->in->getString('billing_comment'));
-                        if ($charge) {
+                        if ($charge = $ticket->addCharge($this->person, $time, $amount)) {
                             $this->em->persist($ticket);
-                            $this->em->flush();
+
+                            if (!empty($post_billing_fields)) {
+                                $billing_field_manager->saveFormToObject($post_billing_fields, $charge);
+//                                $changes = $charge->getStateChangeRecorder()->getChanges();
+//
+//                                $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+//                                $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+//                                $obj = unserialize($serialized);
+//                                $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+//                                $method->setAccessible(true);
+//
+//                                foreach ($changes as $change) {
+//                                    foreach ($changes as $change) {
+//                                        if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+//                                        $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+//                                    }
+//                                }
+                            }
+
+                            $this->em->flush($charge);
                         }
                     }
                 }

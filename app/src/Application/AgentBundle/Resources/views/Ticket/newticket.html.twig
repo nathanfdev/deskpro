@@ -327,10 +327,16 @@ pageMeta.baseId = '{{ baseId }}';
 						<input type="hidden" id="{{ baseId }}_billing_id_hidden" name="billing_id" value="" />
 					</td>
 				</tr>
+				{% for f in billing_fields %}
 				<tr>
-					<th>{{ phrase('agent.general.comment') }}</th>
-					<td><input type="text" id="{{ baseId }}_billing_comment" name="billing_comment" style="width: 98%" maxlength="255" /></td>
+					<th>
+						{{ f.title }}
+					</th>
+					<td>
+						{{ render_custom_field_form(f) }}
+					</td>
 				</tr>
+				{% endfor %}
 			</table>
 		</article>
 	</section>

@@ -265,8 +265,8 @@ class TicketLogGenerator
             case 'custom_data':
                 return array(
                     'action_type'  => 'changed_custom_field',
-                    'value_before' => $old ? $old['value'] : null,
-                    'value_after'  => $new ? $new['value'] : null,
+                    'value_before' => $old ? @$old['value'] : null,
+                    'value_after' => $new ? @$new['value'] : null,
 
                     'field_id'   => $old ? $old['field_def']->id : null,
                     'field_name' => $old ? $old['field_def']->title : null
