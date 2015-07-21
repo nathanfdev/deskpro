@@ -102,6 +102,23 @@ class WorkHoursSet implements WorkHoursInterface
             $work_timezone = 'UTC';
         }
 
+        // old-style array used in old triggers would pass array of [false, true, true, false ...]
+        // instead of array of days (1,2,3)
+        $all_bools = array_reduce($work_days, function($c, $v) { return $c && (is_bool($v) || $v === null); }, true);
+        if ($work_days && $all_bools) {
+            $work_days_ints = array();
+            if (count($work_days) == 7) {
+                array_unshift($work_days, null); // old-style arrays might be 0-based
+            }
+            foreach ($work_days as $k => $v) {
+                if ($v) {
+                    $work_days_ints[] = $k;
+                }
+            }
+
+            $work_days = $work_days_ints;
+        }
+
         $work_days_array = array_fill(1, 7, false);
         foreach ($work_days as $k) {
             if ($k >= 1 && $k <= 7) {
