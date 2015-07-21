@@ -9,5 +9,7 @@ export default keyMirror({
     TASKS_LOAD_DELEGATED_TASKS: null,
     TASKS_LOAD_UNASSIGNED_TASKS: null,
     TASKS_LOAD_AGENTS: null,
-    TASKS_LOAD_LABELS: null
+    TASKS_LOAD_LABELS: null,
+    TASKS_LOAD_TEAMS: null,
+    TASKS_LOAD_DEPARTMENTS: null
 });
