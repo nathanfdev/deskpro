@@ -23,6 +23,15 @@ Feature: /tasks endpoint
     And the JSON node "data.links" should exist
     And the JSON node "data.links.self" should be equal to "/api/v2/tasks/2"
 
+  Scenario: I try to POST a broken task with no title
+    When I send a POST request to "/api/v2/tasks" with body:
+    """
+{
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+
   Scenario: I GET a single task
     When I send a GET request to "/api/v2/tasks/2"
     Then the response should be in JSON

@@ -23,6 +23,15 @@ Feature: /projects endpoint
     And the JSON node "data.links" should exist
     And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
+  Scenario: I try to make a broken POST request without a title
+    When I send a POST request to "/api/v2/projects" with body:
+    """
+{
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+
   Scenario: I GET a single project
     When I send a GET request to "/api/v2/projects/1"
     Then the response should be in JSON
