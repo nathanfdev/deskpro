@@ -34,7 +34,7 @@
 
 namespace Orb\Util;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use Application\DeskPRO\Util\InfLoopAssert;
 
 /**
  * Utility class to work with a set of work hours/days/holidays
@@ -178,7 +178,11 @@ class WorkHoursSet implements WorkHoursInterface
             }
         }
 
+        InfLoopAssert::reset($this);
         while ($delay > 0) {
+            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+                return null;
+            }
             $date_end = $this->getNextWorkDayStart($date_end);
             if ($delay > $work_day_length) {
                 $date_end->modify('+' . ($work_day_length + 1) . ' seconds');
@@ -223,7 +227,11 @@ class WorkHoursSet implements WorkHoursInterface
             $delay += $time_past;
         }
 
+        InfLoopAssert::reset($this);
         while ($delay < 0) {
+            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+                return null;
+            }
             $date_end = $this->getNextWorkDayStart($date_end, true);
             $delay += $work_day_length;
         }
@@ -286,13 +294,10 @@ class WorkHoursSet implements WorkHoursInterface
         $adjust = ($backwards ? '-1 day' : '+1 day');
 
         $has_adjusted = false;
-        $iter_cnt = 0;
 
+        InfLoopAssert::reset($this);
         do {
-            // inf loop protection -- fallback, sholudn't happen
-            if ($iter_cnt++ > 200) {
-                $e = new \RuntimeException("Infinite getNextWorkDayStart for days:" . print_r($this->work_days, true) . " and time: " . $this->work_start);
-                KernelErrorHandler::logException($e);
+            if (!InfLoopAssert::count($this, 200, array($this, 'getDebugDetails'))) {
                 return $date;
             }
 
@@ -377,7 +382,14 @@ class WorkHoursSet implements WorkHoursInterface
                 $wait_time += $time_remaining;
                 $date->modify('+' . ($time_remaining + 1) . ' seconds');
             }
-        } while ($date->getTimestamp() < $end) {
+        }
+
+        InfLoopAssert::reset($this);
+        while ($date->getTimestamp() < $end) {
+            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+                return 0;
+            }
+
             $date = $this->getNextWorkDayStart($date);
             if ($date->getTimestamp() >= $end) {
                 break;
@@ -484,5 +496,13 @@ class WorkHoursSet implements WorkHoursInterface
     public function getSecondsPerWeek()
     {
         return count($this->work_days) * $this->getSecondsPerDay();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDebugDetails()
+    {
+        return sprintf("work_start=%s, work_end=%s, work_days=%s", $this->work_start, $this->work_end, implode(' ', $this->work_days));
     }
 }
