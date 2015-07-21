@@ -622,6 +622,23 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 
     /**
+     * @param string $type 'agent' or 'user'
+     * @return bool
+     */
+    public function hasDeskproUsersource($type)
+    {
+        foreach ($this->usersource_assoc as $assoc) {
+            $us = $assoc->usersource;
+            if ($us->type == $type && $us->source_type == 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Try to guess an org name based on profile info.
      *
      * @return string
