@@ -26,6 +26,12 @@ export default class ComponentRootWrapper extends React.Component {
 
         // Render the component with react
         React.render(props.children, this.node);
+
+        if (props.open) {
+            $(this.node).show();
+        } else {
+            $(this.node).hide();
+        }
     }
 
     componentWillUnmount() {

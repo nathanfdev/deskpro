@@ -6,14 +6,14 @@ import TaskNavGroups from "../Components/TaskNavGroups";
 import TaskNavProjects from "../Components/TaskNavProjects";
 import TaskNavPeople from "../Components/TaskNavPeople";
 import TaskNavLabels from "../Components/TaskNavLabels";
-import TaskCreateHover from "../Components/TaskCreateHover";
-import ComponentRootWrapper from "../Components/ComponentRootWrapper";
 
 @connect(state => ({
     taskList: state.taskList,
     projectList: state.projectList,
     agentList:state.agentList,
     labelList:state.labelList,
+    teamList:state.teamList,
+    departmentList:state.departmentList,
     user: state.user
 }))
 export default class TasksNavFrame extends React.Component {
@@ -31,10 +31,12 @@ export default class TasksNavFrame extends React.Component {
         dispatch(TaskActions.loadUnassignedTasks());
         dispatch(TaskActions.loadLabels());
         dispatch(TaskActions.loadAgents());
+        dispatch(TaskActions.loadTeams());
+        dispatch(TaskActions.loadDepartments());
     }
 
     render() {
-        const { taskList, projectList, agentList, labelList } = this.props;
+        const { taskList, projectList, agentList, labelList, departmentList, teamList } = this.props;
 
         return (<section className="task-nav-frame">
             <div className="sidebar-wrapper" id="sidebar-wrapper">
@@ -64,7 +66,7 @@ export default class TasksNavFrame extends React.Component {
                     <div className="sidebar-list sidebar-list-filters">
                         <TaskNavGroups taskList={taskList} />
 
-                        <TaskNavProjects projectList={projectList} />
+                        <TaskNavProjects projectList={projectList} agentList={agentList} teamList={teamList} departmentList={departmentList} />
 
                         <TaskNavPeople agentList={agentList} />
 

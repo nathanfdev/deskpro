@@ -80,7 +80,8 @@ Feature: /task_links endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.ticket.id" should be equal to "1"
-    And the JSON node "data.article" should not exist
+    And the JSON node "data.article" should exist
+    And the JSON node "data.article.id" should not exist
     And the JSON node "data.links.self" should be equal to "/api/v2/task_links/1"
 
   Scenario: I DELETE a single task

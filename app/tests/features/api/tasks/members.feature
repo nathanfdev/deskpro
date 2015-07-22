@@ -68,7 +68,8 @@ Feature: /project_members endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.team.id" should be equal to "1"
-    And the JSON node "data.person" should not exist
+    And the JSON node "data.person" should exist
+    And the JSON node "data.person.id" should not exist
     And the JSON node "data.links.self" should be equal to "/api/v2/project_members/1"
 
   Scenario: I DELETE a single task
