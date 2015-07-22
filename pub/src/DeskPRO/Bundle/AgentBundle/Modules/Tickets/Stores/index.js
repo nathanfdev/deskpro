@@ -7,7 +7,7 @@ import labels_list from "./labels_list";
 import stars_counts from "./stars_list";
 import sidebar_hover from "./sidebar_hover";
 import departments from "./departments";
-import agents from "./agents";
+import people from "./people";
 
 export default {
 	filter_sets_list,
@@ -19,5 +19,5 @@ export default {
   stars_counts,
   sidebar_hover,
   departments,
-  agents,
+  people,
 };

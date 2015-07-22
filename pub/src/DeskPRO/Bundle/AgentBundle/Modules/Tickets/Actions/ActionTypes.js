@@ -23,5 +23,5 @@ export default keyMirror({
   TICKETS_DEPARTMENT_LOADED: null,
   
   // An agent was loaded.
-  TICKETS_AGENTS_LOADED: null,
+  TICKETS_PEOPLE_LOADED: null,
 });

@@ -15,7 +15,7 @@ const handlePerson = (state, action) => {
 }
 
 const r = handleActions({
-  [ActionTypes.TICKETS_AGENTS_LOADED]: handlePerson,
+  [ActionTypes.TICKETS_PEOPLE_LOADED]: handlePerson,
 }, initialState);
 
 export default (state, action = {type: null}) => {
