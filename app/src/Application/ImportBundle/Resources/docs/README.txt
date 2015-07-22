@@ -169,7 +169,7 @@ Exporters:
 
          - Articles required columns
 
-            'id',
+            'id' is optional,
             'person',
             'title',
             'content',
@@ -178,7 +178,8 @@ Exporters:
             'status',
             'category',
             'label',
-            'date_created'
+            'date_created',
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/articles.csv)
 
             Person means a person email
             Slug could be empty (generated from title)
@@ -231,7 +232,8 @@ Exporters:
             'category',
             'label',
             'date_created',
-            'date_published'
+            'date_published',
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/feedback.csv)
 
             Person means a person email
             Slug could be empty (generated from title)
@@ -284,16 +286,16 @@ Exporters:
 
         - People required columns
 
-            'id',
+            'id' is optional,
             'name',
-            'email'
-
-            'is_agent' is optional
+            'email',
+            'is_agent' is optional,
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/people.csv)
 
 
         - People custom fields required columns
 
-            'person_id',
+            'person_id' people.csv `id` or `email` column,
             'field_name',
             'value'
 
@@ -305,7 +307,8 @@ Exporters:
             'user',
             'agent',
             'status',
-            'date_created' is optional
+            'date_created' is optional,
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/tickets.csv)
 
             User means a user email
             Agent means a agent email

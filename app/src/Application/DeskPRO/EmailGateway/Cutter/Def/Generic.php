@@ -300,6 +300,10 @@ class Generic implements ForwardDef, QuoteDef
      */
     public function cutQuoteBlock($body, $is_html = false)
     {
+        // Remove DP_PREVIEW_TEXT stuff which looks like:
+        // <div id="DP_PREVIEW_TEXT_MARK" class="DP_PREVIEW_TEXT_MARK" ...>text</div>
+        $body = preg_replace('#\s*<div[^>]*DP_PREVIEW_TEXT_MARK[^>]*>(.*?)</div>\s*#is', '', $body);
+
         // Have cuts in the form of <div class="DP_TOP_MARK"> or <!--DP_TOP_MARK-->
         $pos = strpos($body, 'DP_TOP_MARK');
         if ($pos === false) {

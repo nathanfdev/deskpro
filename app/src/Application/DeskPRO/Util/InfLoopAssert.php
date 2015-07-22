@@ -25,103 +25,78 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Entity;
+namespace Application\DeskPRO\Util;
 
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
- * Base exporting entity
- *
- * Class AbstractEntity
- * @package Application\ImportBundle\Entity
+ * Simple util that counts iterations in a loop and will log an exception
+ * when too many iterations happen. Generally used to prevent infinite loops.
  */
-abstract class AbstractEntity implements EntityInterface
+class InfLoopAssert
 {
-    /**
-     * @var array
-     */
-    protected $raw_data = array();
+    private static $counters = array();
 
     /**
-     * @var int|string
+     * @param mixed $id
+     * @return string
      */
-    protected $oid;
-
-    /**
-     * @var string
-     */
-    protected $destination;
-
-    /**
-     * @return array
-     */
-    public function getRawData()
+    private static function getId($id)
     {
-        return $this->raw_data;
+        if (is_array($id)) {
+            $parts = array();
+            foreach ($id as $p) {
+                $parts[] = self::getId($id);
+            }
+            return implode('_', $id);
+        } else if (is_object($id)) {
+            return spl_object_hash($id);
+        } else {
+            return $id;
+        }
     }
 
     /**
-     * @param array $raw_data
-     * @return $this
+     * Reset a counter
+     * @param string $id
      */
-    public function setRawData($raw_data)
+    public static function reset($id)
     {
-        $this->raw_data = $raw_data;
-        return $this;
+        self::$counters[self::getId($id)] = 0;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * Set entity oid
+     * Count a loop iteration.
      *
-     * @param int|string $oid
-     * @return $this
+     * @param string $id
+     * @param int $max
+     * @param string $msg
+     * @param bool $throw
+     * @return bool
      */
-    public function setOid($oid)
+    public static function count($id, $max, $msg, $throw = false)
     {
-        $this->oid = $oid;
-        return $this;
-    }
+        $id = self::getId($id);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDestination()
-    {
-        return $this->destination;
-    }
+        if (!isset(self::$counters[$id])) {
+            self::$counters[$id] = 0;
+        }
 
-    /**
-     * Set entity destination
-     * It could be a file name or db name
-     *
-     * @param string $destination
-     * @return $this
-     */
-    public function setDestination($destination)
-    {
-        $this->destination = $destination;
-        return $this;
-    }
+        self::$counters[$id]++;
 
-    /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
-     */
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        $metadata
-            ->addPropertyConstraint('oid', new Constraints\NotBlank())
-            ->addPropertyConstraint('destination', new Constraints\NotBlank())
-        ;
+        if (self::$counters[$id] > $max) {
+            if (is_callable($msg)) {
+                $msg = call_user_func($msg, $id, $max);
+            }
+            $e = new \RuntimeException($msg);
+            if ($throw) {
+                throw $e;
+            }
+
+            KernelErrorHandler::logException($e, true, "inf_loop_$id");
+            return false;
+        }
+
+        return true;
     }
 }

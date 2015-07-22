@@ -34,6 +34,8 @@
 
 namespace Orb\Util;
 
+use Application\DeskPRO\Util\InfLoopAssert;
+
 /**
  * Utility class to work with a set of work hours/days/holidays
  * to calculate time lengths and thresholds.
@@ -100,6 +102,23 @@ class WorkHoursSet implements WorkHoursInterface
             $work_timezone = 'UTC';
         }
 
+        // old-style array used in old triggers would pass array of [false, true, true, false ...]
+        // instead of array of days (1,2,3)
+        $all_bools = array_reduce($work_days, function($c, $v) { return $c && (is_bool($v) || $v === null); }, true);
+        if ($work_days && $all_bools) {
+            $work_days_ints = array();
+            if (count($work_days) == 7) {
+                array_unshift($work_days, null); // old-style arrays might be 0-based
+            }
+            foreach ($work_days as $k => $v) {
+                if ($v) {
+                    $work_days_ints[] = $k;
+                }
+            }
+
+            $work_days = $work_days_ints;
+        }
+
         $work_days_array = array_fill(1, 7, false);
         foreach ($work_days as $k) {
             if ($k >= 1 && $k <= 7) {
@@ -119,6 +138,15 @@ class WorkHoursSet implements WorkHoursInterface
 
         if (!$any || !Arrays::removeFalsey($work_days_array)) {
             $work_days_array = array(null, true, true, true, true, true, true, true);
+        }
+        if ($work_start > $work_end) {
+            $tmp = $work_start;
+            $work_start = $work_end;
+            $work_end = $tmp;
+        }
+        if (!$work_start && !$work_end) {
+            $work_start = 32400;
+            $work_end = 64860;
         }
 
         $this->work_start = $work_start;
@@ -167,7 +195,11 @@ class WorkHoursSet implements WorkHoursInterface
             }
         }
 
+        InfLoopAssert::reset($this);
         while ($delay > 0) {
+            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+                return null;
+            }
             $date_end = $this->getNextWorkDayStart($date_end);
             if ($delay > $work_day_length) {
                 $date_end->modify('+' . ($work_day_length + 1) . ' seconds');
@@ -212,7 +244,11 @@ class WorkHoursSet implements WorkHoursInterface
             $delay += $time_past;
         }
 
+        InfLoopAssert::reset($this);
         while ($delay < 0) {
+            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+                return null;
+            }
             $date_end = $this->getNextWorkDayStart($date_end, true);
             $delay += $work_day_length;
         }
@@ -276,7 +312,12 @@ class WorkHoursSet implements WorkHoursInterface
 
         $has_adjusted = false;
 
+        InfLoopAssert::reset($this);
         do {
+            if (!InfLoopAssert::count($this, 200, array($this, 'getDebugDetails'))) {
+                return $date;
+            }
+
             list($dow, $year, $month, $day, $hours, $minutes, $seconds) = explode('|', $work_date->format('w|Y|n|j|G|i|s'));
             $dow = intval($dow);
             $year = intval($year);
@@ -358,7 +399,14 @@ class WorkHoursSet implements WorkHoursInterface
                 $wait_time += $time_remaining;
                 $date->modify('+' . ($time_remaining + 1) . ' seconds');
             }
-        } while ($date->getTimestamp() < $end) {
+        }
+
+        InfLoopAssert::reset($this);
+        while ($date->getTimestamp() < $end) {
+            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+                return 0;
+            }
+
             $date = $this->getNextWorkDayStart($date);
             if ($date->getTimestamp() >= $end) {
                 break;
@@ -465,5 +513,13 @@ class WorkHoursSet implements WorkHoursInterface
     public function getSecondsPerWeek()
     {
         return count($this->work_days) * $this->getSecondsPerDay();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDebugDetails()
+    {
+        return sprintf("work_start=%s, work_end=%s, work_days=%s", $this->work_start, $this->work_end, implode(' ', $this->work_days));
     }
 }
