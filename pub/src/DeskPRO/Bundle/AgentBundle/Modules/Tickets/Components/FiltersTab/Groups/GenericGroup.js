@@ -3,6 +3,7 @@ import React from "react";
 export default class GenericGroup extends React.Component {
   render() {
     const {grouping, count, item} = this.props;
+    console.log(grouping + " " + count + " " + item);
     
     return (
       <li>

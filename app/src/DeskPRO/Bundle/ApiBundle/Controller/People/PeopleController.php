@@ -235,7 +235,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
     protected function getPerson($id)
     {
         $id = (int) $id;
-        $person = $this->getDoctrine()->getManager()->getRepository('App:Person')->find($id);
+        $person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find($id);
 
         if (!$person) {
             throw $this->createNotFoundException();

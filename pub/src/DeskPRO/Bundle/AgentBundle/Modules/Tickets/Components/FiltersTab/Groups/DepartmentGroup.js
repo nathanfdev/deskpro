@@ -19,10 +19,9 @@ export default class DepartmentGroup extends React.Component {
   
   render() {
     const { departments, count, item } = this.props;
-    console.log(departments);
     
     if(!departments[this.department_id]) {
-      return (<span>Toto</span>);
+      return (<span></span>);
     } else {
       const key = "department-" + this.department_id;
       return (
