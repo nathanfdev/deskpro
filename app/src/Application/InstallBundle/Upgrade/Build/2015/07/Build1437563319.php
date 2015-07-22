@@ -41,20 +41,19 @@ class Build1437563319 extends AbstractBuild
         $this->out("Billing Custom Fields");
 		$db = $this->container->getDb();
 
-		$db->executeQuery(
-			"INSERT INTO `custom_def_billing`
+		$db->executeQuery("
+			INSERT INTO `custom_def_billing`
 				(`parent_id`, `app_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
 			VALUES
-				(NULL, NULL, '', 0, 0, 'Comment', '', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Text', 'a:0:{}', 1, 1, 0, NULL, 0);
+				(NULL, NULL, '', 0, 0, 'Comment', '', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Text', 'a:0:{}', 1, 1, 0, NULL, 0)
 		");
 		$id = $db->lastInsertId();
 
-		$db->executeQuery('
-			insert into custom_data_billing (ticket_charge_id, field_id, root_field_id, value, input)
-			select id, :id, :id, 0, comment from ticket_charges
-		', array('id' => $id));
+		$db->executeQuery("
+			INSERT INTO custom_data_billing (`ticket_charge_id`, `field_id`, `root_field_id`, `value`, `input`)
+			SELECT id, :id, :id, 0, comment FROM ticket_charges
+		", array('id' => $id));
 
-
-		// todo delete 'comment' column from ticket charge?
+		$this->execMutateSql("ALTER TABLE ticket_charges DROP `comment`");
     }
 }

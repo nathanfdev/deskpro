@@ -38,7 +38,7 @@ class Build1437563318 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("My Upgrade Class");
+        $this->out("Add billing fields");
 		$this->execMutateSql("CREATE TABLE custom_data_billing (id INT AUTO_INCREMENT NOT NULL, ticket_charge_id INT DEFAULT NULL, field_id INT DEFAULT NULL, root_field_id INT DEFAULT NULL, value INT NOT NULL, input LONGTEXT NOT NULL, INDEX IDX_F3AE0D40CF12935E (ticket_charge_id), INDEX IDX_F3AE0D40443707B0 (field_id), INDEX IDX_F3AE0D403F6A6D56 (root_field_id), INDEX field_id_idx (field_id, ticket_charge_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql("CREATE TABLE custom_def_billing (id INT AUTO_INCREMENT NOT NULL, parent_id INT DEFAULT NULL, app_id INT DEFAULT NULL, js_class VARCHAR(255) NOT NULL, has_form_template TINYINT(1) NOT NULL, has_display_template TINYINT(1) NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, handler_class VARCHAR(255) DEFAULT NULL, options LONGBLOB NOT NULL COMMENT '(DC2Type:array)', is_user_enabled TINYINT(1) NOT NULL, is_enabled TINYINT(1) NOT NULL, display_order INT NOT NULL, default_value VARCHAR(500) DEFAULT NULL, is_agent_field TINYINT(1) NOT NULL, INDEX IDX_5849A438727ACA70 (parent_id), INDEX IDX_5849A4387987212D (app_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql("ALTER TABLE custom_data_billing ADD CONSTRAINT FK_F3AE0D40CF12935E FOREIGN KEY (ticket_charge_id) REFERENCES ticket_charges (id) ON DELETE CASCADE");
