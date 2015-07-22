@@ -31,7 +31,7 @@ export class TicketsTabFilterDepartmentGroup extends TicketsTabFilterGroup {
   }
   
   render() {
-    const { departments } = this.props;
+    const { departments, count, item } = this.props;
     console.log(departments);
     
     if(!departments[this.department_id]) {
@@ -40,6 +40,7 @@ export class TicketsTabFilterDepartmentGroup extends TicketsTabFilterGroup {
       const key = "department-" + this.department_id;
       return (
         <li key={key}>
+          <div className="list-counter-bucket"><a href="#" className="list-counter">{count}</a></div>
           <a href="#" className="item">{departments[this.department_id].title}</a>
         </li>
       );
