@@ -2686,10 +2686,8 @@ class TicketController extends AbstractController
             $method->setAccessible(true);
 
             foreach ($changes as $change) {
-                foreach ($changes as $change) {
-                    if (0 !== strpos($change->getField(), 'custom_data.')) continue;
-                    $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
-                }
+                if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
             }
         }
 

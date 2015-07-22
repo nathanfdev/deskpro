@@ -549,8 +549,8 @@
             {% if log.details.old_time or log.details.new_time %}
                 Charge: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
             {% endif %}
-            {% for v in log.details.custom_data if v.value_before or v.value_after %}
-                {{ v.field_name }}: <span class="old-val">{{ v.value_after }}</span><br />
+            {% for v in log.details.custom_data if v.value_before %}
+                {{ v.field_name }}: <span class="old-val">{{ v.value_before }}</span><br />
             {% endfor %}
         </div>
 {% elseif log.action_type == 'delete_billing' %}
