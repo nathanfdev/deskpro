@@ -2,9 +2,7 @@
 
 	<td>
 		{% if charge.charge_time %}
-			<span>
-				{{ charge.charge_time|time_length }}
-			</span>
+        {{ charge.charge_time|time_length(null, true)|raw }}
 		{% endif %}
 		{% if charge.amount %}
 			<span>
@@ -14,7 +12,6 @@
 	</td>
 	<td>{{ charge.agent.name }}</td>
     <td>
-        {#{{charge.date_created|date('c', 'UTC')}}#}
         <time class="timeago"
               datetime="{{ charge.date_created|date('c', 'UTC') }}">{{ charge.date_created|date('fulltime', app.user.timezone) }}</time>
     </td>
@@ -58,8 +55,7 @@
                     {% if charge.charge_time %}
                     <span id="billing_inputs_edit_{{ charge.id }}" class="billing-form-time">
                         <input type="text" id="billing_hours_edit_{{ charge.id }}" name="hours" size="2" placeholder="H" style="max-width: 20%">:
-                        <input type="text" id="billing_minutes_edit_{{ charge.id }}" name="minutes" size="2" placeholder="M" maxlength="2" style="max-width: 20%">:
-                        <input type="text" id="billing_seconds_edit_{{ charge.id }}" name="seconds" size="2" placeholder="S" maxlength="2" style="max-width: 20%">
+                        <input type="text" id="billing_minutes_edit_{{ charge.id }}" name="minutes" size="2" placeholder="M" maxlength="2" style="max-width: 20%"><span class="billing-seconds-input">:<input type="text" id="billing_seconds_edit_{{ charge.id }}" name="seconds" size="2" placeholder="S" maxlength="2" style="max-width: 20%"></span>
                     </span>
                     {% endif %}
                 </td>
