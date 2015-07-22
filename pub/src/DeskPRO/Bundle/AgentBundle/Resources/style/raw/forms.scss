@@ -2,7 +2,7 @@
 textarea, input { outline: none; }
 
 input, button {
-  font-family: Lato, "proxima nova";
+  font-family: Lato,helvetica,verdana,sans-serif;
   font-size: 1em;
 }
 
@@ -150,6 +150,10 @@ form {
     color: #fff;
     border-radius: 2px;
     padding: 10px 15px;
+    
+    &:hover {
+      background: #135388;
+    }
   }
 
 

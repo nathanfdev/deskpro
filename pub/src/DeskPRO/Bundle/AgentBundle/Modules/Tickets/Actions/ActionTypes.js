@@ -7,6 +7,7 @@ export default keyMirror({
   TICKETS_SELECT_FILTER: null,
   TICKETS_LOAD_FILTER_COUNTS: null,
   TICKETS_LOAD_FILTER_SET_FILTERS: null,
+  TICKETS_LOAD_FILTER_GROUPS: null,
   
   // Labels
   TICKETS_LOAD_TICKET_LABELS: null,
@@ -16,4 +17,8 @@ export default keyMirror({
   
   // Hover sidebar
   TICKETS_SIDEBAR_HOVER_FILTER_GROUPING_OPTIONS: null,
+  TICKETS_SIDEBAR_HOVER_HIDE: null,
+  
+  // A department was loaded.
+  TICKETS_DEPARTMENT_LOADED: null,
 });

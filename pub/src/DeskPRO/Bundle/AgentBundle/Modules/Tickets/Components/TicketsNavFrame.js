@@ -6,7 +6,7 @@ import TicketsTabStars from "./StarsTab/TicketsTabStars";
 
 import { connect } from 'redux/react';
 import { bindActionCreators } from 'redux';
-import * as TicketActions from "../Actions/TicketsListActions";
+import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";
 
 @connect(state => ({

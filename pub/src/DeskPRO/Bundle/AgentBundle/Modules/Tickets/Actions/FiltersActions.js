@@ -9,8 +9,9 @@ export const selectTicketFilter = createAction(ActionTypes.TICKETS_SELECT_FILTER
 export const setLoadedTickets = createAction(ActionTypes.TICKETS_LOAD_TICKETS);
 export const setLoadedFilterSetsCounts = createAction(ActionTypes.TICKETS_LOAD_FILTER_COUNTS);
 export const setLoadedFilterSetFilters = createAction(ActionTypes.TICKETS_LOAD_FILTER_SET_FILTERS);
+export const setLoadedFilterGroups = createAction(ActionTypes.TICKETS_LOAD_FILTER_GROUPS);
 
-export const loadFilterSets = () => {
+export function loadFilterSets() {
   return dispatch => {
     DpApi.sendGet('DP_API/ticket_filter_sets').then(
       (values) => {
@@ -20,7 +21,7 @@ export const loadFilterSets = () => {
   }
 }
 
-export const loadFilterTickets = (filter_id) => {
+export function loadFilterTickets(filter_id) {
   return (dispatch) => {
     DpApi.sendGet('DP_API/ticket_filters/' + filter_id + '/tickets').then(
       values => {
@@ -30,7 +31,7 @@ export const loadFilterTickets = (filter_id) => {
   }
 }
 
-export const loadFilterSetsCounts = () => {
+export function loadFilterSetsCounts() {
   return (dispatch) => {
     DpApi.sendGet('DP_API/ticket_filter_sets/all/counts').then(
       values => {
@@ -40,7 +41,7 @@ export const loadFilterSetsCounts = () => {
   }
 }
 
-export const loadFiltersInSet = (filter_set_id) => {
+export function loadFiltersInSet(filter_set_id) {
   return (dispatch) => {
     DpApi.sendGet('DP_API/ticket_filter_sets/' + filter_set_id + '/filters').then(
       values => {
@@ -50,5 +51,17 @@ export const loadFiltersInSet = (filter_set_id) => {
         }));
       }
     );
+  }
+}
+
+export function loadFilterGroups(filter_id, grouping) {
+  return (dispatch) => {
+    DpApi.sendGet('DP_API/ticket_filters/' + filter_id + '/count?group_by=' + grouping).then(
+      values => dispatch(setLoadedFilterGroups({
+        filter_id: filter_id,
+        grouping: grouping,
+        data: values.getData().data
+      }))
+    )
   }
 }

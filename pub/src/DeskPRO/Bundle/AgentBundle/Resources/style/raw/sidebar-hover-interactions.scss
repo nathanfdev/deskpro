@@ -257,6 +257,20 @@
     padding: 7px 10px;
     margin-top: 4px;
   }
+  
+  select {
+    position: relative;
+    display: block;
+    padding: 10px;
+    line-height: 1em;
+    border: 1px solid #e4e4e4;
+    background: #fff;
+    padding-top: 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 4px;
+    width: 100%;
+  }
 
   .select-dropdown {
     display: block;

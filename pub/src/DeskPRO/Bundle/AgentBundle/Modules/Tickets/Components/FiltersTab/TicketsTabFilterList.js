@@ -1,8 +1,15 @@
 import React from "react";
 
+import { connect } from "redux/react";
 import * as SidebarHoverActions from "../../Actions/SidebarHoverActions";
+import * as FiltersActions from "../../Actions/FiltersActions";
 
-export default class TicketsTabFilterList extends React.Component {
+import * as FilterGroups from "./TicketsTabFilterGroups";
+
+@connect(state => ({
+  filter_set_filter_groups: state.filter_set_filter_groups,
+}))
+export default class TicketsTabFilterList extends React.Component {  
   render() {
     const {
       filtersList,
@@ -10,6 +17,7 @@ export default class TicketsTabFilterList extends React.Component {
       filterCounts,
       loadFilterTickets,
       showFilterGroupingOptions,
+      filter_set_filter_groups,
       dispatch,
     } = this.props;
     let totalTickets = 0;
@@ -28,7 +36,7 @@ export default class TicketsTabFilterList extends React.Component {
         const classes = 'fa fa-angle-down';
         expandButton = (
           <div className="list-counter-bucket">
-            <a className="list-counter-dropdown active" onClick={() => dispatch(SidebarHoverActions.showFilterGroupingOptions())} href="#">
+            <a className="list-counter-dropdown active" onClick={() => dispatch(SidebarHoverActions.showFilterGroupingOptions(filter))} href="#">
               &nbsp;<i className={classes}></i>
             </a>
             <a href="#" className="list-counter active">{count}</a>
@@ -36,12 +44,29 @@ export default class TicketsTabFilterList extends React.Component {
         );
       }
       
+      const filter_groups = filter_set_filter_groups.filter_set_filter_groups;
+      
+      let groups = [];
+      if(filter_groups.filter_id == filter.id && filter_groups.data.length > 0) {
+        groups = filter_groups.data.map(group => {
+            return (
+              <FilterGroups.TicketsTabFilterDepartmentGroup
+                count={group.count} item={group[filter_groups.grouping]} />
+            );
+        });
+        
+        groups = (
+          <ul className="with-connectors">
+            {groups}
+          </ul>
+        );
+      }
+      
       return (
         <li className="sidebar-item" key={filter.id}>
           {expandButton}
           <a href="#" onClick={() => loadFilterTickets(filter.id)} className="item">{filter.title}</a>
-
-          {/* Grouping goes here */}
+            {groups}
         </li>
       );
     });

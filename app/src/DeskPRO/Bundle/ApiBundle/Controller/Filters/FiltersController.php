@@ -425,7 +425,6 @@ class FiltersController extends BaseController
 
         throw new InvalidFormException($form); // let our listeners generate the form error response
     }
-    
 
     // A bit of comfort.
     protected function getEm()

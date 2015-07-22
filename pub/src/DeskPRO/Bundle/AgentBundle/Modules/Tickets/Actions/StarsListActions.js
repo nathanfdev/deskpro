@@ -2,7 +2,7 @@ import { createAction } from "redux-actions";
 
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import ActionTypes from "./ActionTypes";
-import * as TicketActions from "./TicketsListActions";
+import * as TicketActions from "./FiltersActions";
 
 export const setLoadedStarCounts = createAction(ActionTypes.TICKETS_LOAD_TICKET_STAR_COUNTS);
 

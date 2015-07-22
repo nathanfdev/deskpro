@@ -40,16 +40,23 @@ use \ReflectionClass;
  */
 class TicketGrouping
 {
-    const DEPARTMENT      = 'department';
-    const PERSON          = 'person';
-    const AGENT           = 'agent';
-    const DATE_CREATED    = 'date_created';
+    const DEPARTMENT       = 'department';
+    const ORGANIZATION     = "organization_id";
+    const PERSON           = "person";
+    const LANGUAGE         = "language_id";
+    const URGENCY          = "urgency";
+    const AGENT            = "agent";
+    const AGENT_TEAM       = "agent_team_id";
+    const WAITING_TIME     = "waiting_times";
+    const ALL_WAITING_TIME = "total_user_waiting";
+    const OPEN_TIME        = "open_time";
+    const DATE_CREATED     = 'date_created';
 
     // Contains this grouping's value.
     protected $column = null;
 
     /**
-     * This class must either be instanciated with ::fromString() or ::fromConst().
+     * This class must either be instantiated with ::fromString() or ::fromConst().
      */
     protected function __construct($column)
     {
