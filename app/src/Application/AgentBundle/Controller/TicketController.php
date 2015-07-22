@@ -3881,7 +3881,7 @@ class TicketController extends AbstractController
                         HandlerAbstract::CONTEXT_AGENT
                     );
                     foreach ($billing_errors as $code) {
-                        $all_billing_errors[] = $field['title'].': '.$trans->getPhraseText(
+                        $all_billing_errors[] = $field['title'].': '.$this->container->getTranslator()->getPhraseText(
                                 preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
                             );
                     }
