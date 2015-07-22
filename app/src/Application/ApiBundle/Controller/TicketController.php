@@ -1756,9 +1756,7 @@ class TicketController extends AbstractController implements ProtectedController
             $time = null;
         }
 
-        $comment = $this->in->getString('comment');
-
-        $charge = $ticket->addCharge($this->person, $time, $amount, $comment);
+        $charge = $ticket->addCharge($this->person, $time, $amount);
         $this->em->persist($ticket);
         $this->em->flush();
 

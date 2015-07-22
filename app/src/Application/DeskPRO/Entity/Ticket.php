@@ -1216,7 +1216,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * @param  Person            $agent
      * @param  int               $time
      * @param  int               $amount
-     * @param  string            $comment
      * @return TicketCharge|null
      */
     public function addCharge(Person $agent, $time, $amount = null)

@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -61,11 +60,6 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
      * @var float|null
      */
     protected $amount;
-
-    /**
-     * @var string
-     */
-    protected $comment = '';
 
     /**
      * @var \DateTime
@@ -351,17 +345,6 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
                 'scale' => 2,
                 'nullable' => true,
                 'columnName' => 'amount',
-            )
-        );
-        $metadata->mapField(
-            array(
-                'fieldName' => 'comment',
-                'type' => 'string',
-                'length' => 255,
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
-                'columnName' => 'comment',
             )
         );
         $metadata->mapField(
