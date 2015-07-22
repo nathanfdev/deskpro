@@ -1,5 +1,5 @@
 <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table billing-form"
-       id="{{ baseId }}_billing_form" data-refresh-url="{{ path('agent_ticket_chargeform', {ticket_id: ticket.id} ) }}">
+       id="{{ baseId }}_billing_form" data-refresh-url="{{ path('agent_ticket_chargeform', {ticket_id: ticket.id, base_id: baseId} ) }}">
     <tr>
         <th width="80">{{ phrase('agent.tickets.billing_charge') }}</th>
         <td>

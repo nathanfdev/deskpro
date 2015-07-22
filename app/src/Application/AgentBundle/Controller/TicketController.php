@@ -2474,6 +2474,7 @@ class TicketController extends AbstractController
             array(
                 'billing_fields_new' => $billing_fields_new,
                 'ticket' => $ticket,
+                'baseId' => $this->in->getString('base_id')
             )
         );
     }
@@ -3881,7 +3882,7 @@ class TicketController extends AbstractController
                         HandlerAbstract::CONTEXT_AGENT
                     );
                     foreach ($billing_errors as $code) {
-                        $all_billing_errors[] = $field['title'].': '.$this->container->getTranslator()->getPhraseText(
+                        $all_billing_errors[] = "(Billing) " . $field['title'].': '.$this->container->getTranslator()->getPhraseText(
                                 preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
                             );
                     }

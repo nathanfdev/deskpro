@@ -23,11 +23,6 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			return;
 		}
 
-		var form = this.getEl('billing_form');
-		var progress = this.getEl('billing_save_progress');
-		var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
-		var billingRows = this.getEl('billing_rows');
-
     var initDateTimePicker = function(){
       $('input.DateTime:not(.datetimepickerinit), .DateTime input:not(.datetimepickerinit)', wrap).each(function () {
         $(this).addClass('datetimepickerinit');
@@ -61,63 +56,78 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
         });
       });
     };
-    initDateTimePicker();
 
-		typeInputs.change(function() { self.updateBillingForm(true); });
-		this.updateBillingForm(true);
+		var form = this.getEl('billing_form');
+		var progress = this.getEl('billing_save_progress');
+		var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
+		var billingRows = this.getEl('billing_rows');
 
-		this.getEl('billing_stop').click(function() {
-			self.stopBillingTimer(false);
-			$(this).hide();
-			self.getEl('billing_start').show();
-		});
-		this.getEl('billing_start').click(function() {
-			if (self.getEl('billing_type_hidden').val() != 'time') {
-				return;
-			}
+		this.initForm = (function() {
+			form = this.getEl('billing_form');
+			progress = this.getEl('billing_save_progress');
+			typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
 
-			self.startBillingTimer(false);
-			$(this).hide();
-			self.getEl('billing_stop').show();
-		});
-		this.getEl('billing_reset').click(function() {
-			if (typeInputs.filter(':checked').val() == 'time') {
-				if (self.getEl('billing_stop').is(':visible')) {
-					self.startBillingTimer(true);
+			typeInputs.change(function () {
+				self.updateBillingForm(true);
+			});
+			this.updateBillingForm(true);
+
+			this.getEl('billing_stop').click(function () {
+				self.stopBillingTimer(false);
+				$(this).hide();
+				self.getEl('billing_start').show();
+			});
+			this.getEl('billing_start').click(function () {
+				if (self.getEl('billing_type_hidden').val() != 'time') {
+					return;
+				}
+
+				self.startBillingTimer(false);
+				$(this).hide();
+				self.getEl('billing_stop').show();
+			});
+			this.getEl('billing_reset').click(function () {
+				if (typeInputs.filter(':checked').val() == 'time') {
+					if (self.getEl('billing_stop').is(':visible')) {
+						self.startBillingTimer(true);
+					} else {
+						self.stopBillingTimer(true);
+					}
 				} else {
 					self.stopBillingTimer(true);
 				}
-			} else {
-				self.stopBillingTimer(true);
-			}
-		});
-
-		this.getEl('billing_save').click(function() {
-			progress.show();
-      var $err = self.getEl('billing_save_errors').hide()
-        , id = $(this).data('charge-id')
-        ;
-			$.ajax({
-				url: $(this).data('submit-url'),
-				data: form.find('input, textarea, select').serialize(),
-				type: 'POST',
-				dataType: 'json'
-			}).done(function(json) {
-				if (json.inserted && self.addBillingRow) {
-					self.addBillingRow(json.html);
-					self.resetBillingForm();
-          initDateTimePicker();
-				} else if(json.invalid_custom_fields) {
-					$err.children().remove();
-					for (var i in json.invalid_custom_fields) {
-						$err.append('<li>' + json.invalid_custom_fields[i] + '</li>');
-					}
-					$err.show();
-				}
-			}).always(function() {
-				progress.hide();
 			});
-		});
+
+			this.getEl('billing_save').click(function () {
+				progress.show();
+				var $err = self.getEl('billing_save_errors').hide()
+					, id   = $(this).data('charge-id')
+					;
+				$.ajax({
+					url:      $(this).data('submit-url'),
+					data:     form.find('input, textarea, select').serialize(),
+					type:     'POST',
+					dataType: 'json'
+				}).done(function (json) {
+					if (json.inserted && self.addBillingRow) {
+						self.addBillingRow(json.html);
+						self.resetBillingForm();
+					} else if (json.invalid_custom_fields) {
+						$err.children().remove();
+						for (var i in json.invalid_custom_fields) {
+							$err.append('<li>' + json.invalid_custom_fields[i] + '</li>');
+						}
+						$err.show();
+					}
+				}).always(function () {
+					progress.hide();
+				});
+			});
+
+      initDateTimePicker();
+		}).bind(this);
+
+		this.initForm();
 
 		wrap.on('click', 'a.billing-delete', function(e) {
 			var id = $(this).data('charge-id')
@@ -266,11 +276,15 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			form.replaceWith(data);
 		});
 
-		if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
-			this.startBillingTimer(true);
-		} else {
-			this.stopBillingTimer(true);
-		}
+		setTimeout((function() {
+      this.initForm();
+
+      if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
+        this.startBillingTimer(true);
+      } else {
+        this.stopBillingTimer(true);
+      }
+    }).bind(this), 100);
 	},
 
 	startBillingTimer: function(reset) {
