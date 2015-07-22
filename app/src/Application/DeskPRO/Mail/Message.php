@@ -220,12 +220,20 @@ class Message extends \Orb\Mail\Message
             $body = $this->replaceEmbeds($body);
             $this->setBody($body, 'text/html');
 
+            $plaintext = $body;
+            $plaintext = str_replace('<!--DP_NEWMSG_AS_NOTE-->', '[DP_NEWMSG_AS_NOTE]', $plaintext);
+            $plaintext = str_replace('<!--DP_NEWMSG_AS_REPLY-->', '[DP_NEWMSG_AS_REPLY]', $plaintext);
+
+            $start_pos = strpos($plaintext, '<!--DP_PREVIEW_TEXT_BEGIN-->');
+            $end_pos   = strpos($plaintext, '<!--DP_PREVIEW_TEXT_END-->');
+            if ($start_pos && $end_pos) {
+                $end_pos_len = strlen('<!--DP_PREVIEW_TEXT_END-->');
+                $plaintext = Strings::cut($plaintext, $start_pos, $end_pos+$end_pos_len);
+            }
+
             // This is a slow process and can crash on complex documents so
             // prevent running on really long messages
             if (strlen($body) < 512000) {
-                $plaintext = $body;
-                $plaintext = str_replace('<!--DP_NEWMSG_AS_NOTE-->', '[DP_NEWMSG_AS_NOTE]', $plaintext);
-                $plaintext = str_replace('<!--DP_NEWMSG_AS_REPLY-->', '[DP_NEWMSG_AS_REPLY]', $plaintext);
                 try {
                     try {
                         $h2t = new Html2Text();
