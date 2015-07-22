@@ -1814,16 +1814,6 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1435766624'
 	),
 
-	1436626197 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1436626197.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1436626197'
-	),
-
-	1436815547 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1436815547.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\deskpro/www/app/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1436815547'
-	),
-
 	1436977632 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1436977632.php',
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1436977632'
@@ -1831,7 +1821,17 @@
 
 	1437062710 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1437062710.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/chroder/Dev/deskpro/dp/alt/app/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1437062710'
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1437062710'
+	),
+
+	1437563318 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1437563318.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1437563318'
+	),
+
+	1437563319 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1437563319.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1437563319'
 	),
 
 );
