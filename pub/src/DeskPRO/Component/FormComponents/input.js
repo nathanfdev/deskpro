@@ -46,29 +46,22 @@ var Input = React.createClass({
     },
 
     render: function() {
-        var element = this.renderElement();
+        let element = this.renderElement();
 
-        if (this.getLayout() === 'elementOnly' || this.props.type === 'hidden') {
-            return element;
-        }
-
-        var warningIcon = '';
-        if (this.showErrors()) {
-            warningIcon = (
-                <Icon symbol="remove" className="form-control-feedback" />
-            );
-        }
-
-        return element;
+        return (<div>
+            {element}
+            <span className='form-error-description'>{this.showErrors() ? this.getErrorMessage() : ''}</span>
+        </div>);
     },
 
     renderElement: function() {
-        var className = 'form-control';
-        if (['range'].indexOf(this.props.type) !== -1) {
+        var className = 'form-error';
+        if (this.showErrors() === false) {
             className = null;
         }
         return (
             <input
+                className={className}
                 {...this.props}
                 id={this.getId()}
                 label={null}

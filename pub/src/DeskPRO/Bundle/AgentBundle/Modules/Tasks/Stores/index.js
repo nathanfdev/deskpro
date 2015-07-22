@@ -4,6 +4,7 @@ import agentList from "./agent_list";
 import labelList from "./label_list";
 import teamList from "./team_list";
 import departmentList from "./department_list";
+import projectCreate from "./project_create";
 
 export default {
     taskList,
@@ -11,5 +12,6 @@ export default {
     agentList,
     labelList,
     departmentList,
-    teamList
+    teamList,
+    projectCreate
 };

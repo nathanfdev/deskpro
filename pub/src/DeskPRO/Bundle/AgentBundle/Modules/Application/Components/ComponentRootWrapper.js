@@ -27,6 +27,7 @@ export default class ComponentRootWrapper extends React.Component {
         // Render the component with react
         React.render(props.children, this.node);
 
+        // Can show and hide a node depending on the open property
         if (props.open) {
             $(this.node).show();
         } else {
@@ -35,6 +36,7 @@ export default class ComponentRootWrapper extends React.Component {
     }
 
     componentWillUnmount() {
+        // Clean up the DOM when the component is umounted
         React.unmountComponentAtNode(this.node);
         $(this.node).remove();
     }
