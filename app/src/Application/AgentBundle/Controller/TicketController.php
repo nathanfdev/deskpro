@@ -2628,7 +2628,6 @@ class TicketController extends AbstractController
 
         $old_amount	= $charge->amount;
         $old_time	= $charge->charge_time;
-        $old_comment	= $charge->comment;
 
         $amount = $this->in->getFloat('amount');
 
