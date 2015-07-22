@@ -4,7 +4,8 @@ import { connect } from "redux/react";
 import * as SidebarHoverActions from "../../Actions/SidebarHoverActions";
 import * as FiltersActions from "../../Actions/FiltersActions";
 
-import * as FilterGroups from "./TicketsTabFilterGroups";
+import GenericGroup from "./Groups/GenericGroup";
+import DepartmentGroup from "./Groups/DepartmentGroup";
 
 @connect(state => ({
   filter_set_filter_groups: state.filter_set_filter_groups,
@@ -49,10 +50,19 @@ export default class TicketsTabFilterList extends React.Component {
       let groups = [];
       if(filter_groups.filter_id == filter.id && filter_groups.data.length > 0) {
         groups = filter_groups.data.map(group => {
+          console.log(filter_groups);
+          // switch(filter_groups.grouping) {
+          // case 'department':
             return (
-              <FilterGroups.TicketsTabFilterDepartmentGroup
+              <DepartmentGroup
                 count={group.count} item={group[filter_groups.grouping]} />
             );
+          // default:
+          //   return (
+          //     <GenericGroup grouping={filter_groups.grouping}
+          //       count={group.count} item={group[filter_groups.grouping]} />
+          //   );
+          // }
         });
         
         groups = (
