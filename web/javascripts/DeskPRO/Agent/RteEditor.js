@@ -57,6 +57,7 @@ DeskPRO.Agent.RteEditor = {
 
           $(this).replaceWith(el);
         });
+				api.$editor.find('table').addClass('dp_message_table');
       }
 		};
 
