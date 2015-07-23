@@ -103,8 +103,13 @@ class DbalTicketFilterEngine extends DbalEngine
 
         // Do we need to apply grouping clauses?
         if (count($context->getGroupBys()) > 0) {
-            foreach($context->getGroupBys() as $group_by) {
-                $query->addCountGroup($group_by->getColumn());
+            foreach ($context->getGroupBys() as $group_by) {
+                $query->addCountGroup($group_by->getColumn(), $group_by->getSelect());
+                if ($group_by->getOrderBy()) {
+                    foreach ($group_by->getOrderBy() as $col => $dir) {
+                        $query->addOrderBy($col, $dir);
+                    }
+                }
             }
         }
 

@@ -87,6 +87,7 @@ app/sys/Resources/agent-perm-names.php
 /app/sys/logs/dev.log
 routing.php
 serve.sh
+/log
 
 # Place devs can use as scratch space
 /_dev

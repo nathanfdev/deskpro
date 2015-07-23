@@ -9,6 +9,7 @@ import DepartmentGroup from "./Groups/DepartmentGroup";
 import PeopleGroup from "./Groups/PeopleGroup";
 import UrgencyGroup from "./Groups/UrgencyGroup";
 import AgentTeamGroup from "./Groups/AgentTeamGroup";
+import WaitingTimeGroup from "./Groups/WaitingTimeGroup";
 
 @connect(state => ({
   filter_set_filter_groups: state.filter_set_filter_groups,
@@ -49,7 +50,6 @@ export default class TicketsTabFilterList extends React.Component {
       }
       
       const filter_groups = filter_set_filter_groups.filter_set_filter_groups;
-      
       let groups = [];
       if(filter_groups.filter_id == filter.id && filter_groups.data.length > 0) {
         groups = filter_groups.data.map(group => {
@@ -75,6 +75,13 @@ export default class TicketsTabFilterList extends React.Component {
             return (
               <AgentTeamGroup
                 count={group.count} item={group[grouping]} />
+            );
+          case 'all_waiting_time':
+          case 'waiting_time':
+          case 'open_time':
+            return (
+              <WaitingTimeGroup
+                count= {group.count} item={group[filter_groups.grouping]} />
             );
           default:
             return (

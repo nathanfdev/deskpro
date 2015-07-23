@@ -78,6 +78,12 @@ class DbalExecutableQuery
     private $and_where;
     private $and_group_where;
     private $group_by;
+    
+    /**
+     * @var additional custom select fields; defined as:
+     * ['alias' => 'SQL bit']
+     */
+    private $additional_selects;
 
     /**
      * @var LoggerInterface
@@ -96,6 +102,7 @@ class DbalExecutableQuery
         $this->page = 1;
         $this->count = null;
         $this->logger = $logger;
+        $this->additional_selects = [];
     }
 
     protected function log($level, $message, array $context = array())
@@ -200,7 +207,7 @@ class DbalExecutableQuery
     {
         $query = clone $this->query;
 
-        $query->setSelectPart('COUNT(*) AS count');
+        $query->setSelectPart('COUNT(tiket.id) AS count');
         $query->setPage(null);
         $query->setLimit(null);
 
@@ -223,15 +230,33 @@ class DbalExecutableQuery
     {
         $query = clone $this->query;
 
-        $query->setSelectPart('COUNT(*) AS count');
+        $query->setSelectPart('COUNT(ticket.id) AS count');
 
         // group by
         if (count($this->group_by) > 0) {
             $query->setGroupWithRollup(false);
             foreach ($this->group_by as $alias => $group) {
-                $query->addSelectPart(sprintf('%s AS %s', $group, $alias));
+                if (!array_key_exists($alias, $this->additional_selects)) {
+                    $query->addSelectPart(sprintf('%s AS %s', $group, $alias));
+                }
+                
                 $query->addGroupBy($alias);
             }
+        }
+        
+        if (count($this->additional_selects) > 0) {
+            foreach ($this->additional_selects as $alias => $sql) {
+                if(is_numeric($alias) || !trim($alias)) {
+                    continue; // We don't want ridiculous aliases.
+                }
+                $query->addSelectPart(sprintf('(%s) as %s', $sql, $alias));
+            }
+        }
+        
+        // ordering
+        foreach ($this->order_by as $order_by => $direction) {
+            $this->log(Logger::DEBUG, 'add order by', array('by' => $order_by, 'dir' => $direction));
+            $query->addOrderBy($order_by, $direction);
         }
 
         // various WHERE manipulations
@@ -272,11 +297,24 @@ class DbalExecutableQuery
             } else {
                 $optional_select_alias = $group;
             }
+        } elseif (is_array($optional_select_alias)) {
+            $this->addSelect($optional_select_alias['alias'], $optional_select_alias['sql']);
+            $optional_select_alias = $optional_select_alias['alias'];
         }
 
         $this->log(Logger::DEBUG, 'adding count group', array('group' => $group, 'alias' => $optional_select_alias));
 
         $this->group_by[$optional_select_alias] = $group;
+    }
+    
+    /**
+     * Adds a custom select item.
+     * @param string $alias is the new select item's alias
+     * @param string $sql is the sql clause that defines the new select item
+     */
+    public function addSelect($alias, $sql) {
+        $this->additional_selects[$alias] = $sql;
+        return $this;
     }
 
     public function getGroupBy()

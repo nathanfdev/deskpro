@@ -47,13 +47,17 @@ class TicketGrouping
     const URGENCY          = "urgency";
     const AGENT            = "agent";
     const AGENT_TEAM       = "agent_team_id";
-    const WAITING_TIME     = "waiting_times";
+    const WAITING_TIME     = "date_user_waiting";
     const ALL_WAITING_TIME = "total_user_waiting";
     const OPEN_TIME        = "open_time";
     const DATE_CREATED     = 'date_created';
 
-    // Contains this grouping's value.
+    /** @var Contains this grouping's value. */
     protected $column = null;
+    /** @var Additional select column, that will probably be used for grouping. */
+    protected $select = null;
+    /** @var Ordering clauses. Useful for some groupings. */
+    protected $order_by = null;
 
     /**
      * This class must either be instantiated with ::fromString() or ::fromConst().
@@ -61,6 +65,40 @@ class TicketGrouping
     protected function __construct($column)
     {
         $this->column = $column;
+        
+        switch ($column) {
+            case self::ALL_WAITING_TIME:
+                $this->select = [
+                    'alias' => 'all_waiting_time',
+                    'sql' => "case when ticket.total_user_waiting between 0 and 30 then '30s' when ticket.total_user_waiting between 30 and 300 then '5min' when ticket.total_user_waiting between 300 and 3600 then '1h' when ticket.total_user_waiting between 3600 and 10800 then '3h' when ticket.total_user_waiting between 10800 and 86400 then '24h' when ticket.total_user_waiting between 86400 and 259200 then '3d' when ticket.total_user_waiting between 259200 and 604800 then '1w' when ticket.total_user_waiting between 604800 and 2419200 then '1m' else '>1m' end"
+                ];
+                $this->order_by = [
+                    'ticket.total_user_waiting' => 'ASC',
+                ];
+                break;
+            case self::WAITING_TIME:
+                $this->select = [
+                    'alias' => 'waiting_time',
+                    'sql' => "case when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 604800 and 2419200 then '1m' else '>1m' end"
+                ];
+                $this->order_by = [
+                    'ticket.date_user_waiting' => 'DESC',
+                ];
+                break;
+            case self::OPEN_TIME:
+                $this->select = [
+                    'alias' => 'open_time',
+                    'sql' => "case when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 604800 and 2419200 then '1m' else '>1m' end"
+                ];
+                $this->order_by = [
+                    'ticket.date_archived' => 'DESC',
+                    'ticket.date_created' => 'DESC',
+                ];
+                break;
+            case self::DATE_CREATED:
+                //todo
+                break;
+        }
     }
 
     public static function fromString($col_string)
@@ -68,13 +106,7 @@ class TicketGrouping
         // A tiny bit of magic. Need PHP 5.3+
         $constant = constant(sprintf('%s::%s', __CLASS__, strtoupper($col_string)));
 
-        if (null === $constant) {
-            throw new UnknownTicketGroupingColumnException(
-                sprintf("Column %s can't be used to group tickets.", $col_string)
-            );
-        }
-
-        return new self($constant);
+        return self::fromConst($constant);
     }
 
     public static function fromConst($value)
@@ -89,8 +121,18 @@ class TicketGrouping
         return new self($value);
     }
 
+    function getSelect()
+    {
+        return $this->select;
+    }
+
     function getColumn()
     {
         return $this->column;
+    }
+    
+    function getOrderBy()
+    {
+        return $this->order_by;
     }
 }
