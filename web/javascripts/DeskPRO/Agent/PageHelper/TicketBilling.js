@@ -62,7 +62,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
 		var billingRows = this.getEl('billing_rows');
 
-		this.initForm = (function() {
+		this.doInitForm = (function() {
 			form = this.getEl('billing_form');
 			progress = this.getEl('billing_save_progress');
 			typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
@@ -210,6 +210,10 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			this.getEl('billing_start').show();
 			this.stopBillingTimer(true);
 		}
+	},
+
+	initForm: function() {
+		this.doInitForm();
 	},
 
 	addBillingRow: function(html) {
