@@ -8,6 +8,7 @@ import GenericGroup from "./Groups/GenericGroup";
 import DepartmentGroup from "./Groups/DepartmentGroup";
 import PeopleGroup from "./Groups/PeopleGroup";
 import UrgencyGroup from "./Groups/UrgencyGroup";
+import AgentTeamGroup from "./Groups/AgentTeamGroup";
 
 @connect(state => ({
   filter_set_filter_groups: state.filter_set_filter_groups,
@@ -68,6 +69,12 @@ export default class TicketsTabFilterList extends React.Component {
             return (
               <PeopleGroup
                 count={group.count} item={group[filter_groups.grouping]} />
+            );
+          case 'agent_team':
+            let grouping = 'agent_team_id';
+            return (
+              <AgentTeamGroup
+                count={group.count} item={group[grouping]} />
             );
           default:
             return (
