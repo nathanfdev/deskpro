@@ -36,21 +36,19 @@ export default class ProjectCreateHover extends React.Component {
                 <div className="sidebar-hover-header">
                     <i className="fa fa-tags"/> <span className="title"><span>Project -</span> Create New</span>
                 </div>
-                <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton}>
+                <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton} onSubmit={this.props.createProject}>
                     <div className="sidebar-hover-content-box">
                         <h2>Title</h2>
-                        <FRC.Input name="title" type="text" placeholder="Title" required/>
+                        <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: "The title field is required"}} />
                     </div>
 
                     <div className="sidebar-hover-content-box">
                         <h2>Departments</h2>
                         <div className="sidebar-hover-checkbox-collection">
                             <ul>{departmentList.departmentList ? departmentList.departmentList.map(function(object) {
+                                let name = "department-" + object.id;
                                 return <li key={object.id}>
-                                    <a href="#" className="checkbox-button">
-                                        <span className="checkbox"><i className="fa fa-check"/></span><span
-                                        className="name">{object.title}</span>
-                                    </a>
+                                    <FRC.CheckboxDeskPRO name={name}>{object.title}</FRC.CheckboxDeskPRO>
                                 </li>;
                             }) : ''}
                             </ul>
@@ -61,12 +59,8 @@ export default class ProjectCreateHover extends React.Component {
                         <h2>Teams</h2>
                         <div className="sidebar-hover-checkbox-collection">
                             <ul>{teamList.teamList ? teamList.teamList.map(function(object) {
-                                return <li key={object.id}>
-                                    <a href="#" className="checkbox-button">
-                                        <span className="checkbox"><i className="fa fa-check"/></span><span
-                                        className="name">{object.name}</span>
-                                    </a>
-                                </li>;
+                                let name = "team-" + object.id;
+                                return <li key={object.id}><FRC.CheckboxDeskPRO name={name}>{object.name}</FRC.CheckboxDeskPRO></li>;
                             }) : ''}
                             </ul>
                         </div>
@@ -76,12 +70,12 @@ export default class ProjectCreateHover extends React.Component {
                         <h2>Project Members</h2>
                         <div className="sidebar-hover-checkbox-collection">
                             <ul>{agentList.agentList ? agentList.agentList.map(function(object) {
+                                let name = "team-" + object.id;
                                 return <li key={object.id}>
-                                    <a href="#" className="checkbox-button">
-                                        <span className="checkbox"><i className="fa fa-check"/></span> <span
-                                        className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/> <span
-                                        className="name">{object.name}</span>
-                                    </a>
+                                    <FRC.CheckboxDeskPRO name={name}>
+                                        <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/>
+                                        {object.name}
+                                    </FRC.CheckboxDeskPRO>
                                 </li>;
                             }) : ''}
                             </ul>
@@ -89,7 +83,7 @@ export default class ProjectCreateHover extends React.Component {
                     </div>
 
                     <div className="sidebar-hover-content-box">
-                        <input type="submit" value="Save" className="button" disabled={!this.state.canSubmit} />
+                        <button type="submit" value="Save" className="button" disabled={!this.state.canSubmit}>Save</button>
                     </div>
                 </Formsy.Form>
              </div>

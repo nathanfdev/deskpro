@@ -256,6 +256,14 @@
     width: 100%;
     padding: 7px 10px;
     margin-top: 4px;
+
+    &.form-error {
+      border: 1px solid #ff5460;
+    }
+  }
+
+  .form-error-description {
+    color: #ff5460;
   }
   
   select {

@@ -1,13 +1,18 @@
 import React from "react";
 import ProjectCreateHover from "../Components/ProjectCreateHover";
 import ComponentRootWrapper from "../../Application/Components/ComponentRootWrapper";
+import { connect } from 'redux/react';
 
 import * as TaskActions from "../Actions/TaskListActions";
 
+@connect(state => ({
+    //projectCreate: state.projectCreate
+}))
 export default class TasksNavProjects extends React.Component {
     constructor(props) {
         super(props);
         this.toggleWindow = this.toggleWindow.bind(this);
+
         this.state = {
             newProject: false
         }
@@ -19,12 +24,16 @@ export default class TasksNavProjects extends React.Component {
         });
     }
 
+    createProject() {
+        this.props.dispatch(TaskActions.createProject({}));
+    }
+
     render() {
-        const {projectList, agentList, teamList, departmentList} = this.props;
+        const {projectList, agentList, teamList, departmentList, projectCreate} = this.props;
 
         return (<section className="sidebar-list tasks-nav-projects">
                 <div>
-                    <ComponentRootWrapper open={this.state.newProject}><ProjectCreateHover agentList={agentList} teamList={teamList} departmentList={departmentList} /></ComponentRootWrapper>
+                    <ComponentRootWrapper open={this.state.newProject}><ProjectCreateHover createProject={this.createProject.bind(this)} agentList={agentList} teamList={teamList} departmentList={departmentList} /></ComponentRootWrapper>
                 </div>
                 <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow}><i className="fa fa-plus"/></a></div>
                 <ul>{projectList.projectList ? projectList.projectList.map(function(object) {

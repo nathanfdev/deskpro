@@ -105,7 +105,8 @@ export default class Http {
     ["ALL", config.method].forEach(t => {
       _.forEach(this.defaults[t], (configValue, configName) => {
         if (configName == 'headers') {
-          configValue.forEach((headerValue, headerName) => {
+          Object.keys(configValue).forEach((headerName) => {
+            let headerValue = configValue[headerName];
             if (!config.headers) {
               config.headers = {};
             }

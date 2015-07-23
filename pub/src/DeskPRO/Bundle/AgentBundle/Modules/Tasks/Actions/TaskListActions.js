@@ -14,137 +14,106 @@ export const setLoadedAgents = createAction(ActionTypes.TASKS_LOAD_AGENTS);
 export const setLoadedLabels = createAction(ActionTypes.TASKS_LOAD_LABELS);
 export const setLoadedTeams = createAction(ActionTypes.TASKS_LOAD_TEAMS);
 export const setLoadedDepartments = createAction(ActionTypes.TASKS_LOAD_DEPARTMENTS);
+export const setCreatedProject = createAction(ActionTypes.TASKS_POST_PROJECT);
+export const failedProject = createAction(ActionTypes.TASKS_POST_PROJECT_FAIL);
 
 // TODO
 
 export const loadTasks = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/tasks'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedTasks(values[0].getData()));
+        DpApi.sendGet('DP_API/tasks').then((value) => {
+            dispatch(setLoadedTasks(value.getData()));
         });
     }
 };
 
 export const loadProjects = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/projects'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedProjects(values[0].getData()));
+        DpApi.sendGet('DP_API/projects').then((value) => {
+            dispatch(setLoadedProjects(value.getData()));
         });
     }
 };
 
 export const loadMyTasks = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/tasks?assigned=me'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedMyTasks(values[0].getData()));
+        DpApi.sendGet('DP_API/tasks?assigned=me').then((value) => {
+            dispatch(setLoadedMyTasks(value.getData()));
         });
     }
 };
 
 export const loadTeamTasks = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/tasks?assigned_team=me'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedTeamTasks(values[0].getData()));
+        DpApi.sendGet('DP_API/tasks?assigned_team=me').then((value) => {
+            dispatch(setLoadedTeamTasks(value.getData()));
         });
     }
 };
 
 export const loadDepartmentTasks = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/tasks?assigned_department=me'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedDepartmentTasks(values[0].getData()));
+        DpApi.sendGet('DP_API/tasks?assigned_department=me').then((value) => {
+            dispatch(setLoadedDepartmentTasks(value.getData()));
         });
     }
 };
 
 export const loadDelegatedTasks = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/tasks?assigned=not_me&creator=me'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedDelegatedTasks(values[0].getData()));
+        DpApi.sendGet('DP_API/tasks?assigned=not_me&creator=me').then((value) => {
+            dispatch(setLoadedDelegatedTasks(value.getData()));
         });
     }
 };
 
 export const loadUnassignedTasks = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/tasks?assigned=null&assigned_team=null&assigned_department=null'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedUnassignedTasks(values[0].getData()));
+        DpApi.sendGet('DP_API/tasks?assigned=null&assigned_team=null&assigned_department=null').then((value) => {
+            dispatch(setLoadedUnassignedTasks(value.getData()));
         });
     }
 };
 
 export const loadAgents = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/people?is_agent=1&not_me=1'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedAgents(values[0].getData()));
+        DpApi.sendGet('DP_API/people?is_agent=1&not_me=1').then((value) => {
+            dispatch(setLoadedAgents(value.getData()));
         });
     }
 };
 
 export const loadLabels = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/task_labels'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedLabels(values[0].getData()));
+        DpApi.sendGet('DP_API/task_labels').then((value) => {
+            dispatch(setLoadedLabels(value.getData()));
         });
     }
 };
 
 export const loadTeams = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/teams'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedTeams(values[0].getData()));
+        DpApi.sendGet('DP_API/teams').then((value) => {
+            dispatch(setLoadedTeams(value.getData()));
         });
     }
 };
 
 export const loadDepartments = () => {
     return dispatch => {
-        let promises = [];
-
-        promises.push(DpApi.sendGet('DP_API/departments'));
-
-        Promise.all(promises).then((values) => {
-            dispatch(setLoadedDepartments(values[0].getData()));
+        DpApi.sendGet('DP_API/departments').then((value) => {
+            dispatch(setLoadedDepartments(value.getData()));
         });
     }
 };
+
+export const createProject = (data) => {
+    return dispatch => {
+        DpApi.sendPost('DP_API/projects', data).then((value) => {
+            dispatch(setCreatedProject(value.getData()));
+        },
+        (value) => {
+            dispatch(failedProject(value.errors));
+        });
+    }
+}

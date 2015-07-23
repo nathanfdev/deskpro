@@ -69,8 +69,10 @@ class ExceptionController extends BaseController
             KernelErrorHandler::handleException($exception);
         }
 
+        $request = Request::createFromGlobals();
+
         // in dev environment, display a stack trace, dont show if we have a test.client
-        if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {
+        if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client') && !$request->headers->has('x-agent-request')) {
             $error = new Response((string)$exception, 500);
             $error->headers->set('content-type', 'text/html');
 
