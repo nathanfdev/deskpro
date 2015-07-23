@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
@@ -54,6 +55,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ProjectsController extends BaseController implements ClassResourceInterface
 {
+    private $storedMembers = array();
+
     /**
      * @ApiDoc(
      *      description="get a list of projects",
@@ -297,9 +300,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     {
         $status = $project->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
-
         $submitted = $request->request->all();
+        $this->convertMembers($submitted);
+
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
 
         try {
             $form->submit($submitted, $request->getMethod() !== 'PUT');
@@ -318,6 +322,8 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
             $location = $this->generateUrl('api_projects_get', array('id' => $project->getId()));
 
+            $this->addMembers($project);
+
             return View::create(
                 $this->createRepresentation($project),
                 $status,
@@ -328,5 +334,58 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         }
 
         throw new InvalidFormException($form);
+    }
+
+    private function convertMembers(&$request)
+    {
+        // {"title":"blah","departments":["1","3"],"teams":["2","3"]}
+        // ARRAY
+
+        if (!empty($request['departments'])) {
+            $this->storedMembers['departments'] = $request['departments'];
+            unset($request['departments']);
+        }
+        if (!empty($request['teams'])) {
+            $this->storedMembers['teams'] = $request['teams'];
+            unset($request['teams']);
+        }
+        if (!empty($request['people'])) {
+            $this->storedMembers['people'] = $request['people'];
+            unset($request['people']);
+        }
+
+        // Total hack, should probably not do this, but unsets aren't doing what they should
+        $request = array('title' => $request['title']);
+    }
+
+    private function addMembers(Project $project)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        foreach ($this->storedMembers as $type => $members) {
+            foreach ($members as $member_id) {
+                $member = new ProjectMember();
+                $member->setProject($project);
+                switch ($type) {
+                    case 'departments':
+                        $dept = $em->getRepository('DeskPRO:Department')->find($member_id);
+                        $member->setDepartment($dept);
+                        break;
+                    case 'teams':
+                        $team = $em->getRepository('DeskPRO:AgentTeam')->find($member_id);
+                        $member->setTeam($team);
+                        break;
+                    case 'people':
+                        $person = $em->getRepository('DeskPRO:Person')->find($member_id);
+                        $member->setPerson($person);
+
+                        break;
+                }
+
+                $em->persist($member);
+            }
+        }
+
+        $em->flush();
     }
 }

@@ -27,7 +27,10 @@ export default class TasksNavProjects extends React.Component {
     createProject(model) {
         console.log(model);
         this.props.dispatch(TaskActions.createProject({
-            title : model.title
+            title : model.title,
+            departments : model.departments,
+            teams : model.teams,
+            people : model.members
         }));
     }
 
