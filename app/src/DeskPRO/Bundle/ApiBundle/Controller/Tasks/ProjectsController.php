@@ -85,7 +85,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     {
         $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
         $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
+        $count = $request->query->get('count', 1000);
 
         $pager = new Pagerfanta(new ArrayAdapter($projects));
         $pager->setMaxPerPage($count);

@@ -7,7 +7,7 @@ var Formsy = require('formsy-react');
 var ComponentMixin = require('./mixins/component');
 var Row = require('./row');
 
-var CheckboxGroup = React.createClass({
+var CheckboxGroupDeskPRO = React.createClass({
 
     mixins: [Formsy.Mixin, ComponentMixin],
 
@@ -23,8 +23,12 @@ var CheckboxGroup = React.createClass({
         };
     },
 
-    changeCheckbox: function() {
-        var value = [];
+    changeCheckbox: function(event) {
+        let value = [];
+        let target = event.currentTarget;
+
+        target.checked = (typeof target.checked === 'undefined' || target.checked === false);
+
         this.props.options.forEach(function(option, key) {
             if (this.refs[key].getDOMNode().checked) {
                 value.push(option.value);
@@ -36,22 +40,30 @@ var CheckboxGroup = React.createClass({
     },
 
     renderElement: function() {
-        var _this = this;
+        let _this = this;
         var controls = this.props.options.map(function(checkbox, key) {
             var checked = (typeof _this.getValue() !== 'undefined' && _this.getValue().indexOf(checkbox.value) !== -1);
-            var disabled = _this.isFormDisabled() || checkbox.disabled || _this.props.disabled;
-            return <input
-                            ref={key}
-                            checked={checked}
-                            type="checkbox"
-                            value={checkbox.value}
-                            onChange={_this.changeCheckbox}
-                            disabled={disabled}
-                            key={key}
-                        />;
+            let disabled = _this.isFormDisabled() || checkbox.disabled || _this.props.disabled;
+            let checkboxClass = checked ? "checkbox checked" : "checkbox";
+            return (
+                <li><a
+                checked={checked}
+                disabled={disabled}
+                href="#"
+                className="checkbox-button"
+                onClick={_this.changeCheckbox}
+                key={key}
+                ref={key}
+                >
+                    <span className={checkboxClass}>
+                        <i className="fa fa-check"/>
+                    </span>
+                    <span className="name">{checkbox.label}</span>
+                </a></li>
+            );
         });
 
-        return (<ul>{controls}</ul>);
+        return <ul>{controls}</ul>;
     },
 
     render: function() {
@@ -66,4 +78,4 @@ var CheckboxGroup = React.createClass({
     }
 });
 
-module.exports = CheckboxGroup;
+module.exports = CheckboxGroupDeskPRO;

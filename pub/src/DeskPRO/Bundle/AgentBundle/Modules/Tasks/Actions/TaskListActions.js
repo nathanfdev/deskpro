@@ -15,7 +15,7 @@ export const setLoadedLabels = createAction(ActionTypes.TASKS_LOAD_LABELS);
 export const setLoadedTeams = createAction(ActionTypes.TASKS_LOAD_TEAMS);
 export const setLoadedDepartments = createAction(ActionTypes.TASKS_LOAD_DEPARTMENTS);
 export const setCreatedProject = createAction(ActionTypes.TASKS_POST_PROJECT);
-export const failedProject = createAction(ActionTypes.TASKS_POST_PROJECT_FAIL);
+export const setFailedProject = createAction(ActionTypes.TASKS_POST_PROJECT_FAIL);
 
 // TODO
 
@@ -110,10 +110,11 @@ export const loadDepartments = () => {
 export const createProject = (data) => {
     return dispatch => {
         DpApi.sendPost('DP_API/projects', data).then((value) => {
+            dispatch(loadProjects());
             dispatch(setCreatedProject(value.getData()));
         },
         (value) => {
-            dispatch(failedProject(value.errors));
+            dispatch(setFailedProject(value.xhr.responseJSON));
         });
     }
 }

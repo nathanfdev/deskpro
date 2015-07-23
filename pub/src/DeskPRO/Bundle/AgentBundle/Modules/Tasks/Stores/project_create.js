@@ -7,16 +7,17 @@ const initialState = {
 };
 
 const r = handleActions({
-    [ActionTypes.TASKS_POST_PROJECT]: (state, action) => ({
+    [ActionTypes.TASKS_POST_PROJECT]: (state, action) => {
+        console.log('succeeded');
+        return {
         ...state,
-        createdProject: action.payload.data
-    }),
-    [ActionTypes.TASKS_POST_PROJECT_FAIL]: (state, action) => {
-    console.log('failed');
-return {
+            createdProject: action.payload.data
+        }
+    },
+    [ActionTypes.TASKS_POST_PROJECT_FAIL]: (state, action) => ({
         ...state,
-        failedProject: action.payload.data
-    }}
+        failedProject: action.payload
+    })
 }, initialState);
 
 export default (state, action = {type: null}) => {

@@ -11,7 +11,8 @@ export default class ProjectCreateHover extends React.Component {
         this.enableButton = this.enableButton.bind(this);
         this.disableButton = this.disableButton.bind(this);
         this.state = {
-            canSubmit: false
+            canSubmit: false,
+            projectTitle: null
         };
     }
 
@@ -27,8 +28,54 @@ export default class ProjectCreateHover extends React.Component {
         })
     }
 
+    updateValues(event) {
+        this.setState({
+            projectTitle: event.target.value
+        })
+    }
+
+    serverValidation(field) {
+        if (this.props.createdProject.failedProject === null
+                || typeof this.props.createdProject.failedProject.errors === 'undefined'
+                || this.props.createdProject.failedProject.errors === null
+                || typeof this.props.createdProject.failedProject.errors.fields[field] === 'undefined') {
+            return '';
+        }
+
+        let errors = this.props.createdProject.failedProject.errors.fields[field].errors;
+
+        return errors.map(function(error) {
+            return <span className="form-error-description" key={error.code}>{error.message}</span>
+        });
+    }
+
     render() {
         const {agentList, teamList, departmentList} = this.props;
+
+        let departments = [], teams = [], members = [];
+
+        if (typeof departmentList.departmentList !== 'undefined' && departmentList.departmentList !== null) {
+            departmentList.departmentList.forEach(function(object) {
+                departments.push({value: object.id, label:object.title});
+            });
+        }
+
+        if (typeof teamList.teamList !== 'undefined' && teamList.teamList !== null) {
+            teamList.teamList.forEach(function(object) {
+                teams.push({value: object.id, label:object.name});
+            });
+        }
+
+        if (typeof agentList.agentList !== 'undefined' && agentList.agentList !== null) {
+            agentList.agentList.forEach(function(object) {
+                let label = (<span>
+                    <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/>
+                        {object.name}
+                </span>
+                );
+                members.push({value: object.id, label:label});
+            });
+        }
 
         return (<div className="sidebar-hover" style={{top: '152px'}}>
 
@@ -40,45 +87,42 @@ export default class ProjectCreateHover extends React.Component {
                     <div className="sidebar-hover-content-box">
                         <h2>Title</h2>
                         <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: "The title field is required"}} />
+                        {this.serverValidation('title')}
                     </div>
 
                     <div className="sidebar-hover-content-box">
                         <h2>Departments</h2>
                         <div className="sidebar-hover-checkbox-collection">
-                            <ul>{departmentList.departmentList ? departmentList.departmentList.map(function(object) {
-                                let name = "department-" + object.id;
-                                return <li key={object.id}>
-                                    <FRC.CheckboxDeskPRO name={name}>{object.title}</FRC.CheckboxDeskPRO>
-                                </li>;
-                            }) : ''}
-                            </ul>
+                            {departments ? <FRC.CheckboxGroupDeskPRO
+                                name="departments"
+                                label="Departments"
+                                options={departments}
+                                multiple
+                                /> : ''}
                         </div>
                     </div>
 
                     <div className="sidebar-hover-content-box">
                         <h2>Teams</h2>
                         <div className="sidebar-hover-checkbox-collection">
-                            <ul>{teamList.teamList ? teamList.teamList.map(function(object) {
-                                let name = "team-" + object.id;
-                                return <li key={object.id}><FRC.CheckboxDeskPRO name={name}>{object.name}</FRC.CheckboxDeskPRO></li>;
-                            }) : ''}
-                            </ul>
+                            {teams ? <FRC.CheckboxGroupDeskPRO
+                                name="teams"
+                                label="Teams"
+                                options={teams}
+                                multiple
+                                /> : ''}
                         </div>
                     </div>
 
                     <div className="sidebar-hover-content-box">
                         <h2>Project Members</h2>
                         <div className="sidebar-hover-checkbox-collection">
-                            <ul>{agentList.agentList ? agentList.agentList.map(function(object) {
-                                let name = "team-" + object.id;
-                                return <li key={object.id}>
-                                    <FRC.CheckboxDeskPRO name={name}>
-                                        <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/>
-                                        {object.name}
-                                    </FRC.CheckboxDeskPRO>
-                                </li>;
-                            }) : ''}
-                            </ul>
+                            {members ? <FRC.CheckboxGroupDeskPRO
+                                name="members"
+                                label="Members"
+                                options={members}
+                                multiple
+                                /> : ''}
                         </div>
                     </div>
 

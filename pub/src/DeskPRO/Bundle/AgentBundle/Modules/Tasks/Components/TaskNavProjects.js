@@ -6,7 +6,7 @@ import { connect } from 'redux/react';
 import * as TaskActions from "../Actions/TaskListActions";
 
 @connect(state => ({
-    //projectCreate: state.projectCreate
+    failedProject: state.failedProject
 }))
 export default class TasksNavProjects extends React.Component {
     constructor(props) {
@@ -24,16 +24,19 @@ export default class TasksNavProjects extends React.Component {
         });
     }
 
-    createProject() {
-        this.props.dispatch(TaskActions.createProject({}));
+    createProject(model) {
+        console.log(model);
+        this.props.dispatch(TaskActions.createProject({
+            title : model.title
+        }));
     }
 
     render() {
-        const {projectList, agentList, teamList, departmentList, projectCreate} = this.props;
+        const {projectList, agentList, teamList, departmentList, createdProject} = this.props;
 
         return (<section className="sidebar-list tasks-nav-projects">
                 <div>
-                    <ComponentRootWrapper open={this.state.newProject}><ProjectCreateHover createProject={this.createProject.bind(this)} agentList={agentList} teamList={teamList} departmentList={departmentList} /></ComponentRootWrapper>
+                    <ComponentRootWrapper open={this.state.newProject}><ProjectCreateHover createProject={this.createProject.bind(this)} createdProject={createdProject} agentList={agentList} teamList={teamList} departmentList={departmentList} /></ComponentRootWrapper>
                 </div>
                 <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow}><i className="fa fa-plus"/></a></div>
                 <ul>{projectList.projectList ? projectList.projectList.map(function(object) {

@@ -14,7 +14,8 @@ import TaskNavLabels from "../Components/TaskNavLabels";
     labelList:state.labelList,
     teamList:state.teamList,
     departmentList:state.departmentList,
-    user: state.user
+    user: state.user,
+    createdProject: state.createdProject
 }))
 export default class TasksNavFrame extends React.Component {
     constructor(props) {
@@ -36,7 +37,7 @@ export default class TasksNavFrame extends React.Component {
     }
 
     render() {
-        const { taskList, projectList, agentList, labelList, departmentList, teamList } = this.props;
+        const { taskList, projectList, agentList, labelList, departmentList, teamList, createdProject } = this.props;
 
         return (<section className="task-nav-frame">
             <div className="sidebar-wrapper" id="sidebar-wrapper">
@@ -66,7 +67,7 @@ export default class TasksNavFrame extends React.Component {
                     <div className="sidebar-list sidebar-list-filters">
                         <TaskNavGroups taskList={taskList} />
 
-                        <TaskNavProjects projectList={projectList} agentList={agentList} teamList={teamList} departmentList={departmentList} />
+                        <TaskNavProjects projectList={projectList} agentList={agentList} teamList={teamList} departmentList={departmentList} createdProject={createdProject} />
 
                         <TaskNavPeople agentList={agentList} />
 
