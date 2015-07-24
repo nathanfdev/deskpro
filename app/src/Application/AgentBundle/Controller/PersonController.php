@@ -1586,6 +1586,10 @@ class PersonController extends AbstractController
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
+
+                $trans = $this->container->getTranslator();
+                $trans->setPersonContext($newperson->getPerson());
+
                 /** @var Mailer $mailer */
                 $mailer = $this->get('mailer');
                 $message = $mailer->createMessage();
@@ -1595,6 +1599,7 @@ class PersonController extends AbstractController
                 ));
 
                 $mailer->send($message);
+                $trans->setPersonContext($this->person);
             }
 
             return $this->createJsonResponse(array(
