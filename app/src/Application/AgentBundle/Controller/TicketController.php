@@ -134,7 +134,7 @@ class TicketController extends AbstractController
             ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $org_fields_group)
             : array();
 
-        if (App::getSetting('core_tickets.enable_billing')) {
+        if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
             $billing_field_manager = $this->container->getBillingFieldManager();
             $billing_fields_new = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge());
             $billing_fields = array();
@@ -417,7 +417,7 @@ class TicketController extends AbstractController
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
         );
 
-        if (App::getSetting('core_tickets.enable_billing')) {
+        if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
             $vars['billing_fields_new'] = $billing_fields_new;
             $vars['billing_fields'] = $billing_fields;
         }
@@ -1270,7 +1270,7 @@ class TicketController extends AbstractController
         }
 
         // havent persisted the messag yet, it was just for dupe checking
-        if (App::getSetting('core_tickets.enable_billing') && $this->in->getUint('charge_time')) {
+        if ((App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) && $this->in->getUint('charge_time')) {
             $charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
         } else {
             $charge = false;
