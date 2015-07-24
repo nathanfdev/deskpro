@@ -138,6 +138,7 @@ class TicketLogGenerator
                     if (!empty($log_metadata['trigger'])) {
                         $log->trigger_id = $log_metadata['trigger']->id;
                         $log->setDetailItem('trigger_title', $log_metadata['trigger']->title);
+                        $log->setDetailItem('trigger_event', $log_metadata['trigger']->event_trigger);
                     }
                     if (!empty($log_metadata['escalation'])) {
                         $log->escalation_id = $log_metadata['escalation']->id;
@@ -510,6 +511,7 @@ class TicketLogGenerator
                 break;
 
             case 'trigger':
+                $a = 1;
                 return array(
                     'action_type' => 'trigger',
                     'id_after'    => $new['trigger_id'],

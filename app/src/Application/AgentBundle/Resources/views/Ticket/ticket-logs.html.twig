@@ -65,7 +65,7 @@
 										<span class="trigger-id" title="{{ sublog.details.escalation_title }}">{{ phrase('agent.general.escalation') }} {{ sublog.trigger_id }}</span>
 										{% if app.user.can_admin %}</a>{% endif %}
 									{% else %}
-										{% if app.user.can_admin %}<a href="{{ path('admin') }}#/tickets/triggers/newticket/{{ sublog.trigger_id }}" target="_blank">{% endif %}
+										{% if app.user.can_admin %}<a href="{{ path('admin') }}#/tickets/triggers/{{ sublog.details.trigger_event ?: 'newticket' }}/{{ sublog.trigger_id }}" target="_blank">{% endif %}
 										<span class="trigger-id" title="{{ sublog.details.trigger_title }}">{{ phrase('agent.general.trigger_x', {id: sublog.trigger_id}) }}</span>
 										{% if app.user.can_admin %}</a>{% endif %}
 									{% endif %}
