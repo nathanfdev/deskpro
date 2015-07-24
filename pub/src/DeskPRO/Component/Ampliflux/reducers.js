@@ -7,19 +7,6 @@ export class Reducer {
     this.registerHandlers();
   }
   
-  /*
-  const r = handleActions({
-    [ActionTypes.TICKETS_LOAD_FILTER_COUNTS]: (state, action) => ({
-      ...state,
-      filter_sets_counts: action.payload.data
-    }),
-  }, initialState);
-
-  export default (state, action = {type: null}) => {
-  	return r(state, action);
-  }
-  */
-  
   // Compiles the reducer class into a bunch of handlers.
   compile() {
     return handleActions(this.actionsMap, this.getInitialState());

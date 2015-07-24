@@ -1,16 +1,13 @@
-import { createAction } from "redux-actions";
-
+import { createAction } from "Ampliflux/actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
-import ActionTypes from "./ActionTypes";
 
-export const agentTeamLoaded = createAction(ActionTypes.TICKETS_AGENT_TEAM_LOADED);
-
-export function loadAgentTeam(agent_team_id) {
-  return (dispatch) => {
+export const loadAgentTeam = createAction(
+  "TICKETS_AGENT_TEAM_LOADED",
+  (trigger, agent_team_id) => {
     DpApi.sendGet('DP_API/agent_teams/' + agent_team_id).then(
-      values => {
-        dispatch(agentTeamLoaded(values.getData()));
+      (values) => {
+        trigger(values.getData());
       }
     );
   }
-}
+);

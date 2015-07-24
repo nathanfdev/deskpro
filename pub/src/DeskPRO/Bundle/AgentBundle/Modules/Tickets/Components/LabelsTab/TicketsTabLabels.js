@@ -6,7 +6,7 @@ export default class TicketsTabLabels extends React.Component {
   render() {
     const { labelsList, dispatch } = this.props;
     
-    const labels = labelsList.labels_list.map(letter => {
+    const labels = labelsList.LabelsList.map(letter => {
       const my_labels = letter.labels.map(label => (
         <a href="#" className="item-label" onClick={() => dispatch(LabelActions.loadLabelTickets(label))}>{label}</a>
       ));

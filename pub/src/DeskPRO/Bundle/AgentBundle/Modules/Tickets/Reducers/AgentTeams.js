@@ -1,12 +1,13 @@
-import * as PeopleActions from "../Actions/PeopleActions";
+import * as AgentTeamActions from "../Actions/AgentTeamActions";
 import { Reducer } from "Ampliflux/reducers";
 
-export default class People extends Reducer {
+export default class AgentTeams extends Reducer {
   registerHandlers() {this
-    .r(PeopleActions.loadPeople, this.personLoaded)
+    .r(AgentTeamActions.loadAgentTeam, this.agentsTeamLoaded)
+    ;
   }
   
-  personLoaded(state, action) {
+  agentsTeamLoaded(state, action) {
     if(!action.payload || !action.payload.data) {
       return state;
     }

@@ -1,77 +1,57 @@
-import { createAction } from "redux-actions";
-
-import {createAction as createAction2} from "Ampliflux/actions";
-
+import {createAction} from "Ampliflux/actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
-import ActionTypes from "./ActionTypes";
 
-export const changeTab = createAction(ActionTypes.TICKETS_CHANGE_TAB);
-export const setLoadedFilterSets = createAction(ActionTypes.TICKETS_LOAD_FILTER_SETS);
-export const selectTicketFilter = createAction(ActionTypes.TICKETS_SELECT_FILTER);
-export const setLoadedTickets = createAction(ActionTypes.TICKETS_LOAD_TICKETS);
-export const setLoadedFilterSetsCounts = createAction(ActionTypes.TICKETS_LOAD_FILTER_COUNTS);
-export const setLoadedFilterSetFilters = createAction(ActionTypes.TICKETS_LOAD_FILTER_SET_FILTERS);
-export const setLoadedFilterGroups = createAction(ActionTypes.TICKETS_LOAD_FILTER_GROUPS);
+export const changeTab = createAction("TICKETS_CHANGE_TAB");
+export const selectTicketFilter = createAction("TICKETS_SELECT_FILTER");
 
-export const loadFilterSets = createAction2("TICKETS_LOAD_FILTER_SETS", (trigger) => {
-  DpApi.sendGet('DP_API/ticket_filter_sets').then(
-    (values) => {
-      trigger(values.getData());
-    }
-  );
-});
+export const loadFilterSets = createAction(
+  "TICKETS_LOAD_FILTER_SETS",
+  (trigger) => {
+    DpApi.sendGet('DP_API/ticket_filter_sets').then(
+      (values) => trigger(values.getData())
+    );
+  }
+);
 
-// export function loadFilterSets() {
-//   return (dispatch) => {
-//     DpApi.sendGet('DP_API/ticket_filter_sets').then(
-//       (values) => {
-//         dispatch(setLoadedFilterSets(values.getData()));
-//       }
-//     );
-//   }
-// }
-
-export function loadFilterTickets(filter_id) {
-  return (dispatch) => {
+export const loadFilterTickets = createAction(
+  "TICKETS_LOAD_TICKETS",
+  (trigger, filter_id) => {
     DpApi.sendGet('DP_API/ticket_filters/' + filter_id + '/tickets').then(
-      values => {
-        dispatch(setLoadedTickets(values.getData()));
-      }
+      values => trigger(values.getData())
     );
   }
-}
+);
 
-export function loadFilterSetsCounts() {
-  return (dispatch) => {
+export const loadFilterSetsCounts = createAction(
+  "TICKETS_LOAD_FILTER_COUNTS",
+  (trigger) => {
     DpApi.sendGet('DP_API/ticket_filter_sets/all/counts').then(
-      values => {
-        dispatch(setLoadedFilterSetsCounts(values.getData()));
-      }
+      values => trigger(values.getData())
     );
   }
-}
+);
 
-export function loadFiltersInSet(filter_set_id) {
-  return (dispatch) => {
+export const loadFiltersInSet = createAction(
+  "TICKETS_LOAD_FILTER_SET_FILTERS",
+  (trigger, filter_set_id) => {
     DpApi.sendGet('DP_API/ticket_filter_sets/' + filter_set_id + '/filters').then(
-      values => {
-        dispatch(setLoadedFilterSetFilters({
-          filter_set_id: filter_set_id,
-          filters: values.getData().data
-        }));
-      }
+      values => trigger({
+        filter_set_id: filter_set_id,
+        filters: values.getData().data
+      })
     );
   }
-}
+);
 
-export function loadFilterGroups(filter_id, grouping) {
-  return (dispatch) => {
+export const loadFilterGroups = createAction(
+  "TICKETS_LOAD_FILTER_GROUPS",
+  (trigger, filter_id, grouping) => {
     DpApi.sendGet('DP_API/ticket_filters/' + filter_id + '/count?group_by=' + grouping).then(
-      values => dispatch(setLoadedFilterGroups({
+      values => trigger({
         filter_id: filter_id,
         grouping: grouping,
         data: values.getData().data
-      }))
-    )
+      })
+    );
   }
-}
+);

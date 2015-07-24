@@ -1,10 +1,8 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import * as DepartmentsActions from "../Actions/DepartmentsActions";
+import { Reducer } from "Ampliflux/reducers";
 
-const initialState = {};
-
-const r = handleActions({
-  [ActionTypes.TICKETS_DEPARTMENT_LOADED]: (state, action) => {
+export default class Departments extends Reducer {
+  departmentLoaded(state, action) {
     if(!action.payload || !action.payload.data) {
       return state;
     }
@@ -12,9 +10,9 @@ const r = handleActions({
       ...state,
       [action.payload.data.id]: action.payload.data
     };
-  },
-}, initialState);
-
-export default (state, action = {type: null}) => {
-	return r(state, action);
+  }
+  
+  registerHandlers() {this
+    .r("TICKETS_DEPARTMENT_LOADED", this.departmentLoaded)
+  }
 }

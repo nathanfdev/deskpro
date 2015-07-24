@@ -1,14 +1,11 @@
-import { createAction } from "redux-actions";
-
+import { createAction } from "Ampliflux/actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
-import ActionTypes from "./ActionTypes";
-import * as TicketActions from "./FiltersActions";
 
-export const hideSidebarHover = createAction(ActionTypes.TICKETS_SIDEBAR_HOVER_HIDE);
+export const hideSidebarHover = createAction("TICKETS_SIDEBAR_HOVER_HIDE");
 
-export function showFilterGroupingOptions(payload = null) {
-  return {
-    type: ActionTypes.TICKETS_SIDEBAR_HOVER_FILTER_GROUPING_OPTIONS,
-    payload: payload
-  };
-}
+export const showFilterGroupingOptions = createAction(
+  "TICKETS_SIDEBAR_HOVER_FILTER_GROUPING_OPTIONS",
+  (trigger, payload = null) => {
+    trigger(payload);
+  }
+)

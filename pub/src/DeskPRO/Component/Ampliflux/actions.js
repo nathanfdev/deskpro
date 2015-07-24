@@ -1,14 +1,33 @@
-export function createAction(action_type, action) {
-  let handler = () => {
-    return (dispatch) => {
-      const trigger = (payload = null) => dispatch({
+export function createAction(action_type, action = null) {
+  let handler = null;
+  if(!action) { // Dumb action
+    handler = () => {
+      console.log(action_type);
+      return (dispatch) => dispatch({
         type: action_type,
-        payload: payload
+        payload: null
       });
-      return action(trigger, dispatch);
     }
-  };
-  handler.actionType = action_type;
+  } else {
+    handler = (...stuff) => {
+      return (dispatch) => {
+        const trigger = (payload = null, type = null) => {
+          if(!type) {
+            type = action_type;
+          }
+          console.log(type);
+          return dispatch({
+            type: type,
+            payload: payload
+          });
+        };
+      
+        const args = [trigger, ...stuff];
+        return action.apply(this, args);
+      };
+    };
+  }
   
+  handler.actionType = action_type;  
   return handler;
 }

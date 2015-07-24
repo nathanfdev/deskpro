@@ -12,7 +12,7 @@ import AgentTeamGroup from "./Groups/AgentTeamGroup";
 import WaitingTimeGroup from "./Groups/WaitingTimeGroup";
 
 @connect(state => ({
-  filter_set_filter_groups: state.filter_set_filter_groups,
+  FilterSetFilterGroups: state.FilterSetFilterGroups,
 }))
 export default class TicketsTabFilterList extends React.Component {  
   render() {
@@ -22,7 +22,7 @@ export default class TicketsTabFilterList extends React.Component {
       filterCounts,
       loadFilterTickets,
       showFilterGroupingOptions,
-      filter_set_filter_groups,
+      FilterSetFilterGroups,
       dispatch,
     } = this.props;
     let totalTickets = 0;
@@ -49,26 +49,26 @@ export default class TicketsTabFilterList extends React.Component {
         );
       }
       
-      const filter_groups = filter_set_filter_groups.filter_set_filter_groups;
+      const FilterGroups = FilterSetFilterGroups.FilterSetFilterGroups;
       let groups = [];
-      if(filter_groups.filter_id == filter.id && filter_groups.data.length > 0) {
-        groups = filter_groups.data.map(group => {
-          switch(filter_groups.grouping) {
+      if(FilterGroups.filter_id == filter.id && FilterGroups.data.length > 0) {
+        groups = FilterGroups.data.map(group => {
+          switch(FilterGroups.grouping) {
           case 'department':
             return (
               <DepartmentGroup
-                count={group.count} item={group[filter_groups.grouping]} />
+                count={group.count} item={group[FilterGroups.grouping]} />
             );
           case 'urgency':
             return (
               <UrgencyGroup
-                count={group.count} urgency={group[filter_groups.grouping]} />
+                count={group.count} urgency={group[FilterGroups.grouping]} />
             );
           case 'agent':
           case 'person':
             return (
               <PeopleGroup
-                count={group.count} item={group[filter_groups.grouping]} />
+                count={group.count} item={group[FilterGroups.grouping]} />
             );
           case 'agent_team':
             let grouping = 'agent_team_id';
@@ -81,12 +81,12 @@ export default class TicketsTabFilterList extends React.Component {
           case 'open_time':
             return (
               <WaitingTimeGroup
-                count= {group.count} item={group[filter_groups.grouping]} />
+                count= {group.count} item={group[FilterGroups.grouping]} />
             );
           default:
             return (
-              <GenericGroup grouping={filter_groups.grouping}
-                count={group.count} item={group[filter_groups.grouping]} />
+              <GenericGroup grouping={FilterGroups.grouping}
+                count={group.count} item={group[FilterGroups.grouping]} />
             );
           }
         });

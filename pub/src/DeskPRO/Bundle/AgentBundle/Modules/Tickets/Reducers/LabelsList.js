@@ -1,12 +1,18 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import * as LabelsListActions from "../Actions/LabelsListActions";
+import { Reducer } from "Ampliflux/reducers";
 
-const initialState = {
-	labels_list: [],
-};
+export default class FilterSetslist extends Reducer {
+  getInitialState() {
+    return {
+    	LabelsList: [],
+    };
+  }
 
-const r = handleActions({
-  [ActionTypes.TICKETS_LOAD_TICKET_LABELS]: (state, action) => {
+  registerHandlers() {this
+    .r(LabelsListActions.loadLabels, this.labelsLoaded)
+  }
+  
+  labelsLoaded(state, action) {
     const flat_data = action.payload.data;
     let grouped_data = {};
     
@@ -28,11 +34,7 @@ const r = handleActions({
     
     return {
       ...state,
-      labels_list: final_data
+      LabelsList: final_data
     };
-  },
-}, initialState);
-
-export default (state, action = {type: null}) => {
-	return r(state, action);
+  }
 }

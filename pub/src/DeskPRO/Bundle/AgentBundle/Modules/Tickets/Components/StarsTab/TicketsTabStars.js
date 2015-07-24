@@ -29,9 +29,9 @@ export default class TicketsTabStars extends React.Component {
       const classes = "fa fa-star star star-" + star;
       // Need to find the count.
       let count = -1;
-      if(starsCounts.stars_counts.length > 0) {
-        for(let k in starsCounts.stars_counts) {
-          let my_count = starsCounts.stars_counts[k];
+      if(starsCounts.StarsCounts.length > 0) {
+        for(let k in starsCounts.StarsCounts) {
+          let my_count = starsCounts.StarsCounts[k];
           if(my_count.star == star) {
             count = my_count.count;
             break;

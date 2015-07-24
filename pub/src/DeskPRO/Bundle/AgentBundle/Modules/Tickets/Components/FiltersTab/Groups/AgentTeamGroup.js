@@ -4,34 +4,30 @@ import { connect } from "redux/react";
 import * as AgentTeamActions from "../../../Actions/AgentTeamActions";
 
 @connect(state => ({
-  agent_teams: state.agent_teams,
+  AgentTeams: state.AgentTeams,
 }))
 export default class AgentTeamGroup extends React.Component {
   constructor(props) {
     super(props);
-    const { dispatch, agent_teams } = this.props;
+    const { dispatch, AgentTeams } = this.props;
     this.agent_team_id = this.props.item;
 
-    console.log(agent_teams);
-
-    if(this.agent_team_id && typeof(agent_teams[this.agent_team_id]) === 'undefined') {
+    if(this.agent_team_id && typeof(AgentTeams[this.agent_team_id]) === 'undefined') {
       dispatch(AgentTeamActions.loadAgentTeam(this.agent_team_id));
     }
   }
   
   render() {
-    const { agent_teams, count, item } = this.props;
+    const { AgentTeams, count, item } = this.props;
     
-    console.log(agent_teams);
-    
-    if(!agent_teams[this.agent_team_id]) {
+    if(!AgentTeams[this.agent_team_id]) {
       return (<span></span>);
     } else {
       const key = "agent-" + this.agent_team_id;
       return (
         <li key={key}>
           <div className="list-counter-bucket"><a href="#" className="list-counter">{count}</a></div>
-          <a href="#" className="item">{agent_teams[this.agent_team_id].name}</a>
+          <a href="#" className="item">{AgentTeams[this.agent_team_id].name}</a>
         </li>
       );
     }

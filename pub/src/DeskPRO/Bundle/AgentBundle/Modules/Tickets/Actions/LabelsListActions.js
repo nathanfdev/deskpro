@@ -1,27 +1,20 @@
-import { createAction } from "redux-actions";
-
+import { createAction } from "Ampliflux/actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
-import ActionTypes from "./ActionTypes";
-import * as TicketActions from "./FiltersActions";
 
-export const setLoadedLabels = createAction(ActionTypes.TICKETS_LOAD_TICKET_LABELS);
-
-export const loadLabels = () => {
-  return dispatch => {
+export const loadLabels = createAction(
+  "TICKETS_LOAD_TICKET_LABELS",
+  (trigger) => {
     DpApi.sendGet('DP_API/ticket_labels').then(
-      (values) => {
-        dispatch(setLoadedLabels(values.getData()));
-      }
+      (values) => trigger(values.getData())
     );
   }
-}
+)
 
-export const loadLabelTickets = (label_name) => {
-  return (dispatch) => {
+export const loadLabelTickets = createAction(
+  "TICKETS_LOAD_TICKETS",
+  (trigger, label_name) => {
     DpApi.sendGet('DP_API/ticket_labels/' + label_name + '/tickets').then(
-      values => {
-        dispatch(TicketActions.setLoadedTickets(values.getData()));
-      }
+      values => trigger(values.getData())
     );
   }
-}
+)

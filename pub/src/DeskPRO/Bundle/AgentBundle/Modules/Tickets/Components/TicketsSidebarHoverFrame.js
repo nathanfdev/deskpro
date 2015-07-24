@@ -8,16 +8,16 @@ import * as LabelActions from "../Actions/LabelsListActions";
 import FilterGroupingOptions from "./SidebarHover/FilterGroupingOptions";
 
 @connect(state => ({
-  sidebar_hover: state.sidebar_hover,
+  SidebarHover: state.SidebarHover,
 }))
 export default class TicketsSidebarHoverFrame extends React.Component {
   render() {
-    const { sidebar_hover, dispatch } = this.props;
-    const classes = "sidebar-hover " + (sidebar_hover.open ? 'show' : 'hide');
+    const { SidebarHover, dispatch } = this.props;
+    const classes = "sidebar-hover " + (SidebarHover.open ? 'show' : 'hide');
     
     return (
       <section className={classes}>
-        <FilterGroupingOptions dispatch={dispatch} payload={sidebar_hover.payload} />
+        <FilterGroupingOptions dispatch={dispatch} payload={SidebarHover.payload} />
       </section>
     );
   }

@@ -4,13 +4,13 @@ import { connect } from 'redux/react';
 import * as TicketActions from "../Actions/FiltersActions";
 
 @connect(state => ({
-  tickets_list: state.tickets_list
+  TicketsList: state.TicketsList
 }))
 export default class TicketsListFrame extends React.Component {
   render() {
-    const { tickets_list } = this.props;
+    const { TicketsList } = this.props;
 
-    let tickets = tickets_list.tickets_list.map((ticket) => {
+    let tickets = TicketsList.TicketsList.map((ticket) => {
       return (
         <div className="ticket">
           <div className="bulk-editing"></div>

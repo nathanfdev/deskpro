@@ -1,27 +1,20 @@
-import { createAction } from "redux-actions";
-
+import { createAction } from "Ampliflux/actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
-import ActionTypes from "./ActionTypes";
-import * as TicketActions from "./FiltersActions";
 
-export const setLoadedStarCounts = createAction(ActionTypes.TICKETS_LOAD_TICKET_STAR_COUNTS);
-
-export const loadStarCounts = () => {
-  return dispatch => {
+export const loadStarCounts = createAction(
+  "TICKETS_LOAD_TICKET_STAR_COUNTS",
+  (trigger) => {
     DpApi.sendGet('DP_API/ticket_stars/all/counts').then(
-      (values) => {
-        dispatch(setLoadedStarCounts(values.getData()));
-      }
+      (values) => trigger(values.getData())
     );
   }
-}
+)
 
-export const loadStarTickets = (star_name) => {
-  return (dispatch) => {
+export const loadStarTickets = createAction(
+  "TICKETS_LOAD_TICKETS",
+  (trigger, star_name) => {
     DpApi.sendGet('DP_API/ticket_stars/' + star_name + '/tickets').then(
-      values => {
-        dispatch(TicketActions.setLoadedTickets(values.getData()));
-      }
+      values => trigger(values.getData())
     );
   }
-}
+)

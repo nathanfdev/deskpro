@@ -10,10 +10,10 @@ import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";
 
 @connect(state => ({
-  filter_sets_list: state.filter_sets_list,
-  filter_sets_counts: state.filter_sets_counts,
-  labels_list: state.labels_list,
-  stars_counts: state.stars_counts,
+  FilterSetsList: state.FilterSetsList,
+  FilterSetsCounts: state.FilterSetsCounts,
+  LabelsList: state.LabelsList,
+  StarsCounts: state.StarsCounts,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
@@ -52,26 +52,26 @@ export default class TicketsNavContent extends React.Component {
   
   render() {
     const {
-      filter_sets_list,
-      filter_sets_counts,
-      labels_list,
-      stars_counts,
+      FilterSetsList,
+      FilterSetsCounts,
+      LabelsList,
+      StarsCounts,
       dispatch
     } = this.props;
     
     let tab = null;
     switch(this.state.showTab) {
     case "labels":
-      tab = <TicketsTabLabels labelsList={labels_list} dispatch={dispatch} />
+      tab = <TicketsTabLabels labelsList={LabelsList} dispatch={dispatch} />
       break;
     case "stars":
-      tab = <TicketsTabStars dispatch={dispatch} starsCounts={stars_counts} />
+      tab = <TicketsTabStars dispatch={dispatch} starsCounts={StarsCounts} />
       break;
     case "filters":
     default:
       tab = <TicketsTabFilters
-              filterSetsList={filter_sets_list}
-              filterSetsCounts={filter_sets_counts}
+              filterSetsList={FilterSetsList}
+              filterSetsCounts={FilterSetsCounts}
               {...bindActionCreators(TicketActions, dispatch)}
               {...this.props} />
       break;
