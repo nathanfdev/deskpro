@@ -5,7 +5,8 @@ var gulp                  = require('gulp'),
     del                   = require('del'),
     runSeq                = require('run-sequence'),
     path                  = require("path"),
-    ExtractTextPlugin     = require("extract-text-webpack-plugin");
+    ExtractTextPlugin     = require("extract-text-webpack-plugin"),
+    fs                    = require("fs");
 
 //######################################################################################################################
 //# Util
@@ -55,7 +56,51 @@ gulp.task('priv:start-prod', function () {
 //# Bundler
 //######################################################################################################################
 
-gulp.task('bundle', function (callback) {
+function createReducers(reducers_path) {
+  console.log("Parsing reducers in " + reducers_path);
+  if(!fs.existsSync(reducers_path)) {
+    return false;
+  }
+  var files = fs.readdirSync(reducers_path);
+  var imports = '';
+  var exports = '';
+  processed_files = [];
+  for(var k in files) {
+    file = files[k];
+    if(file == 'index.js') {
+      continue;
+    }
+    
+    processed_files.push(file);
+    store_name = file.substr(0, file.length - 3);
+    imports+= "import " + store_name + " from './" + store_name + "';\n";
+    exports+= store_name + ",";
+  }
+  
+  console.log("[" + processed_files.join(", ") + "]");
+  
+  var index = imports + "export default {"+ exports +"};";
+  fs.writeFileSync(path.join(reducers_path, "index.js"), index);
+}
+
+gulp.task('create-reducers', function(callback) {
+  var bundles_path = path.join(__dirname, "src/DeskPRO/Bundle");
+  var bundles = fs.readdirSync(bundles_path);
+  for(var k in bundles) {
+    var bundle = bundles[k];
+    var modules_path = path.join(bundles_path, bundle, "Modules");
+    if(fs.existsSync(modules_path)) {
+      var modules = fs.readdirSync(modules_path);
+      for(var l in modules) {
+        createReducers(path.join(modules_path, modules[l], 'Reducers'));
+      }
+    }
+  }
+  
+  return callback();
+});
+
+gulp.task('bundle', ['create-reducers'], function (callback) {
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
@@ -67,16 +112,40 @@ gulp.task('bundle:portal', function (callback) {
   runWebpackBundle(getWebpackConfig('portal', deskpro.isProd), callback);
 });
 
-gulp.task('bundle:dev-server', function(callback) {
+gulp.task('bundle:dev-server', ['create-reducers'], function(callback) {
   startWebpackServer(getWebpackConfig('all', true, false));
 });
 
-gulp.task('bundle:dev-server:agent', function(callback) {
+gulp.task('bundle:dev-server:agent', ['create-reducers'], function(callback) {
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 
 gulp.task('bundle:dev-server:portal', function(callback) {
   startWebpackServer(getWebpackConfig('portal', true, false));
+});
+
+gulp.task('build-test', function(callback) {
+  var config = getWebpackConfig('agent', true, false);
+  config.entry = path.join(__dirname, "src/DeskPRO/tests/runner");
+  config.module.loader = [{
+    test: /\.js$/,
+    include: [
+      path.resolve(__dirname, "src/DeskPRO")
+    ],
+    loader: "babel-loader?stage=0"
+  }];
+  
+  webpack(config).run(function(err, stats) {
+    if(err) throw new gutil.PluginError("webpack", err);
+    gutil.log("[webpack]", stats.toString({
+        // output options
+    }));
+    callback();
+  });
+});
+
+gulp.task('test', ['build-test'], function(callback) {
+  require('./build/main.js');
 });
 
 //######################################################################################################################
@@ -100,7 +169,10 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       sourceMapFilename: "[name].map"
     },
     resolve: {
-      root: path.join(__dirname, "src")
+      root: [
+        path.join(__dirname, "src"),
+        path.join(__dirname, "src/DeskPRO/Component")
+      ]
     },
     devtool: "inline-source-map",
     module: {

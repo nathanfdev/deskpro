@@ -1,5 +1,7 @@
 import { createAction } from "redux-actions";
 
+import {createAction as createAction2} from "Ampliflux/actions";
+
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import ActionTypes from "./ActionTypes";
 
@@ -11,15 +13,23 @@ export const setLoadedFilterSetsCounts = createAction(ActionTypes.TICKETS_LOAD_F
 export const setLoadedFilterSetFilters = createAction(ActionTypes.TICKETS_LOAD_FILTER_SET_FILTERS);
 export const setLoadedFilterGroups = createAction(ActionTypes.TICKETS_LOAD_FILTER_GROUPS);
 
-export function loadFilterSets() {
-  return dispatch => {
-    DpApi.sendGet('DP_API/ticket_filter_sets').then(
-      (values) => {
-        dispatch(setLoadedFilterSets(values.getData()));
-      }
-    );
-  }
-}
+export const loadFilterSets = createAction2("TICKETS_LOAD_FILTER_SETS", (trigger) => {
+  DpApi.sendGet('DP_API/ticket_filter_sets').then(
+    (values) => {
+      trigger(values.getData());
+    }
+  );
+});
+
+// export function loadFilterSets() {
+//   return (dispatch) => {
+//     DpApi.sendGet('DP_API/ticket_filter_sets').then(
+//       (values) => {
+//         dispatch(setLoadedFilterSets(values.getData()));
+//       }
+//     );
+//   }
+// }
 
 export function loadFilterTickets(filter_id) {
   return (dispatch) => {

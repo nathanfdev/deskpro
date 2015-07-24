@@ -6,11 +6,6 @@ const initialState = {
     filter_set_id: null,
     filters: [],
   },
-  filter_set_filter_groups: {
-    filter_id: 0,
-    grouping: null,
-    data: []
-  },
 };
 
 const r = handleActions({
@@ -18,10 +13,6 @@ const r = handleActions({
     ...state,
     filter_set_filters_list: action.payload
   }),
-  [ActionTypes.TICKETS_LOAD_FILTER_GROUPS]: (state, action) => ({
-    ...state,
-    filter_set_filter_groups: action.payload
-  })
 }, initialState);
 
 export default (state, action = {type: null}) => {

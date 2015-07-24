@@ -1,0 +1,12 @@
+import agent_teams from './agent_teams';
+import departments from './departments';
+import filter_set_filter_groups from './filter_set_filter_groups';
+import filter_set_filters_list from './filter_set_filters_list';
+import filter_sets_counts from './filter_sets_counts';
+import filter_sets_list from './filter_sets_list';
+import labels_list from './labels_list';
+import people from './people';
+import sidebar_hover from './sidebar_hover';
+import stars_list from './stars_list';
+import tickets_list from './tickets_list';
+export default {agent_teams,departments,filter_set_filter_groups,filter_set_filters_list,filter_sets_counts,filter_sets_list,labels_list,people,sidebar_hover,stars_list,tickets_list,};
