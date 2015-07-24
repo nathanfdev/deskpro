@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro article labels importer
+ * DeskPRO article labels importer
  *
  * Class ArticleLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer

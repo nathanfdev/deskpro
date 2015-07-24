@@ -25,23 +25,34 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
+
+use Application\ImportBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Mapper interface to find existing DeskPRO records by title
- *
- * Interface MapperByTitleInterface
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
+ * Class Organization
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-interface MapperByTitleInterface
+final class Organization extends AbstractImporter
 {
     /**
-     * Returns the DeskPRO record by title
-     *
-     * @param string $title
-     * @param bool   $throw_exception
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function findOneByTitle($title, $throw_exception = true);
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_ORGANIZATION;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @var Entity\Organization $entity
+     */
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    {
+        $this->records = new ArrayCollection();
+
+        return $this->records;
+    }
 }

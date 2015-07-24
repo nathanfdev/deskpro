@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Collection of DeskPro importers
+ * Collection of DeskPRO importers
  *
  * Class Collection
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer

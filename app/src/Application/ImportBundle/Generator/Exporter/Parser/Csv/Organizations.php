@@ -65,6 +65,21 @@ class Organizations extends AbstractParser
     }
 
     /**
+     * @param array $organization
+     * @return Entity\Organization|null
+     */
+    private function exportOrganization(array $organization)
+    {
+        if ($this->isOrganizationValid($organization)) {
+            $entity = new Entity\Organization();
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Returns a collection of organizations contact data
      *
      * @return Entity\Collection
@@ -75,6 +90,21 @@ class Organizations extends AbstractParser
         $contact_data = $this->getReaderData($this->getOrganizationContactDataReaderConfig());
 
         return $collection;
+    }
+
+    /**
+     * @param array $contact
+     * @return Entity\OrganizationContactData|null
+     */
+    private function exportContact(array $contact)
+    {
+        if ($this->isContactValid($contact)) {
+            $entity = new Entity\OrganizationContactData();
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -116,16 +146,16 @@ class Organizations extends AbstractParser
     /**
      * Check if organization contact data has all required columns
      *
-     * @param array $contact_data
+     * @param array $contact
      * @return bool
      */
-    private function isContactValid(array $contact_data)
+    private function isContactValid(array $contact)
     {
         $columns = array(
             'contact_type',
             'comment',
         );
 
-        return $this->hasRequiredColumns($contact_data, $columns);
+        return $this->hasRequiredColumns($contact, $columns);
     }
 }

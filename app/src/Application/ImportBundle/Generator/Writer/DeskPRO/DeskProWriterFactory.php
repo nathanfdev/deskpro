@@ -36,7 +36,7 @@ use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
 use Exception;
 
 /**
- * Generator deskpro writer factory
+ * Generator DeskPRO writer factory
  *
  * Class DeskProWriterFactory
  * @package Application\ImportBundle\Generator\Writer\DeskPRO
@@ -177,7 +177,9 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Person($mappers))
             ->attach(new Importer\PersonLabel($mappers))
             ->attach(new Importer\Ticket($mappers, $ticket_manager, $blob_adapter))
-            ->attach(new Importer\TicketLabel($mappers));
+            ->attach(new Importer\TicketLabel($mappers))
+            ->attach(new Importer\Organization($mappers))
+        ;
 
         /** @var EntityWatcher $entity_watcher */
         $entity_watcher = $this->container->get('deskpro.search.entity_listener');

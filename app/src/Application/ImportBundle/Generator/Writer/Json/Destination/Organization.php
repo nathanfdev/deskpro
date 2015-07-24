@@ -25,23 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+
+use Application\ImportBundle\Entity;
 
 /**
- * Mapper interface to find existing DeskPRO records by title
+ * Organization entity destination
  *
- * Interface MapperByTitleInterface
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
+ * Class Organization
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-interface MapperByTitleInterface
+final class Organization implements DestinationInterface
 {
     /**
-     * Returns the DeskPRO record by title
-     *
-     * @param string $title
-     * @param bool   $throw_exception
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function findOneByTitle($title, $throw_exception = true);
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_ORGANIZATION;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityOutputPath()
+    {
+        return self::ENTITY_ORGANIZATION_PATH;
+    }
 }

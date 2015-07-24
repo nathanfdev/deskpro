@@ -80,7 +80,7 @@ final class Ticket implements MapperInterface
     }
 
     /**
-     * Returns the existing DeskPro ticket by ref
+     * Returns the existing DeskPRO ticket by ref
      *
      * @param string $ref
      * @param bool   $throw_exception

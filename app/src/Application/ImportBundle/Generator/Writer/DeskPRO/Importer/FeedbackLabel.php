@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback labels importer
+ * DeskPRO feedback labels importer
  *
  * Class FeedbackLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer

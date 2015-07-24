@@ -69,14 +69,14 @@ interface MapperInterface
     const TYPE_EMAIL_ACCOUNT       = 'email_account';
 
     /**
-     * Returns DeskPro record type
+     * Returns DeskPRO record type
      *
      * @return string
      */
     public function getType();
 
     /**
-     * Returns the DeskPro record by criteria
+     * Returns the DeskPRO record by criteria
      *
      * @param array $criteria
      * @param bool  $throw_exception

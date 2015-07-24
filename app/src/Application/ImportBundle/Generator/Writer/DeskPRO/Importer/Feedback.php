@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback importer
+ * DeskPRO feedback importer
  *
  * Class Feedback
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -149,7 +149,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the importing DeskPro doctrine feedback attachment entity
+     * Returns the importing DeskPRO doctrine feedback attachment entity
      *
      * @param Entity\Attachment $entity
      * @param string            $person_email
