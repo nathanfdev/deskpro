@@ -29,6 +29,7 @@
 /pub/node_modules
 /pub/src-build
 /pub/build
+**/Reducers/index.js
 
 # cache and log files
 /app/sys/cache/*
