@@ -177,7 +177,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 			$.ajax({
 				url: $(this).attr('href'),
-				data: $form.find('input').serialize(),
+				data: $form.find('input, textarea, select').serialize(),
 				type: 'POST',
 				dataType: 'json'
 			}).done(function(json) {
