@@ -274,21 +274,21 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 	},
 
 	resetBillingForm: function() {
-		var form = this.getEl('billing_form');
+		var form = this.getEl('billing_form'), self = this;
 
 		$.get(form.data('refresh-url'), function (data) {
 			form.replaceWith(data);
+
+			setTimeout((function() {
+				this.initForm();
+
+				if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
+					this.startBillingTimer(true);
+				} else {
+					this.stopBillingTimer(true);
+				}
+			}).bind(self), 100);
 		});
-
-		setTimeout((function() {
-      this.initForm();
-
-      if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
-        this.startBillingTimer(true);
-      } else {
-        this.stopBillingTimer(true);
-      }
-    }).bind(this), 100);
 	},
 
 	startBillingTimer: function(reset) {
