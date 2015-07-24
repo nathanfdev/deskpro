@@ -169,10 +169,36 @@ class Organization extends AbstractEntity
     }
 
     /**
+     * Returns organization contact data
+     *
+     * @return Collection|OrganizationContactData[]
+     */
+    public function getContactData()
+    {
+        return $this->contact_data;
+    }
+
+    /**
+     * Add an organization contact data
+     *
+     * @param OrganizationContactData $contact
+     * @return $this
+     */
+    public function addContact(OrganizationContactData $contact)
+    {
+        $this->contact_data->attach($contact);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
     {
+        if ( ! $this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
         $contact_data = array();
         foreach ($this->contact_data as $contact) {
             /** @var OrganizationContactData $contact */
@@ -183,7 +209,9 @@ class Organization extends AbstractEntity
             'oid'          => $this->oid,
             'name'         => $this->name,
             'picture'      => $this->picture ? $this->picture->toArray() : null,
+            'importance'   => $this->importance,
             'contact_data' => $contact_data,
+            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
         );
     }
 

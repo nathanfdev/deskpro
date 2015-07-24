@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 
 /**
@@ -57,9 +59,105 @@ final class Organizations extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
+        $collection    = new Entity\Collection();
+        $organizations = $this->reader->getData($this->getOrganizationsReaderConfig());
+
+        foreach ($organizations as $num => $organization) {
+            $this->advanceProgressBar();
+
+            try {
+                $entity = $this->exportOrganization($organization);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid organization record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid organization record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+
+            } catch (NotArrayException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid organization record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
 
         return $collection;
+    }
+
+    /**
+     * Returns a news entity
+     *
+     * @param array $organization
+     * @return Entity\News
+     */
+    private function exportOrganization(array $organization)
+    {
+        if ($this->isOrganizationValid($organization)) {
+            $entity = new Entity\Organization();
+            $entity
+                ->setDestination('organization_' . $organization['oid'])
+                ->setOid($organization['oid'])
+                ->setName($organization['name'])
+                ->setImportance($organization['importance'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($organization['date_created']))
+            ;
+
+            $contacts = $this->exportContactData($organization['contact_data']);
+            foreach ($contacts as $contact) {
+                $entity->addContact($contact);
+            }
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    private function exportContactData(array $contact_data)
+    {
+        $collection = new Entity\Collection();
+        foreach ($contact_data as $num => $contact) {
+            try {
+                $entity = $this->exportContact($contact);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid organization contact data record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid organization contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+
+            } catch (NotArrayException $e) {
+                $this->logError(sprintf(
+                    'Invalid organization contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param array $contact
+     * @return Entity\OrganizationContactData|null
+     *
+     */
+    private function exportContact(array $contact)
+    {
+        return new Entity\OrganizationContactData();
     }
 
     /**
@@ -70,5 +168,26 @@ final class Organizations extends AbstractParser
     private function getOrganizationsReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ORGANIZATION_PATH);
+    }
+
+    /**
+     * Check if organization has all required columns
+     *
+     * @param array $organization
+     * @return bool
+     */
+    private function isOrganizationValid(array $organization)
+    {
+        $columns = array(
+            'oid',
+            'name',
+            'picture',
+            'importance',
+            'date_created',
+            'contact_data',
+        );
+
+        return $this->hasRequiredColumns($organization, $columns)
+            && $this->isArrayColumn($organization, 'contact_data');
     }
 }
