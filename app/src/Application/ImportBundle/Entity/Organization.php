@@ -64,12 +64,18 @@ class Organization extends AbstractEntity
     private $contact_data;
 
     /**
+     * @var Collection
+     */
+    private $custom_fields;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->date_created = new DateTime();
-        $this->contact_data = new Collection();
+        $this->date_created  = new DateTime();
+        $this->contact_data  = new Collection();
+        $this->custom_fields = new Collection();
     }
 
     /**
@@ -191,6 +197,24 @@ class Organization extends AbstractEntity
     }
 
     /**
+     * @return Collection
+     */
+    public function getCustomFields()
+    {
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param CustomField $custom_field
+     * @return $this
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields->attach($custom_field);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -204,14 +228,20 @@ class Organization extends AbstractEntity
             /** @var OrganizationContactData $contact */
             $contact_data[] = $contact->toArray();
         }
+        $custom_fields = array();
+        foreach ($this->custom_fields as $custom_field) {
+            /** @var CustomField $custom_field */
+            $custom_fields[] = $custom_field->toArray();
+        }
 
         return array(
-            'oid'          => $this->oid,
-            'name'         => $this->name,
-            'picture'      => $this->picture ? $this->picture->toArray() : null,
-            'importance'   => $this->importance,
-            'contact_data' => $contact_data,
-            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
+            'oid'           => $this->oid,
+            'name'          => $this->name,
+            'picture'       => $this->picture ? $this->picture->toArray() : null,
+            'importance'    => $this->importance,
+            'date_created'  => $this->date_created->format('Y-m-d H:i:s'),
+            'contact_data'  => $contact_data,
+            'custom_fields' => $custom_fields,
         );
     }
 

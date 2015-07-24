@@ -35,6 +35,8 @@ use Application\ImportBundle\Entity;
  */
 class Organizations extends AbstractParser
 {
+    const ORGANIZATION_PREFIX = 'organization_';
+
     /**
      * {@inheritdoc}
      */
@@ -60,6 +62,7 @@ class Organizations extends AbstractParser
 
         $organizations = $this->getReaderData($this->getOrganizationReaderConfig());
         $contact_data  = $this->exportContactData();
+        $custom_fields = $this->exportOrganizationCustomFields();
 
         return $collection;
     }
@@ -108,23 +111,13 @@ class Organizations extends AbstractParser
     }
 
     /**
-     * Returns reader config for organization records
+     * Returns a collection of organization custom field data
      *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     * @return Entity\Collection
      */
-    private function getOrganizationReaderConfig()
+    private function exportOrganizationCustomFields()
     {
-        return $this->getReaderConfig(self::FILE_ORGANIZATIONS);
-    }
-
-    /**
-     * Returns reader config for organization contact data records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getOrganizationContactDataReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_ORGANIZATIONS_CONTACT_DATA);
+        return $this->exportCustomFields($this->getOrganizationsCustomFieldReaderConfig(), self::ORGANIZATION_PREFIX, 'organization_id');
     }
 
     /**
@@ -157,5 +150,35 @@ class Organizations extends AbstractParser
         );
 
         return $this->hasRequiredColumns($contact, $columns);
+    }
+
+    /**
+     * Returns reader config for organization records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getOrganizationReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_ORGANIZATIONS);
+    }
+
+    /**
+     * Returns reader config for organization contact data records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getOrganizationContactDataReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_ORGANIZATIONS_CONTACT_DATA);
+    }
+
+    /**
+     * Returns reader config for organization custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getOrganizationsCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_ORGANIZATION_CUSTOM_FIELDS);
     }
 }
