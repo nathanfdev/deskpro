@@ -46,7 +46,12 @@ use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="project_members")
+ * @ORM\Table(name="project_members", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="person_unique", columns={"project_id", "person_id"}),
+ *      @ORM\UniqueConstraint(name="team_unique", columns={"project_id", "team_id"}),
+ *      @ORM\UniqueConstraint(name="department_unique", columns={"project_id", "department_id"})
+ *  }
+ * )
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(

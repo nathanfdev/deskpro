@@ -56,6 +56,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class ProjectsController extends BaseController implements ClassResourceInterface
 {
     private $storedMembers = array();
+    private $oldMembers;
 
     /**
      * @ApiDoc(
@@ -301,7 +302,12 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $status = $project->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         $submitted = $request->request->all();
-        $this->convertMembers($submitted);
+        $this->storedMembers = $this->convertMembers($submitted);
+        $submitted = array('title' => $submitted['title']);
+
+        if ($request->getMethod() === 'PUT') {
+            $this->oldMembers = $this->convertExistingMembers($project);
+        }
 
         $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
 
@@ -336,34 +342,76 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         throw new InvalidFormException($form);
     }
 
-    private function convertMembers(&$request)
+    /**
+     * Take members out for the purposes of form validation
+     * @param $request
+     * @return array
+     */
+    private function convertMembers($request)
     {
-        // {"title":"blah","departments":["1","3"],"teams":["2","3"]}
-        // ARRAY
+        $members = array(
+            'departments' => array(),
+            'teams' => array(),
+            'people' => array()
+        );
 
         if (!empty($request['departments'])) {
-            $this->storedMembers['departments'] = $request['departments'];
-            unset($request['departments']);
+            $members['departments'] = $request['departments'];
         }
         if (!empty($request['teams'])) {
-            $this->storedMembers['teams'] = $request['teams'];
-            unset($request['teams']);
+            $members['teams'] = $request['teams'];
         }
         if (!empty($request['people'])) {
-            $this->storedMembers['people'] = $request['people'];
-            unset($request['people']);
+            $members['people'] = $request['people'];
         }
 
-        // Total hack, should probably not do this, but unsets aren't doing what they should
-        $request = array('title' => $request['title']);
+        return $members;
     }
 
+    private function convertExistingMembers(Project $project)
+    {
+        $members = array(
+            'departments' => array(),
+            'teams' => array(),
+            'people' => array()
+        );
+
+        foreach ($project->getMembers() as $member) {
+            if (!empty($member->getDepartment())) {
+                $id = $member->getId();
+                $members['departments'][$id] = $member->getDepartment()->getId();
+            } else if (!empty($member->getTeam())) {
+                $id = $member->getId();
+                $members['teams'][$id] = $member->getTeam()->getId();
+            } else if (!empty($member->getPerson())) {
+                $id = $member->getId();
+                $members['people'][$id] = $member->getPerson()->getId();
+            }
+        }
+
+        return $members;
+    }
+
+    /**
+     * Get the appropriate member models and attach them to the new project
+     * @param Project $project
+     */
     private function addMembers(Project $project)
     {
         $em = $this->getDoctrine()->getManager();
 
-        foreach ($this->storedMembers as $type => $members) {
-            foreach ($members as $member_id) {
+        foreach ($this->oldMembers as $type => $members) {
+            $removed = array_diff($members, $this->storedMembers[$type]);
+            $newMembers = array_diff($this->storedMembers[$type], $members);
+
+            // Remove the old entities
+            foreach ($removed as $id => $member) {
+                $entity = $em->getRepository('App:ProjectMember')->find($id);
+                $em->remove($entity);
+            }
+
+            // Commit the new entities
+            foreach ($newMembers as $member_id) {
                 $member = new ProjectMember();
                 $member->setProject($project);
                 switch ($type) {
@@ -378,7 +426,6 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
                     case 'people':
                         $person = $em->getRepository('DeskPRO:Person')->find($member_id);
                         $member->setPerson($person);
-
                         break;
                 }
 

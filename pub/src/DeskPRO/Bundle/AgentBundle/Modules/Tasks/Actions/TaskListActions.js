@@ -118,3 +118,18 @@ export const createProject = (data) => {
         });
     }
 }
+
+export const editProject = (data) => {
+    let projectId = data.projectId;
+    delete data.projectId;
+
+    return dispatch => {
+        DpApi.sendPut('DP_API/projects/' + projectId, data).then((value) => {
+            dispatch(loadProjects());
+            dispatch(setCreatedProject(value.getData()));
+        },
+        (value) => {
+            dispatch(setFailedProject(value.xhr.responseJSON));
+        });
+    }
+}

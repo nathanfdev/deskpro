@@ -11,7 +11,7 @@ const r = handleActions({
         console.log('succeeded');
         return {
         ...state,
-            createdProject: action.payload.data
+            createdProject: action.payload
         }
     },
     [ActionTypes.TASKS_POST_PROJECT_FAIL]: (state, action) => ({

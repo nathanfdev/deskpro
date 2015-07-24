@@ -49,6 +49,32 @@ export default class ProjectCreateHover extends React.Component {
         });
     }
 
+    parseMembers(members) {
+        let result = {
+            department: [],
+            team: [],
+            person: []
+        };
+
+        members.forEach(function(object) {
+            let linkType = null;
+            switch(true) {
+                case object.department !== null:
+                    linkType = 'department';
+                    break;
+                case object.team !== null:
+                    linkType = 'team';
+                    break;
+                default:
+                    linkType = 'person';
+            }
+
+            result[linkType].push(object[linkType].id);
+        });
+
+        return result;
+    }
+
     render() {
         const {agentList, teamList, departmentList} = this.props;
 
@@ -77,16 +103,20 @@ export default class ProjectCreateHover extends React.Component {
             });
         }
 
+        let project = this.props.projectData ? this.props.projectData : {};
+        let currentMembers = project.members && project.members.length > 0 ? this.parseMembers(project.members) : {};
+
         return (<div className="sidebar-hover" style={{top: '152px'}}>
 
             <div className="sidebar-hover-content">
                 <div className="sidebar-hover-header">
-                    <i className="fa fa-tags"/> <span className="title"><span>Project -</span> Create New</span>
+                    <i className="fa fa-tags"/> <span className="title"><span>Project -</span> {project.id ? 'Edit' : 'Create New'}</span>
                 </div>
                 <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton} onSubmit={this.props.createProject}>
                     <div className="sidebar-hover-content-box">
+                        <FRC.Input name="projectId" type="hidden" value={project.id} />
                         <h2>Title</h2>
-                        <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: "The title field is required"}} />
+                        <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: "The title field is required"}} value={project.title} />
                         {this.serverValidation('title')}
                     </div>
 
@@ -97,6 +127,7 @@ export default class ProjectCreateHover extends React.Component {
                                 name="departments"
                                 label="Departments"
                                 options={departments}
+                                value={currentMembers['department'] ? currentMembers['department'] : []}
                                 multiple
                                 /> : ''}
                         </div>
@@ -109,6 +140,7 @@ export default class ProjectCreateHover extends React.Component {
                                 name="teams"
                                 label="Teams"
                                 options={teams}
+                                value={currentMembers['team'] ? currentMembers['team'] : []}
                                 multiple
                                 /> : ''}
                         </div>
@@ -121,6 +153,7 @@ export default class ProjectCreateHover extends React.Component {
                                 name="members"
                                 label="Members"
                                 options={members}
+                                value={currentMembers['person'] ? currentMembers['person'] : []}
                                 multiple
                                 /> : ''}
                         </div>

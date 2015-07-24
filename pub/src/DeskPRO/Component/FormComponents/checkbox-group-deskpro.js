@@ -46,13 +46,12 @@ var CheckboxGroupDeskPRO = React.createClass({
             let disabled = _this.isFormDisabled() || checkbox.disabled || _this.props.disabled;
             let checkboxClass = checked ? "checkbox checked" : "checkbox";
             return (
-                <li><a
+                <li key={key}><a
                 checked={checked}
                 disabled={disabled}
                 href="#"
                 className="checkbox-button"
                 onClick={_this.changeCheckbox}
-                key={key}
                 ref={key}
                 >
                     <span className={checkboxClass}>
@@ -67,7 +66,6 @@ var CheckboxGroupDeskPRO = React.createClass({
     },
 
     render: function() {
-
         if (this.getLayout() === 'elementOnly') {
             return (
                 <div>{this.renderElement()}</div>
