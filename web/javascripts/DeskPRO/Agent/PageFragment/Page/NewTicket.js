@@ -159,7 +159,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var ol = $(this).text().length;
 				if (ol > len) len = ol;
 			});
-			$(this).width((10 * len) + 25);
+			$(this).width((10 * len) + 50);
 		});
 
 		var depSel = this.getEl('dep');
