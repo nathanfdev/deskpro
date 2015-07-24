@@ -2529,9 +2529,24 @@ class TicketController extends AbstractController
                 array('exist_ticket' => $ticket)
             );
             foreach ($errors as $code) {
-                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$trans->getPhraseText(
-                        preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
-                    );
+                $code = preg_replace('#.*?\.(.*?)$#', '$1', $code);
+                switch ($code) {
+                    case 'min_length':
+                        $code = 'text_min';
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                        break;
+                    case 'max_length':
+                        $code = 'text_max';
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                        break;
+                    case 'regex_fail':
+                        $code = 'text_regex';
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                        break;
+                    default:
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                }
+                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$msg;
                 $is_valid = false;
             }
         }
