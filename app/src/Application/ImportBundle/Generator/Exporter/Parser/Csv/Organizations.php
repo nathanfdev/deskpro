@@ -56,12 +56,28 @@ class Organizations extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
+        $collection    = new Entity\Collection();
+
+        $organizations = $this->getReaderData($this->getOrganizationReaderConfig());
+        $contact_data  = $this->exportContactData();
 
         return $collection;
     }
 
-        /**
+    /**
+     * Returns a collection of organizations contact data
+     *
+     * @return Entity\Collection
+     */
+    private function exportContactData()
+    {
+        $collection   = new Entity\Collection();
+        $contact_data = $this->getReaderData($this->getOrganizationContactDataReaderConfig());
+
+        return $collection;
+    }
+
+    /**
      * Returns reader config for organization records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
@@ -79,5 +95,37 @@ class Organizations extends AbstractParser
     private function getOrganizationContactDataReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_ORGANIZATIONS_CONTACT_DATA);
+    }
+
+    /**
+     * Check if organization has all required columns
+     *
+     * @param array $organization
+     * @return bool
+     */
+    private function isOrganizationValid(array $organization)
+    {
+        $columns = array(
+            'name',
+            'importance',
+        );
+
+        return $this->hasRequiredColumns($organization, $columns);
+    }
+
+    /**
+     * Check if organization contact data has all required columns
+     *
+     * @param array $contact_data
+     * @return bool
+     */
+    private function isContactValid(array $contact_data)
+    {
+        $columns = array(
+            'contact_type',
+            'comment',
+        );
+
+        return $this->hasRequiredColumns($contact_data, $columns);
     }
 }
