@@ -1,19 +1,23 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import * as TaskListActions from "../Actions/TaskListActions";
+import { Reducer } from "Ampliflux/reducers";
 
-const initialState = {
-    departmentList: null,
-    departmentCount: 0
-};
-
-const r = handleActions({
-    [ActionTypes.TASKS_LOAD_DEPARTMENTS]: (state, action) => ({
-        ...state,
-        departmentList: action.payload.data,
-        departmentCount: action.payload.meta.total_count
-    })
-}, initialState);
-
-export default (state, action = {type: null}) => {
-    return r(state, action);
+export default class DepartmentList extends Reducer {
+  getInitialState() {
+    return {
+      departmentList: null,
+      departmentCount: 0
+    };
+  }
+  
+  departmentsLoaded(state, action) {
+    return {
+      ...state,
+      departmentList: action.payload.data,
+      departmentCount: action.payload.meta.total_count
+    };
+  }
+  
+  registerHandlers() {this
+    .r(TaskListActions.loadDepartments, this.departmentsLoaded)
+  }
 }

@@ -59,7 +59,7 @@ export const loadUnassignedTasks = createAction(
   "TASKS_LOAD_UNASSIGNED_TASKS",
   (trigger) => {
     DpApi.sendGet('DP_API/tasks?assigned=null&assigned_team=null&assigned_department=null').then(
-      (trigger) => trigger(value.getData())
+      (value) => trigger(value.getData())
     );
   }
 );

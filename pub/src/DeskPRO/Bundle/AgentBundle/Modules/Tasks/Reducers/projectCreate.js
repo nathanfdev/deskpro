@@ -1,24 +1,24 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import * as TaskListActions from "../Actions/TaskListActions";
+import { Reducer } from "Ampliflux/reducers";
 
-const initialState = {
-    createdProject: null,
-    failedProject: null
-};
-
-const r = handleActions({
-    [ActionTypes.TASKS_POST_PROJECT]: (state, action) => ({
-        ...state,
-        createdProject: action.payload.data
-    }),
-    [ActionTypes.TASKS_POST_PROJECT_FAIL]: (state, action) => {
+export default class ProjectCreate extends Reducer {
+  getInitialState() {
+    return {
+      createdProject: null,
+      failedProject: null
+    };
+  }
+  
+  registerHandlers() {this
+    .r(TaskListActions.createProject, this.setPayload('createdProject', 'data'))
+    .r(TaskListActions.failedProject, this.saveProjectFailed)
+  }
+  
+  saveProjectFailed(state, action) {
     console.log('failed');
-return {
-        ...state,
-        failedProject: action.payload.data
-    }}
-}, initialState);
-
-export default (state, action = {type: null}) => {
-    return r(state, action);
+    return {
+      ...state,
+      failedProject: action.payload.data
+    };
+  }
 }

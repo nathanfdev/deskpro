@@ -54,8 +54,13 @@ export function composeReducers(reducers) {
   let processed_reducers = {};
   for(let k in reducers) {
     try {
-      let reducer = new reducers[k]();
-      processed_reducers[k] = reducer.compile();
+      if(reducers[k].isAmplifluxReducer && reducers[k].isAmplifluxReducer()) {
+        let reducer = new reducers[k]();
+        processed_reducers[k] = reducer.compile();
+      } else {
+        console.log(k + " is Some function");
+        processed_reducers[k] = reducers[k];
+      }
     }
     catch(err) {
       processed_reducers[k] = reducers[k];

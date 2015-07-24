@@ -1,19 +1,23 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import * as TaskListActions from "../Actions/TaskListActions";
+import { Reducer } from "Ampliflux/reducers";
 
-const initialState = {
-	projectList: null,
-    projectCount: 0
-};
-
-const r = handleActions({
-	[ActionTypes.TASKS_LOAD_PROJECTS]: (state, action) => ({
-        ...state,
-        projectList: action.payload.data,
-        projectCount: action.payload.meta.total_count
-    })
-}, initialState);
-
-export default (state, action = {type: null}) => {
-	return r(state, action);
+export default class ProjectList extends Reducer {
+  getInitialState() {
+    return {
+    	projectList: null,
+      projectCount: 0
+    };
+  }
+  
+  projectsLoaded(state, action) {
+    return {
+      ...state,
+      projectList: action.payload.data,
+      projectCount: action.payload.meta.total_count
+    };
+  }
+  
+  registerHandlers() {this
+    .r(TaskListActions.loadProjects, this.projectsLoaded)
+  }
 }

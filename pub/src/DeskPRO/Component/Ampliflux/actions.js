@@ -2,7 +2,7 @@ export function createAction(action_type, action = null) {
   let handler = null;
   if(!action) { // Dumb action
     handler = () => {
-      console.log(action_type);
+      //console.log(action_type); // This is very handy for debugging.
       return (dispatch) => dispatch({
         type: action_type,
         payload: null
@@ -15,7 +15,7 @@ export function createAction(action_type, action = null) {
           if(!type) {
             type = action_type;
           }
-          console.log(type);
+          //console.log(type); // This is very handy for debugging.
           return dispatch({
             type: type,
             payload: payload

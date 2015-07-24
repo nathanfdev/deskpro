@@ -1,19 +1,23 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import * as TaskListActions from "../Actions/TaskListActions";
+import { Reducer } from "Ampliflux/reducers";
 
-const initialState = {
-	agentList: null,
-    agentCount: 0
-};
-
-const r = handleActions({
-	[ActionTypes.TASKS_LOAD_AGENTS]: (state, action) => ({
-        ...state,
-        agentList: action.payload.data,
-        agentCount: action.payload.meta.total_count
-    })
-}, initialState);
-
-export default (state, action = {type: null}) => {
-	return r(state, action);
+export default class AgentList extends Reducer {
+  getInitialState() {
+    return {
+      agentList: null,
+      agentCount: 0
+    };
+  }
+  
+  agentsLoaded(state, action) {
+    return {
+      ...state,
+      agentList: action.payload.data,
+      agentCount: action.payload.meta.total_count
+    };
+  }
+  
+  registerHandlers() {this
+    .r(TaskListActions.loadAgents, this.agentsLoaded)
+  }
 }
