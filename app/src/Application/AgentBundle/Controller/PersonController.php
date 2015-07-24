@@ -1511,37 +1511,49 @@ class PersonController extends AbstractController
             }
         }
 
-                if ($isVCard) {
-                    $newperson->save();
+        if ($language = $this->in->getUint('newperson.language')) {
+            $newperson->language = $this->container->getDataService('Language')->get($language);
+        }
 
-                    $person = $newperson->getPerson();
+        if ($isVCard) {
+            $newperson->save();
 
-                    $vCardReader->applyToPerson($content, $person);
+            $person = $newperson->getPerson();
 
-                    $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+            $vCardReader->applyToPerson($content, $person);
 
-                    // Notify about new person
-                    foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
-                            $this->em->persist($cm);
-                    }
-                    $this->em->flush();
+            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId(
+                'agent.ui.state.newperson',
+                $this->person->id
+            );
 
-                    if ($this->in->getString('newperson.send_welcome_email')) {
-                        /** @var Mailer $mailer */
-                        $mailer = $this->get('mailer');
-                        $message = $mailer->createMessage();
-                        $message->setToPerson($person);
-                        $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                            'person' => $person
-                        ));
-                        $mailer->send($message);
-                    }
+            // Notify about new person
+            foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
+                $this->em->persist($cm);
+            }
+            $this->em->flush();
 
-                    return $this->createJsonResponse(array(
-                            'success' => true,
-                            'person_id' => $person['id']
-                    ));
-                }
+            if ($this->in->getString('newperson.send_welcome_email')) {
+                /** @var Mailer $mailer */
+                $mailer = $this->get('mailer');
+                $message = $mailer->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate(
+                    'DeskPRO:emails_user:register-welcome-byagent.html.twig',
+                    array(
+                        'person' => $person
+                    )
+                );
+                $mailer->send($message);
+            }
+
+            return $this->createJsonResponse(
+                array(
+                    'success' => true,
+                    'person_id' => $person['id']
+                )
+            );
+        }
 
         $formType = new \Application\AgentBundle\Form\Type\NewPerson();
         $form = $this->get('form.factory')->create($formType, $newperson);
