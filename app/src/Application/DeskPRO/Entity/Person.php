@@ -1566,7 +1566,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function addCustomData(CustomDataPerson $data)
     {
         $this->custom_data->add($data);
-        $data['ticket'] = $this;
+        $data->setPerson($this);
 
         $field = $data->field;
         $parent_id = null;

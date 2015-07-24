@@ -59,6 +59,18 @@ class CustomDataPerson extends CustomDataAbstract
     protected $root_field = null;
 
     /**
+     * Set related person entity
+     *
+     * @param Person $person
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getPersonId()

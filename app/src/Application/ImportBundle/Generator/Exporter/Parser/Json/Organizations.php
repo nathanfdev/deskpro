@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,35 +25,50 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
+
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Writer\Json\Destination;
 
 /**
- * Entity destination interface
- *
- * Interface DestinationInterface
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class Organizations
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-interface DestinationInterface
+final class Organizations extends AbstractParser
 {
-    const ENTITY_PERSON_PATH       = 'people/';
-    const ENTITY_TICKET_PATH       = 'tickets/';
-    const ENTITY_ARTICLE_PATH      = 'articles/';
-    const ENTITY_DOWNLOAD_PATH     = 'downloads/';
-    const ENTITY_FEEDBACK_PATH     = 'feedback/';
-    const ENTITY_NEWS_PATH         = 'news/';
-    const ENTITY_ORGANIZATION_PATH = 'organizations/';
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_ORGANIZATION;
+    }
 
     /**
-     * Referred entity type
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getEntityType();
+    public function getCount()
+    {
+        return $this->reader->getDirectoryFilesCount($this->getOrganizationsReaderConfig());
+    }
 
     /**
-     * Relative entity output path
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getEntityOutputPath();
+    public function export()
+    {
+        $collection = new Entity\Collection();
+
+        return $collection;
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Json\JsonConfig
+     */
+    private function getOrganizationsReaderConfig()
+    {
+        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ORGANIZATION_PATH);
+    }
 }

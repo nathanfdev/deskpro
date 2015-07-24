@@ -35,16 +35,18 @@ namespace Application\ImportBundle\Entity;
  */
 interface EntityInterface
 {
-    const TYPE_PERSON          = 'person';
-    const TYPE_TICKET          = 'ticket';
-    const TYPE_TICKET_MESSAGE  = 'ticket_message';
-    const TYPE_TICKET_PRIORITY = 'ticket_priority';
-    const TYPE_ATTACHMENT      = 'attachment';
-    const TYPE_CUSTOM_FIELD    = 'custom_field';
-    const TYPE_DOWNLOAD        = 'download';
-    const TYPE_NEWS            = 'news';
-    const TYPE_ARTICLE         = 'article';
-    const TYPE_FEEDBACK        = 'feedback';
+    const TYPE_PERSON                    = 'person';
+    const TYPE_TICKET                    = 'ticket';
+    const TYPE_TICKET_MESSAGE            = 'ticket_message';
+    const TYPE_TICKET_PRIORITY           = 'ticket_priority';
+    const TYPE_ATTACHMENT                = 'attachment';
+    const TYPE_CUSTOM_FIELD              = 'custom_field';
+    const TYPE_DOWNLOAD                  = 'download';
+    const TYPE_NEWS                      = 'news';
+    const TYPE_ARTICLE                   = 'article';
+    const TYPE_FEEDBACK                  = 'feedback';
+    const TYPE_ORGANIZATION              = 'organization';
+    const TYPE_ORGANIZATION_CONTACT_DATA = 'organization_contact_data';
 
     /**
      * @return array
