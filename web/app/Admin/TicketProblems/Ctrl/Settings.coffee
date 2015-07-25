@@ -1,0 +1,67 @@
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+  class Admin_TicketProblems_Ctrl_Settings extends Admin_Ctrl_Base
+
+    @CTRL_ID = 'Admin_TicketProblems_Ctrl_Settings'
+    @CTRL_AS = 'Settings'
+    @DEPS = []
+
+    init: ->
+      @map = {} # groups map
+      @service = @DataService.get('Problems')
+      @$scope.settings = null
+      @$scope.updateAgents = @updateAgents
+      @$scope.perm = {selected: 'view'}
+
+      @$scope.$watch('settings', (newVal, oldVal) =>
+        @$scope.updateAgents() if parseInt(newVal?.enabled)
+      )
+
+
+
+    initialLoad: ->
+      @service.load().then (settings) =>
+        @$scope.settings = settings
+        settings.groups.map (group) => @map[group.id] = group
+
+
+
+    # update agents checkboxes states
+    updateAgents: =>
+
+      perm = @$scope.perm.selected
+      @$scope.settings.agents.map (agent) =>
+
+        for group in agent.usergroups
+
+          if @map[group.id]?.perms.problems[perm]
+            agent[perm + '_checked'] = true
+            agent[perm + '_disabled'] = true
+            return
+
+        agent[perm + '_checked'] = agent.perms.problems[perm]
+        agent[perm + '_disabled'] = false
+
+
+
+    save: ->
+      @startSpinner('saving')
+
+      perm = @$scope.perm.selected
+      @$scope.settings.agents.map (agent) ->
+        console.info agent.display_name, agent.perms.problems[perm], agent[perm + '_checked'], agent[perm + '_disabled']
+        return if agent[perm + '_disabled']
+        agent.perms.problems[perm] = agent[perm + '_checked']
+        console.info agent.display_name, agent.perms.problems[perm], agent[perm + '_checked'], agent[perm + '_disabled']
+
+      @service.save().then(
+        =>
+          @stopSpinner('saving')
+        =>
+          @stopSpinner('saving')
+      )
+
+
+
+
+
+  Admin_TicketProblems_Ctrl_Settings.EXPORT_CTRL()

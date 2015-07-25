@@ -4151,6 +4151,21 @@ $collection->create('api_tasks_settings_set', array(
 ));
 
 ########################################################################################################################
+# Problems
+########################################################################################################################
+
+$collection->create('api_problems_settings_get', array(
+    'path'       => '/problems/settings',
+    'controller' => 'ApiBundle:Problems:settings',
+    'methods'    => array('GET'),
+));
+
+$collection->create('api_problems_settings_set', array(
+    'path'       => '/problems/settings',
+    'controller' => 'ApiBundle:Problems:updateSettings',
+    'methods'    => array('PUT'),
+));
+########################################################################################################################
 # CRM User Fields
 ########################################################################################################################
 

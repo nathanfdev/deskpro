@@ -1,0 +1,11 @@
+<?php return array(
+    'adm.problems.title'                                    => 'Problems',
+    'adm.problems.label_enabled'                            => 'Enable problems feature',
+    'adm.problems.label_disabled'                           => 'Disable problems feature',
+    'adm.problems.set_view_perm'                            => 'Set "View" permission',
+    'adm.problems.set_create_perm'                          => 'Set "Create" permission',
+    'adm.problems.set_close_perm'                           => 'Set "Close" permission',
+    'adm.problems.set_delete_perm'                          => 'Set "Delete" permission',
+    'adm.problems.for_groups'                               => 'For groups',
+    'adm.problems.for_agents'                               => 'For agents',
+);
