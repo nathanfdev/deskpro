@@ -34,6 +34,7 @@
     'adm.agents.perm_ticket_modify_others'                        => 'Can modify tickets assigned to others',
     'adm.agents.perm_ticket_modify_messages_others'               => 'Can edit and delete messages in tickets assigned to others',
     'adm.agents.perm_ticket_delete_others'                        => 'Can delete and spam tickets assigned to others',
+
     'adm.agents.perm_people_use'                                  => 'Can use the CRM system',
     'adm.agents.perm_people_create'                               => 'Can create new user profiles',
     'adm.agents.perm_people_edit'                                 => 'Can edit user profiles',
@@ -91,6 +92,8 @@
     'adm.agents.perm_ticket_modify_set_unresolved'                => 'Can unresolve ticket',
     'adm.agents.perm_ticket_modify_billing'                       => 'Can modify billing and time log records',
     'adm.agents.perm_ticket_create_labels'                        => 'Can create new ticket labels',
+    'adm.agents.perm_ticket_associate_problem'                    => 'Can associate a ticket to a Problems',
+    'adm.agents.perm_ticket_disassociate_problem'                 => 'Can disassociate a ticket with a Problems',
 
     'adm.agents.import_title'                                     => 'Bulk Invite Agents',
     'adm.agents.import_textarea_title'                            => 'Copy/Paste a list of Email Addresses',
