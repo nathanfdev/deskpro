@@ -84,6 +84,9 @@
 			{% if app.getSetting('core.apps_tasks') %}
                 <li dp-tab-btn="main.perms.tasks"><a href="#"><i class="fa fa-calendar-o"></i> {{ phrase('adm.agents.perm_title_tasks') }}</a></li>
             {% endif %}
+            {% if app.getSetting('core.problems.enabled') %}
+                <li dp-tab-btn="main.perms.problems"><a href="#"><i class="fa fa-bullhorn"></i> {{ phrase('adm.agents.perm_title_problems') }}</a></li>
+            {% endif %}
 		</ul>
 
 		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tickets', type: 'perms', section: 'ticket'} %}
@@ -92,6 +95,7 @@
 		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.publish', type: 'perms', section: 'publish'} %}
 		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.profile', type: 'perms', section: 'general'} %}
 		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tasks', type: 'perms', section: 'tasks'} %}
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.problems', type: 'perms', section: 'problems'} %}
 	</nav>
 
 	{# TICKET PERMISSIONS #}
@@ -279,4 +283,16 @@
         </tbody>
     </table>
     {# /TASKS PERMISSIONS #}
+
+
+	{# PROBLEMS PERMISSIONS #}
+	<table class="table table-hover" dp-tab-body="main.perms.problems">
+		<tbody>
+		{{ _self.perm_row('problems', 'view') }}
+		{{ _self.perm_row('problems', 'create') }}
+		{{ _self.perm_row('problems', 'close') }}
+		{{ _self.perm_row('problems', 'delete') }}
+		</tbody>
+	</table>
+	{# /PROBLEMS PERMISSIONS #}
 </div>

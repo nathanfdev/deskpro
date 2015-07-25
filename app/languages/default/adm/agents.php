@@ -10,6 +10,7 @@
     'adm.agents.perm_title_publish'                               => 'Publish',
     'adm.agents.perm_title_profile'                               => 'Profile',
     'adm.agents.perm_title_tasks'                                 => 'Tasks',
+    'adm.agents.perm_title_problems'                              => 'Problems',
 
     'adm.agents.perm_ticket_use'                                  => 'Can use the ticket system',
     'adm.agents.perm_ticket_create'                               => 'Can create new tickets',
@@ -68,6 +69,10 @@
     'adm.agents.perm_general_picture'                             => 'Can set their own picture',
     'adm.agents.perm_general_signature'                           => 'Can set their own signature',
     'adm.agents.perm_tasks_use'                                   => 'Can use tasks',
+    'adm.agents.perm_problems_view'                               => 'Can view problems',
+    'adm.agents.perm_problems_create'                             => 'Can create problems',
+    'adm.agents.perm_problems_close'                              => 'Can close problems',
+    'adm.agents.perm_problems_delete'                             => 'Can delete problems',
 
     'adm.agents.perm_ticket_modify_department'                    => 'Modify department',
     'adm.agents.perm_ticket_modify_fields'                        => 'Modify fields',
