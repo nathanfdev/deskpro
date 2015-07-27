@@ -28,9 +28,16 @@ export default class AgentApp {
 
     const redux = createRedux(dispatcher);
 
+    var intlData = {
+      "locales": "en-US",
+      "messages": {
+        "foobar": "Tickets"
+      }
+    };
+
     React.render(
       <Provider redux={redux}>
-        {() => <DpAppContainer />}
+        {() => <DpAppContainer {...intlData} />}
       </Provider>,
       document.getElementById('deskpro_app_window')
     );
