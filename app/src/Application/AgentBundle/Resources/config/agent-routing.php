@@ -779,6 +779,13 @@ $collection->create('agent_ticketsearch_runsla', array(
     'options'       => array('fragment_name' => 'sla', 'fragment_type' => 'list'),
 ));
 
+$collection->create('agent_ticketsearch_runproblem', array(
+    'path'          => '/ticket-search/problems/{problem_id}',
+    'controller'    => 'AgentBundle:TicketSearch:runProblem',
+    'requirements'  => array('problem_id' => '\\d+'),
+    'options'       => array('fragment_name' => 'problem', 'fragment_type' => 'list'),
+));
+
 $collection->create('agent_ticketsearch_ajax_get_macro', array(
     'path'        => '/ticket-search/ajax-get-macro',
     'controller'  => 'AgentBundle:TicketSearch:ajaxGetMacro',

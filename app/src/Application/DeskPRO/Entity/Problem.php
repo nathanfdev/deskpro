@@ -80,6 +80,7 @@ class Problem extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Problem';
 
         $metadata->setPrimaryTable(
             array(

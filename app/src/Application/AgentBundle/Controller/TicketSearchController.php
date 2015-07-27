@@ -38,6 +38,8 @@ use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\EntityRepository\Problem;
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -45,6 +47,7 @@ use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Handles ticket searches
@@ -84,6 +87,20 @@ class TicketSearchController extends AbstractController
             FROM people_prefs
             WHERE person_id = ? AND (name LIKE 'agent.ui.filter-visibility.%' OR name LIKE 'agent.ui.sla.filter-visibility.%')
         ", array($this->person->id));
+
+        /**
+         * @var Problem $rep
+         */
+        $open_problems = array();
+        $closed_problems = array();
+        $problem_counts = array();
+        if ($this->settings->get('core.problems.enabled') && $this->person->hasPerm('agent_problems.view')) {
+            $rep = $this->em->getRepository('DeskPRO:Problem');
+            $open_problems = $rep->findBy(array('is_open' => true));
+            $closed_problems = $rep->findBy(array('is_open' => false));
+            $problem_counts = $rep->getCounts();
+        }
+
 
         #------------------------------
         # SLAs
@@ -129,6 +146,10 @@ class TicketSearchController extends AbstractController
             'labels_index' => $index,
             'labels_cloud' => $cloud,
             'initial_inbox_grouping' => $initial_inbox_grouping,
+
+            'open_problems' => $open_problems,
+            'closed_problems' => $closed_problems,
+            'problem_counts' => $problem_counts,
 
             'slas' => $slas,
             'sla_counts' => $sla_counts,
@@ -1156,6 +1177,86 @@ class TicketSearchController extends AbstractController
         return $this->_getResponseForTickets('sla', $sla['id'], $helper, $vars);
     }
 
+    public function runProblemAction($problem_id, Request $request)
+    {
+        /** @var $sla \Application\DeskPRO\Entity\Poblem */
+        if (!$problem = $this->em->find('DeskPRO:Problem', $problem_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+        $searcher->setPerson($this->person);
+
+        $ids = $this->em->getConnection()->fetchAllCol('select ticket_id from problem2tickets where problem_id = ?', array($problem_id));
+        $searcher->addTerm(TicketSearch::TERM_ID, TicketSearch::OP_IS, $ids);
+        $searcher->setLimit(0);
+
+        $order_by = $this->in->getString('order_by') ?:
+            $this->person->getPref('agent.ui.ticket-problem-order-by.' . $problem_id, 'ticket.date_created:desc');
+        $searcher->setOrderByCode($order_by);
+
+        $set_group_term = null;
+        $set_group_option = null;
+        if ($this->in->getString('set_group_term')) {
+            $set_group_term = $this->in->getString('set_group_term');
+            $set_group_option = $this->in->getString('set_group_option');
+
+            $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+            if ($term) {
+                $type = $term['type'];
+                $op = $term['op'];
+                $choice = $term;
+                unset($choice['type'], $choice['op']);
+
+                $searcher->addTerm($type, $op, $choice);
+            }
+        }
+
+        $results = $searcher->getMatches();
+        $results = array_map('intval', $results);
+
+        $helper = new Helper\TicketResults($this);
+        $helper->setTicketIds($results);
+
+        // Or if the user has their own
+        $group_by = $this->person->getPref('agent.ui.ticket-problem-group-by.' . $problem_id);
+
+        if ($request->query->has('group_by')) {
+            $group_by = $request->get('group_by');
+
+            App::getEntityRepository('DeskPRO:PersonPref')->savePref(
+                $this->person,
+                'agent.ui.ticket-problem-group-by.' . $problem_id,
+                $group_by
+            );
+        }
+
+        $helper->setGroupField($group_by);
+        $needs_urgency = $searcher->needsUrgency();
+
+        $vars = array(
+            'problem' => $problem,
+            'problem_id' => $problem_id,
+            'needs_urgency' => $needs_urgency,
+            'order_by_summary' => $searcher->getOrderBySummary(),
+            'terms_summary' => $searcher->getSummary(),
+            'set_group_term' => $set_group_term,
+            'set_group_option' => $set_group_option,
+            'ticket_ids' => $results,
+            'order_by' => $searcher->getOrderBy(),
+        );
+
+        $pref_display_fields = $this->person->getPref('agent.ui.ticket-problem-display-fields.' . $problem_id);
+        if ($pref_display_fields) {
+            $vars['display_fields'] = $pref_display_fields;
+        } else {
+            // Default display fields based on the filter
+            $vars['display_fields'] = $this->_suggestedDisplayFields($searcher);
+        }
+
+        return $this->_getResponseForTickets('problem', $problem_id, $helper, $vars);
+    }
+
     protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
     {
         $view_type = $this->in->getString('view_type');
@@ -1891,7 +1992,7 @@ class TicketSearchController extends AbstractController
 						$new_message = Strings::prepareWysiwygHtml($new_message);
 						$opt['reply_text'] = $new_message;
 					}
-					
+
                     $action = $factory->createFromForm($name, $opt);
                     $collection->add($action);
                 }

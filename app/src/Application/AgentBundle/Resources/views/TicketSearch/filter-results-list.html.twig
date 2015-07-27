@@ -22,6 +22,11 @@
 	{% set refresh_url %}{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
 	pageMeta.refreshUrl = '{{ refresh_url }}';
 	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type&view_name={{ view_name }}';
+{% elseif problem_id %}
+	pageMeta.problem_id = {{problem_id}};
+	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketProblem';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runproblem', {'problem_id': problem_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runproblem', {'problem_id': problem_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type&view_name={{ view_name }}';
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
