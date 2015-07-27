@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Entity;
 
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
 
 /**
  * Class OrganizationContactData
@@ -347,5 +348,9 @@ class OrganizationContactData extends AbstractEntity
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('contact_type', new Constraints\NotBlank())
+        ;
     }
 }

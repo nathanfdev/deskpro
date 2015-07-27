@@ -102,6 +102,7 @@ final class Organizations extends AbstractParser
         if ($this->isOrganizationValid($organization)) {
             $entity = new Entity\Organization();
             $entity
+                ->setRawData($organization)
                 ->setDestination('organization_' . $organization['oid'])
                 ->setOid($organization['oid'])
                 ->setName($organization['name'])
@@ -130,7 +131,7 @@ final class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a organization contact data entity collection
+     * Returns a collection of organizations contact data entities
      *
      * @param array $contact_data
      * @return Entity\Collection
@@ -177,6 +178,7 @@ final class Organizations extends AbstractParser
         if ($this->isContactValid($contact)) {
             $entity = new Entity\OrganizationContactData();
             $entity
+                ->setRawData($contact)
                 ->setContactType($contact['contact_type'])
                 ->setContactType($contact['comment'])
             ;
