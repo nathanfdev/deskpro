@@ -1,0 +1,15 @@
+{
+  "name": "DeskPRO_E2E_Tests",
+  "version": "1.0.0",
+  "description": "Tools required for e2e tests",
+  "author": "DeskPRO <support@deskpro.com>",
+  "private": true,
+  "dependencies": {
+    "selenium-server": "2.46.0",
+    "phantomjs": "1.9.17",
+    "forever": "0.15.0"
+  },
+  "scripts": {
+    "service-status": "node_modules/forever/bin/forever list service-config.json"
+  }
+}

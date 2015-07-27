@@ -6,44 +6,84 @@ import { connect } from 'redux/react';
 import * as TaskActions from "../Actions/TaskListActions";
 
 @connect(state => ({
-    //projectCreate: state.projectCreate
+    failedProject: state.failedProject
 }))
 export default class TasksNavProjects extends React.Component {
     constructor(props) {
         super(props);
-        this.toggleWindow = this.toggleWindow.bind(this);
 
         this.state = {
-            newProject: false
+            showWindow: false,
+            projectData: {},
         }
     }
 
-    toggleWindow() {
+    toggleWindow(project = {}) {
         this.setState({
-            newProject: !this.state.newProject
+            projectData: {}
+        });
+
+        if (this.state.showWindow === false) {
+            this.setState({
+                projectData: project
+            });
+        }
+
+        this.setState({
+            showWindow: !this.state.showWindow
         });
     }
 
-    createProject() {
-        this.props.dispatch(TaskActions.createProject({}));
+    createProject(model) {
+        if (typeof model.projectId !== 'undefined') {
+            this.props.dispatch(TaskActions.editProject({
+                projectId : model.projectId,
+                title : model.title,
+                departments : model.departments,
+                teams: model.teams,
+                people : model.members
+            }))
+        } else {
+            this.props.dispatch(TaskActions.createProject({
+                title : model.title,
+                departments : model.departments,
+                teams : model.teams,
+                people : model.members
+            }));
+        }
     }
 
     render() {
-        const {projectList, agentList, teamList, departmentList, projectCreate} = this.props;
+        const {projectList, agentList, teamList, departmentList, createdProject} = this.props;
+
+        // Workaround to bind toggleWindow to every edit link
+        let _this = this;
 
         return (<section className="sidebar-list tasks-nav-projects">
                 <div>
-                    <ComponentRootWrapper open={this.state.newProject}><ProjectCreateHover createProject={this.createProject.bind(this)} agentList={agentList} teamList={teamList} departmentList={departmentList} /></ComponentRootWrapper>
+                    <ComponentRootWrapper open={this.state.showWindow}>
+                        <ProjectCreateHover
+                            createProject={this.createProject.bind(this)}
+                            createdProject={createdProject}
+                            agentList={agentList}
+                            teamList={teamList}
+                            departmentList={departmentList}
+                            projectData={this.state.projectData}
+                        />
+                    </ComponentRootWrapper>
                 </div>
-                <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow}><i className="fa fa-plus"/></a></div>
+                <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow.bind(this)}><i className="fa fa-plus"/></a></div>
                 <ul>{projectList.projectList ? projectList.projectList.map(function(object) {
                     return <li key={object.id}>
                         <div className="list-counter-bucket">
+                            <a href="#" onClick={_this.toggleWindow.bind(_this, object)}><i className="fa fa-cog" /></a>
                             <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">{object.tasks.length}</a>
+                               onclick="showFilterOptions(this); return false;">
+                                {object.tasks.length}
+                            </a>
                         </div>
                         <a href="#" className="item" onmouseover="toggleCountBucket(this);"><i
-                            className="fa fa-book"/> {object.title}</a>
+                            className="fa fa-book"/> {object.title} </a>
                     </li>;
                 }) : ''}
 

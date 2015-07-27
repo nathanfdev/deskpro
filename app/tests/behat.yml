@@ -88,10 +88,39 @@ portal:
                           base_url: /
 
 
-
-
-
-
+e2e:
+    suites:
+        general:
+            mink_session: default
+            mink_javascript_session: default
+            paths:
+                - %paths.base%/e2e/general
+            contexts:
+                - Behat\MinkExtension\Context\MinkContext
+                - behatch:browser
+                - behatch:debug:
+                    screenshotDir: %paths.base%/e2e/logs/screenshots
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            # Set in boot.php via BEHAT_PARAMS env
+            #base_url: '/'
+            browser_name: "phantomjs"
+            selenium2:
+                wd_host: "http://localhost:4444/wd/hub"
+            default_session: default
+            sessions:
+                default:
+                    selenium2: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: e2e/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DeskPRO\Kernel\ApiKernel
+                env: test
+                debug: true
 
 
 

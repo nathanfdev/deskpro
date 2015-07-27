@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../"
+cd $DIR_ROOT/app/tests/tools
+
+echo "Stop phantomjs"
+bin/phantomjs-stop
+
+echo "Stop selenium"
+bin/selenium-stop
+
+echo ".. done"

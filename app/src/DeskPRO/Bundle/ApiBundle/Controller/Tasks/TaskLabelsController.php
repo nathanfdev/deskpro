@@ -84,7 +84,7 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      */
     public function cgetAction(Request $request)
     {
-        $task_labels = $this->getDoctrine()->getManager()->getRepository('App:LabelTask')->findAll();
+        $task_labels = $this->getDoctrine()->getManager()->getRepository('App:LabelTask')->findBy(array(), array('label' => 'asc'));
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);

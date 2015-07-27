@@ -105,8 +105,28 @@ export const createProject = createAction(
   "TASKS_POST_PROJECT",
   (trigger, data) => {
     DpApi.sendPost('DP_API/projects', data).then(
-      (value) => trigger(value.getData()),
-      (value) => trigger(value.errors, failedProject.actionType)
+      (value) => {
+        trigger(null, loadProjects);
+        trigger(value.getData());
+      },
+      (value) => trigger(value.xhr.responseJSON, failedProject)
+    );
+  }
+);
+
+export const editProject = createAction(
+  "TASKS_EDIT_PROJECT",
+  (trigger, data) => {
+    let projectId = data.projectId;
+    delete data.projectId;
+    DpApi.sendPut('DP_API/projects/' + projectId, data).then(
+      (value) => {
+        trigger(null, loadProjects);
+        trigger(value.getData(), createProject);
+      },
+      (value) => {
+        trigger(value.xhr.responseJSON, failedProject);
+      }
     );
   }
 );

@@ -10,7 +10,7 @@ export default class ProjectCreate extends Reducer {
   }
   
   registerHandlers() {this
-    .r(TaskListActions.createProject, this.setPayload('createdProject', 'data'))
+    .r(TaskListActions.createProject, this.setPayload('createdProject'))
     .r(TaskListActions.failedProject, this.saveProjectFailed)
   }
   
@@ -18,7 +18,7 @@ export default class ProjectCreate extends Reducer {
     console.log('failed');
     return {
       ...state,
-      failedProject: action.payload.data
+      failedProject: action.payload
     };
   }
 }

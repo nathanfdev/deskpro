@@ -30,12 +30,14 @@ var Input = React.createClass({
             'time',
             'url',
             'week'
-        ])
+        ]),
+        inputRef: React.PropTypes.string
     },
 
     getDefaultProps: function() {
         return {
-            type: 'text'
+            type: 'text',
+            inputRef: null
         };
     },
 
@@ -55,7 +57,7 @@ var Input = React.createClass({
     },
 
     renderElement: function() {
-        var className = 'form-error';
+        let className = 'form-error';
         if (this.showErrors() === false) {
             className = null;
         }

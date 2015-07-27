@@ -30,7 +30,6 @@ var CheckboxDeskPRO = React.createClass({
 
         let checkboxClass = this.getValue() ? "checkbox checked" : "checkbox";
 
-
         return (
                 <a
                     {...this.props}

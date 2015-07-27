@@ -30,6 +30,16 @@
 /pub/src-build
 /pub/build
 **/Reducers/index.js
+/pub/npm-debug.log
+
+/app/tests/tools/node_modules
+/app/tests/tools/npm-debug.log
+/app/tests/tools/logs/*
+!/app/tests/tools/logs/.gitkeep
+/app/tests/e2e/logs/*
+!/app/tests/e2e/logs/screenshots
+/app/tests/e2e/logs/screenshots/*
+!/app/tests/e2e/logs/screenshots/.gitkeep
 
 # cache and log files
 /app/sys/cache/*

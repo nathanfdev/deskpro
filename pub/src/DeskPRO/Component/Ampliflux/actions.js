@@ -19,6 +19,9 @@ export function createAction(action_type, action = null) {
           if(!type) {
             type = action_type;
           }
+          else if(typeof type == 'function') {
+            type = type.actionType;
+          }
           //console.log(type); // This is very handy for debugging.
           return dispatch({
             type: type,
