@@ -210,7 +210,7 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity
+     * Returns person custom data entity
      *
      * @param Entity\CustomField $entity
      *

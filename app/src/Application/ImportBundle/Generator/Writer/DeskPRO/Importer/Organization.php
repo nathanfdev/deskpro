@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -72,6 +73,31 @@ final class Organization extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
+        $organization = $this->findOrCreateOrganization($entity);
+
+        foreach ($entity->getCustomFields() as $custom_field) {
+            $custom_field = $this->createOrganizationCustomData($custom_field);
+            if ($custom_field) {
+                $organization->addCustomData($custom_field);
+            }
+        }
+
+        $this->records->add($organization);
         return $this->records;
+    }
+
+    /**
+     * Returns organization custom data entity
+     *
+     * @param Entity\CustomField $entity
+     *
+     * @return DeskPROEntity\CustomDataOrganization
+     * @throws ImporterException
+     */
+    private function createOrganizationCustomData(Entity\CustomField $entity)
+    {
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ORGANIZATION);
+
+        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataOrganization());
     }
 }

@@ -320,7 +320,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity
+     * Returns a ticket custom data entity
      *
      * @param Entity\CustomField $entity
      *
