@@ -45,7 +45,7 @@ class Organization extends AbstractEntity
     private $name;
 
     /**
-     * @var Attachment
+     * @var Blob
      */
     private $picture;
 
@@ -117,7 +117,7 @@ class Organization extends AbstractEntity
     /**
      * Returns picture
      *
-     * @return Attachment
+     * @return Blob|null
      */
     public function getPicture()
     {
@@ -127,10 +127,10 @@ class Organization extends AbstractEntity
     /**
      * Set picture
      *
-     * @param Attachment $picture
+     * @param Blob $picture
      * @return $this
      */
-    public function setPicture(Attachment $picture = null)
+    public function setPicture(Blob $picture = null)
     {
         $this->picture = $picture;
         return $this;
