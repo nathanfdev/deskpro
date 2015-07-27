@@ -27,8 +27,13 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\TicketsMapper;
+use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\EntityRepository;
+use Guzzle\Http\Client;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ZenDesk data exporter factory
@@ -41,10 +46,12 @@ class ZenDeskFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    public function createExporter()
+    public static function createExporter(ContainerInterface $container, BaseConfig $config)
     {
-        /** @var ZenDeskReaderInterface $reader */
-        $reader  = $this->container->get('deskpro.import.zen_desk_reader');
+        /** @var ZenDeskReaderFactoryInterface $reader_factory */
+        $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
+
+        $reader  = $reader_factory->createReader($config);
         $storage = new Parser\ZenDesk\PeopleStorage();
 
         // People parser
@@ -55,7 +62,14 @@ class ZenDeskFactory extends AbstractFactory
         $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader);
         $ticket_people->setPeopleStorage($storage);
 
-        $tickets = new Parser\ZenDesk\Tickets($reader, $ticket_people);
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
+        $doctrine = $container->get('doctrine');
+        /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
+        $entity_manager = $container->get('doctrine.orm.entity_manager');
+        /** @var EntityRepository\ImportMap $import_map_repository */
+        $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
+
+        $tickets_mapper = new TicketsMapper($import_map_repository, $entity_manager);
 
         // Parsers collection
         $parsers = new Parser\Collection();
@@ -65,9 +79,9 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\Articles($reader))
             ->attach(new Parser\ZenDesk\News($reader))
             ->attach($people)
-            ->attach($tickets);
+            ->attach(new Parser\ZenDesk\Tickets($reader, $ticket_people, $tickets_mapper, new Client()))
+        ;
 
-
-        return new ZenDesk($parsers);
+        return new ZenDesk($parsers, $reader);
     }
 }

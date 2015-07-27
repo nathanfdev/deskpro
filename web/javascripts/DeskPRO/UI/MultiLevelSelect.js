@@ -143,7 +143,7 @@
   }
 
   $.fn.dpMultiLevelSelect = function () {
-    $(this).each(function () {
+    return this.each(function () {
 
       var $el = $(this),
           map = $el.data('map');

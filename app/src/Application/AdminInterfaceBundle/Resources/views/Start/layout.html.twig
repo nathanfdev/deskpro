@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html ng-app id="upgrader">
+<html ng-app id="upgrader" ng-init="
+        not_user = {{ not_user ? 'true' : 'false' }};
+    ">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta charset="utf-8">
@@ -12,6 +14,14 @@
 
 	<link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
+	<style>
+		.footer-alert {
+			display: none;
+		}
+		.done-load .footer-alert {
+			display: block;
+		}
+	</style>
 </head>
 <body>
 
@@ -20,11 +30,13 @@
 		<td width="100%" height="100%" align="center" valign="center">
 			<div ng-view class="main_content"></div>
 
-			<div class="alert alert-info" style="margin: 25px auto 0 auto; max-width: 800px; text-align: center;">
-				<p>
-					Need help or have questions? Contact us at <a href="mailto:support@deskpro.com">support@deskpro.com</a>
-					or visit our helpdesk at <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a>.
-				</p>
+			<div class="footer-alert">
+				<div class="alert alert-info" style="margin: 25px auto 0 auto; max-width: 800px; text-align: center;">
+					<p>
+						Need help or have questions? Contact us at <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+						or visit our helpdesk at <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a>.
+					</p>
+				</div>
 			</div>
 		</td>
 	</tr>

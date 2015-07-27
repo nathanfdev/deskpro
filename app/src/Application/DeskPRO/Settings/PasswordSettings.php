@@ -68,6 +68,8 @@ class PasswordSettings
     public $enable_agent_rememberme;
     /** @var bool */
     public $enable_user_rememberme;
+    /** @var bool */
+    public $agent_enable_kb_shortcuts;
 
 
     /**
@@ -133,6 +135,7 @@ class PasswordSettings
         $this->disable_notifications          = (bool)$this->settings->get('agent.disable_notifications');
         $this->enable_agent_rememberme        = (bool)$this->settings->get('core.enable_agent_rememberme');
         $this->enable_user_rememberme         = (bool)$this->settings->get('core.enable_user_rememberme');
+        $this->agent_enable_kb_shortcuts = (bool)$this->settings->get('core.agent_enable_kb_shortcuts');
     }
 
 
@@ -152,6 +155,7 @@ class PasswordSettings
             'disable_notifications'           => $this->disable_notifications,
             'enable_agent_rememberme'         => $this->enable_agent_rememberme,
             'enable_user_rememberme'          => $this->enable_user_rememberme,
+            'agent_enable_kb_shortcuts' => $this->agent_enable_kb_shortcuts,
         );
     }
 
@@ -172,6 +176,7 @@ class PasswordSettings
         $this->disable_notifications          = (bool)$set_settings['disable_notifications'];
         $this->enable_agent_rememberme        = (bool)$set_settings['enable_agent_rememberme'];
         $this->enable_user_rememberme         = (bool)$set_settings['enable_user_rememberme'];
+        $this->agent_enable_kb_shortcuts = (bool)$set_settings['agent_enable_kb_shortcuts'];
     }
 
 
@@ -203,5 +208,6 @@ class PasswordSettings
         $this->settings->setSetting('agent.disable_notifications',          (bool)$this->disable_notifications);
         $this->settings->setSetting('core.enable_agent_rememberme',         (bool)$this->enable_agent_rememberme);
         $this->settings->setSetting('core.enable_user_rememberme',          (bool)$this->enable_user_rememberme);
+        $this->settings->setSetting('core.agent_enable_kb_shortcuts', (bool)$this->agent_enable_kb_shortcuts);
     }
 }

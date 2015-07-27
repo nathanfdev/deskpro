@@ -594,19 +594,25 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * This is mostly for legacy reasons though. It's recommneded you always handle it yourself.
      * So if you are manually managing the ticket will save the ticket through the TicketManager,
      * you should disable auto-processing.
+     *
+     * @return $this
      */
     public function disableAutoTicketProcess()
     {
         $this->__dp_auto_ticket_process = false;
+        return $this;
     }
 
     /**
      * Enable auto ticket processing
      * @see disableAutoTicketProcess
+     *
+     * @return $this
      */
     public function enableAutoTicketProcess()
     {
         $this->__dp_auto_ticket_process = true;
+        return $this;
     }
 
     /**
@@ -934,7 +940,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetParticipants()
     {
-        $this->participants = new ArrayCollection();
+        foreach ($this->participants as $participant) {
+            App::getOrm()->remove($participant);
+        }
+
+        $this->participants->clear();
         $this->_onPropertyChanged('participants', null, $this->participants);
 
         return $this;
@@ -1206,10 +1216,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * @param  Person            $agent
      * @param  int               $time
      * @param  int               $amount
-     * @param  string            $comment
      * @return TicketCharge|null
      */
-    public function addCharge(Person $agent, $time, $amount = null, $comment = '')
+    public function addCharge(Person $agent, $time, $amount = null)
     {
         if ($time !== null) {
             $time = intval($time);
@@ -1231,7 +1240,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $charge = new TicketCharge();
         $charge->charge_time = $time;
         $charge->amount = $amount;
-        $charge->comment = strval($comment);
         $charge->ticket = $this;
         $charge->person = $this->person;
         $charge->organization = $this->organization;
@@ -1350,7 +1358,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetMessages()
     {
-        $this->messages = new ArrayCollection();
+        foreach ($this->messages as $message) {
+            App::getOrm()->remove($message);
+        }
+
+        $this->messages->clear();
         $this->_onPropertyChanged('messages', null, $this->messages);
 
         return $this;
@@ -1572,6 +1584,23 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->custom_data->clear();
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
+    }
+
+    /**
      * Add a custom data item to this ticket
      *
      * @param CustomDataTicket $data
@@ -1646,7 +1675,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        foreach ($this->labels as $label) {
+            App::getOrm()->remove($label);
+        }
+
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
@@ -3144,8 +3177,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                     $work_hours = new OptionsArray($work_hours);
 
                     return new WorkHoursSet(
-                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
-                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_min', 0) * 60,
+                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_min', 0) * 60,
                         $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                         $work_hours->get('timezone', 'UTC'),
                         $work_hours->get('holidays', array())

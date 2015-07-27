@@ -54,7 +54,7 @@ final class Articles extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getArticleReaderConfig());
     }
 
     /**
@@ -63,7 +63,7 @@ final class Articles extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $articles = $this->reader->getData($this->getConfig());
+        $articles = $this->reader->getData($this->getArticleReaderConfig());
 
         foreach ($articles as $num => $article) {
             $this->advanceProgressBar();
@@ -105,7 +105,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination('news_' . $article['oid'])
+                ->setDestination('article_' . $article['oid'])
                 ->setOid($article['oid'])
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -133,6 +133,12 @@ final class Articles extends AbstractParser
                 $entity->addLabel($label);
             }
 
+            $custom_fields = $this->exportCustomFields($article['custom_fields']);
+            foreach ($custom_fields as $custom_field) {
+                /** @var Entity\CustomField $custom_field */
+                $entity->addCustomField($custom_field);
+            }
+
             return $entity;
         }
 
@@ -144,7 +150,7 @@ final class Articles extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getArticleReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_PATH);
     }
@@ -176,10 +182,12 @@ final class Articles extends AbstractParser
             'date_end',
             'categories',
             'labels',
+            'custom_fields',
         );
 
         return $this->hasRequiredColumns($article, $columns)
             && $this->isArrayColumn($article, 'categories')
-            && $this->isArrayColumn($article, 'labels');
+            && $this->isArrayColumn($article, 'labels')
+            && $this->isArrayColumn($article, 'custom_fields');
     }
 }

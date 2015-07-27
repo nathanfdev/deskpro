@@ -43,7 +43,7 @@ final class Json extends AbstractExporter implements ExporterBatchInterface
     /**
      * {@inheritdoc}
      */
-    public function getType()
+    static public function getType()
     {
         return self::TYPE_JSON;
     }

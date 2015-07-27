@@ -50,12 +50,14 @@ DeskPRO.Agent.RteEditor = {
           if (n.attr('style')) {
             el.attr('style', n.attr('style'));
           }
-          if (n.attr('color') && !el.css('color')) {
+          if (n.attr('color')) {
+            el.attr('color', n.attr('color'));
             el.css('color', n.attr('color'));
           }
 
           $(this).replaceWith(el);
         });
+				api.$editor.find('table').addClass('dp_message_table');
       }
 		};
 
@@ -339,11 +341,12 @@ DeskPRO.Agent.RteEditor = {
 
 					var img = textarea.getEditor().find('img[data-paste-id=' + pasteId + ']');
 					if (json.error) {
-						img.remove();
-					} else {
+            img.remove();
+            api.opts.imageUploadError && api.opts.imageUploadError(pasteId);
+          } else {
 						img.data('paste-id', '').attr('src', json.filelink);
 						if (typeof api.opts.imageUploadCallback === 'function') {
-							api.opts.imageUploadCallback(api, json);
+							api.opts.imageUploadCallback(api, json, pasteId);
 						}
 					}
 
@@ -404,6 +407,8 @@ DeskPRO.Agent.RteEditor = {
 							var source = URLObj.createObjectURL(blob);
 
 							var pasteImageId = pasteImageCounter++;
+
+              api.opts.imageBeforeUploadCallback && api.opts.imageBeforeUploadCallback(api, pasteImageId);
 
 							if (sendImage(pasteImageId, RegExp.$1, blob)) {
 								textarea.insertHtml('<img src="' + source + '" data-paste-id="' + pasteImageId + '">');
@@ -486,6 +491,7 @@ DeskPRO.Agent.RteEditor = {
 		}, textarea.data('redactor')));
 
     var origSyncCode = api.syncCode;
+
     api.syncCode = $.proxy(function(html) {
       var copy = $('<div/>').html(this.$editor.html());
       var didChange, counter = 0;

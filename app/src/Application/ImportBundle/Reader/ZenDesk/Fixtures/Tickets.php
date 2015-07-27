@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\PeopleIncrementalExport;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Zendesk\API\ResponseException;
 use DateTime;
 use Exception;
@@ -70,14 +71,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
             }
 
         } catch (ResponseException $e) {
-            $this->logWarning(sprintf(
-                'Unable to export %s, code `%s`, headers:',
-
-                $this->getEntityType(),
-                $this->client->getDebug()->lastResponseCode
-            ));
-
-            $this->logWarning($this->client->getDebug()->lastRequestHeaders);
+            $this->handleResponseException();
         }
     }
 
@@ -88,7 +82,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     {
         $types      = array('problem', 'incident', 'question', 'task');
         $priorities = array('urgent', 'high', 'normal', 'low');
-        $statuses   = array('open', 'pending', 'hold', 'solved', 'closed');
+        $statuses   = array('open', 'pending', 'hold', 'solved', 'closed', 'deleted');
 
         $type   = $types[rand(0, count($types) - 1)];
         $params = array(
@@ -110,7 +104,29 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
             $params['due_at'] = $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d');
         }
 
-        $this->client->tickets()->create($params);
+        $response = $this->client->tickets()->create($params);
+        $this->logger->info('Ticket created successfully');
+        $this->logger->debug(json_encode($response->ticket));
+
+        for ($i = 1; $i <= 100; $i++) {
+            try {
+                $comment = $this->client->tickets()->update(array(
+                    'id'      => $response->ticket->id,
+                    'comment' => array(
+                        'type'       => 'Comment',
+                        'body'       => 'Reply #' . $i,
+                        'public'     => true,
+                        'created_at' => $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d\TH:i:s\Z'),
+                    ),
+                ));
+
+                $this->logger->info('Ticket comment created successfully');
+                $this->logger->debug(json_encode($comment));
+
+            } catch (ResponseException $e) {
+                $this->handleResponseException();
+            }
+        }
     }
 
     /**
@@ -124,10 +140,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     private function getRandomDateTime(DateTime $initial_time, DateTime $end_time)
     {
         $time = new DateTime();
-        $time->setTimestamp(rand(
-            $initial_time->getTimestamp(),
-            $end_time->getTimestamp()
-        ));
+        $time->setTimestamp(rand($initial_time->getTimestamp(), $end_time->getTimestamp()));
 
         return $time;
     }
@@ -145,5 +158,25 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
         }
 
         return $this->people_ids[rand(0, count($this->people_ids) - 1)];
+    }
+
+    /**
+     * Shows error output to log
+     */
+    private function handleResponseException()
+    {
+        $this->logWarning(sprintf(
+            'Unable to export %s, code `%s`, headers:',
+
+            $this->getEntityType(),
+            $this->client->getDebug()->lastResponseCode
+        ));
+
+        $debug = $this->client->getDebug();
+        $this->logWarning($debug->lastRequestHeaders);
+
+        if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
+            sleep(60);
+        }
     }
 }

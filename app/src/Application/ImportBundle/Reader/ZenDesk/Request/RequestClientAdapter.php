@@ -29,7 +29,10 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
 use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Psr\Log\LoggerInterface;
 use Zendesk\API;
+use RuntimeException;
+use Exception;
 
 /**
  * ZenDesk API request adapter via ZenDesk client vendor
@@ -45,13 +48,32 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private $client;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var bool
+     */
+    private $was_request = false;
+
+    /**
      * Constructor
      *
-     * @param API\Client $client
+     * @param API\Client      $client
+     * @param array           $options
+     * @param LoggerInterface $logger
      */
-    public function __construct(API\Client $client)
+    public function __construct(API\Client $client, array $options = array(), LoggerInterface $logger = null)
     {
-        $this->client = $client;
+        $this->client  = $client;
+        $this->options = $options;
+        $this->logger  = $logger;
     }
 
     /**
@@ -87,46 +109,123 @@ final class RequestClientAdapter implements RequestAdapterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function doTicketCommentsFindAllRequest(array $params = array())
+    {
+        return $this->doRequest(new ClientHelper\TicketCommentsFindAll($params));
+    }
+
+    /**
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request
+     * @param int                                $retry_attempt
      *
      * @return \stdClass
      *
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request)
+    private function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
         try {
-            return $request->request($this->client);
+            API\Http::$curl = new CurlRequest(null, $this->options);
+
+            $response = $request->request($this->client);
+            $this->was_request = true;
+
+            return $response;
 
         } catch (API\ResponseException $e) {
             if ($this->client->getDebug()) {
                 $debug = $this->client->getDebug();
 
+                if ($this->logger) {
+                    $this->logger->error($debug->__toString());
+                }
+
                 switch ($debug->lastResponseCode) {
-                    // Handle HTTP 429 Too Many Requests response
-                    case ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS:
-                        throw new RetryAfterException(
-                            $e->getMessage(),
-                            RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders)
+                    case ZenDeskReaderInterface::CODE_UNAUTHORIZED:
+                        throw new RuntimeException(
+                            'Unable to connect, check ZenDesk exporter credentials',
+                            $e->getCode(), $e
                         );
+
+                    case ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS:
+                        $timeout = RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders);
+                        if ($this->logger) {
+                            $this->logger->info("Hit request limit, sleeping for $timeout seconds");
+                        }
+
+                        return $this->retry(
+                            $request,
+                            $retry_attempt,
+                            new RetryAfterException($e->getMessage(), $timeout),
+                            $timeout
+                        );
+
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do
 
                         break;
 
                     default:
-                        var_dump($e->getCode());
-                        var_dump($e->getMessage());
-                        var_dump($this->client->getDebug());
+                        if ($this->logger) {
+                            $this->logger->error("Unknown API ResponseException. Will retry.");
+                            $this->logger->error($e);
+                        }
 
-                        throw $e;
+                        return $this->retry($request, $retry_attempt, $e);
                 }
             }
+
+        } catch (Exception $e) {
+            if ($this->logger) {
+                $this->logger->error("Unknown API request error. Will retry.");
+                $this->logger->error($e);
+            }
+
+            return $this->retry($request, $retry_attempt, $e);
         }
 
         return null;
+    }
+
+    /**
+     * Retry api request on error response
+     *
+     * @param ClientHelper\ClientHelperInterface $request
+     * @param int                                $retry_attempt
+     * @param Exception                          $exception
+     * @param int                                $timeout
+     *
+     * @return \stdClass
+     *
+     * @throws Exception
+     * @throws RetryAfterException
+     */
+    private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
+    {
+        // Retry attempt timeouts (in seconds)
+        $retry_timeouts = array(2, 5, 10, 30);
+
+        if ($this->was_request && $retry_attempt++ < 10) {
+            if ($timeout < 1) {
+                $timeout = isset($retry_timeouts[$retry_attempt]) ? $retry_timeouts[$retry_attempt] : 60;
+            }
+            if ($this->logger) {
+                $this->logger->error(sprintf(
+                    "Retry api request, attempt = %d, timeout = %d.",
+                    $retry_attempt, $timeout
+                ));
+            }
+
+            sleep($timeout);
+
+            return $this->doRequest($request, $retry_attempt);
+        }
+
+        throw $exception;
     }
 }

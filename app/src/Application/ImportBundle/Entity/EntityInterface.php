@@ -47,6 +47,16 @@ interface EntityInterface
     const TYPE_FEEDBACK        = 'feedback';
 
     /**
+     * @return array
+     */
+    public function getRawData();
+
+    /**
+     * @param array $raw_data
+     */
+    public function setRawData($raw_data);
+
+    /**
      * Get entity type
      *
      * @return string
@@ -56,7 +66,7 @@ interface EntityInterface
     /**
      * Get entity oid
      *
-     * @return int
+     * @return int|string
      */
     public function getOid();
 

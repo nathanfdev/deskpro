@@ -69,7 +69,7 @@ class GetTicketTest extends AbstractApiResultTest
             unset($expectedTicketArray[$key]);
         }
 
-        $this->assertEquals($retrievedTicketArray, $expectedTicketArray);
+        $this->assertApiArrayEqual($retrievedTicketArray, $expectedTicketArray);
     }
 
     public function testFindBySubject()

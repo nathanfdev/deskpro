@@ -27,7 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\Csv\CsvReader;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Csv data exporter factory
@@ -40,10 +43,10 @@ class CsvFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    public function createExporter()
+    static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
         /** @var CsvReaderInterface $reader */
-        $reader  = $this->container->get('deskpro.import.csv_reader');
+        $reader = new CsvReader($config);
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\Csv\Downloads($reader))
@@ -53,6 +56,6 @@ class CsvFactory extends AbstractFactory
             ->attach(new Parser\Csv\People($reader))
             ->attach(new Parser\Csv\Tickets($reader));
 
-        return new Csv($parsers);
+        return new Csv($parsers, $reader);
     }
 }

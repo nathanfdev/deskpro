@@ -20,7 +20,7 @@ define [
       @form = {email_primary: '', emails_list: []}
       @hasPermOverrides = false
       @hasDepOverrides = false
-      @primary_phone_number_region = 'US'
+      @default_phone_number_region = 'US'
       @service =
         agents: @DataService.get 'Agents'
       @all_perms =
@@ -86,7 +86,9 @@ define [
           }
           @perm_form = null
 
-        @primary_phone_number_region = result.data.default_country.value || @primary_phone_number_region
+        if result.data.default_country.value
+          @default_phone_number_region = result.data.default_country.value
+        @primary_phone_number_region = result.data.default_country.value || @default_phone_number_region
 
         @teams  = result.data.teams.agent_teams
         @groups = result.data.groups.groups
@@ -100,6 +102,9 @@ define [
 
         @agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
         @form = @agentFormModel.form
+
+        if @form.primary_phone
+          @primary_phone_number_region = @form.primary_phone.region
 
         @$scope.$watch('EditCtrl.form.agent_groups', =>
           @updateEffectiveUgPerms()

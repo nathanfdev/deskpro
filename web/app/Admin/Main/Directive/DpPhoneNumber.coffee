@@ -1,4 +1,4 @@
-define ["jquery", "intl-tel-input"] , ($, intlTelInput) ->
+define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, utils) ->
   ###
     # Description
     # -----------
@@ -31,11 +31,21 @@ define ["jquery", "intl-tel-input"] , ($, intlTelInput) ->
       link: (scope, element, attr, ngModel) ->
         # when we get the dpPhoneNumber attribute value, setup intlTelInput
         attr.$observe 'dpPhoneNumber', (reg) ->
-          element.intlTelInput()
-          if reg
-            element.intlTelInput("selectCountry", reg.toLowerCase())
-          if element.val()
-            element.intlTelInput("setNumber", element.val())
+          element.intlTelInput({
+              defaultCountry: reg.toLowerCase(),
+              autoPlaceholder: true,
+              autoFormat: true,
+              nationalMode: true
+          })
+          element.intlTelInput("setNumber", element.val())
+          element.intlTelInput('utilsLoaded')
+          element.bind('blur keyup change input', () ->
+            scope.$apply(() ->
+              ngModel.$setViewValue(element.intlTelInput('getNumber'))
+            )
+          )
+
+
     }
   ]
 

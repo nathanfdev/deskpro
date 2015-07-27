@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\BaseReader;
 use Zendesk\API;
 use DateTime;
 
@@ -40,7 +41,7 @@ use DateTime;
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskReader implements ZenDeskReaderInterface
+class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
 {
     /**
      * @var Request\RequestAdapterInterface
@@ -56,12 +57,14 @@ class ZenDeskReader implements ZenDeskReaderInterface
      * Constructor
      *
      * @param Request\RequestAdapterInterface $adapter
-     * @param DateTime                        $initial_time
+     * @param ZenDeskConfig                   $config
      */
-    public function __construct(Request\RequestAdapterInterface $adapter, DateTime $initial_time)
+    public function __construct(Request\RequestAdapterInterface $adapter, ZenDeskConfig $config)
     {
+        parent::__construct($config);
+
         $this->adapter      = $adapter;
-        $this->initial_time = $initial_time;
+        $this->initial_time = $config->getInitialTime();
     }
 
     /**
@@ -174,9 +177,28 @@ class ZenDeskReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getTicketComments($id)
+    {
+        $comments = array();
+        $result   = $this->adapter->doTicketCommentsFindAllRequest(array(
+            'ticket_id' => $id,
+        ));
+
+        if ($result) {
+            foreach ($result->comments as $comment) {
+                $comments[] = $this->toArray($comment);
+            }
+        }
+
+        return $comments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTicketsEndTime(DateTime $start_time = null)
     {
-        $request = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $request = $this->adapter->doTicketsIncrementalExportRequest(array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -225,5 +247,13 @@ class ZenDeskReader implements ZenDeskReaderInterface
         }
 
         return 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReady()
+    {
+        return null !== $this->getPeopleCount();
     }
 }

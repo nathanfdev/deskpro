@@ -82,7 +82,7 @@ class ProcessReply extends ProcessAbstract
      */
     public function run($context = 'user')
     {
-        $this->logMessage("doNewRelpy context $context");
+        $this->logMessage("doNewReply context $context");
 
         $this->processBlobs();
 
@@ -174,14 +174,18 @@ class ProcessReply extends ProcessAbstract
             return null;
         }
 
-        if ($this->ticket_email->is_bounce) {
-            $executor_context->getVars()->set('is_bounce_message', true);
-        }
-
         $message = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');
+        }
+
+        if ($this->ticket_email->is_bounce) {
+            $executor_context->getVars()->set('is_bounce_message', true);
+            $message->is_agent_note = true;
+        }
+        if ($this->reader->isFromRobot()) {
+            $executor_context->getVars()->set('is_robot_message', true);
         }
 
         if ($this->person->is_agent) {
@@ -208,9 +212,16 @@ class ProcessReply extends ProcessAbstract
             $message['show_full_hint'] = true;
         }
 
-        if (isset($this->ticket_email->reply_actions['is_note'])) {
-            $message['is_agent_note'] = true;
-            $this->ticket->email_reader_action = 'agent_note';
+        if ($this->person->is_agent) {
+            if (!$email_info->agent_reply_as_note || isset($this->ticket_email->reply_actions['is_reply'])) {
+                $this->logMessage("Reply mode: reply");
+                $message['is_agent_note'] = false;
+                $this->ticket->email_reader_action = 'agent_reply';
+            } else {
+                $this->logMessage("Reply mode: note");
+                $message['is_agent_note'] = true;
+                $this->ticket->email_reader_action = 'agent_note';
+            }
         }
 
         $ticket_attach = array();

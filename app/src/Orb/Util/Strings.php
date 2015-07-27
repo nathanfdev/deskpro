@@ -1243,7 +1243,6 @@ class Strings
      */
     public static function trimHtml($string)
     {
-
         // Dont attempt to run on very large strings
         // the regex can be slow
         if (strlen($string) > 716800) {
@@ -1277,7 +1276,6 @@ class Strings
             $string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
             $string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 
-            $string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
             $string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
         } while ($string != $old_string && $x++ < 1000 && (time()-$time_start) < 10);
 
@@ -1314,26 +1312,6 @@ class Strings
         } while ($changed);
 
         $qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
-
-        // Unwrap divs
-        do {
-            $changed = false;
-            $qp->top()->find('div');
-            foreach ($qp as $div) {
-                if (!trim($div->text())) {
-                    $changed = true;
-                    $children = $div->branch();
-                    $children->children();
-                    foreach ($children as $child) {
-                        @$div->before($child);
-                    }
-                    @$div->remove();
-                    break;
-                }
-            }
-
-            $qp->top();
-        } while ($changed);
 
         ob_start();
         $qp->writeXHTML();
@@ -2303,26 +2281,10 @@ class Strings
      */
     public static function prepareWysiwygHtml($html)
     {
-        $html = preg_replace('#<p></p>#', '', $html);
-        $html = preg_replace('#<p>\s*</p>#', '<br>', $html);
-        $html = preg_replace('#<br\s*/?></p>#', '</p>', $html);
-        $html = str_replace(array('<p>', '</p>'), array('<div>', '</div>'), $html);
-        $html = preg_replace('#(<br\s*/?>)\s*</div>#', '</div>', $html);
-        $html = preg_replace('#<div[^>]*>\s*(<br\s*/?>)?\s*</div>\s*#i', "<br />\n", $html);
         $html = str_replace(array('<p>', '</p>'), array('<div>', '</div>'), $html);
         $html = preg_replace('#<p(\b)#', '<div$1', $html);
         $html = preg_replace('#<div[^>]+class="dp-signature-start"[^>]*>#', '<div>', $html);
-        do {
-            $original = $html;
-            $html = preg_replace('#<div>(.*)</div>\s*?#siU', "\\1<br />\n", $html);
-            // need to loop to handle nested divs - may not be perfect
-        } while ($original != $html);
-
-        $html = preg_replace('#(<br\s*/?>\s*)+$#', '', $html);
-        $html = preg_replace('#\x{00a0}#u', ' ', $html);
-        $html = preg_replace_callback('#( {2,})#', function($m) {
-            return str_repeat('&nbsp;', strlen($m[1]));
-        }, trim($html));
+        $html = self::trimHtml($html);
 
         return $html;
     }

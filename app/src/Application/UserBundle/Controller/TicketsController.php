@@ -105,7 +105,7 @@ class TicketsController extends AbstractController
                 SELECT ticket
                 FROM DeskPRO:Ticket ticket
                 $dql_join
-                WHERE ticket.person = :person AND ticket.status != 'hidden'
+                WHERE ticket.person = :person AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
                 ORDER BY $sort_dql
             ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
         } else {
@@ -118,7 +118,7 @@ class TicketsController extends AbstractController
                     FROM DeskPRO:Ticket ticket
                     LEFT JOIN ticket.participants part
                     $dql_join
-                    WHERE (ticket.person = :person OR (part.person = :person AND ticket.organization != :org)) AND ticket.status != 'hidden'
+                    WHERE (ticket.person = :person OR (part.person = :person AND ticket.organization != :org)) AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
                     ORDER BY $sort_dql
                 ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
             } else {
@@ -128,7 +128,7 @@ class TicketsController extends AbstractController
                     FROM DeskPRO:Ticket ticket
                     LEFT JOIN ticket.participants part
                     $dql_join
-                    WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden'
+                    WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
                     ORDER BY $sort_dql
                 ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
             }
@@ -236,14 +236,14 @@ class TicketsController extends AbstractController
         $count = $this->db->fetchColumn("
             SELECT COUNT(*)
             FROM tickets
-            WHERE tickets.organization_id = ? AND tickets.status != 'hidden'
+            WHERE tickets.organization_id = ? AND tickets.status != 'hidden' AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
         ", array($this->person->organization->id));
 
         $tickets = $this->em->createQuery("
             SELECT ticket
             FROM DeskPRO:Ticket ticket
             $dql_join
-            WHERE ticket.organization = :organization AND ticket.status != 'hidden'
+            WHERE ticket.organization = :organization AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
             ORDER BY $sort_dql
         ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('organization' => $this->person->organization));
 
@@ -652,7 +652,7 @@ class TicketsController extends AbstractController
             $ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
         }
 
-        if (!$ticket) {
+        if (!$ticket || !($ticket->date_last_agent_reply || $ticket->date_last_user_reply)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
         }
 

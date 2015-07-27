@@ -110,6 +110,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isCustomFieldValid($custom_field)) {
             $entity = new Entity\CustomField();
             $entity
+                ->setDestination('custom_field_' . $custom_field['oid'])
                 ->setOid($custom_field['oid'])
                 ->setKey($custom_field['key'])
                 ->setValue($custom_field['value']);
@@ -135,8 +136,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 ->setOid($attachment['oid'])
                 ->setPersonEmail($attachment['person'])
                 ->setBlobData($attachment['blob_data'])
-                ->setBlobData($attachment['blob_url'])
-                ->setBlobData($attachment['blob_path'])
+                ->setBlobUrl($attachment['blob_url'])
+                ->setBlobPath($attachment['blob_path'])
                 ->setFileName($attachment['file_name'])
                 ->setContentType($attachment['content_type'])
                 ->setAsInline($attachment['is_inline']);

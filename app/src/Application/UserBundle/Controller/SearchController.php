@@ -257,10 +257,24 @@ class SearchController extends AbstractController
 
         $se = $this->container->getSearchEngine();
         $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+        $sticky_search  = new StickyWordSearch($this->em);
         $results = $se->getUserSearch()->similarTo($context, $content, array('limit_types' => array($content_type)));
+        $words = array();
+
+        foreach ($results->getResults() as $result) {
+            $class = get_class($result);
+            $type = 'DeskPRO:' . substr($class, strrpos($class, '\\') + 1);
+            foreach ($sticky_search->getStickyWords($type, $result->getId()) as $word) {
+                if (count($words) < 100) {
+                    $words[] = $word;
+                }
+            }
+        }
+
 
         return $this->render('UserBundle:Search:similar-to.html.twig', array(
             'results' => $results->getTypedResults(),
+            'words' => $words,
         ));
     }
 }

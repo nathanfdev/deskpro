@@ -111,7 +111,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      *
      * @param  array $data validated data (the payload)
      * @param  array $job  the full job db row array
-     * @return bool  TRUE if successfully processed
+     * @return void
      */
     abstract public function process(array $data, array $job);
 

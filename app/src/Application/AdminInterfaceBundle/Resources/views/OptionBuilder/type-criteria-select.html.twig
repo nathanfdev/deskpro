@@ -17,7 +17,8 @@
 						<option ng-if="operators.indexOf('notcontains') !== -1" value="notcontains">does not contain</option>
 						<option ng-if="operators.indexOf('is_regex') !== -1" value="is_regex">matches regex</option>
 						<option ng-if="operators.indexOf('not_regex') !== -1" value="not_regex">does not match regex</option>
-						<option ng-if="operators.indexOf('touched') !== -1" value="nottouched">was set during this event</option>
+                        <option ng-if="operators.indexOf('touched') !== -1" value="touched">was set during this event
+                        </option>
 						<option ng-if="operators.indexOf('nottouched') !== -1" value="nottouched">was not set during this event</option>
 						<option ng-if="operators.indexOf('changed') !== -1" value="changed">changed</option>
 						<option ng-if="operators.indexOf('changed_to') !== -1" value="changed_to">changed to</option>
@@ -29,7 +30,7 @@
 					</select>
 					<select
 						ng-if="!multiselect"
-						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched'"
+						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched' || model.op == 'isset' || model.op == 'not_isset'"
 						ui-select2
 						ng-model="model.value"
 						style="min-width: 140px"
@@ -38,7 +39,7 @@
 					</select>
 					<select
 						ng-if="multiselect"
-						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched'"
+						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched' || model.op == 'isset' || model.op == 'not_isset'"
 						multiple
 						ui-select2
 						ng-model="model.value"

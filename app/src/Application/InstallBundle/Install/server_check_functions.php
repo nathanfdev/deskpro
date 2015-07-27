@@ -85,12 +85,17 @@ function deskpro_install_check_reqs()
         $errors['ldap_check'] = 'recommended';
     }
 
+    $ldap_conn_limit = @ini_get('ldap.max_links');
+    if ($ldap_conn_limit != '-1' && (int) $ldap_conn_limit < 5) {
+        $errors['ldap_max_limit'] = 'recommended';
+    }
+
     return $errors;
 }
 
 function deskpro_install_check_version()
 {
-    return version_compare(phpversion(), '5.3.2', '>=');
+    return version_compare(phpversion(), '5.3.9', '>=');
 }
 
 function deskpro_install_check_pcre()
@@ -287,10 +292,10 @@ function deskpro_install_simple_data_submit($log)
         $data['php_has_tokenizer'] = 0;
     }
 
-    if (defined('DP_MA_SERVER')) {
-        $ma_server = DP_MA_SERVER;
+    if (defined('DP_MA_SERVER_SECURE')) {
+        $ma_server = DP_MA_SERVER_SECURE;
     } else {
-        $ma_server = 'http://www.deskpro.com/members';
+        $ma_server = 'https://www.deskpro.com/members';
     }
 
     $opts = array(

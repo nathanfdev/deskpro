@@ -65,29 +65,29 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
-        $username = $context->getin()->getstring('username');
-        $password = $context->getin()->getstring('password');
-        $options  = appoptionsmapper::getoptions($context->getin()->getcleanvaluearray('settings'));
+        $username = $context->getIn()->getString('username');
+        $password = $context->getIn()->getString('password');
+        $options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
 
         if (defined('dpc_is_cloud')) {
-            if ($app_id = $context->getin()->getstring('app_id')) {
-                $app = $context->getcontainer()->getappmanager()->getapp($app_id);
-                $options['password_php'] = $app->getsetting('php_code');
+            if ($app_id = $context->getIn()->getString('app_id')) {
+                $app = $context->getContainer()->getAppManager()->getApp($app_id);
+                $options['password_php'] = $app->getSetting('php_code');
             } else {
                 $options['password_php'] = '';
             }
         }
 
-        $tester = usersourcetester::createfromoptions('application\\Deskpro\\Usersource\\Adapter\\Dbtablephppasswordcheck', $options);
+        $tester = UsersourceTester::createFromOptions('Application\\Deskpro\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
         $tester->test($username, $password);
 
         $result_data = array(
-            'log'        => $tester->getlog(),
-            'raw_data'   => $tester->getrawdata(),
-            'is_valid'   => $tester->isvalid(),
+            'log'        => $tester->getLog(),
+            'raw_data'   => $tester->getRawData(),
+            'is_valid'   => $tester->isValid(),
         );
 
-        return $context->createjsonresponse($result_data);
+        return $context->createJsonResponse($result_data);
     }
 
     /**

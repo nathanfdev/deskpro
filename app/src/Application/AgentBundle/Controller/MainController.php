@@ -36,6 +36,8 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -419,6 +421,8 @@ class MainController extends AbstractController
             $index_running = false;
         }
 
+        $return_results[] = $this->getDeletedTicketResults($q);
+
         return $this->createJsonResponse(array(
             'grouped_results' => $return_results,
             'index_running'   => $index_running,
@@ -456,9 +460,36 @@ class MainController extends AbstractController
             $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
         }
 
+        $return_results[] = $this->getDeletedTicketResults($q);
+
         return $this->createJsonResponse(array(
             'grouped_results' => $return_results
         ));
+    }
+
+    protected function getDeletedTicketResults($query)
+    {
+        $res = array(
+            'type'      => 'deleted_tickets',
+            'title'     => $this->container->getTranslator()->phrase('agent.search.type_ticket_deleted'),
+            'results'   => array(),
+        );
+
+        if (!$query = preg_replace('/[^\d]/', '', $query)) {
+            return $res;
+        }
+
+        /** @var $deleted TicketDeleted */
+        if (!$deleted = $this->em->find('DeskPRO:TicketDeleted', $query)) {
+            return $res;
+        }
+
+        $res['results'][] = array(
+            'id' => $deleted['ticket_id'],
+            'reason' => $deleted['reason'],
+        );
+
+        return $res;
     }
 
     /**
@@ -579,6 +610,8 @@ class MainController extends AbstractController
                     );
                 }
             break;
+            case 'deleted_tickets':
+
         }
 
         return $rows;

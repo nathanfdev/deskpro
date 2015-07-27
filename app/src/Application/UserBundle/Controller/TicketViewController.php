@@ -215,6 +215,10 @@ class TicketViewController extends AbstractController
             return $this->renderStandardError(null, null, 403);
         }
 
+        if (!($ticket->date_last_agent_reply || $ticket->date_last_user_reply)) {
+            return $this->renderStandardError(null, null, 403);
+        }
+
         $can_edit = $ticket->person === $this->person;
         if (!$can_edit && ($this->in->getBool('edit') || $this->in->getBool('process'))) {
             return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));

@@ -2535,6 +2535,7 @@ dp .dp-new-feedback td {
 #dp section.dp-comments-box article > ul > li > article {
 	clear: left;
 	padding: 12px 12px 0 0;
+    word-wrap: break-word;
 }
 
 #dp section.dp-comments-box article > ul > li.new-comment {
@@ -2557,6 +2558,17 @@ dp .dp-new-feedback td {
 
 #dp section.dp-comments-box article .dp-validating-note i {
 	{{ _self.opacity(0.5) }}
+}
+
+#dp table.dp_message_table {
+	border-collapse: collapse;
+	border: 1px solid #444;
+}
+
+#dp table.dp_message_table td, #dp table.dp_message_table th {
+	border: 1px solid #444;
+	padding: 4px;
+	vertical-align: top;
 }
 
 /***********************************************************************************************************************

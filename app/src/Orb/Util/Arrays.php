@@ -1634,7 +1634,7 @@ class Arrays
     public static function lowercaseKeys($array, $dupe_mode = LOWERKEY_DUPE_OVERWRITE)
     {
         foreach ($array as $key => $value) {
-            $lower_key = strtowloer($key);
+            $lower_key = strtolower($key);
             if ($lower_key == $key) continue; // already lowercase
 
             unset($array[$key]);

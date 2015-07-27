@@ -12,6 +12,11 @@ $collection->create('agent', array(
     'controller'  => 'AgentBundle:Main:index',
 ));
 
+$collection->create('geoip', array(
+    'path'        => '/geoip',
+    'controller'  => 'AgentBundle:Misc:getGeoIp',
+));
+
 $collection->create('agent_savedom', array(
     'path'        => '/save-dom.json',
     'controller'  => 'AgentBundle:Misc:saveDom',
@@ -1099,6 +1104,15 @@ $collection->create('agent_ticket_chargedelete', array(
     'controller'    => 'AgentBundle:Ticket:deleteCharge',
     'requirements'  => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
 ));
+
+$collection->create(
+    'agent_ticket_chargeform',
+    array(
+        'path' => '/ticket/{ticket_id}/charge/form',
+        'controller' => 'AgentBundle:Ticket:ticketChargeForm',
+        'requirements' => array('ticket_id' => '\\d+'),
+    )
+);
 
 $collection->create('agent_ticket_addsla', array(
     'path'          => '/ticket/{ticket_id}/add-sla',

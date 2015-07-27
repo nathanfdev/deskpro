@@ -48,7 +48,7 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
     /**
      * {@inheritdoc}
      */
-    public function getType()
+    static public function getType()
     {
         return self::TYPE_ZENDESK;
     }
@@ -106,13 +106,20 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
         $updated_config
             ->setId($updated_config->getId() + 1)
             ->setDateModified(new DateTime())
-            ->setRetryAfterTime($this->retry_date);
+            ->setRetryAfterTime($this->retry_date)
+        ;
 
         if ($tickets_parser->getCurrentEndTime()) {
             $updated_config->setTicketsEndTime($tickets_parser->getCurrentEndTime());
         }
         if ($people_parser->getCurrentEndTime()) {
             $updated_config->setPeopleEndTime($people_parser->getCurrentEndTime());
+        }
+
+        if ($tickets_parser->getCount() > 1 || $people_parser->getCount() > 1) {
+            $updated_config->setHasRemaining(true);
+        } else {
+            $updated_config->setHasRemaining(false);
         }
 
         return $updated_config;

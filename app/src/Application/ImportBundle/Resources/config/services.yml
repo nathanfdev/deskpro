@@ -1,32 +1,19 @@
 services:
-  deskpro.import.csv_reader:
-    class: Application\ImportBundle\Reader\Csv\CsvReader
 
-  deskpro.import.json_reader:
-    class: Application\ImportBundle\Reader\Json\JsonReader
+  deskpro.import.zendesk_reader_factory:
+    class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
 
-  deskpro.import.os_ticket_reader:
-    class: Application\ImportBundle\Reader\OsTicket\OsTicketReader
-    factory_class: Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory
-    factory_method: createReaderByDeskproConfig
+  deskpro.import.config:
+    class: Application\ImportBundle\Generator\GeneratorConfig
 
-  deskpro.import.zen_desk_reader:
-    class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReader
-    factory_class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
-    factory_method: createReaderByDeskproConfig
-
-  deskpro.import.zen_desk_fixtures:
-    class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReader
-    factory_class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
-    factory_method: createFixturesByDeskproConfig
+  deskpro.import.generator:
+    scope: prototype
+    class: Application\ImportBundle\Generator\Generator
+    factory_class: Application\ImportBundle\Generator\GeneratorFactory
+    factory_method: createGenerator
+    arguments: [@service_container]
 
   deskpro.import.batch_exporter:
     class: Application\ImportBundle\Generator\Exporter\Batch
     factory_class: Application\ImportBundle\Generator\Exporter\BatchFactory
     factory_method: createExporter
-
-  deskpro.import.generator:
-    class: Application\ImportBundle\Generator\Generator
-    factory_class: Application\ImportBundle\Generator\GeneratorFactory
-    factory_method: createGenerator
-    arguments: [@service_container]

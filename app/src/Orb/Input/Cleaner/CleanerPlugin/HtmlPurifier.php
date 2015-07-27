@@ -189,6 +189,8 @@ class HtmlPurifier implements CleanerPlugin
                 }
             }
 
+            $value = preg_replace('#<div[^>]*display\s*:\s*inline[^>]*>(.*?)</div>#', '<span>\\1</span>', $value);
+
             // Email do a bunch of processing with DOMDocument which messes with HTML Entities
             // There are bugs with different versions of libxml where entites are not properly
             // decoded, or the DOMDocument->substituteEntities not being honoured etc.
@@ -272,7 +274,7 @@ class HtmlPurifier implements CleanerPlugin
                 break;
 
             case 'html_core':
-                $config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table,thead,tbody,tfoot,tr,td[colspan|rowspan],th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
+                $config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href|target],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table[border|cellspacing|cellpadding|align|summary],thead,tbody,tfoot,tr,td[colspan|rowspan],th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
                 $config->set('AutoFormat.AutoParagraph', true);
                 $config->set('AutoFormat.Linkify', true);
                 $config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
@@ -280,7 +282,7 @@ class HtmlPurifier implements CleanerPlugin
                 break;
 
             case 'simple_html':
-                $config->set('HTML.Allowed', 'em,i,strong,b,u,strike,a[href],img[src],ul,li,dd,dt,dl,ol,p[align],span,br');
+                $config->set('HTML.Allowed', 'em,i,strong,b,u,strike,a[href|target],img[src],ul,li,dd,dt,dl,ol,p[align],span,br');
                 $config->set('AutoFormat.AutoParagraph', true);
                 $config->set('AutoFormat.Linkify', true);
                 $config->set('URI.DisableExternalResources', true);

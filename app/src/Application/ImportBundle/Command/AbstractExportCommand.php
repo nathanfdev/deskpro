@@ -27,13 +27,22 @@
 
 namespace Application\ImportBundle\Command;
 
+use Application\DeskPRO\App;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Csv\CsvConfig;
+use Application\ImportBundle\Reader\Json\JsonConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Processor\MemoryUsageProcessor;
+use Orb\Util\Env;
+use Orb\Util\OptionsArray;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -42,11 +51,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Orb\Util\OptionsArray;
-use Psr\Log\LoggerInterface;
-use Exception;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Process\Process;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * Base export command
@@ -62,7 +71,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->addArgument('script', InputArgument::REQUIRED, 'The target script to use')
+            ->addArgument(
+                'script',
+                InputArgument::REQUIRED,
+                'The target script to use'
+            )
             ->addOption(
                 'input-path',
                 null,
@@ -92,9 +105,211 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 'No progressbar'
-            );
-
+            )
+            ->addOption(
+                'batch',
+                'b',
+                InputOption::VALUE_NONE,
+                'Runs only the next batch'
+            )
+            ->addOption(
+                'memory-usage',
+                'm',
+                InputOption::VALUE_NONE,
+                'Shows memory usage'
+            )
+        ;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $GLOBALS['DP_IS_IMPORTING'] = true;
+        $GLOBALS['DP_NOSQL_LOG'] = true;
+
+        @ini_set('memory_limit', -1);
+        @set_time_limit(0);
+
+        $em = App::getOrm();
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+
+        $ret = null;
+        if ($input->getOption('batch')) {
+            $ret = $this->executeBatchRun($input, $output);
+        } else {
+            $ret = $this->executeUnattendedRun($input, $output);
+        }
+
+        unset($GLOBALS['DP_IS_IMPORTING']);
+        $GLOBALS['DP_NOSQL_LOG'] = false;
+
+        return $ret;
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
+    {
+        $out = $this->checkPhpInfo();
+        if ($out !== true) {
+            $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
+            $output->write('<error>Specify path to PHP in config.php by setting the $DP_CONFIG[\'php_path\'] option.</error>');
+
+            return 1;
+        }
+
+        $out = $this->checkRequirements();
+        if ($out !== true) {
+            $output->write('<error>PHP sub-command binary fails server checks: ' . $out . '</error>');
+            $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
+
+            return 1;
+        }
+
+        $arguments   = array_map(function($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
+        $arguments[] = '-b';
+
+        // todo always verbose mode by now
+        // todo check for progress bar in unattended mode
+        $arguments[] = '-vvv';
+
+        $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
+
+        do {
+            $process = new Process($cmd, realpath(DP_ROOT.'/../'));
+            $process->setTimeout(18000);
+            $process->run(function($type, $data) use ($output) {
+                $output->write($data);
+            });
+
+            if ( ! $process->isSuccessful()) {
+                $output->writeln("<error>Detected error, halting process</error>");
+                return 1;
+            }
+
+            $output->writeln("<info>Done batch</info>");
+            $output->writeln("<info>Updating search tables.</info>");
+
+            $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+
+            $config          = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $exporter_config = $config->getExporterBatchConfig();
+
+            if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
+                $rerun = $exporter_config->getHasRemaining();
+                if ($rerun) {
+                    $output->writeln("<info>Running next batch</info>");
+                }
+
+            } else {
+                $rerun = false;
+            }
+
+        } while ($rerun);
+
+        $output->writeln("<info>Done all.</info>");
+        return 0;
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    protected function executeBatchRun(InputInterface $input, OutputInterface $output)
+    {
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+
+        try {
+            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $logger = $this->createLogger($config, $input, $output);
+
+            if ($config->isSilent()) {
+                $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            }
+            if ($config->getRetryWaitTimeout()) {
+                $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
+            } else {
+                $this->doExecute($config, $logger, $input, $output);
+            }
+
+            return 0;
+
+        } catch (Generator\GeneratorException $e) {
+            if (isset($logger)) {
+                foreach ($e->getExceptions() as $exception) {
+                    /** @var Generator\Validator\ValidatorConstraintException $exception */
+                    $logger->alert(sprintf(
+                        "Validator failure for %s on record #%s: %s",
+
+                        get_class($exception->getEntity()),
+                        $exception->getEntity()->getOid(),
+                        $exception->getErrors())
+                    );
+
+                    $logger->info(json_encode($exception->getEntity()->toArray()));
+
+                    if ($r = $exception->getEntity()->getRawData()) {
+                        foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
+                            $logger->info($l);
+                        }
+                    }
+                }
+            }
+            if (isset($logger)) {
+                $logger->critical($e);
+            }
+
+            // Mark batch as successful even an error has occurred
+            return 0;
+
+        } catch (\Exception $e) {
+            KernelErrorHandler::logException($e, true);
+            $output->writeln($e->getMessage());
+
+            if (isset($logger)) {
+                $logger->critical($e);
+            }
+            if (isset($config)) {
+                $output->writeln(sprintf(
+                    'An error has occurred while %s. Look at the log file `%s` to see details.',
+
+                    strtolower($config->getGenerationType()),
+                    $config->getLogPath()
+                ));
+            }
+
+            // Mark batch as successful even an error has occurred
+            return 0;
+        }
+    }
+
+    /**
+     * Checks generator configuration
+     *
+     * @param GeneratorConfig $config
+     * @throws RuntimeException
+     */
+    protected abstract function checkConfiguration(GeneratorConfig $config);
+
+    /**
+     * Executes command
+     *
+     * @param GeneratorConfig $config
+     * @param LoggerInterface $logger
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
+    protected abstract function doExecute(GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output);
 
     /**
      * Creates a new generator config instance
@@ -104,7 +319,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param array          $supported_types
      *
      * @return GeneratorConfig
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function createGeneratorConfig(InputInterface $input, array $supported_types)
     {
@@ -117,6 +332,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         foreach ($supported_types as $type) {
             $config->addEntityType($type);
         }
+
+        $this->checkConfiguration($config);
 
         return $config;
     }
@@ -157,32 +374,55 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param GeneratorConfig $config
      * @param InputInterface  $input
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         if ($input->hasArgument('script')) {
             $config->setExporterType($input->getArgument('script'));
         } else {
-            throw new Exception('Source type argument is not defined');
+            throw new RuntimeException('Source type argument is not defined');
         }
 
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 
-        if ($input->hasOption('input-path')) {
-            if ($input->getOption('input-path')) {
-                $config->setInputPath(rtrim($input->getOption('input-path'), "\\/") . "/");
-            } else {
-                switch ($config->getExporterType()) {
-                    case ExporterInterface::TYPE_CSV:
-                        throw new Exception('You must supply an "input-path" argument while using CSV exporter');
-                    case ExporterInterface::TYPE_JSON:
-                        throw new Exception('You must supply an "input-path" argument while using JSON exporter');
-                }
-            }
+        $input_path = '';
+        if ($input->hasOption('input-path') && $input->getOption('input-path')) {
+            $input_path = rtrim($input->getOption('input-path'), "\\/") . "/";
         }
+
+        switch ($config->getExporterType()) {
+            case ExporterInterface::TYPE_CSV:
+                $readerConfig = new CsvConfig($input_path);
+                break;
+            case ExporterInterface::TYPE_JSON:
+                $readerConfig = new JsonConfig($input_path);
+                break;
+            case ExporterInterface::TYPE_ZENDESK:
+                $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
+                break;
+            case ExporterInterface::TYPE_OS_TICKET:
+                $readerConfig = OsTicketReaderFactory::getDefaultConfig();
+                break;
+            default:
+                throw new RuntimeException(sprintf(
+                    'Unknown source type `%s`, expected: (%s)',
+
+                    $config->getExporterType(),
+                    implode(', ', array(
+                        ExporterInterface::TYPE_CSV,
+                        ExporterInterface::TYPE_JSON,
+                        ExporterInterface::TYPE_OS_TICKET,
+                        ExporterInterface::TYPE_ZENDESK,
+                    ))
+                ));
+        }
+
+        $config->setReaderConfig($readerConfig);
+        // back compatibility
+        $config->setInputPath($input_path);
 
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
@@ -204,11 +444,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param GeneratorConfig $config
      * @param InputInterface  $input
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function setBatchConfigByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         $batch_config_file = null;
+        $config->setExporterBatchConfig(null);
 
         // Tries to get batch.json from output or input path
         if ($config->getBatchFilePath()) {
@@ -246,17 +487,19 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * Create a logger
      *
      * @param GeneratorConfig $config
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return LoggerInterface
      */
-    protected function createLogger(GeneratorConfig $config, OutputInterface $output)
+    protected function createLogger(GeneratorConfig $config, InputInterface $input, OutputInterface $output)
     {
         $logger = new Logger('exporter');
 
         if ($config->getLogPath()) {
             $formatter = new LineFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
+            $formatter->allowInlineLineBreaks(true);
 
             $handler = new StreamHandler($config->getLogPath());
             $handler->setFormatter($formatter);
@@ -266,11 +509,15 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($config->isConsoleOutputEnabled()) {
             $formatter = new ConsoleFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
+            $formatter->allowInlineLineBreaks(true);
 
             $handler = new ConsoleHandler($output);
             $handler->setFormatter($formatter);
 
             $logger->pushHandler($handler);
+        }
+        if ($input->getOption('memory-usage')) {
+            $logger->pushProcessor(new MemoryUsageProcessor());
         }
 
         return $logger;
@@ -287,10 +534,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function createGenerator(GeneratorConfig $config, LoggerInterface $logger)
     {
         /** @var Generator\Generator $generator */
-        $generator = $this->getContainer()->get('deskpro.import.generator');
-        $generator
-            ->setConfig($config)
-            ->setLogger($logger);
+        $this->getContainer()->set('deskpro.import.config', $config);
+
+        /** @var Generator\Generator $generator */
+        $generator = Generator\GeneratorFactory::createGenerator($this->getContainer());
+        $generator->setLogger($logger);
 
         return $generator;
     }
@@ -327,5 +575,44 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function getContainer()
     {
         return parent::getContainer();
+    }
+
+    /**
+     * Check PHP info
+     *
+     * @return bool
+     */
+    protected function checkPhpInfo()
+    {
+        if (dp_is_php_path_guessed()) {
+            $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
+
+            $process = new Process($cmd, realpath(DP_ROOT));
+            $process->run();
+
+            return $process->isSuccessful() && Env::isSamePhpInfo(Env::getPhpInfo(), $process->getOutput());
+        }
+
+        return true;
+    }
+
+    /**
+     * Make sure PHP we have passes requirements
+     *
+     * @return bool|string
+     */
+    protected function checkRequirements()
+    {
+        $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/check-req.php'));
+
+        $process = new Process($cmd, realpath(DP_ROOT));
+        $process->run();
+
+        $output = $process->getOutput();
+        if ( ! $process->isSuccessful() || strpos($output, 'OKAY') === false) {
+            return $output;
+        }
+
+        return true;
     }
 }

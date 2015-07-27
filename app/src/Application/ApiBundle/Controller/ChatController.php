@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
 * @SWG\Resource(
@@ -729,8 +730,12 @@ class ChatController extends AbstractController
     {
         $chat = $this->em->getRepository('DeskPRO:ChatConversation')->findOneById($id);
 
-        if (!$chat || !$this->person->PermissionsManager->ChatChecker->canView($chat)) {
+        if (!$chat) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no chat with ID $id");
+        }
+
+        if (!$this->person->PermissionsManager->ChatChecker->canView($chat)) {
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         return $chat;

@@ -89,6 +89,9 @@ class TicketSettings
     /** @var array|null */
     public $working_hours = null;
 
+    /** @var bool|false */
+    public $email_reply_as_note            = false;
+
     public $agent_defaults = array(
         'newticket_status'      => 'awaiting_user',
         'newticket_agent'       => 'assign',
@@ -197,6 +200,8 @@ class TicketSettings
         if (!$this->from_email_headers) {
             $this->from_email_headers = array('from', 'reply-to', 'x-original-from');
         }
+
+        $this->email_reply_as_note = (bool)$this->settings->get('core_tickets.email_reply_as_note');
     }
 
 
@@ -228,6 +233,7 @@ class TicketSettings
             'gateway_max_email',
             'working_hours',
             'from_email_headers',
+            'email_reply_as_note',
         ) as $s) {
             $export_settings[$s] = $this->$s;
         }
@@ -326,5 +332,6 @@ class TicketSettings
         }
 
         $this->settings->setSetting('core_email.from_email_headers', implode(',', $this->from_email_headers));
+        $this->settings->setSetting('core_tickets.email_reply_as_note', $this->email_reply_as_note);
     }
 }

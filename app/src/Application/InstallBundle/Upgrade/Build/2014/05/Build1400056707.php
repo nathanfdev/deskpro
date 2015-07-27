@@ -42,6 +42,7 @@ class Build1400056707 extends AbstractBuild
 
         $this->out("Create ticket_escalations table");
         $db->exec("CREATE TABLE ticket_escalations (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, event_trigger VARCHAR(50) NOT NULL, event_trigger_time INT NOT NULL, is_enabled TINYINT(1) NOT NULL, terms LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', terms_any LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', actions LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)', date_created DATETIME NOT NULL, date_last_run DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE ticket_escalations ADD sys_name VARCHAR(255) DEFAULT NULL", true);
 
         $this->out("Create ticket_escalation_logs table");
         $db->exec("CREATE TABLE ticket_escalation_logs (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, escalation_id INT DEFAULT NULL, date_ran DATETIME NOT NULL, date_criteria DATETIME NOT NULL, INDEX IDX_10B6C273700047D2 (ticket_id), INDEX IDX_10B6C273703EE70D (escalation_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");

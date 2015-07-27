@@ -164,7 +164,11 @@ class CleanupDaily extends AbstractJob
                 stream_context_create(array('http' => array('timeout' => 10)))
             );
 
-            if ($config && strpos($config, '<?') !== false && strpos($config, DP_DATABASE_PASSWORD) !== false && strpos($config, 'DP_DATABASE_PASSWORD') !== false) {
+            if ($config
+                && strpos($config, '<?') !== false
+                && (DP_DATABASE_PASSWORD === '' || strpos($config, DP_DATABASE_PASSWORD) !== false)
+                && strpos($config, 'DP_DATABASE_PASSWORD') !== false
+            ) {
 
                 $this->logStatus("CRITICAL: config.php file is publicly readable at $url");
 

@@ -110,8 +110,8 @@ if (!@ini_get('error_log')) {
     @ini_set('error_log', dp_get_log_dir() . '/server-phperr-cli.log');
 }
 
-if (!defined('DP_MA_SERVER')) {
-    define('DP_MA_SERVER', 'http://www.deskpro.com/members');
+if (!defined('DP_MA_SERVER_SECURE')) {
+    define('DP_MA_SERVER_SECURE', 'https://www.deskpro.com/members');
 }
 
 // Current build time
@@ -1976,7 +1976,7 @@ class Upgrade
     public function callService($endpoint, array $post_data = array(), $url = null)
     {
         if ($url === null) {
-            $url = DP_MA_SERVER;
+            $url = DP_MA_SERVER_SECURE;
         }
 
         $url = rtrim($url, '/') . '/api/' . ltrim($endpoint, '/');
@@ -2652,7 +2652,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
                 "<error>We could not fetch version information from our web server. There are a number of possible causes:\n"
                 ."    - Your server is behind a firewall\n"
                 ."    - There is a network problem between your server and ours\n"
-                ."    - Our version server may be having difficulties. Check http://www.deskpro.com/status/\n"
+                ."    - Our version server may be having difficulties. Check http://status.deskpro.com/\n"
                 ."\n"
                 ."You can try again but if you continue to experience trouble, you can contact us at support@deskpro.com</error>"
             );

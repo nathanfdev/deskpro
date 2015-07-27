@@ -90,6 +90,11 @@ interface BatchConfigInterface
     public function setDateModified(DateTime $date_modified);
 
     /**
+     * @return bool
+     */
+    public function getHasRemaining();
+
+    /**
      * Convert to array
      *
      * @return array

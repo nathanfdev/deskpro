@@ -65,14 +65,21 @@ class AppOptionsMapper
         $options['username']               = $settings->get('service_username');
         $options['password']               = $settings->get('service_password');
         $options['accountFilterFormat']    = $settings->get('account_filter');
+        $options['ldapPaging']             = $settings->get('ldap_paging');
+        $options['ldapPerPage']            = $settings->get('ldap_per_page');
 
         switch ($settings->get('secure')) {
             case 'ssl':
                 $options['useSsl'] = true;
+                $options['useStartTls'] = false;
                 break;
             case 'tls':
                 $options['useStartTls'] = true;
+                $options['useSsl'] = false;
                 break;
+            default:
+                $options['useStartTls'] = false;
+                $options['useSsl'] = false;
         }
 
         if (!$options['port']) {

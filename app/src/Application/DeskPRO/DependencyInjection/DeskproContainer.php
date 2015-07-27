@@ -725,6 +725,14 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @return \Application\DeskPRO\CustomFields\BillingFieldManager
+     */
+    public function getBillingFieldManager()
+    {
+        return $this->getSystemService('billing_fields_manager');
+    }
+
+    /**
      * @return \Application\DeskPRO\CustomFields\EntityFieldManager
      */
     public function getEntityFieldManager()

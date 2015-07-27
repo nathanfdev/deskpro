@@ -55,7 +55,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getFeedbackReaderConfig());
     }
 
     /**
@@ -64,7 +64,7 @@ final class Feedback extends AbstractParser
     public function export()
     {
         $collection     = new Entity\Collection();
-        $feedback_items = $this->reader->getData($this->getConfig());
+        $feedback_items = $this->reader->getData($this->getFeedbackReaderConfig());
 
         foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
@@ -135,6 +135,12 @@ final class Feedback extends AbstractParser
                 $entity->addAttachment($attachment);
             }
 
+            $custom_fields = $this->exportCustomFields($feedback['custom_fields']);
+            foreach ($custom_fields as $custom_field) {
+                /** @var Entity\CustomField $custom_field */
+                $entity->addCustomField($custom_field);
+            }
+
             return $entity;
         }
 
@@ -176,7 +182,7 @@ final class Feedback extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getFeedbackReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_FEEDBACK_PATH);
     }
@@ -210,6 +216,7 @@ final class Feedback extends AbstractParser
 
         return $this->hasRequiredColumns($feedback, $columns)
             && $this->isArrayColumn($feedback, 'labels')
-            && $this->isArrayColumn($feedback, 'attachments');
+            && $this->isArrayColumn($feedback, 'attachments')
+            && $this->isArrayColumn($feedback, 'custom_fields');
     }
 }

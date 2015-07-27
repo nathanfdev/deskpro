@@ -176,7 +176,7 @@ class AsseticManager
         }
 
         if (!is_dir($dir)) {
-            throw \RuntimeException("Bad asset write path `$dir`");
+            throw new \RuntimeException("Bad asset write path `$dir`");
         }
 
         $content = $asset->dump();

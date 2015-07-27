@@ -36,11 +36,11 @@
         <?php else: $failed = true; ?>
         <span class="label important" style="float:right">FAIL</span>
         <?php endif ?>
-        Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.2
+        Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.9
         <?php if ($failed): ?>
         <div class="alert-message block-message error">
             <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_php_version') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-            DeskPRO requires PHP 5.3.2. You have <?php echo phpversion() ?>.
+            DeskPRO requires PHP 5.3.9. You have <?php echo phpversion() ?>.
         </div>
         <?php endif ?>
     </td>
@@ -332,6 +332,25 @@
             <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_upload_tmp_dir') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
             We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?> contains an invalid value.
             The temporary upload directory must be writable by the web server for uploads to be accepted. If you do not fix this problem, you will not be able to add attachments to tickets or articles or upload any other kind of file.
+        </div>
+        <?php endif ?>
+    </td>
+</tr>
+
+
+<tr>
+    <td>
+        <?php $failed = false ?>
+        <?php if (!isset($errors['ldap_max_limit'])): ?>
+        <span class="label success" style="float:right">OK</span>
+        <?php else: $failed = true; $failed_phpini = true; ?>
+        <span class="label warning" style="float:right">WARNING</span>
+        <?php endif ?>
+        Check that PHP's <a href="http://php.net/manual/en/ldap.configuration.php#ini.ldap.max_links">ldap.max_links</a> setting is not too low
+        <?php if ($failed): ?>
+        <div class="alert-message block-message error">
+            We have detected the <code><a href="http://php.net/manual/en/ldap.configuration.php#ini.ldap.max_links">ldap.max_link</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?> contains a value that is too low.
+            If you plan on using the LDAP features of DeskPRO, we recommend a setting of 5 or higher (or, "-1" for unlimited).
         </div>
         <?php endif ?>
     </td>

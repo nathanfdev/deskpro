@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Types\JsonObjectSerializable;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -115,6 +116,26 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     public function has($id)
     {
         return isset($this->fields[$id]);
+    }
+
+
+    /**
+     * @param string $id
+     * @param Ticket $ticket
+     * @return bool
+     */
+    public function hasActiveField($id, Ticket $ticket)
+    {
+        if (!isset($this->fields[$id])) {
+            return false;
+        }
+
+        $f = $this->fields[$id];
+        if ($f->getCriteria() && !$f->getCriteria()->isTicketMatch($ticket)) {
+            return false;
+        }
+
+        return true;
     }
 
 

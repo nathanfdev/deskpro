@@ -54,7 +54,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getTicketReaderConfig());
     }
 
     /**
@@ -63,7 +63,7 @@ final class Tickets extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets    = $this->reader->getData($this->getConfig());
+        $tickets    = $this->reader->getData($this->getTicketReaderConfig());
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
@@ -122,7 +122,9 @@ final class Tickets extends AbstractParser
                 ->setOrganization($ticket['organization'])
                 ->setAsHold($ticket['is_hold'])
                 ->setUrgency($ticket['urgency'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']))
+                ->setLogMessage($ticket['log_message'])
+            ;
 
             if ($ticket['date_resolved']) {
                 $entity->setDateResolved(new DateTime($ticket['date_resolved']));
@@ -279,7 +281,7 @@ final class Tickets extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getTicketReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_TICKET_PATH);
     }
@@ -316,6 +318,7 @@ final class Tickets extends AbstractParser
             'participants',
             'labels',
             'custom_fields',
+            'log_message',
         );
 
         return $this->hasRequiredColumns($ticket, $columns)

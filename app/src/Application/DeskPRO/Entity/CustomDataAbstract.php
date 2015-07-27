@@ -37,6 +37,8 @@ namespace Application\DeskPRO\Entity;
 /**
  * Base class used for storing custom field data.
  *
+ * @method $this setField(CustomDataAbstract $field)
+ * @method $this setRootField(CustomDataAbstract $root_field)
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {

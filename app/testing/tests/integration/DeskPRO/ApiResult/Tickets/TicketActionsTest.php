@@ -162,6 +162,6 @@ class TicketActionsTest extends AbstractApiResultTest
             unset($expectedTicketMessage[$key]);
         }
 
-        return $this->assertEquals($retrievedTicketMessageArray, $expectedTicketMessage);
+        return $this->assertApiArrayEqual($retrievedTicketMessageArray, $expectedTicketMessage);
     }
 }

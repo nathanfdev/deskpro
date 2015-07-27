@@ -54,7 +54,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getFeedbackConfig());
+        return $this->getReaderCount($this->getFeedbackReaderConfig());
     }
 
     /**
@@ -63,8 +63,10 @@ final class Feedback extends AbstractParser
     public function export()
     {
         $collection     = new Entity\Collection();
-        $feedback_items = $this->getReaderData($this->getFeedbackConfig());
+
+        $feedback_items = $this->getReaderData($this->getFeedbackReaderConfig());
         $attachments    = $this->exportFeedbackAttachments();
+        $custom_fields  = $this->exportFeedbackCustomFields();
 
         foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
@@ -77,6 +79,17 @@ final class Feedback extends AbstractParser
                         if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $entity->getOid()) {
                             $entity->addAttachment($attachment);
                         }
+                    }
+                    foreach ($custom_fields as $custom_field_entity) {
+                        /** @var Entity\CustomField $custom_field_entity */
+                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
+                            $entity->addCustomField($custom_field_entity);
+                        }
+                    }
+
+                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $feedback);
+                    foreach ($inline_custom_fields as $custom_field_entity) {
+                        $entity->addCustomField($custom_field_entity);
                     }
 
                     $collection->attach($entity);
@@ -107,6 +120,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
+                ->setRawData($feedback)
                 ->setDestination('feedback_' . $feedback['id'])
                 ->setOid($feedback['id'])
                 ->setPersonEmail($feedback['person'])
@@ -139,7 +153,17 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackAttachments()
     {
-        return $this->exportAttachments($this->getFeedbackAttachmentsConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
+        return $this->exportAttachments($this->getFeedbackAttachmentsReaderConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
+    }
+
+    /**
+     * Returns a collection of ticket custom field data
+     *
+     * @return Entity\Collection
+     */
+    private function exportFeedbackCustomFields()
+    {
+        return $this->exportCustomFields($this->getFeedbackCustomFieldReaderConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
     }
 
     /**
@@ -173,7 +197,7 @@ final class Feedback extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getFeedbackConfig()
+    private function getFeedbackReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_FEEDBACK);
     }
@@ -183,8 +207,18 @@ final class Feedback extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getFeedbackAttachmentsConfig()
+    private function getFeedbackAttachmentsReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_FEEDBACK_ATTACHMENTS);
+    }
+
+    /**
+     * Returns reader config for feedback custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getFeedbackCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_FEEDBACK_CUSTOM_FIELDS);
     }
 }

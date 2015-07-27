@@ -93,23 +93,26 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             $headers = array();
         }
 
-        $data = array();
-        $data['ticket']          = $ticket->toApiData();
-        $data['person_context']  = $context->getPersonContext() ? $context->getPersonContext()->toApiData() : null;
-        $data['event_performer'] = $context->getEventPerformer();
-        $data['event_type']      = $context->getEventType();
-        $data['event_method']    = $context->getEventMethod();
-        $data['custom_data']     = $custom_data;
+        $method = strtoupper($this->getActionOption('method')) ?: 'POST';
+        $request = new \Guzzle\Http\Message\EntityEnclosingRequest($method, $url, $headers);
 
-        if ('json' === $this->getActionOption('payload_type')) {
-            $data = json_encode($data);
-            $headers['content-type'] = 'application/json';
-        } else {
-            $headers['content-type'] = 'application/x-www-form-urlencoded';
+        if ($method == 'POST' || $method == 'PUT') {
+            $data = array();
+            $data['ticket']          = $ticket->toApiData();
+            $data['person_context']  = $context->getPersonContext() ? $context->getPersonContext()->toApiData() : null;
+            $data['event_performer'] = $context->getEventPerformer();
+            $data['event_type']      = $context->getEventType();
+            $data['event_method']    = $context->getEventMethod();
+            $data['custom_data']     = $custom_data;
+
+            if ('json' === $this->getActionOption('payload_type')) {
+                $data = json_encode($data);
+                $headers['content-type'] = 'application/json';
+            } else {
+                $headers['content-type'] = 'application/x-www-form-urlencoded';
+            }
+            $request->setBody($data);
         }
-
-        $request = new \Guzzle\Http\Message\EntityEnclosingRequest($this->getActionOption('method') ?: 'POST', $url, $headers);
-        $request->setBody($data);
 
         if ($username || $password) {
             $request->setAuth($username ?: '', $password ?: '');

@@ -151,6 +151,11 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     private $custom_fields;
 
     /**
+     * @var string
+     */
+    private $log_message;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -287,6 +292,11 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             DeskPROEntity\Ticket::STATUS_RESOLVED,
             DeskPROEntity\Ticket::STATUS_ARCHIVED,
             DeskPROEntity\Ticket::STATUS_HIDDEN,
+
+            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_VALIDATING,
+            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_SPAM,
+            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
+            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_TEMP,
         );
 
         return in_array($this->status, $statuses, true);
@@ -589,6 +599,24 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
+     * @return string
+     */
+    public function getLogMessage()
+    {
+        return $this->log_message;
+    }
+
+    /**
+     * @param string $log_message
+     * @return $this
+     */
+    public function setLogMessage($log_message)
+    {
+        $this->log_message = $log_message;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -632,6 +660,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             'labels'        => $this->labels,
             'messages'      => $messages,
             'custom_fields' => $custom_fields,
+            'log_message'   => $this->log_message,
         );
     }
 
@@ -659,6 +688,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
                 ),
             )))
 
-            ->addGetterConstraint('statusValid', new Constraints\True());
+            ->addGetterConstraint('statusValid', new Constraints\True())
+        ;
     }
 }

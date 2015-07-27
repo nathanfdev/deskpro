@@ -37,6 +37,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
 use Application\DeskPRO\Debug\Data\TicketFilterData;
@@ -50,6 +51,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
@@ -69,6 +71,7 @@ use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
@@ -122,6 +125,7 @@ class TicketController extends AbstractController
         $field_manager = $this->container->getTicketFieldManager();
         $person_field_manager = $this->container->getPersonFieldManager();
         $org_field_manager = $this->container->getOrgFieldManager();
+
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
         $person_fields_group = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
         $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $person_fields_group);
@@ -129,6 +133,16 @@ class TicketController extends AbstractController
         $custom_org_fields = $ticket->person->organization
             ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $org_fields_group)
             : array();
+
+        if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
+            $billing_field_manager = $this->container->getBillingFieldManager();
+            $billing_fields_new = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge());
+            $billing_fields = array();
+
+            foreach ($ticket->charges as $charge) {
+                $billing_fields[$charge['id']] = $billing_field_manager->getDisplayArrayForObject($charge);
+            }
+        }
 
         // new custom fields
         $new_field_manager = $this->container->getCustomFieldManager();
@@ -402,6 +416,11 @@ class TicketController extends AbstractController
             'addable_slas'               => $addable_slas,
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
         );
+
+        if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
+            $vars['billing_fields_new'] = $billing_fields_new;
+            $vars['billing_fields'] = $billing_fields;
+        }
 
         if($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
@@ -1251,7 +1270,7 @@ class TicketController extends AbstractController
         }
 
         // havent persisted the messag yet, it was just for dupe checking
-        if (App::getSetting('core_tickets.enable_billing') && $this->in->getUint('charge_time')) {
+        if ((App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) && $this->in->getUint('charge_time')) {
             $charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
         } else {
             $charge = false;
@@ -1683,10 +1702,35 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
+        $tm = $this->container->getTicketManager();
+        $tm->markAsManaged($ticket);
+
+        $old_val = $message->is_agent_note;
         $message->is_agent_note = $this->in->getBool('is_note');
 
-        $this->em->persist($message);
-        $this->em->flush();
+        // When converting to a reply, we act as though this is a new
+        // agent reply and pass it through newreply triggers
+        if ($message->is_agent_note != $old_val) {
+            $this->em->persist($message);
+            $this->em->flush();
+
+            $ticket->getStateChangeRecorder()->recordData('message_note_status', array(
+                'message_id'    => $message->id,
+                'is_agent_note' => $message->is_agent_note
+            ));
+
+            $ticket_context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+            $tm->saveTicket($ticket, $ticket_context);
+
+            // fake this as a new message so things like notifications are sent through to the user
+            if (!$message->is_agent_note) {
+                $ticket->resetStateChangeRecorder();
+                $ticket_context = $tm->createAgentExecutorContext($message->person, 'newreply', 'web');
+                $ticket->getStateChangeRecorder()->recordData('free', array('message' => 'This message was converted from a note into a reply by ' . $this->person->getDisplayContact()));
+                $ticket->getStateChangeRecorder()->record('message', null, $message);
+                $tm->saveTicket($ticket, $ticket_context);
+            }
+        }
 
         return $this->createJsonResponse(array(
             'message_id' => $message->getId(),
@@ -2303,16 +2347,16 @@ class TicketController extends AbstractController
                 $permission_errors = true;
             } else {
 
+                $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
                 $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
                 $newticket->setValuesFromTicket($ticket);
+                $newticket->status = $ticket->status;
 
                 $validator = new NewTicketValidator();
                 $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
                 $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
                 $validator->setLayout($layout);
-
-                $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-                $newticket->status = $ticket->status;
 
                 if (!$validator->isValid($newticket)) {
                     $free = array();
@@ -2419,6 +2463,22 @@ class TicketController extends AbstractController
         ));
     }
 
+    public function ticketChargeFormAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+        $billing_field_manager = $this->container->getBillingFieldManager();
+        $billing_fields_new = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge());
+
+        return $this->render(
+            'AgentBundle:Ticket:view-billing-form.html.twig',
+            array(
+                'billing_fields_new' => $billing_fields_new,
+                'ticket' => $ticket,
+                'baseId' => $this->in->getString('base_id')
+            )
+        );
+    }
+
     ############################################################################
     # add-charge
     ############################################################################
@@ -2439,23 +2499,103 @@ class TicketController extends AbstractController
             );
         }
 
-        $comment = $this->in->getString('billing_comment');
-
-        $charge = $ticket->addCharge($this->person, $time, $amount, $comment);
-        if ($charge) {
-            $this->em->persist($ticket);
-            $this->em->flush();
-
-            return $this->createJsonResponse(array(
-                'inserted' => true,
-                'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
-                    'ticket' => $ticket,
-                    'charge' => $charge
-                ))
-            ));
-        } else {
+        if (!$charge = $ticket->addCharge($this->person, $time, $amount)) {
             return $this->createJsonResponse(array('inserted' => false));
         }
+
+        $ticket_log = new TicketLog();
+        $this->em->persist($charge);
+        $this->em->persist($ticket_log);
+
+        $ticket_log->ticket      = $ticket;
+        $ticket_log->person      = $this->person;
+        $ticket_log->action_type = 'new_billing';
+        $ticket_log->id_object   = $charge->id;
+        $ticket_log->details     = array(
+            'new_amount'   => $charge->amount,
+            'new_time'	   => $charge->charge_time,
+        );
+
+        $field_manager = $this->container->getBillingFieldManager();
+        $custom_fields = @$_POST['custom_fields'] ?: array();
+
+        $invalid_custom_fields = array();
+        $is_valid = true;
+        $trans = $this->container->getTranslator();
+        foreach ($field_manager->getFields() as $field) {
+            $errors = $field->getHandler()->validateFormData(
+                $custom_fields,
+                HandlerAbstract::CONTEXT_AGENT,
+                array('exist_ticket' => $ticket)
+            );
+            foreach ($errors as $code) {
+                $code = preg_replace('#.*?\.(.*?)$#', '$1', $code);
+                switch ($code) {
+                    case 'min_length':
+                        $code = 'text_min';
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                        break;
+                    case 'max_length':
+                        $code = 'text_max';
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                        break;
+                    case 'regex_fail':
+                        $code = 'text_regex';
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                        break;
+                    default:
+                        $msg = $trans->getPhraseText('user.error.form_' . $code);
+                }
+                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$msg;
+                $is_valid = false;
+            }
+        }
+        if (!$is_valid) {
+            return $this->createJsonResponse(array(
+                'inserted' => false,
+                'invalid_custom_fields' => $invalid_custom_fields,
+            ));
+        }
+
+        $this->em->persist($ticket);
+        $this->em->flush();
+
+        if (!empty($custom_fields)) {
+            $field_manager->saveFormToObject($custom_fields, $charge);
+            $changes = $charge->getStateChangeRecorder()->getChanges();
+
+            $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+            $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+            $obj = unserialize($serialized);
+            $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+            $method->setAccessible(true);
+            $details = $ticket_log->details;
+
+            foreach ($changes as $change) {
+                if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+            }
+            $ticket_log->details = $details;
+        }
+        $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
+
+        // todo need a transaction joined with above
+        $details = $ticket_log->details;
+        $details['charge_id'] = $charge->id;
+        $ticket_log->id_object = $charge->id;
+        $ticket_log->details = $details;
+        $this->em->flush();
+
+        return $this->createJsonResponse(array(
+            'inserted' => true,
+            'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+                'ticket' => $ticket,
+                'charge' => $charge,
+                'billing_fields' => $billing_fields,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+            ))
+        ));
     }
 
     ############################################################################
@@ -2466,21 +2606,43 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify_billing');
 
-        $charge = $this->em->createQuery('
-            SELECT c
-            FROM DeskPRO:TicketCharge c
-            WHERE c.ticket = ?0 AND c.id = ?1
-        ')->setParameters(array($ticket, $charge_id))->getOneOrNullResult();
+        /** @var Entity\TicketCharge $charge */
+        $charge = $this->em->getRepository('DeskPRO:TicketCharge')->findOneBy(array('ticket' => $ticket, 'id' => $charge_id));
 
         if (!$charge) {
             return $this->createJsonResponse(array(
-                'success' => false
+                'success' => false,
+            ));
+        }
+
+        $field_manager = $this->container->getBillingFieldManager();
+        $custom_fields = @$_POST['custom_fields'] ?: array();
+
+        $invalid_custom_fields = array();
+        $is_valid = true;
+        $trans = $this->container->getTranslator();
+        foreach ($field_manager->getFields() as $field) {
+            $errors = $field->getHandler()->validateFormData(
+                $custom_fields,
+                HandlerAbstract::CONTEXT_AGENT,
+                array('exist_ticket' => $ticket)
+            );
+            foreach ($errors as $code) {
+                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$trans->phrase(
+                        preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
+                    );
+                $is_valid = false;
+            }
+        }
+        if (!$is_valid) {
+            return $this->createJsonResponse(array(
+                'success' => false,
+                'invalid_custom_fields' => $invalid_custom_fields,
             ));
         }
 
         $old_amount	= $charge->amount;
         $old_time	= $charge->charge_time;
-        $old_comment	= $charge->comment;
 
         $amount = $this->in->getFloat('amount');
 
@@ -2490,9 +2652,6 @@ class TicketController extends AbstractController
             + $this->in->getUint('seconds')
         );
 
-        $comment = $this->in->getString('billing_comment');
-
-        $charge->comment = $comment;
         if ($charge->charge_time) {
             $charge->charge_time = $time;
         } else {
@@ -2504,25 +2663,65 @@ class TicketController extends AbstractController
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'modify_billing';
         $ticket_log->id_object   = $charge->id;
-        $ticket_log->details     = array(
-            'charge_id'    => $charge->id,
-            'old_amount'   => $old_amount,
-            'old_time'     => $old_time,
-            'new_amount'   => $charge->amount,
-            'new_time'	   => $charge->charge_time,
-            'old_comment'  => $old_comment,
-            'new_comment'  => $charge->comment
-        );
+        $details = array();
 
-        $this->em->persist($charge);
-        $this->em->persist($ticket_log);
+        if ($created = $this->in->getString('date_created')) {
+            try {
+                $dt = new \DateTime($created, new \DateTimeZone($this->person->getTimezone()));
+                $dt->setTimezone(new \DateTimeZone('UTC'));
+                $details['old_created'] = $charge->date_created;
+                $details['new_created'] = $dt;
+                $charge->date_created = $dt;
+
+            } catch(\Exception $e) {
+                return $this->createJsonResponse(array(
+                    'success' => false,
+                ));
+            }
+        }
+
+        if ($old_amount !== $charge->amount) {
+            $details['old_amount'] = $old_amount;
+            $details['new_amount'] = $charge->amount;
+        }
+
+        if ($old_time !== $charge->charge_time) {
+            $details['old_time'] = $old_time;
+            $details['new_time'] = $charge->charge_time;
+        }
+
+        if (!empty($custom_fields)) {
+            $field_manager->saveFormToObject($custom_fields, $charge);
+            $changes = $charge->getStateChangeRecorder()->getChanges();
+
+            $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+            $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+            $obj = unserialize($serialized);
+            $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+            $method->setAccessible(true);
+
+            foreach ($changes as $change) {
+                if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+            }
+        }
+
+        if ($details) {
+            $details['charge_id'] = $charge->id;
+            $ticket_log->details = $details;
+            $this->em->persist($ticket_log);
+        }
+
         $this->em->flush();
+        $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
         return $this->createJsonResponse(array(
             'updated'	=> true,
             'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                 'ticket' => $ticket,
-                'charge' => $charge
+                'charge' => $charge,
+                'billing_fields' => $billing_fields,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
             ))
         ));
 
@@ -2534,11 +2733,8 @@ class TicketController extends AbstractController
 
         $this->ensureAuthToken('delete_charge', $security_token);
 
-        $charge = $this->em->createQuery('
-            SELECT c
-            FROM DeskPRO:TicketCharge c
-            WHERE c.ticket = ?0 AND c.id = ?1
-        ')->setParameters(array($ticket, $charge_id))->getOneOrNullResult();
+        /** @var Entity\TicketCharge $charge */
+        $charge = $this->em->getRepository('DeskPRO:TicketCharge')->findOneBy(array('ticket' => $ticket, 'id' => $charge_id));
 
         if (!$charge) {
             return $this->createJsonResponse(array(
@@ -2546,6 +2742,39 @@ class TicketController extends AbstractController
             ));
         }
 
+        $ticket_log = new TicketLog();
+        $ticket_log->ticket      = $ticket;
+        $ticket_log->person      = $this->person;
+        $ticket_log->action_type = 'delete_billing';
+        $ticket_log->id_object   = $charge->id;
+        $ticket_log->details     = array(
+            'charge_id'    => $charge->id,
+            'old_amount'   => $charge->amount,
+            'old_time'     => $charge->charge_time,
+            'old_created'  => $charge->date_created,
+        );
+        foreach ($charge->custom_data as $data) {
+            /** @var $data Entity\CustomDataBilling */
+            $charge->getStateChangeRecorder()->record('custom_data.'.$data['root_field']['id'], $data, null, true);
+        }
+
+        $changes = $charge->getStateChangeRecorder()->getChanges();
+        $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+        $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+        $obj = unserialize($serialized);
+        $method = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+        $method->setAccessible(true);
+        $details = $ticket_log->details;
+
+        foreach ($changes as $change) {
+            foreach ($changes as $change) {
+                if (0 !== strpos($change->getField(), 'custom_data.')) continue;
+                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+            }
+        }
+        $ticket_log->details = $details;
+
+        $this->em->persist($ticket_log);
         $this->em->remove($charge);
         $this->em->flush();
 
@@ -2802,7 +3031,7 @@ class TicketController extends AbstractController
 
     public function changeUserOverlayAction($ticket_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
         return $this->render('AgentBundle:Ticket:change-user-overlay.html.twig', array(
             'ticket' => $ticket,
@@ -2811,7 +3040,7 @@ class TicketController extends AbstractController
 
     public function changeUserOverlayPreviewAction($ticket_id, $new_person_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
         $new_person = $this->em->find('DeskPRO:Person', $new_person_id);
         if (!$new_person) {
             throw $this->createNotFoundException();
@@ -2825,7 +3054,7 @@ class TicketController extends AbstractController
 
     public function changeUserAction($ticket_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
         $old_person = $ticket->person;
 
@@ -3475,20 +3704,18 @@ class TicketController extends AbstractController
         $field_manager = $this->container->getTicketFieldManager();
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
+        $billing_field_manager = $this->container->getBillingFieldManager();
+        $group = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
+        $billing_fields = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
         $page = $layouts->getLayout($ticket->department ? $ticket->department['id'] : 0);
         $layout = LayoutDisplay::createFromLayout($page, LayoutDisplay::NEW_TICKET);
 
         $manager = $this->container->getCustomFieldManager();
         $new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
-        $custom_person_fields = array();
-        $custom_org_fields = array();
-        if ($ticket->person) {
-            $custom_person_fields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($ticket->person);
-            if ($org = $ticket->person->organization) {
-                $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
-                $custom_org_fields = $this->container->getOrgFieldManager()->getDisplayArrayForObject($org);
-            }
+        if ($ticket->person && ($org = $ticket->person->organization)) {
+            $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
         }
 
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
@@ -3502,10 +3729,11 @@ class TicketController extends AbstractController
             'ticket_options'         => $ticket_options,
             'custom_fields'          => $custom_fields,
             'new_custom_fields'      => $new_custom_fields->createView(),
+            'billing_fields' => $billing_fields,
         ));
     }
 
-    public function newSaveAction()
+    public function newSaveAction(Request $request)
     {
         if (!$this->person->hasPerm('agent_tickets.create')) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -3524,7 +3752,11 @@ class TicketController extends AbstractController
         $formType = new \Application\AgentBundle\Form\Type\NewTicket();
         $form = $this->get('form.factory')->create($formType, $newticket);
 
-        if ($this->get('request')->getMethod() == 'POST') {
+        if ($request->getMethod() === 'POST') {
+
+            if ($request->get('is_note')) {
+                $newticket->is_note = true;
+            }
 
             $action_type = $this->in->getString('options.action');
             $macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
@@ -3561,7 +3793,7 @@ class TicketController extends AbstractController
                 }
             }
 
-            $form->handleRequest($this->get('request'));
+            $form->handleRequest($request);
             $form->isValid();
 
             #------------------------------
@@ -3647,14 +3879,35 @@ class TicketController extends AbstractController
             $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
             $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
+            $newticket->billing_fields = $this->request->request->get('billing_fields', array());
             $newticket->status = $set_status;
             $validator->setLayout($layout);
+            $newticket->setLayout($layout);
 
-            if (!$validator->isValid($newticket)) {
+            $all_billing_errors = array();
+            if ($post_billing_fields = $request->get('billing_fields', array())) {
+                $billing_field_manager = $this->container->getBillingFieldManager();
+
+                foreach ($billing_field_manager->getFields() as $field) {
+                    $billing_errors = $field->getHandler()->validateFormData(
+                        $post_billing_fields,
+                        HandlerAbstract::CONTEXT_AGENT
+                    );
+                    foreach ($billing_errors as $code) {
+                        $all_billing_errors[] = "(Billing) " . $field['title'].': '.$this->container->getTranslator()->getPhraseText(
+                                preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
+                            );
+                    }
+                }
+            }
+
+
+            if (!$validator->isValid($newticket) || $all_billing_errors) {
                 $free = array();
                 foreach ($validator->getErrorsInfo() as $info) {
                     $free[] = $info['message'];
                 }
+                $free = array_merge($free, $all_billing_errors);
 
                 return $this->createJsonResponse(array('error' => true, 'error_codes' => array('free' => true), 'error_messages' => $free));
             }
@@ -3737,9 +3990,50 @@ class TicketController extends AbstractController
                     }
 
                     if ($amount || $time) {
-                        $charge = $ticket->addCharge($this->person, $time, $amount, $this->in->getString('billing_comment'));
-                        if ($charge) {
+                        if ($charge = $ticket->addCharge($this->person, $time, $amount)) {
+
+                            $this->em->persist($charge);
                             $this->em->persist($ticket);
+                            $this->em->flush();
+
+                            $ticket_log = new TicketLog();
+                            $ticket_log->ticket = $ticket;
+                            $ticket_log->person = $this->person;
+                            $ticket_log->action_type = 'new_billing';
+                            $ticket_log->details = array(
+                                'new_amount' => $charge->amount,
+                                'new_time' => $charge->charge_time,
+                            );
+                            $this->em->persist($ticket_log);
+
+
+                            if (!empty($post_billing_fields)) {
+                                $billing_field_manager->saveFormToObject($post_billing_fields, $charge);
+                                $changes = $charge->getStateChangeRecorder()->getChanges();
+
+                                $class = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+                                $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+                                $obj = unserialize($serialized);
+                                $method = new \ReflectionMethod(
+                                    'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange'
+                                );
+                                $method->setAccessible(true);
+                                $details = $ticket_log->details;
+
+                                foreach ($changes as $change) {
+                                    foreach ($changes as $change) {
+                                        if (0 !== strpos($change->getField(), 'custom_data.')) {
+                                            continue;
+                                        }
+                                        $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+                                    }
+                                }
+                            }
+
+
+                            $details['charge_id'] = $charge->id;
+                            $ticket_log->id_object = $charge->id;
+                            $ticket_log->details = $details;
                             $this->em->flush();
                         }
                     }

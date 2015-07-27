@@ -84,7 +84,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		this.getEl('delete_btn').on('click', function() {
 			var url = $(this).data('delete-url');
-                        var el  = $('<div>Are you sure you want to delete this organization? <strong class="warning">The organization will be permanantly deleted</strong>.<br/><br/>Deleted Reason? <input type="text" value="" class="delete-reason" style="width: 200px;" />');
+                        var el  = $('<div>Are you sure you want to delete this organization? <strong class="warning">The organization will be permanently deleted</strong>.<br/><br/>Deleted Reason? <input type="text" value="" class="delete-reason" style="width: 200px;" />');
 			DeskPRO_Window.showConfirm(
 				el,
 				function() {

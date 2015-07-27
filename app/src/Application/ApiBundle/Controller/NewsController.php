@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @SWG\Resource(
@@ -1300,11 +1301,11 @@ class NewsController extends AbstractController
 
         if ($check_perm) {
             if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($news)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
 
             if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($news)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
         }
 

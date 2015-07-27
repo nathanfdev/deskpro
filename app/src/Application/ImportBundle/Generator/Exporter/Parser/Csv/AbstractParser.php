@@ -42,16 +42,20 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    const FILE_ARTICLES             = 'articles.csv';
-    const FILE_DOWNLOADS            = 'downloads.csv';
-    const FILE_DOWNLOAD_ATTACHMENTS = 'downloads_attachments.csv';
-    const FILE_FEEDBACK             = 'feedback.csv';
-    const FILE_FEEDBACK_ATTACHMENTS = 'feedback_attachments.csv';
-    const FILE_NEWS                 = 'news.csv';
-    const FILE_PEOPLE               = 'people.csv';
-    const FILE_TICKETS              = 'tickets.csv';
-    const FILE_TICKET_MESSAGES      = 'ticket_messages.csv';
-    const FILE_TICKET_ATTACHMENTS   = 'ticket_attachments.csv';
+    const FILE_ARTICLES               = 'articles.csv';
+    const FILE_ARTICLE_CUSTOM_FIELDS  = 'article_custom_fields.csv';
+    const FILE_DOWNLOADS              = 'downloads.csv';
+    const FILE_DOWNLOAD_ATTACHMENTS   = 'downloads_attachments.csv';
+    const FILE_FEEDBACK               = 'feedback.csv';
+    const FILE_FEEDBACK_ATTACHMENTS   = 'feedback_attachments.csv';
+    const FILE_FEEDBACK_CUSTOM_FIELDS = 'feedback_custom_fields.csv';
+    const FILE_NEWS                   = 'news.csv';
+    const FILE_PEOPLE                 = 'people.csv';
+    const FILE_PEOPLE_CUSTOM_FIELDS   = 'people_custom_fields.csv';
+    const FILE_TICKETS                = 'tickets.csv';
+    const FILE_TICKET_MESSAGES        = 'ticket_messages.csv';
+    const FILE_TICKET_ATTACHMENTS     = 'ticket_attachments.csv';
+    const FILE_TICKET_CUSTOM_FIELDS   = 'ticket_custom_fields.csv';
 
     /**
      * @var CsvReaderInterface
@@ -76,7 +80,13 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getReaderConfig($record_type)
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        /** @var CsvConfig $base */
+        $base = $this->reader->getConfig();
+
+        $config = clone $base;
+        $config->setResource(rtrim($base->getResource(), '/') . '/' . $record_type);
+
+        return $config;
     }
 
     /**
@@ -179,6 +189,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isAttachmentValid($attachment, $ref_column)) {
             $entity = new Entity\Attachment();
             $entity
+                ->setRawData($attachment)
                 ->setDestination($destination_prefix . $attachment[$ref_column])
                 ->setOid($num)
                 ->setPersonEmail($attachment['person'])
@@ -186,7 +197,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 ->setBlobPath($attachment['blob_path'])
                 ->setFileName($attachment['file_name'])
                 ->setContentType($attachment['content_type'])
-                ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
+                ->setAsInline($this->isBooleanTrue($attachment['is_inline']))
+            ;
 
             return $entity;
         }
@@ -215,5 +227,140 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         );
 
         return $this->hasRequiredColumns($attachment, $columns);
+    }
+
+    /**
+     * Returns a collection of custom fields
+     *
+     * @param CsvConfig $config
+     * @param string    $destination_prefix
+     * @param string    $ref_column
+     *
+     * @return Entity\Collection
+     */
+    protected function exportCustomFields(CsvConfig $config, $destination_prefix, $ref_column)
+    {
+        $collection    = new Entity\Collection();
+        $custom_fields = $this->getReaderData($config);
+
+        foreach ($custom_fields as $num => $custom_field) {
+            try {
+                $entity = $this->exportCustomField($num, $destination_prefix, $custom_field, $ref_column);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid custom field record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an attachment entity
+     *
+     * @param int    $num
+     * @param string $destination_prefix
+     * @param array  $custom_field
+     * @param string $ref_column
+     *
+     * @return Entity\CustomField|null
+     */
+    protected function exportCustomField($num, $destination_prefix, array $custom_field, $ref_column)
+    {
+        if ($this->isCustomFieldValid($custom_field, $ref_column)) {
+            $entity = new Entity\CustomField();
+            $entity
+                ->setRawData($custom_field)
+                ->setDestination($destination_prefix . $custom_field[$ref_column])
+                ->setOid($num)
+                ->setKey($custom_field['field_name'])
+                ->setValue($custom_field['value'])
+            ;
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if a custom field has all required columns
+     *
+     * @param array  $custom_field
+     * @param string $ref_column
+     *
+     * @return bool
+     */
+    protected function isCustomFieldValid(array $custom_field, $ref_column)
+    {
+        $columns = array(
+            $ref_column,
+            'field_name',
+            'value',
+        );
+
+        return $this->hasRequiredColumns($custom_field, $columns);
+    }
+
+    /**
+     * Returns a collection of inline custom fields
+     *
+     * @param string $destination
+     * @param array  $entity
+     *
+     * @return Entity\Collection
+     */
+    protected function exportInlineCustomFields($destination, array $entity)
+    {
+        $collection    = new Entity\Collection();
+        $custom_fields = $this->parseInlineCustomFields($entity);
+
+        foreach ($custom_fields as $num => $custom_field) {
+            $entity = new Entity\CustomField();
+            $entity
+                ->setOid($custom_field['property'])
+                ->setDestination($destination)
+                ->setKey($custom_field['field_name'])
+                ->setValue($custom_field['value'])
+            ;
+
+            $collection->attach($entity);
+
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Parses inline custom fields from entity
+     *
+     * @param array $entity
+     * @return array
+     */
+    protected function parseInlineCustomFields(array $entity)
+    {
+        $properties    = array_keys($entity);
+        $custom_fields = array();
+
+        foreach ($properties as $property) {
+            if (preg_match('/^custom "([^"]+)"$/', $property, $matches)) {
+                $custom_fields[] = array(
+                    'property'   => $property,
+                    'field_name' => $matches[1],
+                    'value'      => $entity[$property],
+                );
+            }
+        }
+
+        return $custom_fields;
     }
 }

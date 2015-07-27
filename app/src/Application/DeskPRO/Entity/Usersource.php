@@ -139,6 +139,13 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     protected $is_sso_background = false;
 
     /**
+     * True if this usersource should be automatically synced
+     *
+     * @var bool
+     */
+    protected $sync_enabled = false;
+
+    /**
      * True if this should attempt to make users who login agents
      *
      * @var bool
@@ -176,6 +183,16 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         $data['is_sso'] = $this->is_sso_background || $this->is_sso_auto;
 
         return $data;
+    }
+
+    public function isSyncEnabled()
+    {
+        return $this->sync_enabled;
+    }
+
+    public function setSyncEnabled($enabled)
+    {
+        $this->setModelField('sync_enabled', (bool) $enabled);
     }
 
     public function makeSsoAutoOnly()
@@ -286,6 +303,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
         $metadata->mapField(array( 'fieldName' => 'is_sso_auto', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_auto', ));
         $metadata->mapField(array( 'fieldName' => 'is_sso_background', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_background', ));
+        $metadata->mapField(array( 'fieldName' => 'sync_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'default' => 0, 'nullable' => false, 'columnName' => 'sync_enabled', ));
 
         $metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 
@@ -321,10 +339,19 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @return boolean
+     * @deprecated use isEnabled
      */
     public function getIsEnabled()
     {
-        return $this->is_enabled;
+        return $this->isEnabled();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return (bool) $this->is_enabled;
     }
 
     /**
@@ -373,5 +400,13 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return AppInstance|null
+     */
+    public function getApp()
+    {
+        return $this->app;
     }
 }

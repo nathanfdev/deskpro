@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		el.find('select').addClass('with-select2');
+		el.find('select').not('[data-no-select2]').addClass('with-select2');
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
@@ -109,7 +109,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			})
 		});
 
-		$('.DateTime.customfield', this.wrapper).each(function(){
+    $('.DateTime.customfield input', this.wrapper).each(function () {
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -159,7 +159,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var ol = $(this).text().length;
 				if (ol > len) len = ol;
 			});
-			$(this).width((10 * len) + 25);
+			$(this).width((10 * len) + 50);
 		});
 
 		var depSel = this.getEl('dep');
@@ -434,16 +434,113 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				target.slideDown('fast');
 			}
 		});
+
+    /**
+     * Note
+     */
+    var $toggle = this.getEl('message_toggle')
+      , $input = this.el.find('input[name="options[notify_user]"]')
+      , replyAsState = this.getEl('reply_as_type').data('type')
+      , emailCheckboxState = true
+      ;
+
+    $toggle.children('li').on('click', function(){
+      $toggle.children('li').removeClass('on');
+      $(this).addClass('on');
+
+      if ($(this).data('is-note')) {
+
+        self._is_note = true;
+        emailCheckboxState = $input.prop('checked');
+        replyAsState = self.getEl('reply_as_type').data('type');
+        self.removeSignature();
+
+        $input.prop('checked', false).parent().hide();
+        self.shortcutReplySetAwaitingAgent();
+
+      } else {
+
+        self._is_note = false;
+        $input.prop('checked', emailCheckboxState).parent().show();
+        self.setReplyAsOptionName(replyAsState, true);
+        self.addSignature();
+
+      }
+    });
 	},
 
-	setReplyAsOptionName: function(name) {
+  addSignature: function() {
+
+    if (this._is_note) return;
+
+    var textarea = this.textarea
+      , api = this.textarea.data('redactor')
+      ;
+
+    if (api) {
+
+      var sig = api.$editor.find('.dp-signature-start:first');
+      if (sig.length) return;
+
+      sig = this.getEl('signature_value_html').val() || '';
+      if (!sig) return;
+      sig = $(sig);
+      if ('DIV' === sig[0].tagName)
+        sig = $('<p class="dp-signature-start"></p>').append(sig.html());
+
+      api.$editor.append($($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>'), sig);
+
+    } else {
+
+      var sig = this.getEl('signature_value').val()
+        , text = textarea.val()
+        ;
+
+      if (!text.match(new RegExp(sig + '$')))
+      textarea.val(text + "\n\n" + sig);
+    }
+  },
+
+  removeSignature: function() {
+
+    var textarea = this.textarea
+      , api = this.textarea.data('redactor')
+      ;
+
+    if (api) {
+
+      var sig = api.$editor.find('.dp-signature-start:first')
+        , p
+        ;
+      if (!sig.length) return;
+
+      for (var i = 0; i < 2; i++) {
+        p = sig.prev();
+        if ('P' !== p.prop('tagName')) break; // not <p>
+        if ($.trim(p.text())) break;          // not empty string
+        p.remove();
+      }
+      sig.remove();
+
+    } else {
+
+      var sig = this.getEl('signature_value').val()
+        , text = textarea.val()
+        , reg = new RegExp("\\n?\\n?" + sig + '$')
+        ;
+
+      textarea.val(text.replace(reg, ''));
+    }
+  },
+
+	setReplyAsOptionName: function(name, ignoreMacro) {
 		var item = this.getEl('status_menu').find('li[data-type="' + name + '"]').first();
 		if (item[0]) {
-			this.setReplyAsOption(item);
+			this.setReplyAsOption(item, ignoreMacro);
 		}
 	},
 
-	setReplyAsOption: function(item) {
+	setReplyAsOption: function(item, ignoreMacro) {
 		var replyAsType = this.getEl('reply_as_type');
 
 		var html = Orb.escapeHtml(item.data('label'));
@@ -452,8 +549,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var macroUrl = item.data('get-macro-url');
 
-		var textarea = this.textarea;
-		var api = this.textarea.data('redactor');
+		var textarea = this.textarea
+      , api = this.textarea.data('redactor')
+      , self = this
+      ;
 
 		if (!macroUrl) {
 			this.getEl('actions_row').hide();
@@ -484,16 +583,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						actionsRowList.append(li);
 					});
 
-					// There's a snippet reply point
-					var sig = null;
-					if (api) {
-						sig = api.$editor.find('.dp-signature-start');
-						if (!sig[0]) {
-							sig = null;
-						}
-					}
-
-					actionsRowList.find('.with-reply, .with-snippet').each(function() {
+					!ignoreMacro && actionsRowList.find('.with-reply, .with-snippet').each(function() {
 						var pos = $(this).data('reply-pos');
 						var html = $(this).find('.reply-text').get(0).innerHTML;
 
@@ -501,26 +591,13 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							if (api) {
 								if (pos == 'overwrite') {
 									api.$editor.html(html);
-									if (sig) {
-										api.$editor.append(sig);
-									}
+									self.addSignature();
 								} else if (pos == 'prepend') {
 									api.$editor.prepend(html);
 								} else {
-									if (sig) {
-										var usesig = sig;
-										var prev = sig.prev();
-										if (prev[0] && prev.is('p') && $.trim(prev.text()) === '') {
-											usesig = prev;
-											var prev2 = prev.prev();
-											if (prev2[0] && prev2.is('p') && $.trim(prev2.text()) === '') {
-												prev2.remove()
-											}
-										}
-										usesig.before(html);
-									} else {
-										api.$editor.append(html);
-									}
+                  self.removeSignature();
+                  api.$editor.append(html);
+                  self.addSignature();
 								}
 
 								api.syncCode();
@@ -596,6 +673,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
+    formData.push({
+      name: 'is_note',
+      value: this.getEl('message_toggle').children('li.on').data('is-note') || ''
+    });
 
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on').hide();

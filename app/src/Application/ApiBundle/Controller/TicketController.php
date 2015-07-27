@@ -43,6 +43,7 @@ use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -254,7 +255,7 @@ class TicketController extends AbstractController implements ProtectedController
     public function newTicketAction()
     {
         if (!$this->person->hasPerm('agent_tickets.create')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         $errors = array();
@@ -867,7 +868,7 @@ class TicketController extends AbstractController implements ProtectedController
 
     /**
      * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/log",
+     * 	path="/tickets/{ticket_id}/logs",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets all logs in a Ticket by Ticket ID.",
@@ -897,16 +898,8 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
-        $trackers = $this->em->fetchAllCol("
-            SELECT log
-            FROM ticket_changetracker_logs
-            WHERE ticket_id = ?
-            ORDER BY id ASC
-        ", array($ticket->getId()));
-
         return $this->createApiResponse(array(
-            'logs' => $this->getApiData($ticket_logs),
-            'tracker_logs' => $trackers
+            'logs' => $this->getApiData($ticket_logs)
         ));
     }
 
@@ -1763,9 +1756,7 @@ class TicketController extends AbstractController implements ProtectedController
             $time = null;
         }
 
-        $comment = $this->in->getString('comment');
-
-        $charge = $ticket->addCharge($this->person, $time, $amount, $comment);
+        $charge = $ticket->addCharge($this->person, $time, $amount);
         $this->em->persist($ticket);
         $this->em->flush();
 
@@ -2570,12 +2561,16 @@ class TicketController extends AbstractController implements ProtectedController
 
         $ticket = $q->getOneOrNullResult();
 
-        if (!$ticket || !$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+        if (!$ticket) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $id");
         }
 
+        if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
+        }
+
         if ($check_perm && !$this->checkTicketPerm($ticket, $check_perm)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $id");
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         return $ticket;

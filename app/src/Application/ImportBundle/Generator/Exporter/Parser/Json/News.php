@@ -54,7 +54,7 @@ final class News extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getNewsReaderConfig());
     }
 
     /**
@@ -63,7 +63,7 @@ final class News extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $news_list  = $this->reader->getData($this->getConfig());
+        $news_list  = $this->reader->getData($this->getNewsReaderConfig());
 
         foreach ($news_list as $num => $news) {
             $this->advanceProgressBar();
@@ -139,7 +139,7 @@ final class News extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getNewsReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_NEWS_PATH);
     }

@@ -250,7 +250,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $this->logMessage('[TicketGatewayProcessor] Person ID is ' . $person->id);
             }
 
-            if ($person && !$person->is_agent) {
+            if ($person && !$person->is_agent && !$is_bounce) {
                 $ticket->addParticipantPerson($person);
             }
         }
@@ -286,7 +286,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($person && (!$person->is_agent && $person->is_disabled)) {
             // user is disabled so can't create/reply to tickets
 
-            if (!$this->reader->isFromRobot()) {
+            if (!$this->reader->isFromRobot() && !$is_bounce) {
                 $message = App::getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', array(
                     'subject' => $this->reader->getSubject()->getSubjectUtf8(),
@@ -331,7 +331,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $from_address = $this->container->getEmailAccountManager()->getAccountForTicket($ticket)->getUseEmailAddress();
 
                 // user is disabled so can't create/reply to tickets
-                if (!$this->reader->isFromRobot()) {
+                if (!$this->reader->isFromRobot() && !$is_bounce) {
                     $message = $this->container->getMailer()->createMessage();
                     $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', array(
                         'subject' => $this->reader->getSubject()->getSubjectUtf8(),
@@ -427,7 +427,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($ticket && $person) {
             App::$container->getTicketManager()->markAsManaged($ticket);
-
             return $this->runReply($ticket_email);
         } else {
             return $this->runNew($ticket_email, $reply_as_new);
@@ -435,6 +434,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
+     * Create a publicly visible reply to a ticket from an email.
+     *
      * @param  TicketIncomingEmail                            $ticket_email
      * @return \Application\DeskPRO\Entity\TicketMessage|null
      */

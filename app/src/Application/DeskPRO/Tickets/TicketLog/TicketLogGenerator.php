@@ -262,10 +262,11 @@ class TicketLogGenerator
                 break;
 
             case 'custom_field':
+            case 'custom_data':
                 return array(
                     'action_type'  => 'changed_custom_field',
-                    'value_before' => $old ? $old['value'] : null,
-                    'value_after'  => $new ? $new['value'] : null,
+                    'value_before' => $old ? @$old['value'] : null,
+                    'value_after' => $new ? @$new['value'] : null,
 
                     'field_id'   => $old ? $old['field_def']->id : null,
                     'field_name' => $old ? $old['field_def']->title : null
@@ -636,6 +637,14 @@ class TicketLogGenerator
                 $log_data['old_status']  = $old['status'];
                 $log_data['new_status']  = $new['status'];
 
+                return $log_data;
+
+            case 'message_note_status':
+                $log_data = array();
+                $log_data['action_type']    = 'message_note_status';
+                $log_data['message_id']     = $new['message_id'];
+                $log_data['was_agent_note'] = !$new['is_agent_note'];
+                $log_data['is_agent_note']  = $new['is_agent_note'];
                 return $log_data;
 
             case 'webhook':

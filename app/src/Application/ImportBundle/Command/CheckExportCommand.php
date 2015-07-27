@@ -27,10 +27,11 @@
 
 namespace Application\ImportBundle\Command;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Application\ImportBundle\Generator;
-use Exception;
+use RuntimeException;
 
 /**
  * Check export command
@@ -55,27 +56,9 @@ class CheckExportCommand extends AbstractExportCommand
     /**
      * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
     {
-        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
-
-        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
-        if ($config->needInputPath() &&  ! $config->getInputPath()) {
-            throw new Exception('Input path must be specified');
-        }
-        if ($config->isSilent()) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-        }
-
-        $logger    = $this->createLogger($config, $output);
         $generator = $this->createGenerator($config, $logger);
-
-        if ($config->getRetryWaitTimeout()) {
-            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
-
-            return;
-        }
-
         $this->createAndSetProgressBar($generator, $output);
 
         $exceptions = $generator->validate();
@@ -103,6 +86,16 @@ class CheckExportCommand extends AbstractExportCommand
                     $config->getLogPath()
                 ));
             }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function checkConfiguration(Generator\GeneratorConfig $config)
+    {
+        if ($config->needInputPath() &&  ! $config->getInputPath()) {
+            throw new RuntimeException('Input path must be specified');
         }
     }
 }

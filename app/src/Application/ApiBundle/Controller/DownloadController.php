@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
 * @SWG\Resource(
@@ -1483,11 +1484,11 @@ class DownloadController extends AbstractController
 
         if ($check_perm) {
             if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
 
             if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($download)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
         }
 

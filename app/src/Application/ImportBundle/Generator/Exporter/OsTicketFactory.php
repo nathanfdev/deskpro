@@ -27,7 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
+use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * OsTicket data exporter factory
@@ -40,10 +42,9 @@ class OsTicketFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    public function createExporter()
+    static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
-        /** @var OsTicketReaderInterface $reader */
-        $reader  = $this->container->get('deskpro.import.os_ticket_reader');
+        $reader = OsTicketReaderFactory::createReader($config);
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\OsTicket\Downloads($reader))
@@ -53,6 +54,6 @@ class OsTicketFactory extends AbstractFactory
             ->attach(new Parser\OsTicket\People($reader))
             ->attach(new Parser\OsTicket\Tickets($reader));
 
-        return new Osticket($parsers);
+        return new Osticket($parsers, $reader);
     }
 }

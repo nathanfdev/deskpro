@@ -388,6 +388,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		}
 		row.find('.select2').css('max-width', 150);
 		DP.select(row.find('.select2'));
+    row.find('[data-custom-field]').dpMultiLevelSelect();
 
 		if (row.data('form-base-name')) {
 			this.updateFormName($('.builder-op', row), row.data('form-base-name'));

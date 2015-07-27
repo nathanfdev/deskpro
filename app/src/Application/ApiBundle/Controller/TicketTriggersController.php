@@ -469,7 +469,10 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $is_new = !((bool)$trigger->id);
 
         $trigger->title         = $this->in->getString('title');
-        $trigger->event_trigger = $this->in->getString('event_trigger');
+
+        if ($is_new) {
+            $trigger->event_trigger = $this->in->getString('event_trigger');
+        }
 
         if ($trigger->event_trigger == TicketTrigger::EVENT_TYPE_UPDATE) {
             if ($this->in->getBool('flags.run_newreply')) {

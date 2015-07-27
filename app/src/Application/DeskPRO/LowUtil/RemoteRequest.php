@@ -156,6 +156,22 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         }
     }
 
+    private function setCaBundle($ch)
+    {
+        if (!defined('DP_CURL_USE_SYS_CA_BUNDLE')) {
+            if (defined('DP_ROOT') && file_exists(DP_ROOT.'/sys/Resources/ca-bundle.crt')) {
+                if (@curl_setopt($ch, CURLOPT_CAINFO, DP_ROOT.'/sys/Resources/ca-bundle.crt')) {
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                } else {
+                    error_log("Could not set DeskPRO CA Bundle");
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                }
+            } else {
+                error_log("Could not set DeskPRO CA Bundle");
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            }
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -172,6 +188,8 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $this->setCaBundle($ch);
         curl_exec($ch);
         fflush($fp);
         fclose($fp);
@@ -218,6 +236,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
         }
 
+        $this->setCaBundle($ch);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);

@@ -102,9 +102,10 @@ $collection->create('api_docs_get', array(
 ########################################################################################################################
 
 $collection->create('api_labels_definitions', array(
-    'path'          => '/labels/definitions',
+    'path'          => '/labels/definitions/{type}',
     'controller'    => 'ApiBundle:Labels:listDefinitions',
     'methods'       => array('GET'),
+    'defaults'      => array('type' => null),
 ));
 
 $collection->create('api_labels_definitions_create', array(
@@ -2429,27 +2430,15 @@ $collection->create('api_general_settings_save', array(
 # Usersources
 ########################################################################################################################
 
+$collection->create('api_usersources_start_sync', array(
+    'path' => '/usersources/start-sync',
+    'controller' => 'ApiBundle:Usersources:startUsersourceSync',
+    'methods' => array('POST')
+));
+
 $collection->create('api_usersources_list', array(
     'path'        => '/usersources/{type}',
     'controller'  => 'ApiBundle:Usersources:listByType',
-    'methods'     => array('GET'),
-));
-
-$collection->create('api_usersources_get', array(
-    'path'        => '/usersources/{type}/{id}',
-    'controller'  => 'ApiBundle:Usersources:getUsersource',
-    'methods'     => array('GET'),
-));
-
-$collection->create('api_usersources_post', array(
-    'path'        => '/usersources/{type}/{id}',
-    'controller'  => 'ApiBundle:Usersources:postUsersource',
-    'methods'     => array('POST'),
-));
-
-$collection->create('api_usersources_extra_details', array(
-    'path'        => '/usersources/{type}/app-{id}/extra-details',
-    'controller'  => 'ApiBundle:Usersources:getUsersourceExtra',
     'methods'     => array('GET'),
 ));
 
@@ -2465,10 +2454,58 @@ $collection->create('api_usersources_display_order', array(
     'methods'     => array('POST'),
 ));
 
+$collection->create('api_usersources_sync_status', array(
+    'path'        => '/usersources/sync/status',
+    'controller'  => 'ApiBundle:Usersources:syncStatus',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_sync_start', array(
+    'path'        => '/usersources/sync/start',
+    'controller'  => 'ApiBundle:Usersources:syncStart',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_sync_stop', array(
+    'path'        => '/usersources/sync/stop',
+    'controller'  => 'ApiBundle:Usersources:syncStop',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_sync_info', array(
+    'path' => '/usersources/sync/info/{app_id}',
+    'controller' => 'ApiBundle:Usersources:getSyncInformation',
+    'methods' => array('GET'),
+));
+
 $collection->create('api_usersources_available_apps', array(
     'path'        => '/usersources/available/app-packages/{interface}',
     'controller'  => 'ApiBundle:Usersources:availableAppPackages',
     'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_get', array(
+    'path' => '/usersources/{type}/{id}',
+    'controller' => 'ApiBundle:Usersources:getUsersource',
+    'methods' => array('GET'),
+));
+
+$collection->create('api_usersources_post', array(
+    'path' => '/usersources/{type}/{id}',
+    'controller' => 'ApiBundle:Usersources:postUsersource',
+    'methods' => array('POST'),
+));
+
+$collection->create('api_usersources_extra_details', array(
+    'path' => '/usersources/{type}/app-{app_id}/extra-details',
+    'controller' => 'ApiBundle:Usersources:getUsersourceExtra',
+    'methods' => array('GET'),
+));
+
+$collection->create('api_usersource_refresh_person', array(
+    'path'        => '/usersources/{usersource_id}/person-refresh/{identity_or_email}',
+    'controller'  => 'ApiBundle:Usersources:personRefresh',
+    'methods'     => array('GET')
 ));
 
 ########################################################################################################################
@@ -4215,6 +4252,15 @@ $collection->create('api_custom_fields_update_order', array(
     'methods'     => array('POST'),
 ));
 
+$collection->create(
+    'api_custom_fields_delete_option',
+    array(
+        'path' => '/custom_fields/option',
+        'controller' => 'ApiBundle:CustomFields:deleteOption',
+        'methods' => array('DELETE'),
+    )
+);
+
 ########################################################################################################################
 # CRM Organization Fields
 ########################################################################################################################
@@ -4544,35 +4590,35 @@ $collection->create('api_langs_install', array(
     'path'         => '/langs/{id}/install',
     'controller'   => 'ApiBundle:Languages:installLang',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '[a-z]+')
+    'requirements' => array('id' => '[a-z_]+')
 ));
 
 $collection->create('api_langs_delete', array(
     'path'         => '/langs/{id}/uninstall',
     'controller'   => 'ApiBundle:Languages:uninstallLang',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '\d+|[a-z]+')
+    'requirements' => array('id' => '\d+|[a-z_]+')
 ));
 
 $collection->create('api_langs_getinfo', array(
     'path'         => '/langs/{id}',
     'controller'   => 'ApiBundle:Languages:getLang',
     'methods'      => array('GET'),
-    'requirements' => array('id' => '\d+|[a-z]+')
+    'requirements' => array('id' => '\d+|[a-z_]+')
 ));
 
 $collection->create('api_langs_saveinfo', array(
     'path'         => '/langs/{id}',
     'controller'   => 'ApiBundle:Languages:saveLang',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '\d+|[a-z]+')
+    'requirements' => array('id' => '\d+|[a-z_]+')
 ));
 
 $collection->create('api_langs_savephrases', array(
     'path'         => '/langs/{id}/phrases',
     'controller'   => 'ApiBundle:Languages:savePhraseSet',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '\d+|[a-z]+')
+    'requirements' => array('id' => '\d+|[a-z_]+')
 ));
 
 $collection->create('api_langs_getphrasegroups', array(
@@ -4593,7 +4639,7 @@ $collection->create('api_langs_getphrase', array(
     'path'         => '/langs/phrases/{phrase_id}/{for_lang}',
     'controller'   => 'ApiBundle:Languages:getPhrase',
     'defaults'     => array('for_lang' => '-1'),
-    'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+', 'for_lang' => '\d+|[a-z]+'),
+    'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+', 'for_lang' => '\d+|[a-z_]+'),
     'methods'      => array('GET'),
 ));
 
@@ -4607,7 +4653,7 @@ $collection->create('api_langs_getphrases', array(
     'path'         => '/langs/{id}/{group_id}',
     'controller'   => 'ApiBundle:Languages:getPhrases',
     'methods'      => array('GET'),
-    'requirements' => array('id' => '\d+|[a-z]+', 'group_id' => '[a-zA-Z0-9\-_\.]+')
+    'requirements' => array('id' => '\d+|[a-z_]+', 'group_id' => '[a-zA-Z0-9\-_\.]+')
 ));
 
 ########################################################################################################################
@@ -4855,6 +4901,15 @@ $collection->create('api_blobs_get', array(
     'methods'      => array('GET'),
 ));
 
+$collection->create(
+    'api_blobs_delete',
+    array(
+        'path' => '/blobs/{id}/{auth}',
+        'controller' => 'ApiBundle:Blobs:delete',
+        'methods' => array('DELETE'),
+    )
+);
+
 ########################################################################################################################
 # My
 ########################################################################################################################
@@ -4978,6 +5033,115 @@ $collection->create('api_reset_demo_status', array(
     'path'        => '/reset-demo/status',
     'controller'  => 'ApiBundle:ResetDemo:status',
     'methods'     => array('GET'),
+));
+
+##############################################################################################
+# Importers
+##############################################################################################
+
+$collection->create(
+    'api_server_importers_list',
+    array(
+        'path' => '/server/importers',
+        'controller' => 'ApiBundle:Importers:list',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_get',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:get',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_getlog',
+    array(
+        'path' => '/server/importers/{id}/download-log',
+        'controller' => 'ApiBundle:Importers:downloadLog',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_save',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:save',
+        'methods' => array('PUT'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_test',
+    array(
+        'path' => '/server/importers/{id}/test',
+        'controller' => 'ApiBundle:Importers:test',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_start',
+    array(
+        'path' => '/server/importers/{id}/start',
+        'controller' => 'ApiBundle:Importers:start',
+        'methods' => array('GET'),
+    )
+);
+
+
+##############################################################################################
+# Billing Fields
+##############################################################################################
+
+$collection->create('api_billing_fields_get', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'ApiBundle:BillingFields:getCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_billing_fields_create', array(
+    'path'       => '/billing_fields',
+    'controller' => 'ApiBundle:BillingFields:saveCustomField',
+    'defaults'   => array('id' => '0'),
+    'methods'    => array('PUT'),
+));
+
+$collection->create('api_billing_fields_save', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'ApiBundle:BillingFields:saveCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_billing_fields_delete', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'ApiBundle:BillingFields:deleteCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('DELETE'),
+));
+
+$collection->create('api_billing_fields', array(
+    'path'        => '/billing_fields',
+    'controller'  => 'ApiBundle:BillingFields:list',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_billing_fields_setenabled', array(
+    'path'        => '/billing_fields/set-enabled/{field_id}/{is_enabled}',
+    'controller'  => 'ApiBundle:BillingFields:toggleField',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_billing_fields_update_order', array(
+    'path'        => '/billing_fields/display-order',
+    'controller'  => 'ApiBundle:BillingFields:saveDisplayOrder',
+    'methods'     => array('POST'),
 ));
 
 return $collection;

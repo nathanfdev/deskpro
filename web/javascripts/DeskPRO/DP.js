@@ -132,10 +132,6 @@ var DP = {
 	},
 
 	select: function(el, options) {
-    if (el.data('select2') || el.data('no-select2')) {
-			return;
-		}
-
 		if (el.length && el.length > 1) {
 			el.each(function() {
 				DP.select($(this), options);
@@ -143,7 +139,11 @@ var DP = {
 			return;
 		}
 
-		var options = options || {};
+    if (el.data('select2') || el.data('no-select2')) {
+      return;
+    }
+
+		options = options || {};
 
 		if (el.data('style-type')) {
 			switch (el.data('style-type')) {

@@ -137,8 +137,20 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
                 $this->session->set('auth_person_id', $person->getId());
                 $this->session->set('dp_interface', DP_INTERFACE);
+                $this->session->setFlash('is_from_login', 'yes');
 
                 App::setCurrentPerson($person);
+
+                if ($this->in->getBool('remember_me')) {
+                    $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie(
+                        'dpreme',
+                        $person->getId() . '-' . $person->getRememberMeCookieCode(),
+                        'never',
+                        true,
+                        \Orb\Util\Web::getRequestProtocol() == 'HTTPS' ? true : false
+                    );
+                    $cookie->send();
+                }
 
                 // Announce if its an agent
                 if ($set_active) {
@@ -241,6 +253,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
         $this->session->invalidate();
         $this->session->save();
+
+        $this->session->setFlash('is_from_logout', 'yes');
 
         foreach (array('dpsid-agent', 'dpsid-admin', 'dpreme') as $cookie_name) {
             if (!empty($_COOKIE[$cookie_name])) {
@@ -453,6 +467,7 @@ HTML;
         $identity = $result->getIdentity();
 
         $person = $identity['person'];
+        $person->language = $this->container->getTranslator()->getLanguage();
 
         if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
             $this->session->set('account_disabled', $person->id);
@@ -476,6 +491,7 @@ HTML;
         $this->session->invalidate();
         $this->session->set('auth_person_id', $identity->getIdentity());
         $this->session->set('dp_interface', DP_INTERFACE);
+        $this->session->setFlash('is_from_login', 'yes');
         $this->session->save();
 
         App::setCurrentPerson($person);
@@ -1018,10 +1034,12 @@ HTML;
                     'email' => $email
                 );
 
+                $this->container->getTranslator()->setDefaultPersonContext($person);
                 $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
                 $message->setTo($email, $person->getDisplayName());
                 $this->container->getMailer()->send($message);
+                $this->container->getTranslator()->setDefaultPersonContext($this->person);
 
                 if ($_format == 'json') {
                     return $this->createJsonResponse(array('success' => 1));
@@ -1048,10 +1066,14 @@ HTML;
             'interface' => DP_INTERFACE
         );
 
+        $this->container->getTranslator()->setDefaultPersonContext($person);
         $message = $this->container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
         $message->setTo($email, $person->getDisplayName());
-
+        $this->container->getTranslator()->setDefaultPersonContext($person);
+        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+            $message->prepare();
+        });
         $this->container->getMailer()->send($message);
 
         if ($_format == 'json') {
@@ -1074,8 +1096,9 @@ HTML;
             return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
         }
 
-        $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
-        $this->em->getRepository('DeskPRO:TmpData')->removeDupes($code_data);
+        if ($code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password')) {
+            $this->em->getRepository('DeskPRO:TmpData')->removeDupes($code_data);
+        }
         $person = null;
         if ($code_data) {
             $person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
@@ -1367,6 +1390,7 @@ HTML;
     )
     {
         $this->session->set('auth_person_id', $person['id']);
+        $this->session->setFlash('is_from_login', 'yes');
         $this->session->set('dp_interface', DP_INTERFACE);
         $this->session->set('auth_usersource_id', $usersource->id);
         $this->session->set('auth_usersource_type', $usersource->source_type);

@@ -38,6 +38,8 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
  */
 final class Articles extends AbstractParser
 {
+    const ARTICLE_PREFIX = 'article_';
+
     /**
      * {@inheritdoc}
      */
@@ -51,7 +53,7 @@ final class Articles extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getConfig());
+        return $this->getReaderCount($this->getArticleReaderConfig());
     }
 
     /**
@@ -59,8 +61,10 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $articles   = $this->getReaderData($this->getConfig());
+        $collection    = new Entity\Collection();
+
+        $articles      = $this->getReaderData($this->getArticleReaderConfig());
+        $custom_fields = $this->exportArticleCustomFields();
 
         foreach ($articles as $num => $article) {
             $this->advanceProgressBar();
@@ -68,6 +72,18 @@ final class Articles extends AbstractParser
             try {
                 $entity = $this->exportArticle($num, $article);
                 if ($entity) {
+                    foreach ($custom_fields as $custom_field_entity) {
+                        /** @var Entity\CustomField $custom_field_entity */
+                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
+                            $entity->addCustomField($custom_field_entity);
+                        }
+                    }
+
+                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $article);
+                    foreach ($inline_custom_fields as $custom_field_entity) {
+                        $entity->addCustomField($custom_field_entity);
+                    }
+
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
@@ -96,17 +112,20 @@ final class Articles extends AbstractParser
     private function exportArticle($num, array $article)
     {
         if ($this->isArticleValid($article)) {
-            $entity = new Entity\Article();
+            $article_id = isset($article['id']) ? $article['id'] : 'num_' . $num;
+            $entity     = new Entity\Article();
             $entity
-                ->setDestination('article_' . $num)
-                ->setOid($num)
+                ->setRawData($article)
+                ->setDestination(self::ARTICLE_PREFIX . $article_id)
+                ->setOid($article_id)
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
                 ->setContent($article['content'])
                 ->setSlug($article['slug'])
                 ->setLanguage($article['language'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']))
-                ->setStatus($article['status']);
+                ->setStatus($article['status'])
+            ;
 
             if ($article['label']) {
                 $entity->addLabel($article['label']);
@@ -119,6 +138,16 @@ final class Articles extends AbstractParser
         }
 
         return null;
+    }
+
+    /**
+     * Returns a collection of articles custom field data
+     *
+     * @return Entity\Collection
+     */
+    private function exportArticleCustomFields()
+    {
+        return $this->exportCustomFields($this->getArticleCustomFieldReaderConfig(), self::ARTICLE_PREFIX, 'article_id');
     }
 
     /**
@@ -149,8 +178,18 @@ final class Articles extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getConfig()
+    private function getArticleReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_ARTICLES);
+    }
+
+    /**
+     * Returns reader config for articles custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getArticleCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_ARTICLE_CUSTOM_FIELDS);
     }
 }

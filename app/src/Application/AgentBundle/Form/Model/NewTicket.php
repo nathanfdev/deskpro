@@ -40,8 +40,10 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 
 class NewTicket
 {
@@ -123,15 +125,39 @@ class NewTicket
     protected $_person_context;
 
     /**
+     * @var LayoutDisplay
+     */
+    protected $layout;
+
+    /**
      * @var \Application\DeskPRO\Entity\Ticket
      */
     public $exist_ticket;
 
+    /**
+     * @var array
+     */
     protected $_blob_inline_ids = array();
+
+    /**
+     * @var bool
+     */
     public $suppress_user_notify = false;
 
+    /**
+     * @var array
+     */
     public $custom_person_fields;
+
+    /**
+     * @var array
+     */
     public $custom_org_fields;
+
+    /**
+     * @var bool
+     */
+    public $is_note = false;
 
     public function __construct(EntityManager $em, Person $person_context)
     {
@@ -142,6 +168,14 @@ class NewTicket
         $this->_ticket_manager = App::$container->getTicketManager();
 
         $this->person = new NewTicketPerson();
+    }
+
+    /**
+     * @param LayoutDisplay $layout
+     */
+    public function setLayout(LayoutDisplay $layout)
+    {
+        $this->layout = $layout;
     }
 
 
@@ -354,6 +388,10 @@ class NewTicket
         $message->person = $this->_person_context;
         $message->setVisitorFromRequest();
 
+        if ($this->is_note) {
+            $message->is_agent_note = true;
+        }
+
         $message_text = $this->message;
         $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
         $message_text = $formatter->formatText($message_text, $ticket);
@@ -398,7 +436,7 @@ class NewTicket
 
         switch ($this->billing_type) {
             case 'amount':
-                $ticket->addCharge($this->_person_context, null, floatval($this->billing_amount), $this->billing_comment);
+                $ticket->addCharge($this->_person_context, null, floatval($this->billing_amount));
                 break;
 
             case 'time':
@@ -407,7 +445,7 @@ class NewTicket
                     + 60 * $this->billing_minutes
                     + $this->billing_seconds
                 );
-                $ticket->addCharge($this->_person_context, $time, null, $this->billing_comment);
+                $ticket->addCharge($this->_person_context, $time, null);
         }
 
         $this->_em->persist($ticket);
@@ -417,20 +455,44 @@ class NewTicket
         }
 
         $field_manager = App::getSystemService('ticket_fields_manager');
-        $post_custom_fields = $this->ticket_fields;
+        $post_custom_fields = array();
+        if ($this->ticket_fields) {
+            foreach ($this->ticket_fields as $k => $v) {
+                $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                if (!$this->layout || $this->layout->hasActiveField('ticket_field_' . $id, $ticket)) {
+                    $post_custom_fields[$k] = $v;
+                }
+            }
+        }
         if (!empty($post_custom_fields)) {
             $field_manager->saveFormToObject($post_custom_fields, $ticket);
         }
 
         $manager = App::$container->getPersonFieldManager();
-        $post_custom_person_fields = $this->custom_person_fields;
+        $post_custom_person_fields = array();
+        if ($this->custom_person_fields) {
+            foreach ($this->custom_person_fields as $k => $v) {
+                $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                if (!$this->layout || $this->layout->hasActiveField('user_field_' . $id, $ticket)) {
+                    $post_custom_person_fields[$k] = $v;
+                }
+            }
+        }
         if (!empty($post_custom_person_fields)) {
             $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
         }
 
         if ($ticket->person->organization) {
             $manager = App::$container->getOrgFieldManager();
-            $post_custom_org_fields = $this->custom_org_fields;
+            $post_custom_org_fields = array();
+            if ($this->custom_org_fields) {
+                foreach ($this->custom_org_fields as $k => $v) {
+                    $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                    if (!$this->layout || $this->layout->hasActiveField('org_field_' . $id, $ticket)) {
+                        $post_custom_org_fields[$k] = $v;
+                    }
+                }
+            }
             if (!empty($post_custom_org_fields)) {
                 $manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
             }

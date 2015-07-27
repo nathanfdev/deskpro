@@ -38,6 +38,38 @@ use Application\ImportBundle\AbstractCollection;
 final class Collection extends AbstractCollection
 {
     /**
+     * @var int
+     */
+    private $expected_count = 0;
+
+    /**
+     * @param int $expected_count
+     * @return $this
+     */
+    public function setExpectedCount($expected_count)
+    {
+        $this->expected_count = $expected_count;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpectedCount()
+    {
+        return $this->expected_count;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSkippedCount()
+    {
+        $diff = $this->expected_count - count($this->collection);
+        return $diff > 0 ? $diff : 0;
+    }
+
+    /**
      * Add an entity
      *
      * @param EntityInterface $entity
@@ -57,6 +89,8 @@ final class Collection extends AbstractCollection
      */
     public function merge(Collection $collection)
     {
+        $this->expected_count += $collection->getExpectedCount();
+
         foreach ($collection as $entity) {
             /** @var EntityInterface $entity */
             $this->attach($entity);

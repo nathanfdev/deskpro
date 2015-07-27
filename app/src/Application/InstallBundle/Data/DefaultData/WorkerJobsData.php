@@ -149,7 +149,7 @@ class WorkerJobsData extends AbstractDefaultData
 			'id'           => 'hard_delete_tickets',
 			'worker_group' => 'hard_delete_tickets',
 			'title'        => 'Hard Delete Tickets',
-			'description'  => 'Processes tickets that were soft-deleted long ago and permanantly deletes them',
+			'description'  => 'Processes tickets that were soft-deleted long ago and permanently deletes them',
 			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\HardDeleteTickets',
 			'run_interval' => Job\HardDeleteTickets::DEFAULT_INTERVAL
 		);

@@ -50,7 +50,7 @@ class FilterSlaStatus extends AbstractFilterTerm
     protected function getOptionsDef()
     {
         $options = new CheckedOptionsArray();
-        $options->addRequiredNames('sla_ids', 'sla_status');
+        $options->addRequiredNames('sla_id', 'sla_status');
 
         return $options;
     }

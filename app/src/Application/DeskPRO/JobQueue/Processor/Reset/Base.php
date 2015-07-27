@@ -36,11 +36,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 abstract class Base extends AbstractJobProcessor
 {
     /**
-     * @var JobQueue
-     */
-    protected $queue;
-
-    /**
      * @var EntityManager
      */
     protected $em;
@@ -53,10 +48,9 @@ abstract class Base extends AbstractJobProcessor
     /**
      * @inheritdoc
      */
-    public function __construct(DeskproContainer $container, JobQueue $queue)
+    public function __construct(DeskproContainer $container)
     {
         parent::__construct($container->getEm()->getConnection());
-        $this->queue = $queue;
         $this->em = $container->getEm();
         $this->container = $container;
     }
@@ -82,13 +76,15 @@ abstract class Base extends AbstractJobProcessor
 
         if ($total === $data['limit']) {
             $data['offset'] = $data['offset'] + $total;
-            $new = $this->queue->add($this::JOB_TYPE, $data);
+            $new = $this->container->getJobQueue()->add($this::JOB_TYPE, $data);
 
             $jobs = $this->em->getRepository('DeskPRO:Job')->findBy(array('depends_on_job' => $job['id']));
             foreach ($jobs as $dep) {
                 $dep->depends_on_job = $new;
             }
             $this->em->flush();
+
+            $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
         }
 
         return true;

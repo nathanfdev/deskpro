@@ -1,12 +1,31 @@
 {
-	"oid": 1,
-	"person": "admin@example.com",
-	"language": "English",
-	"title": "Example Feedback",
-	"content": "This is an example feedback. Feel free to edit or delete it from the agent interface.",
-	"total_rating": "4",
-	"num_comments": "5",
-	"num_ratings": "6",
-	"category": "Suggestion",
-	"labels": ["label1", "label2"]
+  "oid": 1,
+  "person": "serg.yastrebov@gmail.com",
+  "language": "english",
+  "title": "Feedback 1",
+  "content": "Feedback Content 1",
+  "slug": "feedback-slug-1",
+  "popularity": 10,
+  "status": "published",
+  "total_rating": 0,
+  "num_comments": 0,
+  "num_ratings": 0,
+  "view_count": 0,
+  "category": "Feedback Category 1",
+  "labels": ["Feedback Label 1"],
+  "date_created": "2015-03-05 19:40:10",
+  "date_published": null,
+  "attachments": [
+    {
+      "oid": 0,
+      "person": "serg.yastrebov@gmail.com",
+      "blob_data": null,
+      "blob_url": "",
+      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/docs\/data_example\/csv\/feedback.csv",
+      "file_name": "feedback.csv",
+      "content_type": "csv",
+      "is_inline": false
+    }
+  ],
+  "custom_fields": []
 }

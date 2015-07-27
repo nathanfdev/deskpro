@@ -47,18 +47,32 @@ class PhoneNumberType extends AbstractType
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('number', 'text', array(
+		//
+		// NOTE: this is a "hidden" field. You should instantiate "DeskPRO.UI.PhoneNumberInputs" on the client
+		// and call "renderPhoneInputs()" after the form is drawn. It is safe to call that method any number of
+		// times if you are using this in a collection type.
+		//
+
+		$builder->add('number', 'hidden', array(
 			'required' => false,
 			'label' => false,
 			'attr' => array(
-				'placeholder' => '+19021111111',
-				'class' => 'phone_number',
+				'class' => 'dp_phone_number_hidden',
 			),
 			'constraints' => array(
-				new NotBlank(array('message' => 'Phone number is invalid.')),
+				new NotBlank(array('message' => '[phone_number]Phone number is invalid.')),
 			),
 		));
 		$builder->get('number')->addModelTransformer(new PhoneNumberModelTransformer());
+
+		if ($options['show_phone_label']) {
+			$builder->add('label', 'text', array(
+				'label' => false,
+				'attr' => array(
+					'class' => 'phone_label'
+				)
+			));
+		}
 
 		$builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event){
 			$data = $event->getForm()->getData();
@@ -84,6 +98,7 @@ class PhoneNumberType extends AbstractType
 	{
 		$resolver->setDefaults(array(
 			'data_class' => 'Application\DeskPRO\Entity\PhoneNumber',
+			'show_phone_label' => false
 		));
 	}
 

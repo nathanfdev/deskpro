@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\DependencyInjection\SystemServices\PersonEditManagerService;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
@@ -44,6 +45,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
+use Application\DeskPRO\People\PersonEditManager;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Util\PhoneNumbers;
@@ -148,14 +150,16 @@ class PersonController extends AbstractController
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
 
-	    $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
-		    'type' => new PhoneNumberType(),
-		    'allow_add' => true,
-		    'allow_delete' => true,
-		    'options' => array(
-			    'label' => false
-		    ),
-	    ))->createView();
+        $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
+            'type' => new PhoneNumberType(),
+            'allow_add' => true,
+            'allow_delete' => true,
+            'options' => array(
+                'label' => false,
+                'show_phone_label' => true
+            ),
+        ))->createView();
+
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         if ($session) {
@@ -251,21 +255,10 @@ class PersonController extends AbstractController
 
             foreach($contact_data as $c_data) {
                 foreach($c_data as $data) {
+                    if (!isset($data['contact_type'])) {
+                        continue;
+                    }
                     switch($data['contact_type']) {
-                        case 'phone':
-                            if(empty($data['number']))
-                                break;
-
-                            $tel = '';
-
-                            if(!empty($data['country_calling_code']))
-                                $tel .= '+'.$data['country_calling_code'].'-';
-
-
-                            $tel .= $data['number'];
-
-                            $vcard->addTelephone($tel);
-                            break;
                         case 'website':
                             $vcard->setURL($data['url']);
                             break;
@@ -282,6 +275,10 @@ class PersonController extends AbstractController
                             break;
                     }
                 }
+            }
+
+            foreach ($person->phone_numbers as $phone) {
+                $vcard->addTelephone($phone->getPhoneNumber()->__toString());
             }
 
             $response->setContent($vcard->fetch());
@@ -582,31 +579,18 @@ class PersonController extends AbstractController
                     $data['html'] = '';
                 }
 
-                if ($person->organization) {
-                    $tickets = $this->em->createQuery("
-                        SELECT t
-                        FROM DeskPRO:Ticket t
-                        WHERE t.person = ?0 AND t.organization IS NULL
-                        ORDER BY t.id DESC
-                    ")->setMaxResults(250)->execute(array($person));
 
-                    foreach ($tickets as $t) {
-                        $t->organization = $person->organization;
-                        $this->em->persist($t);
-                        $this->em->flush();
-                    }
-                } elseif ($old_org) {
-                    $tickets = $this->em->createQuery("
-                        SELECT t
-                        FROM DeskPRO:Ticket t
-                        WHERE t.person = ?0 AND t.organization = ?1
-                        ORDER BY t.id DESC
-                    ")->setMaxResults(250)->execute(array($person, $old_org));
-                    foreach ($tickets as $t) {
-                        $t->organization = null;
-                        $this->em->persist($t);
-                        $this->em->flush();
-                    }
+                $conn = $this->em->getConnection();
+                foreach (array('tickets', 'tickets_search_active') as $table) {
+                    $conn->executeQuery(
+                        sprintf(
+                            'update %s set organization_id = %s where person_id = %d and organization_id %s',
+                            $table,
+                            $person->organization ? $person->organization['id'] : 'null',
+                            $person['id'],
+                            $old_org ? ' = '.$old_org['id'] : 'is null'
+                        )
+                    );
                 }
 
                 break;
@@ -897,7 +881,8 @@ class PersonController extends AbstractController
 		    'allow_add' => true,
 		    'allow_delete' => true,
 		    'options' => array(
-			    'label' => false
+			    'label' => false,
+                'show_phone_label' => true
 		    ),
 	    ));
 
@@ -909,9 +894,9 @@ class PersonController extends AbstractController
 
                 // Setting comment
                 foreach ($email_comments as $email_id => $comment) {
-                    if (isset($person->emails[$email_id])) {
-                        $person->emails[$email_id]->comment = $comment;
-                        $this->em->persist($person->emails[$email_id]);
+                    if ($email = $person->getEmailId($email_id)) {
+                        $email->comment = $comment;
+                        $this->em->persist($email);
                     }
                 }
 
@@ -1014,6 +999,10 @@ class PersonController extends AbstractController
             throw $e;
         }
 
+        // to handle empty form submission
+        if (!$request->get('collection')) {
+            $request->request->set('collection', array());
+        }
 	    $phones_form->handleRequest($request);
 	    if ($phones_form->isValid()) {
 		    foreach ($phones_form->getData() as $phone) {
@@ -1338,28 +1327,39 @@ class PersonController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-                $personDeleted = new Entity\PersonDeleted();
+        $this->em->beginTransaction();
+        try {
+            $personDeleted = new Entity\PersonDeleted();
 
-                $personDeleted['person_id'] = $person_id;
-                $personDeleted['by_person'] = $this->getPerson();
-                $personDeleted['reason']    = $this->in->getString('reason');
+            $personDeleted['person_id'] = $person_id;
+            $personDeleted['by_person'] = $this->getPerson();
+            $personDeleted['reason']    = $this->in->getString('reason');
 
-                $this->em->persist($personDeleted);
-                $this->em->flush();
+            $this->em->persist($personDeleted);
+            $this->em->flush();
 
-        if ($this->in->getBool('ban')) {
-            foreach ($person->emails as $email) {
-                $email_addy = strtolower($email->email);
-                App::getDb()->replace('ban_emails', array(
-                    'banned_email' => $email_addy,
-                    'is_pattern' => 0
-                ));
+            if ($this->in->getBool('ban')) {
+                foreach ($person->emails as $email) {
+                    $email_addy = strtolower($email->email);
+                    App::getDb()->replace('ban_emails', array(
+                        'banned_email' => $email_addy,
+                        'is_pattern' => 0
+                    ));
+                }
             }
+
+            /** @var PersonEditManager $edit_manager */
+            $edit_manager = $this->container->getSystemService('person_edit_manager');
+            $edit_manager->setPersonContext($this->person);
+            $edit_manager->deleteUser($person);
+
+            $this->em->commit();
+        } catch(\Exception $e) {
+            $this->em->rollback();
+            throw $e;
         }
 
-        $edit_manager = $this->container->getSystemService('person_edit_manager');
-        $edit_manager->setPersonContext($this->person);
-        $edit_manager->deleteUser($person);
+
 
         return $this->createJsonResponse(array('success' => true));
     }

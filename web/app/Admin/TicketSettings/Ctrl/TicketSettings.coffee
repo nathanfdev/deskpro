@@ -24,7 +24,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
         for own k, v of settings.agent_defaults
           if not v then settings.agent_defaults[k] = "0"
 
-        days = [false, false, false, false, false, false]
+        days = [null, false, false, false, false, false, false, false]
         for day in settings.working_hours.work_days
           days[day] = true
 

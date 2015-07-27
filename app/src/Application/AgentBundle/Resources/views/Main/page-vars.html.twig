@@ -60,7 +60,8 @@
 		{% for x in ['core.use_agent_team', 'core.use_product', 'core.use_ticket_category', 'core.use_ticket_priority', 'core.use_ticket_workflow', 'core_tickets.enable_agent_rte'] %}
 			'{{ x }}': {% if app.getSetting(x) %}true{% else %}false{% endif %},
 		{% endfor %}
-		'rand': {{ rand() }}
+		'rand': {{ rand() }},
+		'core.default_country_code': '{{ app.getSetting('core.default_country_code') }}'
 	};
 	var DP_AGENT_RTE_BUTTONS = {
 		{% for x in ['html', 'bold', 'italic', 'underline', 'strike', 'color', 'alignment', 'list', 'image', 'link', 'table', 'hr'] %}

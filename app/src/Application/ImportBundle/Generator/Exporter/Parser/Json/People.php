@@ -31,7 +31,6 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use DateTime;
 use DateTimeZone;
 
 /**
@@ -55,7 +54,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getPersonReaderConfig());
     }
 
     /**
@@ -64,7 +63,7 @@ final class People extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $people     = $this->reader->getData($this->getConfig());
+        $people     = $this->reader->getData($this->getPersonReaderConfig());
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
@@ -106,7 +105,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('ticket_' . $person['oid'])
+                ->setDestination('person_' . $person['oid'])
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])
@@ -153,7 +152,7 @@ final class People extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getPersonReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_PERSON_PATH);
     }
