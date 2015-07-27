@@ -18,23 +18,23 @@ import TaskNavLabels from "../Components/TaskNavLabels";
     createdProject: state.createdProject
 }))
 export default class TasksNavFrame extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        const { dispatch } = this.props;
+    const { dispatch } = this.props;
 
-        dispatch(TaskActions.loadTasks());
-        dispatch(TaskActions.loadMyTasks());
-        dispatch(TaskActions.loadProjects());
-        dispatch(TaskActions.loadTeamTasks());
-        dispatch(TaskActions.loadDepartmentTasks());
-        dispatch(TaskActions.loadDelegatedTasks());
-        dispatch(TaskActions.loadUnassignedTasks());
-        dispatch(TaskActions.loadLabels());
-        dispatch(TaskActions.loadAgents());
-        dispatch(TaskActions.loadTeams());
-        dispatch(TaskActions.loadDepartments());
-    }
+    dispatch(TaskActions.loadTasks());
+    dispatch(TaskActions.loadMyTasks());
+    dispatch(TaskActions.loadProjects());
+    dispatch(TaskActions.loadTeamTasks());
+    dispatch(TaskActions.loadDepartmentTasks());
+    dispatch(TaskActions.loadDelegatedTasks());
+    dispatch(TaskActions.loadUnassignedTasks());
+    dispatch(TaskActions.loadDepartments());
+    dispatch(TaskActions.loadAgents());
+    dispatch(TaskActions.loadTeams());
+    dispatch(TaskActions.loadLabels());
+  }
 
     switchTaskList(identifier, page) {
         this.props.dispatch(TaskActions.loadTaskList(identifier, page));
