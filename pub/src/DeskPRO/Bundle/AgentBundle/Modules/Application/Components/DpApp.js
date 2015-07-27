@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'redux/react';
 
 import * as AppActions from "../Actions/AppActions";
+import * as TaskActions from "../../Tasks/Actions/TaskListActions";
 
 import Header from "./Header";
 import AppSwitcher from "./AppSwitcher";
@@ -23,13 +24,15 @@ import TicketsSidebarHoverFrame from "DeskPRO/Bundle/AgentBundle/Modules/Tickets
   user: state.user,
   dp_window: state.dp_window
 }))
+
 export default class DpApp extends React.Component {
+
   render() {
     const { user, dp_window, dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (<div className="dp-window">
-        <Header user={user} />
+      <Header user={user} />
         <AppSwitcher switchApp={actions.setActiveApp} activeAppId={dp_window.activeAppId} />
 
         <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsSidebarHoverFrame /></AppFrameWrapper>

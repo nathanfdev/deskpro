@@ -36,6 +36,10 @@ export default class TasksNavFrame extends React.Component {
         dispatch(TaskActions.loadDepartments());
     }
 
+    switchTaskList(identifier, page) {
+        this.props.dispatch(TaskActions.loadTaskList(identifier, page));
+    }
+
     render() {
         const { taskList, projectList, agentList, labelList, departmentList, teamList, createdProject } = this.props;
 
@@ -65,13 +69,13 @@ export default class TasksNavFrame extends React.Component {
                     </div>
 
                     <div className="sidebar-list sidebar-list-filters">
-                        <TaskNavGroups taskList={taskList} />
+                        <TaskNavGroups taskList={taskList} switchTaskList={this.switchTaskList.bind(this)} />
 
-                        <TaskNavProjects projectList={projectList} agentList={agentList} teamList={teamList} departmentList={departmentList} createdProject={createdProject} />
+                        <TaskNavProjects projectList={projectList} agentList={agentList} teamList={teamList} departmentList={departmentList} createdProject={createdProject} switchTaskList={this.switchTaskList.bind(this)} />
 
-                        <TaskNavPeople agentList={agentList} />
+                        <TaskNavPeople agentList={agentList} switchTaskList={this.switchTaskList.bind(this)} />
 
-                        <TaskNavLabels labelList={labelList} />
+                        <TaskNavLabels labelList={labelList} switchTaskList={this.switchTaskList.bind(this)} />
 
                     </div>
                 </aside>

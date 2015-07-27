@@ -14,7 +14,7 @@ export default class TasksNavProjects extends React.Component {
 
         this.state = {
             showWindow: false,
-            projectData: {},
+            projectData: {}
         }
     }
 
