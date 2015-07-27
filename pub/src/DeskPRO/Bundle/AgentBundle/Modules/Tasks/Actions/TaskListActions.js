@@ -106,7 +106,7 @@ export const createProject = createAction(
   (trigger, data) => {
     DpApi.sendPost('DP_API/projects', data).then(
       (value) => {
-        trigger(null, loadProjects);
+        trigger(null, loadProjects());
         trigger(value.getData());
       },
       (value) => trigger(value.xhr.responseJSON, failedProject)
@@ -121,7 +121,7 @@ export const editProject = createAction(
     delete data.projectId;
     DpApi.sendPut('DP_API/projects/' + projectId, data).then(
       (value) => {
-        trigger(null, loadProjects);
+        trigger(null, loadProjects());
         trigger(value.getData(), createProject);
       },
       (value) => {
