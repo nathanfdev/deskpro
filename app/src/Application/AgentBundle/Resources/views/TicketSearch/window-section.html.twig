@@ -183,7 +183,19 @@
                                         </em>
 									</div>
 								</div>
-							</li>
+
+                                <select class="dpe_select problems_select" data-dropdown-css-class="small filter-list"
+                                        data-select-width="165" data-placeholder="Closed Incidents"
+                                        data-select-clear="1">
+                                    <option></option>
+                                    {% for p in closed_problems %}
+                                        <option value="{{ p.id }}">
+                                            {{ p.title }} {{ problem_counts[p.id]|default(0) }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                            </li>
 						{% endfor %}
 					</ul>
 				</article>

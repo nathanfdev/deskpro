@@ -289,6 +289,16 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
+    this.sectionEl.find('.problems_select').each(function () {
+      var sel = $(this);
+      if (sel.hasClass('with-select2')) return;
+      DP.select(sel);
+
+      sel.on('change', function (ev) {
+        //console.log($(this).val());
+      });
+    });
+
 		if (groupingFilterIds.length) {
 			this.doRefreshFilterGrouping(groupingFilterIds, false);
 		} else {
