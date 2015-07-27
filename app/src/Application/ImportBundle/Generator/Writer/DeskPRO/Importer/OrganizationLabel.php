@@ -31,30 +31,13 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPRO organization importer
+ * DeskPRO organization label importer
  *
- * Class Organization
+ * Class OrganizationLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-final class Organization extends AbstractImporter
+final class OrganizationLabel extends AbstractImporter
 {
-    /**
-     * @var BlobAdapterInterface
-     */
-    private $blob_adapter;
-
-    /**
-     * Constructor
-     *
-     * @param Mapper\Collection    $mappers
-     * @param BlobAdapterInterface $blob_adapter
-     */
-    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
-    {
-        parent::__construct($mappers);
-        $this->blob_adapter = $blob_adapter;
-    }
-
     /**
      * {@inheritdoc}
      */

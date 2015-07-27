@@ -65,6 +65,8 @@ class DeskProWriterFactory extends AbstractFactory
         $custom_def_ticket_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
         /** @var EntityRepository\CustomDefFeedback $custom_def_feedback_repository */
         $custom_def_feedback_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefFeedback');
+        /** @var EntityRepository\CustomDefOrganization $custom_def_organization_repository */
+        $custom_def_organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefOrganization');
         /** @var EntityRepository\CustomDefArticle $custom_def_article_repository */
         $custom_def_article_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefArticle');
         /** @var EntityRepository\Department $departmentRepository */
@@ -91,6 +93,8 @@ class DeskProWriterFactory extends AbstractFactory
         $news_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelNews');
         /** @var EntityRepository\Organization $organization_repository */
         $organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Organization');
+        /** @var EntityRepository\LabelOrganization $organization_label_repository */
+        $organization_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelOrganization');
         /** @var EntityRepository\Person $person_repository */
         $person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Person');
         /** @var EntityRepository\LabelPerson $person_label_repository */
@@ -126,6 +130,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\CustomDefPerson($custom_def_person_repository))
             ->attach(new Importer\Mapper\CustomDefTicket($custom_def_ticket_repository))
             ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository))
+            ->attach(new Importer\Mapper\CustomDefOrganization($custom_def_organization_repository))
             ->attach(new Importer\Mapper\CustomDefArticle($custom_def_article_repository))
             ->attach(new Importer\Mapper\Department($departmentRepository))
             ->attach(new Importer\Mapper\Download($download_repository))
@@ -139,6 +144,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\NewsCategory($news_category_repository))
             ->attach(new Importer\Mapper\NewsLabel($news_label_repository))
             ->attach(new Importer\Mapper\Organization($organization_repository))
+            ->attach(new Importer\Mapper\OrganizationLabel($organization_label_repository))
             ->attach(new Importer\Mapper\Person($person_repository))
             ->attach(new Importer\Mapper\PersonLabel($person_label_repository))
             ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
@@ -178,7 +184,8 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\PersonLabel($mappers))
             ->attach(new Importer\Ticket($mappers, $ticket_manager, $blob_adapter))
             ->attach(new Importer\TicketLabel($mappers))
-            ->attach(new Importer\Organization($mappers))
+            ->attach(new Importer\Organization($mappers, $blob_adapter))
+            ->attach(new Importer\OrganizationLabel($mappers))
         ;
 
         /** @var EntityWatcher $entity_watcher */

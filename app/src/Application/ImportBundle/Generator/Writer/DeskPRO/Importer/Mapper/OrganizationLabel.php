@@ -25,53 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * DeskPRO organization importer
+ * Organization label record mapper
  *
- * Class Organization
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
+ * Class OrganizationLabel
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class Organization extends AbstractImporter
+final class OrganizationLabel implements MapperInterface
 {
     /**
-     * @var BlobAdapterInterface
+     * @var EntityRepository\LabelOrganization
      */
-    private $blob_adapter;
+    private $repository;
 
     /**
      * Constructor
      *
-     * @param Mapper\Collection    $mappers
-     * @param BlobAdapterInterface $blob_adapter
+     * @param EntityRepository\LabelOrganization $repository
      */
-    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    public function __construct(EntityRepository\LabelOrganization $repository)
     {
-        parent::__construct($mappers);
-        $this->blob_adapter = $blob_adapter;
+        $this->repository = $repository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function getType()
     {
-        return Entity\EntityInterface::TYPE_ORGANIZATION;
+        return self::TYPE_ORGANIZATION_LABEL;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
-        $this->records = new ArrayCollection();
+        /** @var Entity\LabelOrganization $record */
+        $record = $this->repository->findOneBy($criteria);
+        if ( ! $record && $throw_exception) {
+            throw new MapperException('Organization label not found', $criteria);
+        }
 
-        return $this->records;
+        return $record;
     }
 }
