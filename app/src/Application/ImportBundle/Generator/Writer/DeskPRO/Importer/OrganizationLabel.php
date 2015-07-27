@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -55,6 +56,69 @@ final class OrganizationLabel extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
+        $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
+        $labels        = $this->getExistingLabelsNames($organization->getId());
+
+        foreach ($entity->getLabels() as $label) {
+            if (in_array($label, $labels, true)) {
+                $this->logDebug(sprintf(
+                    'Found an existing label `%s` for organization with oid `%d` (Skipping)',
+                    $label, $organization->getId()
+                ));
+            } else {
+                $organization->addLabel($this->createOrganizationLabel($label));
+                $this->logInfo(sprintf(
+                    'Creating a new label `%s` for organization with oid `%d`',
+                    $label, $organization->getId()
+                ));
+            }
+        }
+
         return $this->records;
+    }
+
+    /**
+     * Returns a new organization label entity
+     *
+     * @param string $label
+     * @return DeskPROEntity\LabelOrganization
+     */
+    private function createOrganizationLabel($label)
+    {
+        $entity = new DeskPROEntity\LabelOrganization();
+        $entity->setLabel($label);
+
+        return $entity;
+    }
+
+    /**
+     * Returns a collection of existing organization label names
+     *
+     * @param int $id
+     *
+     * @return array
+     * @throws Mapper\MapperException
+     */
+    private function getExistingLabelsNames($id)
+    {
+        $labels = $this->getOrganizationLabelMapper()->findByOrganizationId($id, false);
+        $names  = array();
+
+        foreach ($labels as $label) {
+            $names[] = $label->getLabel();
+        }
+
+        return $names;
+    }
+
+    /**
+     * Returns the organization label mapper
+     *
+     * @return Mapper\OrganizationLabel
+     * @throws \Exception
+     */
+    private function getOrganizationLabelMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION_LABEL);
     }
 }

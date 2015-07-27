@@ -112,7 +112,7 @@ final class TicketLabel extends AbstractImporter
     }
 
     /**
-     * Returns the person label mapper
+     * Returns the ticket label mapper
      *
      * @return Mapper\TicketLabel
      * @throws \Exception

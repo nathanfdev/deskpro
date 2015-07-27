@@ -313,4 +313,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET);
     }
+
+    /**
+     * Returns the organization mapper
+     *
+     * @return Mapper\Organization
+     * @throws \Exception
+     */
+    protected function getOrganizationMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
+    }
 }
