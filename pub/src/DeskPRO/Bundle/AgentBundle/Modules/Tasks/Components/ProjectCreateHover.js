@@ -133,7 +133,7 @@ export default class ProjectCreateHover extends React.Component {
                         </div>
                     </div>
 
-                    <div className="sidebar-hover-content-box">
+                    { teams.length ? <div className="sidebar-hover-content-box">
                         <h2>Teams</h2>
                         <div className="sidebar-hover-checkbox-collection">
                             {teams ? <FRC.CheckboxGroupDeskPRO
@@ -144,7 +144,7 @@ export default class ProjectCreateHover extends React.Component {
                                 multiple
                                 /> : ''}
                         </div>
-                    </div>
+                    </div> : '' }
 
                     <div className="sidebar-hover-content-box">
                         <h2>Project Members</h2>
