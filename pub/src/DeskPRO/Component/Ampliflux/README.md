@@ -149,3 +149,10 @@ store,
 getState => [thunkMiddleware(getState), promiseMiddleware]
 );
 ````
+
+## Assets
+Ampliflux also provides helpers to better deal with assets. It assumes that all static assets
+except for stylesheets are stored in pub/static and organised by bundle within.
+
+- bundleUrl(bundle, ...path) Returns the URL to the asset of bundle
+- commonUrl(...path) Returns the URL to an asset that is in the common pool
