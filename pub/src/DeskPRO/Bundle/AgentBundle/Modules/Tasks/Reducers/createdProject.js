@@ -1,7 +1,7 @@
 import * as TaskListActions from "../Actions/TaskListActions";
 import { Reducer } from "Ampliflux/reducers";
 
-export default class ProjectCreate extends Reducer {
+export default class CreatedProject extends Reducer {
   getInitialState() {
     return {
       createdProject: null,
