@@ -92,7 +92,7 @@ final class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a news entity
+     * Returns a organization entity
      *
      * @param array $organization
      * @return Entity\News
@@ -109,9 +109,18 @@ final class Organizations extends AbstractParser
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($organization['date_created']))
             ;
 
-            $contacts = $this->exportContactData($organization['contact_data']);
-            foreach ($contacts as $contact) {
+            $contact_data = $this->exportContactData($organization['contact_data']);
+            foreach ($contact_data as $contact) {
                 $entity->addContact($contact);
+            }
+            foreach ($organization['labels'] as $label) {
+                $entity->addLabel($label);
+            }
+
+            $custom_fields = $this->exportCustomFields($organization['custom_fields']);
+            foreach ($custom_fields as $custom_field) {
+                /** @var Entity\CustomField $custom_field */
+                $entity->addCustomField($custom_field);
             }
 
             return $entity;
@@ -120,6 +129,12 @@ final class Organizations extends AbstractParser
         return null;
     }
 
+    /**
+     * Returns a organization contact data entity collection
+     *
+     * @param array $contact_data
+     * @return Entity\Collection
+     */
     private function exportContactData(array $contact_data)
     {
         $collection = new Entity\Collection();
@@ -151,13 +166,34 @@ final class Organizations extends AbstractParser
     }
 
     /**
+     * Returns a organization contact data entity
+     *
      * @param array $contact
      * @return Entity\OrganizationContactData|null
      *
      */
     private function exportContact(array $contact)
     {
-        return new Entity\OrganizationContactData();
+        if ($this->isContactValid($contact)) {
+            $entity = new Entity\OrganizationContactData();
+            $entity
+                ->setContactType($contact['contact_type'])
+                ->setContactType($contact['comment'])
+            ;
+
+            for ($i = 1; $i < 11; $i++) {
+                $field_key = 'field_' . $i;
+                $setter    = 'setField' . $i;
+
+                if (array_key_exists($field_key, $contact)) {
+                    $entity->$setter($contact[$field_key]);
+                }
+            }
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -188,6 +224,24 @@ final class Organizations extends AbstractParser
         );
 
         return $this->hasRequiredColumns($organization, $columns)
-            && $this->isArrayColumn($organization, 'contact_data');
+            && $this->isArrayColumn($organization, 'contact_data')
+            && $this->isArrayColumn($organization, 'labels');
+    }
+
+    /**
+     * Check if organization contact data has all required columns
+     *
+     * @param array $contact
+     * @return bool
+     */
+    private function isContactValid(array $contact)
+    {
+        $columns = array(
+            'organization_id',
+            'contact_type',
+            'comment',
+        );
+
+        return $this->hasRequiredColumns($contact, $columns);
     }
 }

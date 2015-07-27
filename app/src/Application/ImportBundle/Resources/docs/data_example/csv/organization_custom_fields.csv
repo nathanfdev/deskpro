@@ -1,1 +1,6 @@
 organization_id;field_name;value
+organization 1;Text field;My text value
+organization 1;Textarea field;My multi-line\n value
+organization 1;Multiple-select box field;Choice 1 > Choice 2
+organization 2;Multiple-select box field;Choice 4 > Choice 5
+organization 2;Hidden field;some value

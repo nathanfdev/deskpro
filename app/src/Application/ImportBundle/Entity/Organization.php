@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Entity;
 
 use DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
 
 /**
  * Exporting organization entity
@@ -67,6 +68,11 @@ class Organization extends AbstractEntity
      * @var Collection
      */
     private $custom_fields;
+
+    /**
+     * @var string[]
+     */
+    private $labels = array();
 
     /**
      * Constructor
@@ -217,6 +223,23 @@ class Organization extends AbstractEntity
     /**
      * {@inheritdoc}
      */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addLabel($label)
+    {
+        $this->labels[] = $label;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function toArray()
     {
         if ( ! $this->date_created) {
@@ -242,6 +265,7 @@ class Organization extends AbstractEntity
             'date_created'  => $this->date_created->format('Y-m-d H:i:s'),
             'contact_data'  => $contact_data,
             'custom_fields' => $custom_fields,
+            'labels'        => $this->labels,
         );
     }
 
@@ -251,5 +275,9 @@ class Organization extends AbstractEntity
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('name', new Constraints\NotBlank())
+        ;
     }
 }
