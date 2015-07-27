@@ -74,4 +74,25 @@ final class OrganizationLabel implements MapperInterface
 
         return $record;
     }
+
+    /**
+     * Returns a collection of organization labels
+     *
+     * @param int  $id
+     * @param bool $throw_exception
+     *
+     * @return Entity\LabelOrganization[]
+     * @throws MapperException
+     */
+    public function findByOrganizationId($id, $throw_exception = true)
+    {
+        $criteria = array('organization' => $id);
+        $records  = $this->repository->findBy($criteria);
+
+        if (empty($records) && $throw_exception) {
+            throw new MapperException('Organization labels not found', $criteria);
+        }
+
+        return $records;
+    }
 }
