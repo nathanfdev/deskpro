@@ -1,4 +1,8 @@
 export function createAction(action_type, action = null) {
+  if(typeof(action_type) == 'function' && !action) { // The action_type was omitted; we create one implicitly.
+    action = action_type;
+    action_type = "flux-randomaction-" + Math.floor(Math.random() * 1000000000 + 1);
+  }
   let handler = null;
   if(!action) { // Dumb action
     handler = () => {

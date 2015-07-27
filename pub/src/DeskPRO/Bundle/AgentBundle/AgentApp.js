@@ -20,7 +20,6 @@ export default class AgentApp {
 
   start() {
     const store = composeReducers(Object.assign({}, app_stores, ticket_stores, task_stores));
-    // const store = composeStores(Object.assign({}, app_stores, ticket_stores, task_stores));
 
     const dispatcher = createDispatcher(
       store,
