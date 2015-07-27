@@ -147,6 +147,9 @@ class Organizations extends AbstractParser
                 $entity = $this->exportContact($contact);
                 if ($entity) {
                     $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid organization contact record `%d` found (Skipping)', $num));
                 }
 
             } catch (NoColumnException $e) {
