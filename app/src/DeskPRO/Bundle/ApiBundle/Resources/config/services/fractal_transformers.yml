@@ -1,0 +1,11 @@
+services:
+
+    # the manager
+    api_fractal_manager:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\FractalManager
+        arguments:
+            - @service_container
+        calls:
+            - [setSerializer, [@api_fractal_serializer]]
+    api_fractal_serializer:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\FractalJsonSerializer
