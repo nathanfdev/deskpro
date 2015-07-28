@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -61,6 +62,17 @@ class SandboxWidget extends NotifyPropertyChangeEntity
     protected $name;
 
     /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget", inversedBy="children")
+     */
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget", mappedBy="parent")
+     * @var ArrayCollection
+     */
+    protected $children;
+
+    /**
      * @ORM\Column(type="integer")
      * @Assert\NotNull()
      * @Assert\NotBlank()
@@ -68,12 +80,62 @@ class SandboxWidget extends NotifyPropertyChangeEntity
      */
     protected $inventory;
 
+    public function __construct()
+    {
+        $this->setModelField('children', new ArrayCollection());
+    }
+
     /**
      * @return mixed
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param SandboxWidget $widget
+     */
+    public function setParent(SandboxWidget $widget)
+    {
+        $this->setModelField('parent', $widget);
+        $widget->addChild($this);
+    }
+
+    /**
+     * @return SandboxWidget
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param SandboxWidget $widget
+     */
+    public function addChild(SandboxWidget $widget)
+    {
+        if (!$this->children->contains($widget)) {
+            $this->children->add($widget);
+            $this->setModelField('children', $this->children);
+        }
+    }
+
+    /**
+     * @param SandboxWidget $widget
+     */
+    public function removeChild(SandboxWidget $widget)
+    {
+        $this->children->removeElement($widget);
+        $this->setModelField('children', $this->children);
+    }
+
+    /**
+     * @return ArrayCollection|SandboxWidget[]
+     */
+    public function getChildren()
+    {
+        return $this->children;
     }
 
     /**
