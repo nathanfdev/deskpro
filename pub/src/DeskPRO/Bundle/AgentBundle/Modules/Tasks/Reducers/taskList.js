@@ -27,42 +27,42 @@ export default class TaskList extends Reducer {
     return {
         ...state,
         taskList: action.payload.data,
-        taskCount: action.payload.meta.total_count
+        taskCount: action.payload.meta.pagination.total
     };
   }
   
   myTasksLoaded(state, action) {
     return {
       ...state,
-      myTaskCount: action.payload.meta.total_count
+      myTaskCount: action.payload.meta.pagination.total
     };
   }
   
   teamTasksLoaded(state, action) {
     return {
       ...state,
-      teamTaskCount: action.payload.meta.total_count
+      teamTaskCount: action.payload.meta.pagination.total
     };
   }
   
   departmentTasksLoaded(state, action) {
     return {
       ...state,
-      deptTaskCount: action.payload.meta.total_count
+      deptTaskCount: action.payload.meta.pagination.total
     };
   }
   
   delegatedTasksLoaded(state, action) {
     return {
       ...state,
-      delegatedTaskCount: action.payload.meta.total_count
+      delegatedTaskCount: action.payload.meta.pagination.total
     };
   }
   
   unassignedTasksLoaded(state, action) {
     return {
       ...state,
-      unassignedTaskCount: action.payload.meta.total_count
+      unassignedTaskCount: action.payload.meta.pagination.total
     };
   }
 }

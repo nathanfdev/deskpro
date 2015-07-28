@@ -15,3 +15,15 @@ services:
     #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
     api_transformer.sandbox_widget:
         class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\SandboxWidgetTransformer
+    api_transformer.task:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskTransformer
+    api_transformer.task_label:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskLabelTransformer
+    api_transformer.task_comment:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskCommentTransformer
+    api_transformer.task_attachment:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskAttachmentTransformer
+    api_transformer.task_linked_item:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskLinkedItemTransformer
+    api_transformer.task_count:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskCountTransformer
