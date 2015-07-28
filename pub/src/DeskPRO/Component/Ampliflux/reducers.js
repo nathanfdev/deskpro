@@ -58,7 +58,6 @@ export function composeReducers(reducers) {
         let reducer = new reducers[k]();
         processed_reducers[k] = reducer.compile();
       } else {
-        console.log(k + " is Some function");
         processed_reducers[k] = reducers[k];
       }
     }

@@ -1,4 +1,5 @@
 import React from "react";
+import { IntlMixin, FormattedMessage, FormattedNumber } from "react-intl";
 
 import TicketsTabFilters from "./FiltersTab/TicketsTabFilters";
 import TicketsTabLabels from "./LabelsTab/TicketsTabLabels";
@@ -9,11 +10,14 @@ import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";
 
+import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
+
 @connect(state => ({
   FilterSetsList: state.FilterSetsList,
   FilterSetsCounts: state.FilterSetsCounts,
   LabelsList: state.LabelsList,
   StarsCounts: state.StarsCounts,
+  Translations: state.Translations,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
@@ -21,6 +25,8 @@ export default class TicketsNavContent extends React.Component {
     this.state = {
       showTab: "filters"
     };
+    
+    this.intl = IntlMixin;
     
     const { dispatch } = this.props;
     dispatch(TicketActions.loadFilterSets());
@@ -56,6 +62,7 @@ export default class TicketsNavContent extends React.Component {
       FilterSetsCounts,
       LabelsList,
       StarsCounts,
+      Translations,
       dispatch
     } = this.props;
     
@@ -85,7 +92,7 @@ export default class TicketsNavContent extends React.Component {
               <i className="fa fa-envelope-o"></i>
               <span className="help"><i className="fa fa-question"></i></span>
             </span>
-            <h1>Tickets</h1>
+            <h1><FormattedMessage message={getIntlMessage(Translations, "foobar")} /></h1>
             <hr />
             <a href="#" className="slider-control"></a>
           </div>

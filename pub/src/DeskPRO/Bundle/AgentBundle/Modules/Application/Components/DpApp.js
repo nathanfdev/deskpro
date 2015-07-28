@@ -38,7 +38,7 @@ export default class DpApp extends React.Component {
         <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsSidebarHoverFrame /></AppFrameWrapper>
 
         <NavFrame activeAppId={dp_window.activeAppId}>
-          <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsNavFrame /></AppFrameWrapper>
+          <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsNavFrame {...this.props} /></AppFrameWrapper>
           <AppFrameWrapper appId="tasks" activeAppId={dp_window.activeAppId}><TasksNavFrame /></AppFrameWrapper>
         </NavFrame>
 

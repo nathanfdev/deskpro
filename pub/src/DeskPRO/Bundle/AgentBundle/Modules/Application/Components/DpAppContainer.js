@@ -24,7 +24,7 @@ export default class DpAppContainer extends React.Component {
     const { dp_window } = this.props;
 
     if (dp_window.isLoaded) {
-      return <DpApp />;
+      return <DpApp {...this.props} />;
     } else {
       return <DpAppLoading />;
     }
