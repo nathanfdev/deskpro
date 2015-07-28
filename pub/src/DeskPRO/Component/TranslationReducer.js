@@ -1,25 +1,16 @@
 import { Reducer } from "Ampliflux/reducers";
 
-export default class Translations extends Reducer {
+export default class TranslationReducer extends Reducer {
   constructor() {
     super();
     
-    this.locales = [
-      {
-        locales: "en-US",
-        messages: {
-          foobar: "Tickets"
-        }
-      },
-      {
-        locales: ["fr-FR", "fr-CA"],
-        messages: {
-          foobar: "Trucs"
-        }
-      }
-    ];
+    this.locales = this.getLocales();
     
     this.defaultLocale = "en-US";
+  }
+  
+  getLocales() {
+    return [];
   }
   
   getTranslations(locale) {
@@ -49,8 +40,9 @@ export default class Translations extends Reducer {
   getInitialState() {
     return this.getTranslations(this.defaultLocale);
   }
-
-  registerHandlers() {
-    // None yet; need one to change language maybe?
+  
+  changeLocale(state, action) {
+    const new_translations = this.getTranslations(action.payload);
+    return new_translations ? new_translations : state;
   }
 }

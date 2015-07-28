@@ -35,32 +35,5 @@ export default class DpApp extends React.Component {
         <TabFrame />
       </div>
     );
-    /*
-        <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}>
-          <TicketsSidebarHoverFrame />
-        </AppFrameWrapper>
-        <NavFrame activeAppId={dp_window.activeAppId}>
-          <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}>
-            <TicketsNavFrame {...this.props} />
-          </AppFrameWrapper>
-          <AppFrameWrapper appId="tasks" activeAppId={dp_window.activeAppId}>
-            <TasksNavFrame />
-          </AppFrameWrapper>
-        </NavFrame>
-
-        <div className="dp-content-outer-frame">
-          <ListFrame>
-            <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}>
-              <TicketsListFrame />
-            </AppFrameWrapper>
-            <AppFrameWrapper appId="tasks" activeAppId={dp_window.activeAppId}>
-              <TasksListFrame />
-            </AppFrameWrapper>
-          </ListFrame>
-          <TabFrame />
-        </div>
-
-      </div>);
-    */
   }
 }

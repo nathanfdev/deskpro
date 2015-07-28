@@ -4,7 +4,7 @@ import { connect } from "redux/react";
 import * as PeopleActions from "../../../Actions/PeopleActions";
 
 @connect(state => ({
-  people: state.people,
+  people: state.People,
 }))
 export default class PeopleGroup extends React.Component {
   constructor(props) {
@@ -15,6 +15,10 @@ export default class PeopleGroup extends React.Component {
     if(this.agent_id && typeof(people[this.agent_id]) === 'undefined') {
       dispatch(PeopleActions.loadPeople(this.agent_id));
     }
+  }
+  
+  shouldComponentUpdate(nextProps) {
+    return (typeof nextProps.people[this.agent_id] != 'undefined');
   }
   
   render() {
