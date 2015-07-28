@@ -76,12 +76,14 @@ final class Organization extends AbstractImporter
         $organization = $this->findOrCreateOrganization($entity);
         $organization
             ->setImportance($entity->getImportance())
-            ->setPicture($entity->getPicture())
             ->resetContactData()
             ->resetLabels()
             ->resetCustomData()
         ;
 
+        if ($entity->getPicture()) {
+            $organization->setPicture($this->blob_adapter->createByBlob($entity->getPicture()));
+        }
         foreach ($entity->getContactData() as $contact) {
             $entity->addContact($contact);
         }
