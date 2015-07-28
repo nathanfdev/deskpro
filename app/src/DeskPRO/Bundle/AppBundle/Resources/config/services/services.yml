@@ -13,3 +13,7 @@ services:
 
   translator.noop:
       class: DeskPRO\Bundle\AppBundle\Translator\NoopTranslator
+
+  doctrine_association_manager:
+    class: DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager
+    arguments: [@doctrine.orm.default_entity_manager]
