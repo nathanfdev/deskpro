@@ -124,6 +124,7 @@ class Organizations extends AbstractParser
                 ->setDestination(self::ORGANIZATION_PREFIX . $organization_id)
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
+                ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'organization_id'))
             ;
 
             return $entity;
@@ -133,7 +134,7 @@ class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a collection of organizations contact data entities
+     * Returns a collection of organization contact data entities
      *
      * @return Entity\Collection
      */
@@ -164,6 +165,8 @@ class Organizations extends AbstractParser
     }
 
     /**
+     * Returns an organization contact data entity
+     *
      * @param array $contact
      * @return Entity\OrganizationContactData|null
      */
