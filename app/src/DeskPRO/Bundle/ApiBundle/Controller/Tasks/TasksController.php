@@ -102,7 +102,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createFractalRepresentation($pager, $this->getTaskTransformerName($request)),
             Response::HTTP_OK
         );
     }
@@ -125,10 +125,11 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
      * )
      * @Get("/tasks/{id}", name="api_tasks_get")
+     * @param Request $request
      * @param int $id
      * @return View
      */
-    public function getAction($id)
+    public function getAction(Request $request, $id)
     {
         $task = $this->getTask($id);
 
@@ -137,7 +138,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         return View::create(
-            $this->createRepresentation($task),
+            $this->createFractalRepresentation($task, $this->getTaskTransformerName($request)),
             Response::HTTP_OK
         );
     }
@@ -283,7 +284,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createFractalRepresentation($pager, $this->getTaskTransformerName($request)),
             Response::HTTP_OK
         );
     }
@@ -344,7 +345,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createFractalRepresentation($pager, 'task_label'),
             Response::HTTP_OK
         );
     }
@@ -405,7 +406,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createFractalRepresentation($pager, 'task_comment'),
             Response::HTTP_OK
         );
     }
@@ -466,7 +467,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createFractalRepresentation($pager, 'task_attachment'),
             Response::HTTP_OK
         );
     }
@@ -527,7 +528,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createFractalRepresentation($pager, 'task_linked_item'),
             Response::HTTP_OK
         );
     }
@@ -582,7 +583,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
 
             return View::create(
-                $this->createRepresentation($task),
+                $this->createFractalRepresentation($task, $this->getTaskTransformerName($request)),
                 $status,
                 array(
                     'Location' => $location,
@@ -708,5 +709,14 @@ class TasksController extends BaseController implements ClassResourceInterface
         $query = $query->getQuery();
 
         return $query->getResult();
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    protected function getTaskTransformerName(Request $request)
+    {
+        return $request->query->has('count_only') ? 'task_count' : 'task';
     }
 }

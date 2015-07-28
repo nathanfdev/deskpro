@@ -4,7 +4,7 @@ import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 export const loadTasks = createAction(
   "TASKS_LOAD_TASKS",
   (trigger) => {
-    DpApi.sendGet('DP_API/tasks').then(
+    DpApi.sendGet('DP_API/tasks?count_only=true').then(
       (value) => trigger(value.getData())
     );
   }
@@ -22,7 +22,7 @@ export const loadProjects = createAction(
 export const loadMyTasks = createAction(
   "TASKS_LOAD_MY_TASKS",
   (trigger) => {
-    DpApi.sendGet('DP_API/tasks?assigned=me').then(
+    DpApi.sendGet('DP_API/tasks?assigned=me&count_only=true').then(
       (value) => trigger(value.getData())
     );
   }
@@ -31,7 +31,7 @@ export const loadMyTasks = createAction(
 export const loadTeamTasks = createAction(
   "TASKS_LOAD_TEAM_TASKS",
   (trigger) => {
-    DpApi.sendGet('DP_API/tasks?assigned_team=me').then(
+    DpApi.sendGet('DP_API/tasks?assigned_team=me&count_only=true').then(
       (value) => trigger(value.getData())
     );
   }
@@ -40,7 +40,7 @@ export const loadTeamTasks = createAction(
 export const loadDepartmentTasks = createAction(
   "TASKS_LOAD_DEPARTMENT_TASKS",
   (trigger) => {
-    DpApi.sendGet('DP_API/tasks?assigned_department=me').then(
+    DpApi.sendGet('DP_API/tasks?assigned_department=me&count_only=true').then(
       (value) => trigger(value.getData())
     );
   }
@@ -49,7 +49,7 @@ export const loadDepartmentTasks = createAction(
 export const loadDelegatedTasks = createAction(
   "TASKS_LOAD_DELEGATED_TASKS",
   (trigger) => {
-  DpApi.sendGet('DP_API/tasks?assigned=not_me&creator=me').then(
+  DpApi.sendGet('DP_API/tasks?assigned=not_me&creator=me&count_only=true').then(
     (value) => trigger(value.getData())
   );
   }
@@ -58,7 +58,7 @@ export const loadDelegatedTasks = createAction(
 export const loadUnassignedTasks = createAction(
   "TASKS_LOAD_UNASSIGNED_TASKS",
   (trigger) => {
-    DpApi.sendGet('DP_API/tasks?assigned=null&assigned_team=null&assigned_department=null').then(
+    DpApi.sendGet('DP_API/tasks?assigned=null&assigned_team=null&assigned_department=null&count_only=true').then(
       (value) => trigger(value.getData())
     );
   }

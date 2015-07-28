@@ -612,4 +612,12 @@ class Task extends NotifyPropertyChangeEntity
         $this->linked_items->add($linked_item);
         $this->setModelField('linked_item', $linked_item);
     }
+
+    /**
+     * @return TaskAssignment[]|ArrayCollection
+     */
+    public function getAssigned()
+    {
+        return $this->assigned;
+    }
 }
