@@ -43,7 +43,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
 
-
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
@@ -253,6 +252,22 @@ class Organization extends DomainObject implements HighlightableModelInterface
         $this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
     }
 
+    /**
+     * Reset contact data
+     *
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        foreach ($this->contact_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->contact_data->clear();
+        $this->_onPropertyChanged('contact_data', null, $this->contact_data);
+
+        return $this;
+    }
 
     /**
      * @param  null  $type
@@ -425,6 +440,17 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $custom_fields;
     }
 
+    /**
+     * Set organization picture
+     *
+     * @param Blob|null $blob
+     * @return $this
+     */
+    public function setPicture(Blob $blob = null)
+    {
+        $this->setModelField('picture_blob', $blob);
+        return $this;
+    }
 
     /**
      * Gets the URL to a picture for the org. If there is no picture for the org, a default one
@@ -492,6 +518,22 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return false;
     }
 
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->labels->clear();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
 
     /**
      * Add a label

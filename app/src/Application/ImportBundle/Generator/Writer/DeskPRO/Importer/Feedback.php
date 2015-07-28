@@ -164,7 +164,8 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
         $attachment = new DeskPROEntity\FeedbackAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByAttachment($entity));
+            ->setBlob($this->blob_adapter->createByBlob($entity))
+        ;
 
         $this->records->add($attachment);
         return $attachment;

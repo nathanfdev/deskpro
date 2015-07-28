@@ -85,7 +85,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setSlug($entity->getSlug())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setLanguage($this->findLanguage($entity->getLanguage()))
-            ->setBlob($this->blob_adapter->createByAttachment($entity->getAttachment()))
+            ->setBlob($this->blob_adapter->createByBlob($entity->getAttachment()))
             ->setCategory($this->findOrCreateDownloadCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())

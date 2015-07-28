@@ -207,7 +207,7 @@ final class Ticket extends AbstractImporter
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByAttachment($entity))
+            ->setBlob($this->blob_adapter->createByBlob($entity))
         ;
 
         return $attachment;
