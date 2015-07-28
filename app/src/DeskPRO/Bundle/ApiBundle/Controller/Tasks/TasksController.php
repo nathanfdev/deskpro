@@ -577,6 +577,10 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         if ($form->isValid()) {
+            // Workaround to deal with done being treated as null
+            if (in_array('done', array_keys($submitted))) {
+                $task->setDone((bool) $submitted['done']);
+            }
             $this->getDoctrine()->getManager()->persist($task);
             $this->getDoctrine()->getManager()->flush();
 

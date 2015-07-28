@@ -333,7 +333,7 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function isDone()
     {
-        return $this->is_done = false;
+        return $this->is_done;
     }
 
     /**
@@ -477,7 +477,7 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setDone($is_done)
     {
-        $this->setModelField('status', $is_done);
+        $this->setModelField('is_done', $is_done);
     }
 
     /**

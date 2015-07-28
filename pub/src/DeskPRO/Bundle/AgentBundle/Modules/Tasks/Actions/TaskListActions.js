@@ -106,8 +106,8 @@ export const createProject = createAction(
   (trigger, data) => {
     DpApi.sendPost('DP_API/projects', data).then(
       (value) => {
-        trigger(null, loadProjects());
         trigger(value.getData());
+        trigger(null, loadProjects());
       },
       (value) => trigger(value.xhr.responseJSON, failedProject)
     );
@@ -121,8 +121,8 @@ export const editProject = createAction(
     delete data.projectId;
     DpApi.sendPut('DP_API/projects/' + projectId, data).then(
       (value) => {
-        trigger(null, loadProjects());
         trigger(value.getData(), createProject);
+        trigger(null, loadProjects());
       },
       (value) => {
         trigger(value.xhr.responseJSON, failedProject);
@@ -135,7 +135,42 @@ export const loadTaskList = createAction(
   "TASKS_LOAD_TASK_LIST",
   (trigger, data, page = 1) => {
     DpApi.sendGet('DP_API/' + data).then(
-      (value) => trigger(value.getData())
+      (value) => {
+        let result = value.getData();
+        result['source'] = data;
+        trigger(result);
+      }
     );
+  }
+);
+
+export const failedTask = createAction("TASKS_POST_TASK_FAIL");
+export const createTask = createAction(
+  "TASKS_POST_TASK",
+  (trigger, data) => {
+    DpApi.sendPost('DP_API/tasks', data).then(
+      (value) => {
+        trigger(value.getData());
+        trigger(null, loadTaskList());
+      },
+      (value) => trigger(value.xhr.responseJSON, failedTask)
+    );
+  }
+);
+
+export const editTask = createAction(
+  "TASKS_EDIT_TASK",
+  (trigger, data, source = 'nowhere') => {
+    let taskId = data.taskId;
+    delete data.taskId;
+    DpApi.sendPut('DP_API/tasks/' + taskId, data).then(
+      (value) => {
+        trigger(value.getData(), createTask);
+        trigger(null, loadTaskList(source));
+      },
+      (value) => {
+        trigger(value.xhr.responseJSON, failedTask);
+      }
+    )
   }
 );

@@ -14,5 +14,9 @@ export default keyMirror({
     TASKS_LOAD_DEPARTMENTS: null,
     TASKS_POST_PROJECT: null,
     TASKS_POST_PROJECT_FAIL: null,
+    TASKS_EDIT_PROJECT: null,
     TASKS_LOAD_TASK_LIST: null
+    TASKS_POST_TASK: null,
+    TASKS_POST_TASK_FAIL: null,
+    TASKS_EDIT_TASK: null
 });
