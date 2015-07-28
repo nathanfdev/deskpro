@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from 'redux/react';
+import { createSelector } from 'reselect';
 import * as TicketActions from "../../Actions/FiltersActions";
 
 import TicketsTabFilterList from "./TicketsTabFilterList";
@@ -10,15 +11,12 @@ import TicketsTabFilterList from "./TicketsTabFilterList";
 export default class TicketsTabFilterSetItem extends React.Component {
   constructor(props) {
     super(props);
-    
     const { dispatch, filterSet } = this.props;
-    
+
     this.state = {
       open: false
     };
-    
-    this.filters = [];
-    this.filterCounts = null;
+
     this.filterSetId = filterSet.id;
     dispatch(TicketActions.loadFiltersInSet(filterSet.id));
   }
@@ -37,6 +35,11 @@ export default class TicketsTabFilterSetItem extends React.Component {
     }
   }
   
+  shouldComponentUpdate(nextProps, nextState) {
+    const { FilterSetFiltersList } = nextProps;
+    return (FilterSetFiltersList.FilterSetFiltersList.filter_set_id == this.filterSetId);
+  }
+  
   render() {
     const {
       FilterSetFiltersList,
@@ -47,30 +50,26 @@ export default class TicketsTabFilterSetItem extends React.Component {
       showFilterGroupingOptions,
       dispatch,
     } = this.props;
-    
-    if(FilterSetFiltersList.FilterSetFiltersList.filter_set_id == this.filterSetId) {
-      this.filters = FilterSetFiltersList.FilterSetFiltersList.filters;
-      this.filterCounts = filterCounts;
-    }
-    
+    const filters = FilterSetFiltersList.FilterSetFiltersList.filters;
+
     const filtersClassName = 'with-connectors collapse ' + (this.state.open ? 'open' : 'closed');
     let filter_list = null;
-    if(this.filterCounts === null) {
+    if(filterCounts === null) {
       filter_list = (
         <span>Loading&hellip;</span>
       );
     } else {
       filter_list = (
         <TicketsTabFilterList
-          filtersList={this.filters}
+          filtersList={filters}
           filterSet={filterSet}
-          filterCounts={this.filterCounts}
+          filterCounts={filterCounts}
           loadFilterTickets={loadFilterTickets}
           showFilterGroupingOptions={showFilterGroupingOptions}
           dispatch={dispatch} />
       );
     }
-    
+
     return (
       <div className="list-filter-set">
         <h3 className="list-sidebar-title">{filterSet.title}</h3>
