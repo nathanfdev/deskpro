@@ -56,7 +56,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class ProjectsController extends BaseController implements ClassResourceInterface
 {
     private $storedMembers = array();
-    private $oldMembers;
+    private $oldMembers = array();
 
     /**
      * @ApiDoc(
@@ -398,41 +398,43 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     private function addMembers(Project $project)
     {
-        $em = $this->getDoctrine()->getManager();
+        if (!empty($this->oldMembers)) {
+            $em = $this->getDoctrine()->getManager();
 
-        foreach ($this->oldMembers as $type => $members) {
-            $removed = array_diff($members, $this->storedMembers[$type]);
-            $newMembers = array_diff($this->storedMembers[$type], $members);
+            foreach ($this->oldMembers as $type => $members) {
+                $removed = array_diff($members, $this->storedMembers[$type]);
+                $newMembers = array_diff($this->storedMembers[$type], $members);
 
-            // Remove the old entities
-            foreach ($removed as $id => $member) {
-                $entity = $em->getRepository('App:ProjectMember')->find($id);
-                $em->remove($entity);
-            }
-
-            // Commit the new entities
-            foreach ($newMembers as $member_id) {
-                $member = new ProjectMember();
-                $member->setProject($project);
-                switch ($type) {
-                    case 'departments':
-                        $dept = $em->getRepository('DeskPRO:Department')->find($member_id);
-                        $member->setDepartment($dept);
-                        break;
-                    case 'teams':
-                        $team = $em->getRepository('DeskPRO:AgentTeam')->find($member_id);
-                        $member->setTeam($team);
-                        break;
-                    case 'people':
-                        $person = $em->getRepository('DeskPRO:Person')->find($member_id);
-                        $member->setPerson($person);
-                        break;
+                // Remove the old entities
+                foreach ($removed as $id => $member) {
+                    $entity = $em->getRepository('App:ProjectMember')->find($id);
+                    $em->remove($entity);
                 }
 
-                $em->persist($member);
-            }
-        }
+                // Commit the new entities
+                foreach ($newMembers as $member_id) {
+                    $member = new ProjectMember();
+                    $member->setProject($project);
+                    switch ($type) {
+                        case 'departments':
+                            $dept = $em->getRepository('DeskPRO:Department')->find($member_id);
+                            $member->setDepartment($dept);
+                            break;
+                        case 'teams':
+                            $team = $em->getRepository('DeskPRO:AgentTeam')->find($member_id);
+                            $member->setTeam($team);
+                            break;
+                        case 'people':
+                            $person = $em->getRepository('DeskPRO:Person')->find($member_id);
+                            $member->setPerson($person);
+                            break;
+                    }
 
-        $em->flush();
+                    $em->persist($member);
+                }
+            }
+
+            $em->flush();
+        }
     }
 }
