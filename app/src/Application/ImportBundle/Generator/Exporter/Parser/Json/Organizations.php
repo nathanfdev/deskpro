@@ -33,6 +33,8 @@ use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 
 /**
+ * Organizations json file parser
+ *
  * Class Organizations
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */

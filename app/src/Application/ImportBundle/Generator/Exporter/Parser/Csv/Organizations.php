@@ -31,6 +31,8 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
+ * Organizations csv file parser
+ *
  * Class Organizations
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
@@ -184,6 +186,7 @@ class Organizations extends AbstractParser
                     ->setComment($contact['comment'])
                 ;
             }
+
             for ($i = 1; $i < 11; $i++) {
                 $field_key = 'field_' . $i;
                 $setter    = 'setField' . $i;
