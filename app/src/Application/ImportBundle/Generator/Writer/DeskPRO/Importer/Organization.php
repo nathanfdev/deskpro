@@ -73,7 +73,7 @@ final class Organization extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $organization  = $this->findOrCreateOrganization($entity);
+        $organization = $this->findOrCreateOrganization($entity);
         $organization
             ->setImportance($entity->getImportance())
             ->setDateCreated($entity->getDateCreated())
@@ -86,7 +86,7 @@ final class Organization extends AbstractImporter
             $organization->setPicture($this->blob_adapter->createByBlob($entity->getPicture()));
         }
         foreach ($entity->getContactData() as $contact) {
-            $entity->addContact($contact);
+            $organization->addContactData($this->createContactData($contact));
         }
         foreach ($entity->getCustomFields() as $custom_field) {
             $custom_field = $this->createOrganizationCustomData($custom_field);
@@ -97,6 +97,31 @@ final class Organization extends AbstractImporter
 
         $this->records->add($organization);
         return $this->records;
+    }
+
+    /**
+     * @param Entity\OrganizationContactData $entity
+     * @return DeskPROEntity\OrganizationContactData
+     */
+    private function createContactData(Entity\OrganizationContactData $entity)
+    {
+        $contact = new DeskPROEntity\OrganizationContactData();
+        $contact
+            ->setContactType($entity->getContactType())
+            ->setComment($entity->getComment())
+            ->setField1($entity->getField1())
+            ->setField2($entity->getField2())
+            ->setField3($entity->getField3())
+            ->setField4($entity->getField4())
+            ->setField5($entity->getField5())
+            ->setField6($entity->getField6())
+            ->setField7($entity->getField7())
+            ->setField8($entity->getField8())
+            ->setField9($entity->getField9())
+            ->setField10($entity->getField10())
+        ;
+
+        return $contact;
     }
 
     /**
