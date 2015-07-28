@@ -52,7 +52,7 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 
 /**
- * THIS IS A TEST CONTROLLER AND IS NOT PRODUCTION CODE. It is used for testing the api, and that is it.)
+ * THIS IS A TEST CONTROLLER AND IS NOT PRODUCTION CODE. It is used for testing the api, and that is it.
  */
 class SandboxWidgetsController extends BaseController implements ClassResourceInterface
 {
@@ -82,7 +82,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $pager = new Pagerfanta(new ArrayAdapter($widgets));
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createFractalRepresentation($pager, "sandbox_widget"),
             Response::HTTP_OK
         );
     }
@@ -113,7 +113,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $widget = $this->getWidget($id);
 
         return View::create(
-            $this->createRepresentation($widget),
+            $this->createFractalRepresentation($widget, "sandbox_widget"),
             Response::HTTP_OK
         );
     }
@@ -221,7 +221,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
             $this->getDoctrine()->getManager()->flush($widget);
 
             return View::create(
-                $this->createRepresentation($widget),
+                $this->createFractalRepresentation($widget, "sandbox_widget"),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_sandbox_widgets_get', array('id' => $widget->getId()))

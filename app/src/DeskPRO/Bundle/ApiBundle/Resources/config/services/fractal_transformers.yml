@@ -9,3 +9,9 @@ services:
             - [setSerializer, [@api_fractal_serializer]]
     api_fractal_serializer:
         class: DeskPRO\Bundle\ApiBundle\Fractal\FractalJsonSerializer
+
+    # the transformers
+    # note: you don't need a tag for these to work. just make the prefix the same.
+    #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
+    api_transformer.sandbox_widget:
+        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\SandboxWidgetTransformer

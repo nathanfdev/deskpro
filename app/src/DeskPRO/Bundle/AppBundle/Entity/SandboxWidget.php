@@ -36,8 +36,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * THIS IS A TEST ENTITY and is only here temporarily to show how the API works (we also run unit tests
@@ -45,12 +43,6 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @ORM\Entity()
  * @ORM\Table("api_sandbox_widgets")
- * @Serializer\ExclusionPolicy("ALL")
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_sandbox_widgets_get", parameters={"id" = "expr(object.getId())"})
- * )
  */
 class SandboxWidget extends NotifyPropertyChangeEntity
 {
@@ -58,13 +50,11 @@ class SandboxWidget extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     * @Serializer\Expose()
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Serializer\Expose()
      * @Assert\NotNull()
      * @Assert\Length(min=10)
      */
@@ -72,7 +62,6 @@ class SandboxWidget extends NotifyPropertyChangeEntity
 
     /**
      * @ORM\Column(type="integer")
-     * @Serializer\Expose()
      * @Assert\NotNull()
      * @Assert\NotBlank()
      * @Assert\Type("integer")
