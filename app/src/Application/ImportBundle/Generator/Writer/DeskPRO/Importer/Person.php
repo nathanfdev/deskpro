@@ -76,6 +76,7 @@ final class Person extends AbstractImporter
             ->resetEmails()
             ->resetLabels()
             ->resetUsergroups()
+            ->resetCustomData()
         ;
 
         if ($entity->isAgent() && ! in_array('agent_all_safe_perms', $entity->getUserGroups(), true)) {

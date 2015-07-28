@@ -373,6 +373,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $labels;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -1582,6 +1583,23 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->custom_data->clear();
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
     }
 
     /**

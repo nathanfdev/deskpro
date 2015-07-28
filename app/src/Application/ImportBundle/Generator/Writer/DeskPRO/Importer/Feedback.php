@@ -89,7 +89,9 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             ->setCategory($this->findOrCreateFeedbackCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
-            ->setViewsCount($entity->getViewCount());
+            ->setViewsCount($entity->getViewCount())
+            ->resetCustomData()
+        ;
 
         foreach ($entity->getAttachments() as $attachment) {
             $feedback->addAttachment($this->createAttachment(

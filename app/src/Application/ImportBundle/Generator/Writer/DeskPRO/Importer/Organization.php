@@ -74,9 +74,12 @@ final class Organization extends AbstractImporter
         $this->records = new ArrayCollection();
 
         $organization = $this->findOrCreateOrganization($entity);
+        $organization
+            ->resetCustomData()
+        ;
 
         foreach ($entity->getContactData() as $contact) {
-
+            $entity->addContact($contact);
         }
         foreach ($entity->getCustomFields() as $custom_field) {
             $custom_field = $this->createOrganizationCustomData($custom_field);

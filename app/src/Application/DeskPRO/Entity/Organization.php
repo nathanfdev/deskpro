@@ -47,6 +47,8 @@ use Orb\Util\Numbers;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
+ * Class Organization
+ * @package Application\DeskPRO\Entity
  */
 class Organization extends DomainObject implements HighlightableModelInterface
 {
@@ -87,6 +89,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
     protected $importance = 0;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -332,6 +335,23 @@ class Organization extends DomainObject implements HighlightableModelInterface
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
         return $custom_data;
+    }
+
+    /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->custom_data->clear();
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
     }
 
     /**
