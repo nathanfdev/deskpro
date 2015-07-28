@@ -22,7 +22,6 @@ Feature: Sandbox Widgets Example
     And the JSON node "data" should exist
     And the JSON node "data.name" should be equal to "My Awesome Widget"
     And the JSON node "data.inventory" should be equal to 10
-    And the JSON node "data.links.self" should be equal to "/api/v2/sandbox_widgets/1"
 
   Scenario: I GET a single widget
     When I send a GET request to "/api/v2/sandbox_widgets/1"
@@ -30,7 +29,6 @@ Feature: Sandbox Widgets Example
     And the response status code should be 200
     And the JSON node "data.name" should be equal to "My Awesome Widget"
     And the JSON node "data.inventory" should be equal to 10
-    And the JSON node "data.links.self" should be equal to "/api/v2/sandbox_widgets/1"
 
   Scenario: I modify a widget
     When I send a PUT request to "/api/v2/sandbox_widgets/1" with body:
@@ -50,7 +48,6 @@ Feature: Sandbox Widgets Example
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].name" should be equal to "My Awesome Widget"
     And the JSON node "data[0].inventory" should be equal to 4
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/sandbox_widgets/1"
 
   Scenario: I DELETE a widget
     When I send a DELETE request to "/api/v2/sandbox_widgets/1"

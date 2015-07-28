@@ -33,9 +33,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\View;
 
+use DeskPRO\Bundle\ApiBundle\Fractal\FractalManager;
 use DeskPRO\Bundle\ApiBundle\View\Representation\BatchRepresentation;
 use DeskPRO\Bundle\ApiBundle\View\Representation\ErrorRepresentation;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
+use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\FormInterface;
 
@@ -47,9 +51,67 @@ class ApiViewRepresentationFactory
     const DATATYPE_GROUPED_COUNT = 2;
 
     /**
+     * @var FractalManager
+     */
+    private $fractal_manager;
+
+    public function __construct(FractalManager $fractal_manager)
+    {
+        $this->fractal_manager = $fractal_manager;
+    }
+
+    /**
+     * Uses Fractal (we extend a lot of its functionality) to turn the $data in to an array
+     *
+     * @param $data
+     * @param $transformer
+     * @param int $datatype
+     * @return array
+     */
+    public function createFractalRepresentation($data, $transformer, $datatype = self::DATATYPE_STANDARD)
+    {
+        if (!$data instanceof Pagerfanta) {
+
+            if (self::DATATYPE_GROUPED_COUNT === $datatype) {
+                // TODO: this should be a fractal Transformer I think? I'm not sure.
+                // Either way it is a serializer concern, and now this needs to be updated because
+                // we changed serialization methods.
+                // It just means making serializeGroupedCount return an Item object like the others below.
+                $item = $this->serializeGroupedCount($data);
+            } else if (is_array($data)) {
+                $item = new Item($data, $transformer);
+                $item->setMetaValue('count', count($data));
+                $item->setMetaValue('total_count', count($data));
+            } else if (is_object($data) && method_exists($data, 'count')) { // A bit of duck-typing.
+                $item = new Item($data, $transformer);
+                $item->setMetaValue('count', $data->count());
+                $item->setMetaValue('total_count', $data->count());
+            } else {
+                $item = new Item($data, $transformer);
+            }
+
+            return $this->fractal_manager->createData($item)->toArray();
+
+        } else {
+
+            $results = $data->getCurrentPageResults();
+            $collection = new Collection($results, $transformer);
+
+            $paginator = new PagerfantaPaginatorAdapter($data, function () {
+                /* TODO: maybe? pagerfanta router */
+            });
+            $collection->setPaginator($paginator);
+
+            return $this->fractal_manager->createData($collection)->toArray();
+
+        }
+    }
+
+    /**
      * @param mixed $data
      * @param integer $datatype is one of the datatype class constants that describes the type of data provided
      * @return StandardRepresentation
+     * @deprecated this is the "old way". use createFractalRepresentation instead. this method will be deleted soon.
      */
     public function createRepresentation($data, $datatype = self::DATATYPE_STANDARD)
     {
@@ -90,12 +152,16 @@ class ApiViewRepresentationFactory
     }
 
     /**
+     * Format a set of responses for batch response
+     *
      * @param array $responses
-     * @return BatchRepresentation
+     * @return array
      */
     public function createBatchRepresentation(array $responses = array())
     {
-        return new BatchRepresentation($responses);
+        return [
+            'responses' => $responses
+        ];
     }
 
     /**
@@ -103,15 +169,16 @@ class ApiViewRepresentationFactory
      * @param $code
      * @param $message
      * @param array|FormInterface $errors_data
-     * @return ErrorRepresentation
+     * @return array
      */
     public function createErrorRepresentation($status, $code, $message, $errors_data = array())
     {
-        if ($errors_data instanceof FormInterface) {
-            // process form errors here into an array we want to use
-        }
-
-        return new ErrorRepresentation($status, $code, $message, $errors_data);
+        return [
+            'status' => $status,
+            'code' => $code,
+            'message' => $message,
+            'errors' => count($errors_data) ? $errors_data : null
+        ];
     }
 
     /**

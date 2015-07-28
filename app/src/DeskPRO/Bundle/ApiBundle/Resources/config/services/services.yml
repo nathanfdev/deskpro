@@ -2,6 +2,8 @@ services:
 
   api_view_representation_factory:
       class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
+      arguments:
+        - @api_fractal_manager
 
   jsonp_format_listener:
       class: DeskPRO\Bundle\ApiBundle\EventListener\JsonpFormatListener
