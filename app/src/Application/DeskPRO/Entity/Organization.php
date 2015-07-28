@@ -555,12 +555,22 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $this->_label_manager;
     }
 
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
+    }
+
     public function __toString()
     {
         return $this->name;
     }
-
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
