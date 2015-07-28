@@ -57,21 +57,14 @@ final class DownloadLabel extends AbstractImporter
         $this->records = new ArrayCollection();
 
         $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
-        $labels   = $this->getExistingLabelsNames($download->getId());
+        $download->resetLabels();
 
         foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for download with oid `%d` (Skipping)',
-                    $label, $download->getId()
-                ));
-            } else {
-                $download->addLabel($this->createDownloadLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for download with oid `%d`',
-                    $label, $download->getId()
-                ));
-            }
+            $download->addLabel($this->createDownloadLabel($label));
+            $this->logDebug(sprintf(
+                'Creating a new label `%s` for download with oid `%d`',
+                $label, $download->getId()
+            ));
         }
 
         return $this->records;
@@ -90,36 +83,5 @@ final class DownloadLabel extends AbstractImporter
 
         $this->records->add($entity);
         return $entity;
-    }
-
-    /**
-     * Returns a collection of existing download label names
-     *
-     * @param int $id
-     *
-     * @return array
-     * @throws Mapper\MapperException
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getDownloadLabelMapper()->findByDownloadId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the download label mapper
-     *
-     * @return Mapper\DownloadLabel
-     * @throws \Exception
-     */
-    private function getDownloadLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DOWNLOAD_LABEL);
     }
 }

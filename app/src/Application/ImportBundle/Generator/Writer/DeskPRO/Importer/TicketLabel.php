@@ -57,21 +57,14 @@ final class TicketLabel extends AbstractImporter
         $this->records = new ArrayCollection();
 
         $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
-        $labels = $this->getExistingLabelsNames($ticket->getId());
+        $ticket->resetLabels();
 
         foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for ticket with oid `%d` (Skipping)',
-                    $label, $ticket->getId()
-                ));
-            } else {
-                $ticket->addLabel($this->createTicketLabel($label));
-                $this->logInfo(sprintf(
-                    'Creating a new label `%s` for ticket with oid `%d`',
-                    $label, $ticket->getId()
-                ));
-            }
+            $ticket->addLabel($this->createTicketLabel($label));
+            $this->logInfo(sprintf(
+                'Creating a new label `%s` for ticket with oid `%d`',
+                $label, $ticket->getId()
+            ));
         }
 
         return $this->records;
@@ -89,36 +82,5 @@ final class TicketLabel extends AbstractImporter
         $entity->setLabel($label);
 
         return $entity;
-    }
-
-    /**
-     * Returns a collection of existing ticket label names
-     *
-     * @param int $id
-     *
-     * @return array
-     * @throws Mapper\MapperException
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getTicketLabelMapper()->findByTicketId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the ticket label mapper
-     *
-     * @return Mapper\TicketLabel
-     * @throws \Exception
-     */
-    private function getTicketLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_LABEL);
     }
 }

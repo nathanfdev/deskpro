@@ -2103,7 +2103,11 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        foreach ($this->labels as $label) {
+            App::getOrm()->remove($label);
+        }
+
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;

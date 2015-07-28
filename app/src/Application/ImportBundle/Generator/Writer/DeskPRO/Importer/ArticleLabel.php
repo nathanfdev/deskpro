@@ -57,21 +57,14 @@ final class ArticleLabel extends AbstractImporter
         $this->records = new ArrayCollection();
 
         $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
-        $labels  = $this->getExistingLabelsNames($article->getId());
+        $article->resetLabels();
 
         foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for article with oid `%d` (Skipping)',
-                    $label, $article->getId()
-                ));
-            } else {
-                $article->addLabel($this->createArticleLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for article with oid `%d`',
-                    $label, $article->getId()
-                ));
-            }
+            $article->addLabel($this->createArticleLabel($label));
+            $this->logDebug(sprintf(
+                'Creating a new label `%s` for article with oid `%d`',
+                $label, $article->getId()
+            ));
         }
 
         return $this->records;
@@ -90,36 +83,5 @@ final class ArticleLabel extends AbstractImporter
 
         $this->records->add($entity);
         return $entity;
-    }
-
-    /**
-     * Returns a collection of existing article label names
-     *
-     * @param int $id
-     *
-     * @return array
-     * @throws Mapper\MapperException
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getArticleLabelMapper()->findByArticleId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the article label mapper
-     *
-     * @return Mapper\ArticleLabel
-     * @throws \Exception
-     */
-    private function getArticleLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_LABEL);
     }
 }
