@@ -43,7 +43,8 @@ export default class TasksNavFrame extends React.Component {
     render() {
         const { taskList, projectList, agentList, labelList, departmentList, teamList, createdProject } = this.props;
 
-        return (<section className="task-nav-frame">
+        return (
+          <section className="task-nav-frame dp-nav-frame">
             <div className="sidebar-wrapper" id="sidebar-wrapper">
                 <a className="collapse-button" href="#" onclick="resizePanels('hide_filters');"><i
                     className="fa fa-angle-right"/></a>
@@ -80,6 +81,7 @@ export default class TasksNavFrame extends React.Component {
                     </div>
                 </aside>
             </div>
-        </section>);
+        </section>
+      );
     }
 }

@@ -19,8 +19,8 @@ $window-header-height: 44px;
 $app-switcher-width: 55px;
 $nav-frame-width: 220px;
 
-$list-frame-width: 45%;
-$tab-frame-width: 55%;
+$list-frame-width: 450px;
+$tab-frame-width: 100%;
 
 .dp-window {
   .dp-window-header {
@@ -78,8 +78,8 @@ $tab-frame-width: 55%;
 
   .dp-list-frame {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: $window-header-height;
+    left: $app-switcher-width + $nav-frame-width;
     bottom: 0;
     width: $list-frame-width;
     background: #f8f8f8;
@@ -90,10 +90,30 @@ $tab-frame-width: 55%;
 
   .dp-tab-frame {
     position: absolute;
-    top: 0;
+    top: $window-header-height;
+    left: $app-switcher-width + $nav-frame-width + $list-frame-width;
     right: 0;
     bottom: 0;
-    width: $tab-frame-width;
+    
+    .blank-text {
+      font-size: 12px;
+      position: absolute;
+      top: 50%;
+      text-align: center;
+      width: 100%;
+      line-height: 1em;
+      margin-top: -71px;
+      font-style: italic;
+      
+      p {
+        color: #999;
+      }
+      
+      .hero-icon {
+        font-size: 100px;
+        margin-bottom: 30px;
+      }
+    }
   }
 }
 

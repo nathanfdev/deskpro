@@ -44,7 +44,7 @@ export default class TicketsListFrame extends React.Component {
     });
 
     return (
-      <section className="ticket-list-frame">
+      <section className="ticket-list-frame dp-list-frame">
         <div className="ticket-list">
           <div className="tickets-control-bar">
 

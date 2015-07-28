@@ -7,7 +7,8 @@ import { connect } from 'redux/react';
 export default class TasksListFrame extends React.Component {
   render() {
     const {taskFrameList} = this.props;
-    return (<section className="task-list-frame">
+    return (
+      <section className="task-list-frame dp-list-frame">
       <div className="ticket-list">
 
         <div className="tickets-control-bar">
@@ -135,6 +136,7 @@ export default class TasksListFrame extends React.Component {
           </div>
         }) : '' }
       </div>
-    </section>);
+    </section>
+    );
   }
 }

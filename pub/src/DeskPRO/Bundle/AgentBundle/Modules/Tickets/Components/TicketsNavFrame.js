@@ -85,7 +85,7 @@ export default class TicketsNavContent extends React.Component {
     }
     
     return (
-      <section className="ticket-nav-frame">
+      <section className="ticket-nav-frame dp-nav-frame">
         <aside className="sidebar has-tabs">
           <div className="sidebar-title">
             <span className="sidebar-type-icon">

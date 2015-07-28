@@ -1,6 +1,6 @@
 import React from "react";
 import ProjectCreateHover from "../Components/ProjectCreateHover";
-import ComponentRootWrapper from "../../Application/Components/ComponentRootWrapper";
+import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
 import { connect } from 'redux/react';
 
 import * as TaskActions from "../Actions/TaskListActions";
