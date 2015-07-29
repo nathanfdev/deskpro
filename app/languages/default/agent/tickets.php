@@ -396,4 +396,5 @@
 	'agent.tickets.link_existing_ticket'                => 'Link Existing Ticket',
 	'agent.tickets.linked_tickets'                      => 'Linked Tickets',
 	'agent.tickets.linking_with_ticket'                 => 'Linking with ticket:',
+    'agent.tickets.closed_incidents' => 'Closed Incidents',
 );
