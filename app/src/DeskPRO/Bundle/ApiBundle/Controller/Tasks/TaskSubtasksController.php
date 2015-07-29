@@ -251,16 +251,7 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
 
         $submitted = $request->request->all();
 
-        try {
-            $form->submit($submitted, $request->getMethod() !== 'PUT');
-        } catch (TermTypeDoesNotExistException $e) {
-            throw new WrappedApiErrorException(
-                new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-                array(
-                    'type' => $e->getMessage()
-                )
-            );
-        }
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->persist($subtask);

@@ -253,16 +253,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
         $submitted = $request->request->all();
         $submitted = $this->cleanLinkTypes($submitted);
 
-        try {
-            $form->submit($submitted, $request->getMethod() !== 'PUT');
-        } catch (TermTypeDoesNotExistException $e) {
-            throw new WrappedApiErrorException(
-                new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-                array(
-                    'type' => $e->getMessage()
-                )
-            );
-        }
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
             // Try and gracefully handle integrity constraint failures
