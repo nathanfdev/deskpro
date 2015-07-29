@@ -104,6 +104,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->loadFixtures('Import/CustomDefPerson');
         $this->helper->loadFixtures('Import/CustomDefFeedback');
         $this->helper->loadFixtures('Import/CustomDefArticle');
+        $this->helper->loadFixtures('Import/CustomDefOrganization');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
