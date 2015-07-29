@@ -103,7 +103,7 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
         $this->assertCount(2, $feedback['custom_fields']);
 
         // Checking for organizations
-        $this->assertContains('Entity `organization_some organization` parsed successfully!', $output);
+        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
     }
 
     /**

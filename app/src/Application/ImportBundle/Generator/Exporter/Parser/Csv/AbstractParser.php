@@ -328,7 +328,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity = new Entity\CustomField();
             $entity
                 ->setRawData($custom_field)
-                ->setDestination($destination_prefix . $custom_field[$ref_column])
+                ->setDestination($this->formatDestination($destination_prefix, $custom_field[$ref_column]))
                 ->setOid($num)
                 ->setKey($custom_field['field_name'])
                 ->setValue($custom_field['value'])
@@ -410,5 +410,22 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         return $custom_fields;
+    }
+
+    /**
+     * Formats destination path
+     *
+     * @param $prefix
+     * @param $id
+     *
+     * @return string
+     */
+    protected function formatDestination($prefix, $id)
+    {
+        $filename = strtolower($id);
+        $filename = str_replace(' ', '_', $filename);
+        $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
+
+        return rtrim($prefix, '_') . '_' . $filename;
     }
 }

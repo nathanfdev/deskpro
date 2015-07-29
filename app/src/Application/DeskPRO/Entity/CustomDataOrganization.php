@@ -62,6 +62,29 @@ class CustomDataOrganization extends CustomDataAbstract
         return $this->organization['id'];
     }
 
+    /**
+     * Set a field
+     *
+     * @param CustomDefOrganization $field
+     * @return $this
+     */
+    public function setField(CustomDefOrganization $field = null)
+    {
+        $this->setModelField('field', $field);
+        return $this;
+    }
+
+    /**
+     * Set a root field
+     *
+     * @param CustomDefOrganization $field
+     * @return $this
+     */
+    public function setRootField(CustomDefOrganization $field = null)
+    {
+        $this->setModelField('root_field', $field);
+        return $this;
+    }
 
 
     ############################################################################

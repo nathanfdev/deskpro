@@ -123,7 +123,7 @@ class Organizations extends AbstractParser
             $entity
                 ->setRawData($organization)
                 ->setOid($organization_id)
-                ->setDestination(self::ORGANIZATION_PREFIX . $organization_id)
+                ->setDestination($this->formatDestination(self::ORGANIZATION_PREFIX, $organization_id))
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
                 ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'name'))
@@ -182,7 +182,7 @@ class Organizations extends AbstractParser
                 $entity
                     ->setRawData($contact)
                     ->setOid($contact['organization_id'])
-                    ->setDestination(self::ORGANIZATION_PREFIX . $contact['organization_id'])
+                    ->setDestination($this->formatDestination(self::ORGANIZATION_PREFIX, $contact['organization_id']))
                     ->setComment($contact['comment'])
                 ;
             }
