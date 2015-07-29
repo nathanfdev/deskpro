@@ -130,17 +130,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function exportAttachment(array $attachment)
     {
         if ($this->isAttachmentValid($attachment)) {
-            $entity = new Entity\Attachment();
+            /** @var Entity\Attachment $entity */
+            $entity = $this->exportBlob($attachment, new Entity\Attachment());
             $entity
-                ->setDestination('attachment_' . $attachment['oid'])
-                ->setOid($attachment['oid'])
                 ->setPersonEmail($attachment['person'])
-                ->setBlobData($attachment['blob_data'])
-                ->setBlobUrl($attachment['blob_url'])
-                ->setBlobPath($attachment['blob_path'])
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-                ->setAsInline($attachment['is_inline']);
+                ->setAsInline($attachment['is_inline'])
+            ;
 
             return $entity;
         }
@@ -157,17 +152,60 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function isAttachmentValid(array $attachment)
     {
         $columns = array(
-            'oid',
             'person',
+            'is_inline',
+        );
+
+        return $this->isBlobValid($attachment)
+            && $this->hasRequiredColumns($attachment, $columns);
+    }
+
+    /**
+     * Returns a blob entity
+     *
+     * @param array            $blob
+     * @param Entity\Blob|null $entity
+     *
+     * @return Entity\Blob|null
+     */
+    protected function exportBlob(array $blob, Entity\Blob $entity = null)
+    {
+        if ($this->isBlobValid($blob)) {
+            $entity = $entity ? : new Entity\Blob();
+            $entity
+                ->setDestination('attachment_' . $blob['oid'])
+                ->setOid($blob['oid'])
+                ->setBlobData($blob['blob_data'])
+                ->setBlobUrl($blob['blob_url'])
+                ->setBlobPath($blob['blob_path'])
+                ->setFileName($blob['file_name'])
+                ->setContentType($blob['content_type'])
+            ;
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if a blob has all required columns
+     *
+     * @param array $blob
+     * @return bool
+     */
+    protected function isBlobValid(array $blob)
+    {
+        $columns = array(
+            'oid',
             'blob_data',
             'blob_url',
             'blob_path',
             'file_name',
             'content_type',
-            'is_inline',
         );
 
-        return $this->hasRequiredColumns($attachment, $columns);
+        return $this->hasRequiredColumns($blob, $columns);
     }
 
     /**

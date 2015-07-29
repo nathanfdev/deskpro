@@ -73,7 +73,7 @@ final class Organization extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $organization = $this->findOrCreateOrganization($entity);
+        $organization = $this->findOrCreateOrganization($entity->getName());
         $organization
             ->setImportance($entity->getImportance())
             ->setDateCreated($entity->getDateCreated())
@@ -95,7 +95,6 @@ final class Organization extends AbstractImporter
             }
         }
 
-        $this->records->add($organization);
         return $this->records;
     }
 

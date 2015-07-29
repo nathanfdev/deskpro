@@ -109,6 +109,7 @@ final class Organizations extends AbstractParser
                 ->setOid($organization['oid'])
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
+                ->setPicture($this->exportBlob($organization['picture']))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($organization['date_created']))
             ;
 

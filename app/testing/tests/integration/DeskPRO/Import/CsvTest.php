@@ -335,9 +335,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals(2, $this->custom_data_article_repository->countAll());
 
         // Checking for blob
-        $this->assertCount(3, $this->blob_repository->findBy(array('content_type' => 'csv')));
+        $this->assertCount(4, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'tickets.csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'organizations.csv')));
     }
     
     private function checkDbWriterOutput(CommandTester $command_tester)
