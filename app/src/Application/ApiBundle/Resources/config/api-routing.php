@@ -4225,6 +4225,32 @@ $collection->create('api_custom_fields', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create(
+    'api_common_custom_fields_get',
+    array(
+        'path' => '/custom_fields/{objectType}/{objectId}',
+        'controller' => 'ApiBundle:CustomFields:getCommonFields',
+        'requirements' => array(
+            'objectType' => implode(
+                '|',
+                array_keys(\Application\ApiBundle\Controller\CustomFieldsController::$allowed_common)
+            ),
+            'id' => '\\d+'
+        ),
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_common_custom_fields_set',
+    array(
+        'path' => '/custom_fields/{objectType}/{objectId}',
+        'controller' => 'ApiBundle:CustomFields:setCommonField',
+        'requirements' => array('objectType' => '\\w+', 'objectId' => '\\d+'),
+        'methods' => array('POST'),
+    )
+);
+
 $collection->create('api_custom_fields_children', array(
     'path'         => '/custom_fields/{id}/children',
     'controller'   => 'ApiBundle:CustomFields:children',
