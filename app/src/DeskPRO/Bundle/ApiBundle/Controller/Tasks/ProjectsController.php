@@ -45,6 +45,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,11 +88,11 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function cgetAction(Request $request)
     {
-        $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
+        $projects = $this->getDoctrine()->getManager()->createQueryBuilder()->select('p')->from('App:TaskProject', 'p');
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 1000);
 
-        $pager = new Pagerfanta(new ArrayAdapter($projects));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($projects));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 

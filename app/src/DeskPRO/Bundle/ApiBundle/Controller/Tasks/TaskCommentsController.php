@@ -44,6 +44,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,12 +85,12 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
      */
     public function cgetAction(Request $request)
     {
-        $comments = $this->getDoctrine()->getManager()->getRepository('App:TaskComment')->findAll();
+        $comments = $this->getDoctrine()->getManager()->createQueryBuilder()->select('c')->from('App:TaskComment', 'c');
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($comments));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($comments));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 

@@ -45,6 +45,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,7 +93,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($tasks));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -597,7 +598,8 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         if (empty($filter)) {
             /** @var EntityManager $em */
-            return $em->getRepository('App:Task')->findAll();
+            return $em->createQueryBuilder()->select('t')
+                ->from('App:Task', 't');
         }
 
         return $this->executeFilter($em, $filter);
@@ -617,6 +619,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             'assigned_department' => ['field' => 'department', 'table' => ['t.assigned', 'a']],
             'creator' => ['field' => 'creator'],
             'project' => ['field' => 'project'],
+            'is_done' => ['field' => 'is_done'],
             'label' => ['field' => 'id', 'table' => ['t.labels', 'l']],
         ];
 
@@ -648,13 +651,15 @@ class TasksController extends BaseController implements ClassResourceInterface
                             $returnValue = $user->getId();
                     }
                 } else {
-                    if (!empty($value) && $value !== 'null') {
+                    if (!empty($value) && !in_array($value, ['null', 'false', 'true'])) {
                         // Clean the IDs, including those in a comma-separated string
                         $ids = explode(',', $value);
                         $ids = array_map(function($id) {
                             return (int) $id;
                         }, $ids);
                         $returnValue = implode(',', $ids);
+                    } else if (!empty($value) && ($value === 'false' || $value === 'true')) {
+                        $returnValue = ($value === 'true');
                     }
                 }
 
@@ -725,9 +730,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $query = $query->andWhere($field . ' ' . $term);
         }
 
-        $query = $query->getQuery();
-
-        return $query->getResult();
+        return $query->getQuery();
     }
 
     /**
