@@ -43,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,12 +84,12 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      */
     public function cgetAction(Request $request)
     {
-        $task_attachments = $this->getDoctrine()->getManager()->getRepository('App:TaskAttachment')->findAll();
+        $task_attachments = $this->getDoctrine()->getManager()->createQueryBuilder()->select('a')->from('App:TaskAttachment', 'a');
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($task_attachments));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($task_attachments));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
