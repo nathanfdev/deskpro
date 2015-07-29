@@ -101,6 +101,9 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
 
         $feedback = $this->getContent('1/feedback/feedback_1.json');
         $this->assertCount(2, $feedback['custom_fields']);
+
+        // Checking for organizations
+        $this->assertContains('Entity `organization_some organization` parsed successfully!', $output);
     }
 
     /**

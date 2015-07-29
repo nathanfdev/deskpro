@@ -240,8 +240,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 ->setRawData($blob)
                 ->setDestination($destination_prefix . $blob[$ref_column])
                 ->setOid($num)
-                ->setBlobUrl($blob['blob_url'])
-                ->setBlobPath($blob['blob_path'])
+                ->setBlobUrl(@$blob['blob_url'])
+                ->setBlobPath(@$blob['blob_path'])
                 ->setFileName($blob['file_name'])
                 ->setContentType($blob['content_type'])
             ;
@@ -264,13 +264,17 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     {
         $columns = array(
             $ref_column,
-            'blob_url',
-            'blob_path',
             'file_name',
             'content_type',
         );
 
-        return $this->hasRequiredColumns($blob, $columns);
+        $blob_columns = array(
+            'blob_url',
+            'blob_path',
+        );
+
+        return $this->hasRequiredColumns($blob, $columns)
+            && $this->hasAnyRequiredColumn($blob, $blob_columns);
     }
 
     /**

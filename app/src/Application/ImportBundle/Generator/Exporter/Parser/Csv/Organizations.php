@@ -126,7 +126,7 @@ class Organizations extends AbstractParser
                 ->setDestination(self::ORGANIZATION_PREFIX . $organization_id)
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
-                ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'organization_id'))
+                ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'name'))
             ;
 
             return $entity;

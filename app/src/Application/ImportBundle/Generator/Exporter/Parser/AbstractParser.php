@@ -53,7 +53,10 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
         foreach ($columns as $column) {
             if (array_key_exists($column, $record) === false) {
                 if ($throw_exception) {
-                    throw new NoColumnException(sprintf('Column `%s` not found', $column));
+                    throw new NoColumnException(sprintf(
+                        'Column `%s` not found, exists [%s]',
+                        $column,  implode(', ', array_keys($record))
+                    ));
                 }
 
                 return false;
@@ -64,6 +67,34 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     }
 
     /**
+     * Check if a record has any of required columns
+     *
+     * @param array   $record
+     * @param array   $columns
+     * @param boolean $throw_exception
+     *
+     * @return bool
+     * @throws NoColumnException
+     */
+    protected function hasAnyRequiredColumn(array $record, array $columns, $throw_exception = true)
+    {
+        foreach ($columns as $column) {
+            if (array_key_exists($column, $record) === true) {
+                return true;
+            }
+        }
+
+        if ($throw_exception) {
+            throw new NoColumnException(sprintf(
+                'Columns `%s` not found, exists [%s]',
+                implode(', ', $columns), implode(', ', array_keys($record))
+            ));
+        }
+
+        return false;
+    }
+
+    /**
      * Check if a record column is array
      *
      * @param array  $record
@@ -71,19 +102,11 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
      * @param bool   $throw_exception
      *
      * @return bool
-     *
-     * @throws NoColumnException
      * @throws NotArrayException
      */
     protected function isArrayColumn(array $record, $column, $throw_exception = true)
     {
-        if (array_key_exists($column, $record) === false) {
-            if ($throw_exception) {
-                throw new NoColumnException(sprintf('Column `%s` not found', $column));
-            }
-
-            return false;
-        }
+        $this->hasRequiredColumns($record, array($column), $throw_exception);
 
         if (is_array($record[$column]) === false) {
             if ($throw_exception) {
