@@ -5,6 +5,7 @@ import * as TaskActions from "../Actions/TaskListActions";
 export default class TasksNavPeople extends React.Component {
     render() {
         const {agentList} = this.props;
+        let _this = this;
 
         return (<section className="sidebar-list tasks-nav-people">
                 <div className="list-sidebar-title">People</div>
@@ -14,7 +15,7 @@ export default class TasksNavPeople extends React.Component {
                             <a className="list-counter" href="#"
                                onclick="showFilterOptions(this); return false;">{object.assigned_tasks.length}</a>
                         </div>
-                        <a href="#" className="item" onmouseover="toggleCountBucket(this);">
+                        <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={_this.props.switchTaskList.bind(_this, 'tasks?assigned=' + object.id, 1)}>
                                         <span className="list-icon"><span
                                             style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}} className="avatar"/></span>
                             {object.name}
