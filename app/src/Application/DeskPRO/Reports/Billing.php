@@ -155,12 +155,23 @@ class Billing
     {
         $currency = addslashes(App::getSetting('core_tickets.billing_currency'));
 
+        $fields = App::getContainer()->getBillingFieldManager()->getFields();
+        $select_bits = array();
+        foreach ($fields as $f) {
+            $select_bits[] = 'ticket_charges.custom_data[' . $f->getId() . '] AS \'' . addslashes($f->getTitle()) . '\'';
+        }
+
+        $select_bits = implode(', ', $select_bits);
+        if ($select_bits) {
+            $select_bits = $select_bits . ', ';
+        }
+
         $output = array(
             'list-charges-date'                      => array(
                 'title' => 'List of charges <1:date group, default: today>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.agent, ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         ORDER BY ticket_charges.date_created
@@ -230,7 +241,7 @@ class Billing
                 'title' => 'List of charges per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.agent, ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         SPLIT BY ticket_charges.person
@@ -271,7 +282,7 @@ class Billing
                 'title' => 'List of charges per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.agent, ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL
                         SPLIT BY ticket_charges.organization
@@ -312,7 +323,7 @@ class Billing
                 'title' => 'List of charges per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         SPLIT BY ticket_charges.agent

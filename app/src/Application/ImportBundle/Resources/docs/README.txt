@@ -28,7 +28,6 @@ Commands:
 
         Examples:
         php cmd.php dp:export:check csv --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv" --verbose
-        php cmd.php dp:export:check json --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv_to_json" --verbose
 
         php cmd.php dp:export:check osticket --verbose
         php cmd.php dp:export:check osticket --batch-config="app/src/Application/ImportBundle/Resources/docs/data_example/osticket.batch.json" --verbose
@@ -105,7 +104,6 @@ Commands:
 
         Examples:
         php cmd.php dp:import:run csv --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv" --verbose
-        php cmd.php dp:import:run json --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv_to_json" --verbose
         php cmd.php dp:import:run json --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket_to_json" --verbose
         php cmd.php dp:import:run osticket --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket" --verbose
         php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/zendesk" --verbose
@@ -153,20 +151,25 @@ Exporters:
 
         Files
          - articles.csv
+         - article_custom_fields.csv
          - downloads.csv
          - feedback.csv
          - feedback_attachments.csv
+         - feedback_custom_fields.csv
          - news.csv
          - people.csv
+         - people_custom_fields.csv
          - tickets.csv
          - ticket_messages.csv
          - ticket_attachments.csv
+         - ticket_custom_fields.csv
 
         Example files dir:
         app/src/Application/ImportBundle/Resources/docs/data_example/csv
 
          - Articles required columns
 
+            'id' is optional,
             'person',
             'title',
             'content',
@@ -175,13 +178,21 @@ Exporters:
             'status',
             'category',
             'label',
-            'date_created'
+            'date_created',
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/articles.csv)
 
             Person means a person email
             Slug could be empty (generated from title)
             Date created could be empty (current time)
             Label could be empty (only one label is supported)
             Category could be empty
+
+
+         - Article custom fields required columns
+
+            'article_id',
+            'field_name',
+            'value'
 
 
          - Downloads required columns
@@ -221,7 +232,8 @@ Exporters:
             'category',
             'label',
             'date_created',
-            'date_published'
+            'date_published',
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/feedback.csv)
 
             Person means a person email
             Slug could be empty (generated from title)
@@ -233,7 +245,7 @@ Exporters:
 
         - Feedback attachments required columns
 
-            'feedback_id'
+            'feedback_id',
             'person',
             'blob_url',
             'blob_path',
@@ -242,6 +254,13 @@ Exporters:
             'is_inline'
 
             Person means a person email
+
+
+        - Feedback custom fields required columns
+
+            'feedback_id'
+            'field_name'
+            'value'
 
 
         - News required columns
@@ -267,10 +286,18 @@ Exporters:
 
         - People required columns
 
+            'id' is optional,
             'name',
-            'email'
+            'email',
+            'is_agent' is optional,
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/people.csv)
 
-            'is_agent' is optional
+
+        - People custom fields required columns
+
+            'person_id' people.csv `id` or `email` column,
+            'field_name',
+            'value'
 
 
         - Tickets required columns
@@ -280,7 +307,8 @@ Exporters:
             'user',
             'agent',
             'status',
-            'date_created'
+            'date_created' is optional,
+            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/tickets.csv)
 
             User means a user email
             Agent means a agent email
@@ -292,14 +320,16 @@ Exporters:
             'ticket_id',
             'message_id',
             'message_text',
-            'user'
+            'user',
+            'date_created' is optional
 
             User means a user email
+            Date created could be empty (current time)
 
 
         - Ticket attachments required columns
 
-            'message_id'
+            'message_id',
             'person',
             'blob_url',
             'blob_path',
@@ -308,6 +338,13 @@ Exporters:
             'is_inline'
 
             Person means a person email
+
+
+        - Ticket custom fields required columns
+
+            'ticket_id',
+            'field_name',
+            'value'
 
 
     2) OsTicket
@@ -383,11 +420,12 @@ Exporters:
         Add `zendesk_import` configuration to your www/config.php
 
             $DP_CONFIG['zendesk_import'] = array(
-                'subdomain'    => 'your account subdomain',
-                'username'     => 'email@deskpro.com',
-                'password'     => '',
-                'api_token'    => '',
-                'initial_time' => '2013-01-01 00:00:00'
+                'subdomain'          => 'your account subdomain',
+                'username'           => 'email@deskpro.com',
+                'password'           => '',
+                'api_token'          => '',
+                'initial_time'       => '2013-01-01 00:00:00',
+                'connection_timeout' => 60,
             );
 
         Supported tickets and people data export.

@@ -94,6 +94,7 @@ class Column extends AbstractPart
         'custom_data_organizations' => '%1$s.root_field_id = %2$s',
         'custom_data_person' => '%1$s.root_field_id = %2$s',
         'custom_data_ticket' => '%1$s.root_field_id = %2$s',
+        'custom_data_billing' => '%1$s.root_field_id = %2$s',
         'ticket_slas' => '%1$s.sla_id = %2$s',
     );
 
@@ -385,6 +386,7 @@ class Column extends AbstractPart
                 $custom_def_table = str_replace('_data_', '_def_', $assocTable);
                 switch ($custom_def_table) {
                     case 'custom_def_ticket': $manager = App::getContainer()->getSystemService('TicketFieldsManager'); break;
+                    case 'custom_def_billing': $manager = App::getContainer()->getBillingFieldManager(); break;
                     case 'custom_def_people': $manager = App::getContainer()->getSystemService('PersonFieldsManager'); break;
                     case 'custom_def_organizations': $manager = App::getContainer()->getSystemService('OrgFieldsManager'); break;
                     default: $manager = null; break;

@@ -234,7 +234,7 @@ class Session implements SessionInterface
 
     public function getIterator()
     {
-        return \ArrayIterator($this->data);
+        return new \ArrayIterator($this->data);
     }
 
     public function offsetUnset($offset)

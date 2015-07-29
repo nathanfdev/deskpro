@@ -133,6 +133,12 @@ final class Articles extends AbstractParser
                 $entity->addLabel($label);
             }
 
+            $custom_fields = $this->exportCustomFields($article['custom_fields']);
+            foreach ($custom_fields as $custom_field) {
+                /** @var Entity\CustomField $custom_field */
+                $entity->addCustomField($custom_field);
+            }
+
             return $entity;
         }
 
@@ -176,10 +182,12 @@ final class Articles extends AbstractParser
             'date_end',
             'categories',
             'labels',
+            'custom_fields',
         );
 
         return $this->hasRequiredColumns($article, $columns)
             && $this->isArrayColumn($article, 'categories')
-            && $this->isArrayColumn($article, 'labels');
+            && $this->isArrayColumn($article, 'labels')
+            && $this->isArrayColumn($article, 'custom_fields');
     }
 }

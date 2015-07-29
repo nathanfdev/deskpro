@@ -25,28 +25,31 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-
 namespace Application\ImportBundle\Reader;
 
-
-abstract class BaseReader
+/**
+ * Class BaseReader
+ * @package Application\ImportBundle\Reader
+ */
+abstract class BaseReader implements ReaderInterface
 {
+    /**
+     * @var BaseConfig
+     */
     protected $config;
 
     /**
+     * Constructor
+     *
      * @param BaseConfig $config
-     * @throws \Exception
      */
     public function __construct(BaseConfig $config)
     {
-        if (!$config) {
-            throw new \Exception('Reader configuration is not defined');
-        }
         $this->config = $config;
     }
 
     /**
-     * @return BaseConfig
+     * {@inheritdoc}
      */
     public function getConfig()
     {
@@ -54,7 +57,7 @@ abstract class BaseReader
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function isReady()
     {

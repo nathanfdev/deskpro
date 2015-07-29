@@ -63,6 +63,7 @@ class CheckCreationSystem extends AbstractTriggerTerm
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getTermOptions();
-        $this->isStringMatch($ticket, $context, 'creation_system', $options->get('creation_system'));
+
+        return $this->isStringMatch($ticket, $context, 'creation_system', $options->get('creation_system'));
     }
 }

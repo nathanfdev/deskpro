@@ -66,6 +66,19 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $labels = array();
 
     /**
+     * @var Collection
+     */
+    private $custom_fields;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->custom_fields = new Collection();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getType()
@@ -205,12 +218,36 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * @return Collection
+     */
+    public function getCustomFields()
+    {
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param CustomField $custom_field
+     * @return $this
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields->attach($custom_field);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
     {
         if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
+        }
+
+        $custom_fields = array();
+        foreach ($this->custom_fields as $custom_field) {
+            /** @var CustomField $custom_field */
+            $custom_fields[] = $custom_field->toArray();
         }
 
         return array(
@@ -231,6 +268,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'date_end'       => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
             'categories'     => $this->categories,
             'labels'         => $this->labels,
+            'custom_fields'  => $custom_fields,
         );
     }
 

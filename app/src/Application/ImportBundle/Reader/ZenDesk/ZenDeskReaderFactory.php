@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Reader\ZenDesk;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Zendesk\API\Client;
 use Exception;
 use DateTime;
@@ -40,33 +41,12 @@ use DateTime;
  * Class ZenDeskReaderFactory
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskReaderFactory
+class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
 {
     /**
-     * Create a ZenDesk reader
-     *
-     * @return ZenDeskReader
-     * @throws Exception
+     * {@inheritdoc}
      */
-    public static function createReaderByDeskPROConfig()
-    {
-        $config = self::getZenDeskConfig();
-        $client = self::createClient($config);
-
-        return new ZenDeskReader(
-            new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config))
-            ),
-
-            $config
-        );
-    }
-
-    /**
-     * @param ZenDeskConfig $config
-     * @return ZenDeskReader
-     */
-    public static function createReader(ZenDeskConfig $config)
+    public function createReader(ZenDeskConfig $config)
     {
         $client = self::createClient($config);
         $logger = new Logger('zendesk');

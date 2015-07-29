@@ -144,7 +144,7 @@ class PeopleListRenderer
 
         $data['id']                    = $entity->id;
         $data['name_with_title']       = $entity->getNameWithTitle();
-        $data['organization']          = $entity->organization ? array('name' => $entity->organization['name']) : null;
+        $data['organization']          = $entity->organization ? array('id' => $entity->organization['id'], 'name' => $entity->organization['name']) : null;
         $data['is_contact']            = $entity->is_contact;
         $data['is_user']               = $entity->is_user;
         $data['is_agent']              = $entity->is_agent;

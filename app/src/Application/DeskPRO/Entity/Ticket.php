@@ -1212,10 +1212,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * @param  Person            $agent
      * @param  int               $time
      * @param  int               $amount
-     * @param  string            $comment
      * @return TicketCharge|null
      */
-    public function addCharge(Person $agent, $time, $amount = null, $comment = '')
+    public function addCharge(Person $agent, $time, $amount = null)
     {
         if ($time !== null) {
             $time = intval($time);
@@ -1237,7 +1236,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $charge = new TicketCharge();
         $charge->charge_time = $time;
         $charge->amount = $amount;
-        $charge->comment = strval($comment);
         $charge->ticket = $this;
         $charge->person = $this->person;
         $charge->organization = $this->organization;
@@ -1576,6 +1574,23 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($change) {
 			$this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
+    }
+
+    /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->custom_data->clear();
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
     }
 
     /**

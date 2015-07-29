@@ -27,13 +27,15 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
+use Application\ImportBundle\Reader\ReaderInterface;
+
 /**
  * Json data parser interface
  *
  * Interface JsonReaderInterface
  * @package Application\ImportBundle\Reader\Json
  */
-interface JsonReaderInterface
+interface JsonReaderInterface extends ReaderInterface
 {
     /**
      * Returns count of json files in the dir

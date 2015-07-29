@@ -654,9 +654,6 @@ class TicketSearch extends SearcherAbstract
             $table = 'tickets_search_active';
         }
 
-        $sql = "SELECT COUNT(tickets.id) AS count FROM $table AS tickets ";
-        $sql2 = "SELECT COUNT(part_perm.id) AS count FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
-
         #------------------------------
         # Standard for permissions
         #------------------------------
@@ -780,6 +777,13 @@ class TicketSearch extends SearcherAbstract
             $where .= " AND tickets.status NOT IN ('archived', 'hidden') ";
         }
 
+        $sql = "SELECT tickets.id AS ticket_id FROM $table AS tickets ";
+        $sql2 = "SELECT tickets.id AS ticket_id FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
+
+        if (!$with_part_union) {
+            $sql = "SELECT COUNT(DISTINCT tickets.id) FROM $table AS tickets ";
+        }
+
         $sql .= " $sql_joins ";
         $sql2 .= " $sql_joins ";
 
@@ -789,12 +793,12 @@ class TicketSearch extends SearcherAbstract
             $sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
         }
 
-        $sql .= " ";
-        $sql2 .= " ";
+        $sql .= " LIMIT 10000 ";
+        $sql2 .= " LIMIT 10000 ";
 
         if ($with_part_union) {
             $count_sql = "
-                SELECT SUM(count)
+                SELECT COUNT(DISTINCT ticket_id)
                 FROM (
                     $sql
                     UNION

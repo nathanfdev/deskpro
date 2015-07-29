@@ -276,6 +276,13 @@
 </style>
 <![endif]-->
 
+{% if not app.getSetting('core.agent_enable_kb_shortcuts') %}
+<style>
+	#create-menu kbd {
+		display: none !important;
+	}
+</style>
+{% endif %}
 <ul id="create-menu" class="btn-menu">
     {% if app.user.hasPerm('agent_tickets.create') %}
         <li id="create_ticket_btn"><a><div class="wrap"><i class="icon-dp-ticket"></i></div>{{ phrase('agent.chrome.create_new-ticket') }} <kbd>t</kbd></a></li>

@@ -27,13 +27,15 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
+use Application\ImportBundle\Reader\ReaderInterface;
+
 /**
  * Csv data parser interface
  *
  * Interface CsvReaderInterface
  * @package Application\ImportBundle\Reader\Csv
  */
-interface CsvReaderInterface
+interface CsvReaderInterface extends ReaderInterface
 {
     /**
      * Returns rows count of csv file

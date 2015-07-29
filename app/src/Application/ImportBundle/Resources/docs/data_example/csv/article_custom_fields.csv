@@ -1,0 +1,4 @@
+article_id;field_name;value
+1;Multiple-select box field;Choice 1 > Choice 2
+1;Multiple-select box field;Choice 4 > Choice 5
+1;Hidden field;some value

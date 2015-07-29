@@ -98,6 +98,7 @@ final class Ticket extends AbstractImporter
             ->resetMessages()
             ->resetParticipants()
             ->resetLabels()
+            ->resetCustomData()
         ;
 
         if ($entity->getLanguage()) {
@@ -114,7 +115,10 @@ final class Ticket extends AbstractImporter
             $ticket->addParticipant($this->createParticipant($participant));
         }
         foreach ($entity->getCustomFields() as $custom_field) {
-            $ticket->addCustomData($this->createCustomData($custom_field));
+            $custom_field = $this->createTicketCustomData($custom_field);
+            if ($custom_field) {
+                $ticket->addCustomData($custom_field);
+            }
         }
 
         $this->records->add($ticket);
@@ -324,52 +328,11 @@ final class Ticket extends AbstractImporter
      * @return DeskPROEntity\CustomDataTicket
      * @throws ImporterException
      */
-    private function createCustomData(Entity\CustomField $entity)
+    private function createTicketCustomData(Entity\CustomField $entity)
     {
-        $ticket_def   = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getKey());
-        $custom_field = new DeskPROEntity\CustomDataTicket();
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
 
-        switch ($ticket_def->getTypeName()) {
-            case Entity\CustomField::FIELD_TYPE_TEXT:
-            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
-                $custom_field
-                    ->setField($ticket_def)
-                    ->setRootField($ticket_def)
-                    ->setValue($entity->getValue());
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_TOGGLE:
-                $custom_field
-                    ->setField($ticket_def)
-                    ->setRootField($ticket_def)
-                    ->setValue($entity->getValue() ? 1 : 0);
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_DATE:
-                $custom_field
-                    ->setField($ticket_def)
-                    ->setRootField($ticket_def)
-                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0);
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_CHOICE:
-                $choice_def = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getValue());
-                $custom_field
-                    ->setField($choice_def)
-                    ->setRootField($ticket_def)
-                    ->setValue(1);
-
-                break;
-
-            default:
-                throw new ImporterException('Unknown custom field type `%s`', $ticket_def->getTypeName());
-        }
-
-        $this->records->add($custom_field);
-        return $custom_field;
+        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataTicket());
     }
 
     /**
@@ -403,16 +366,5 @@ final class Ticket extends AbstractImporter
     private function getTicketCategoryMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_CATEGORY);
-    }
-
-    /**
-     * Returns the custom def person mapper
-     *
-     * @return Mapper\CustomDefTicket
-     * @throws \Exception
-     */
-    private function getCustomDefTicketMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
     }
 }

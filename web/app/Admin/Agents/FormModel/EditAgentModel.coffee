@@ -78,6 +78,8 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
       formData = {}
       formData.name = @form.name
       formData.primary_phone = {number: @form.primary_phone.number}
+      if not formData.primary_phone.number
+        formData.primary_phone = null
       formData.notification_settings = @form.notification_settings
       formData.primary_team = if @form.primary_team then @form.primary_team.id else null
 

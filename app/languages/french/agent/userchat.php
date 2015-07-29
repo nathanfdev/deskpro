@@ -33,7 +33,7 @@
 	'agent.userchat.msg_new_user_track'                                    => 'L\'utilisateur regarde : {{label}}',
 	'agent.userchat.msg_user_timeout'                                      => 'L\'utilisateur ne répond pas.',
 	'agent.userchat.new_chat'                                              => 'Nouveau chat',
-	'agent.userchat.take_chat'                                             => 'Prendre le chat',
+	'agent.userchat.take_chat'                                             => 'Chatter',
 	'agent.userchat.taken_by'                                              => 'Chat pris par',
 	'agent.userchat.transcript_sent'                                       => 'Transcription envoyée à {{email}}',
 	'agent.userchat.unassigned'                                            => 'Chat non assigné',

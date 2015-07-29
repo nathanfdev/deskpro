@@ -172,7 +172,7 @@ class Util
         App::getDb()->commit();
     }
 
-    public static function getPrintableTimeLength($length, $max_unit = null)
+    public static function getPrintableTimeLength($length, $max_unit = null, $as_html = false)
     {
         if ($length < 1) {
             return '0 seconds';
@@ -212,19 +212,35 @@ class Util
         // TODO: translation
         $parts = array();
         if ($days && count($parts) <= 1) {
-            $parts[] = ($days > 1 ? "$days days" : '1 day');
+            $parts['days'] = ($days > 1 ? "$days days" : '1 day');
         }
         if ($hours && count($parts) <= 1) {
-            $parts[] = ($hours > 1 ? "$hours hours" : '1 hour');
+            $parts['hours'] = ($hours > 1 ? "$hours hours" : '1 hour');
         }
         if ($minutes && count($parts) <= 1) {
-            $parts[] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
+            $parts['minutes'] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
         }
         if ($seconds && count($parts) <= 1) {
-            $parts[] = ($seconds > 1 ? "$seconds seconds" : '1 second');
+            $parts['seconds'] = ($seconds > 1 ? "$seconds seconds" : '1 second');
         }
 
-        return implode(', ', $parts);
+        if ($as_html) {
+            $last = count($parts)-1;
+            $current = 0;
+            $html = '';
+            foreach ($parts as $type => $v) {
+                $html .= '<span class="timelen-display-'.$type.'">';
+                $html .= $v;
+                $html .= '</span>';
+                if ($last != $current) {
+                    $html .= '<span class="timelen-sep-'.$type.'">, </span>';
+                }
+                $current++;
+            }
+            return $html;
+        } else {
+            return implode(', ', $parts);
+        }
     }
 
 

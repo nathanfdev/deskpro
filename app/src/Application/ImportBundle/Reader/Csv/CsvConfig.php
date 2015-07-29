@@ -139,7 +139,11 @@ class CsvConfig extends BaseConfig
         return $this;
     }
 
-    static public function fromArray(array $data)
+    /**
+     * @param array $data
+     * @return CsvConfig
+     */
+    public static function fromArray(array $data)
     {
         $config = new self(@$data['resource'] ?: @$data['temp'].'/in');
 

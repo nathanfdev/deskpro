@@ -44,7 +44,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDefPerson extends CustomDefAbstract
 {
     /**
-     * @var CustomDefPeople
+     * @var CustomDefPerson
      */
     protected $parent = null;
 
@@ -55,6 +55,17 @@ class CustomDefPerson extends CustomDefAbstract
      */
     protected $children = null;
 
+    /**
+     * Set parent
+     *
+     * @param CustomDefPerson $parent
+     * @return $this
+     */
+    public function setParent(CustomDefPerson $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+        return $this;
+    }
 
 
     ############################################################################

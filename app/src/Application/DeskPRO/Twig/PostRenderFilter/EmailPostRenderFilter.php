@@ -78,6 +78,14 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
             $code = str_replace($id, $block, $code);
         }
 
+        $code = preg_replace_callback('#<table([^>]*)>#i', function($m) {
+            if (strpos($m[0], 'dp_message_table') === false) {
+                return $m[0];
+            }
+
+            return '<table border="1" cellspacing="0" cellpadding="4">';
+        }, $code);
+
         if (!$code) {
             return $orig_code;
         }

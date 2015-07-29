@@ -39,6 +39,7 @@ use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Orb\Util\Arrays;
+use Orb\Validator\StringEmail;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Swift_Transport;
@@ -170,6 +171,10 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
             $this->logger->info(sprintf('Message %d queued as aborted (disable_send is enabled in config)', $r['id']), array('sendmail_source_id' => $r['id']));
             $r = $this->source_mapper->setLogText($r);
+        } elseif (!$this->_validateNewMessage($message, $error_message)) {
+            $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
+            $this->logger->info(sprintf('Message %d queued as aborted (failed validation) -- ' . $error_message, $r['id']), array('sendmail_source_id' => $r['id']));
+            $r = $this->source_mapper->setLogText($r);
         } else {
             $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
             $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('sendmail_source_id' => $r['id']));
@@ -177,6 +182,34 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         }
 
         return $r['id'];
+    }
+
+    /**
+     * Before queueing a message, it validates it to see if we should send it. If this returns
+     * false, the message will be saved as aborted.
+     *
+     * @param Swift_Mime_Message $message
+     * @param null $error_message
+     * @return bool
+     */
+    private function _validateNewMessage(Swift_Mime_Message $message, &$error_message = null)
+    {
+        $tos = $message->getTo();
+        $is_invalid = false;
+
+        foreach ($tos as $addy => $name) {
+            if (StringEmail::isExampleEmail($addy)) {
+                $is_invalid = $addy;
+                break;
+            }
+        }
+
+        if ($is_invalid !== false) {
+            $error_message = "$is_invalid is an invalid email address.";
+            return false;
+        }
+
+        return true;
     }
 
 
