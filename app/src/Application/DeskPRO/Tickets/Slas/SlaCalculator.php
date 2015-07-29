@@ -248,7 +248,7 @@ class SlaCalculator
             $times[] = $ticket->date_archived->getTimestamp();
         }
 
-        if ($ticket->status == 'resolved' && $ticket->date_resolved) {
+        if (($ticket->status == 'resolved' || $ticket->status == 'archived') && $ticket->date_resolved) {
             $times[] = $ticket->date_resolved->getTimestamp();
         }
 
