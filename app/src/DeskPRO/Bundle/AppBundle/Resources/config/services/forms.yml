@@ -16,6 +16,11 @@ services:
       tags:
           - { name: form.type, alias: sandbox_widget }
 
+  form.api_date:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
+      tags:
+          - { name: form.type, alias: api_date }
+
   form.filter:
       class: DeskPRO\Bundle\AppBundle\Form\Type\FilterType
       tags:
