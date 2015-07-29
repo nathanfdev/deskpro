@@ -6,6 +6,7 @@ import TaskNavGroups from "../Components/TaskNavGroups";
 import TaskNavProjects from "../Components/TaskNavProjects";
 import TaskNavPeople from "../Components/TaskNavPeople";
 import TaskNavLabels from "../Components/TaskNavLabels";
+import $ from "jquery";
 
 @connect(state => ({
   taskList: state.taskList,
@@ -36,8 +37,10 @@ export default class TasksNavFrame extends React.Component {
     dispatch(TaskActions.loadLabels());
   }
 
-  switchTaskList(identifier, page) {
-      this.props.dispatch(TaskActions.loadTaskList(identifier, page));
+  switchTaskList(identifier, page, event) {
+    this.props.dispatch(TaskActions.loadTaskList(identifier, page));
+    $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
+    $(event.target).addClass('active');
   }
 
   render() {

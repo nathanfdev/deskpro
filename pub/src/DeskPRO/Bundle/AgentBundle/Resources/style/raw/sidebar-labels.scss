@@ -35,6 +35,11 @@
     background: #fff;
     border: 1px solid #dbdcdd;
     margin-bottom: 5px;
+
+    &.active {
+      background: $top-bar-blue;
+      color: #fff;
+    }
   }
 
 
