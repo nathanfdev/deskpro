@@ -27,7 +27,7 @@ class TaskType extends AbstractType
             )
             ->add(
                 'is_done',
-                'checkbox',
+                'api_boolean',
                 array(
                     'description' => 'the task status',
                     'required' => false,

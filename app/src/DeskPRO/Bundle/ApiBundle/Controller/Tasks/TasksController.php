@@ -565,11 +565,6 @@ class TasksController extends BaseController implements ClassResourceInterface
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
-            // Workaround to deal with done being treated as null
-            // TODO: Remove when request layer is fixed
-            if (in_array('is_done', array_keys($submitted))) {
-                $task->setIsDone((bool) $submitted['is_done']);
-            }
             $this->getDoctrine()->getManager()->persist($task);
             $this->getDoctrine()->getManager()->flush();
 
