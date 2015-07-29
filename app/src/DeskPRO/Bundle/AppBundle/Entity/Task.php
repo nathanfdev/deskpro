@@ -477,7 +477,7 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setIsDone($is_done)
     {
-        $this->setModelField('is_done', $is_done);
+        $this->setModelField('is_done', (bool)$is_done);
     }
 
     /**

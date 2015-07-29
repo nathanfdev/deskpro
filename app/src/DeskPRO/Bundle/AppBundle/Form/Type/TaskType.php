@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Intl\DateFormatter\IntlDateFormatter;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TaskType extends AbstractType
@@ -46,12 +47,12 @@ class TaskType extends AbstractType
                 array(
                     'description' => 'the type of task',
                     'required' => false,
-                    'choices' => array('task' => 'TasK', 'event' => 'Event'),
+                    'choices' => array('task' => 'Task', 'event' => 'Event'),
                 )
             )
             ->add(
                 'date_due',
-                'datetime',
+                'api_date',
                 array(
                     'required' => false,
                     'description' => 'the task due date',
