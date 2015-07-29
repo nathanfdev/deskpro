@@ -25,7 +25,7 @@ class TaskType extends AbstractType
                 )
             )
             ->add(
-                'done',
+                'is_done',
                 'checkbox',
                 array(
                     'description' => 'the task status',

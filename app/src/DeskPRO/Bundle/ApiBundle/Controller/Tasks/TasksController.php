@@ -555,6 +555,7 @@ class TasksController extends BaseController implements ClassResourceInterface
     {
         $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
+
         /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
 
@@ -573,8 +574,9 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         if ($form->isValid()) {
             // Workaround to deal with done being treated as null
-            if (in_array('done', array_keys($submitted))) {
-                $task->setDone((bool) $submitted['done']);
+            // TODO: Remove when request layer is fixed
+            if (in_array('is_done', array_keys($submitted))) {
+                $task->setIsDone((bool) $submitted['is_done']);
             }
             $this->getDoctrine()->getManager()->persist($task);
             $this->getDoctrine()->getManager()->flush();

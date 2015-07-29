@@ -2,18 +2,25 @@ import React from "react";
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
+import { IntlMixin, FormattedDate } from "react-intl";
 
 @connect(state => ({
   taskFrameList: state.taskFrameList
 }))
 export default class TasksListFrame extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.intl = IntlMixin;
+  }
+
   toggleDone(done, taskId, reload) {
     let newValues = {
       taskId : taskId,
-      done : !done
+      is_done : !done
     };
 
-    if (newValues.done === true) {
+    if (newValues.is_done === true) {
       newValues['percent_complete'] = 100;
     }
 
@@ -137,7 +144,11 @@ export default class TasksListFrame extends React.Component {
 
               <div className="task-properties">
                 <div>
-                  <i className="fa fa-calendar-o"/> Due: Today, 2.30PM
+                  <i className="fa fa-calendar-o"/> Due: {object.date_due ? <FormattedDate
+                  value={Date.parse(object.date_due)}
+                  day="numeric"
+                  month="long"
+                  year="numeric" /> : 'N/A' }
                 </div>
 
                 <span className="disc"></span>
