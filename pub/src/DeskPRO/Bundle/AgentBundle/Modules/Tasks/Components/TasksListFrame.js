@@ -14,15 +14,19 @@ export default class TasksListFrame extends React.Component {
     this.intl = IntlMixin;
   }
 
-  toggleDone(done, taskId, reload) {
+  toggleDone(object, reload) {
+    object.is_done = !object.is_done;
+
     let newValues = {
-      taskId : taskId,
-      is_done : !done
+      taskId : object.id,
+      is_done : object.is_done
     };
 
     if (newValues.is_done === true) {
       newValues['percent_complete'] = 100;
     }
+
+    this.forceUpdate();
 
     this.props.dispatch(TaskActions.editTask(newValues, reload));
   }
@@ -125,9 +129,8 @@ export default class TasksListFrame extends React.Component {
                                                                style={{backgroundImage: "url(./img/avatar6.png)"}}></span>
             </div>
 
-
             <div className="card-line">
-              <span className="line-box card-task-mark" onClick={_this.toggleDone.bind(_this, object.is_done, object.id, taskFrameList.taskFrameSource)}>
+              <span className="line-box card-task-mark" onClick={_this.toggleDone.bind(_this, object, taskFrameList.taskFrameSource)}>
                 {doneButton}
               </span>
 
