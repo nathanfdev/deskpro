@@ -48,10 +48,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       perm = @$scope.perm.selected
       @$scope.settings.agents.map (agent) ->
-        console.info agent.display_name, agent.perms.problems[perm], agent[perm + '_checked'], agent[perm + '_disabled']
         return if agent[perm + '_disabled']
         agent.perms.problems[perm] = agent[perm + '_checked']
-        console.info agent.display_name, agent.perms.problems[perm], agent[perm + '_checked'], agent[perm + '_disabled']
 
       @service.save().then(
         =>
