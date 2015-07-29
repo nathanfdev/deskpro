@@ -64,15 +64,15 @@ function createReducers(reducers_path) {
   var files = fs.readdirSync(reducers_path);
   var imports = '';
   var exports = '';
-  processed_files = [];
+  var processed_files = [];
   for(var k in files) {
-    file = files[k];
-    if(file == 'index.js') {
+    var file = files[k];
+    if(file == 'index.js' || !file.match(/\.js$/)) {
       continue;
     }
     
     processed_files.push(file);
-    store_name = file.substr(0, file.length - 3);
+    var store_name = file.substr(0, file.length - 3);
     imports+= "import " + store_name + " from './" + store_name + "';\n";
     exports+= store_name + ",";
   }
