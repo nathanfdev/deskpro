@@ -58,16 +58,22 @@ class DeferredIdentity
     private $assoc_manager;
     private $source_entity;
     private $property_name;
-    private $resolved;
-    private $result;
+    private $resolved_identity;
+    private $resolved_entities;
+    private $identity_payload;
+    private $include_entity;
+    private $entity_payload;
 
-    public function __construct(DoctrineAssociationManager $assoc_manager, $source_entity, $property_name)
+    public function __construct(DoctrineAssociationManager $assoc_manager, $source_entity, $property_name, $include_entity = false)
     {
         $this->assoc_manager = $assoc_manager;
         $this->source_entity = $source_entity;
         $this->property_name = $property_name;
-        $this->resolved = false;
-        $this->result = null;
+        $this->include_entity = $include_entity;
+        $this->resolved_identity = false;
+        $this->resolved_entities = false;
+        $this->identity_payload = null;
+        $this->entity_payload = null;
     }
 
     /**
@@ -79,19 +85,29 @@ class DeferredIdentity
      */
     public function resolve()
     {
-        if (!$this->resolved) {
-            $this->assoc_manager->resolveDeferred();
+        if (!$this->resolved_identity) {
+            $this->assoc_manager->resolveDeferredIdentity();
         }
 
-        return $this->getResult();
+        if ($this->include_entity && !$this->resolved_entities) {
+            $this->assoc_manager->resolveDeferredEntities();
+        }
     }
 
     /**
      * @return boolean
      */
-    public function isResolved()
+    public function isResolvedIdentity()
     {
-        return $this->resolved;
+        return $this->resolved_identity;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isResolvedEntities()
+    {
+        return $this->resolved_entities;
     }
 
     /**
@@ -113,19 +129,48 @@ class DeferredIdentity
     /**
      * @return mixed
      */
-    public function getResult()
+    public function getIdentityPayload()
     {
-        return $this->result;
+        return $this->identity_payload;
     }
 
     /**
      * The DoctrineAssociationManager will set a result to mark this as resolved.
      *
-     * @param mixed $result
+     * @param mixed $identity_payload
      */
-    public function setResult($result)
+    public function resolveIdentityPayload($identity_payload)
     {
-        $this->result = $result;
-        $this->resolved = true;
+        $this->identity_payload = $identity_payload;
+        $this->resolved_identity = true;
+    }
+
+    /**
+     * The DoctrineAssociationManager will set a result to mark this as resolved.
+     *
+     * @param mixed $entity_payload
+     */
+    public function resolveEntitiesPayload($entity_payload)
+    {
+        $this->entity_payload = $entity_payload;
+        $this->resolved_entities = true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntityPayload()
+    {
+        return $this->entity_payload;
+    }
+
+    public function markForInclude()
+    {
+        $this->include_entity = true;
+    }
+
+    public function isIncludeEntities()
+    {
+        return $this->include_entity;
     }
 }

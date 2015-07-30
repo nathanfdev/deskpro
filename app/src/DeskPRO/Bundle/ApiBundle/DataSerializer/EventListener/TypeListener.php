@@ -31,71 +31,52 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
+
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * This knows how to find the type of an object
+ * Find and set the type of data in the context.
  */
-class DataTypeMap
+class TypeListener implements EventSubscriberInterface
 {
     /**
-     * @var array map
+     * @var DataTypeMap
      */
-    protected $map;
+    private $type_map;
 
-    public function __construct(array $map = null)
+    public function __construct(DataTypeMap $type_map)
     {
-        if ($map) {
-            $this->map = $map;
-        } else {
-            // this is how we configure the map for now, the null check is for testing only
-            // this config process will get simpler (probably a yml config file)
-            // you can see how this map checks can be expanded beyond just object type lookups
-            $this->map = [
-                'sandbox_widget' => [
-                    'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget'
-                    ]
-                ]
-            ];
-        }
+        $this->type_map = $type_map;
     }
 
-    /**
-     * Given some $data give me the object "type" or null if it can't be determined.
-     *
-     * @param $data
-     * @return string|null
-     */
-    public function findType($data)
+    public static function getSubscribedEvents()
     {
-        $object_class = is_object($data) ? get_class($data) : null;
-
-        if ($object_class && ($type = $this->findTypeForClass($object_class))) {
-            return $type;
-        }
-
-        return null;
+        return [
+            DataSerializerEvents::PRE_SERIALIZE => ['preSerialize', 0]
+        ];
     }
 
-    /**
-     * Given a class name, give me the type
-     *
-     * @param $object_class
-     * @return null|string
-     */
-    public function findTypeForClass($object_class)
+    public function preSerialize(DataSerializerEvent $event)
     {
-        foreach ($this->map as $type => $checks) {
-            if (isset($checks['classes'])) {
-                foreach ($checks['classes'] as $class_name) {
-                    if ($class_name == $object_class) {
-                        return $type;
-                    }
-                }
+        $context = $event->getContext();
+
+        $type = $context->getMainType();
+        $data = $context->getMainData();
+
+        if (null === $type) {
+            if (!$type = $this->type_map->findType($data)) {
+                throw new DataSerializerException(
+                    'could not find object type for given data, and no specific type provided'
+                );
             }
-        }
 
-        return null;
+            $context->setMainType($type);
+        }
     }
 }

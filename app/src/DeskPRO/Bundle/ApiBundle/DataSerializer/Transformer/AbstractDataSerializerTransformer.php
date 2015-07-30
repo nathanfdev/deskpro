@@ -69,7 +69,7 @@ abstract class AbstractDataSerializerTransformer
         $transformed = [];
 
         foreach ($this->getAutomaticProperties() as $property_name) {
-            $property_context = new PropertyTransformationContext($data, $property_name);
+            $property_context = new PropertyTransformationContext($data, $property_name, $context);
 
             $this->property_transformer->transform($property_context);
 

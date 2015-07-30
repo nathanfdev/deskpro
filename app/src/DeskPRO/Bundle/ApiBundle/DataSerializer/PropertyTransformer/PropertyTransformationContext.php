@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer;
 
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -52,19 +53,48 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
  */
 class PropertyTransformationContext
 {
+    /**
+     * @var mixed the piece of data that has the property we are concerned with
+     */
     protected $data;
+
+    /**
+     * @var string the property name on $data we are concerned with
+     */
     protected $property_name;
+
+    /**
+     * @var mixed internally stored/cached value (we only access it once from $data)
+     */
     protected $value;
+
+    /**
+     * @var bool wether we already populated $value or not
+     */
     protected $found_value;
+
+    /**
+     * @var mixed the final transformation of the property
+     */
     protected $transformed_value;
+
+    /**
+     * @var bool wether we actually did a transformation or not yet
+     */
     protected $is_transformed;
 
-    public function __construct($data, $property_name)
+    /**
+     * @var DataSerializerContext the main serialization context
+     */
+    private $serializer_context;
+
+    public function __construct($data, $property_name, DataSerializerContext $serializer_context)
     {
         $this->property_name = $property_name;
         $this->data = $data;
         $this->is_transformed = false;
         $this->found_value = false;
+        $this->serializer_context = $serializer_context;
     }
 
     public function transform($transformed_value)
@@ -114,5 +144,13 @@ class PropertyTransformationContext
         }
 
         return $this->value;
+    }
+
+    /**
+     * @return DataSerializerContext
+     */
+    public function getSerializerContext()
+    {
+        return $this->serializer_context;
     }
 }

@@ -33,6 +33,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
+use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+
 /**
  * The DataSerializer package is mostly stateless services, however there is a lot of state to
  * keep track of during the serialization process. An instance of this class tracks all of that
@@ -41,7 +43,12 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 class DataSerializerContext
 {
     /**
-     * @var mixed the main data we are serializing
+     * @var mixed the input data that we want to serialize (could be a Pager for example)
+     */
+    protected $source_data;
+
+    /**
+     * @var mixed the main data we are serializing (never a Pager object for example)
      */
     protected $main_data;
 
@@ -51,54 +58,74 @@ class DataSerializerContext
     protected $main_type;
 
     /**
+     * @var AbstractDataSerializerTransformer|null
+     */
+    protected $main_transformer;
+
+    /**
      * @var string|null the view that we should transform the $main_data on (this is simply passed to the transformer)
      */
     protected $main_view;
 
     /**
-     * @var array the transformed data (this is not always ready to use, because the context can be in a "processing" state)
+     * @var array the final result of serialization
+     */
+    protected $serialized_array;
+
+    /**
+     * @var array the transformed data (this is not always ready to use, because the context can be in a
+     *            "processing" state). this is an intermediary state to get into $serialized_array.
      */
     protected $main_transformed;
 
     /**
-     * @var array an array of "types" that we want to include (side-load) if we ever encounter them during transformation
+     * @var array an array of "types" that we want to include (side-load) if we ever encounter them during
+     *            transformation
      */
     protected $requested_includes;
 
     /**
-     * @var array a multi-dimensional array, the root keys are an object "type" ("person") and the value contains the
-     *            ids (or SerializeDeferredPropertyInterface's that represent ids) of the entities of this type that
-     *            we need to include (side-load) that have not been side-loaded yet
+     * This is a place where we queue up includes to transform
+     *
+     * @var array a multi-dimensional array, the root keys are an object "type" ("person") and the value
+     *            contains an array of what is included (it is always internally an array, but in the
+     *            result JSON it could end up being a single object).
      */
-    protected $includes_to_process;
+    protected $includes;
 
     /**
-     * @var array similar to $includes_to_process, a multi-dimensional array with the root key being the object "type" and
-     *            the value being an array of actual ids (no objects) that have already been side-loaded.
+     * These are considered processed, but may still need another pass.
+     *
+     * @var array a multi-dimensional array, the root keys are an object "type" ("person") and the value
+     *            contains an array of what is included (it is always internally an array, but in the
+     *            result JSON it could end up being a single object).
      */
-    protected $includes_processed;
+    protected $includes_transformed;
 
-    public function __construct($main_data, array $requested_includes = array(), $main_view = null, $main_type = null)
+    public function __construct($source_data, array $requested_includes = [], $main_view = null, $main_type = null)
     {
-        $this->main_data = $main_data;
+        $this->source_data = $source_data;
+        $this->main_data = $source_data; // main data starts the same as source data, but event listneres can change this
         $this->requested_includes = $requested_includes;
         $this->main_type = $main_type;
+        $this->includes = [];
         $this->main_view = $main_view;
+        $this->serialized_array = [];
     }
 
     /**
      * This is an alternate way to create the context where you can use a string instead of an array for the includes,
      * and it will be parsed into the array for you.
      *
-     * @param $main_data
+     * @param $source_data
      * @param null $requested_includes_string
      * @param null $main_view
      * @param null $main_type
      * @return DataSerializerContext
      */
-    public static function create($main_data, $requested_includes_string = null, $main_view = null, $main_type = null)
+    public static function create($source_data, $requested_includes_string = null, $main_view = null, $main_type = null)
     {
-        return new self($main_data, self::parseIncludes($requested_includes_string), $main_view, $main_type);
+        return new self($source_data, self::parseIncludes($requested_includes_string), $main_view, $main_type);
     }
 
     public static function parseIncludes($requested_includes_string)
@@ -123,6 +150,31 @@ class DataSerializerContext
     }
 
     /**
+     * True if we need to include this type
+     *
+     * @param $type
+     * @return bool
+     */
+    public function isTypeIncluded($type)
+    {
+        return in_array($type, $this->requested_includes);
+    }
+
+    public function addIncludeProperty($type, $include)
+    {
+        $the_include = array();
+        if (array_key_exists($type, $this->includes)) {
+            $the_include = $this->includes[$type];
+        }
+
+        if (!in_array($include, $the_include)) {
+            $the_include[] = $include;
+        }
+
+        $this->includes[$type] = $the_include;
+    }
+
+    /**
      * @return array
      */
     public function getMainTransformed()
@@ -139,11 +191,27 @@ class DataSerializerContext
     }
 
     /**
+     * @var mixed $main_data
+     */
+    public function setMainData($main_data)
+    {
+        $this->main_data = $main_data;
+    }
+
+    /**
      * @return mixed
      */
     public function getMainData()
     {
         return $this->main_data;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setMainType($type)
+    {
+        $this->main_type = $type;
     }
 
     /**
@@ -168,5 +236,90 @@ class DataSerializerContext
     public function getRequestedIncludes()
     {
         return $this->requested_includes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSourceData()
+    {
+        return $this->source_data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSerializedArray()
+    {
+        return $this->serialized_array;
+    }
+
+    /**
+     * @param array $serialized_array
+     */
+    public function setSerializedArray(array $serialized_array)
+    {
+        $this->serialized_array = $serialized_array;
+    }
+
+    /**
+     * @return AbstractDataSerializerTransformer|null
+     */
+    public function getMainTransformer()
+    {
+        return $this->main_transformer;
+    }
+
+    /**
+     * @param AbstractDataSerializerTransformer|null $main_transformer
+     */
+    public function setMainTransformer(AbstractDataSerializerTransformer $main_transformer)
+    {
+        $this->main_transformer = $main_transformer;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncludes()
+    {
+        return $this->includes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncludesTransformed()
+    {
+        return $this->includes_transformed;
+    }
+
+    /**
+     * Add the transformed array to the includes for this type.
+     *
+     * @param $type
+     * @param $transformed_include
+     */
+    public function addTransformedInclude($type, array $transformed_include)
+    {
+        $the_include = array();
+        if (array_key_exists($type, $this->includes_transformed)) {
+            $the_include = $this->includes_transformed[$type];
+        }
+
+        // we may want to iterate this and check for the "id" to be the same
+        if (!in_array($transformed_include, $the_include)) {
+            $the_include[] = $transformed_include;
+        }
+
+        $this->includes_transformed[$type] = $the_include;
+    }
+
+    /**
+     * We processed whatever was in $includes and we want to reset the array.
+     */
+    public function clearIncludes()
+    {
+        $this->includes = [];
     }
 }

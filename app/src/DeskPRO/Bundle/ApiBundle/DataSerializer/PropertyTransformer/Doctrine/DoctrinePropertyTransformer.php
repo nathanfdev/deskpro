@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Doctrine;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
@@ -49,9 +50,15 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
      */
     private $assoc_manager;
 
-    public function __construct(DoctrineAssociationManager $assoc_manager)
+    /**
+     * @var DataTypeMap
+     */
+    private $type_map;
+
+    public function __construct(DoctrineAssociationManager $assoc_manager, DataTypeMap $type_map)
     {
         $this->assoc_manager = $assoc_manager;
+        $this->type_map = $type_map;
     }
 
     public function transform(PropertyTransformationContext $property_context)
@@ -59,14 +66,31 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
         $val = $property_context->getValue();
         $data = $property_context->getData();
         $property_name = $property_context->getPropertyName();
+        $serializer_context = $property_context->getSerializerContext();
 
         $new_val = null;
         if ($val instanceof DomainObject || $val instanceof NotifyPropertyChangeEntity) {
-            $new_val = new DoctrineDeferredProperty($this->assoc_manager->deferAssociationIds($data, $property_name));
+            $type = $this->getType($data, $property_name);
+            $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
+            $new_val = new DoctrineDeferredProperty($doctrine_deferred, $type);
+            if ($serializer_context->isTypeIncluded($type)) {
+                $serializer_context->addIncludeProperty(
+                    $type,
+                    new DoctrineDeferredInclude($doctrine_deferred)
+                );
+            }
         } elseif ($val instanceof Collection || is_array($val) || $val instanceof \Traversable || $val === null) {
             if ($this->assoc_manager->isAssociation($data, $property_name)) {
                 // this is an association, we don't want to worry about getting these IDs yet
-                $new_val = new DoctrineDeferredProperty($this->assoc_manager->deferAssociationIds($data, $property_name));
+                $type = $this->getType($data, $property_name);
+                $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
+                $new_val = new DoctrineDeferredProperty($doctrine_deferred, $type);
+                if ($serializer_context->isTypeIncluded($type)) {
+                    $serializer_context->addIncludeProperty(
+                        $type,
+                        new DoctrineDeferredInclude($doctrine_deferred)
+                    );
+                }
             }
         }
 
@@ -75,13 +99,25 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
         }
     }
 
+    protected function getType($entity, $property_name)
+    {
+        $type = null;
+        $meta = $this->assoc_manager->getMetadata($entity)->getAssociationMapping($property_name);
+        if (array_key_exists('targetEntity', $meta)) {
+            $type = $this->type_map->findTypeForClass($meta['targetEntity']);
+        }
+
+        return $type;
+    }
+
     /**
      * @param DeferredPropertyInterface $deferred_property
      * @return bool true if supports this deferred property, false otherwise
      */
     public function supportsDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
-        return $deferred_property instanceof DoctrineDeferredProperty;
+        return $deferred_property instanceof DoctrineDeferredProperty
+            || $deferred_property instanceof DoctrineDeferredInclude;
     }
 
     /**
@@ -90,7 +126,10 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
      */
     public function resolveDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
-        /** @var DoctrineDeferredProperty $deferred_property */
-        return $deferred_property->resolve();
+        if ($deferred_property instanceof DoctrineDeferredProperty) {
+            return $deferred_property->resolveProperty();
+        }
+        /** @var DoctrineDeferredInclude $deferred_property */
+        return $deferred_property->resolveInclude();
     }
 }

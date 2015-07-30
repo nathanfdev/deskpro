@@ -46,7 +46,7 @@ class SandboxWidgetTransformer extends AbstractDataSerializerTransformer
     public function getCustomProperties(DataSerializerContext $context)
     {
         return [
-            'inventory_warning' => $context->getMainData()->getInventory() < 5
+            'inventory_warning' => $context->getMainData()->getInventory() <= 5
         ];
     }
 }

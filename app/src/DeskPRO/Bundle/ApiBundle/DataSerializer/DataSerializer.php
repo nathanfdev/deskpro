@@ -37,43 +37,23 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * The main entry point into the DataSerializer package.
+ * The main entry point into the DataSerializer package, which simply calls an ordered series of events.
  */
 class DataSerializer
 {
     /**
-     * @var DataTypeMap
+     * @var EventDispatcherInterface
      */
-    private $type_map;
-
-    /**
-     * @var DataTransformerFactory
-     */
-    private $transformer_factory;
-
-    /**
-     * @var DataPropertyTransformer
-     */
-    private $property_transformer;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private $event_dispatcher;
 
     public function __construct(
-        DataTypeMap $type_map,
-        DataTransformerFactory $transformer_factory,
-        DataPropertyTransformer $property_transformer,
-        LoggerInterface $logger
+        EventDispatcherInterface $event_dispatcher
     )
     {
-        $this->type_map = $type_map;
-        $this->transformer_factory = $transformer_factory;
-        $this->property_transformer = $property_transformer;
-        $this->logger = $logger;
+        $this->event_dispatcher = $event_dispatcher;
     }
 
     /**
@@ -90,52 +70,66 @@ class DataSerializer
      */
     public function serialize($data, $includes_string = null, $view = null, $type = null)
     {
-        if (null === $type) {
-            if (!$type = $this->type_map->findType($data)) {
-                throw new DataSerializerException('could not find object type for given data, and no specific type provided');
-            }
-        }
-
-        $transformer = $this->transformer_factory->findByType($type);
-        if ($transformer instanceof AbstractDataSerializerTransformer) {
-            $transformer->setPropertyTransformer($this->property_transformer);
-            $transformer->setLogger($this->logger);
-        }
-
+        /**
+         * CREATE CONTEXT
+         *
+         * this context holds all state for this serialization, and it is passed to every event and mutated by
+         * those events until it finally holds the final serialized array.
+         */
         $context = DataSerializerContext::create($data, $includes_string, $type, $view);
 
-        $context->setMainTransformed($transformer->transform($context));
 
-        // the following call will happen recursively as we side-load data
-        $this->processPass($context);
+        /**
+         * PRE_SERIALIZE
+         *
+         * core listeners:
+         * EventListener\TypeListener - maps an api object "type" onto the context
+         */
+        $this->event_dispatcher->dispatch(DataSerializerEvents::PRE_SERIALIZE, new DataSerializerEvent($context));
 
-        return ['data' => $context->getMainTransformed()];
-    }
 
-    protected function processPass(DataSerializerContext $context)
-    {
-        // this is a big array that might have some deferred properties to deal with
-        // we now replace the deferred properties with the resolved values
-        $transformed = $context->getMainTransformed();
-        $context->setMainTransformed($this->processArrayDeferredProperties($transformed));
+        /**
+         * PRE_TRANSFORM
+         *
+         * core listeners:
+         * EventListener\TransformerListener - find the proper transformer based on "type" and put it in the context
+         */
+        $this->event_dispatcher->dispatch(DataSerializerEvents::PRE_TRANSFORM, new DataSerializerEvent($context));
 
-        // TODO: side-loading
-    }
 
-    protected function processArrayDeferredProperties(array $data)
-    {
-        $processed = [];
+        /**
+         * TRANSFORM
+         *
+         * core listeners:
+         * EventListener\TransformerListener - execute the transformer and call $context->setMainTransformed()
+         */
+        $this->event_dispatcher->dispatch(DataSerializerEvents::TRANSFORM, new DataSerializerEvent($context));
 
-        foreach ($data as $key => $val) {
-            if (is_array($val)) {
-                $processed[$key] = $this->processArrayDeferredProperties($val);
-            } elseif ($val instanceof DeferredPropertyInterface) {
-                $processed[$key] = $this->property_transformer->resolveDeferredProperty($val);
-            } else {
-                $processed[$key] = $val;
-            }
-        }
 
-        return $processed;
+        /**
+         * POST_TRANSFORM
+         *
+         * core listeners:
+         * EventListener\JsonApiFormatListener - decorates the main transformation array with api format, and starts
+         *                                       setting up the final $context->getSerializedArray()
+         * EventListener\DeferredPropertiesListener - deal with deferred properties
+         */
+        $this->event_dispatcher->dispatch(DataSerializerEvents::POST_TRANSFORM, new DataSerializerEvent($context));
+
+        /**
+         * POST_SERIALIZE
+         *
+         * core listeners:
+         * EventListener\SideloadListener - now that serilization of the main is done, process includes
+         */
+        $this->event_dispatcher->dispatch(DataSerializerEvents::POST_SERIALIZE, new DataSerializerEvent($context));
+
+
+        /**
+         * DONE
+         *
+         * the context should now have the final serialized array ready to be returned
+         */
+        return $context->getSerializedArray();
     }
 }

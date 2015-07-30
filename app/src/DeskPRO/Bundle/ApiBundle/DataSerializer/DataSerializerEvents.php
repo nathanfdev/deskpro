@@ -34,68 +34,36 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 /**
- * This knows how to find the type of an object
+ * All events are fired with a DataSerializerEvent, which contains the mutable DataSerializeContext.
  */
-class DataTypeMap
+class DataSerializerEvents 
 {
     /**
-     * @var array map
+     * This is fired as soon as the DataSerializer::serilize method starts, and is a
+     * stardard way to find the "type" for the context, or to mutate the context.
      */
-    protected $map;
-
-    public function __construct(array $map = null)
-    {
-        if ($map) {
-            $this->map = $map;
-        } else {
-            // this is how we configure the map for now, the null check is for testing only
-            // this config process will get simpler (probably a yml config file)
-            // you can see how this map checks can be expanded beyond just object type lookups
-            $this->map = [
-                'sandbox_widget' => [
-                    'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget'
-                    ]
-                ]
-            ];
-        }
-    }
+    const PRE_SERIALIZE = 'data_serializer.event.pre_serialize';
 
     /**
-     * Given some $data give me the object "type" or null if it can't be determined.
-     *
-     * @param $data
-     * @return string|null
+     * Last chance to mutate the context before the transformer is called.
      */
-    public function findType($data)
-    {
-        $object_class = is_object($data) ? get_class($data) : null;
-
-        if ($object_class && ($type = $this->findTypeForClass($object_class))) {
-            return $type;
-        }
-
-        return null;
-    }
+    const PRE_TRANSFORM = 'data_serializer.event.pre_transform';
 
     /**
-     * Given a class name, give me the type
-     *
-     * @param $object_class
-     * @return null|string
+     * Do the actual transformation of the main data... the job here is to take $context->getMainData() and then
+     * set the transformed array onto $context->setMainTransformed(), usually by using the $context->getTransformer()
+     * which is set in PRE_TRANSFORM.
      */
-    public function findTypeForClass($object_class)
-    {
-        foreach ($this->map as $type => $checks) {
-            if (isset($checks['classes'])) {
-                foreach ($checks['classes'] as $class_name) {
-                    if ($class_name == $object_class) {
-                        return $type;
-                    }
-                }
-            }
-        }
+    const TRANSFORM = 'data_serializer.event.transform';
 
-        return null;
-    }
+    /**
+     * The $context now has the getMainTransformed() array from the transformer, and the $context is now open to
+     * mutation from the listeners. This is where we start mutating the array in $context->getSerializedArray()
+     */
+    const POST_SERIALIZE = 'data_serializer.event.post_serialize';
+
+    /**
+     * A final pass on the $context before returning the $context->getSerializedArray() data.
+     */
+    const POST_TRANSFORM = 'data_serializer.event.post_transform';
 }

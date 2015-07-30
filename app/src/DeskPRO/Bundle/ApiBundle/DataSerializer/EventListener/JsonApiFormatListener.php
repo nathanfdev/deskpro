@@ -31,71 +31,52 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
+
+
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * This knows how to find the type of an object
+ * After the main data has been transformed, we want to "decorate" the result array with our format
+ * and set it as the "serialized" data on the context.
+ *
+ * {
+ *     "data": {},
+ *     "meta": {},
+ *     "linked": {}
+ * }
+ *
+ * This should ALWAYS be the first listener that does postTransformation.
  */
-class DataTypeMap
+class JsonApiFormatListener implements EventSubscriberInterface
 {
-    /**
-     * @var array map
-     */
-    protected $map;
-
-    public function __construct(array $map = null)
+    public static function getSubscribedEvents()
     {
-        if ($map) {
-            $this->map = $map;
-        } else {
-            // this is how we configure the map for now, the null check is for testing only
-            // this config process will get simpler (probably a yml config file)
-            // you can see how this map checks can be expanded beyond just object type lookups
-            $this->map = [
-                'sandbox_widget' => [
-                    'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget'
-                    ]
-                ]
-            ];
-        }
+        return [
+            DataSerializerEvents::POST_TRANSFORM => ['postTransform', 1028]
+        ];
     }
 
-    /**
-     * Given some $data give me the object "type" or null if it can't be determined.
-     *
-     * @param $data
-     * @return string|null
-     */
-    public function findType($data)
+    public function postTransform(DataSerializerEvent $event)
     {
-        $object_class = is_object($data) ? get_class($data) : null;
+        $context = $event->getContext();
 
-        if ($object_class && ($type = $this->findTypeForClass($object_class))) {
-            return $type;
+        // this sets up the initial structure of the final serialized array, so it needs to be the first to "set" it.
+        // if we use a different format, then this listener shouldn't even be registered.
+        if (!empty($context->getSerializedArray())) {
+            throw new DataSerializerException(
+                'JsonApiFormatListener expects DataSerializerContext::getSeriliazedArray to be empty, but it is not'
+            );
         }
 
-        return null;
-    }
-
-    /**
-     * Given a class name, give me the type
-     *
-     * @param $object_class
-     * @return null|string
-     */
-    public function findTypeForClass($object_class)
-    {
-        foreach ($this->map as $type => $checks) {
-            if (isset($checks['classes'])) {
-                foreach ($checks['classes'] as $class_name) {
-                    if ($class_name == $object_class) {
-                        return $type;
-                    }
-                }
-            }
-        }
-
-        return null;
+        $context->setSerializedArray([
+            'data' => $context->getMainTransformed(),
+            'meta' => array(),
+            'linked' => array()
+        ]);
     }
 }

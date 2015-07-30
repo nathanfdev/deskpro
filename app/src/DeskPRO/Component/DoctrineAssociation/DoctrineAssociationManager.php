@@ -55,6 +55,11 @@ class DoctrineAssociationManager
     private $deferred_ids;
 
     /**
+     * @var DeferredIdentity[]
+     */
+    private $deferred_includes;
+
+    /**
      * @var array the metadata object for an entity class (we cache here, since its always the same)
      */
     protected $metadatas;
@@ -62,7 +67,8 @@ class DoctrineAssociationManager
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->deferred_ids = array();
+        $this->deferred_ids = [];
+        $this->deferred_includes = [];
     }
 
     /**
@@ -83,6 +89,11 @@ class DoctrineAssociationManager
         $this->deferred_ids[] = $deferred;
 
         return $deferred;
+    }
+
+    public function markDeferredAsIncluded(DeferredIdentity $deferred_identity)
+    {
+        $this->deferred_includes[] = $deferred_identity;
     }
 
     /**
@@ -129,13 +140,17 @@ class DoctrineAssociationManager
         return $this->metadatas[$entity_class];
     }
 
-    public function resolveDeferred()
+    public function resolveDeferredIdentity()
     {
         $property_accessor = PropertyAccess::createPropertyAccessor();
 
         // NOTE: this is not optimized. it is just doing the basics. but it is here so that we CAN have a
         //       chance to optimize it.
         foreach ($this->deferred_ids as $deferred) {
+            if ($deferred->isResolvedIdentity()) {
+                continue; // already resolved the ids for this one
+            }
+
             $entity = $deferred->getSourceEntity();
             $property_name = $deferred->getPropertyName();
 
@@ -164,10 +179,8 @@ class DoctrineAssociationManager
                 $result = $ids;
             }
 
-            $deferred->setResult($result);
+            $deferred->resolveIdentityPayload($result);
         }
-
-        $this->deferred_ids = array(); // clear resolved
     }
 
     /**
@@ -187,5 +200,34 @@ class DoctrineAssociationManager
         }
 
         return $id;
+    }
+
+    public function resolveDeferredEntities()
+    {
+        $property_accessor = PropertyAccess::createPropertyAccessor();
+
+        foreach ($this->deferred_ids as $deferred) {
+            if (!$deferred->isIncludeEntities()) {
+                continue; // ths one doesn't need the actual entities, skip it
+            }
+
+            if (!$deferred->isResolvedIdentity()) {
+                $this->resolveDeferredIdentity(); // ids need to be resolved first
+            }
+
+            $entity = $deferred->getSourceEntity();
+            $property_name = $deferred->getPropertyName();
+
+            $assoc = $this->getAssociation($entity, $property_name);
+            if ($assoc['type'] < ClassMetadata::TO_ONE) {
+                // gets the single ID (no query necessary here)
+                $obj = $property_accessor->getValue($entity, $property_name);
+                $deferred->resolveEntitiesPayload($obj);
+            } else {
+                // a query IS done here, and it creates a proxy doctrine object with only the ID (the rest is lazy)
+                $collection = $property_accessor->getValue($entity, $property_name);
+                $deferred->resolveEntitiesPayload($collection);
+            }
+        }
     }
 }

@@ -31,71 +31,39 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Doctrine;
 
-/**
- * This knows how to find the type of an object
- */
-class DataTypeMap
+
+use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
+use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
+
+class DoctrineDeferredInclude implements DeferredPropertyInterface
 {
     /**
-     * @var array map
+     * @var DeferredIdentity
      */
-    protected $map;
-
-    public function __construct(array $map = null)
-    {
-        if ($map) {
-            $this->map = $map;
-        } else {
-            // this is how we configure the map for now, the null check is for testing only
-            // this config process will get simpler (probably a yml config file)
-            // you can see how this map checks can be expanded beyond just object type lookups
-            $this->map = [
-                'sandbox_widget' => [
-                    'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget'
-                    ]
-                ]
-            ];
-        }
-    }
+    private $deferred_identity;
 
     /**
-     * Given some $data give me the object "type" or null if it can't be determined.
-     *
-     * @param $data
-     * @return string|null
+     * @var string the api object "type"
      */
-    public function findType($data)
-    {
-        $object_class = is_object($data) ? get_class($data) : null;
-
-        if ($object_class && ($type = $this->findTypeForClass($object_class))) {
-            return $type;
-        }
-
-        return null;
-    }
+    private $type;
 
     /**
-     * Given a class name, give me the type
-     *
-     * @param $object_class
-     * @return null|string
+     * @var bool
      */
-    public function findTypeForClass($object_class)
-    {
-        foreach ($this->map as $type => $checks) {
-            if (isset($checks['classes'])) {
-                foreach ($checks['classes'] as $class_name) {
-                    if ($class_name == $object_class) {
-                        return $type;
-                    }
-                }
-            }
-        }
+    private $include;
 
-        return null;
+    public function __construct(DeferredIdentity $deferred_identity)
+    {
+        $deferred_identity->markForInclude();
+        $this->deferred_identity = $deferred_identity;
+    }
+
+    public function resolveInclude()
+    {
+        $this->deferred_identity->resolve();
+
+        return $this->deferred_identity->getEntityPayload();
     }
 }

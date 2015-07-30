@@ -44,13 +44,26 @@ class DoctrineDeferredProperty implements DeferredPropertyInterface
      */
     private $deferred_identity;
 
-    public function __construct(DeferredIdentity $deferred_identity)
+    /**
+     * @var string the api object "type"
+     */
+    private $type;
+
+    /**
+     * @var bool
+     */
+    private $include;
+
+    public function __construct(DeferredIdentity $deferred_identity, $type)
     {
         $this->deferred_identity = $deferred_identity;
+        $this->type = $type;
     }
 
-    public function resolve()
+    public function resolveProperty()
     {
-        return $this->deferred_identity->resolve();
+        $this->deferred_identity->resolve();
+
+        return $this->deferred_identity->getIdentityPayload();
     }
 }

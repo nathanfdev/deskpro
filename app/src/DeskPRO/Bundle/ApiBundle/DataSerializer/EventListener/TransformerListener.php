@@ -31,71 +31,70 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
+
+
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataPropertyTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerFactory;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * This knows how to find the type of an object
+ * Find the right transformer during PRE_TRANSFORM and execute it during TRANSFORM
  */
-class DataTypeMap
+class TransformerListener implements EventSubscriberInterface
 {
     /**
-     * @var array map
+     * @var DataTransformerFactory
      */
-    protected $map;
+    private $transformer_factory;
 
-    public function __construct(array $map = null)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(
+        DataTransformerFactory $transformer_factory,
+        LoggerInterface $logger
+    )
     {
-        if ($map) {
-            $this->map = $map;
-        } else {
-            // this is how we configure the map for now, the null check is for testing only
-            // this config process will get simpler (probably a yml config file)
-            // you can see how this map checks can be expanded beyond just object type lookups
-            $this->map = [
-                'sandbox_widget' => [
-                    'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget'
-                    ]
-                ]
-            ];
-        }
+        $this->transformer_factory = $transformer_factory;
+        $this->logger = $logger;
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            DataSerializerEvents::PRE_TRANSFORM => ['preTransform', 0],
+            DataSerializerEvents::TRANSFORM => ['transform', 0]
+        ];
     }
 
     /**
-     * Given some $data give me the object "type" or null if it can't be determined.
-     *
-     * @param $data
-     * @return string|null
+     * Get the transformer for this context "type"
      */
-    public function findType($data)
+    public function preTransform(DataSerializerEvent $event)
     {
-        $object_class = is_object($data) ? get_class($data) : null;
+        $context = $event->getContext();
 
-        if ($object_class && ($type = $this->findTypeForClass($object_class))) {
-            return $type;
-        }
+        // normally the type is found and set onto the $context via the TypeListener
+        $transformer = $this->transformer_factory->findByType($context->getMainType());
 
-        return null;
+        $context->setMainTransformer($transformer);
     }
 
     /**
-     * Given a class name, give me the type
-     *
-     * @param $object_class
-     * @return null|string
+     * Now execute the transformer and set the "main transformed data"
      */
-    public function findTypeForClass($object_class)
+    public function transform(DataSerializerEvent $event)
     {
-        foreach ($this->map as $type => $checks) {
-            if (isset($checks['classes'])) {
-                foreach ($checks['classes'] as $class_name) {
-                    if ($class_name == $object_class) {
-                        return $type;
-                    }
-                }
-            }
-        }
+        $context = $event->getContext();
 
-        return null;
+        $transformed_array = $context->getMainTransformer()->transform($context);
+        $context->setMainTransformed($transformed_array);
     }
 }

@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -50,8 +51,20 @@ class DataTransformerFactory
      * @var ContainerInterface
      */
     private $container;
+    /**
+     * @var DataPropertyTransformer
+     */
+    private $property_transformer;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(
+        ContainerInterface $container,
+        DataPropertyTransformer $property_transformer,
+        LoggerInterface $logger
+    )
     {
         // this particular implmentation of a DataTransformerFactory simply uses a service name convention to find
         // a container service.
@@ -60,6 +73,8 @@ class DataTransformerFactory
         // it's not ideal to use the container directly, but it is contained in this factory service so changing it
         // is relatively straightforward.
         $this->container = $container;
+        $this->property_transformer = $property_transformer;
+        $this->logger = $logger;
     }
 
     /**
@@ -72,9 +87,25 @@ class DataTransformerFactory
         $service_name = self::TRANSFORMER_SERVICE_PREFIX . $type;
 
         if (!$this->container->has($service_name)) {
+            $this->logger->error('could not find a data serializer transformer for type: ' . $type);
             throw new DataSerializerException('could not find a data transformer for type: "' . $type . '"');
         }
 
-        return $this->container->get($service_name);
+        $transformer = $this->container->get($service_name);
+        $this->injectSetters($transformer);
+
+        return $transformer;
+    }
+
+    /**
+     * To make creating transformers easier, we auto-inject these services via setters on
+     * the AbstractDataSeralizerTransformer.
+     *
+     * @param AbstractDataSerializerTransformer $transformer
+     */
+    protected function injectSetters(AbstractDataSerializerTransformer $transformer)
+    {
+        $transformer->setPropertyTransformer($this->property_transformer);
+        $transformer->setLogger($this->logger);
     }
 }

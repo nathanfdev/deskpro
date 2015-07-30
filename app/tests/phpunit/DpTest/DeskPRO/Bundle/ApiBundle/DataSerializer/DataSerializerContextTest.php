@@ -45,6 +45,7 @@ class DataSerializerContextTest extends DeskProTestCase
 
         $c = new DataSerializerContext($ticket, ['person'], 'names_only', 'ticket');
 
+        $this->assertSame($ticket, $c->getSourceData());
         $this->assertSame($ticket, $c->getMainData());
         $this->assertSame(['person'], $c->getRequestedIncludes());
         $this->assertSame('ticket', $c->getMainType());
@@ -57,6 +58,7 @@ class DataSerializerContextTest extends DeskProTestCase
 
         $c = DataSerializerContext::create($ticket, 'person,attachment,email', 'names_only', 'ticket');
 
+        $this->assertSame($ticket, $c->getSourceData());
         $this->assertSame($ticket, $c->getMainData());
         $this->assertSame(['person', 'attachment', 'email'], $c->getRequestedIncludes());
         $this->assertSame('ticket', $c->getMainType());
