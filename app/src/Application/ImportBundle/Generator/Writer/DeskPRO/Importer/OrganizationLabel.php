@@ -55,7 +55,6 @@ final class OrganizationLabel extends AbstractImporter
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
-
         $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
         $organization->resetLabels();
 
@@ -67,6 +66,7 @@ final class OrganizationLabel extends AbstractImporter
             ));
         }
 
+        $this->records->add($organization);
         return $this->records;
     }
 

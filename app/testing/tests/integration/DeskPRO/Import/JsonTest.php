@@ -70,6 +70,11 @@ class JsonTest extends \DpIntegrationTestCase
     private $download_repository;
 
     /**
+     * @var EntityRepository\Organization
+     */
+    private $organization_repository;
+
+    /**
      * @var EntityRepository\Blob
      */
     private $blob_repository;
@@ -81,6 +86,7 @@ class JsonTest extends \DpIntegrationTestCase
     {
         $this->helper->enableFreshDatabaseSet('FreshDb');
         $this->helper->loadFixtures('Import/Person');
+        $this->helper->loadFixtures('Import/Organization');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
@@ -93,6 +99,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->feedback_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
         $this->feedback_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
         $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
+        $this->organization_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
         $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/json';
@@ -140,6 +147,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertContains('Entity `article_1` parsed successfully!', $output);
         $this->assertContains('Entity `article_2` parsed successfully!', $output);
         $this->assertContains('Entity `download_1` parsed successfully!', $output);
+        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkDbEmpty();
@@ -225,6 +233,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
         $this->helper->seeFileFound('1/news/news_1.json');
         $this->helper->seeFileFound('1/downloads/download_1.json');
+        $this->helper->seeFileFound('1/organizations/organization_some_organization.json');
 
         $this->checkJsonFile('/1/articles/article1.json', '1/articles/article_1.json');
         $this->checkJsonFile('/1/articles/article2.json', '1/articles/article_2.json');
@@ -234,6 +243,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkJsonFile('/1/news/news1.json', '1/news/news_1.json');
         $this->checkJsonFile('/1/news/news2.json', '1/news/news_2.json');
         $this->checkJsonFile('/1/downloads/download1.json', '1/downloads/download_1.json');
+        $this->checkJsonFile('/1/organization_some_organization.json', '1/organization_some_organization.json');
     }
 
     private function checkJsonFile($input, $output)
@@ -254,6 +264,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
+        $this->assertEquals(1, $this->organization_repository->countAll());
         $this->assertEquals(0, $this->blob_repository->countAll());
     }
 
@@ -264,8 +275,6 @@ class JsonTest extends \DpIntegrationTestCase
 
         /** @var Entity\Person $person */
         $person = $this->person_repository->findOneBy(array('name' => 'Sergey'));
-        $this->assertCount(2, $person->labels);
-
         $labels = array();
         foreach ($person->labels as $label) {
             $labels[] = $label->getLabel();
@@ -280,6 +289,20 @@ class JsonTest extends \DpIntegrationTestCase
         // Checking for feedback
         $this->assertCount(2, $this->feedback_repository->findAll());
         $this->assertCount(1, $this->feedback_attachment_repository->findAll());
+
+        // Checking for organizations
+        $this->assertCount(1, $this->organization_repository->findAll());
+
+        /** @var Entity\Organization $organization */
+        $organization = $this->organization_repository->findOneBy(array('name' => 'Some Organization'));
+        $this->assertNotNull($organization);
+
+        $labels = array();
+        foreach ($organization->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('label1', 'label2'), $labels);
 
         // Checking for blob
         $this->assertCount(2, $this->blob_repository->findBy(array('content_type' => 'csv')));

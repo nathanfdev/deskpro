@@ -51,10 +51,7 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     protected function hasRequiredColumns(array $record = null, array $columns, $throw_exception = true)
     {
         if ( ! is_array($record)) {
-            throw new NoColumnException(sprintf(
-                'Columns `%s` not found, record is not array',
-                implode(', ', $columns)
-            ));
+            throw new NoColumnException('Record is not array');
         }
 
         foreach ($columns as $column) {
@@ -86,10 +83,7 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     protected function hasAnyRequiredColumn(array $record = null, array $columns, $throw_exception = true)
     {
         if ( ! is_array($record)) {
-            throw new NoColumnException(sprintf(
-                'Columns `%s` not found, record is not array',
-                implode(', ', $columns)
-            ));
+            throw new NoColumnException('Record is not array');
         }
 
         foreach ($columns as $column) {
@@ -121,7 +115,7 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     protected function isArrayColumn(array $record = null, $column, $throw_exception = true)
     {
         if ( ! is_array($record)) {
-            throw new NotArrayException(sprintf('Column `%s` is not array, null object given', $column));
+            throw new NotArrayException(sprintf('Column `%s` is not array, record is not array', $column));
         }
 
         $this->hasRequiredColumns($record, array($column), $throw_exception);
@@ -167,5 +161,22 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     protected function isBooleanTrue($value)
     {
         return $value === 'true' || (int)$value === 1;
+    }
+
+    /**
+     * Formats destination path
+     *
+     * @param $prefix
+     * @param $id
+     *
+     * @return string
+     */
+    protected function formatDestination($prefix, $id)
+    {
+        $filename = strtolower($id);
+        $filename = str_replace(' ', '_', $filename);
+        $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
+
+        return rtrim($prefix, '_') . '_' . $filename;
     }
 }

@@ -411,21 +411,4 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         return $custom_fields;
     }
-
-    /**
-     * Formats destination path
-     *
-     * @param $prefix
-     * @param $id
-     *
-     * @return string
-     */
-    protected function formatDestination($prefix, $id)
-    {
-        $filename = strtolower($id);
-        $filename = str_replace(' ', '_', $filename);
-        $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
-
-        return rtrim($prefix, '_') . '_' . $filename;
-    }
 }

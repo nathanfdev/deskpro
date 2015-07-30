@@ -536,7 +536,16 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * @return Entity\LabelOrganization[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
      * Add a label
+     *
      * @param Entity\LabelOrganization $label
      */
     public function addLabel(Entity\LabelOrganization $label)

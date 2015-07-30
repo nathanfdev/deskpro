@@ -105,13 +105,16 @@ final class Organizations extends AbstractParser
             $entity = new Entity\Organization();
             $entity
                 ->setRawData($organization)
-                ->setDestination('organization_' . $organization['oid'])
+                ->setDestination($this->formatDestination('organization_', $organization['oid']))
                 ->setOid($organization['oid'])
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
-                ->setPicture($this->exportBlob($organization['picture']))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($organization['date_created']))
             ;
+
+            if ($organization['picture']) {
+                $entity->setPicture($organization['picture']);
+            }
 
             $contact_data = $this->exportContactData($organization['contact_data']);
             foreach ($contact_data as $contact) {
