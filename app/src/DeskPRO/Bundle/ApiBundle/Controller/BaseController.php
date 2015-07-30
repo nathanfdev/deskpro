@@ -43,11 +43,12 @@ class BaseController extends FOSRestController
     /**
      * @param mixed $input any array or object
      * @param string $transformer the short name (no prefix) of the service name for the transformer you want to use
+     * @param int $datatype
      * @return array
      */
-    protected function createFractalRepresentation($input, $transformer)
+    protected function createFractalRepresentation($input, $transformer, $datatype = 1)
     {
-        return $this->get('api_view_representation_factory')->createFractalRepresentation($input, $transformer);
+        return $this->get('api_view_representation_factory')->createFractalRepresentation($input, $transformer, $datatype);
     }
 
     /**

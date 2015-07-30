@@ -25,5 +25,3 @@ services:
         class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskAttachmentTransformer
     api_transformer.task_linked_item:
         class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskLinkedItemTransformer
-    api_transformer.task_count:
-        class: DeskPRO\Bundle\ApiBundle\Fractal\Transformer\TaskCountTransformer

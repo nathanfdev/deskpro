@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
@@ -88,6 +89,8 @@ class TasksController extends BaseController implements ClassResourceInterface
     {
         $em = $this->getDoctrine()->getManager();
 
+        $datatype = $this->getDatatype($request);
+
         $tasks = $this->filterTasks($request, $em);
 
         $page = $request->query->get('page', 1);
@@ -98,7 +101,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createFractalRepresentation($pager, $this->getTaskTransformerName($request)),
+            $this->createFractalRepresentation($pager, 'task', $datatype),
             Response::HTTP_OK
         );
     }
@@ -134,7 +137,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         return View::create(
-            $this->createFractalRepresentation($task, $this->getTaskTransformerName($request)),
+            $this->createFractalRepresentation($task, 'task'),
             Response::HTTP_OK
         );
     }
@@ -257,7 +260,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $subtasks = $task->getSubtasks();
 
         return View::create(
-            $this->createFractalRepresentation($subtasks, $this->getTaskTransformerName($request)),
+            $this->createFractalRepresentation($subtasks, 'task'),
             Response::HTTP_OK
         );
     }
@@ -423,6 +426,7 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * Retrieve a single task
      * @param int $id
      * @return Task
      */
@@ -464,7 +468,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
 
             return View::create(
-                $this->createFractalRepresentation($task, $this->getTaskTransformerName($request)),
+                $this->createFractalRepresentation($task, 'task'),
                 $status,
                 array(
                     'Location' => $location,
@@ -476,9 +480,26 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * Get the datatype to use for creating the Fractal Representation
+     * @param Request $request
+     * @return int
+     */
+    protected function getDatatype(Request $request)
+    {
+        $params = $request->query->all();
+
+        if (in_array('count_only', array_keys($params))) {
+            return 3;
+        }
+
+        return 1;
+    }
+
+    /**
+     * Retrieve tasks from the entity manager according to the request parameters
      * @param Request $request
      * @param $em
-     * @return array
+     * @return Query
      */
     protected function filterTasks(Request $request, $em)
     {
@@ -494,6 +515,7 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * Calculate what terms to filter the request by
      * @param Request $request
      * @return array
      */
@@ -565,9 +587,10 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * Build up a query according to the filter we need to process
      * @param $em
      * @param $filter
-     * @return array
+     * @return Query
      */
     protected function executeFilter($em, $filter)
     {
@@ -619,14 +642,5 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         return $query->getQuery();
-    }
-
-    /**
-     * @param Request $request
-     * @return string
-     */
-    protected function getTaskTransformerName(Request $request)
-    {
-        return $request->query->has('count_only') ? 'task_count' : 'task';
     }
 }

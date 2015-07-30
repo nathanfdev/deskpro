@@ -49,6 +49,8 @@ class ApiViewRepresentationFactory
     const DATATYPE_STANDARD = 1;
     /** @const DATATYPE_GROUPED_COUNT Provided data is an array resulting from a grouped count query. */
     const DATATYPE_GROUPED_COUNT = 2;
+    /** @const DATATYPE_COUNT_ONLY Standard datatype, but we only want the total results */
+    const DATATYPE_COUNT_ONLY = 3;
 
     /**
      * @var FractalManager
@@ -70,8 +72,21 @@ class ApiViewRepresentationFactory
      */
     public function createFractalRepresentation($data, $transformer, $datatype = self::DATATYPE_STANDARD)
     {
-        if (!$data instanceof Pagerfanta) {
+        if ($datatype === self::DATATYPE_COUNT_ONLY) {
+            if (is_object($data) && method_exists($data, 'count')) {
+                return ['meta' => [
+                    'count' => $data->count(),
+                    'total_count' => $data->count(),
+                ]];
+            }
 
+            return ['meta' => [
+                'count' => $data['count'],
+                'total_count' => $data['count'],
+            ]];
+        }
+
+        if (!$data instanceof Pagerfanta) {
             if (self::DATATYPE_GROUPED_COUNT === $datatype) {
                 // TODO: this should be a fractal Transformer I think? I'm not sure.
                 // Either way it is a serializer concern, and now this needs to be updated because
