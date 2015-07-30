@@ -3,6 +3,7 @@
 namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\EntityRepository;
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
 use Application\ImportBundle\Command\ImportBatchCommand;
@@ -79,6 +80,7 @@ class JsonTest extends \DpIntegrationTestCase
     public function runBefore()
     {
         $this->helper->enableFreshDatabaseSet('FreshDb');
+        $this->helper->loadFixtures('Import/Person');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
@@ -246,7 +248,7 @@ class JsonTest extends \DpIntegrationTestCase
     {
         $this->assertEquals(0, $this->ticket_repository->countAll());
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
-        $this->assertEquals(1, $this->person_repository->countAll());
+        $this->assertEquals(2, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
         $this->assertEquals(1, $this->article_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
@@ -257,7 +259,19 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbData()
     {
+        // Checking for people
         $this->assertCount(2, $this->person_repository->findAll());
+
+        /** @var Entity\Person $person */
+        $person = $this->person_repository->findOneBy(array('name' => 'Sergey'));
+        $this->assertCount(2, $person->labels);
+
+        $labels = array();
+        foreach ($person->labels as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('label1', 'label2'), $labels);
 
         // Checking for tickets
         $this->assertCount(1, $this->ticket_repository->findAll());

@@ -1,6 +1,6 @@
 {
   "oid": 1,
-  "person": "serg.yastrebov@gmail.com",
+  "person": "user@example.com",
   "title": "Download 1",
   "content": "Download Content 1",
   "language": "english",
@@ -14,7 +14,7 @@
   "status": "published",
   "attachment": {
     "oid": 0,
-    "person": "serg.yastrebov@gmail.com",
+    "person": "user@example.com",
     "blob_data": null,
     "blob_url": "",
     "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/docs\/data_example\/csv\/downloads.csv",

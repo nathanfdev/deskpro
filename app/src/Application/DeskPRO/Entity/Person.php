@@ -2077,12 +2077,15 @@ class Person extends DomainObject implements HighlightableModelInterface
      * Add a label
      *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
+     * @return $this
      */
     public function addLabel(LabelPerson $label)
     {
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+
+        return $this;
     }
 
     public function removeLabelByString($l)

@@ -14,8 +14,8 @@
   "language": null,
   "organization": null,
   "organization_position": null,
-  "emails": ["serg.yastrebov@gmail.com"],
-  "labels": [],
+  "emails": ["user@example.com"],
+  "labels": ["label1", "label2"],
   "user_groups": [],
   "custom_fields": []
 }
