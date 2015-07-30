@@ -1,30 +1,35 @@
 #!/bin/bash
 
-DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
+cd %~dp0
+cd ../../
 
 echo ">> Cleaning"
-rm -rf $DIR_ROOT/app/vendor
-rm -rf $DIR_ROOT/web/app-build
-rm -rf $DIR_ROOT/web/loader-build
-rm -rf $DIR_ROOT/web/bower_components
-rm -rf $DIR_ROOT/web/node_modules
+rmdir /s /q .\app\vendor
+rmdir /s /q .\web\app-build
+rmdir /s /q .\web\loader-build
+rmdir /s /q .\web\bower_components
+rmdir /s /q .\web\node_modules
 echo ".. done"
 echo
 
 echo ">> Installing vendors with composer"
-cd $DIR_ROOT/app
+cd %~dp0
+cd ../../app
 composer install --ignore-platform-reqs -o
 echo ".. done"
 echo
 
 echo ">> Hacking vendors"
-$DIR_ROOT/app/bin/hack-vendors.sh
+cd %~dp0
+cd ../../
+php .\app\bin\build\build-vendors-mutate.php
 echo ".. done"
 
 echo ">> Installing web dependencies"
-cd $DIR_ROOT/web
-npm install
-bower install --config.interactive=false --allow-root
+cd %~dp0
+cd ../../web
+npm install --save --save-dev
+bower install --config.interactive=false --allow-root --save-dev
 echo ".. done"
 
 echo ">> Building web assets"
@@ -33,8 +38,9 @@ echo ".. done"
 echo
 
 echo ">> Installing new web dependencies (dev)"
-cd $DIR_ROOT/pub
-npm install
+cd %~dp0
+cd ../../pub
+npm install --save-dev
 echo ".. done"
 
 echo ">> Building new web assets"

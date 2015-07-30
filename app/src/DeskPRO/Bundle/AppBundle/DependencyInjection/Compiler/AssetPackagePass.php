@@ -26,87 +26,42 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Config;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
-use Monolog\Logger;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * This is meant to be used in the container as a way of using expressions to get at some of our dynamic config
- * methods in config files.
- */
-class DeskproConfigService
+class AssetPackagePass implements CompilerPassInterface
 {
-    /**
-     * The deskpro data dir (absolute path)
-     */
-    public function getDataDir()
+    public function process(ContainerBuilder $container)
     {
-        return dp_get_data_dir();
-    }
+        //templating.asset.default_package.http
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('web', false));
+        $container->setDefinition('templating.asset.default_package.http', $def);
 
-    /**
-     * The dir we store all of our logs in (absolute path)
-     *
-     * @return string
-     */
-    public function getLogDir()
-    {
-        return dp_get_log_dir();
-    }
+        //templating.asset.default_package.ssl
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('web', false));
+        $container->setDefinition('templating.asset.default_package.ssl', $def);
 
-    /**
-     * This (and higher) are the only log level lines we want stored
-     */
-    public function getLogLevel()
-    {
-        global $DP_CONFIG;
+        //templating.asset.package.app_assets.http
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('pub/build', false));
+        $container->setDefinition('templating.asset.package.app_assets.http', $def);
 
-        if (isset($DP_CONFIG['log_level'])) {
-            $log_level = $DP_CONFIG['log_level'];
-        } else {
-            $log_level = Logger::DEBUG;
-        }
-
-        return $log_level;
-    }
-
-    /**
-     * We don't store logs unless we hit a line with this log level
-     */
-    public function getLogLevelThreshold()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level_threshold'])) {
-            $log_level = $DP_CONFIG['log_level_threshold'];
-        } else {
-            $log_level = Logger::ERROR;
-        }
-
-        return $log_level;
-    }
-
-    /**
-     * @return int
-     */
-    public function getBuildNumber()
-    {
-        return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
-    }
-
-    /**
-     * @param string $k
-     * @param mixed  $default
-     * @return mixed
-     */
-    public function getConfigValue($k, $default = null)
-    {
-        return dp_get_config($k, $default);
+        //templating.asset.package.app_assets.ssl
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('pub/build', true));
+        $container->setDefinition('templating.asset.package.app_assets.ssl', $def);
     }
 }

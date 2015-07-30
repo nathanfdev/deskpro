@@ -3,6 +3,7 @@
 }
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 require_once __DIR__."/config.shared.php";
@@ -33,8 +34,6 @@ $container->setParameter('templating.engine.delegating.class', 'Application\\Des
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
 
 // candidates to be moved to config.share.php below:
-$container->setParameter('templating.asset.url_package.class', 'Application\\DeskPRO\\Templating\\Asset\\UrlPackage');
-$container->setParameter('templating.asset.path_package.class', 'Application\\DeskPRO\\Templating\\Asset\\PathPackage');
 $container->setParameter('templating.globals.class', 'Application\\DeskPRO\\Templating\\GlobalVariables');
 $container->setParameter('twig.extension.trans.class', 'Application\\DeskPRO\\Twig\\Extension\\TranslationExtension');
 
@@ -148,7 +147,10 @@ $container->loadFromExtension('framework', array(
     'secret'     => "irrelevant - compiler pass will override this",
     'templating' => array(
         'engines'          => array('twig', 'php'/*, 'jsonphp'*/),
-        'assets_base_urls' => 'CONFIG_HTTP',
+        'assets_base_urls' => "SET_IN_ASSET_PACKAGE_PASS",
+        'packages' => array(
+            'app_assets' => array('base_url' => "SET_IN_ASSET_PACKAGE_PASS")
+        )
     ),
     'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),
     'session'                                                                                         => array(),

@@ -15,6 +15,15 @@ export default class Http {
     };
 
     this.interceptors = [];
+    this.resultResolvers = [];
+    this.init();
+  }
+
+  /**
+   * Called during construc. Meant as a hook point for sub-classes.
+   */
+  init() {
+    // add stuff
   }
 
   /**
@@ -52,6 +61,19 @@ export default class Http {
    */
   addInterceptor(interceptor) {
     this.interceptors.push(interceptor)
+  }
+
+  /**
+   * A result resolver is run after interceptors. This allows you to re-define the actual result passed
+   * back from making a result. E.g., usually this would be an HttpResponse, but maybe you want to change this.
+   *
+   * Note that these are basically the same as interceptors. The difference is that the return result of a ResultResolver
+   * is not expected to be an HttpResponse.
+   *
+   * @param {ResultResolver} resultResolver
+   */
+  addResultResolver(resultResolver) {
+    this.resultResolvers.push(resultResolver);
   }
 
   /**
@@ -132,17 +154,17 @@ export default class Http {
         this.ajaxFn(config).done((data, textStatus, jqXHR) => {
           let r = new HttpResponse(jqXHR, textStatus, config, data);
           if (config.transformRequest) {
-            ajaxResolve(config.transformRequest(r));
-          } else {
-            ajaxResolve(r);
+            r = config.transformRequest(r);
           }
+
+          ajaxResolve(r);
         }).fail((jqXHR, textStatus, errorThrown) => {
           let r = new HttpResponse(jqXHR, textStatus, config, null);
           if (config.transformRequest) {
-            ajaxReject(config.transformRequest(r));
-          } else {
-            ajaxReject(r);
+            r = config.transformRequest(r);
           }
+
+          ajaxReject(r);
         });
       });
     };
@@ -159,11 +181,29 @@ export default class Http {
       }
     });
 
+    this.resultResolvers.forEach(i => {
+      if (i.response || i.responseError) {
+        chain.push(this._getBoundInterceptor(i.response, i), this._getBoundInterceptor(i.responseError, i));
+      }
+    });
+
     while (chain.length) {
-      promise = promise.then(chain.shift(), chain.shift());
+      let res = chain.shift();
+      let err = chain.shift();
+      promise = promise.then(
+        () => this._callInterceptor(res, Array.prototype.slice.call(arguments)),
+        () => this._callInterceptor(err, Array.prototype.slice.call(arguments))
+      );
     }
 
     return promise;
+  }
+
+  _callInterceptor(i, v) {
+    if (!_.isArray(v)) {
+      v = [v];
+    }
+    return i.apply(v);
   }
 
   _getBoundInterceptor(i, s) {

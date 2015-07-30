@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -26,17 +26,27 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Templating\Asset;
+namespace DpTest\DeskPRO\Bundle\PortalBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
+use DpTest\PortalTestCase;
 
-class PathPackage extends UrlPackage
+class PortalControllerTest extends PortalTestCase
 {
-    public function __construct(Request $request, $version = null, $format = null)
+    public function testHomepageLoads()
     {
-        parent::__construct(array('CONFIG_HTTP'), $version, $format);
+        $this->installDataSet('fresh');
+
+        $client = $this->getClient();
+
+        $cralwer = $client->request('GET', '/');
+
+        $response = $client->getResponse();
+
+        expect($response->getStatusCode())->toBe(200);
     }
 }

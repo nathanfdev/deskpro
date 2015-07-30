@@ -1,10 +1,11 @@
 export default class UrlCorrector {
-  constructor(baseUrl) {
+  constructor(baseUrl, regex = null) {
     this.baseUrl = baseUrl;
+    this.regex = regex || /^\/?DP_URL\//;
   }
 
   request(config) {
-    config.url = config.url.replace(/^\/?DP_URL\//, this.baseUrl);
+    config.url = config.url.replace(this.regex, this.baseUrl);
     return config;
   }
 }
