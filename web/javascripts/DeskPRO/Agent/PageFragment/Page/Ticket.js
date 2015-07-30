@@ -845,6 +845,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         });
       }
     }, 1500);
+
+    var $problems = this.getEl('ticket_problem_id');
+    $problems.on('change', function () {
+      var $title = self.getEl('create_problem');
+      if (!$title.length) return;
+      -1 == $problems.val() ? $title.show() : $title.hide();
+    });
 	},
 
 	setTicketReplyBox: function(rb) {

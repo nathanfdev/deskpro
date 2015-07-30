@@ -516,6 +516,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	protected $jira_issues;
 
+    /**
+     * @var ArrayCollection
+     */
+    protected $problems;
+
 	/**
      * If the tikcet was created from an email just now, then this is the reader
      * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
@@ -572,6 +577,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->attachments   = new ArrayCollection();
         $this->charges       = new ArrayCollection();
         $this->ticket_slas   = new ArrayCollection();
+        $this->problems = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
@@ -3445,6 +3451,40 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @param Problem|null $problem
+     * @return null
+     */
+    public function associateProblem(Problem $problem = null)
+    {
+        if (!$problem) {
+            return null;
+        }
+
+        if ($old = $this->problems->first()) {
+            foreach ($problem->tickets as $ticket) {
+                if ($ticket['id'] == $this->id) {
+                    $problem->tickets->removeElement($ticket);
+                }
+            }
+        }
+
+        $this->problems->clear();
+        $this->problems->add($problem);
+        $problem->tickets->add($this);
+
+        $this->_onPropertyChanged('problems', $this->problems, $this->problems);
+    }
+
+    /**
+     *
+     */
+    public function disassociateProblem()
+    {
+        $this->problems->clear();
+        $this->_onPropertyChanged('problems', $this->problems, $this->problems);
+    }
+
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
@@ -3955,5 +3995,31 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'dpApi'                => false,
 			'dpApiDeep'            => false
 		));
+        $metadata->mapManyToMany(
+            array(
+                'fieldName' => 'problems',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Problem',
+                'cascade' => array('persist', 'merge'),
+                'joinTable' => array(
+                    'name' => 'problem2tickets',
+                    'inverseJoinColumns' => array(
+                        array(
+                            'name' => 'problem_id',
+                            'referencedColumnName' => 'id',
+                            'nullable' => true,
+                            'onDelete' => 'cascade',
+                        ),
+                    ),
+                    'joinColumns' => array(
+                        array(
+                            'name' => 'ticket_id',
+                            'referencedColumnName' => 'id',
+                            'nullable' => true,
+                            'onDelete' => 'cascade',
+                        ),
+                    ),
+                ),
+            )
+        );
     }
 }

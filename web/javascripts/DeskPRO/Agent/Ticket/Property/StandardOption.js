@@ -11,7 +11,7 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 	displayNameType: 'standardOption',
 
 	init: function() {
-		var valid_options = ['language_id', 'category_id', 'product_id', 'priority_id', 'workflow_id'];
+    var valid_options = ['language_id', 'category_id', 'product_id', 'priority_id', 'workflow_id', 'problem_id', 'create_problem'];
 
 		if (valid_options.indexOf(this.options.optionName) == -1) {
 			throw 'invalidOptionName:'+this.options.optionName;
@@ -25,6 +25,14 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 			case 'product_id': this.displayNameType = 'product'; this.displayCaption = 'Product'; break;
 			case 'priority_id': this.displayNameType = 'ticket_priority'; this.displayCaption = 'Priority'; break;
 			case 'workflow_id': this.displayNameType = 'ticket_workflow'; this.displayCaption = 'Workflow'; break;
+      case 'problem_id':
+        this.displayNameType = 'ticket_problem';
+        this.displayCaption = 'Problem';
+        break;
+      case 'create_problem':
+        this.displayNameType = 'ticket_problem_create';
+        this.displayCaption = 'Create Problem';
+        break;
 		}
 	},
 

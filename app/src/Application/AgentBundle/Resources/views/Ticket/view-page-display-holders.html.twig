@@ -58,6 +58,53 @@
 		</tr>
 	</tbody>
 {% endif %}
+
+{% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
+    <tbody class="problem problem_id item" data-item-type="ticket_problem">
+    <tr class="mode-display">
+        <th width="80">
+            <span class="problem_id label">{{ phrase('agent.problems.problem') }}:</span>
+        </th>
+        <td>
+            <span class="prop-val problem_id">{{ ticket.problems.first ? ticket.problems.first.title : phrase('agent.general.none') }}</span>
+        </td>
+    </tr>
+
+    {% if app.user.PermissionsManager.get('TicketChecker').canAssociateProblem(ticket) %}
+        <tr class="mode-edit">
+            <th width="80">{{ phrase('agent.problems.problem') }}:</th>
+            <td>
+
+                {% if app.user.hasPerm('agent_problems.create') %}
+                    {% set problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(problems) %}
+                {% endif %}
+
+                <div>
+                    {% include 'AgentBundle:Common:select-standard.html.twig' with {
+                    'name': 'ticket[problem_id]',
+                    'add_classname': 'prop-input-problem_id',
+                    'add_attr': 'data-prop-id="problem" ',
+                    'with_blank': app.user.PermissionsManager.get('TicketChecker').canDisassociateProblem(ticket),
+                    'blank_title': '',
+                    'categories': problems,
+                    'id': baseId ~ '_ticket_problem_id',
+                    'selected': ticket.problems.isEmpty ? null : ticket.problems.first.id
+                    } %}
+
+                    {% if app.user.hasPerm('agent_problems.create') %}
+                        <input id="{{ baseId }}_create_problem" type="text" data-prop-id="create_problem"
+                               name="ticket[create_problem]"
+                               style="display: none;" placeholder="{{ phrase('agent.problems.problem') }}"
+                                />
+                    {% endif %}
+
+                </div>
+            </td>
+        </tr>
+    {% endif %}
+    </tbody>
+{% endif %}
+
 {% if app.getSetting('core.use_product') %}
 	<tbody class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
 		<tr class="mode-display">

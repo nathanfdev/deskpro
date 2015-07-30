@@ -137,6 +137,8 @@ class Problem extends \Application\DeskPRO\Domain\DomainObject
                 'fieldName' => 'tickets',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'cascade' => array('persist', 'merge'),
+                'mappedBy' => 'problems',
+                'inversedBy' => 'tickets',
                 'joinTable' => array(
                     'name' => 'problem2tickets',
                     'joinColumns' => array(

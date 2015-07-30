@@ -50,6 +50,7 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
@@ -362,6 +363,12 @@ class TicketController extends AbstractController
             $agents_with_perm[$agent->id] = $agent->PermissionsManager->TicketChecker->canView($ticket);
         }
 
+        $problems = array();
+        if ($this->person->hasPerm('agent_problems.view')) {
+            $problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+        }
+
+
         $vars = array(
             'agents'                     => $agents,
             'agents_with_perm'           => $agents_with_perm,
@@ -415,6 +422,7 @@ class TicketController extends AbstractController
 
             'addable_slas'               => $addable_slas,
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
+            'problems' => $problems,
         );
 
         if (App::getSetting('core_tickets.enable_billing')) {
@@ -2062,6 +2070,33 @@ class TicketController extends AbstractController
                     }
                 }
 
+                if (isset($actions['problem_id'])) {
+                    $id = (int)$actions['problem_id'];
+                    $title = @$actions['create_problem'];
+                    /** @var TicketChecker $checker */
+                    $checker = $this->person->PermissionsManager->TicketChecker;
+
+                    switch (true) {
+                        case $id > 0 && $checker->canAssociateProblem($ticket):
+                            $problem = $this->em->find('DeskPRO:Problem', $actions['problem_id']);
+                            $ticket->associateProblem($problem);
+                            break;
+
+                        case 0 === $id && $checker->canDisassociateProblem($ticket):
+                            $ticket->disassociateProblem();
+                            break;
+
+                        case -1 === $id && $this->person->hasPerm('agent_problems.create') && $title:
+                            $problem = new Problem();
+                            $problem->creator = $this->person;
+                            $problem->title = $title;
+                            $this->em->persist($problem);
+                            $this->em->flush($problem);
+                            $ticket->associateProblem($problem);
+                            break;
+                    }
+                }
+
                 $tm->saveTicket($ticket, $context);
                 $this->db->commit();
             } catch (\Exception $e) {
@@ -2096,6 +2131,12 @@ class TicketController extends AbstractController
         $data['data']['reload'] = (($was_rtl && !$is_rtl) || (!$was_rtl && $is_rtl));
 
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+        $problems = array();
+        if ($this->person->hasPerm('agent_problems.view')) {
+            $problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+        }
+
         $data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
             'ticket'              => $ticket,
             'ticket_options'      => $ticket_options,
@@ -2103,6 +2144,7 @@ class TicketController extends AbstractController
             'custom_person_fields'=> $custom_person_fields,
             'custom_org_fields'   => $custom_org_fields,
             'new_custom_fields'   => $new_custom_fields->createView(),
+            'problems' => $problems,
         ));
 
         $client_messages = false;
@@ -3703,6 +3745,8 @@ class TicketController extends AbstractController
             $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
         }
 
+        $problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
             'ticket'                 => $ticket,
             'message'                => $message,
@@ -3715,6 +3759,7 @@ class TicketController extends AbstractController
             'custom_fields'          => $custom_fields,
             'new_custom_fields'      => $new_custom_fields->createView(),
             'billing_fields' => $billing_fields,
+            'problems' => $problems,
         ));
     }
 
@@ -4124,6 +4169,33 @@ class TicketController extends AbstractController
             } catch (\Exception $e) {
                 $this->db->rollback();
                 throw $e;
+            }
+
+            if ($this->settings->get('core.problems.enabled')) {
+                $id = (int)$request->get('problem_id');
+                $title = $this->in->getString('problem_title'); // sanitize
+                /** @var TicketChecker $checker */
+                $checker = $this->person->PermissionsManager->TicketChecker;
+                if ($checker->canAssociateProblem($ticket)) {
+                    if (-1 === $id && $title) {
+                        if ($this->person->hasPerm('agent_problems.create')) {
+                            $problem = new Problem();
+                            $problem->creator = $this->person;
+                            $problem->title = $title;
+                            $this->em->persist($problem);
+                            $this->em->flush($problem);
+                        }
+                    } else {
+                        if (!$problem = $this->em->find('DeskPRO:Problem', $id)) {
+                            // silent?
+                        }
+                    }
+
+                    if ($problem) {
+                        $ticket->associateProblem($problem);
+                        $this->em->flush();
+                    }
+                }
             }
 
             return $this->createJsonResponse(array(

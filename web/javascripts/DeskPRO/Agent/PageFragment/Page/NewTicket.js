@@ -10,14 +10,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.allowDupe = true;
 	},
 
-        _initLabels: function() {
-            if (this.getEl('labels_input')[0]) {
-                this.labelsInput = new DeskPRO.UI.LabelsInput({
-                    type: 'tickets',
-                    input: this.getEl('labels_input')
-                });
-                this.ownObject(this.labelsInput);
-            }
+	_initLabels: function () {
+		if (this.getEl('labels_input')[0]) {
+			this.labelsInput = new DeskPRO.UI.LabelsInput({
+				type:  'tickets',
+				input: this.getEl('labels_input')
+			});
+			this.ownObject(this.labelsInput);
+		}
 	},
 
 	initPage: function(el) {
@@ -467,6 +467,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       }
     });
+
+
+		var $problems = this.getEl('select_problem');
+		$problems.on('change', function () {
+			var $title = self.getEl('problem_title');
+			if (!$title.length) return;
+			-1 == $problems.val() ? $title.show() : $title.hide();
+		});
+
 	},
 
   addSignature: function() {
