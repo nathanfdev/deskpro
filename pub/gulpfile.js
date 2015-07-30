@@ -67,7 +67,7 @@ function createReducers(reducers_path) {
   processed_files = [];
   for(var k in files) {
     file = files[k];
-    if(file == 'index.js') {
+    if(file == 'index.js' || !file.match(/\.js$/)) {
       continue;
     }
     

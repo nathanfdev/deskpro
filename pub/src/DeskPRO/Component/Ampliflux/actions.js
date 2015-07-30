@@ -5,11 +5,11 @@ export function createAction(action_type, action = null) {
   }
   let handler = null;
   if(!action) { // Dumb action
-    handler = () => {
+    handler = (payload = null) => {
       //console.log(action_type); // This is very handy for debugging.
       return (dispatch) => dispatch({
         type: action_type,
-        payload: null
+        payload: payload
       });
     }
   } else {
