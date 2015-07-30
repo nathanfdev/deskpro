@@ -12,11 +12,6 @@ class TaskFilterBuilderTest extends PortalTestCase
     const ADMIN_USER = 1;
 
     /**
-     * @var array|ParameterBag
-     */
-    protected $request = [];
-
-    /**
      * @var null|EntityManager
      */
     protected $em = null;
@@ -26,7 +21,6 @@ class TaskFilterBuilderTest extends PortalTestCase
      */
     public function setUp()
     {
-        $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\ParameterBag')->getMock();
         $this->em = $this->getContainer()->get('doctrine')->getManager();
 
         // Install the API dataset
@@ -40,7 +34,7 @@ class TaskFilterBuilderTest extends PortalTestCase
     public function testValid()
     {
         // Set the request up
-        $this->setRequest([
+        $request = new ParameterBag([
             'assigned' => 'me',                 // Check it can be assigned to "me" i.e. the admin
             'irrelevant' => 'parameter',        // Irrelevant parameters should be ignored
         ]);
@@ -50,7 +44,7 @@ class TaskFilterBuilderTest extends PortalTestCase
 
         // Create the filter and apply it
         $filter = new TaskFilterBuilder($this->em, $person);
-        $results = $filter->filterRequest($this->request);
+        $results = $filter->filterRequest($request);
 
         // Validate that we get a query back
         $this->assertInstanceOf('Doctrine\ORM\Query', $results);
@@ -74,7 +68,7 @@ class TaskFilterBuilderTest extends PortalTestCase
     public function testValidUnassigned()
     {
         // Set the request up
-        $this->setRequest([
+        $request = new ParameterBag([
             'assigned' => 'null',            // To get unassigned tasks we set everything to null
             'assigned_team' => 'null',
             'assigned_department' => 'null',
@@ -85,7 +79,7 @@ class TaskFilterBuilderTest extends PortalTestCase
 
         // Create the filter and apply it
         $filter = new TaskFilterBuilder($this->em, $person);
-        $results = $filter->filterRequest($this->request);
+        $results = $filter->filterRequest($request);
 
         // Validate that we get a query back
         $this->assertInstanceOf('Doctrine\ORM\Query', $results);
@@ -96,15 +90,6 @@ class TaskFilterBuilderTest extends PortalTestCase
         foreach ($results->getResult() as $result) {
             $this->assertEmpty($result->getAssigned());
         }
-    }
-
-    /**
-     * Set what parameters form the request
-     * @param array $request
-     */
-    protected function setRequest(array $request)
-    {
-        $this->request->method('all')->willReturn($request);
     }
 
     /**
