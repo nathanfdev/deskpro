@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
+use DeskPRO\Bundle\AppBundle\Task\TaskFilterBuilder;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -503,144 +504,12 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     protected function filterTasks(Request $request, $em)
     {
-        $filter = $this->getFilter($request);
+        $user = $this->getUser();
 
-        if (empty($filter)) {
-            /** @var EntityManager $em */
-            return $em->createQueryBuilder()->select('t')
-                ->from('App:Task', 't');
-        }
+        $filter = new TaskFilterBuilder($em, $user);
 
-        return $this->executeFilter($em, $filter);
+        return $filter->filterRequest($request->query);
     }
 
-    /**
-     * Calculate what terms to filter the request by
-     * @param Request $request
-     * @return array
-     */
-    protected function getFilter(Request $request)
-    {
-        $filter = [];
 
-        $allowedFilters = [
-            'assigned' => ['field' => 'person', 'table' => ['t.assigned', 'a']],
-            'assigned_team' => ['field' => 'team', 'table' => ['t.assigned', 'a']],
-            'assigned_department' => ['field' => 'department', 'table' => ['t.assigned', 'a']],
-            'creator' => ['field' => 'creator'],
-            'project' => ['field' => 'project'],
-            'is_done' => ['field' => 'is_done'],
-            'label' => ['field' => 'id', 'table' => ['t.labels', 'l']],
-        ];
-
-        foreach($request->query->all() as $item => $value) {
-            if (in_array($item, array_keys($allowedFilters))) {
-                // Add a NOT indicator
-                $not = false;
-                if (strpos($value, 'not_') === 0) {
-                    $not = true;
-                    $value = substr($value, 4);
-                }
-
-                // Default to null
-                $returnValue = null;
-
-                // If the value is set to 'me', get the current user's ID, teams and departments
-                if ($value === 'me') {
-                    $user = $this->getUser();
-                    switch($allowedFilters[$item]) {
-                        case 'team':
-                            $returnValue = implode(',', $user->getTeamIds());
-                            break;
-                        case 'department':
-                            // TODO perm_check
-                            $user->loadHelper('AgentPermissions');
-                            $returnValue = implode(',', $user->getAllowedDepartments());
-                            break;
-                        default:
-                            $returnValue = $user->getId();
-                    }
-                } else {
-                    if (!empty($value) && !in_array($value, ['null', 'false', 'true'])) {
-                        // Clean the IDs, including those in a comma-separated string
-                        $ids = explode(',', $value);
-                        $ids = array_map(function($id) {
-                            return (int) $id;
-                        }, $ids);
-                        $returnValue = implode(',', $ids);
-                    } else if (!empty($value) && ($value === 'false' || $value === 'true')) {
-                        $returnValue = ($value === 'true');
-                    }
-                }
-
-                // Add the not indicator back to the output
-                if ($not) {
-                    $returnValue = 'not_' . $returnValue;
-                }
-
-                $filter[$item] = $allowedFilters[$item];
-                $filter[$item]['value'] = $returnValue;
-            }
-        }
-
-        return $filter;
-    }
-
-    /**
-     * Build up a query according to the filter we need to process
-     * @param $em
-     * @param $filter
-     * @return Query
-     */
-    protected function executeFilter($em, $filter)
-    {
-        /** @var EntityManager $em */
-        $query = $em->createQueryBuilder()->select('t')
-            ->from('App:Task', 't');
-
-        // Join the necessary tables
-        $joins = [];
-        foreach ($filter as $param => $details) {
-            if (!empty($details['table']) && !in_array($details['table'][0], $joins)) {
-                $query = $query->leftJoin($details['table'][0], $details['table'][1]);
-                $joins[] = $details['table'][0];
-            }
-        }
-
-        // Set the where queries
-        foreach ($filter as $param => $details) {
-            // Work out whether there was a "not" indicator
-            $not = false;
-            if (strpos($details['value'], 'not_') === 0) {
-                $not = true;
-                $details['value'] = substr($details['value'], 4);
-            }
-
-            // Filter out null values
-            $term = $not ? 'is NOT NULL' : 'is NULL';
-
-            // If not null, see what kind of query it is
-            if (!is_null($details['value'])) {
-                $term = $not ? 'NOT IN (:' . $details['field'] . ')' : 'IN (:' . $details['field'] . ')';
-
-                // If we don't have an array, check if it equals or doesn't equal
-                if (strpos($details['value'], ',') === false) {
-                    $term = $not ? '!= :' : '= :';
-                    $term .= $details['field'];
-                }
-
-                // Set the query parameter
-                $query = $query->setParameter($details['field'], $details['value']);
-            }
-
-            // Set the table to check
-            $table = !empty($details['table']) ? $details['table'][1] : 't';
-            $field = $table . '.' . $details['field'];
-
-            // Put together the where clause
-            $query = $query->andWhere($field . ' ' . $term);
-        }
-
-        return $query->getQuery();
-    }
 }

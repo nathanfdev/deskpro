@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Usersource;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 class ApiDb extends AbstractDbSet
@@ -107,6 +108,12 @@ class ApiDb extends AbstractDbSet
         // Create a basic task
         $task = new Task($admin);
         $task->setTitle("A demo task");
+        $taskAssignment = new TaskAssignment();
+        $taskAssignment->setTask($task);
+        $taskAssignment->setPerson($admin);
+
+        $unassignedTask = new Task($admin);
+        $unassignedTask->setTitle("An unassigned task");
 
         // Create a new knowledge base article
         $article = new Article();
@@ -127,6 +134,8 @@ class ApiDb extends AbstractDbSet
         $em->persist($dep2);
         $em->persist($brand);
         $em->persist($task);
+        $em->persist($taskAssignment);
+        $em->persist($unassignedTask);
         $em->persist($article);
         $em->flush();
 
