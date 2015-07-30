@@ -113,7 +113,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $widget = $this->getWidget($id);
 
         return View::create(
-            $this->createFractalRepresentation($widget, "sandbox_widget"),
+            $this->dataSerialize($widget),
             Response::HTTP_OK
         );
     }

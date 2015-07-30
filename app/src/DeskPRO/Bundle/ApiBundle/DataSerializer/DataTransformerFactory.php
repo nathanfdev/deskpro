@@ -1,0 +1,80 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
+
+use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * Hands you a Transformer\AbstractDataSerializerTransformer instance for an object type.
+ *
+ * This factory is used throughout the DataSerializer package to find the right transformer forn object type.
+ */
+class DataTransformerFactory
+{
+    const TRANSFORMER_SERVICE_PREFIX = 'data_serializer.transformer.';
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        // this particular implmentation of a DataTransformerFactory simply uses a service name convention to find
+        // a container service.
+        // data_serializer.transformer.X
+        // where X is the object "type"
+        // it's not ideal to use the container directly, but it is contained in this factory service so changing it
+        // is relatively straightforward.
+        $this->container = $container;
+    }
+
+    /**
+     * @param string $type the object "type" string, like "ticket" or "person"
+     * @return AbstractDataSerializerTransformer
+     * @throws DataSerializerException
+     */
+    public function findByType($type)
+    {
+        $service_name = self::TRANSFORMER_SERVICE_PREFIX . $type;
+
+        if (!$this->container->has($service_name)) {
+            throw new DataSerializerException('could not find a data transformer for type: "' . $type . '"');
+        }
+
+        return $this->container->get($service_name);
+    }
+}

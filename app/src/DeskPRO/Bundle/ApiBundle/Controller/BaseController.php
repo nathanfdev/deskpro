@@ -41,6 +41,14 @@ use Symfony\Component\Form\FormInterface;
 class BaseController extends FOSRestController
 {
     /**
+     * @return array
+     */
+    protected function dataSerialize($data, $includes_string = null)
+    {
+        return $this->get('data_serializer')->serialize($data, $includes_string);
+    }
+
+    /**
      * @param mixed $input any array or object
      * @param string $transformer the short name (no prefix) of the service name for the transformer you want to use
      * @param int $datatype
