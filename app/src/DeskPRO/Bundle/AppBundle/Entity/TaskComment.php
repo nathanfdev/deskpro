@@ -73,15 +73,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $person;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("person")
-     */
-    public function getPersonId()
-    {
-        return $this->person ? $this->person->getId() : null;
-    }
 
     /**
      * @var \DateTime
