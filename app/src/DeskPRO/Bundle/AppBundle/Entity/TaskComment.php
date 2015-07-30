@@ -108,15 +108,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $task;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("task")
-     */
-    public function getTaskId()
-    {
-        return $this->task ? $this->task->getId() : null;
-    }
 
     /**
      * @var TaskAttachment[]|ArrayCollection
@@ -124,27 +115,9 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @Serializer\Expose()
      */
     protected $attachments;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("attachments")
-     */
-    public function getAttachmentsId()
-    {
-        if (!$this->attachments) {
-            return array();
-        }
-        
-        $attachments = array();
-        foreach($this->attachments as $attachment) {
-            $attachments[] = $attachment->getId();
-        }
-        
-        return $attachments;
-    }
 
     /**
-     * Construct
+     * Constructor
      * @param Person $person
      */
     public function __construct(Person $person)

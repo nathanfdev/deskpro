@@ -125,6 +125,9 @@ class TaskLog extends NotifyPropertyChangeEntity
      */
     protected $task;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());

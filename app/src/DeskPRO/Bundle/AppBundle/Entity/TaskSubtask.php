@@ -86,15 +86,6 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $task;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("task")
-     */
-    public function getTaskId()
-    {
-        return $this->task ? $this->task->getId() : null;
-    }
 
     /**
      * @var \DateTime
@@ -128,6 +119,10 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     protected $date_completed = null;
 
+    /**
+     * Constructor
+     * @param Person $person
+     */
     public function __construct(Person $person)
     {
         $this->setModelField('date_created', new \DateTime());

@@ -136,19 +136,6 @@ class Task extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */ 
     protected $creator;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("creator")
-     */
-    public function getCreatorId()
-    {
-        if ($this->creator) {
-            return $this->creator->getId();
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Project, public or private
@@ -165,19 +152,6 @@ class Task extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $project;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("project")
-     */
-    public function getProjectId()
-    {
-        if ($this->project) {
-            return $this->project->getId();
-        } else {
-            return null;
-        }
-    }
 
     /**
      * @var TaskList
@@ -186,19 +160,6 @@ class Task extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $list;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("list")
-     */
-    public function getListId()
-    {
-        if ($this->list) {
-            return $this->list->getId();
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Between 1 and 10
@@ -214,24 +175,6 @@ class Task extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $subtasks;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("subtasks")
-     */
-    public function getSubTasksId()
-    {
-        if (!$this->subtasks) {
-            return array();
-        }
-        
-        $subtasks = array();
-        foreach($this->subtasks as $task) {
-            $subtasks[] = $task->getId();
-        }
-        
-        return $subtasks;
-    }
 
     /**
      * @var LabelTask[]|ArrayCollection
@@ -246,23 +189,6 @@ class Task extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $comments;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("comments")
-     */
-    public function getCommentIds()
-    {
-        if (!$this->comments) {
-            return array();
-        }
-        
-        $comments = array();
-        foreach($this->comments as $comment) {
-            $comments[] = $comment->getId();
-        }
-        return $comments;
-    }
 
     /**
      * @var TaskAttachment[]|ArrayCollection
@@ -270,23 +196,6 @@ class Task extends NotifyPropertyChangeEntity
      * @Serializer\Exclude()
      */
     protected $attachments;
-    
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("attachments")
-     */
-    public function getAttachmentsIds()
-    {
-        if (!$this->attachments) {
-            return array();
-        }
-        
-        $attachments = array();
-        foreach($this->attachments as $attachment) {
-            $attachments[] = $attachment->getId();
-        }
-        return $attachments;
-    }
 
     /**
      * @var TaskLinkedItem[]|ArrayCollection
