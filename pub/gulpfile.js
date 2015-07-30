@@ -52,6 +52,10 @@ gulp.task('priv:start-prod', function () {
 //# Bundler
 //######################################################################################################################
 
+gulp.task('refresh:bundle', ['clean'], function (callback) {
+  runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
+});
+
 gulp.task('bundle', function (callback) {
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
@@ -114,13 +118,15 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             "css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&" +
             "includePaths[]=" + (path.resolve(__dirname, "./bower_components")) + "&" +
             "includePaths[]=" + (path.resolve(__dirname, "./node_modules")),
-            { "publicPath": "./" }
+            { "publicPath": "../../../../../../../pub/build/" }
           )
         }
       ]
     },
     plugins: [
-      new ExtractTextPlugin("[name].css"),
+      // this path is so the relative paths are the same between build/ and src/ dirs
+      // makes it generally easier to keep in your head
+      new ExtractTextPlugin("DeskPRO/Bundle/Build/Resources/style/[name].css"),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       })

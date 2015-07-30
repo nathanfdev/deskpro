@@ -59,8 +59,7 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo __FILE__;
-        echo "\n";
+        $scss = new \Leafo\ScssPhp\Compiler();
 
         return 0;
     }
