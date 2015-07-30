@@ -250,6 +250,43 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
+     * @APIDoc(
+     *      description="get attached members for a project",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/projects/{id}/members", name="api_projects_members_get")
+     *
+     * @param $id
+     * @return View
+     */
+    public function getMembersAction($id)
+    {
+        $project = $this->getProject($id);
+
+        if (empty($project)) {
+            throw $this->createNotFoundException();
+        }
+
+        $members = $project->getMembers();
+
+        return View::create(
+            $this->createRepresentation($members),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @param int $id
      * @return Project
      */

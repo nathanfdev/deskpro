@@ -58,49 +58,6 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
 {
     /**
      * @ApiDoc(
-     *      description="get a list of members",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/project_members", name="api_project_members")
-     * @param Request $request
-     * @return View
-     */
-    public function cgetAction(Request $request)
-    {
-        $members = $this->getDoctrine()->getManager()->createQueryBuilder()->select('p')->from('App:ProjectMember', 'p');
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($members));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->createRepresentation($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
      *      description="get a member",
      *      requirements={
      *          {
