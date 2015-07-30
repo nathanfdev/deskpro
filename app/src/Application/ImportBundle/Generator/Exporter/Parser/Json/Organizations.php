@@ -113,7 +113,7 @@ final class Organizations extends AbstractParser
             ;
 
             if ($organization['picture']) {
-                $entity->setPicture($organization['picture']);
+                $entity->setPicture($this->exportBlob($organization['picture']));
             }
 
             $contact_data = $this->exportContactData($organization['contact_data']);

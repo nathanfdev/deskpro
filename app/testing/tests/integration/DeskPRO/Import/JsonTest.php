@@ -87,6 +87,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->helper->enableFreshDatabaseSet('FreshDb');
         $this->helper->loadFixtures('Import/Person');
         $this->helper->loadFixtures('Import/Organization');
+        $this->helper->loadFixtures('Import/Ticket');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
