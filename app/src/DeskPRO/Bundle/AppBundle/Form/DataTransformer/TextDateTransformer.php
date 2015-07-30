@@ -112,6 +112,8 @@ class TextDateTransformer implements DataTransformerInterface
     {
         if ($value === null || empty($value)) {
             return null;
+        } else if ($value instanceof \DateTime) {
+            return $value;
         }
 
         $date = \DateTime::createFromFormat(\DateTime::ISO8601, $value);
