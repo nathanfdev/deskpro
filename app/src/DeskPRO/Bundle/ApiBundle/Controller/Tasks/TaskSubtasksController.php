@@ -59,43 +59,19 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
     /**
      * @ApiDoc(
      *      description="get a list of subtasks",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
      *      statusCodes={
      *          200="Success"
      *      }
      * )
      * @Get("/subtasks", name="api_subtasks")
-     * @param Request $request
      * @return View
      */
-    public function cgetAction(Request $request)
+    public function cgetAction()
     {
-        $subtasks = $this->getDoctrine()->getManager()->createQueryBuilder()->select('s')->from('App:TaskSubtask', 's');
-
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($subtasks));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
+        $subtasks = $this->getDoctrine()->getManager()->getRepository('App:TaskSubtask')->findAll();
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createRepresentation($subtasks),
             Response::HTTP_OK
         );
     }

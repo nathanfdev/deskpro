@@ -235,22 +235,6 @@ class TasksController extends BaseController implements ClassResourceInterface
      *              "dataType"="integer"
      *          }
      *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
      *      statusCodes={
      *          200="Success"
      *      }
@@ -272,76 +256,8 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $subtasks = $task->getSubtasks();
 
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($subtasks->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
         return View::create(
-            $this->createFractalRepresentation($pager, $this->getTaskTransformerName($request)),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @APIDoc(
-     *      description="get labels for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/tasks/{id}/labels", name="api_tasks_labels_get")
-     *
-     * @param Request $request
-     * @param $id
-     * @return View
-     */
-    public function getLabelsAction(Request $request, $id)
-    {
-        $task = $this->getTask($id);
-
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-
-        $labels = $task->getLabels();
-
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($labels->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->createFractalRepresentation($pager, 'task_label'),
+            $this->createFractalRepresentation($subtasks, $this->getTaskTransformerName($request)),
             Response::HTTP_OK
         );
     }
@@ -479,22 +395,6 @@ class TasksController extends BaseController implements ClassResourceInterface
      *              "dataType"="integer"
      *          }
      *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
      *      statusCodes={
      *          200="Success"
      *      }
@@ -516,15 +416,8 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $links = $task->getLinkedItems();
 
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($links->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
         return View::create(
-            $this->createFractalRepresentation($pager, 'task_linked_item'),
+            $this->createFractalRepresentation($links, 'task_linked_item'),
             Response::HTTP_OK
         );
     }

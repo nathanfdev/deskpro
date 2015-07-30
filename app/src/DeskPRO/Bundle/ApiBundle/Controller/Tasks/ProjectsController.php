@@ -36,23 +36,19 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ProjectsController extends BaseController implements ClassResourceInterface
 {
@@ -62,22 +58,6 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     /**
      * @ApiDoc(
      *      description="get a list of projects",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
      *      statusCodes={
      *          200="Success"
      *      }
@@ -88,16 +68,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function cgetAction(Request $request)
     {
-        $projects = $this->getDoctrine()->getManager()->createQueryBuilder()->select('p')->from('App:TaskProject', 'p');
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 1000);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($projects));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
+        $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createRepresentation($projects),
             Response::HTTP_OK
         );
     }

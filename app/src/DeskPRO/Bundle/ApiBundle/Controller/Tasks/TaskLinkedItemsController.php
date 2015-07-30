@@ -60,22 +60,6 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
     /**
      * @ApiDoc(
      *      description="get a list of links",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
      *      statusCodes={
      *          200="Success"
      *      }
@@ -86,17 +70,10 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      */
     public function cgetAction(Request $request)
     {
-        $task_links = $this->getDoctrine()->getManager()->createQueryBuilder()->select('l')->from('App:TaskLinkedItems', 'l');
-
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($task_links));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
+        $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItems')->findAll();
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->createRepresentation($taskLinks),
             Response::HTTP_OK
         );
     }
