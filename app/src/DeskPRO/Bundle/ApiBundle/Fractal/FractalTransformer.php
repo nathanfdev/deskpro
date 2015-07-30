@@ -34,6 +34,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Fractal;
 
 
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
 use Doctrine\Common\Collections\Collection;
 use League\Fractal\TransformerAbstract;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -75,7 +78,7 @@ abstract class FractalTransformer extends TransformerAbstract implements Contain
         foreach ($this->getWhitelist() as $property_name) {
             $val = $this->getPropertyAccessor()->getValue($data, $property_name);
 
-            $val = $this->autoProcessValue($val);
+            $val = $this->autoProcessValue($val, $property_name, $data);
 
             $transformed[$property_name] = $val;
         }
@@ -100,20 +103,32 @@ abstract class FractalTransformer extends TransformerAbstract implements Contain
      * happens to be "1" and we want all is_numeric to be integers, we can do that here.
      *
      * @param mixed $val
+     * @param mixed $property_name
+     * @param mixed $data
      * @return mixed
      */
-    protected function autoProcessValue($val)
+    protected function autoProcessValue($val, $property_name, $data)
     {
+        $assoc_manager = $this->container->get('doctrine_association_manager');
+
         if ($val instanceof \DateTime) {
-            $val = $val->format(\DateTime::ISO8601);
+            return $val->format(\DateTime::ISO8601);
         }
 
-        if ($val instanceof Collection || is_array($val) || $val instanceof \Traversable) {
-            // TODO: here is where we would mark this as a place where we want an array of IDs and to side-load
-            $val = null;
+        if ($val instanceof DomainObject || $val instanceof NotifyPropertyChangeEntity) {
+            return $assoc_manager->deferAssociationIds($data, $property_name);
         }
 
-        if (!is_scalar($val)) {
+        if ($val instanceof Collection || is_array($val) || $val instanceof \Traversable || $val === null) {
+            if ($assoc_manager->isAssociation($data, $property_name)) {
+                // this is an association, we don't want to worry about getting these IDs yet
+                $val = $assoc_manager->deferAssociationIds($data, $property_name);
+            } else {
+                $val = null;
+            }
+        }
+
+        if (!is_scalar($val) && !$val instanceof DeferredIdentity) {
             // this is a catch-all for now, and we will iron out any value that hits here and deal with it accordingly
             $val = null;
         }

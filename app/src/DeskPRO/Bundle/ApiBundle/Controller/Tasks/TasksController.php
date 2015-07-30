@@ -45,6 +45,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,18 +87,13 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function cgetAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $filter = $this->getFilter($request);
 
-        if (!empty($filter)) {
-            $tasks = $this->getByAssignment($em, $filter);
-        } else {
-            $tasks = $em->getRepository('App:Task')->findAll();
-        }
+        $tasks = $this->filterTasks($request, $em);
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($tasks));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -560,27 +556,15 @@ class TasksController extends BaseController implements ClassResourceInterface
     {
         $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
+
         /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
 
         $submitted = $request->request->all();
 
-        try {
-            $form->submit($submitted, $request->getMethod() !== 'PUT');
-        } catch (TermTypeDoesNotExistException $e) {
-            throw new WrappedApiErrorException(
-                new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-                array(
-                    'type' => $e->getMessage()
-                )
-            );
-        }
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
-            // Workaround to deal with done being treated as null
-            if (in_array('done', array_keys($submitted))) {
-                $task->setDone((bool) $submitted['done']);
-            }
             $this->getDoctrine()->getManager()->persist($task);
             $this->getDoctrine()->getManager()->flush();
 
@@ -600,18 +584,39 @@ class TasksController extends BaseController implements ClassResourceInterface
 
     /**
      * @param Request $request
+     * @param $em
+     * @return array
+     */
+    protected function filterTasks(Request $request, $em)
+    {
+        $filter = $this->getFilter($request);
+
+        if (empty($filter)) {
+            /** @var EntityManager $em */
+            return $em->createQueryBuilder()->select('t')
+                ->from('App:Task', 't');
+        }
+
+        return $this->executeFilter($em, $filter);
+    }
+
+    /**
+     * @param Request $request
      * @return array
      */
     protected function getFilter(Request $request)
     {
-        $filter = array();
+        $filter = [];
 
-        $allowedFilters = array(
-            'assigned' => 'person',
-            'assigned_team' => 'team',
-            'assigned_department' => 'department',
-            'creator' => 'creator',
-        );
+        $allowedFilters = [
+            'assigned' => ['field' => 'person', 'table' => ['t.assigned', 'a']],
+            'assigned_team' => ['field' => 'team', 'table' => ['t.assigned', 'a']],
+            'assigned_department' => ['field' => 'department', 'table' => ['t.assigned', 'a']],
+            'creator' => ['field' => 'creator'],
+            'project' => ['field' => 'project'],
+            'is_done' => ['field' => 'is_done'],
+            'label' => ['field' => 'id', 'table' => ['t.labels', 'l']],
+        ];
 
         foreach($request->query->all() as $item => $value) {
             if (in_array($item, array_keys($allowedFilters))) {
@@ -641,13 +646,15 @@ class TasksController extends BaseController implements ClassResourceInterface
                             $returnValue = $user->getId();
                     }
                 } else {
-                    if (!empty($value) && $value !== 'null') {
+                    if (!empty($value) && !in_array($value, ['null', 'false', 'true'])) {
                         // Clean the IDs, including those in a comma-separated string
                         $ids = explode(',', $value);
                         $ids = array_map(function($id) {
                             return (int) $id;
                         }, $ids);
                         $returnValue = implode(',', $ids);
+                    } else if (!empty($value) && ($value === 'false' || $value === 'true')) {
+                        $returnValue = ($value === 'true');
                     }
                 }
 
@@ -656,7 +663,8 @@ class TasksController extends BaseController implements ClassResourceInterface
                     $returnValue = 'not_' . $returnValue;
                 }
 
-                $filter[$allowedFilters[$item]] = $returnValue;
+                $filter[$item] = $allowedFilters[$item];
+                $filter[$item]['value'] = $returnValue;
             }
         }
 
@@ -666,53 +674,58 @@ class TasksController extends BaseController implements ClassResourceInterface
     /**
      * @param $em
      * @param $filter
-     * @return mixed
+     * @return array
      */
-    protected function getByAssignment($em, $filter)
+    protected function executeFilter($em, $filter)
     {
-        // Get the entity manager for tasks, and join the assigned table
         /** @var EntityManager $em */
         $query = $em->createQueryBuilder()->select('t')
-            ->from('App:Task', 't')
-            ->leftJoin('t.assigned', 'a');
+            ->from('App:Task', 't');
 
-        // Loop through to set where query
-        foreach ($filter as $field => $value) {
-
-            // Work out whether there was a "not" indicator
-            $not = false;
-            if (strpos($value, 'not_') === 0) {
-                $not = true;
-                $value = substr($value, 4);
+        // Join the necessary tables
+        $joins = [];
+        foreach ($filter as $param => $details) {
+            if (!empty($details['table']) && !in_array($details['table'][0], $joins)) {
+                $query = $query->leftJoin($details['table'][0], $details['table'][1]);
+                $joins[] = $details['table'][0];
             }
-
-            // Default to checking if null (or not null)
-            $term = $not ? 'is NOT NULL' : 'is NULL';
-
-            if (!is_null($value)) {
-                // Otherwise, if it's an array check if it's in (or not in) the array
-                $term = $not ? 'NOT IN (:' . $field . ')' : 'IN (:' . $field . ')';
-
-                // If we don't have an array, check if it equals (or doesn't equal)
-                if (strpos($value, ',') === false) {
-                    $term = $not ? '!= :' : '= :';
-                    $term .= $field;
-                }
-
-                // Set the parameter
-                $query = $query->setParameter($field, $value);
-            }
-
-            // If the field is creator, we need the correct table
-            $table = $field === 'creator' ? 't.' : 'a.';
-
-            // Add the where clause to the query
-            $query = $query->andWhere($table . $field . ' ' . $term);
         }
 
-        $query = $query->getQuery();
+        // Set the where queries
+        foreach ($filter as $param => $details) {
+            // Work out whether there was a "not" indicator
+            $not = false;
+            if (strpos($details['value'], 'not_') === 0) {
+                $not = true;
+                $details['value'] = substr($details['value'], 4);
+            }
 
-        return $query->getResult();
+            // Filter out null values
+            $term = $not ? 'is NOT NULL' : 'is NULL';
+
+            // If not null, see what kind of query it is
+            if (!is_null($details['value'])) {
+                $term = $not ? 'NOT IN (:' . $details['field'] . ')' : 'IN (:' . $details['field'] . ')';
+
+                // If we don't have an array, check if it equals or doesn't equal
+                if (strpos($details['value'], ',') === false) {
+                    $term = $not ? '!= :' : '= :';
+                    $term .= $details['field'];
+                }
+
+                // Set the query parameter
+                $query = $query->setParameter($details['field'], $details['value']);
+            }
+
+            // Set the table to check
+            $table = !empty($details['table']) ? $details['table'][1] : 't';
+            $field = $table . '.' . $details['field'];
+
+            // Put together the where clause
+            $query = $query->andWhere($field . ' ' . $term);
+        }
+
+        return $query->getQuery();
     }
 
     /**

@@ -2,20 +2,31 @@ import React from "react";
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
+import { IntlMixin, FormattedDate } from "react-intl";
 
 @connect(state => ({
   taskFrameList: state.taskFrameList
 }))
 export default class TasksListFrame extends React.Component {
-  toggleDone(done, taskId, reload) {
+  constructor(props) {
+    super(props);
+
+    this.intl = IntlMixin;
+  }
+
+  toggleDone(object, reload) {
+    object.is_done = !object.is_done;
+
     let newValues = {
-      taskId : taskId,
-      done : !done
+      taskId : object.id,
+      is_done : object.is_done
     };
 
-    if (newValues.done === true) {
+    if (newValues.is_done === true) {
       newValues['percent_complete'] = 100;
     }
+
+    this.forceUpdate();
 
     this.props.dispatch(TaskActions.editTask(newValues, reload));
   }
@@ -118,9 +129,8 @@ export default class TasksListFrame extends React.Component {
                                                                style={{backgroundImage: "url(./img/avatar6.png)"}}></span>
             </div>
 
-
             <div className="card-line">
-              <span className="line-box card-task-mark" onClick={_this.toggleDone.bind(_this, object.is_done, object.id, taskFrameList.taskFrameSource)}>
+              <span className="line-box card-task-mark" onClick={_this.toggleDone.bind(_this, object, taskFrameList.taskFrameSource)}>
                 {doneButton}
               </span>
 
@@ -137,7 +147,11 @@ export default class TasksListFrame extends React.Component {
 
               <div className="task-properties">
                 <div>
-                  <i className="fa fa-calendar-o"/> Due: Today, 2.30PM
+                  <i className="fa fa-calendar-o"/> Due: {object.date_due ? <FormattedDate
+                  value={Date.parse(object.date_due)}
+                  day="numeric"
+                  month="long"
+                  year="numeric" /> : 'N/A' }
                 </div>
 
                 <span className="disc"></span>

@@ -31,45 +31,30 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 
-use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
-use League\Fractal\Serializer\JsonApiSerializer;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextDateTransformer;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 
-class FractalJsonSerializer extends JsonApiSerializer
+/**
+ * A text input to a date time object, and back, using \DateTime
+ */
+class ApiDateType extends AbstractType
 {
-    public function collection($resourceKey, array $data)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return parent::collection($resourceKey, $data);
+        $builder->addViewTransformer(new TextDateTransformer(\DateTime::ISO8601));
     }
 
-    /**
-     * The parent method wraps $data in an array, which we don't want.
-     */
-    public function item($resourceKey, array $data)
+    public function getParent()
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return array($resourceKey ?: 'data' => $data);
+        return 'text';
     }
 
-    protected function resolveDeferredValues(array $data)
+    public function getName()
     {
-        $new = [];
-
-        foreach ($data as $key => $val) {
-            if (is_array($val)) {
-                $val = $this->resolveDeferredValues($val);
-            } elseif ($val instanceof DeferredIdentity) {
-                $val = $val->resolve();
-            }
-
-            $new[$key] = $val;
-        }
-
-        return $new;
+        return 'api_date';
     }
 }

@@ -31,45 +31,26 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 
-use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
-use League\Fractal\Serializer\JsonApiSerializer;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextDateTransformer;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class FractalJsonSerializer extends JsonApiSerializer
+/**
+ * A true/false value
+ */
+class ApiBooleanType extends AbstractType
 {
-    public function collection($resourceKey, array $data)
+    public function getParent()
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return parent::collection($resourceKey, $data);
+        return 'checkbox';
     }
 
-    /**
-     * The parent method wraps $data in an array, which we don't want.
-     */
-    public function item($resourceKey, array $data)
+    public function getName()
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return array($resourceKey ?: 'data' => $data);
-    }
-
-    protected function resolveDeferredValues(array $data)
-    {
-        $new = [];
-
-        foreach ($data as $key => $val) {
-            if (is_array($val)) {
-                $val = $this->resolveDeferredValues($val);
-            } elseif ($val instanceof DeferredIdentity) {
-                $val = $val->resolve();
-            }
-
-            $new[$key] = $val;
-        }
-
-        return $new;
+        return 'api_boolean';
     }
 }

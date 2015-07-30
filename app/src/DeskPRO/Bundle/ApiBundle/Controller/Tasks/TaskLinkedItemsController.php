@@ -45,6 +45,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -85,12 +86,12 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      */
     public function cgetAction(Request $request)
     {
-        $task_links = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->findAll();
+        $task_links = $this->getDoctrine()->getManager()->createQueryBuilder()->select('l')->from('App:TaskLinkedItems', 'l');
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($task_links));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($task_links));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -253,16 +254,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
         $submitted = $request->request->all();
         $submitted = $this->cleanLinkTypes($submitted);
 
-        try {
-            $form->submit($submitted, $request->getMethod() !== 'PUT');
-        } catch (TermTypeDoesNotExistException $e) {
-            throw new WrappedApiErrorException(
-                new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-                array(
-                    'type' => $e->getMessage()
-                )
-            );
-        }
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
             // Try and gracefully handle integrity constraint failures

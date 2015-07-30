@@ -44,6 +44,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,12 +85,13 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      */
     public function cgetAction(Request $request)
     {
-        $task_labels = $this->getDoctrine()->getManager()->getRepository('App:LabelTask')->findBy(array(), array('label' => 'asc'));
+        $task_labels = $this->getDoctrine()->getManager()->createQueryBuilder()->select('l')->from('App:LabelTask', 'l')
+            ->orderBy('l.label', 'ASC');
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($task_labels));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($task_labels));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -251,16 +253,7 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
 
         $submitted = $request->request->all();
 
-        try {
-            $form->submit($submitted, $request->getMethod() !== 'PUT');
-        } catch (TermTypeDoesNotExistException $e) {
-            throw new WrappedApiErrorException(
-                new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-                array(
-                    'type' => $e->getMessage()
-                )
-            );
-        }
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->persist($label);

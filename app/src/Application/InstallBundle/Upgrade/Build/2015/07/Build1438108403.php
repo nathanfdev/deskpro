@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,47 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal;
+namespace Application\InstallBundle\Upgrade\Build;
 
-
-use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
-use League\Fractal\Serializer\JsonApiSerializer;
-
-class FractalJsonSerializer extends JsonApiSerializer
+class Build1438108403 extends AbstractBuild
 {
-    public function collection($resourceKey, array $data)
+    public function run()
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return parent::collection($resourceKey, $data);
-    }
-
-    /**
-     * The parent method wraps $data in an array, which we don't want.
-     */
-    public function item($resourceKey, array $data)
-    {
-        $data = $this->resolveDeferredValues($data);
-
-        return array($resourceKey ?: 'data' => $data);
-    }
-
-    protected function resolveDeferredValues(array $data)
-    {
-        $new = [];
-
-        foreach ($data as $key => $val) {
-            if (is_array($val)) {
-                $val = $this->resolveDeferredValues($val);
-            } elseif ($val instanceof DeferredIdentity) {
-                $val = $val->resolve();
-            }
-
-            $new[$key] = $val;
-        }
-
-        return $new;
+        $this->out("test entity");
+		$this->execMutateSql("ALTER TABLE api_sandbox_widgets ADD parent_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE api_sandbox_widgets ADD CONSTRAINT FK_CD41AFC1727ACA70 FOREIGN KEY (parent_id) REFERENCES api_sandbox_widgets (id)");
+		$this->execMutateSql("CREATE INDEX IDX_CD41AFC1727ACA70 ON api_sandbox_widgets (parent_id)");
+		$this->execMutateSql("ALTER TABLE custom_ticket_filters CHANGE term term LONGTEXT NOT NULL");
     }
 }

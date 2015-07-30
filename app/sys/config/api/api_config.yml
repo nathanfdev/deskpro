@@ -72,6 +72,8 @@ fos_rest:
         throw_exception_on_unsupported_content_type:  true
         decoders:
             json: fos_rest.decoder.jsontoform
+        array_normalizer:
+            forms: false
     service:
         inflector: api_url_inflector
     format_listener:

@@ -41,7 +41,7 @@ class SandboxWidgetTransformer extends FractalTransformer
 {
     public function getWhitelist()
     {
-        return ['id', 'name', 'inventory'];
+        return ['id', 'name', 'inventory', 'parent', 'children'];
     }
 
     protected function transformExtras($data)

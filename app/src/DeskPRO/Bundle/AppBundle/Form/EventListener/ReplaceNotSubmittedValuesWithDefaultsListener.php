@@ -66,7 +66,7 @@ class ReplaceNotSubmittedValuesWithDefaultsListener implements EventSubscriberIn
         if ($form->getConfig()->getCompound()) {
             foreach ($form->all() as $name => $child_form) {
                 // if this form field was not submitted
-                if (!isset($submittedData[$name])) {
+                if (!array_key_exists($name, $submittedData)) {
                     // and if this form field is not required
                     if (!$child_form->isRequired()) {
                         // then add its default data to the submitted data for processing
