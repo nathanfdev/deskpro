@@ -1,0 +1,10 @@
+{
+  "oid":"Some Organization",
+  "name":"Some Organization",
+  "picture":null,
+  "importance":5,
+  "date_created":"2015-07-30 06:09:01",
+  "contact_data":[],
+  "custom_fields":[],
+  "labels":["old label 1", "old label 2"]
+}

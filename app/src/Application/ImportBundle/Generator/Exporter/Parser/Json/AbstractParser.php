@@ -163,12 +163,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns a blob entity
      *
-     * @param array            $blob
+     * @param array|null       $blob
      * @param Entity\Blob|null $entity
      *
      * @return Entity\Blob|null
      */
-    protected function exportBlob(array $blob, Entity\Blob $entity = null)
+    protected function exportBlob(array $blob = null, Entity\Blob $entity = null)
     {
         if ($this->isBlobValid($blob)) {
             $entity = $entity ? : new Entity\Blob();
@@ -191,10 +191,10 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Check if a blob has all required columns
      *
-     * @param array $blob
+     * @param array|null $blob
      * @return bool
      */
-    protected function isBlobValid(array $blob)
+    protected function isBlobValid(array $blob = null)
     {
         $columns = array(
             'oid',
