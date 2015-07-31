@@ -46,7 +46,6 @@
 		"sensio/framework-extra-bundle": "~3.0",
 		"pagerfanta/pagerfanta": "~1.0",
 		"white-october/pagerfanta-bundle": "~1.0",
-		"leafo/scssphp": "0.0.12",
 		"phpspec/phpspec": "~2.1",
 		"friendsofsymfony/http-cache-bundle": "~1.2",
 		"behat/behat": "~3.0",

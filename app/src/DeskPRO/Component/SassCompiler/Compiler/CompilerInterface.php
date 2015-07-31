@@ -29,14 +29,15 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler\CompilerAdapter;
+namespace DeskPRO\Component\SassCompiler\Compiler;
 
-interface CompilerAdapterInterface
+use DeskPRO\Component\SassCompiler\SassProject;
+
+interface CompilerInterface
 {
     /**
-     * @param string $source_file
-     * @param array $inc_paths
+     * @param SassProject $project
      * @return string
      */
-    public function compile($source_file, array $inc_paths);
+    public function compile(SassProject $project);
 }

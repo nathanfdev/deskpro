@@ -29,63 +29,17 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler\Filter;
+namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
-use DeskPRO\Component\Util\RandUtils;
-
-/**
- * Removes absolute and relative paths in @import's.
- * Means only files in the include paths can be imported.
- *
- * This "fixes" it by replacing bad @imports with a token,
- * and then putting them back after SCSS has run (thus it's possible
- * for someone to use an http url for example and still have it @import via usual css).
- */
-class SafeImportIncPathFilter implements FilterInterface
+interface FileLoaderInterface
 {
     /**
-     * @var array
-     */
-    private $tokens = array();
-
-    /**
-     * Called on a source file BEFORE scss has been compiled.
+     * Given a requested path, load the file.
      *
-     * @param string $file_name
-     * @param string $source
-     * @return string
-     */
-    public function preProcessSource($file_name, $source)
-    {
-        $tokens = array();
-        $source = preg_replace_callback('#@import\s+(.*?);#i', function($m) use (&$tokens, $source) {
-            $url = trim(trim(trim($m[1]), "'\""));
-            if (!preg_match('#^[a-zA-Z0-9_\-_][a-zA-Z0-9_\-_\.\\/]#', $url)) {
-                $t = RandUtils::randomBodyToken($source);
-                $tokens[$t] = $m[0];
-                return $t;
-            } else {
-                return $m[0];
-            }
-        }, $source);
-
-        $this->tokens = $tokens;
-
-        return $source;
-    }
-
-    /**
-     * Called on the result AFTER scss has been compiled.
+     * This should return a string when successful, or NULL if the file could not be loaded.
      *
-     * @param string $source
-     * @return string
+     * @param string $file
+     * @return string|null
      */
-    public function postProcessResult($source)
-    {
-        if (!$this->tokens) {
-            return $source;
-        }
-
-        return str_replace(array_keys($this->tokens), array_values($this->tokens), $source);
-    }
+    public function loadFile($path);
 }

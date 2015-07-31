@@ -29,37 +29,29 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler\CompilerAdapter;
+namespace DeskPRO\Component\SassCompiler\Compiler;
 
+use \DeskPRO\Component\SassCompiler\ScssPhp\Compiler;
+use DeskPRO\Component\SassCompiler\SassProject;
+use DeskPRO\Component\SassCompiler\ScssPhp\DefaultFileLoader;
+use DeskPRO\Component\SassCompiler\ScssPhp\StringFileLoader;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Process\Process;
 
-class NodeSassAdapter implements CompilerAdapterInterface
+class ScssPhpCompiler implements CompilerInterface
 {
-    /**
-     * @var string
-     */
-    private $bin_path = '/usr/bin/node-sass';
-
     /**
      * @var array
      */
     private $options;
 
     /**
-     * @var Process
-     */
-    private $last_proc;
-
-    /**
-     * @param string $bin_path
      * @param array $options
      */
-    public function __construct($bin_path, array $options = array())
+    public function __construct(array $options)
     {
-        $this->bin_path = $bin_path;
         $this->options = self::getOptionsResolver()->resolve($options);
     }
+
 
     /**
      * @return OptionsResolver
@@ -70,70 +62,43 @@ class NodeSassAdapter implements CompilerAdapterInterface
 
         if (!$resolver) {
             $resolver = new OptionsResolver();
-            $resolver->setDefaults(array(
-                'output-style' => 'nested',
-                'indent-type' => 'space',
-                'indent-width' => 2,
-                'linefeed' => 'lf',
-                'source-comments' => false
-            ));
-            $resolver->setAllowedValues('output-style', array('nested', 'expanded', 'compact', 'compressed'));
-            $resolver->setAllowedValues('indent-type', array('tab', 'space'));
-            $resolver->setAllowedTypes('indent-width', 'int');
-            $resolver->setAllowedValues('linefeed', array('cr', 'crlf', 'lf', 'lfcr'));
-            $resolver->setAllowedTypes('source-comments', 'bool');
+            $resolver->setDefault('compiler_options', array());
         }
 
         return $resolver;
     }
 
     /**
-     * @param string $source_file
-     * @param array $inc_paths
-     * @return string
+     * @param SassProject $project
+     * @return Compiler
      */
-    public function compile($source_file, array $inc_paths)
+    protected function createCompilerForProject(SassProject $project)
     {
-        $args = array();
+        $compiler_options = $this->options['compiler_options'];
+        $compiler_options['include_paths'] = $project->getIncludePaths();
 
-        foreach ($this->options as $name => $v) {
-            if (is_bool($v)) {
-                if ($v) {
-                    $args[] = '--' . $name;
-                }
-            } else {
-                $args[] = '--' . $name . '=' . escapeshellarg($v);
-            }
-        }
+        $file_sources = $project->getFileSources();
 
-        $out_file = @tempnam(sys_get_temp_dir(), "dpcss_");
-        if (!$out_file) {
-            $out_file = @tempnam(dirname($source_file), "dpcss_");
-        }
-        if (!$out_file) {
-            throw new \RuntimeException("Failed to create temporary output file in sys temp dir and source file dir");
-        }
+        $compiler_options['file_loaders'] = array(
+            new StringFileLoader($file_sources),
+            new DefaultFileLoader($project->getIncludePaths())
+        );
 
-        $args[] = $source_file;
-        $cmd = escapeshellcmd($this->bin_path) . ' ' . implode(' ', $args) . ' ' . escapeshellarg($out_file);
-        $cwd = dirname($source_file);
+        $compiler = new Compiler($compiler_options);
+        $compiler->addImportPath(function($f) use ($file_sources) {
+            return isset($file_sources[$f]) ? $f : null;
+        });
 
-        $this->last_proc = new Process($cmd, $cwd);
-        $this->last_proc->setTimeout(60);
-        $this->last_proc->run();
-
-        if (!$this->last_proc->isSuccessful()) {
-            throw new \InvalidArgumentException("node-sass returned error -- " . $this->last_proc->getErrorOutput());
-        }
-
-        return file_get_contents($out_file);
+        return $compiler;
     }
 
     /**
-     * @return Process
+     * @param SassProject $project
+     * @return string
      */
-    public function getLastProcess()
+    public function compile(SassProject $project)
     {
-        return $this->last_proc;
+        $compiler = $this->createCompilerForProject($project);
+        return $compiler->compile($project->getSource());
     }
 }

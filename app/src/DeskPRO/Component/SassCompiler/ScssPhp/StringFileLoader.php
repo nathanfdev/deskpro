@@ -29,24 +29,39 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler\Filter;
+namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
-interface FilterInterface
+class StringFileLoader implements FileLoaderInterface
 {
     /**
-     * Called on a source file BEFORE scss has been compiled.
-     *
-     * @param string  $file_name
-     * @param string  $source
-     * @return string
+     * @var array
      */
-    public function preProcessSource($file_name, $source);
+    private $files = array();
 
     /**
-     * Called on the result AFTER scss has been compiled.
-     *
-     * @param string $source
-     * @return string
+     * @param array $files
      */
-    public function postProcessResult($source);
+    public function __construct(array $files)
+    {
+        foreach ($files as $path => $f) {
+            $this->files[$path] = $f;
+        }
+    }
+
+    /**
+     * Given a requested path, load the file.
+     *
+     * This should return a string when successful, or NULL if the file could not be loaded.
+     *
+     * @param string $file
+     * @return string|null
+     */
+    public function loadFile($path)
+    {
+        if (isset($this->files[$path])) {
+            return $this->files[$path];
+        }
+
+        return null;
+    }
 }
