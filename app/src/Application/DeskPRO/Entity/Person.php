@@ -3785,6 +3785,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 ),
             )
         );
+
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'                     => 'project_members',
+                'targetEntity'                  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'                      => 'person',
+            )
+        );
     }
 
     public function clear()

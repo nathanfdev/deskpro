@@ -37,6 +37,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -114,6 +116,13 @@ class Department extends DomainObject implements HasPhraseName
      * @var Blob
      */
     protected $avatar;
+
+    /**
+     * @var ProjectMember[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="department")
+     * @Serializer\Expose()
+     */
+    protected $project_members;
 
     /**
      * @return Department
@@ -267,6 +276,23 @@ class Department extends DomainObject implements HasPhraseName
     public function setRealTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return ProjectMember[]|ArrayCollection
+     */
+    public function getProjectMembers()
+    {
+        return $this->project_members;
+    }
+
+    /**
+     * @param ProjectMember $member
+     */
+    public function addProjectMember(ProjectMember $member)
+    {
+        $this->project_members->add($member);
+        $this->setModelField('project_member', $member);
     }
 
     /**
@@ -574,6 +600,14 @@ class Department extends DomainObject implements HasPhraseName
                  'mappedBy'                              => 'parent',
                  'orderBy'                               => array('display_order' => 'ASC'),
                  'indexBy'                                                        => 'id',
+            )
+        );
+
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'                     => 'project_members',
+                'targetEntity'                  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'                      => 'department',
             )
         );
 
