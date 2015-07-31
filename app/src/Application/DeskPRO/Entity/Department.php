@@ -119,7 +119,6 @@ class Department extends DomainObject implements HasPhraseName
 
     /**
      * @var ProjectMember[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="department")
      * @Serializer\Expose()
      */
     protected $project_members;
