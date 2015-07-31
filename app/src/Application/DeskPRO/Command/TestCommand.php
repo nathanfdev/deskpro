@@ -32,8 +32,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
-use DeskPRO\Component\SassCompiler\SassProject;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,23 +59,8 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $compiler = new ScssPhpCompiler(array(
-            'compiler_options' => array(
-                'include_paths' => array(
-                    DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style',
-                    DP_WEB_ROOT.'/pub/node_modules'
-                )
-            )
-        ));
-
-        $project = new SassProject();
-        $project->addIncludePath(DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style');
-        $project->addIncludePath(DP_WEB_ROOT.'/pub/node_modules');
-
-        $project->setSourceFile(DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss');
-        $project->addFileSource(DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/setup.scss', '.CUSTOM_TESTING_OVERRIDE_THING {  color: #fff; }');
-
-        echo $compiler->compile($project);
+        echo __FILE__;
+        echo "\n";
 
         return 0;
     }

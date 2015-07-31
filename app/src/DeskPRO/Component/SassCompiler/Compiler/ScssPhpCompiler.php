@@ -47,9 +47,9 @@ class ScssPhpCompiler implements CompilerInterface
     /**
      * @param array $options
      */
-    public function __construct(array $options)
+    public function __construct(array $options = null)
     {
-        $this->options = self::getOptionsResolver()->resolve($options);
+        $this->options = self::getOptionsResolver()->resolve($options ?: array());
     }
 
 
@@ -78,10 +78,14 @@ class ScssPhpCompiler implements CompilerInterface
         $compiler_options['include_paths'] = $project->getIncludePaths();
 
         $file_sources = $project->getFileSources();
+        $string_loader = new StringFileLoader($file_sources);
 
         $compiler_options['file_loaders'] = array(
-            new StringFileLoader($file_sources),
+            $string_loader,
             new DefaultFileLoader($project->getIncludePaths())
+        );
+        $compiler_options['file_locators'] = array(
+            $string_loader
         );
 
         $compiler = new Compiler($compiler_options);

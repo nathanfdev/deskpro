@@ -52,6 +52,11 @@ class Compiler extends BaseCompiler
     private $file_loaders = array();
 
     /**
+     * @var FileLocatorInterface[]
+     */
+    private $file_locators = array();
+
+    /**
      * @var array
      */
     private $options;
@@ -71,9 +76,37 @@ class Compiler extends BaseCompiler
             $this->file_loaders[] = $fl;
         }
 
+        foreach ($this->options['file_locators'] as $fl) {
+            if (!$fl instanceof FileLocatorInterface) {
+                throw new InvalidOptionsException();
+            }
+            $this->file_locators[] = $fl;
+        }
+
         foreach ($this->options['include_paths'] as $p) {
             $this->addImportPath($p);
         }
+    }
+
+    /**
+     * @param string $url
+     * @return null|string
+     */
+    public function findImport($url)
+    {
+        foreach ($this->file_locators as $fl) {
+            $p = $fl->locateFile($url);
+            if ($p) {
+                return $p;
+            }
+        }
+
+        $p = parent::findImport($url);
+        if ($p) {
+            return $p;
+        }
+
+        return $url;
     }
 
     /**
@@ -99,6 +132,7 @@ class Compiler extends BaseCompiler
             });
 
             $resolver->setDefault('include_paths', array());
+            $resolver->setDefault('file_locators', array());
         }
 
         return $resolver;
@@ -135,7 +169,7 @@ class Compiler extends BaseCompiler
             case 'throw':
                 throw new \InvalidArgumentException('Could not load file: ' . $path);
             case 'comment':
-                return '/* COULD NOT LOAD FILE (' . $path . '): ' . $e->getMessage() . ' */';
+                return '/* COULD NOT LOAD FILE (' . $path . ') */';
         }
 
         return '';
@@ -147,16 +181,23 @@ class Compiler extends BaseCompiler
     protected function importFile($path, $out)
     {
         // see if tree is cached
-        $realPath = realpath($path);
+        $realPath = @realpath($path);
 
         if (isset($this->importCache[$realPath])) {
             $tree = $this->importCache[$realPath];
+        } elseif (isset($this->importCache[$path])) {
+            $tree = $this->importCache[$path];
         } else {
             $code = $this->loadFile($path);
 
             $parser = new ScssPhpParser($path, false);
             $tree = $parser->parse($code);
-            $this->importCache[$realPath] = $tree;
+
+            if ($realPath) {
+                $this->importCache[$realPath] = $tree;
+            } else {
+                $this->importCache[$path] = $tree;
+            }
         }
 
         $pi = pathinfo($path);

@@ -31,7 +31,7 @@
 
 namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
-class StringFileLoader implements FileLoaderInterface
+class StringFileLoader implements FileLoaderInterface, FileLocatorInterface
 {
     /**
      * @var array
@@ -39,12 +39,22 @@ class StringFileLoader implements FileLoaderInterface
     private $files = array();
 
     /**
+     * @var array
+     */
+    private $aliases = array();
+
+    /**
      * @param array $files
      */
     public function __construct(array $files)
     {
         foreach ($files as $path => $f) {
-            $this->files[$path] = $f;
+            $m = null;
+            if (preg_match('#^@alias:(.*?)$#', trim($f), $m)) {
+                $this->aliases[$path] = $m[1];
+            } else {
+                $this->files[$path] = $f;
+            }
         }
     }
 
@@ -63,5 +73,24 @@ class StringFileLoader implements FileLoaderInterface
         }
 
         return null;
+    }
+
+    /**
+     * Given a requested path, return the real path (as it will be passed to loaders).
+     *
+     * These are used to resolve include paths etc.
+     *
+     * @param string $file
+     * @return string|null
+     */
+    public function locateFile($path)
+    {
+        $path = preg_replace('#\.scss$#', '', $path) . '.scss';
+
+        if (isset($this->aliases[$path])) {
+            return $this->aliases[$path];
+        }
+
+        return isset($this->files[$path]) ? $path : null;
     }
 }

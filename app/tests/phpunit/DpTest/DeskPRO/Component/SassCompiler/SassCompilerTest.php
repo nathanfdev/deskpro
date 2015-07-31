@@ -31,9 +31,7 @@
 
 namespace DpTest\DeskPRO\Component\Util\ListUtils;
 
-use DeskPRO\Component\SassCompiler\CompilerAdapter\NodeSassAdapter;
-use DeskPRO\Component\SassCompiler\CompilerAdapter\SimpleImportAdapter;
-use DeskPRO\Component\SassCompiler\SassCompiler;
+use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
 use DeskPRO\Component\SassCompiler\SassProject;
 use DpTest\DeskProTestCase;
 
@@ -41,53 +39,82 @@ class SassCompilerTest extends DeskProTestCase
 {
     public function testCompiler()
     {
-        $adapter = new SimpleImportAdapter();
-        $compiler = new SassCompiler($adapter, dp_get_tmp_dir());
+        $compiler = new ScssPhpCompiler();
+        $project = new SassProject();
+        $project->setSourceFile(__DIR__.'/data/sample.scss');
 
-        $proj = new SassProject();
-        $proj->setSource("SOURCE\n@import 'file_a.css';\n@import 'file_b.css';");
-        $proj->addFileSource('file_a.css', "A");
-        $proj->addFileSource('file_b.css', "B");
-
-        $this->assertEquals("SOURCE\nA\nB", trim($compiler->compileProject($proj)));
+        $res = $compiler->compile($project);
+        $this->assertStringMatchesFormatFile(__DIR__.'/data/sample.css', $res);
     }
 
-    public function testNodeSassCompiler()
+    public function testImportCompiler()
     {
-        $bin_path = 'node-sass';
+        $compiler = new ScssPhpCompiler();
+        $project = new SassProject();
+        $project->setSourceFile(__DIR__.'/data/importtest/main.scss');
 
-        $out = $ret = null;
-        exec($bin_path . ' --version', $out, $ret);
-        if ($ret != 0) {
-            // not installed on this server
-            return;
-        }
-
-        $adapter = new NodeSassAdapter($bin_path);
-        $compiler = new SassCompiler($adapter, dp_get_tmp_dir());
-
-        $source = <<<SRC
-@import "a";
-body { background: \$bg-color; }
-SRC;
-
-        $source_a = <<<SRC
-\$bg-color: #000;
-SRC;
-
-        $proj = new SassProject();
-        $proj->setSource($source);
-        $proj->addFileSource('a.scss', $source_a);
-
-        $result_expect = <<<SRC
-body { background: #000; }
-SRC;
-
-        $this->assertEquals($this->normalizeString($result_expect), $this->normalizeString($compiler->compileProject($proj)));
+        $res = $compiler->compile($project);
+        $this->assertStringMatchesFormatFile(__DIR__.'/data/importtest/main.css', $res);
     }
 
-    private function normalizeString($s)
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testUnsafeImportCompiler()
     {
-        return strtolower(preg_replace('#\s#', '', $s));
+        $compiler = new ScssPhpCompiler(array(
+            'compiler_options' => array(
+                'error_load_file' => 'throw'
+            )
+        ));
+        $project = new SassProject();
+        $project->setSource('@import "/etc/passwd"');
+        $project->addIncludePath(__DIR__);
+
+        $compiler->compile($project);
+    }
+
+    public function testImportBadCompiler()
+    {
+        $compiler = new ScssPhpCompiler();
+        $project = new SassProject();
+        $project->setSourceFile(__DIR__.'/data/importtest_bad/main.scss');
+
+        $res = $compiler->compile($project);
+        $this->assertStringMatchesFormatFile(__DIR__.'/data/importtest_bad/main.css', $res);
+    }
+
+    public function testImportOverrideCompiler()
+    {
+        $compiler = new ScssPhpCompiler();
+        $project = new SassProject();
+        $project->setSourceFile(__DIR__.'/data/importtest/main.scss');
+        $project->addFileSource(__DIR__.'/data/importtest/vars.scss', '$color: green;');
+
+        $res = $compiler->compile($project);
+        $this->assertStringMatchesFormatFile(__DIR__.'/data/importtest/main_override.css', $res);
+    }
+
+    public function testImportVirtualCompiler()
+    {
+        $compiler = new ScssPhpCompiler();
+        $project = new SassProject();
+        $project->setSourceFile(__DIR__.'/data/importtest_virtual/main.scss');
+        $project->addFileSource('vars.scss', '$color: red;');
+
+        $res = $compiler->compile($project);
+        $this->assertStringMatchesFormatFile(__DIR__.'/data/importtest_virtual/main.css', $res);
+    }
+
+    public function testImportVirtualAliasCompiler()
+    {
+        $compiler = new ScssPhpCompiler();
+        $project = new SassProject();
+        $project->setSourceFile(__DIR__.'/data/importtest_virtual_alias/main.scss');
+        $project->addFileSource('vars.scss', '$color: red;');
+        $project->addFileSource('foobar.scss', '@alias:vars.scss');
+
+        $res = $compiler->compile($project);
+        $this->assertStringMatchesFormatFile(__DIR__.'/data/importtest_virtual_alias/main.css', $res);
     }
 }
