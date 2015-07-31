@@ -40,7 +40,7 @@ export default class TasksNavFrame extends React.Component {
   switchTaskList(identifier, page, event) {
     this.props.dispatch(TaskActions.loadTaskList(identifier, page));
     $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
-    $(event.target).addClass('active');
+    $(event.target).closest('a').addClass('active');
   }
 
   render() {
