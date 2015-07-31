@@ -4,6 +4,7 @@ import DpApi from "../DpApi";
  * Load a generic API endpoint. Only use when you need to get the address from the action
  * @param address
  * @param params
+ * @return Promise
  */
 export function loadAddress(address, params = {}) {
   if (params.length > 0) {
@@ -16,6 +17,7 @@ export function loadAddress(address, params = {}) {
 /**
  * Load the number of remaining tasks
  * @param params
+ * @return Promise
  */
 export function loadTasksRemainingCount(params = {}) {
   let query = {
@@ -30,6 +32,7 @@ export function loadTasksRemainingCount(params = {}) {
 /**
  * Load agents
  * @param params
+ * @return Promise
  */
 export function loadAgents(params = {}) {
   let query = {
@@ -43,6 +46,7 @@ export function loadAgents(params = {}) {
 /**
  * Load all projects
  * @param params
+ * @return Promise
  */
 export function loadProjects(params = {}) {
   return DpApi.sendGet('DP_API/projects?' + compileParams(params));
@@ -51,6 +55,7 @@ export function loadProjects(params = {}) {
 /**
  * Load all labels
  * @param params
+ * @return Promise
  */
 export function loadLabels(params = {}) {
   return DpApi.sendGet('DP_API/task_labels?' + compileParams(params));
@@ -59,6 +64,7 @@ export function loadLabels(params = {}) {
 /**
  * Load all teams
  * @param params
+ * @return Promise
  */
 export function loadTeams(params = {}) {
   return DpApi.sendGet('DP_API/teams?' + compileParams(params));
@@ -67,6 +73,7 @@ export function loadTeams(params = {}) {
 /**
  * Load all departments
  * @param params
+ * @return Promise
  */
 export function loadDepartments(params = {}) {
   return DpApi.sendGet('DP_API/departments?' + compileParams(params));
@@ -75,6 +82,7 @@ export function loadDepartments(params = {}) {
 /**
  * Create a project
  * @param data
+ * @return Promise
  */
 export function createProject(data) {
   return DpApi.sendPost('DP_API/projects', data);
@@ -84,26 +92,29 @@ export function createProject(data) {
  * Update a project
  * @param projectId
  * @param data
+ * @return Promise
  */
 export function editProject(projectId, data) {
-  DpApi.sendPut('DP_API/projects/' + projectId, data);
+  return DpApi.sendPut('DP_API/projects/' + projectId, data);
 }
 
 /**
  * Create a task
  * @param data
+ * @return Promise
  */
 export function createTask(data) {
-  DpApi.sendPost('DP_API/tasks', data);
+  return DpApi.sendPost('DP_API/tasks', data);
 }
 
 /**
  * Update a task
  * @param taskId
  * @param data
+ * @return Promise
  */
 export function editTask(taskId, data) {
-  DpApi.sendPut('DP_API/tasks/' + taskId, data);
+  return DpApi.sendPut('DP_API/tasks/' + taskId, data);
 }
 
 /**
