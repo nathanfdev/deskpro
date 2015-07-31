@@ -44,28 +44,3 @@ h1.global-filter-set-header {
     margin-left: 8px;
   }
 }
-
-
-
-
-table {
-  width: 100%;
-  font-size: 0.9em;
-
-  tr {
-    border-bottom: 1px solid #e5e5e5;
-  }
-
-  td {
-    padding: 10px;
-    border-right: 1px solid #e5e5e5;
-  }
-  .default {
-    font-style: italic;
-    color: #b9b9b9;
-  }
-
-  .alt {
-    background: #f6f8fa;
-  }
-}

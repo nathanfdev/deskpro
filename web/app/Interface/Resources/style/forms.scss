@@ -1,10 +1,7 @@
 // Get rid of the the glow on focused inputs (chrome)
 textarea, input { outline: none; }
 
-input, button {
-  font-family: Lato, "proxima nova";
-  font-size: 1em;
-}
+input, button {}
 
 input {
   @include placeholder {
