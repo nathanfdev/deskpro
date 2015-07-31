@@ -28,7 +28,7 @@ fi
 ##################################
 IS_PHPUNIT_ERROR=0
 if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/phpunit -c phpunit.xml.cov
+    bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml
 else
     bin/phpunit
 fi

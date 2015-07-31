@@ -1,0 +1,49 @@
+#!/bin/bash
+
+SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+ROOT_DIR=$SCRIPT_DIR/../../../
+
+TESTS_ERROR=1
+
+cd $ROOT_DIR
+
+DATABASE_NAME=$DATABASE_PREFIX
+
+echo "Init project deps"
+$ROOT_DIR/app/bin/init-project.sh
+echo "--> Done"
+
+echo "Creating test databases"
+mysql -e "CREATE DATABASE ${DATABASE_NAME};"
+mysql -e "CREATE DATABASE ${DATABASE_NAME}_test;"
+mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;" 
+mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}_test.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;" 
+echo "--> Done"
+
+echo "Creating config.php"
+rm config.php
+cp app/tests/jenkins/test-config.php config.php
+echo "--> Done"
+
+echo "Creating config.testing.php"
+cp app/tests/jenkins/config.test.php.dist app/tests/config.test.php
+echo "--> Done"
+
+echo "Ensuring permissions"
+chmod -R 0777 data
+chmod -R 0777 app/sys/cache
+echo "--> Done"
+
+echo "Running tests"
+app/tests/bin/run-tests coverage
+
+if [[ $? -eq 0 ]]; then
+	TESTS_ERROR=0
+fi
+
+echo "Removing test databases"
+mysql -e "DROP DATABASE ${DATABASE_NAME};"
+mysql -e "DROP DATABASE ${DATABASE_NAME}_test;"
+echo "--> Done"
+
+exit $TESTS_ERROR
