@@ -257,7 +257,7 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbEmpty()
     {
-        $this->assertEquals(0, $this->ticket_repository->countAll());
+        $this->assertEquals(1, $this->ticket_repository->countAll());
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
         $this->assertEquals(2, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
@@ -284,8 +284,19 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals(array('label1', 'label2'), $labels);
 
         // Checking for tickets
-        $this->assertCount(1, $this->ticket_repository->findAll());
+        $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(0, $this->ticket_attachment_repository->findAll());
+
+        /** @var Entity\Ticket $ticket */
+        $ticket = $this->ticket_repository->findOneBy(array('ref' => 'AAABBBCCC'));
+        $this->assertNotNull($ticket);
+
+        $labels = array();
+        foreach ($ticket->labels as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('label1', 'label2'), $labels);
 
         // Checking for feedback
         $this->assertCount(2, $this->feedback_repository->findAll());
@@ -320,10 +331,12 @@ class JsonTest extends \DpIntegrationTestCase
 
         // Checking for tickets
         $this->assertContains('Creating new ticket with ref', $output);
+        $this->assertContains('Found existing ticket', $output);
         $this->assertContains('Persisted TicketLog #1', $output);
         $this->assertContains('Persisted TicketMessage #1', $output);
         $this->assertContains('Persisted TicketPriority #1', $output);
         $this->assertContains('Persisted Ticket #1', $output);
+        $this->assertContains('Persisted Ticket #2', $output);
 
         // Checking for news
         $this->assertContains('Persisted News #2', $output);

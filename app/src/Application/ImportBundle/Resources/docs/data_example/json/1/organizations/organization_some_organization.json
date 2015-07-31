@@ -4,7 +4,11 @@
   "picture":null,
   "importance":5,
   "date_created":"2015-07-30 06:09:01",
-  "contact_data":[],
+  "contact_data":[
+    {
+
+    }
+  ],
   "custom_fields":[],
   "labels":["label1", "label2"]
 }

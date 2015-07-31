@@ -67,6 +67,7 @@ final class TicketLabel extends AbstractImporter
             ));
         }
 
+        $this->records->add($ticket);
         return $this->records;
     }
 
