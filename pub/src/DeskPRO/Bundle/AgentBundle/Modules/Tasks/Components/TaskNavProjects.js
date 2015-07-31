@@ -81,7 +81,7 @@ export default class TasksNavProjects extends React.Component {
                                 {object.tasks.length}
                             </a>
                         </div>
-                        <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={_this.props.switchTaskList.bind(_this, 'tasks?project=' + object.id, 1)}><i
+                        <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={_this.props.switchTaskList.bind(_this, 'tasks?project=' + object.id)}><i
                             className="fa fa-book"/> {object.title} </a>
                     </li>;
                 }) : ''}
