@@ -40,7 +40,7 @@ final class Person extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_PERSON;
     }
@@ -58,12 +58,12 @@ final class Person extends AbstractConstraintValidator
         }
 
         if ($entity->getOrganizationPosition()) {
-            if (!$entity->getOrganization()) {
+            if ( ! $entity->getOrganization()) {
                 throw new ValidatorException('Person organization is not defined');
             }
         }
         if ($entity->isAdmin()) {
-            if (!$entity->isAgent()) {
+            if ( ! $entity->isAgent()) {
                 throw new ValidatorException('Person is admin but is not agent');
             }
         }

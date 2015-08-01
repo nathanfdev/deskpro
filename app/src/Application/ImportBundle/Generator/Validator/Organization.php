@@ -30,31 +30,39 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * Download entities validator
+ * Organization entities validator
  *
- * Class Download
+ * Class Organization
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Download extends AbstractConstraintValidator
+class Organization extends AbstractConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_DOWNLOAD;
+        return Entity\EntityInterface::TYPE_ORGANIZATION;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $entity
+     * @var Entity\Organization $entity
      */
     public function validate(Entity\EntityInterface $entity)
     {
         $errors = $this->validator->validate($entity);
         if (count($errors) > 0) {
             throw new ValidatorConstraintException($entity, $errors);
+        }
+
+        foreach ($entity->getCustomFields() as $custom_field) {
+            /** @var Entity\CustomField $custom_field */
+            $errors = $this->validator->validate($custom_field);
+            if (count($errors) > 0) {
+                throw new ValidatorConstraintException($entity, $errors);
+            }
         }
     }
 }
