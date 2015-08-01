@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Application\ImportBundle\Entity;
@@ -68,6 +69,93 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             '%s/%d/%s',
             $this->config->getInputPath(), $this->getBatchConfig()->getId() + 1, $record_type
         ));
+    }
+
+    /**
+     * Returns a collection of contact data entities
+     *
+     * @param array $contact_data
+     * @return Entity\Collection
+     */
+    protected function exportContactData(array $contact_data)
+    {
+        $collection = new Entity\Collection();
+        foreach ($contact_data as $num => $contact) {
+            try {
+                $entity = $this->exportContact($contact);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid contact data record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+
+            } catch (NotArrayException $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a contact data entity
+     *
+     * @param array $contact
+     * @return Entity\ContactData|null
+     *
+     */
+    protected function exportContact(array $contact)
+    {
+        if ($this->isContactValid($contact)) {
+            $entity = new Entity\ContactData();
+            $entity
+                ->setRawData($contact)
+                ->setOid($contact['oid'])
+                ->setDestination('contact_data_' . $contact['oid'])
+                ->setContactType($contact['contact_type'])
+                ->setComment($contact['comment'])
+            ;
+
+            for ($i = 1; $i < 11; $i++) {
+                $field_key = 'field_' . $i;
+                $setter    = 'setField' . $i;
+
+                if (array_key_exists($field_key, $contact)) {
+                    $entity->$setter($contact[$field_key]);
+                }
+            }
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if contact data has all required columns
+     *
+     * @param array $contact
+     * @return bool
+     */
+    protected function isContactValid(array $contact)
+    {
+        $columns = array(
+            'oid',
+            'contact_type',
+            'comment',
+        );
+
+        return $this->hasRequiredColumns($contact, $columns);
     }
 
     /**

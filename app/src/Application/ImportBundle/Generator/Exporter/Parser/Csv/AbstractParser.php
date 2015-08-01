@@ -389,6 +389,98 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
+     * Returns a collection of organization contact data entities
+     *
+     * @param CsvConfig $config
+     * @param string    $destination_prefix
+     * @param string    $ref_column
+     *
+     * @return Entity\Collection
+     */
+    protected function exportContactData(CsvConfig $config, $destination_prefix, $ref_column)
+    {
+        $collection   = new Entity\Collection();
+        $contact_data = $this->getReaderData($config);
+
+        foreach ($contact_data as $num => $contact) {
+            try {
+                $entity = $this->exportContact($contact, $destination_prefix, $ref_column);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid organization contact record `%d` found (Skipping)', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid organization contact record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an organization contact data entity
+     *
+     * @param array  $contact
+     * @param string $destination_prefix
+     * @param string $ref_column
+     *
+     * @return Entity\ContactData|null
+     */
+    protected function exportContact(array $contact, $destination_prefix, $ref_column)
+    {
+        if ($this->isContactValid($contact, $ref_column)) {
+            $entity = new Entity\ContactData();
+            $entity
+                ->setOid($contact['organization_id'])
+                ->setDestination($this->formatDestination($destination_prefix, $contact[$ref_column]))
+                ->setRawData($contact)
+                ->setContactType($contact['contact_type'])
+            ;
+
+            if (array_key_exists('comment', $contact)) {
+                $entity->setComment($contact['comment']);
+            }
+
+            for ($i = 1; $i < 11; $i++) {
+                $field_key = 'field_' . $i;
+                $setter    = 'setField' . $i;
+
+                if (array_key_exists($field_key, $contact)) {
+                    $entity->$setter($contact[$field_key]);
+                }
+            }
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if contact data has all required columns
+     *
+     * @param array  $contact
+     * @param string $ref_column
+     *
+     * @return bool
+     */
+    protected function isContactValid(array $contact, $ref_column)
+    {
+        $columns = array(
+            $ref_column,
+            'contact_type',
+        );
+
+        return $this->hasRequiredColumns($contact, $columns);
+    }
+
+    /**
      * Parses inline custom fields from entity
      *
      * @param array $entity

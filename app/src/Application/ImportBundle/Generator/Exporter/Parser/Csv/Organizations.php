@@ -64,7 +64,7 @@ class Organizations extends AbstractParser
         $collection    = new Entity\Collection();
 
         $organizations = $this->getReaderData($this->getOrganizationReaderConfig());
-        $contact_data  = $this->exportContactData();
+        $contact_data  = $this->exportOrganizationContactData();
         $custom_fields = $this->exportOrganizationCustomFields();
 
         foreach ($organizations as $num => $organization) {
@@ -136,73 +136,6 @@ class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a collection of organization contact data entities
-     *
-     * @return Entity\Collection
-     */
-    private function exportContactData()
-    {
-        $collection   = new Entity\Collection();
-        $contact_data = $this->getReaderData($this->getOrganizationContactDataReaderConfig());
-
-        foreach ($contact_data as $num => $contact) {
-            try {
-                $entity = $this->exportContact($contact);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid organization contact record `%d` found (Skipping)', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid organization contact record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns an organization contact data entity
-     *
-     * @param array $contact
-     * @return Entity\ContactData|null
-     */
-    private function exportContact(array $contact)
-    {
-        if ($this->isContactValid($contact)) {
-            $entity = new Entity\ContactData();
-            $entity->setContactType($contact['contact_type']);
-
-            if (array_key_exists('comment', $contact)) {
-                $entity
-                    ->setRawData($contact)
-                    ->setOid($contact['organization_id'])
-                    ->setDestination($this->formatDestination(self::ORGANIZATION_PREFIX, $contact['organization_id']))
-                    ->setComment($contact['comment'])
-                ;
-            }
-
-            for ($i = 1; $i < 11; $i++) {
-                $field_key = 'field_' . $i;
-                $setter    = 'setField' . $i;
-
-                if (array_key_exists($field_key, $contact)) {
-                    $entity->$setter($contact[$field_key]);
-                }
-            }
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
      * Returns a collection of organization custom field data
      *
      * @return Entity\Collection
@@ -210,6 +143,16 @@ class Organizations extends AbstractParser
     private function exportOrganizationCustomFields()
     {
         return $this->exportCustomFields($this->getOrganizationsCustomFieldReaderConfig(), self::ORGANIZATION_PREFIX, 'organization_id');
+    }
+
+    /**
+     * Returns a collection of organization contact data
+     *
+     * @return Entity\Collection
+     */
+    private function exportOrganizationContactData()
+    {
+        return $this->exportContactData($this->getOrganizationContactDataReaderConfig(), self::ORGANIZATION_PREFIX, 'organization_id');
     }
 
     /**
@@ -226,22 +169,6 @@ class Organizations extends AbstractParser
         );
 
         return $this->hasRequiredColumns($organization, $columns);
-    }
-
-    /**
-     * Check if organization contact data has all required columns
-     *
-     * @param array $contact
-     * @return bool
-     */
-    private function isContactValid(array $contact)
-    {
-        $columns = array(
-            'organization_id',
-            'contact_type',
-        );
-
-        return $this->hasRequiredColumns($contact, $columns);
     }
 
     /**

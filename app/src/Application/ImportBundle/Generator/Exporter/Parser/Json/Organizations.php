@@ -137,75 +137,6 @@ final class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a collection of organizations contact data entities
-     *
-     * @param array $contact_data
-     * @return Entity\Collection
-     */
-    private function exportContactData(array $contact_data)
-    {
-        $collection = new Entity\Collection();
-        foreach ($contact_data as $num => $contact) {
-            try {
-                $entity = $this->exportContact($contact);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid organization contact data record found (Skipping): %d', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logError(sprintf(
-                    'Invalid organization contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
-            } catch (NotArrayException $e) {
-                $this->logError(sprintf(
-                    'Invalid organization contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a organization contact data entity
-     *
-     * @param array $contact
-     * @return Entity\ContactData|null
-     *
-     */
-    private function exportContact(array $contact)
-    {
-        if ($this->isContactValid($contact)) {
-
-            $entity = new Entity\ContactData();
-            $entity
-                ->setRawData($contact)
-                ->setContactType($contact['contact_type'])
-                ->setComment($contact['comment'])
-            ;
-
-            for ($i = 1; $i < 11; $i++) {
-                $field_key = 'field_' . $i;
-                $setter    = 'setField' . $i;
-
-                if (array_key_exists($field_key, $contact)) {
-                    $entity->$setter($contact[$field_key]);
-                }
-            }
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
      * Returns record type reader config
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
@@ -235,21 +166,5 @@ final class Organizations extends AbstractParser
         return $this->hasRequiredColumns($organization, $columns)
             && $this->isArrayColumn($organization, 'contact_data')
             && $this->isArrayColumn($organization, 'labels');
-    }
-
-    /**
-     * Check if organization contact data has all required columns
-     *
-     * @param array $contact
-     * @return bool
-     */
-    private function isContactValid(array $contact)
-    {
-        $columns = array(
-            'contact_type',
-            'comment',
-        );
-
-        return $this->hasRequiredColumns($contact, $columns);
     }
 }

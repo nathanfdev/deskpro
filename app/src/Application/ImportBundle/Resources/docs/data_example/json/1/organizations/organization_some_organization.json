@@ -6,6 +6,7 @@
   "date_created": "2015-07-30 06:09:01",
   "contact_data": [
     {
+      "oid": 1,
       "contact_type": "mobile",
       "comment": "some comment",
       "field_1": "field 1 data",
