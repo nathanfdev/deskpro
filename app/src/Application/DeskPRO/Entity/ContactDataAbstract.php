@@ -162,6 +162,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
      * @param string $field_1
      * @return $this
      */
@@ -169,6 +177,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     {
         $this->setModelField('field_1', (string)$field_1);
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField1()
+    {
+        return $this->field_1;
     }
 
     /**
@@ -182,6 +198,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * @return string
+     */
+    public function getField2()
+    {
+        return $this->field_2;
+    }
+
+    /**
      * @param string $field_3
      * @return $this
      */
@@ -189,6 +213,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     {
         $this->setModelField('field_3', (string)$field_3);
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField3()
+    {
+        return $this->field_3;
     }
 
     /**
@@ -202,6 +234,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * @return string
+     */
+    public function getField4()
+    {
+        return $this->field_4;
+    }
+
+    /**
      * @param string $field_5
      * @return $this
      */
@@ -209,6 +249,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     {
         $this->setModelField('field_5', (string)$field_5);
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField5()
+    {
+        return $this->field_5;
     }
 
     /**
@@ -222,6 +270,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * @return string
+     */
+    public function getField6()
+    {
+        return $this->field_6;
+    }
+
+    /**
      * @param string $field_7
      * @return $this
      */
@@ -229,6 +285,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     {
         $this->setModelField('field_7', (string)$field_7);
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField7()
+    {
+        return $this->field_7;
     }
 
     /**
@@ -242,6 +306,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * @return string
+     */
+    public function getField8()
+    {
+        return $this->field_8;
+    }
+
+    /**
      * @param string $field_9
      * @return $this
      */
@@ -252,6 +324,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * @return string
+     */
+    public function getField9()
+    {
+        return $this->field_9;
+    }
+
+    /**
      * @param string $field_10
      * @return $this
      */
@@ -259,6 +339,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     {
         $this->setModelField('field_10', (string)$field_10);
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField10()
+    {
+        return $this->field_10;
     }
 
     /**

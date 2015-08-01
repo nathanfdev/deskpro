@@ -309,6 +309,12 @@ class JsonTest extends \DpIntegrationTestCase
         $organization = $this->organization_repository->findOneBy(array('name' => 'Some Organization'));
         $this->assertNotNull($organization);
 
+        $contact_data1 = $organization->getContactData('type1');
+        $contact = $contact_data1[0];
+        $this->assertEquals('some comment', $contact->getComment());
+        $this->assertEquals('field 1 data', $contact->getField1());
+        $this->assertEquals('field 2 data', $contact->getField2());
+
         $labels = array();
         foreach ($organization->getLabels() as $label) {
             $labels[] = $label->getLabel();

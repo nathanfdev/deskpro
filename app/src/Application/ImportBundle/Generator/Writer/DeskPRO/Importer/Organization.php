@@ -99,6 +99,8 @@ final class Organization extends AbstractImporter
     }
 
     /**
+     * Returns organization contact data entity
+     *
      * @param Entity\OrganizationContactData $entity
      * @return DeskPROEntity\OrganizationContactData
      */

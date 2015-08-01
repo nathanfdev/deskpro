@@ -1,14 +1,22 @@
 {
-  "oid":"Some Organization",
-  "name":"Some Organization",
-  "picture":null,
-  "importance":5,
-  "date_created":"2015-07-30 06:09:01",
-  "contact_data":[
+  "oid": "Some Organization",
+  "name": "Some Organization",
+  "picture": null,
+  "importance": 5,
+  "date_created": "2015-07-30 06:09:01",
+  "contact_data": [
     {
-
+      "contact_type": "type1",
+      "comment": "some comment",
+      "field_1": "field 1 data",
+      "field_2": "field 2 data",
+      "field_3": "field 3 data",
+      "field_4": "field 4 data"
     }
   ],
-  "custom_fields":[],
-  "labels":["label1", "label2"]
+  "custom_fields": [],
+  "labels": [
+    "label1",
+    "label2"
+  ]
 }

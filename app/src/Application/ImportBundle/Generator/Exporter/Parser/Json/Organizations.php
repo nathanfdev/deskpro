@@ -186,7 +186,7 @@ final class Organizations extends AbstractParser
             $entity
                 ->setRawData($contact)
                 ->setContactType($contact['contact_type'])
-                ->setContactType($contact['comment'])
+                ->setComment($contact['comment'])
             ;
 
             for ($i = 1; $i < 11; $i++) {
@@ -245,7 +245,6 @@ final class Organizations extends AbstractParser
     private function isContactValid(array $contact)
     {
         $columns = array(
-            'organization_id',
             'contact_type',
             'comment',
         );

@@ -271,7 +271,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param  null  $type
-     * @return array
+     * @return Entity\OrganizationContactData[]
      */
     public function getContactData($type = null)
     {
