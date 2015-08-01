@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * Address contact data helper
+ *
  * Class Address
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

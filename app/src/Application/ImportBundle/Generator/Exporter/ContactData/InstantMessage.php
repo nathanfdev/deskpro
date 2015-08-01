@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * InstantMessage contact data helper
+ *
  * Class InstantMessage
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

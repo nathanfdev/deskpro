@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
 use Application\ImportBundle\Entity\ContactData;
 
 /**
+ * Contact data helper
+ *
  * Interface ContactDataInterface
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
@@ -47,11 +49,15 @@ interface ContactDataInterface
     const TYPE_WEBSITE         = 'website';
 
     /**
-     * @return mixed
+     * Helper type
+     *
+     * @return string
      */
     public function getType();
 
     /**
+     * Creates a contact data entity
+     *
      * @param array $data
      * @return ContactData
      */

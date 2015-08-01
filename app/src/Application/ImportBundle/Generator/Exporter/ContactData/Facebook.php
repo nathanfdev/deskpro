@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * Facebook contact data helper
+ *
  * Class Facebook
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

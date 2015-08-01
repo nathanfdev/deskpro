@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * LinkedIn contact data helper
+ *
  * Class LinkedIn
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
 use Application\ImportBundle\Entity\ContactData;
 
 /**
+ * Abstract phone contact data helper
+ *
  * Class AbstractContactData
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

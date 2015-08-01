@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * Skype contact data helper
+ *
  * Class Skype
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

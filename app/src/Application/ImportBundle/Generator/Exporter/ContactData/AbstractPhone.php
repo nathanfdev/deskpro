@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * Abstract phone contact data helper
+ *
  * Class AbstractPhone
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

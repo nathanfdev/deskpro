@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * Twitter contact data helper
+ *
  * Class Twitter
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

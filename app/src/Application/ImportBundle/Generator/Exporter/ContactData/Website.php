@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
+ * Website contact data helper
+ *
  * Class Website
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */

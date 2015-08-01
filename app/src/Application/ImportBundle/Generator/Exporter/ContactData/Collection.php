@@ -27,19 +27,42 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\AbstractCollection;
+
 /**
- * Fax contact data helper
+ * Collection of contact data helpers
  *
- * Class Fax
+ * Class Collection
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-final class Fax extends AbstractPhone
+class Collection extends AbstractCollection
 {
     /**
-     * {@inheritdoc}
+     * Add a helper
+     *
+     * @param ContactDataInterface $helper
+     * @return $this
      */
-    public function getType()
+    public function attach(ContactDataInterface $helper)
     {
-        return self::TYPE_FAX;
+        $this->collection[$helper->getType()] = $helper;
+        return $this;
+    }
+
+    /**
+     * Returns a helper by contact type
+     *
+     * @param string $type
+     *
+     * @return ContactDataInterface
+     * @throws \RuntimeException
+     */
+    public function getByType($type)
+    {
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
+        }
+
+        throw new \RuntimeException(sprintf('This contact type `%s` is not supported', $type));
     }
 }
