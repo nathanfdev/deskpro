@@ -88,11 +88,21 @@ class DataSideloads
 
     public function addIgnoredData($type, $data)
     {
-        if (!$id = $this->id_finder->findDataId($data)) {
-            throw new \InvalidArgumentException('could not find ID for given data of type: '  . $type);
-        }
+        if (is_array($data) || $data instanceof \Traversable) {
+            foreach ($data as $the_data) {
+                if (!$id = $this->id_finder->findDataId($the_data)) {
+                    throw new \InvalidArgumentException('could not find ID for given data of type: ' . $type);
+                }
 
-        $this->addIgnoredTypeId($type, $id);
+                $this->addIgnoredTypeId($type, $id);
+            }
+        } else {
+            if (!$id = $this->id_finder->findDataId($data)) {
+                throw new \InvalidArgumentException('could not find ID for given data of type: ' . $type);
+            }
+
+            $this->addIgnoredTypeId($type, $id);
+        }
     }
 
     public function addIgnoredTypeId($type, $id)

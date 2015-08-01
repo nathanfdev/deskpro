@@ -75,14 +75,15 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *
      * @Get("/sandbox_widgets", name="api_sandbox_widgets")
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
         $widgets = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->findAll();
 
         $pager = new Pagerfanta(new ArrayAdapter($widgets));
+        $pager->setMaxPerPage(2);
 
         return View::create(
-            $this->createFractalRepresentation($pager, "sandbox_widget"),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -113,7 +114,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $widget = $this->getWidget($id);
 
         return View::create(
-            $this->dataSerialize($widget, $request->query->get('include')),
+            $this->dataSerialize($widget),
             Response::HTTP_OK
         );
     }

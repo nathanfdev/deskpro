@@ -45,6 +45,11 @@ class BaseController extends FOSRestController
      */
     protected function dataSerialize($data, $includes_string = null)
     {
+        // not passing an $includes_string will default to the master request's "include" GET param
+        if (null === $includes_string) {
+            $includes_string = $this->get('request_stack')->getMasterRequest()->query->get('include');
+        }
+
         return $this->get('data_serializer')->serialize($data, $includes_string);
     }
 

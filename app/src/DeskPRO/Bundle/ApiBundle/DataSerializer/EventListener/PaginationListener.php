@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PaginationListener implements EventSubscriberInterface
@@ -43,16 +44,55 @@ class PaginationListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            DataSerializerEvents::PRE_SERIALIZE => ['preSerialize']
+            DataSerializerEvents::PRE_SERIALIZE => ['preSerialize'],
+            DataSerializerEvents::POST_SERIALIZE => ['postSerialize']
         ];
     }
 
     public function preSerialize(DataSerializerEvent $event)
     {
         $context = $event->getContext();
+        $source_data = $context->getSourceData();
 
-        // it's important to always make sure you call setMainData here with the main data
-        // even if we're not dealing with a pager
-        $context->setMainData($context->getSourceData());
+        if (!$source_data instanceof Pagerfanta) {
+            // it's important to always make sure you call setMainData here with the main data
+            // even if we're not dealing with a pager
+            $context->setMainData($source_data);
+        } else {
+            $main_data = $source_data->getCurrentPageResults();
+            $context->setMainData($main_data);
+        }
+    }
+
+    public function postSerialize(DataSerializerEvent $event)
+    {
+        $context = $event->getContext();
+        $source_data = $context->getSourceData();
+
+        if (!$source_data instanceof Pagerfanta) {
+            return;
+        }
+
+        $serialized = $context->getSerializedArray();
+
+        if (!array_key_exists('meta', $serialized)) {
+            $serialized['meta'] = [];
+        }
+
+        $meta = $serialized['meta'];
+
+        $pagination = [
+            'total' => $source_data->count(),
+            'count' => count($source_data->getCurrentPageResults()),
+            'per_page' => $source_data->getMaxPerPage(),
+            'current_page' => $source_data->getCurrentPage(),
+            'total_pages' => ceil($source_data->count()/$source_data->getMaxPerPage())
+        ];
+
+        $meta['pagination'] = $pagination;
+
+        $serialized['meta'] = $meta;
+
+        $context->setSerializedArray($serialized);
     }
 }

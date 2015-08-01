@@ -35,11 +35,14 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
 
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataPropertyTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerFactory;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -49,9 +52,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class TransformerListener implements EventSubscriberInterface
 {
     /**
-     * @var DataTransformerFactory
+     * @var DataTransformer
      */
-    private $transformer_factory;
+    private $data_transformer;
 
     /**
      * @var LoggerInterface
@@ -59,33 +62,19 @@ class TransformerListener implements EventSubscriberInterface
     private $logger;
 
     public function __construct(
-        DataTransformerFactory $transformer_factory,
+        DataTransformer $data_transformer,
         LoggerInterface $logger
     )
     {
-        $this->transformer_factory = $transformer_factory;
         $this->logger = $logger;
+        $this->data_transformer = $data_transformer;
     }
 
     public static function getSubscribedEvents()
     {
         return [
-            DataSerializerEvents::PRE_TRANSFORM => ['preTransform', 0],
             DataSerializerEvents::TRANSFORM => ['transform', 0]
         ];
-    }
-
-    /**
-     * Get the transformer for this context "type"
-     */
-    public function preTransform(DataSerializerEvent $event)
-    {
-        $context = $event->getContext();
-
-        // normally the type is found and set onto the $context via the TypeListener
-        $transformer = $this->transformer_factory->findByType($context->getMainType());
-
-        $context->setMainTransformer($transformer);
     }
 
     /**
@@ -95,13 +84,30 @@ class TransformerListener implements EventSubscriberInterface
     {
         $context = $event->getContext();
 
+        $main_data = $context->getMainData();
+
+        if (is_array($main_data) || $main_data instanceof \Traversable) {
+            $main_transformed = [];
+            foreach ($main_data as $this_data) {
+                $transformation_response = $this->doTransform($this_data, $context);
+                $main_transformed[] = $transformation_response->getTransformed();
+            }
+        } else {
+            $transformation_response = $this->doTransform($main_data, $context);
+            $main_transformed = $transformation_response->getTransformed();
+        }
+
+        $context->setMainTransformed($main_transformed);
+    }
+
+    protected function doTransform($data, DataSerializerContext $context)
+    {
         $transformation_request = new DataTransformerRequest(
-            $context->getMainData(),
+            $data,
             $context,
             $context->getMainView() ?: DataTransformerRequest::DEFAULT_VIEW
         );
 
-        $transformed_array = $context->getMainTransformer()->transform($transformation_request);
-        $context->setMainTransformed($transformed_array);
+        return $this->data_transformer->transform($transformation_request);
     }
 }

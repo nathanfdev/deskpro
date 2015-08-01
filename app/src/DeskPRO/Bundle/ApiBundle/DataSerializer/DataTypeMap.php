@@ -72,6 +72,14 @@ class DataTypeMap
      */
     public function findType($data)
     {
+        if (is_array($data) || $data instanceof \Traversable) {
+            foreach ($data as $item) {
+                $data = $item; // for the purposes of this method, we use the first element of an array/collection
+                break;
+            }
+
+        }
+
         $object_class = is_object($data) ? get_class($data) : null;
 
         if ($object_class && ($type = $this->findTypeForClass($object_class))) {

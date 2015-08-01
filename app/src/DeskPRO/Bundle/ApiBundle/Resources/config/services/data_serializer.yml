@@ -47,7 +47,7 @@ services:
 
     data_serializer.listener.transformer:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener\TransformerListener
-        arguments: [@data_serializer.transformer_factory, @logger]
+        arguments: [@data_serializer.data_transformer, @logger]
         tags:
             - { name: data_serializer.event_subscriber }
 

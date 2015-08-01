@@ -58,11 +58,6 @@ class DataSerializerContext
     protected $main_type;
 
     /**
-     * @var AbstractDataSerializerTransformer|null
-     */
-    protected $main_transformer;
-
-    /**
      * @var string|null the view that we should transform the $main_data on (this is simply passed to the transformer)
      */
     protected $main_view;
@@ -85,27 +80,10 @@ class DataSerializerContext
     protected $requested_includes;
 
     /**
-     * This is a place where we queue up includes to transform
-     *
-     * @var array a multi-dimensional array, the root keys are an object "type" ("person") and the value
-     *            contains an array of what is included (it is always internally an array, but in the
-     *            result JSON it could end up being a single object).
-     */
-    protected $includes;
-
-    /**
      * @var DataSideloads
      */
     protected $sideloads;
 
-    /**
-     * These are considered processed, but may still need another pass.
-     *
-     * @var array a multi-dimensional array, the root keys are an object "type" ("person") and the value
-     *            contains an array of what is included (it is always internally an array, but in the
-     *            result JSON it could end up being a single object).
-     */
-    protected $includes_transformed;
     /**
      * @var DataTypeIdFinder
      */
@@ -262,22 +240,6 @@ class DataSerializerContext
     public function setSerializedArray(array $serialized_array)
     {
         $this->serialized_array = $serialized_array;
-    }
-
-    /**
-     * @return AbstractDataSerializerTransformer|null
-     */
-    public function getMainTransformer()
-    {
-        return $this->main_transformer;
-    }
-
-    /**
-     * @param AbstractDataSerializerTransformer|null $main_transformer
-     */
-    public function setMainTransformer(AbstractDataSerializerTransformer $main_transformer)
-    {
-        $this->main_transformer = $main_transformer;
     }
 
     /**
