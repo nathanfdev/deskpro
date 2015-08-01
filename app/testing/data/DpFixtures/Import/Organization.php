@@ -17,8 +17,17 @@ class Organization extends AbstractFixture
      */
     public function load(ObjectManager $manager)
     {
+        $contact_data = new Entity\OrganizationContactData();
+        $contact_data
+            ->setContactType('fax')
+            ->setComment('some comment')
+        ;
+
         $organization = new Entity\Organization();
-        $organization->setName('Some Organization');
+        $organization
+            ->setName('Some Organization')
+            ->addContactData($contact_data)
+        ;
 
         $manager->persist($organization);
         $manager->flush();
