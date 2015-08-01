@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Twitter contact data helper
  *
@@ -40,19 +42,30 @@ final class Twitter extends AbstractContactData
      */
     public function getType()
     {
-        return self::TYPE_TWITTER;
+        return ContactData::TYPE_TWITTER;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
-        $contact = parent::create($data);
+        $contact = parent::toEntity($data);
 
         $contact->setField1(isset($data['username']) ? $data['username'] : '');
         $contact->setField2(isset($data['display_feed']) && $data['display_feed'] ? 1 : 0);
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'username'     => $entity->getField1(),
+            'display_feed' => $entity->getField2(),
+        ));
     }
 }

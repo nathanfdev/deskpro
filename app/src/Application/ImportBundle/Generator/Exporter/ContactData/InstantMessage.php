@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * InstantMessage contact data helper
  *
@@ -40,19 +42,30 @@ final class InstantMessage extends AbstractContactData
      */
     public function getType()
     {
-        return self::TYPE_INSTANT_MESSAGE;
+        return ContactData::TYPE_INSTANT_MESSAGE;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
-        $contact = parent::create($data);
+        $contact = parent::toEntity($data);
 
         $contact->setField1(isset($data['username']) ? $data['username'] : '');
         $contact->setField2(isset($data['service']) ? $data['service'] : '');
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'username' => $entity->getField1(),
+            'service'  => $entity->getField2(),
+        ));
     }
 }

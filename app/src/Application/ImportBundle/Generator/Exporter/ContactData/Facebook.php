@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Facebook contact data helper
  *
@@ -40,20 +42,30 @@ final class Facebook extends AbstractContactData
      */
     public function getType()
     {
-        return self::TYPE_FACEBOOK;
+        return ContactData::TYPE_FACEBOOK;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
-        $contact = parent::create($data);
+        $contact = parent::toEntity($data);
 
         if (isset($data['profile_url'])) {
             $contact->setField1($data['profile_url']);
         }
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'profile_url' => $entity->getField1(),
+        ));
     }
 }

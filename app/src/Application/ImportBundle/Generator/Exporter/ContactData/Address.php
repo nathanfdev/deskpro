@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Address contact data helper
  *
@@ -40,15 +42,15 @@ final class Address extends AbstractContactData
      */
     public function getType()
     {
-        return self::TYPE_ADDRESS;
+        return ContactData::TYPE_ADDRESS;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
-        $contact = parent::create($data);
+        $contact = parent::toEntity($data);
 
         $contact->setField1(isset($data['address']) ? $data['address'] : '');
         $contact->setField2(isset($data['city']) ? $data['city'] : '');
@@ -57,5 +59,19 @@ final class Address extends AbstractContactData
         $contact->setField5(isset($data['country']) ? $data['country'] : '');
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'address' => $entity->getField1(),
+            'city'    => $entity->getField2(),
+            'state'   => $entity->getField3(),
+            'zip'     => $entity->getField4(),
+            'country' => $entity->getField5(),
+        ));
     }
 }

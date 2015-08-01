@@ -40,7 +40,7 @@ abstract class AbstractContactData implements ContactDataInterface
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
         $contact = new ContactData();
         $contact->setRawData($data);
@@ -51,5 +51,16 @@ abstract class AbstractContactData implements ContactDataInterface
         }
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array(
+            'contact_type' => $this->getType(),
+            'comment'      => $entity->getComment(),
+        );
     }
 }

@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Abstract phone contact data helper
  *
@@ -38,14 +40,26 @@ abstract class AbstractPhone extends AbstractContactData
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
-        $contact = parent::create($data);
+        $contact = parent::toEntity($data);
 
         $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
         $contact->setField2(isset($data['number']) ? $data['number'] : '');
         $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'country_calling_code' => $entity->getField1(),
+            'number'               => $entity->getField2(),
+            'type'                 => $entity->getField3(),
+        ));
     }
 }

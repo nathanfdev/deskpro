@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Website contact data helper
  *
@@ -40,20 +42,30 @@ final class Website extends AbstractContactData
      */
     public function getType()
     {
-        return self::TYPE_WEBSITE;
+        return ContactData::TYPE_WEBSITE;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
-        $contact = parent::create($data);
+        $contact = parent::toEntity($data);
 
         if (isset($data['url'])) {
             $contact->setField1($data['url']);
         }
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'url' => $entity->getField1(),
+        ));
     }
 }

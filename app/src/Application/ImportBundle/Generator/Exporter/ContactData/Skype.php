@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Skype contact data helper
  *
@@ -40,20 +42,30 @@ final class Skype extends AbstractContactData
      */
     public function getType()
     {
-        return self::TYPE_SKYPE;
+        return ContactData::TYPE_SKYPE;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function toEntity(array $data)
     {
-        $contact = parent::create($data);
+        $contact = parent::toEntity($data);
 
         if (isset($data['username'])) {
             $contact->setField1($data['username']);
         }
 
         return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'username' => $entity->getField1(),
+        ));
     }
 }

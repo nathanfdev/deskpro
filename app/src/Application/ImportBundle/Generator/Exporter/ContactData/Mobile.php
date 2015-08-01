@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Mobile contact data helper
  *
@@ -40,6 +42,6 @@ final class Mobile extends AbstractPhone
      */
     public function getType()
     {
-        return self::TYPE_MOBILE;
+        return ContactData::TYPE_MOBILE;
     }
 }

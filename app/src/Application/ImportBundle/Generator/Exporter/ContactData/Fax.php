@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
+use Application\ImportBundle\Entity\ContactData;
+
 /**
  * Fax contact data helper
  *
@@ -40,6 +42,6 @@ final class Fax extends AbstractPhone
      */
     public function getType()
     {
-        return self::TYPE_FAX;
+        return ContactData::TYPE_FAX;
     }
 }
