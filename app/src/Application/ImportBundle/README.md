@@ -1,15 +1,16 @@
 IMPORT BUNDLE
-========================================================================================================================
+==================
 
 Commands
-------------------------------------------------------------------------------------------------------------------------
+------------
 
-## Export check ##
+**Export check**
 
-Reads data from an external source (csv, json, osticket, zendesk) and validates that all entities has requires fields and they have valid values.
-Import check is not necessary, use dp:export:check json to check json files.
+Reads and validates data from an external source.
 
+```
 php cmd.php dp:export:check exporter_type [--input-path=] [--verbose]
+```
 
 exporter_type
     Available values: csv, json, osticket, zendesk
@@ -35,12 +36,14 @@ Examples:
     php cmd.php dp:export:check zendesk --verbose
 
 
-## Export run ##
+**Export run**
 
 Reads data from an external source, validate entities and write them to json files.
 Export could be run in json files only.
 
+```
 php cmd.php dp:export:run exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
+```
 
 exporter_type
     Available values: csv, json, osticket, zendesk
@@ -81,11 +84,13 @@ Examples:
     php cmd.php dp:export:run zendesk --output-path="app/src/Application/ImportBundle/Resources/example/zendesk_to_json" --verbose
 
 
-## Import run ##
+**Import run**
 
 Reads data from an external source, validate entities and import them to deskpro database.
 
+```
 php cmd.php dp:import:run exporter_type [--input-path=] [--verbose] [--dry-run]
+```
 
 exporter_type
     Available values: csv, json, osticket, zendesk
@@ -109,11 +114,13 @@ Examples:
     php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundle/Resources/example/zendesk" --verbose
 
 
-## Import batch run ##
+**Import batch run**
 
 Reads data from an external source and writes to json files. Then reads json files and imports to database.
 
+```
 php cmd.php dp:import:batch exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
+```
 
 exporter_type
     Available values: csv, osticket, zendesk
@@ -142,9 +149,9 @@ Examples:
 
 
 Exporters
-------------------------------------------------------------------------------------------------------------------------
+------------
 
-## CSV ##
+**CSV**
 
 Exports data from CSV files.
 
@@ -345,7 +352,7 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name',
     'value'
 
-## OsTicket ##
+**OsTicket**
 
 Exports data from OsTicket database.
 
@@ -410,7 +417,7 @@ END$$
 DELIMITER ;
 
 
-## ZenDesk ##
+**ZenDesk**
 
 Exports data from ZenDesk account.
 
@@ -430,7 +437,7 @@ Supported tickets and people data export.
 
 
 Support for batching
-------------------------------------------------------------------------------------------------------------------------
+------------
 
 Common properties:
 
