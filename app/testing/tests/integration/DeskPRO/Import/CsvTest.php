@@ -148,6 +148,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->overrideDpRootPath('/ticket_attachments.csv');
         $this->overrideDpRootPath('/feedback_attachments.csv');
         $this->overrideDpRootPath('/downloads.csv');
+        $this->overrideDpRootPath('/organizations.csv');
 
         $this->checkDbEmpty();
         $this->checkJsonEmpty();
