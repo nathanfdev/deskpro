@@ -31,8 +31,16 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class Twitter
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Twitter extends AbstractContactData
+final class Twitter extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_TWITTER;
+    }
+
     /**
      * {@inheritdoc}
      */

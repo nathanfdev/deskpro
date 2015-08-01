@@ -182,6 +182,7 @@ final class Organizations extends AbstractParser
     private function exportContact(array $contact)
     {
         if ($this->isContactValid($contact)) {
+
             $entity = new Entity\ContactData();
             $entity
                 ->setRawData($contact)

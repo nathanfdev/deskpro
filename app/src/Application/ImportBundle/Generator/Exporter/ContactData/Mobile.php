@@ -31,7 +31,13 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class Mobile
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Mobile extends Phone
+final class Mobile extends AbstractPhone
 {
-
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_MOBILE;
+    }
 }

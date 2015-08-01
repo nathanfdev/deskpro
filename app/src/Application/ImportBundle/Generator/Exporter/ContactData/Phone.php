@@ -31,19 +31,13 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class Phone
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Phone extends AbstractContactData
+final class Phone extends AbstractPhone
 {
     /**
      * {@inheritdoc}
      */
-    public function create(array $data)
+    public function getType()
     {
-        $contact = parent::create($data);
-
-        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
-        $contact->setField2(isset($data['number']) ? $data['number'] : '');
-        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
-
-        return $contact;
+        return self::TYPE_PHONE;
     }
 }

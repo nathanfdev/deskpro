@@ -31,7 +31,13 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class Fax
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Fax extends Phone
+final class Fax extends AbstractPhone
 {
-
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_FAX;
+    }
 }

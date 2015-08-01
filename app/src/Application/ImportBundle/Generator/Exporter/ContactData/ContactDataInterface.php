@@ -35,6 +35,22 @@ use Application\ImportBundle\Entity\ContactData;
  */
 interface ContactDataInterface
 {
+    const TYPE_ADDRESS         = 'address';
+    const TYPE_FACEBOOK        = 'facebook';
+    const TYPE_FAX             = 'fax';
+    const TYPE_INSTANT_MESSAGE = 'instant_message';
+    const TYPE_LINKED_IN       = 'linked_in';
+    const TYPE_MOBILE          = 'mobile';
+    const TYPE_PHONE           = 'phone';
+    const TYPE_SKYPE           = 'skype';
+    const TYPE_TWITTER         = 'twitter';
+    const TYPE_WEBSITE         = 'website';
+
+    /**
+     * @return mixed
+     */
+    public function getType();
+
     /**
      * @param array $data
      * @return ContactData

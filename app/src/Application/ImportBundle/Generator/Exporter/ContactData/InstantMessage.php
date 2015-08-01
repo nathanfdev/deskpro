@@ -31,8 +31,16 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class InstantMessage
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class InstantMessage extends AbstractContactData
+final class InstantMessage extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_INSTANT_MESSAGE;
+    }
+
     /**
      * {@inheritdoc}
      */

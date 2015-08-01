@@ -31,8 +31,16 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class LinkedIn
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class LinkedIn extends AbstractContactData
+final class LinkedIn extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_LINKED_IN;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -31,8 +31,16 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class Website
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Website extends AbstractContactData
+final class Website extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_WEBSITE;
+    }
+
     /**
      * {@inheritdoc}
      */

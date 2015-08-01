@@ -31,8 +31,16 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class Skype
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Skype extends AbstractContactData
+final class Skype extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_SKYPE;
+    }
+
     /**
      * {@inheritdoc}
      */

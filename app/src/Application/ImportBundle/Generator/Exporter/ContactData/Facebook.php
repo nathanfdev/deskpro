@@ -31,8 +31,16 @@ namespace Application\ImportBundle\Generator\Exporter\ContactData;
  * Class Facebook
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Facebook extends AbstractContactData
+final class Facebook extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_FACEBOOK;
+    }
+
     /**
      * {@inheritdoc}
      */

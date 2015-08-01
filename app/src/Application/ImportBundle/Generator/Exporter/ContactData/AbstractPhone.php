@@ -28,19 +28,11 @@
 namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
- * Class Address
+ * Class AbstractPhone
  * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-final class Address extends AbstractContactData
+abstract class AbstractPhone extends AbstractContactData
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return self::TYPE_ADDRESS;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -48,11 +40,9 @@ final class Address extends AbstractContactData
     {
         $contact = parent::create($data);
 
-        $contact->setField1(isset($data['address']) ? $data['address'] : '');
-        $contact->setField2(isset($data['city']) ? $data['city'] : '');
-        $contact->setField3(isset($data['state']) ? $data['state'] : '');
-        $contact->setField4(isset($data['zip']) ? $data['zip'] : '');
-        $contact->setField5(isset($data['country']) ? $data['country'] : '');
+        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
+        $contact->setField2(isset($data['number']) ? $data['number'] : '');
+        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
 
         return $contact;
     }

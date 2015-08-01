@@ -41,6 +41,8 @@ abstract class AbstractContactData implements ContactDataInterface
     public function create(array $data)
     {
         $contact = new ContactData();
+        $contact->setRawData($data);
+        $contact->setContactType($this->getType());
 
         if (isset($data['comment'])) {
             $contact->setComment($data['comment']);
