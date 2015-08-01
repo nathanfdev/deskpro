@@ -64,7 +64,7 @@ class CustomDataPerson extends CustomDataAbstract
      * @param Person $person
      * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
         return $this;

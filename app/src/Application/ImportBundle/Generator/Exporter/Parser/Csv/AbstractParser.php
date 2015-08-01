@@ -42,23 +42,24 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    const FILE_ARTICLES                   = 'articles.csv';
-    const FILE_ARTICLE_CUSTOM_FIELDS      = 'article_custom_fields.csv';
-    const FILE_DOWNLOADS                  = 'downloads.csv';
-    const FILE_DOWNLOAD_ATTACHMENTS       = 'downloads_attachments.csv';
-    const FILE_FEEDBACK                   = 'feedback.csv';
-    const FILE_FEEDBACK_ATTACHMENTS       = 'feedback_attachments.csv';
-    const FILE_FEEDBACK_CUSTOM_FIELDS     = 'feedback_custom_fields.csv';
-    const FILE_NEWS                       = 'news.csv';
-    const FILE_PEOPLE                     = 'people.csv';
-    const FILE_PEOPLE_CUSTOM_FIELDS       = 'people_custom_fields.csv';
-    const FILE_TICKETS                    = 'tickets.csv';
-    const FILE_TICKET_MESSAGES            = 'ticket_messages.csv';
-    const FILE_TICKET_ATTACHMENTS         = 'ticket_attachments.csv';
-    const FILE_TICKET_CUSTOM_FIELDS       = 'ticket_custom_fields.csv';
-    const FILE_ORGANIZATIONS              = 'organizations.csv';
-    const FILE_ORGANIZATIONS_CONTACT_DATA = 'organizations_contact_data.csv';
-    const FILE_ORGANIZATION_CUSTOM_FIELDS = 'organization_custom_fields.csv';
+    const FILE_ARTICLES                         = 'articles.csv';
+    const FILE_ARTICLE_CUSTOM_FIELDS            = 'article_custom_fields.csv';
+    const FILE_DOWNLOADS                        = 'downloads.csv';
+    const FILE_DOWNLOAD_ATTACHMENTS             = 'downloads_attachments.csv';
+    const FILE_FEEDBACK                         = 'feedback.csv';
+    const FILE_FEEDBACK_ATTACHMENTS             = 'feedback_attachments.csv';
+    const FILE_FEEDBACK_CUSTOM_FIELDS           = 'feedback_custom_fields.csv';
+    const FILE_NEWS                             = 'news.csv';
+    const FILE_PEOPLE                           = 'people.csv';
+    const FILE_PEOPLE_CUSTOM_FIELDS             = 'people_custom_fields.csv';
+    const FILE_TICKETS                          = 'tickets.csv';
+    const FILE_TICKET_MESSAGES                  = 'ticket_messages.csv';
+    const FILE_TICKET_ATTACHMENTS               = 'ticket_attachments.csv';
+    const FILE_TICKET_CUSTOM_FIELDS             = 'ticket_custom_fields.csv';
+    const FILE_ORGANIZATIONS                    = 'organizations.csv';
+    const FILE_ORGANIZATION_CONTACT_DATA        = 'organization_contact_data.csv';
+    const FILE_ORGANIZATION_CONTACT_DATA_FIELDS = 'organization_contact_data_fields.csv';
+    const FILE_ORGANIZATION_CUSTOM_FIELDS       = 'organization_custom_fields.csv';
 
     /**
      * @var CsvReaderInterface
@@ -475,6 +476,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         $columns = array(
             $ref_column,
             'contact_type',
+            'contact_id',
         );
 
         return $this->hasRequiredColumns($contact, $columns);

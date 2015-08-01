@@ -188,7 +188,7 @@ class Organizations extends AbstractParser
      */
     private function getOrganizationContactDataReaderConfig()
     {
-        return $this->getReaderConfig(self::FILE_ORGANIZATIONS_CONTACT_DATA);
+        return $this->getReaderConfig(self::FILE_ORGANIZATION_CONTACT_DATA);
     }
 
     /**

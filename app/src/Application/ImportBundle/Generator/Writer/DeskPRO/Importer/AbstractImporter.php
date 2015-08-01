@@ -200,7 +200,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
         }
 
-        $this->records->add($custom_field);
         return $custom_field;
     }
 
