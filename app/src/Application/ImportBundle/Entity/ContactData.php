@@ -356,6 +356,21 @@ class ContactData extends AbstractEntity
 
         $metadata
             ->addPropertyConstraint('contact_type', new Constraints\NotBlank())
+            ->addPropertyConstraint('contact_type', new Constraints\Choice(array(
+                'choices' => array(
+                    self::TYPE_ADDRESS,
+                    self::TYPE_FACEBOOK,
+                    self::TYPE_FAX,
+                    self::TYPE_INSTANT_MESSAGE,
+                    self::TYPE_LINKED_IN,
+                    self::TYPE_MOBILE,
+                    self::TYPE_PHONE,
+                    self::TYPE_SKYPE,
+                    self::TYPE_TWITTER,
+                    self::TYPE_WEBSITE,
+                ),
+            )))
+            ->addPropertyConstraint('field_1', new Constraints\NotBlank())
         ;
     }
 }

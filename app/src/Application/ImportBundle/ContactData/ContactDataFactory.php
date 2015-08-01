@@ -28,12 +28,16 @@
 namespace Application\ImportBundle\ContactData;
 
 /**
+ * Contact data helper factory
+ *
  * Class ContactDataFactory
  * @package Application\ImportBundle\ContactData
  */
 class ContactDataFactory
 {
     /**
+     * Return helper by contact type
+     *
      * @param string $contact_type
      * @return ContactDataInterface
      */
