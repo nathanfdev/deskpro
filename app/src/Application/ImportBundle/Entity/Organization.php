@@ -60,7 +60,7 @@ class Organization extends AbstractEntity
     private $date_created;
 
     /**
-     * @var OrganizationContactData[]
+     * @var ContactData[]
      */
     private $contact_data;
 
@@ -183,7 +183,7 @@ class Organization extends AbstractEntity
     /**
      * Returns organization contact data
      *
-     * @return Collection|OrganizationContactData[]
+     * @return Collection|ContactData[]
      */
     public function getContactData()
     {
@@ -193,10 +193,10 @@ class Organization extends AbstractEntity
     /**
      * Add an organization contact data
      *
-     * @param OrganizationContactData $contact
+     * @param ContactData $contact
      * @return $this
      */
-    public function addContact(OrganizationContactData $contact)
+    public function addContact(ContactData $contact)
     {
         $this->contact_data->attach($contact);
         return $this;
@@ -248,7 +248,7 @@ class Organization extends AbstractEntity
 
         $contact_data = array();
         foreach ($this->contact_data as $contact) {
-            /** @var OrganizationContactData $contact */
+            /** @var ContactData $contact */
             $contact_data[] = $contact->toArray();
         }
         $custom_fields = array();

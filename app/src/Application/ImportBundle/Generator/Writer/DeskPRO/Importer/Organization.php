@@ -101,10 +101,10 @@ final class Organization extends AbstractImporter
     /**
      * Returns organization contact data entity
      *
-     * @param Entity\OrganizationContactData $entity
+     * @param Entity\ContactData $entity
      * @return DeskPROEntity\OrganizationContactData
      */
-    private function createContactData(Entity\OrganizationContactData $entity)
+    private function createContactData(Entity\ContactData $entity)
     {
         $contact = new DeskPROEntity\OrganizationContactData();
         $contact

@@ -31,10 +31,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints;
 
 /**
- * Class OrganizationContactData
+ * Exporting contact data entity
+ *
+ * Class ContactData
  * @package Application\ImportBundle\Entity
  */
-class OrganizationContactData extends AbstractEntity
+class ContactData extends AbstractEntity
 {
     /**
      * @var string

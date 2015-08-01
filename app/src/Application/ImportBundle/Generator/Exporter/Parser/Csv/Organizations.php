@@ -74,7 +74,7 @@ class Organizations extends AbstractParser
                 $entity = $this->exportOrganization($organization);
                 if ($entity) {
                     foreach ($contact_data as $contact) {
-                        /** @var Entity\OrganizationContactData $contact */
+                        /** @var Entity\ContactData $contact */
                         if ($entity->getDestination() === $contact->getDestination()) {
                             $entity->addContact($contact);
                         }
@@ -170,12 +170,12 @@ class Organizations extends AbstractParser
      * Returns an organization contact data entity
      *
      * @param array $contact
-     * @return Entity\OrganizationContactData|null
+     * @return Entity\ContactData|null
      */
     private function exportContact(array $contact)
     {
         if ($this->isContactValid($contact)) {
-            $entity = new Entity\OrganizationContactData();
+            $entity = new Entity\ContactData();
             $entity->setContactType($contact['contact_type']);
 
             if (array_key_exists('comment', $contact)) {

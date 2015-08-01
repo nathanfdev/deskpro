@@ -176,13 +176,13 @@ final class Organizations extends AbstractParser
      * Returns a organization contact data entity
      *
      * @param array $contact
-     * @return Entity\OrganizationContactData|null
+     * @return Entity\ContactData|null
      *
      */
     private function exportContact(array $contact)
     {
         if ($this->isContactValid($contact)) {
-            $entity = new Entity\OrganizationContactData();
+            $entity = new Entity\ContactData();
             $entity
                 ->setRawData($contact)
                 ->setContactType($contact['contact_type'])
