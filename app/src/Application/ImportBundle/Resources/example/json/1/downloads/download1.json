@@ -17,7 +17,7 @@
     "person": "user@example.com",
     "blob_data": null,
     "blob_url": "",
-    "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/docs\/data_example\/csv\/downloads.csv",
+    "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/example\/csv\/downloads.csv",
     "file_name": "downloads.csv",
     "content_type": "csv",
     "is_inline": false

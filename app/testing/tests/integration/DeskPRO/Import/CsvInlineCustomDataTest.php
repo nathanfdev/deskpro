@@ -29,7 +29,7 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
      */
     public function runBefore()
     {
-        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv_inline_custom_data';
+        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv_inline_custom_data';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
 
         if ( ! is_dir($this->output_path)) {

@@ -135,7 +135,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->custom_data_article_repository      = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataArticle');
         $this->custom_data_organization_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataOrganization');
 
-        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv';
+        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
 
         if ( ! is_dir($this->output_path)) {
@@ -275,7 +275,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->seeFileFound('1/tickets/ticket_144.json');
         $this->helper->seeInThisFile('How to submit a ticket');
         $this->helper->seeInThisFile('Any update on my ticket yet?');
-        $this->helper->seeInThisFile('Resources\/docs\/data_example\/csv\/tickets.csv');
+        $this->helper->seeInThisFile('Resources\/example\/csv\/tickets.csv');
 
         $this->helper->seeFileFound('1/tickets/ticket_145.json');
         $this->helper->seeInThisFile('Another Ticket');

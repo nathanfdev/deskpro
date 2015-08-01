@@ -27,10 +27,10 @@ Commands:
             Disables all console output.
 
         Examples:
-        php cmd.php dp:export:check csv --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv" --verbose
+        php cmd.php dp:export:check csv --input-path="app/src/Application/ImportBundle/Resources/example/csv" --verbose
 
         php cmd.php dp:export:check osticket --verbose
-        php cmd.php dp:export:check osticket --batch-config="app/src/Application/ImportBundle/Resources/docs/data_example/osticket.batch.json" --verbose
+        php cmd.php dp:export:check osticket --batch-config="app/src/Application/ImportBundle/Resources/example/osticket.batch.json" --verbose
 
         php cmd.php dp:export:check zendesk --verbose
 
@@ -66,19 +66,19 @@ Commands:
         Examples:
 
             # CSV
-            php cmd.php dp:export:run csv --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv" \
-                --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv_to_json" --verbose
+            php cmd.php dp:export:run csv --input-path="app/src/Application/ImportBundle/Resources/example/csv" \
+                --output-path="app/src/Application/ImportBundle/Resources/example/csv_to_json" --verbose
 
 
             # OsTicket
-            php cmd.php dp:export:run osticket --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket_to_json" --verbose
-            php cmd.php dp:export:run osticket --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket_to_json" \
-                --batch-config="app/src/Application/ImportBundle/Resources/docs/data_example/osticket.batch.json" --verbose
-            php cmd.php dp:export:run osticket --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket_to_json_fixtures"
+            php cmd.php dp:export:run osticket --output-path="app/src/Application/ImportBundle/Resources/example/osticket_to_json" --verbose
+            php cmd.php dp:export:run osticket --output-path="app/src/Application/ImportBundle/Resources/example/osticket_to_json" \
+                --batch-config="app/src/Application/ImportBundle/Resources/example/osticket.batch.json" --verbose
+            php cmd.php dp:export:run osticket --output-path="app/src/Application/ImportBundle/Resources/example/osticket_to_json_fixtures"
 
 
             #ZenDesk
-            php cmd.php dp:export:run zendesk --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/zendesk_to_json" --verbose
+            php cmd.php dp:export:run zendesk --output-path="app/src/Application/ImportBundle/Resources/example/zendesk_to_json" --verbose
 
 
     3) Import run
@@ -103,10 +103,10 @@ Commands:
             Test run, entities are not imported to deskpro database.
 
         Examples:
-        php cmd.php dp:import:run csv --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv" --verbose
-        php cmd.php dp:import:run json --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket_to_json" --verbose
-        php cmd.php dp:import:run osticket --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket" --verbose
-        php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/zendesk" --verbose
+        php cmd.php dp:import:run csv --input-path="app/src/Application/ImportBundle/Resources/example/csv" --verbose
+        php cmd.php dp:import:run json --input-path="app/src/Application/ImportBundle/Resources/example/osticket_to_json" --verbose
+        php cmd.php dp:import:run osticket --output-path="app/src/Application/ImportBundle/Resources/example/osticket" --verbose
+        php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundle/Resources/example/zendesk" --verbose
 
 
     4) Import batch run
@@ -137,8 +137,8 @@ Commands:
             Test run, json files are not generated. If dry run mode is enabled "output-path" is not required.
 
         Examples:
-        php cmd.php dp:import:batch osticket --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket_to_json2" --verbose
-        php cmd.php dp:import:batch zendesk --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/zendesk_to_json2" --verbose
+        php cmd.php dp:import:batch osticket --output-path="app/src/Application/ImportBundle/Resources/example/osticket_to_json2" --verbose
+        php cmd.php dp:import:batch zendesk --output-path="app/src/Application/ImportBundle/Resources/example/zendesk_to_json2" --verbose
 
 
 =====================
@@ -165,7 +165,7 @@ Exporters:
          - ticket_custom_fields.csv
 
         Example files dir:
-        app/src/Application/ImportBundle/Resources/docs/data_example/csv
+        app/src/Application/ImportBundle/Resources/example/csv
 
          - Articles required columns
 
@@ -179,7 +179,7 @@ Exporters:
             'category',
             'label',
             'date_created',
-            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/articles.csv)
+            'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/articles.csv)
 
             Person means a person email
             Slug could be empty (generated from title)
@@ -233,7 +233,7 @@ Exporters:
             'label',
             'date_created',
             'date_published',
-            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/feedback.csv)
+            'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/feedback.csv)
 
             Person means a person email
             Slug could be empty (generated from title)
@@ -290,7 +290,7 @@ Exporters:
             'name',
             'email',
             'is_agent' is optional,
-            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/people.csv)
+            'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/people.csv)
 
 
         - People custom fields required columns
@@ -308,7 +308,7 @@ Exporters:
             'agent',
             'status',
             'date_created' is optional,
-            'custom "Custom field name"' could be multiple (see docs/data_example/csv_inline_custom_data/tickets.csv)
+            'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/tickets.csv)
 
             User means a user email
             Agent means a agent email

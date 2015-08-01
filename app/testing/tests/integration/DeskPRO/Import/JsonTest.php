@@ -103,7 +103,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->organization_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
         $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
 
-        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/json';
+        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
 
         if ( ! is_dir($this->output_path)) {
