@@ -4,7 +4,7 @@ IMPORT BUNDLE
 Commands
 ------------
 
-**Export check**
+**1) Export check**
 
 Reads and validates data from an external source.
 
@@ -36,7 +36,7 @@ Examples:
     php cmd.php dp:export:check zendesk --verbose
 
 
-**Export run**
+**2) Export run**
 
 Reads data from an external source, validate entities and write them to json files.
 Export could be run in json files only.
@@ -84,7 +84,7 @@ Examples:
     php cmd.php dp:export:run zendesk --output-path="app/src/Application/ImportBundle/Resources/example/zendesk_to_json" --verbose
 
 
-**Import run**
+**3) Import run**
 
 Reads data from an external source, validate entities and import them to deskpro database.
 
@@ -114,7 +114,7 @@ Examples:
     php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundle/Resources/example/zendesk" --verbose
 
 
-**Import batch run**
+**4) Import batch run**
 
 Reads data from an external source and writes to json files. Then reads json files and imports to database.
 
@@ -151,7 +151,7 @@ Examples:
 Exporters
 ------------
 
-**CSV**
+**1) CSV**
 
 Exports data from CSV files.
 
@@ -352,19 +352,21 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name',
     'value'
 
-**OsTicket**
+**2) OsTicket**
 
 Exports data from OsTicket database.
 
 Configuration
 Add `osticket_import` configuration to your www/config.php
 
+```php
 $DP_CONFIG['osticket_import'] = array(
     'db_host'       => 'localhost',
     'db_name'       => 'os_ticket',
     'db_username'   => 'root',
     'db_password'   => 'deskpro'
 );
+```
 
 Fixtures:
 
@@ -417,21 +419,23 @@ END$$
 DELIMITER ;
 
 
-**ZenDesk**
+**3) ZenDesk**
 
 Exports data from ZenDesk account.
 
 Configuration
 Add `zendesk_import` configuration to your www/config.php
 
-    $DP_CONFIG['zendesk_import'] = array(
-        'subdomain'          => 'your account subdomain',
-        'username'           => 'email@deskpro.com',
-        'password'           => '',
-        'api_token'          => '',
-        'initial_time'       => '2013-01-01 00:00:00',
-        'connection_timeout' => 60,
-    );
+```php
+$DP_CONFIG['zendesk_import'] = array(
+    'subdomain'          => 'your account subdomain',
+    'username'           => 'email@deskpro.com',
+    'password'           => '',
+    'api_token'          => '',
+    'initial_time'       => '2013-01-01 00:00:00',
+    'connection_timeout' => 60,
+);
+```
 
 Supported tickets and people data export.
 
