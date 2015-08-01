@@ -115,7 +115,7 @@ final class People extends AbstractParser
             $entity    = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination(self::PERSON_PREFIX . $person_id)
+                ->setDestination($this->formatDestination(self::PERSON_PREFIX, $person_id))
                 ->setOid($person_id)
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])

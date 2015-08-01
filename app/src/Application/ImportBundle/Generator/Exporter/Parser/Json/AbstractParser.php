@@ -118,20 +118,11 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function exportContact(array $contact)
     {
         if ($this->isContactValid($contact)) {
-            $entity = new Entity\ContactData();
-            $entity
-                ->setRawData($contact)
-                ->setOid($contact['oid'])
-                ->setDestination('contact_data_' . $contact['oid'])
-                ->setContactType($contact['contact_type'])
-                ->setComment($contact['comment'])
-            ;
-
             $handler = ContactDataFactory::getHandler($contact['contact_type']);
             $entity  = $handler->toEntity($contact);
             $entity
                 ->setOid($contact['oid'])
-                ->setDestination('contact_data_' . $contact['oid'])
+                ->setDestination($this->formatDestination('contact_data_', $contact['oid']))
             ;
 
             return $entity;
@@ -197,7 +188,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isCustomFieldValid($custom_field)) {
             $entity = new Entity\CustomField();
             $entity
-                ->setDestination('custom_field_' . $custom_field['oid'])
+                ->setDestination($this->formatDestination('custom_field_', $custom_field['oid']))
                 ->setOid($custom_field['oid'])
                 ->setKey($custom_field['key'])
                 ->setValue($custom_field['value']);
@@ -260,7 +251,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isBlobValid($blob)) {
             $entity = $entity ? : new Entity\Blob();
             $entity
-                ->setDestination('attachment_' . $blob['oid'])
+                ->setDestination($this->formatDestination('attachment_', $blob['oid']))
                 ->setOid($blob['oid'])
                 ->setBlobData($blob['blob_data'])
                 ->setBlobUrl($blob['blob_url'])

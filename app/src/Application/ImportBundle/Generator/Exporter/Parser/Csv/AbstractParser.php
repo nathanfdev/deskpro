@@ -238,7 +238,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity = $entity ? : new Entity\Blob();
             $entity
                 ->setRawData($blob)
-                ->setDestination($destination_prefix . $blob[$ref_column])
+                ->setDestination($this->formatDestination($destination_prefix, $blob[$ref_column]))
                 ->setOid($num)
                 ->setBlobUrl(@$blob['blob_url'])
                 ->setBlobPath(@$blob['blob_path'])

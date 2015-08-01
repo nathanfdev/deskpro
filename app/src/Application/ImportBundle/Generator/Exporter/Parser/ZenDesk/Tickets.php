@@ -176,7 +176,7 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
-                ->setDestination('ticket_' . $ticket['id'])
+                ->setDestination($this->formatDestination('ticket_', $ticket['id']))
                 ->setOid($ticket['id'])
                 ->setRef($ref)
                 ->setPersonEmail($person_email)
@@ -302,7 +302,7 @@ final class Tickets extends AbstractParser
 
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination('message_' . $comment['id'])
+                ->setDestination($this->formatDestination('message_', $comment['id']))
                 ->setOid($comment['id'])
                 ->setPersonEmail($author_email)
                 ->setMessageText($comment['body'])
@@ -366,7 +366,7 @@ final class Tickets extends AbstractParser
                 $request = $this->http_client->get($attachment['content_url']);
                 $entity  = new Entity\Attachment();
                 $entity
-                    ->setDestination('attachment_' . $attachment['id'])
+                    ->setDestination($this->formatDestination('attachment_', $attachment['id']))
                     ->setOid($attachment['id'])
                     ->setBlobData(base64_encode($request->send()->getBody(true)))
                     ->setFileName($attachment['file_name'])

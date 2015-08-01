@@ -106,7 +106,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination('feedback_' . $feedback['oid'])
+                ->setDestination($this->formatDestination('feedback_', $feedback['oid']))
                 ->setOid($feedback['oid'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
