@@ -2,10 +2,26 @@ services:
 
     data_serializer:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializer
-        arguments: [@data_serializer.event_dispatcher]
+        arguments: [@data_serializer.event_dispatcher, @data_serializer.type_id_finder]
 
     data_serializer.type_map:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap
+
+    data_serializer.type_id_finder:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeIdFinder
+        arguments:
+            - @property_accessor
+
+    data_serializer.data_transformer:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer
+        arguments:
+            - @data_serializer.data_transformer_registry
+            - @data_serializer.transformer_factory
+            - @data_serializer.type_map
+            - @data_serializer.type_id_finder
+
+    data_serializer.data_transformer_registry:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRegistry
 
     data_serializer.transformer_factory:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerFactory
@@ -24,6 +40,11 @@ services:
         tags:
             - { name: data_serializer.event_subscriber }
 
+    data_serializer.listener.pagination:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener\PaginationListener
+        tags:
+            - { name: data_serializer.event_subscriber }
+
     data_serializer.listener.transformer:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener\TransformerListener
         arguments: [@data_serializer.transformer_factory, @logger]
@@ -38,7 +59,11 @@ services:
 
     data_serializer.listener.sideload:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener\SideloadListener
-        arguments: [@data_serializer.transformer_factory, @data_serializer.property_transformer, @logger]
+        arguments:
+            - @data_serializer.data_transformer
+            - @data_serializer.property_transformer
+            - @data_serializer.listener.deferred_properties
+            - @logger
         tags:
             - { name: data_serializer.event_subscriber }
 
@@ -68,4 +93,4 @@ services:
     # note: you don't need a tag for these to work. just make the prefix the same.
     #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
     data_serializer.transformer.sandbox_widget:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\SandboxWidgetTransformer
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\SandboxWidgetTransformer

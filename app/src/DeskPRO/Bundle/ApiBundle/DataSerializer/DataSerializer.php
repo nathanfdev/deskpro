@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -49,11 +49,18 @@ class DataSerializer
      */
     private $event_dispatcher;
 
+    /**
+     * @var DataTypeIdFinder
+     */
+    private $id_finder;
+
     public function __construct(
-        EventDispatcherInterface $event_dispatcher
+        EventDispatcherInterface $event_dispatcher,
+        DataTypeIdFinder $id_finder
     )
     {
         $this->event_dispatcher = $event_dispatcher;
+        $this->id_finder = $id_finder;
     }
 
     /**
@@ -76,7 +83,7 @@ class DataSerializer
          * this context holds all state for this serialization, and it is passed to every event and mutated by
          * those events until it finally holds the final serialized array.
          */
-        $context = DataSerializerContext::create($data, $includes_string, $type, $view);
+        $context = DataSerializerContext::create($data, $includes_string, $type, $view, $this->id_finder);
 
 
         /**

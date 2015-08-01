@@ -31,22 +31,48 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
-
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
-
-class SandboxWidgetTransformer extends AbstractDataSerializerTransformer
+/**
+ * A stateful cache we use to store the transformations so we only ever execute a data transformer once
+ * per type/id pair (per view).
+ */
+class DataTransformerRegistry
 {
-    public function getAutomaticProperties()
+    private $transformed_data;
+
+    public function __construct()
     {
-        return ['id', 'name', 'inventory', 'parent', 'children'];
+        $this->transformed_data = [];
     }
 
-    public function getCustomProperties(DataSerializerContext $context)
+    public function registerTransformed($type, $id, $transformed, $view = DataTransformerRequest::DEFAULT_VIEW)
     {
-        return [
-            'inventory_warning' => $context->getMainData()->getInventory() <= 5
-        ];
+        if (!array_key_exists($view, $this->transformed_data)) {
+            $this->transformed_data[$view] = [];
+        }
+
+        if (!array_key_exists($type, $this->transformed_data[$view])) {
+            $this->transformed_data[$view][$type] = [];
+        }
+
+        $this->transformed_data[$view][$type][$id] = $transformed;
+    }
+
+    public function getTransformed($type, $id, $view = DataTransformerRequest::DEFAULT_VIEW)
+    {
+        if (!array_key_exists($view, $this->transformed_data)) {
+            return null;
+        }
+
+        if (!array_key_exists($type, $this->transformed_data[$view])) {
+            return null;
+        }
+
+        if (!array_key_exists($id, $this->transformed_data[$view][$type])) {
+            return null;
+        }
+
+        return $this->transformed_data[$view][$type][$id];
     }
 }

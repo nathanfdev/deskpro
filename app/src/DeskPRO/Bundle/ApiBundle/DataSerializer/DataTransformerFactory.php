@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

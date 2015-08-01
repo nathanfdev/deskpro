@@ -108,12 +108,12 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *
      * @Get("/sandbox_widgets/{id}", name="api_sandbox_widgets_get")
      */
-    public function getAction($id)
+    public function getAction(Request $request, $id)
     {
         $widget = $this->getWidget($id);
 
         return View::create(
-            $this->dataSerialize($widget),
+            $this->dataSerialize($widget, $request->query->get('include')),
             Response::HTTP_OK
         );
     }

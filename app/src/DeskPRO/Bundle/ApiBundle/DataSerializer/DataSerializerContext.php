@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 
 /**
  * The DataSerializer package is mostly stateless services, however there is a lot of state to
@@ -94,6 +94,11 @@ class DataSerializerContext
     protected $includes;
 
     /**
+     * @var DataSideloads
+     */
+    protected $sideloads;
+
+    /**
      * These are considered processed, but may still need another pass.
      *
      * @var array a multi-dimensional array, the root keys are an object "type" ("person") and the value
@@ -101,8 +106,12 @@ class DataSerializerContext
      *            result JSON it could end up being a single object).
      */
     protected $includes_transformed;
+    /**
+     * @var DataTypeIdFinder
+     */
+    private $id_finder;
 
-    public function __construct($source_data, array $requested_includes = [], $main_view = null, $main_type = null)
+    public function __construct($source_data, array $requested_includes = [], $main_view = null, $main_type = null, DataTypeIdFinder $id_finder)
     {
         $this->source_data = $source_data;
         $this->main_data = $source_data; // main data starts the same as source data, but event listneres can change this
@@ -111,6 +120,8 @@ class DataSerializerContext
         $this->includes = [];
         $this->main_view = $main_view;
         $this->serialized_array = [];
+        $this->sideloads = new DataSideloads($id_finder);
+        $this->id_finder = $id_finder;
     }
 
     /**
@@ -121,11 +132,12 @@ class DataSerializerContext
      * @param null $requested_includes_string
      * @param null $main_view
      * @param null $main_type
+     * @param DataTypeIdFinder $id_finder
      * @return DataSerializerContext
      */
-    public static function create($source_data, $requested_includes_string = null, $main_view = null, $main_type = null)
+    public static function create($source_data, $requested_includes_string = null, $main_view = null, $main_type = null, DataTypeIdFinder $id_finder)
     {
-        return new self($source_data, self::parseIncludes($requested_includes_string), $main_view, $main_type);
+        return new self($source_data, self::parseIncludes($requested_includes_string), $main_view, $main_type, $id_finder);
     }
 
     public static function parseIncludes($requested_includes_string)
@@ -160,20 +172,6 @@ class DataSerializerContext
         return in_array($type, $this->requested_includes);
     }
 
-    public function addIncludeProperty($type, $include)
-    {
-        $the_include = array();
-        if (array_key_exists($type, $this->includes)) {
-            $the_include = $this->includes[$type];
-        }
-
-        if (!in_array($include, $the_include)) {
-            $the_include[] = $include;
-        }
-
-        $this->includes[$type] = $the_include;
-    }
-
     /**
      * @return array
      */
@@ -195,6 +193,10 @@ class DataSerializerContext
      */
     public function setMainData($main_data)
     {
+        if ($type = $this->getMainType()) {
+            $this->sideloads->addIgnoredData($type, $main_data);
+        }
+
         $this->main_data = $main_data;
     }
 
@@ -279,47 +281,10 @@ class DataSerializerContext
     }
 
     /**
-     * @return array
+     * @return DataSideloads
      */
-    public function getIncludes()
+    public function getSideloads()
     {
-        return $this->includes;
-    }
-
-    /**
-     * @return array
-     */
-    public function getIncludesTransformed()
-    {
-        return $this->includes_transformed;
-    }
-
-    /**
-     * Add the transformed array to the includes for this type.
-     *
-     * @param $type
-     * @param $transformed_include
-     */
-    public function addTransformedInclude($type, array $transformed_include)
-    {
-        $the_include = array();
-        if (array_key_exists($type, $this->includes_transformed)) {
-            $the_include = $this->includes_transformed[$type];
-        }
-
-        // we may want to iterate this and check for the "id" to be the same
-        if (!in_array($transformed_include, $the_include)) {
-            $the_include[] = $transformed_include;
-        }
-
-        $this->includes_transformed[$type] = $the_include;
-    }
-
-    /**
-     * We processed whatever was in $includes and we want to reset the array.
-     */
-    public function clearIncludes()
-    {
-        $this->includes = [];
+        return $this->sideloads;
     }
 }

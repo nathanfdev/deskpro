@@ -34,73 +34,25 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
 
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataPropertyTransformer;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Recursively finds DeferredPropertyInterface's in the serialized array and processes them
- */
-class DeferredPropertiesListener implements EventSubscriberInterface
+class PaginationListener implements EventSubscriberInterface
 {
-    /**
-     * @var DataPropertyTransformer
-     */
-    private $property_transformer;
-
-    public function __construct(DataPropertyTransformer $property_transformer, LoggerInterface $logger)
-    {
-        $this->property_transformer = $property_transformer;
-    }
-
     public static function getSubscribedEvents()
     {
         return [
-            DataSerializerEvents::POST_TRANSFORM => ['postTransform', 0]
+            DataSerializerEvents::PRE_SERIALIZE => ['preSerialize']
         ];
     }
 
-    public function postTransform(DataSerializerEvent $event)
+    public function preSerialize(DataSerializerEvent $event)
     {
         $context = $event->getContext();
 
-        $this->processDeferredPropertiesInSerializedArray($context);
-    }
-
-    protected function processDeferredPropertiesInSerializedArray(DataSerializerContext $context)
-    {
-        // this is a big array that might have some deferred properties to deal with
-        // we now replace the deferred properties with the resolved values
-        $transformed = $context->getSerializedArray();
-        $context->setSerializedArray($this->processArrayDeferredProperties($transformed));
-    }
-
-    /**
-     * This is public because the SideloadListener uses this service and calls this method...
-     *
-     * @param array $data
-     * @return array
-     * @throws DataSerializerException
-     */
-    public function processArrayDeferredProperties(array $data)
-    {
-        $processed = [];
-
-        foreach ($data as $key => $val) {
-            if (is_array($val)) {
-                $processed[$key] = $this->processArrayDeferredProperties($val);
-            } elseif ($val instanceof DeferredPropertyInterface) {
-                $processed[$key] = $this->property_transformer->resolveDeferredProperty($val);
-            } else {
-                $processed[$key] = $val;
-            }
-        }
-
-        return $processed;
+        // it's important to always make sure you call setMainData here with the main data
+        // even if we're not dealing with a pager
+        $context->setMainData($context->getSourceData());
     }
 }

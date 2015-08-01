@@ -74,19 +74,19 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
             $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
             $new_val = new DoctrineDeferredProperty($doctrine_deferred, $type);
             if ($serializer_context->isTypeIncluded($type)) {
-                $serializer_context->addIncludeProperty(
+                $serializer_context->getSideloads()->addDeferred(
                     $type,
                     new DoctrineDeferredInclude($doctrine_deferred)
                 );
             }
-        } elseif ($val instanceof Collection || is_array($val) || $val instanceof \Traversable || $val === null) {
+        } elseif ($val === null || $val instanceof Collection || is_array($val) || $val instanceof \Traversable) {
             if ($this->assoc_manager->isAssociation($data, $property_name)) {
                 // this is an association, we don't want to worry about getting these IDs yet
                 $type = $this->getType($data, $property_name);
                 $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
                 $new_val = new DoctrineDeferredProperty($doctrine_deferred, $type);
                 if ($serializer_context->isTypeIncluded($type)) {
-                    $serializer_context->addIncludeProperty(
+                    $serializer_context->getSideloads()->addDeferred(
                         $type,
                         new DoctrineDeferredInclude($doctrine_deferred)
                     );

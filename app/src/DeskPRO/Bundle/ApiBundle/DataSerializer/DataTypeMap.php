@@ -33,6 +33,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * This knows how to find the type of an object
  */
@@ -54,7 +56,8 @@ class DataTypeMap
             $this->map = [
                 'sandbox_widget' => [
                     'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget'
+                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
+                        '\Proxies\__CG__\DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
                     ]
                 ]
             ];
@@ -86,9 +89,11 @@ class DataTypeMap
      */
     public function findTypeForClass($object_class)
     {
+        $object_class = $this->normalizeNamespaceString($object_class);
         foreach ($this->map as $type => $checks) {
             if (isset($checks['classes'])) {
                 foreach ($checks['classes'] as $class_name) {
+                    $class_name = $this->normalizeNamespaceString($class_name);
                     if ($class_name == $object_class) {
                         return $type;
                     }
@@ -97,5 +102,20 @@ class DataTypeMap
         }
 
         return null;
+    }
+
+    /**
+     * Make sure to remove any leading "\" from the FQNS
+     *
+     * @param $object_class
+     * @return string
+     */
+    public function normalizeNamespaceString($object_class)
+    {
+        if (substr($object_class, 0, 1) === '\\') {
+            return substr($object_class, 1);
+        }
+
+        return $object_class;
     }
 }

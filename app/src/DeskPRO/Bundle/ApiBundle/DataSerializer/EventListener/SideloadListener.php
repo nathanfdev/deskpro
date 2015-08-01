@@ -37,9 +37,12 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataPropertyTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerFactory;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
+use Doctrine\Common\Collections\Collection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -51,7 +54,7 @@ class SideloadListener implements EventSubscriberInterface
     /**
      * @var DataTransformerFactory
      */
-    private $transformer_factory;
+    private $data_transformer;
 
     /**
      * @var DataPropertyTransformer
@@ -62,76 +65,80 @@ class SideloadListener implements EventSubscriberInterface
      * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @var DeferredPropertiesListener
+     */
+    private $deferred_properties_listener;
 
     public function __construct(
-        DataTransformerFactory $transformer_factory,
+        DataTransformer $data_transformer,
         DataPropertyTransformer $property_transformer,
+        DeferredPropertiesListener $deferred_properties_listener,
         LoggerInterface $logger
     )
     {
-        $this->transformer_factory = $transformer_factory;
+        $this->data_transformer = $data_transformer;
         $this->property_transformer = $property_transformer;
+        $this->deferred_properties_listener = $deferred_properties_listener;
         $this->logger = $logger;
     }
 
     public static function getSubscribedEvents()
     {
         return [
-            DataSerializerEvents::POST_TRANSFORM => ['postTransform', -128],
             DataSerializerEvents::POST_SERIALIZE => ['postSerialize', 0],
         ];
     }
 
     /**
-     * For any include value, we need to transform it and add it to the $context as a processed include.
-     */
-    public function postTransform(DataSerializerEvent $event)
-    {
-        $context = $event->getContext();
-
-        $includes = $context->getIncludes();
-
-        foreach ($includes as $type => $type_includes) {
-            $transformed = [];
-            $transformer = $this->transformer_factory->findByType($type);
-            foreach ($type_includes as $type_include) {
-                if ($type_include instanceof DeferredPropertyInterface) {
-                    // this value was deferred, so we need to resolve it before transforming it
-                    // i.e. if this was a deferred doctrine value, we need to get the entity first and then transform it
-                    $type_include = $this->property_transformer->resolveDeferredProperty($type_include);
-                }
-
-                // this one was not deferred, and we already have the actual array
-                $transformed[] = $transformer->transform($type_include);
-            }
-
-            foreach ($transformed as $transformed_include) {
-                $context->addTransformedInclude($type, $transformed_include);
-            }
-
-        }
-
-        $context->clearIncludes(); // these were dealt with already, celar them and make way for the next pass
-        // TODO: do this recursively
-    }
-
-    /**
-     * All of the $includes should be processed, and now we can finalize the side-load data into the serialized array.
-     *
-     * @param DataSerializerEvent $event
+     * Process the $context->getSideloads() object, and add it to "linked" in the serialized array.
      */
     public function postSerialize(DataSerializerEvent $event)
     {
         $context = $event->getContext();
 
-        // TODO: recursion should be dealt with, confirm.
+        $sideloads = $context->getSideloads();
 
-        $serialized = $context->getSerializedArray();
+        // keep looping and resolving sideloads until there are none left to resolve
+        while ($sideloads->hasUnprocessed()) {
 
-        if ($linked = $context->getIncludesTransformed()) {
-            $serialized['linked'] = $linked;
+            foreach ($sideloads->getAndClearDeferred() as $type => $deferred_array) {
+                foreach ($deferred_array as $deferred_property) {
+                    $sideload_data = null;
+                    if ($deferred_property instanceof DeferredPropertyInterface) {
+                        // this value was deferred, so we need to resolve it before transforming it
+                        // i.e. if this was a deferred doctrine value, we need to get the entity first and then transform it
+                        $sideload_data = $this->property_transformer->resolveDeferredProperty($deferred_property);
+                    }
+
+                    if (is_array($sideload_data) || $sideload_data instanceof \Traversable) {
+                        $sideloads->addSideloadCollection($type, $sideload_data);
+                    } elseif ($sideload_data) {
+                        $sideloads->addSideloadData($type, $sideload_data);
+                    }
+                }
+            }
+
+            $sideloads->processCollections();
+
+            $sideloads_transformed = [];
+            $processing = $sideloads->getSideloadData();
+            foreach ($processing as $type => $datas) {
+                foreach ($datas as $id => $data) {
+                    $transformation_request = new DataTransformerRequest($data, $context);
+                    $transformer_response = $this->data_transformer->transform($transformation_request);
+                    $sideloads_transformed[$type][$id] = $transformer_response->getTransformed();
+                }
+            }
+
+            $serialized = $context->getSerializedArray();
+
+            $sideloads_transformed = $this->deferred_properties_listener->processArrayDeferredProperties(
+                $sideloads_transformed
+            );
+            $serialized['linked'] = $sideloads_transformed;
+
+            $context->setSerializedArray($serialized);
         }
-
-        $context->setSerializedArray($serialized);
     }
 }

@@ -31,11 +31,12 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataPropertyTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformationContext;
 use Psr\Log\LoggerInterface;
 
@@ -51,9 +52,9 @@ abstract class AbstractDataSerializerTransformer
      */
     protected $logger;
 
-    abstract public function getAutomaticProperties();
+    abstract public function getAutomaticProperties(DataTransformerRequest $transformation_request);
 
-    abstract public function getCustomProperties(DataSerializerContext $context);
+    abstract public function getCustomProperties(DataTransformerRequest $transformation_request);
 
     /**
      * The context contains all of the data needed to do the transformation, including what "view" and also
@@ -63,13 +64,13 @@ abstract class AbstractDataSerializerTransformer
      * @param DataSerializerContext $context
      * @return array
      */
-    public function transform(DataSerializerContext $context)
+    public function transform(DataTransformerRequest $transformation_request)
     {
-        $data = $context->getMainData();
+        $data = $transformation_request->getDataToBeTransformed();
         $transformed = [];
 
-        foreach ($this->getAutomaticProperties() as $property_name) {
-            $property_context = new PropertyTransformationContext($data, $property_name, $context);
+        foreach ($this->getAutomaticProperties($transformation_request) as $property_name) {
+            $property_context = new PropertyTransformationContext($data, $property_name, $transformation_request->getSerializerContext());
 
             $this->property_transformer->transform($property_context);
 
@@ -89,7 +90,7 @@ abstract class AbstractDataSerializerTransformer
             $transformed[$property_name] = $transformation;
         }
 
-        return array_merge($transformed, $this->getCustomProperties($context));
+        return array_merge($transformed, $this->getCustomProperties($transformation_request));
     }
 
     /**

@@ -31,77 +31,84 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\EventListener;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataPropertyTransformer;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvent;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerEvents;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerFactory;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
-/**
- * Find the right transformer during PRE_TRANSFORM and execute it during TRANSFORM
- */
-class TransformerListener implements EventSubscriberInterface
+class DataTransformer
 {
+    /**
+     * @var DataTransformerRegistry
+     */
+    private $transformed_registry;
+    /**
+     * @var DataTypeMap
+     */
+    private $type_map;
+
     /**
      * @var DataTransformerFactory
      */
     private $transformer_factory;
-
     /**
-     * @var LoggerInterface
+     * @var DataTypeIdFinder
      */
-    private $logger;
+    private $id_finder;
 
     public function __construct(
+        DataTransformerRegistry $transformed_registry,
         DataTransformerFactory $transformer_factory,
-        LoggerInterface $logger
+        DataTypeMap $type_map,
+        DataTypeIdFinder $id_finder
     )
     {
+        $this->transformed_registry = $transformed_registry;
+        $this->type_map = $type_map;
         $this->transformer_factory = $transformer_factory;
-        $this->logger = $logger;
+        $this->id_finder = $id_finder;
     }
 
-    public static function getSubscribedEvents()
+    public function transform(DataTransformerRequest $transformation_request)
     {
-        return [
-            DataSerializerEvents::PRE_TRANSFORM => ['preTransform', 0],
-            DataSerializerEvents::TRANSFORM => ['transform', 0]
-        ];
-    }
+        $data = $transformation_request->getDataToBeTransformed();
+        $type = $this->type_map->findType($data);
+        $id = $this->id_finder->findDataId($data);
 
-    /**
-     * Get the transformer for this context "type"
-     */
-    public function preTransform(DataSerializerEvent $event)
-    {
-        $context = $event->getContext();
+        if ($type && $id) {
+            if (!$transformed = $this->transformed_registry->getTransformed($type, $id)) {
+                $transformed = $this->doTransform($transformation_request, $type);
+                $this->transformed_registry->registerTransformed($type, $id, $transformed);
+            }
 
-        // normally the type is found and set onto the $context via the TypeListener
-        $transformer = $this->transformer_factory->findByType($context->getMainType());
+            $transformed = $this->transformed_registry->getTransformed($type, $id);
+        } elseif ($type) {
+            $transformed = $this->doTransform($transformation_request, $type);
+        } else {
+            return null; // couldn't find type
+        }
 
-        $context->setMainTransformer($transformer);
-    }
-
-    /**
-     * Now execute the transformer and set the "main transformed data"
-     */
-    public function transform(DataSerializerEvent $event)
-    {
-        $context = $event->getContext();
-
-        $transformation_request = new DataTransformerRequest(
-            $context->getMainData(),
-            $context,
-            $context->getMainView() ?: DataTransformerRequest::DEFAULT_VIEW
+        return new DataTransformerResponse(
+            $transformation_request,
+            $transformation_request->getView(),
+            $type,
+            $id,
+            $transformed
         );
+    }
 
-        $transformed_array = $context->getMainTransformer()->transform($transformation_request);
-        $context->setMainTransformed($transformed_array);
+    /**
+     * @param DataTransformerRequest $transformation_request
+     * @param $type
+     * @return array
+     * @throws Exception\DataSerializerException
+     */
+    public function doTransform(DataTransformerRequest $transformation_request, $type)
+    {
+        $transformer = $this->transformer_factory->findByType($type);
+        $transformed = $transformer->transform($transformation_request);
+
+        return $transformed;
     }
 }

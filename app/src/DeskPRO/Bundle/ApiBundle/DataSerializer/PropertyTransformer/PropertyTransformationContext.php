@@ -79,7 +79,7 @@ class PropertyTransformationContext
     protected $transformed_value;
 
     /**
-     * @var bool wether we actually did a transformation or not yet
+     * @var bool weather we actually did a transformation or not yet
      */
     protected $is_transformed;
 
