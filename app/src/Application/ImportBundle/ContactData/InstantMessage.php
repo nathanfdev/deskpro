@@ -25,38 +25,47 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Contact data helper
+ * InstantMessage contact data helper
  *
- * Interface ContactDataInterface
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class InstantMessage
+ * @package Application\ImportBundle\ContactData
  */
-interface ContactDataInterface
+final class InstantMessage extends AbstractContactData
 {
     /**
-     * Helper type
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getType();
+    public function getType()
+    {
+        return ContactData::TYPE_INSTANT_MESSAGE;
+    }
 
     /**
-     * Creates a contact data entity
-     *
-     * @param array $data
-     * @return ContactData
+     * {@inheritdoc}
      */
-    public function toEntity(array $data);
+    public function toEntity(array $data)
+    {
+        $contact = parent::toEntity($data);
+
+        $contact->setField1(isset($data['username']) ? $data['username'] : '');
+        $contact->setField2(isset($data['service']) ? $data['service'] : '');
+
+        return $contact;
+    }
 
     /**
-     * Converts to array
-     *
-     * @param ContactData $entity
-     * @return array
+     * {@inheritdoc}
      */
-    public function toArray(ContactData $entity);
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'username' => $entity->getField1(),
+            'service'  => $entity->getField2(),
+        ));
+    }
 }

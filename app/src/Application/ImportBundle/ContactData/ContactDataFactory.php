@@ -25,23 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
-
-use Application\ImportBundle\Entity\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 /**
- * Fax contact data helper
- *
- * Class Fax
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class ContactDataFactory
+ * @package Application\ImportBundle\ContactData
  */
-final class Fax extends AbstractPhone
+class ContactDataFactory
 {
     /**
-     * {@inheritdoc}
+     * @param string $contact_type
+     * @return ContactDataInterface
      */
-    public function getType()
+    public static function getHandler($contact_type)
     {
-        return ContactData::TYPE_FAX;
+        static $collection;
+
+        if (null === $collection) {
+            $collection = new Collection();
+            $collection
+                ->attach(new Address())
+                ->attach(new Facebook())
+                ->attach(new Fax())
+                ->attach(new InstantMessage())
+                ->attach(new LinkedIn())
+                ->attach(new Mobile())
+                ->attach(new Phone())
+                ->attach(new Skype())
+                ->attach(new Twitter())
+                ->attach(new Website())
+            ;
+        }
+
+        return $collection->getByType($contact_type);
     }
 }

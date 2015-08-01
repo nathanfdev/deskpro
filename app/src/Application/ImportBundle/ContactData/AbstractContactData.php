@@ -25,44 +25,42 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
-use Application\ImportBundle\AbstractCollection;
+use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Collection of contact data helpers
+ * Abstract phone contact data helper
  *
- * Class Collection
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class AbstractContactData
+ * @package Application\ImportBundle\ContactData
  */
-class Collection extends AbstractCollection
+abstract class AbstractContactData implements ContactDataInterface
 {
     /**
-     * Add a helper
-     *
-     * @param ContactDataInterface $helper
-     * @return $this
+     * {@inheritdoc}
      */
-    public function attach(ContactDataInterface $helper)
+    public function toEntity(array $data)
     {
-        $this->collection[$helper->getType()] = $helper;
-        return $this;
+        $contact = new ContactData();
+        $contact->setRawData($data);
+        $contact->setContactType($this->getType());
+
+        if (isset($data['comment'])) {
+            $contact->setComment($data['comment']);
+        }
+
+        return $contact;
     }
 
     /**
-     * Returns a helper by contact type
-     *
-     * @param string $type
-     *
-     * @return ContactDataInterface
-     * @throws \RuntimeException
+     * {@inheritdoc}
      */
-    public function getByType($type)
+    public function toArray(ContactData $entity)
     {
-        if (isset($this->collection[$type])) {
-            return $this->collection[$type];
-        }
-
-        throw new \RuntimeException(sprintf('This contact type `%s` is not supported', $type));
+        return array(
+            'contact_type' => $this->getType(),
+            'comment'      => $entity->getComment(),
+        );
     }
 }

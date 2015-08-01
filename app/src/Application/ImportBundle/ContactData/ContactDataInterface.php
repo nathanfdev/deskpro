@@ -25,47 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Facebook contact data helper
+ * Contact data helper
  *
- * Class Facebook
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Interface ContactDataInterface
+ * @package Application\ImportBundle\ContactData
  */
-final class Facebook extends AbstractContactData
+interface ContactDataInterface
 {
     /**
-     * {@inheritdoc}
+     * Helper type
+     *
+     * @return string
      */
-    public function getType()
-    {
-        return ContactData::TYPE_FACEBOOK;
-    }
+    public function getType();
 
     /**
-     * {@inheritdoc}
+     * Creates a contact data entity
+     *
+     * @param array $data
+     * @return ContactData
      */
-    public function toEntity(array $data)
-    {
-        $contact = parent::toEntity($data);
-
-        if (isset($data['profile_url'])) {
-            $contact->setField1($data['profile_url']);
-        }
-
-        return $contact;
-    }
+    public function toEntity(array $data);
 
     /**
-     * {@inheritdoc}
+     * Converts to array
+     *
+     * @param ContactData $entity
+     * @return array
      */
-    public function toArray(ContactData $entity)
-    {
-        return array_merge(parent::toArray($entity), array(
-            'profile_url' => $entity->getField1(),
-        ));
-    }
+    public function toArray(ContactData $entity);
 }

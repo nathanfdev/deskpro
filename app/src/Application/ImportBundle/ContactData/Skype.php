@@ -25,24 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Website contact data helper
+ * Skype contact data helper
  *
- * Class Website
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Skype
+ * @package Application\ImportBundle\ContactData
  */
-final class Website extends AbstractContactData
+final class Skype extends AbstractContactData
 {
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return ContactData::TYPE_WEBSITE;
+        return ContactData::TYPE_SKYPE;
     }
 
     /**
@@ -52,8 +52,8 @@ final class Website extends AbstractContactData
     {
         $contact = parent::toEntity($data);
 
-        if (isset($data['url'])) {
-            $contact->setField1($data['url']);
+        if (isset($data['username'])) {
+            $contact->setField1($data['username']);
         }
 
         return $contact;
@@ -65,7 +65,7 @@ final class Website extends AbstractContactData
     public function toArray(ContactData $entity)
     {
         return array_merge(parent::toArray($entity), array(
-            'url' => $entity->getField1(),
+            'username' => $entity->getField1(),
         ));
     }
 }

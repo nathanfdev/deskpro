@@ -25,24 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * InstantMessage contact data helper
+ * LinkedIn contact data helper
  *
- * Class InstantMessage
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class LinkedIn
+ * @package Application\ImportBundle\ContactData
  */
-final class InstantMessage extends AbstractContactData
+final class LinkedIn extends AbstractContactData
 {
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return ContactData::TYPE_INSTANT_MESSAGE;
+        return ContactData::TYPE_LINKED_IN;
     }
 
     /**
@@ -52,8 +52,9 @@ final class InstantMessage extends AbstractContactData
     {
         $contact = parent::toEntity($data);
 
-        $contact->setField1(isset($data['username']) ? $data['username'] : '');
-        $contact->setField2(isset($data['service']) ? $data['service'] : '');
+        if (isset($data['profile_url'])) {
+            $contact->setField1($data['profile_url']);
+        }
 
         return $contact;
     }
@@ -64,8 +65,7 @@ final class InstantMessage extends AbstractContactData
     public function toArray(ContactData $entity)
     {
         return array_merge(parent::toArray($entity), array(
-            'username' => $entity->getField1(),
-            'service'  => $entity->getField2(),
+            'profile_url' => $entity->getField1(),
         ));
     }
 }

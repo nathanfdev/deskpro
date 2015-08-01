@@ -25,53 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Address contact data helper
+ * Fax contact data helper
  *
- * Class Address
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Fax
+ * @package Application\ImportBundle\ContactData
  */
-final class Address extends AbstractContactData
+final class Fax extends AbstractPhone
 {
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return ContactData::TYPE_ADDRESS;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toEntity(array $data)
-    {
-        $contact = parent::toEntity($data);
-
-        $contact->setField1(isset($data['address']) ? $data['address'] : '');
-        $contact->setField2(isset($data['city']) ? $data['city'] : '');
-        $contact->setField3(isset($data['state']) ? $data['state'] : '');
-        $contact->setField4(isset($data['zip']) ? $data['zip'] : '');
-        $contact->setField5(isset($data['country']) ? $data['country'] : '');
-
-        return $contact;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray(ContactData $entity)
-    {
-        return array_merge(parent::toArray($entity), array(
-            'address' => $entity->getField1(),
-            'city'    => $entity->getField2(),
-            'state'   => $entity->getField3(),
-            'zip'     => $entity->getField4(),
-            'country' => $entity->getField5(),
-        ));
+        return ContactData::TYPE_FAX;
     }
 }

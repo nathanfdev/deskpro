@@ -25,42 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Abstract phone contact data helper
+ * Phone contact data helper
  *
- * Class AbstractContactData
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Phone
+ * @package Application\ImportBundle\ContactData
  */
-abstract class AbstractContactData implements ContactDataInterface
+final class Phone extends AbstractPhone
 {
     /**
      * {@inheritdoc}
      */
-    public function toEntity(array $data)
+    public function getType()
     {
-        $contact = new ContactData();
-        $contact->setRawData($data);
-        $contact->setContactType($this->getType());
-
-        if (isset($data['comment'])) {
-            $contact->setComment($data['comment']);
-        }
-
-        return $contact;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray(ContactData $entity)
-    {
-        return array(
-            'contact_type' => $this->getType(),
-            'comment'      => $entity->getComment(),
-        );
+        return ContactData::TYPE_PHONE;
     }
 }

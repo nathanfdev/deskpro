@@ -25,47 +25,44 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
-use Application\ImportBundle\Entity\ContactData;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Skype contact data helper
+ * Collection of contact data helpers
  *
- * Class Skype
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Collection
+ * @package Application\ImportBundle\ContactData
  */
-final class Skype extends AbstractContactData
+class Collection extends AbstractCollection
 {
     /**
-     * {@inheritdoc}
+     * Add a helper
+     *
+     * @param ContactDataInterface $helper
+     * @return $this
      */
-    public function getType()
+    public function attach(ContactDataInterface $helper)
     {
-        return ContactData::TYPE_SKYPE;
+        $this->collection[$helper->getType()] = $helper;
+        return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a helper by contact type
+     *
+     * @param string $type
+     *
+     * @return ContactDataInterface
+     * @throws \RuntimeException
      */
-    public function toEntity(array $data)
+    public function getByType($type)
     {
-        $contact = parent::toEntity($data);
-
-        if (isset($data['username'])) {
-            $contact->setField1($data['username']);
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
         }
 
-        return $contact;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray(ContactData $entity)
-    {
-        return array_merge(parent::toArray($entity), array(
-            'username' => $entity->getField1(),
-        ));
+        throw new \RuntimeException(sprintf('This contact type `%s` is not supported', $type));
     }
 }

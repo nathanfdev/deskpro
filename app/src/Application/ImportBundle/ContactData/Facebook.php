@@ -25,24 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Twitter contact data helper
+ * Facebook contact data helper
  *
- * Class Twitter
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Facebook
+ * @package Application\ImportBundle\ContactData
  */
-final class Twitter extends AbstractContactData
+final class Facebook extends AbstractContactData
 {
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return ContactData::TYPE_TWITTER;
+        return ContactData::TYPE_FACEBOOK;
     }
 
     /**
@@ -52,8 +52,9 @@ final class Twitter extends AbstractContactData
     {
         $contact = parent::toEntity($data);
 
-        $contact->setField1(isset($data['username']) ? $data['username'] : '');
-        $contact->setField2(isset($data['display_feed']) && $data['display_feed'] ? 1 : 0);
+        if (isset($data['profile_url'])) {
+            $contact->setField1($data['profile_url']);
+        }
 
         return $contact;
     }
@@ -64,8 +65,7 @@ final class Twitter extends AbstractContactData
     public function toArray(ContactData $entity)
     {
         return array_merge(parent::toArray($entity), array(
-            'username'     => $entity->getField1(),
-            'display_feed' => $entity->getField2(),
+            'profile_url' => $entity->getField1(),
         ));
     }
 }

@@ -25,24 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * LinkedIn contact data helper
+ * Address contact data helper
  *
- * Class LinkedIn
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Address
+ * @package Application\ImportBundle\ContactData
  */
-final class LinkedIn extends AbstractContactData
+final class Address extends AbstractContactData
 {
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return ContactData::TYPE_LINKED_IN;
+        return ContactData::TYPE_ADDRESS;
     }
 
     /**
@@ -52,9 +52,11 @@ final class LinkedIn extends AbstractContactData
     {
         $contact = parent::toEntity($data);
 
-        if (isset($data['profile_url'])) {
-            $contact->setField1($data['profile_url']);
-        }
+        $contact->setField1(isset($data['address']) ? $data['address'] : '');
+        $contact->setField2(isset($data['city']) ? $data['city'] : '');
+        $contact->setField3(isset($data['state']) ? $data['state'] : '');
+        $contact->setField4(isset($data['zip']) ? $data['zip'] : '');
+        $contact->setField5(isset($data['country']) ? $data['country'] : '');
 
         return $contact;
     }
@@ -65,7 +67,11 @@ final class LinkedIn extends AbstractContactData
     public function toArray(ContactData $entity)
     {
         return array_merge(parent::toArray($entity), array(
-            'profile_url' => $entity->getField1(),
+            'address' => $entity->getField1(),
+            'city'    => $entity->getField2(),
+            'state'   => $entity->getField3(),
+            'zip'     => $entity->getField4(),
+            'country' => $entity->getField5(),
         ));
     }
 }

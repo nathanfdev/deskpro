@@ -25,18 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Abstract phone contact data helper
+ * Website contact data helper
  *
- * Class AbstractPhone
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Website
+ * @package Application\ImportBundle\ContactData
  */
-abstract class AbstractPhone extends AbstractContactData
+final class Website extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return ContactData::TYPE_WEBSITE;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -44,9 +52,9 @@ abstract class AbstractPhone extends AbstractContactData
     {
         $contact = parent::toEntity($data);
 
-        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
-        $contact->setField2(isset($data['number']) ? $data['number'] : '');
-        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
+        if (isset($data['url'])) {
+            $contact->setField1($data['url']);
+        }
 
         return $contact;
     }
@@ -57,9 +65,7 @@ abstract class AbstractPhone extends AbstractContactData
     public function toArray(ContactData $entity)
     {
         return array_merge(parent::toArray($entity), array(
-            'country_calling_code' => $entity->getField1(),
-            'number'               => $entity->getField2(),
-            'type'                 => $entity->getField3(),
+            'url' => $entity->getField1(),
         ));
     }
 }

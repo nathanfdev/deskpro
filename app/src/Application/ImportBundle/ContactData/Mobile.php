@@ -25,33 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
+
+use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Class ContactDataFactory
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Mobile contact data helper
+ *
+ * Class Mobile
+ * @package Application\ImportBundle\ContactData
  */
-class ContactDataFactory
+final class Mobile extends AbstractPhone
 {
     /**
-     * @return Collection
+     * {@inheritdoc}
      */
-    public static function create()
+    public function getType()
     {
-        $collection = new Collection();
-        $collection
-            ->attach(new Address())
-            ->attach(new Facebook())
-            ->attach(new Fax())
-            ->attach(new InstantMessage())
-            ->attach(new LinkedIn())
-            ->attach(new Mobile())
-            ->attach(new Phone())
-            ->attach(new Skype())
-            ->attach(new Twitter())
-            ->attach(new Website())
-        ;
-
-        return $collection;
+        return ContactData::TYPE_MOBILE;
     }
 }

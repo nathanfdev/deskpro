@@ -25,23 +25,47 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\ContactData;
+namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Mobile contact data helper
+ * Twitter contact data helper
  *
- * Class Mobile
- * @package Application\ImportBundle\Generator\Exporter\ContactData
+ * Class Twitter
+ * @package Application\ImportBundle\ContactData
  */
-final class Mobile extends AbstractPhone
+final class Twitter extends AbstractContactData
 {
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return ContactData::TYPE_MOBILE;
+        return ContactData::TYPE_TWITTER;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toEntity(array $data)
+    {
+        $contact = parent::toEntity($data);
+
+        $contact->setField1(isset($data['username']) ? $data['username'] : '');
+        $contact->setField2(isset($data['display_feed']) && $data['display_feed'] ? 1 : 0);
+
+        return $contact;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(ContactData $entity)
+    {
+        return array_merge(parent::toArray($entity), array(
+            'username'     => $entity->getField1(),
+            'display_feed' => $entity->getField2(),
+        ));
     }
 }
