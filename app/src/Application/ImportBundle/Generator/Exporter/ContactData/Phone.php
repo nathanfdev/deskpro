@@ -25,13 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
- * Class Skype
- * @package Application\ImportBundle\ContactData
+ * Class Phone
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Skype extends AbstractContactData
+class Phone extends AbstractContactData
 {
     /**
      * {@inheritdoc}
@@ -40,9 +40,9 @@ class Skype extends AbstractContactData
     {
         $contact = parent::create($data);
 
-        if (isset($data['username'])) {
-            $contact->setField1($data['username']);
-        }
+        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
+        $contact->setField2(isset($data['number']) ? $data['number'] : '');
+        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
 
         return $contact;
     }

@@ -25,13 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
- * Class Fax
- * @package Application\ImportBundle\ContactData
+ * Class Skype
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Fax extends Phone
+class Skype extends AbstractContactData
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function create(array $data)
+    {
+        $contact = parent::create($data);
 
+        if (isset($data['username'])) {
+            $contact->setField1($data['username']);
+        }
+
+        return $contact;
+    }
 }

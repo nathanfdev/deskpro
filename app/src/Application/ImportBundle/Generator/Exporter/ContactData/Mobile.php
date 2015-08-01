@@ -25,11 +25,11 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
  * Class Mobile
- * @package Application\ImportBundle\ContactData
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
 class Mobile extends Phone
 {

@@ -25,23 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
+
+use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Class Facebook
- * @package Application\ImportBundle\ContactData
+ * Class AbstractContactData
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Facebook extends AbstractContactData
+abstract class AbstractContactData implements ContactDataInterface
 {
     /**
      * {@inheritdoc}
      */
     public function create(array $data)
     {
-        $contact = parent::create($data);
+        $contact = new ContactData();
 
-        if (isset($data['profile_url'])) {
-            $contact->setField1($data['profile_url']);
+        if (isset($data['comment'])) {
+            $contact->setComment($data['comment']);
         }
 
         return $contact;

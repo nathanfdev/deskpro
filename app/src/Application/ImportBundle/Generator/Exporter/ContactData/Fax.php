@@ -25,27 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
-
-use Application\ImportBundle\Entity\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
- * Class AbstractContactData
- * @package Application\ImportBundle\ContactData
+ * Class Fax
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-abstract class AbstractContactData implements ContactDataInterface
+class Fax extends Phone
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function create(array $data)
-    {
-        $contact = new ContactData();
 
-        if (isset($data['comment'])) {
-            $contact->setComment($data['comment']);
-        }
-
-        return $contact;
-    }
 }

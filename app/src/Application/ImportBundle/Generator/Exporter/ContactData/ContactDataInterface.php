@@ -25,24 +25,19 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
+
+use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Class InstantMessage
- * @package Application\ImportBundle\ContactData
+ * Interface ContactDataInterface
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class InstantMessage extends AbstractContactData
+interface ContactDataInterface
 {
     /**
-     * {@inheritdoc}
+     * @param array $data
+     * @return ContactData
      */
-    public function create(array $data)
-    {
-        $contact = parent::create($data);
-
-        $contact->setField1(isset($data['username']) ? $data['username'] : '');
-        $contact->setField2(isset($data['service']) ? $data['service'] : '');
-
-        return $contact;
-    }
+    public function create(array $data);
 }

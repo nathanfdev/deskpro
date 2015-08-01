@@ -25,13 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
- * Class Address
- * @package Application\ImportBundle\ContactData
+ * Class InstantMessage
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Address extends AbstractContactData
+class InstantMessage extends AbstractContactData
 {
     /**
      * {@inheritdoc}
@@ -40,11 +40,8 @@ class Address extends AbstractContactData
     {
         $contact = parent::create($data);
 
-        $contact->setField1(isset($data['address']) ? $data['address'] : '');
-        $contact->setField2(isset($data['city']) ? $data['city'] : '');
-        $contact->setField3(isset($data['state']) ? $data['state'] : '');
-        $contact->setField4(isset($data['zip']) ? $data['zip'] : '');
-        $contact->setField5(isset($data['country']) ? $data['country'] : '');
+        $contact->setField1(isset($data['username']) ? $data['username'] : '');
+        $contact->setField2(isset($data['service']) ? $data['service'] : '');
 
         return $contact;
     }

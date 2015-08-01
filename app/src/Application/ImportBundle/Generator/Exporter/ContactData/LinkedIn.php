@@ -25,13 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
- * Class Twitter
- * @package Application\ImportBundle\ContactData
+ * Class LinkedIn
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-class Twitter extends AbstractContactData
+class LinkedIn extends AbstractContactData
 {
     /**
      * {@inheritdoc}
@@ -40,8 +40,9 @@ class Twitter extends AbstractContactData
     {
         $contact = parent::create($data);
 
-        $contact->setField1(isset($data['username']) ? $data['username'] : '');
-        $contact->setField2(isset($data['display_feed']) && $data['display_feed'] ? 1 : 0);
+        if (isset($data['profile_url'])) {
+            $contact->setField1($data['profile_url']);
+        }
 
         return $contact;
     }

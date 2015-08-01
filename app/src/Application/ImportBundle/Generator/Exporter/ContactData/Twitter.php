@@ -25,19 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
-
-use Application\ImportBundle\Entity\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\ContactData;
 
 /**
- * Interface ContactDataInterface
- * @package Application\ImportBundle\ContactData
+ * Class Twitter
+ * @package Application\ImportBundle\Generator\Exporter\ContactData
  */
-interface ContactDataInterface
+class Twitter extends AbstractContactData
 {
     /**
-     * @param array $data
-     * @return ContactData
+     * {@inheritdoc}
      */
-    public function create(array $data);
+    public function create(array $data)
+    {
+        $contact = parent::create($data);
+
+        $contact->setField1(isset($data['username']) ? $data['username'] : '');
+        $contact->setField2(isset($data['display_feed']) && $data['display_feed'] ? 1 : 0);
+
+        return $contact;
+    }
 }
