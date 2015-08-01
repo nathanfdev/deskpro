@@ -9,10 +9,9 @@
       "oid": 1,
       "contact_type": "mobile",
       "comment": "some comment",
-      "field_1": "field 1 data",
-      "field_2": "field 2 data",
-      "field_3": "field 3 data",
-      "field_4": "field 4 data"
+      "country_calling_code": "country_calling_code",
+      "number": "number",
+      "type": "type"
     }
   ],
   "custom_fields": [],

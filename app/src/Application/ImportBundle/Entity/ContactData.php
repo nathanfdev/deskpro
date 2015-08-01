@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Application\ImportBundle\ContactData\ContactDataFactory;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints;
 
@@ -338,21 +339,12 @@ class ContactData extends AbstractEntity
      */
     public function toArray()
     {
-        return array(
-            'oid'          => $this->oid,
-            'contact_type' => $this->contact_type,
-            'comment'      => $this->comment,
-            'field_1'      => $this->field_1,
-            'field_2'      => $this->field_2,
-            'field_3'      => $this->field_3,
-            'field_4'      => $this->field_4,
-            'field_5'      => $this->field_5,
-            'field_6'      => $this->field_6,
-            'field_7'      => $this->field_7,
-            'field_8'      => $this->field_8,
-            'field_9'      => $this->field_9,
-            'field_10'     => $this->field_10,
-        );
+        $handler = ContactDataFactory::getHandler($this->contact_type);
+        $params  = $handler->toArray($this);
+
+        $params['oid'] = $this->oid;
+
+        return $params;
     }
 
     /**

@@ -312,8 +312,9 @@ class JsonTest extends \DpIntegrationTestCase
         $contact_data1 = $organization->getContactData('mobile');
         $contact = $contact_data1[0];
         $this->assertEquals('some comment', $contact->getComment());
-        $this->assertEquals('field 1 data', $contact->getField1());
-        $this->assertEquals('field 2 data', $contact->getField2());
+        $this->assertEquals('country_calling_code', $contact->getField1());
+        $this->assertEquals('number', $contact->getField2());
+        $this->assertEquals('type', $contact->getField3());
 
         $this->assertEmpty($organization->getContactData('fax'));
 

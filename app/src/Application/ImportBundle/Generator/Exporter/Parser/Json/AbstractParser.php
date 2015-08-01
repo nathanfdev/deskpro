@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\Json\JsonConfig;
@@ -126,14 +127,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 ->setComment($contact['comment'])
             ;
 
-            for ($i = 1; $i < 11; $i++) {
-                $field_key = 'field_' . $i;
-                $setter    = 'setField' . $i;
-
-                if (array_key_exists($field_key, $contact)) {
-                    $entity->$setter($contact[$field_key]);
-                }
-            }
+            $handler = ContactDataFactory::getHandler($contact['contact_type']);
+            $entity  = $handler->toEntity($contact);
+            $entity
+                ->setOid($contact['oid'])
+                ->setDestination('contact_data_' . $contact['oid'])
+            ;
 
             return $entity;
         }
