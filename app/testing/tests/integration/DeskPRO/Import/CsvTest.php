@@ -361,6 +361,8 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals('1234567', $contact->getField2());
         $this->assertEquals('phone', $contact->getField3());
 
+        $this->assertEquals(4, $this->custom_data_organization_repository->countAll());
+
         // Checking for blob
         $this->assertCount(4, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
