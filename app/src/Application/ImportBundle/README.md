@@ -565,12 +565,221 @@ Supported contact types:
 #### Exporter #2. JSON
 
 ###### JSON Entity #1. Article
+
+```json
+{
+  "oid": 1,
+  "person": "user@example.com",
+  "title": "Article 1",
+  "content": "Content 1",
+  "language": "english",
+  "end_action": null,
+  "slug": "slug-article-1",
+  "total_rating": 0,
+  "num_comments": 0,
+  "num_ratings": 0,
+  "view_count": 0,
+  "status": "published",
+  "date_created": "2015-01-15 00:00:00",
+  "date_published": null,
+  "date_end": null,
+  "categories": ["Category 1"],
+  "labels": ["Label 1"],
+  "custom_fields": []
+}
+```
+
 ###### JSON Entity #2. Download
+
+```json
+{
+  "oid": 1,
+  "person": "user@example.com",
+  "title": "Download 1",
+  "content": "Download Content 1",
+  "language": "english",
+  "slug": "download-slug-1",
+  "total_rating": 0,
+  "num_comments": 0,
+  "num_ratings": 0,
+  "num_downloads": 0,
+  "view_count": 0,
+  "category": "Category 1",
+  "status": "published",
+  "attachment": {
+    "oid": 0,
+    "person": "user@example.com",
+    "blob_data": null,
+    "blob_url": "",
+    "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/example\/csv\/downloads.csv",
+    "file_name": "downloads.csv",
+    "content_type": "csv",
+    "is_inline": false
+  },
+  "date_created": "2015-03-05 19:40:10",
+  "date_published": null,
+  "labels": ["Label 1"]
+}
+```
+
 ###### JSON Entity #3. Feedback
+
+```json
+{
+  "oid": 1,
+  "person": "user@example.com",
+  "language": "english",
+  "title": "Feedback 1",
+  "content": "Feedback Content 1",
+  "slug": "feedback-slug-1",
+  "popularity": 10,
+  "status": "published",
+  "total_rating": 0,
+  "num_comments": 0,
+  "num_ratings": 0,
+  "view_count": 0,
+  "category": "Feedback Category 1",
+  "labels": ["Feedback Label 1"],
+  "date_created": "2015-03-05 19:40:10",
+  "date_published": null,
+  "attachments": [
+    {
+      "oid": 0,
+      "person": "user@example.com",
+      "blob_data": null,
+      "blob_url": "",
+      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/example\/csv\/feedback.csv",
+      "file_name": "feedback.csv",
+      "content_type": "csv",
+      "is_inline": false
+    }
+  ],
+  "custom_fields": []
+}
+```
+
 ###### JSON Entity #4. News
+
+```json
+{
+  "oid": 1,
+  "person": "user@example.com",
+  "language": "english",
+  "slug": "news-slug-1",
+  "title": "News Title 1",
+  "content": "News Content 1",
+  "view_count": 0,
+  "total_rating": 0,
+  "num_comments": 0,
+  "num_ratings": 0,
+  "status": "published",
+  "date_created": "2015-03-05 19:40:10",
+  "date_published": null,
+  "category": "News Category 1",
+  "labels": ["News Label 1"]
+}
+```
+
 ###### JSON Entity #5. Person
+
+```json
+{
+  "oid": 710618382,
+  "is_agent": true,
+  "is_user": false,
+  "is_admin": true,
+  "first_name": null,
+  "last_name": null,
+  "name": "Sergey",
+  "override_display_name": null,
+  "password": null,
+  "password_scheme": "plain",
+  "timezone": "Europe/Moscow",
+  "date_created": "2015-02-06 19:05:35",
+  "language": null,
+  "organization": null,
+  "organization_position": null,
+  "emails": ["user@example.com"],
+  "labels": ["label1", "label2"],
+  "user_groups": [],
+  "custom_fields": []
+}
+```
+
 ###### JSON Entity #6. Ticket
+
+```json
+{
+  "oid": 1,
+  "ref": "A4G7I8Y1RV",
+  "department": null,
+  "person": "user@example.com",
+  "agent": "user@example.com",
+  "agent_team": null,
+  "status": "awaiting_agent",
+  "date_created": "2015-02-06 19:03:43",
+  "date_resolved": null,
+  "date_archived": null,
+  "subject": "Subject 1",
+  "priority": {
+    "oid": 0,
+    "title": "high",
+    "value": 50
+  },
+  "language": null,
+  "category": null,
+  "workflow": null,
+  "product": null,
+  "organization": null,
+  "is_hold": false,
+  "urgency": 1,
+  "participants": [],
+  "labels": [
+    "label1",
+    "label2"
+  ],
+  "messages": [
+    {
+      "oid": 1,
+      "person": "user@example.com",
+      "date_created": "2015-02-06 19:03:43",
+      "message_text": "Reply content",
+      "message_html": null,
+      "is_note": false,
+      "attachments": []
+    }
+  ],
+  "custom_fields": [],
+  "log_message": "Imported from ZenDesk"
+}
+```
+
 ###### JSON Entity #7. Organization
+
+```json
+{
+  "oid": "Some Organization",
+  "name": "Some Organization",
+  "picture": null,
+  "importance": 5,
+  "date_created": "2015-07-30 06:09:01",
+  "contact_data": [
+    {
+      "oid": 1,
+      "contact_type": "mobile",
+      "comment": "some comment",
+      "country_calling_code": "country_calling_code",
+      "number": "number",
+      "type": "type"
+    }
+  ],
+  "custom_fields": [],
+  "labels": [
+    "label1",
+    "label2"
+  ]
+}
+```
 
 #### Exporter #3. OsTicket
 
