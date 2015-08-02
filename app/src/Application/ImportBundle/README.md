@@ -456,15 +456,23 @@ Supported contact types:
  - twitter
  - website
 
-Example:
+1) "address" contact type:
  
-| organization_id   | contact_id | field_name           | value        |
-|-------------------|------------|----------------------|--------------|
-| Some Organization | contact_1  | contact_type         | fax          |
-| Some Organization | contact_1  | comment              | some comment |
-| Some Organization | contact_1  | country_calling_code | +7           |
-| Some Organization | contact_1  | number               | 1234567      |
-| Some Organization | contact_1  | type                 | phone        |
+| organization_id   | contact_id | field_name           | value                        |
+|-------------------|------------|----------------------|------------------------------|
+| Some Organization | contact_1  | contact_type         | fax                          |
+| Some Organization | contact_1  | comment              | some comment                 |
+| Some Organization | contact_1  | country_calling_code | +7                           |
+| Some Organization | contact_1  | number               | 1234567                      |
+| Some Organization | contact_1  | type                 | phone                        |
+
+2) "facebook" contact type:
+
+| organization_id   | contact_id | field_name           | value                        |
+|-------------------|------------|----------------------|------------------------------|
+| Some Organization | contact_2  | contact_type         | facebook                     |
+| Some Organization | contact_2  | comment              | some comment                 |
+| Some Organization | contact_2  | profile_url          | http:://facebook.com/profile |
 
 **organization_custom_fields.csv**
 
