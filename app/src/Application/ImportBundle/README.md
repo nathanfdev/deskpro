@@ -4,7 +4,7 @@ IMPORT BUNDLE
 Commands
 ------------
 
-**1) Export check**
+#### Command #1. Export check
 
 Reads and validates data from an external source.
 
@@ -46,7 +46,8 @@ php cmd.php dp:export:check osticket --batch-config="app/src/Application/ImportB
 php cmd.php dp:export:check zendesk --verbose
 ```
 
-**2) Export run**
+
+#### Command #2. Export run
 
 Reads data from an external source, validate entities and write them to json files.
 Export could be run in json files only.
@@ -106,7 +107,7 @@ php cmd.php dp:export:run zendesk --output-path="app/src/Application/ImportBundl
 ```
 
 
-**3) Import run**
+#### Command #3. Import run
 
 Reads data from an external source, validate entities and import them to deskpro database.
 
@@ -149,7 +150,7 @@ php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundl
 ```
 
 
-**4) Import batch run**
+#### Command #4. Import batch run
 
 Reads data from an external source and writes to json files. Then reads json files and imports to database.
 
@@ -197,11 +198,12 @@ php cmd.php dp:import:batch zendesk --output-path="app/src/Application/ImportBun
 Exporters
 ------------
 
-**1) CSV**
+#### Exporter #1. CSV
 
 Exports data from CSV files.
 
-**Files map**
+###### Files map
+
  - articles.csv
  - article_custom_fields.csv
  - downloads.csv
@@ -221,35 +223,37 @@ Exports data from CSV files.
 Example:
 app/src/Application/ImportBundle/Resources/example/csv
 
-**Articles**
-- Articles required columns
+###### Entity #1. Article
 
-    'id' is optional,
-    'person',
-    'title',
-    'content',
-    'slug',
-    'language',
-    'status',
-    'category',
-    'label',
-    'date_created',
-    'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/articles.csv)
+articles.csv
+
+- id (is optional),
+- person,
+- title,
+- content,
+- slug,
+- language,
+- status,
+- category,
+- label,
+- date_created,
+- custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/articles.csv)
     
-    Person means a person email
-    Slug could be empty (generated from title)
-    Date created could be empty (current time)
-    Label could be empty (only one label is supported)
-    Category could be empty
+Person means a person email
+Slug could be empty (generated from title)
+Date created could be empty (current time)
+Label could be empty (only one label is supported)
+Category could be empty
 
 
- - Article custom fields required columns
+article_custom_fields.csv
 
-    'article_id',
-    'field_name',
-    'value'
+- article_id
+- field_name
+- value
 
-**Downloads**
+###### Entity #2. Download
+
  - Downloads required columns
 
     'person',
@@ -273,7 +277,8 @@ app/src/Application/ImportBundle/Resources/example/csv
     Label could be empty (only one label is supported)
     Category could be empty
 
-**Feedback**
+###### Entity #3. Feedback
+
 - Feedback required columns
 
     'id',
@@ -317,7 +322,8 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name'
     'value'
 
-**News**
+###### Entity #4. News
+
 - News required columns
 
     'person',
@@ -338,7 +344,8 @@ app/src/Application/ImportBundle/Resources/example/csv
     Label could be empty (only one label is supported)
     Category could be empty
 
-**People**
+###### Entity #5. Person
+
 - People required columns
 
     'id' is optional,
@@ -354,7 +361,8 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name',
     'value'
 
-**Tickets**
+###### Entity #6. Ticket
+
 - Tickets required columns
 
     'id',
@@ -401,7 +409,7 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name',
     'value'
 
-**2) OsTicket**
+#### Exporter #2. OsTicket
 
 Exports data from OsTicket database.
 
@@ -470,7 +478,7 @@ END$$
 DELIMITER ;
 ```
 
-**3) ZenDesk**
+#### Exporter #3. ZenDesk
 
 Exports data from ZenDesk account.
 
