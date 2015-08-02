@@ -218,6 +218,7 @@ Exports data from CSV files.
     - ticket_attachments.csv
     - ticket_custom_fields.csv
  - organizations.csv
+    - organization_contact_data.csv
     - organization_custom_fields.csv
 
 Example: `app/src/Application/ImportBundle/Resources/example/csv`
@@ -388,6 +389,39 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
 | ticket_id                  | reference to `tickets.csv`                                                    |
+| field_name                 |                                                                               |
+| value                      |                                                                               |
+
+###### Entity #7. Organization
+
+**organizations.csv**
+
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| id                         | is optional                                                                   |
+| name                       |                                                                               |
+| importance                 |                                                                               |
+| date_created               | created could be empty (current time)                                         |
+| blob_url                   |                                                                               |
+| blob_path                  |                                                                               |
+| file_name                  |                                                                               |
+| content_type               |                                                                               |
+| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/organizations.csv`     |
+
+**organization_contact_data.csv**
+
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| organization_id            | reference to `organizations.csv` `id` or `name` column                        |
+| contact_id                 |                                                                               |
+| field_name                 |                                                                               |
+| value                      |                                                                               |
+
+**organization_custom_fields.csv**
+
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| organization_id            | reference to `organizations.csv` `id` or `name` column                        |
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
