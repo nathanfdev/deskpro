@@ -455,8 +455,8 @@ Supported contact types:
  - skype
  - twitter
  - website
- 
- Example:
+
+Example:
  
 | organization_id   | contact_id | field_name           | value        |
 |-------------------|------------|----------------------|--------------|
