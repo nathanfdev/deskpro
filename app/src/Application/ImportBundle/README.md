@@ -225,32 +225,29 @@ app/src/Application/ImportBundle/Resources/example/csv
 
 ###### Entity #1. Article
 
-articles.csv
+*articles.csv*
 
-- id (is optional),
-- person,
-- title,
-- content,
-- slug,
-- language,
-- status,
-- category,
-- label,
-- date_created,
-- custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/articles.csv)
-    
-Person means a person email
-Slug could be empty (generated from title)
-Date created could be empty (current time)
-Label could be empty (only one label is supported)
-Category could be empty
+| Column name                | Description                                                        |
+| -------------------------- |--------------------------------------------------------------------|
+| id                         | is optional, use as reference for `article_custom_fields.csv`      |
+| person                     | means a person email                                               |
+| title                      |                                                                    |
+| content                    |                                                                    |
+| slug                       | could be empty (generated from title)                              |
+| language                   |                                                                    |
+| status                     |                                                                    |
+| category                   | could be empty                                                     |
+| label                      | could be empty (only one label is supported)                       |
+| date_created               | created could be empty (current time)                              |
+| custom "Custom field name" | could be multiple, see example/csv_inline_custom_data/articles.csv |
 
+*article_custom_fields.csv*
 
-article_custom_fields.csv
-
-- article_id
-- field_name
-- value
+| Column name                | Description                                                        |
+| -------------------------- |--------------------------------------------------------------------|
+| article_id                 | reference to `articles.csv`                                        |
+| field_name                 |                                                                    |
+| value                      |                                                                    |
 
 ###### Entity #2. Download
 
