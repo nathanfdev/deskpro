@@ -458,61 +458,92 @@ Supported contact types:
 
 1) "address" contact type:
  
-| organization_id   | contact_id | field_name           | value                        |
-|-------------------|------------|----------------------|------------------------------|
-| Some Organization | contact_1  | contact_type         | address                      |
-| Some Organization | contact_1  | comment              | some comment                 |
-| Some Organization | contact_1  | address              | address                      |
-| Some Organization | contact_1  | city                 | city                         |
-| Some Organization | contact_1  | state                | state                        |
-| Some Organization | contact_1  | zip                  | zip                          |
-| Some Organization | contact_1  | country              | country                      |
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_1  | contact_type         | address                       |
+| Some Organization | contact_1  | comment              | some comment                  |
+| Some Organization | contact_1  | address              | address                       |
+| Some Organization | contact_1  | city                 | city                          |
+| Some Organization | contact_1  | state                | state                         |
+| Some Organization | contact_1  | zip                  | zip                           |
+| Some Organization | contact_1  | country              | country                       |
 
 2) "facebook" contact type:
 
-| organization_id   | contact_id | field_name           | value                        |
-|-------------------|------------|----------------------|------------------------------|
-| Some Organization | contact_2  | contact_type         | facebook                     |
-| Some Organization | contact_2  | comment              | some comment                 |
-| Some Organization | contact_2  | profile_url          | http:://facebook.com/profile |
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_2  | contact_type         | facebook                      |
+| Some Organization | contact_2  | comment              | some comment                  |
+| Some Organization | contact_2  | profile_url          | https:://facebook.com/profile |
 
 3) "fax" contact type:
 
-| organization_id   | contact_id | field_name           | value                        |
-|-------------------|------------|----------------------|------------------------------|
-| Some Organization | contact_3  | contact_type         | fax                          |
-| Some Organization | contact_3  | comment              | some comment                 |
-| Some Organization | contact_3  | country_calling_code | +7                           |
-| Some Organization | contact_3  | number               | 1234567                      |
-| Some Organization | contact_3  | type                 | phone                        |
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_3  | contact_type         | fax                           |
+| Some Organization | contact_3  | comment              | some comment                  |
+| Some Organization | contact_3  | country_calling_code | +7                            |
+| Some Organization | contact_3  | number               | 1234567                       |
+| Some Organization | contact_3  | type                 | phone                         |
 
 4) "instant_message" contact type:
 
-| organization_id   | contact_id | field_name           | value                        |
-|-------------------|------------|----------------------|------------------------------|
-| Some Organization | contact_4  | contact_type         | instant_message              |
-| Some Organization | contact_4  | username             | some_user                    |
-| Some Organization | contact_4  | service              | service                      |
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_4  | contact_type         | instant_message               |
+| Some Organization | contact_4  | username             | some_user                     |
+| Some Organization | contact_4  | service              | service                       |
 
-5) "mobile" contact type:
+5) "linked_in" contact type:
 
-| organization_id   | contact_id | field_name           | value                        |
-|-------------------|------------|----------------------|------------------------------|
-| Some Organization | contact_5  | contact_type         | mobile                       |
-| Some Organization | contact_5  | comment              | some comment                 |
-| Some Organization | contact_5  | country_calling_code | +7                           |
-| Some Organization | contact_5  | number               | 1234567                      |
-| Some Organization | contact_5  | type                 | phone                        |
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_5  | contact_type         | linked_in                     |
+| Some Organization | contact_5  | profile_url          | https://linkedin.com/profile  |
 
-6) "phone" contact type:
+6) "mobile" contact type:
 
-| organization_id   | contact_id | field_name           | value                        |
-|-------------------|------------|----------------------|------------------------------|
-| Some Organization | contact_6  | contact_type         | phone                        |
-| Some Organization | contact_6  | comment              | some comment                 |
-| Some Organization | contact_6  | country_calling_code | +7                           |
-| Some Organization | contact_6  | number               | 1234567                      |
-| Some Organization | contact_6  | type                 | phone                        |
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_6  | contact_type         | mobile                        |
+| Some Organization | contact_6  | comment              | some comment                  |
+| Some Organization | contact_6  | country_calling_code | +7                            |
+| Some Organization | contact_6  | number               | 1234567                       |
+| Some Organization | contact_6  | type                 | phone                         |
+
+7) "phone" contact type:
+
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_7  | contact_type         | phone                         |
+| Some Organization | contact_7  | comment              | some comment                  |
+| Some Organization | contact_7  | country_calling_code | +7                            |
+| Some Organization | contact_7  | number               | 1234567                       |
+| Some Organization | contact_7  | type                 | phone                         |
+
+8) "skype" contact type:
+
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_8  | contact_type         | skype                         |
+| Some Organization | contact_8  | comment              | some comment                  |
+| Some Organization | contact_4  | username             | some_user                     |
+
+9) "twitter" contact type:
+
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_9  | contact_type         | twitter                       |
+| Some Organization | contact_9  | comment              | some comment                  |
+| Some Organization | contact_9  | display_feed         | 1                             |
+
+10) "website" contact type:
+
+| organization_id   | contact_id | field_name           | value                         |
+|-------------------|------------|----------------------|-------------------------------|
+| Some Organization | contact_10 | contact_type         | website                       |
+| Some Organization | contact_10 | comment              | some comment                  |
+| Some Organization | contact_10 | url                  | http://site.com               |
 
 **organization_custom_fields.csv**
 
