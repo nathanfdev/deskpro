@@ -18,8 +18,17 @@ IMPORT BUNDLE
         * [CSV Entity #5. Person](#csv-entity-5-person)
         * [CSV Entity #6. Ticket](#csv-entity-6-ticket)
         * [CSV Entity #7. Organization](#csv-entity-7-organization)
-    - [Exporter #2. OsTicket](#exporter-2-osticket)
-    - [Exporter #3. ZenDesk](#exporter-3-zendesk)
+    - [Exporter #2. JSON](#exporter-2-json)
+        * [JSON Files map](#json-files-map)
+        * [JSON Entity #1. Article](#json-entity-1-article)
+        * [JSON Entity #2. Download](#json-entity-2-download)
+        * [JSON Entity #3. Feedback](#json-entity-3-feedback)
+        * [JSON Entity #4. News](#json-entity-4-news)
+        * [JSON Entity #5. Person](#json-entity-5-person)
+        * [JSON Entity #6. Ticket](#json-entity-6-ticket)
+        * [JSON Entity #7. Organization](#json-entity-7-organization)
+    - [Exporter #3. OsTicket](#exporter-3-osticket)
+    - [Exporter #4. ZenDesk](#exporter-4-zendesk)
 
 Commands
 ------------
@@ -553,7 +562,17 @@ Supported contact types:
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-#### Exporter #2. OsTicket
+#### Exporter #2. JSON
+
+###### JSON Entity #1. Article
+###### JSON Entity #2. Download
+###### JSON Entity #3. Feedback
+###### JSON Entity #4. News
+###### JSON Entity #5. Person
+###### JSON Entity #6. Ticket
+###### JSON Entity #7. Organization
+
+#### Exporter #3. OsTicket
 
 Exports data from OsTicket database.
 
@@ -622,7 +641,7 @@ END$$
 DELIMITER ;
 ```
 
-#### Exporter #3. ZenDesk
+#### Exporter #4. ZenDesk
 
 Exports data from ZenDesk account.
 
