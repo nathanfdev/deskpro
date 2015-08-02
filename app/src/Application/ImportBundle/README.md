@@ -14,11 +14,11 @@ php cmd.php dp:export:check exporter_type [--input-path=] [--verbose]
 
 **exporter_type**
 
-Supported types: "csv", "json", "osticket", "zendesk"
+Supported types: "csv", "json", "osticket", "zendesk".
 
 **--input-path=**
 
-Location of source data. Csv and json exporters need input path to be specified.
+Location of source data for "csv" and "json" exporters.
 
 **--batch-config=**
 
@@ -57,7 +57,7 @@ php cmd.php dp:export:run exporter_type [--input-path=] [--output-path=""] [--ve
 
 **exporter_type**
 
-Available values: csv, json, osticket, zendesk
+Supported types: "csv", "json", "osticket", "zendesk".
 
 **--input-path=**
 
@@ -116,7 +116,7 @@ php cmd.php dp:import:run exporter_type [--input-path=] [--verbose] [--dry-run]
 
 **exporter_type**
 
-Available values: csv, json, osticket, zendesk
+Supported types: "csv", "json", "osticket", "zendesk".
 
 **--input-path=**
 
@@ -159,7 +159,7 @@ php cmd.php dp:import:batch exporter_type [--input-path=] [--output-path=""] [--
 
 **exporter_type**
 
-Available values: csv, osticket, zendesk
+Supported types: "csv", "json", "osticket", "zendesk".
 
 **--input-path=**
 
@@ -201,7 +201,7 @@ Exporters
 
 Exports data from CSV files.
 
-Files
+**Files map**
  - articles.csv
  - article_custom_fields.csv
  - downloads.csv
@@ -215,10 +215,13 @@ Files
  - ticket_messages.csv
  - ticket_attachments.csv
  - ticket_custom_fields.csv
+ - organizations.csv
+ - organization_custom_fields.csv
 
-Example files dir:
+Example:
 app/src/Application/ImportBundle/Resources/example/csv
 
+**Articles**
 - Articles required columns
 
     'id' is optional,
@@ -246,7 +249,7 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name',
     'value'
 
-
+**Downloads**
  - Downloads required columns
 
     'person',
@@ -270,7 +273,7 @@ app/src/Application/ImportBundle/Resources/example/csv
     Label could be empty (only one label is supported)
     Category could be empty
 
-
+**Feedback**
 - Feedback required columns
 
     'id',
@@ -314,7 +317,7 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name'
     'value'
 
-
+**News**
 - News required columns
 
     'person',
@@ -335,7 +338,7 @@ app/src/Application/ImportBundle/Resources/example/csv
     Label could be empty (only one label is supported)
     Category could be empty
 
-
+**People**
 - People required columns
 
     'id' is optional,
@@ -351,7 +354,7 @@ app/src/Application/ImportBundle/Resources/example/csv
     'field_name',
     'value'
 
-
+**Tickets**
 - Tickets required columns
 
     'id',
