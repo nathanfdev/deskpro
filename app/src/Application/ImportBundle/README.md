@@ -460,11 +460,13 @@ Supported contact types:
  
 | organization_id   | contact_id | field_name           | value                        |
 |-------------------|------------|----------------------|------------------------------|
-| Some Organization | contact_1  | contact_type         | fax                          |
+| Some Organization | contact_1  | contact_type         | address                      |
 | Some Organization | contact_1  | comment              | some comment                 |
-| Some Organization | contact_1  | country_calling_code | +7                           |
-| Some Organization | contact_1  | number               | 1234567                      |
-| Some Organization | contact_1  | type                 | phone                        |
+| Some Organization | contact_1  | address              | address                      |
+| Some Organization | contact_1  | city                 | city                         |
+| Some Organization | contact_1  | state                | state                        |
+| Some Organization | contact_1  | zip                  | zip                          |
+| Some Organization | contact_1  | country              | country                      |
 
 2) "facebook" contact type:
 
@@ -473,6 +475,44 @@ Supported contact types:
 | Some Organization | contact_2  | contact_type         | facebook                     |
 | Some Organization | contact_2  | comment              | some comment                 |
 | Some Organization | contact_2  | profile_url          | http:://facebook.com/profile |
+
+3) "fax" contact type:
+
+| organization_id   | contact_id | field_name           | value                        |
+|-------------------|------------|----------------------|------------------------------|
+| Some Organization | contact_3  | contact_type         | fax                          |
+| Some Organization | contact_3  | comment              | some comment                 |
+| Some Organization | contact_3  | country_calling_code | +7                           |
+| Some Organization | contact_3  | number               | 1234567                      |
+| Some Organization | contact_3  | type                 | phone                        |
+
+4) "instant_message" contact type:
+
+| organization_id   | contact_id | field_name           | value                        |
+|-------------------|------------|----------------------|------------------------------|
+| Some Organization | contact_4  | contact_type         | instant_message              |
+| Some Organization | contact_4  | username             | some_user                    |
+| Some Organization | contact_4  | service              | service                      |
+
+5) "mobile" contact type:
+
+| organization_id   | contact_id | field_name           | value                        |
+|-------------------|------------|----------------------|------------------------------|
+| Some Organization | contact_5  | contact_type         | mobile                       |
+| Some Organization | contact_5  | comment              | some comment                 |
+| Some Organization | contact_5  | country_calling_code | +7                           |
+| Some Organization | contact_5  | number               | 1234567                      |
+| Some Organization | contact_5  | type                 | phone                        |
+
+6) "phone" contact type:
+
+| organization_id   | contact_id | field_name           | value                        |
+|-------------------|------------|----------------------|------------------------------|
+| Some Organization | contact_6  | contact_type         | phone                        |
+| Some Organization | contact_6  | comment              | some comment                 |
+| Some Organization | contact_6  | country_calling_code | +7                           |
+| Some Organization | contact_6  | number               | 1234567                      |
+| Some Organization | contact_6  | type                 | phone                        |
 
 **organization_custom_fields.csv**
 
