@@ -10,6 +10,14 @@ IMPORT BUNDLE
     - [Command #4. Import batch run](#command-4-import-batch-run)
 * [Exporters](#exporters)
     - [Exporter #1. CSV](#exporter-1-csv)
+        * [CSV Files map](#csv-files-map)
+        * [CSV Entity #1. Article](#csv-entity-1-article)
+        * [CSV Entity #2. Download](#csv-entity-2-download)
+        * [CSV Entity #3. Feedback](#csv-entity-3-feedback)
+        * [CSV Entity #4. News](#csv-entity-4-news)
+        * [CSV Entity #5. Person](#csv-entity-5-person)
+        * [CSV Entity #6. Ticket](#csv-entity-6-ticket)
+        * [CSV Entity #7. Organization](#csv-entity-7-organization)
     - [Exporter #2. OsTicket](#exporter-2-osticket)
     - [Exporter #3. ZenDesk](#exporter-3-zendesk)
 
@@ -214,7 +222,7 @@ Exporters
 
 Exports data from CSV files.
 
-###### Files map
+###### CSV Files map
 
  - articles.csv
     - article_custom_fields.csv
@@ -235,7 +243,7 @@ Exports data from CSV files.
 
 Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
-###### Entity #1. Article
+###### CSV Entity #1. Article
 
 **articles.csv**
 
@@ -261,7 +269,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-###### Entity #2. Download
+###### CSV Entity #2. Download
 
 **downloads.csv**
 
@@ -283,7 +291,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | content_type               |                                                                               |
 | is_inline                  | boolean                                                                       |
 
-###### Entity #3. Feedback
+###### CSV Entity #3. Feedback
 
 **feedback.csv**
 
@@ -323,7 +331,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-###### Entity #4. News
+###### CSV Entity #4. News
 
 **news.csv**
 
@@ -340,7 +348,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | category                   | could be empty                                                                |
 | label                      | could be empty (only one label is supported)                                  |
 
-###### Entity #5. Person
+###### CSV Entity #5. Person
 
 **people.csv**
 
@@ -360,7 +368,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-###### Entity #6. Ticket
+###### CSV Entity #6. Ticket
 
 **tickets.csv**
 
@@ -404,7 +412,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-###### Entity #7. Organization
+###### CSV Entity #7. Organization
 
 **organizations.csv**
 
