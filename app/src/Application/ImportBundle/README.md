@@ -428,14 +428,43 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | content_type               |                                                                               |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/organizations.csv`     |
 
+ Example:
+ 
+| name              | importance | blob_url                | file_name   | content_type |
+|-------------------|------------|-------------------------|-------------|--------------|
+| Some Organization | 1          | http://site.com/img.png | preview.png | image/png    | 
+
 **organization_contact_data.csv**
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
 | organization_id            | reference to `organizations.csv` `id` or `name` column                        |
 | contact_id                 |                                                                               |
-| field_name                 |                                                                               |
+| field_name                 | `contact_type`, `comment` and contact type specific parameters                |
 | value                      |                                                                               |
+
+Supported contact types:
+
+ - address
+ - facebook
+ - fax
+ - instant_message
+ - linked_in
+ - mobile
+ - phone
+ - skype
+ - twitter
+ - website
+ 
+ Example:
+ 
+| organization_id   | contact_id | field_name           | value        |
+|-------------------|------------|----------------------|--------------|
+| Some Organization | contact_1  | contact_type         | fax          |
+| Some Organization | contact_1  | comment              | some comment |
+| Some Organization | contact_1  | country_calling_code | +7           |
+| Some Organization | contact_1  | number               | 1234567      |
+| Some Organization | contact_1  | type                 | phone        |
 
 **organization_custom_fields.csv**
 

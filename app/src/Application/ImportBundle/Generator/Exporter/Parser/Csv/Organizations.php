@@ -127,6 +127,7 @@ class Organizations extends AbstractParser
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
                 ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'name'))
+                ->setDateCreated($this->getFromStringOrCurrentDateTime(@$organization['date_created']))
             ;
 
             return $entity;
