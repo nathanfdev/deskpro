@@ -238,7 +238,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | category                   | could be empty                                                                |
 | label                      | could be empty (only one label is supported)                                  |
 | date_created               | created could be empty (current time)                                         |
-| custom "Custom field name" | could be multiple, see example/csv_inline_custom_data/articles.csv            |
+| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/articles.csv`          |
 
 **article_custom_fields.csv**
 
@@ -288,7 +288,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | date_created               | created could be empty (current time)                                         |
 | date_published             | created could be empty (current time)                                         |
 | label                      | could be empty (only one label is supported)                                  |
-| custom "Custom field name" | could be multiple, see example/csv_inline_custom_data/feedback.csv            |
+| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/feedback.csv`          |
 
 **feedback_attachments.csv**
 
@@ -312,42 +312,40 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### Entity #4. News
 
-- News required columns
+**news.csv**
 
-    'person',
-    'title',
-    'content',
-    'slug',
-    'language',
-    'status',
-    'date_created',
-    'date_published',
-    'category',
-    'label'
-
-    Person means a person email
-    Slug could be empty (generated from title)
-    Date created could be empty (current time)
-    Date published could be empty
-    Label could be empty (only one label is supported)
-    Category could be empty
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| person                     | means a person email                                                          |
+| title                      |                                                                               |
+| content                    |                                                                               |
+| slug                       | could be empty (generated from title)                                         |
+| language                   |                                                                               |
+| status                     |                                                                               |
+| date_created               | created could be empty (current time)                                         |
+| date_published             | created could be empty (current time)                                         |
+| category                   | could be empty                                                                |
+| label                      | could be empty (only one label is supported)                                  |
 
 ###### Entity #5. Person
 
-- People required columns
+**people.csv**
 
-    'id' is optional,
-    'name',
-    'email',
-    'is_agent' is optional,
-    'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/people.csv)
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| id                         | is optional, use as reference for `people_custom_fields.csv`                  |
+| name                       |                                                                               |
+| email                      |                                                                               |
+| is_agent                   | boolean                                                                       |
+| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/people.csv`            |
 
+**people_custom_fields.csv**
 
-- People custom fields required columns
-
-    'person_id' people.csv `id` or `email` column,
-    'field_name',
-    'value'
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| person_id                  | reference to `people.csv` `id` or `email` column                              |
+| field_name                 |                                                                               |
+| value                      |                                                                               |
 
 ###### Entity #6. Ticket
 
