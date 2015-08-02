@@ -220,104 +220,95 @@ Exports data from CSV files.
  - organizations.csv
  - organization_custom_fields.csv
 
-Example:
-app/src/Application/ImportBundle/Resources/example/csv
+Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### Entity #1. Article
 
-*articles.csv*
+**articles.csv**
 
-| Column name                | Description                                                        |
-| -------------------------- |--------------------------------------------------------------------|
-| id                         | is optional, use as reference for `article_custom_fields.csv`      |
-| person                     | means a person email                                               |
-| title                      |                                                                    |
-| content                    |                                                                    |
-| slug                       | could be empty (generated from title)                              |
-| language                   |                                                                    |
-| status                     |                                                                    |
-| category                   | could be empty                                                     |
-| label                      | could be empty (only one label is supported)                       |
-| date_created               | created could be empty (current time)                              |
-| custom "Custom field name" | could be multiple, see example/csv_inline_custom_data/articles.csv |
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| id                         | is optional, use as reference for `article_custom_fields.csv`                 |
+| person                     | means a person email                                                          |
+| title                      |                                                                               |
+| content                    |                                                                               |
+| slug                       | could be empty (generated from title)                                         |
+| language                   |                                                                               |
+| status                     |                                                                               |
+| category                   | could be empty                                                                |
+| label                      | could be empty (only one label is supported)                                  |
+| date_created               | created could be empty (current time)                                         |
+| custom "Custom field name" | could be multiple, see example/csv_inline_custom_data/articles.csv            |
 
-*article_custom_fields.csv*
+**article_custom_fields.csv**
 
-| Column name                | Description                                                        |
-| -------------------------- |--------------------------------------------------------------------|
-| article_id                 | reference to `articles.csv`                                        |
-| field_name                 |                                                                    |
-| value                      |                                                                    |
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| article_id                 | reference to `articles.csv`                                                   |
+| field_name                 |                                                                               |
+| value                      |                                                                               |
 
 ###### Entity #2. Download
 
- - Downloads required columns
+**downloads.csv**
 
-    'person',
-    'title',
-    'content',
-    'slug',
-    'language',
-    'category',
-    'status',
-    'date_created',
-    'label'
-    'blob_url',
-    'blob_path',
-    'file_name',
-    'content_type',
-    'is_inline'
-
-    Person means a person email
-    Slug could be empty (generated from title)
-    Date created could be empty (current time)
-    Label could be empty (only one label is supported)
-    Category could be empty
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| person                     | means a person email                                                          |
+| title                      |                                                                               |
+| content                    |                                                                               |
+| slug                       | could be empty (generated from title)                                         |
+| language                   |                                                                               |
+| category                   | could be empty                                                                |
+| status                     |                                                                               |
+| date_created               | created could be empty (current time)                                         |
+| label                      | could be empty (only one label is supported)                                  |
+| category                   | could be empty                                                                |
+| blob_url                   |                                                                               |
+| blob_path                  |                                                                               |
+| file_name                  |                                                                               |
+| content_type               |                                                                               |
+| is_inline                  | boolean                                                                       |
 
 ###### Entity #3. Feedback
 
-- Feedback required columns
+**feedback.csv**
 
-    'id',
-    'person',
-    'title',
-    'content',
-    'slug',
-    'language',
-    'popularity',
-    'status',
-    'category',
-    'label',
-    'date_created',
-    'date_published',
-    'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/feedback.csv)
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| id                         | use as reference for `feedback_attachments.csv`, `feedback_custom_fields.csv` |
+| person                     | means a person email                                                          |
+| title                      |                                                                               |
+| content                    |                                                                               |
+| slug                       | could be empty (generated from title)                                         |
+| language                   |                                                                               |
+| category                   | could be empty                                                                |
+| popularity                 |                                                                               |
+| status                     |                                                                               |
+| date_created               | created could be empty (current time)                                         |
+| date_published             | created could be empty (current time)                                         |
+| label                      | could be empty (only one label is supported)                                  |
+| custom "Custom field name" | could be multiple, see example/csv_inline_custom_data/feedback.csv            |
 
-    Person means a person email
-    Slug could be empty (generated from title)
-    Date created could be empty (current time)
-    Date published could be empty
-    Label could be empty (only one label is supported)
-    Category could be empty
+**feedback_attachments.csv**
 
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| feedback_id                | reference to `feedback.csv`                                                   |
+| person                     | means a person email                                                          |
+| blob_url                   |                                                                               |
+| blob_path                  |                                                                               |
+| file_name                  |                                                                               |
+| content_type               |                                                                               |
+| is_inline                  | boolean                                                                       |
 
-- Feedback attachments required columns
+**feedback_custom_fields.csv**
 
-    'feedback_id',
-    'person',
-    'blob_url',
-    'blob_path',
-    'file_name',
-    'content_type',
-    'is_inline'
-
-    Person means a person email
-
-
-- Feedback custom fields required columns
-
-    'feedback_id'
-    'field_name'
-    'value'
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| feedback_id                | reference to `feedback.csv`                                                   |
+| field_name                 |                                                                               |
+| value                      |                                                                               |
 
 ###### Entity #4. News
 
