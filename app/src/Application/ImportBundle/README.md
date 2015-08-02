@@ -9,6 +9,9 @@ IMPORT BUNDLE
     - [Command #3. Import run](#command-3-import-run)
     - [Command #4. Import batch run](#command-4-import-batch-run)
 * [Exporters](#exporters)
+    - [Exporter #1. CSV](#exporter-1-csv)
+    - [Exporter #2. OsTicket](#exporter-2-osticket)
+    - [Exporter #3. ZenDesk](#exporter-3-zendesk)
 
 Commands
 ------------
