@@ -205,20 +205,20 @@ Exports data from CSV files.
 ###### Files map
 
  - articles.csv
- - article_custom_fields.csv
+    - article_custom_fields.csv
  - downloads.csv
  - feedback.csv
- - feedback_attachments.csv
- - feedback_custom_fields.csv
+    - feedback_attachments.csv
+    - feedback_custom_fields.csv
  - news.csv
  - people.csv
- - people_custom_fields.csv
+    - people_custom_fields.csv
  - tickets.csv
- - ticket_messages.csv
- - ticket_attachments.csv
- - ticket_custom_fields.csv
+    - ticket_messages.csv
+    - ticket_attachments.csv
+    - ticket_custom_fields.csv
  - organizations.csv
- - organization_custom_fields.csv
+    - organization_custom_fields.csv
 
 Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
