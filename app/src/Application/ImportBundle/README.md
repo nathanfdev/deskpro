@@ -12,20 +12,25 @@ Reads and validates data from an external source.
 php cmd.php dp:export:check exporter_type [--input-path=] [--verbose]
 ```
 
-exporter_type
-    Available values: csv, json, osticket, zendesk
+**exporter_type**
 
---input-path=
-    Csv and json exporter types need input path to be specified.
+Supported types: "csv", "json", "osticket", "zendesk"
 
---batch-config=
-    Path to custom batch config file.
+**--input-path=**
 
---verbose
-    Shows log output in the console.
+Location of source data. Csv and json exporters need input path to be specified.
 
---silent
-    Disables all console output.
+**--batch-config=**
+
+Path to custom batch config file.
+
+**--verbose**
+
+Shows log output in the console.
+
+**--silent**
+
+Disables all console output.
 
 Examples:
 ```bash
@@ -50,26 +55,33 @@ Export could be run in json files only.
 php cmd.php dp:export:run exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
 ```
 
-exporter_type
-    Available values: csv, json, osticket, zendesk
+**exporter_type**
 
---input-path=
-    Csv and json exporter types need input path to be specified.
+Available values: csv, json, osticket, zendesk
 
---output-path=
-    Destination path of generating json files.
+**--input-path=**
 
---batch-config=
-    Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir
+Csv and json exporter types need input path to be specified.
 
---verbose
-    Shows log output in the console.
+**--output-path=**
 
---silent
-    Disables all console output.
+Destination path of generating json files.
 
---dry-run
-    Test run, json files are not generated. If dry run mode is enabled "output-path" is not required.
+**--batch-config=**
+
+Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir
+
+**--verbose**
+
+Shows log output in the console.
+
+**--silent**
+
+Disables all console output.
+
+**--dry-run**
+
+Test run, json files are not generated. If dry run mode is enabled "output-path" is not required.
 
 Examples:
 
@@ -102,20 +114,25 @@ Reads data from an external source, validate entities and import them to deskpro
 php cmd.php dp:import:run exporter_type [--input-path=] [--verbose] [--dry-run]
 ```
 
-exporter_type
-    Available values: csv, json, osticket, zendesk
+**exporter_type**
 
---input-path=
-    Csv and json exporter types need input path to be specified.
+Available values: csv, json, osticket, zendesk
 
---verbose
-    Shows log output in the console.
+**--input-path=**
 
---silent
-    Disables all console output.
+Csv and json exporter types need input path to be specified.
 
---dry-run
-    Test run, entities are not imported to deskpro database.
+**--verbose**
+
+Shows log output in the console.
+
+**--silent**
+
+Disables all console output.
+
+**--dry-run**
+
+Test run, entities are not imported to deskpro database.
 
 Examples:
 ```
@@ -140,26 +157,33 @@ Reads data from an external source and writes to json files. Then reads json fil
 php cmd.php dp:import:batch exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
 ```
 
-exporter_type
-    Available values: csv, osticket, zendesk
+**exporter_type**
 
---input-path=
-    Csv exporter need input path to be specified.
+Available values: csv, osticket, zendesk
 
---output-path=
-    Destination path of generating json files.
+**--input-path=**
 
---batch-config=
-    Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir
+Csv exporter need input path to be specified.
 
---verbose
-    Shows log output in the console.
+**--output-path=**
 
---silent
-    Disables all console output.
+Destination path of generating json files.
 
---dry-run
-    Test run, json files are not generated. If dry run mode is enabled "output-path" is not required.
+**--batch-config=**
+
+Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir
+
+**--verbose**
+
+Shows log output in the console.
+
+**--silent**
+
+Disables all console output.
+
+**--dry-run**
+
+Test run, json files are not generated. If dry run mode is enabled "output-path" is not required.
 
 Examples:
 ```bash
