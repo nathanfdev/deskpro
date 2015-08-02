@@ -349,51 +349,47 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### Entity #6. Ticket
 
-- Tickets required columns
+**tickets.csv**
 
-    'id',
-    'subject',
-    'user',
-    'agent',
-    'status',
-    'date_created' is optional,
-    'custom "Custom field name"' could be multiple (see example/csv_inline_custom_data/tickets.csv)
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| id                         | use as reference for `ticket_messages.csv`, `ticket_custom_fields.csv`        |
+| subject                    |                                                                               |
+| user                       | means a person email                                                          |
+| agent                      | means a person email                                                          |
+| status                     |                                                                               |
+| date_created               | created could be empty (current time)                                         |
+| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/tickets.csv`           |
 
-    User means a user email
-    Agent means a agent email
-    Date created could be empty (current time)
+**ticket_messages.csv**
 
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| ticket_id                  | reference to `tickets.csv`                                                    |
+| message_id                 |                                                                               |
+| message_text               |                                                                               |
+| user                       | means a person email                                                          |
+| date_created               | created could be empty (current time)                                         |
 
-- Ticket messages required columns
+**ticket_attachments.csv**
 
-    'ticket_id',
-    'message_id',
-    'message_text',
-    'user',
-    'date_created' is optional
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| message_id                 | reference to `ticket_messages.csv`                                            |
+| person                     | means a person email                                                          |
+| blob_url                   |                                                                               |
+| blob_path                  |                                                                               |
+| file_name                  |                                                                               |
+| content_type               |                                                                               |
+| is_inline                  | boolean                                                                       |
 
-    User means a user email
-    Date created could be empty (current time)
+**ticket_custom_fields.csv**
 
-
-- Ticket attachments required columns
-
-    'message_id',
-    'person',
-    'blob_url',
-    'blob_path',
-    'file_name',
-    'content_type',
-    'is_inline'
-
-    Person means a person email
-
-
-- Ticket custom fields required columns
-
-    'ticket_id',
-    'field_name',
-    'value'
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| ticket_id                  | reference to `tickets.csv`                                                    |
+| field_name                 |                                                                               |
+| value                      |                                                                               |
 
 #### Exporter #2. OsTicket
 
