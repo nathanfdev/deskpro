@@ -28,10 +28,10 @@ IMPORT BUNDLE
         * [JSON Entity #6. Ticket](#json-entity-6-ticket)
         * [JSON Entity #7. Organization](#json-entity-7-organization)
     - [Exporter #3. OsTicket](#exporter-3-osticket)
-        * [OsTicket Exporter Configuration](#osticket-exporter-configuration)
+        * [OsTicket Configuration](#osticket-configuration)
         * [OsTicket Fixtures](#osticket-fixtures)
     - [Exporter #4. ZenDesk](#exporter-4-zendesk)
-        * [ZenDesk Exporter Configuration](#zendesk-exporter-configuration)
+        * [ZenDesk Configuration](#zendesk-configuration)
         * [ZenDesk Fixtures](#zendesk-fixtures)
         * [ZenDesk Batch.json](#zendesk-batch.json)
 
@@ -840,7 +840,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 Exports data from OsTicket database.
 
-###### OsTicket Exporter Configuration
+###### OsTicket Configuration
 
 Add `osticket_import` configuration to `config.php`
 
@@ -910,7 +910,7 @@ DELIMITER ;
 
 Exports data from ZenDesk account. Supported tickets and people data export.
 
-###### ZenDesk Exporter Configuration
+###### ZenDesk Configuration
 
 Add `zendesk_import` configuration to `config.php`
 
