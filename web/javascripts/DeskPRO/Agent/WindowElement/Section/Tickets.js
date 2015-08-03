@@ -57,6 +57,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}, 20000);
 	},
 
+	initScope: function () {
+		var self = this;
+
+	},
+
 	_initSection: function(data) {
 		var self = this;
 		this.setHasInitialLoaded();

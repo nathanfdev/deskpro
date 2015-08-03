@@ -89,6 +89,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 */
 	init: function() {},
 
+	initScope: function () {
+	},
+
 	onShow: function() { },
 	onFirstShow: function() { },
 	onHide: function() { },
@@ -170,7 +173,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 * @param {jQuery} contentEl
 	 */
 	setSectionElement: function(el, contentEl) {
+
 		var self = this;
+
 		if (this.sectionEl) {
 			this.sectionEl.remove();
 		}
@@ -212,6 +217,26 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			$(this).addClass('active');
 
 			contentEl.find('.pane-content').hide().filter('.'+$(this).data('tab-id')).show().find('.dp-with-activate-listener').triggerHandler('dp_activated');
+		});
+
+		var attachPoint = el
+			, $scope      = DeskPRO_Window.$scope.$new()
+			;
+
+		self.$scope = $scope;
+		self.$q = DeskPRO_Window.$q;
+
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function ($compile) {
+			attachPoint.data('$ngControllerController', self);
+			$compile(attachPoint.contents())(self.$scope);
+			self.initScope();
+		}]);
+
+		this.addEvent('destroy', function () {
+			if (self.$scope) {
+				self.$scope.$destroy();
+				self.$scope = null;
+			}
 		});
 	},
 

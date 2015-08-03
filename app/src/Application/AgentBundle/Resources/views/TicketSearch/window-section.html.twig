@@ -159,58 +159,7 @@
 			</article>
 		</section>
 
-		{% if app.getSetting('core.problems.enabled') %}
-			<section class="pane-section sla-section" id="problems-section">
-				<header>
-					<h1>
-                        <span class="problems-filter-type">
-                            {{ phrase('agent.problems.title') }}
-                        </span>
-					</h1>
-				</header>
-				<article>
-					<ul id="tickets_outline_problems" class="nav-list">
-						{% for p in open_problems %}
-							<li class="is-nav-item" data-problem-id="{{p.id}}">
-
-                                {% set _url = path('agent_ticketsearch_runproblem', {'problem_id': p.id}) %}
-
-                                <div class="item" data-route="listpane:{{ _url }}">
-									<h3>{{ p.title }}</h3>
-									<div class="float-side">
-										<em style="cursor:pointer" data-route="listpane:{{ _url }}" class="counter list-counter">
-                                            {{ problem_counts[p.id]|default(0) }}
-                                        </em>
-									</div>
-								</div>
-                            </li>
-						{% endfor %}
-						<li>
-							<div class="item-form">
-								<div class="select-value-wrap">
-									<div class="select-value"><label
-												id="nav_closed_problem_label_{{ p.id }}"></label> <i
-												class="icon-caret-down"></i></div>
-									<select class="dpe_select invisible-trigger problems_select"
-											data-label-bound="#nav_closed_problem_label_{{ p.id }}"
-											data-dropdown-css-class="invisible-trigger small filter-list"
-											data-select-width="165"
-											data-path="listpane:{{ path('agent_ticketsearch_runproblem', {'problem_id': 0}) }}"
-											>
-										<option value="">{{ phrase('agent.problems.closed_incidents') }}</option>
-										{% for p in closed_problems %}
-											<option value="{{ p.id }}">
-												{{ p.title }} ({{ problem_counts[p.id]|default(0) }})
-											</option>
-										{% endfor %}
-									</select>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</article>
-			</section>
-		{% endif %}
+		{% include 'AgentBundle:TicketSearch:problems-section.html.twig' %}
 
 		{% if slas %}
 			<section class="pane-section sla-section">
