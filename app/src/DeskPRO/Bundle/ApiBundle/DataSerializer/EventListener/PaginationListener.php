@@ -44,7 +44,7 @@ class PaginationListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            DataSerializerEvents::PRE_SERIALIZE => ['preSerialize'],
+            DataSerializerEvents::PRE_SERIALIZE => ['preSerialize', 128],
             DataSerializerEvents::POST_SERIALIZE => ['postSerialize']
         ];
     }
@@ -81,12 +81,17 @@ class PaginationListener implements EventSubscriberInterface
 
         $meta = $serialized['meta'];
 
+        $total_pages = ceil($source_data->count() / $source_data->getMaxPerPage());
+        if ($total_pages < 1) {
+            $total_pages = 1; // we shouldn't ever report less than 1 total pages
+        }
+
         $pagination = [
             'total' => $source_data->count(),
             'count' => count($source_data->getCurrentPageResults()),
             'per_page' => $source_data->getMaxPerPage(),
             'current_page' => $source_data->getCurrentPage(),
-            'total_pages' => ceil($source_data->count()/$source_data->getMaxPerPage())
+            'total_pages' => $total_pages
         ];
 
         $meta['pagination'] = $pagination;

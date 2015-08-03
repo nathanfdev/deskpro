@@ -81,6 +81,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
 
         $pager = new Pagerfanta(new ArrayAdapter($widgets));
         $pager->setMaxPerPage(2);
+        $pager->setCurrentPage($request->query->get('page', 1));
 
         return View::create(
             $this->dataSerialize($pager),
@@ -194,7 +195,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $this->getDoctrine()->getManager()->flush();
 
         return View::create(
-            array(),
+            [],
             Response::HTTP_OK
         );
     }
@@ -222,7 +223,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
             $this->getDoctrine()->getManager()->flush($widget);
 
             return View::create(
-                $this->createFractalRepresentation($widget, "sandbox_widget"),
+                $this->dataSerialize($widget),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_sandbox_widgets_get', array('id' => $widget->getId()))
@@ -244,6 +245,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         if (!$widget) {
             throw new NotFoundHttpException();
         }
+
         return $widget;
     }
 }

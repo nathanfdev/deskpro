@@ -49,7 +49,10 @@ class SandboxWidgetType extends AbstractType
                 'description' => 'the widget name'
             ))->add('inventory', 'integer', array(
                 'description' => 'the inventory'
-            ))
+            ))->add('parent', 'entity', array(
+                'class' => 'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
+                'required' => false
+        ))
         ;
     }
 

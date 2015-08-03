@@ -70,7 +70,7 @@ class TypeListener implements EventSubscriberInterface
         $data = $context->getMainData();
 
         if (null === $type) {
-            if (!$type = $this->type_map->findType($data)) {
+            if (!($type = $this->type_map->findType($data)) && is_object($data)) {
                 throw new DataSerializerException(
                     'could not find object type for given data, and no specific type provided'
                 );

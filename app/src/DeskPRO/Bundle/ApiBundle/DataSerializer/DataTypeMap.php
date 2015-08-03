@@ -78,6 +78,7 @@ class DataTypeMap
                 break;
             }
 
+            return null;
         }
 
         $object_class = is_object($data) ? get_class($data) : null;
