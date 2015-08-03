@@ -597,6 +597,7 @@ Supported contact types:
             - ticket2.json
         - batch.json
             
+Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ###### JSON Entity #1. Article
 
@@ -945,7 +946,7 @@ Common properties:
 
 **1) output.batch.json**
 
-Generates by exporters whitch has support for batching (osticket and zendesk). Specific for each exporter.
+Generates by exporters which has support for batching (osticket and zendesk). Specific for each exporter.
 
 **2) input.batch.json**
 
