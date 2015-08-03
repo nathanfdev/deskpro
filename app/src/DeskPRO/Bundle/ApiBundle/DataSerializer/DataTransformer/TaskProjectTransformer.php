@@ -31,36 +31,19 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-use League\Fractal\Manager;
-use League\Fractal\Resource\ResourceInterface;
-use League\Fractal\Scope;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-class FractalScope extends Scope
+class TaskProjectTransformer extends AbstractDataSerializerTransformer
 {
-    /**
-     * Fire the main transformer.
-     *
-     * @internal
-     * @param  callable|\League\Fractal\TransformerAbstract $transformer
-     * @param  mixed $data
-     * @return array
-     */
-    protected function fireTransformer($transformer, $data)
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $transformer = $this->getManager()->resolveTransformer($transformer, $data);
-
-        return parent::fireTransformer($transformer, $data);
+        return ['id', 'title'];
     }
 
-    /**
-     * @return FractalManager
-     */
-    public function getManager()
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return parent::getManager();
+        return [];
     }
 }

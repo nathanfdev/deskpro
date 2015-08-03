@@ -31,45 +31,20 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
-use League\Fractal\Serializer\JsonApiSerializer;
-
-class FractalJsonSerializer extends JsonApiSerializer
+class TaskLinkedItemTransformer extends AbstractDataSerializerTransformer
 {
-    public function collection($resourceKey, array $data)
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return parent::collection($resourceKey, $data);
+        return ['id', 'task', 'ticket', 'chat', 'article'];
     }
 
-    /**
-     * The parent method wraps $data in an array, which we don't want.
-     */
-    public function item($resourceKey, array $data)
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return array($resourceKey ?: 'data' => $data);
-    }
-
-    protected function resolveDeferredValues(array $data)
-    {
-        $new = [];
-
-        foreach ($data as $key => $val) {
-            if (is_array($val)) {
-                $val = $this->resolveDeferredValues($val);
-            } elseif ($val instanceof DeferredIdentity) {
-                $val = $val->resolve();
-            }
-
-            $new[$key] = $val;
-        }
-
-        return $new;
+        return [];
     }
 }

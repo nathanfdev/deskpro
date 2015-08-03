@@ -1,0 +1,26 @@
+services:
+
+    # DATA TRANSFORMERS
+    #
+    # note: you don't need a tag for these to work. just make the prefix the same.
+    #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
+    data_serializer.transformer.sandbox_widget:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\SandboxWidgetTransformer
+
+    data_serializer.transformer.task:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskTransformer
+
+    data_serializer.transformer.task_label:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskLabelTransformer
+
+    data_serializer.transformer.task_comment:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskCommentTransformer
+
+    data_serializer.transformer.task_attachment:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskAttachmentTransformer
+
+    data_serializer.transformer.task_linked_item:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskLinkedItemTransformer
+
+    data_serializer.transformer.task_project:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskProjectTransformer

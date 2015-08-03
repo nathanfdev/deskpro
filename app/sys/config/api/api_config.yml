@@ -10,6 +10,31 @@ parameters:
   hateoas.serializer.json_hal.class: DeskPRO\Bundle\ApiBundle\Serializer\HateoasJsonApiSerializer
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
 
+api:
+    data_serializer:
+        types:
+            sandbox_widget:
+                classes:
+                    - "DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
+            task:
+                classes:
+                    - "DeskPRO\Bundle\AppBundle\Entity\Task"
+            task_comment:
+                classes:
+                    - "DeskPRO\Bundle\AppBundle\Entity\TaskComment"
+            task_attachment:
+                classes:
+                    - "DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
+            task_linked_item:
+                classes:
+                    - "DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem"
+            task_label:
+                classes:
+                    - "DeskPRO\Bundle\AppBundle\Entity\LabelTask"
+            task_project:
+                classes:
+                    - "DeskPRO\Bundle\AppBundle\Entity\TaskProject"
+
 framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }

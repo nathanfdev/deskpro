@@ -31,23 +31,27 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DependencyInjection;
 
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class SandboxWidgetTransformer extends FractalTransformer
+class Configuration implements ConfigurationInterface
 {
-    public function getWhitelist()
+    public function getConfigTreeBuilder()
     {
-        return ['id', 'name', 'inventory', 'parent', 'children'];
-    }
+        $treeBuilder = new TreeBuilder();
+        $rootNode = $treeBuilder->root('api');
 
-    protected function transformExtras($data)
-    {
-        return [
-            'inventory_warning' => $data->getInventory() < 5
-        ];
+        $rootNode
+            ->children()
+            ->arrayNode('data_serializer')
+                ->children()
+                    ->variableNode('types')
+                ->end()
+            ->end();
+
+        return $treeBuilder;
     }
 }

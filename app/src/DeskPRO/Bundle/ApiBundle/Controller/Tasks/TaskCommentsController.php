@@ -95,7 +95,7 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -130,7 +130,7 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
         }
 
         return View::create(
-            $this->createRepresentation($comment),
+            $this->dataSerialize($comment),
             Response::HTTP_OK
         );
     }
@@ -276,7 +276,7 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -322,7 +322,7 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
             $location = $this->generateUrl('api_task_comments_get', array('id' => $comment->getId()));
 
             return View::create(
-                $this->createRepresentation($comment),
+                $this->dataSerialize($comment),
                 $status,
                 array(
                     'Location' => $location,

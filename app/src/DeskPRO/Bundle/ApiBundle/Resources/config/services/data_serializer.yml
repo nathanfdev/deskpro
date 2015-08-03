@@ -6,6 +6,8 @@ services:
 
     data_serializer.type_map:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap
+        arguments:
+            - %api.data_serializer.types%
 
     data_serializer.type_id_finder:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeIdFinder
@@ -86,11 +88,3 @@ services:
     data_serializer.property_transformer.doctrine:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Doctrine\DoctrinePropertyTransformer
         arguments: [@doctrine_association_manager, @data_serializer.type_map]
-
-
-    # DATA TRANSFORMERS
-    #
-    # note: you don't need a tag for these to work. just make the prefix the same.
-    #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
-    data_serializer.transformer.sandbox_widget:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\SandboxWidgetTransformer

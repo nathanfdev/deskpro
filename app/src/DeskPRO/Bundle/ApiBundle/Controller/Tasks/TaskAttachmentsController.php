@@ -94,7 +94,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -129,7 +129,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
         }
 
         return View::create(
-            $this->createRepresentation($attachment),
+            $this->dataSerialize($attachment),
             Response::HTTP_OK
         );
     }
@@ -241,7 +241,7 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
             $location = $this->generateUrl('api_task_attachments_get', array('id' => $attachment->getId()));
 
             return View::create(
-                $this->createRepresentation($attachment),
+                $this->dataSerialize($attachment),
                 $status,
                 array(
                     'Location' => $location,

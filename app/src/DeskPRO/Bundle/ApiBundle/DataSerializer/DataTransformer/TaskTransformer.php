@@ -31,14 +31,49 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-class TaskCommentTransformer extends FractalTransformer
+class TaskTransformer extends AbstractDataSerializerTransformer
 {
-    public function getWhitelist()
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'comment', 'person', 'date_created', 'task'];
+        return [
+            'id',
+            'title',
+            'is_done',
+            'percent_complete',
+            'date_created',
+            'task_type',
+            'date_due',
+            'date_event_start',
+            'date_event_end',
+            'creator',
+            'visibility',
+            'project',
+            'list',
+            'urgency',
+            'subtasks',
+            'comments',
+            'attachments',
+            'linked_items',
+            'assigned'
+        ];
+    }
+
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
+        $data = $transformation_request->getDataToBeTransformed();
+
+        $labels = [];
+
+        foreach ($data->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        return ['labels' => $labels];
     }
 }

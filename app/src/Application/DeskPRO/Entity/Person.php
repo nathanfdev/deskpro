@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -552,6 +553,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $assigned_tasks;
 
     /**
+     * @var ProjectMember[]|ArrayCollection
+     */
+    protected $project_members;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -629,6 +635,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->teams = new ArrayCollection();
         $this->notes = new ArrayCollection();
         $this->assigned_tasks = new ArrayCollection();
+        $this->project_members = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -778,6 +785,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function isAgentValidated()
     {
         return (bool) $this->is_agent_confirmed;
+    }
+
+    public function getProjectMembers()
+    {
+        return $this->project_members;
     }
 
     /**

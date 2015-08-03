@@ -73,7 +73,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
 
         return View::create(
-            $this->createRepresentation($projects),
+            $this->dataSerialize($projects),
             Response::HTTP_OK
         );
     }

@@ -72,6 +72,8 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $avatar;
 
+    protected $project_members;
+
     /**
      * @return int
      */
@@ -83,6 +85,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->members = new ArrayCollection();
+        $this->project_members = new ArrayCollection();
     }
 
     public function addPerson(Entity\Person $person)

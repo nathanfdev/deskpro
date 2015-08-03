@@ -50,7 +50,7 @@ class DataTypeMap
         if ($map) {
             $this->map = $map;
         } else {
-            // this is how we configure the map for now, the null check is for testing only
+            // in dev/prod, we construct this with a $map array so the followg is just for testing purposes
             // this config process will get simpler (probably a yml config file)
             // you can see how this map checks can be expanded beyond just object type lookups
             $this->map = [
@@ -77,8 +77,10 @@ class DataTypeMap
                 $data = $item; // for the purposes of this method, we use the first element of an array/collection
                 break;
             }
+        }
 
-            return null;
+        if (is_array($data) || $data instanceof \Traversable) {
+            return null; // it is still an array and we can't determine type now
         }
 
         $object_class = is_object($data) ? get_class($data) : null;

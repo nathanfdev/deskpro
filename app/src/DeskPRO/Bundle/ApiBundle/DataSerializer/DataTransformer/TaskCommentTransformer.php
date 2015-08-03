@@ -31,35 +31,20 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-class TaskTransformer extends FractalTransformer
+class TaskCommentTransformer extends AbstractDataSerializerTransformer
 {
-    /**
-     * Get the whitelist of allowed properties
-     * @return array
-     */
-    public function getWhitelist()
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'title', 'is_done', 'percent_complete', 'date_created', 'task_type', 'date_due',
-            'date_event_start', 'date_event_end', 'creator', 'visibility', 'project', 'list', 'urgency', 'subtasks',
-            'comments', 'attachments', 'linked_items', 'assigned'];
+        return ['id', 'comment', 'person', 'date_created', 'task'];
     }
 
-    /**
-     * Add additional fields, including transforming the labels array into text values
-     * @param $data
-     * @return array
-     */
-    public function transformExtras($data)
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        $labels = [];
-        foreach ($data->getLabels() as $label) {
-            $labels[] = $label->getLabel();
-        }
-
-        return ['labels' => $labels];
+        return [];
     }
 }

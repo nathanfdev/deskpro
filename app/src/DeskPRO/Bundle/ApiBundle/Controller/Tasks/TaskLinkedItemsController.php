@@ -73,7 +73,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
         $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItems')->findAll();
 
         return View::create(
-            $this->createRepresentation($taskLinks),
+            $this->dataSerialize($taskLinks),
             Response::HTTP_OK
         );
     }
@@ -108,7 +108,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
         }
 
         return View::create(
-            $this->createRepresentation($link),
+            $this->dataSerialize($link),
             Response::HTTP_OK
         );
     }
@@ -245,7 +245,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
             $location = $this->generateUrl('api_task_links_get', array('id' => $link->getId()));
 
             return View::create(
-                $this->createRepresentation($link),
+                $this->dataSerialize($link),
                 $status,
                 array(
                     'Location' => $location,

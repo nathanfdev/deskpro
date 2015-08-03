@@ -102,7 +102,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createFractalRepresentation($pager, 'task', $datatype),
+            $this->dataSerialize($pager, null, $datatype),
             Response::HTTP_OK
         );
     }
@@ -138,7 +138,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         return View::create(
-            $this->createFractalRepresentation($task, 'task'),
+            $this->dataSerialize($task),
             Response::HTTP_OK
         );
     }
@@ -261,7 +261,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $subtasks = $task->getSubtasks();
 
         return View::create(
-            $this->createFractalRepresentation($subtasks, 'task'),
+            $this->dataSerialize($subtasks),
             Response::HTTP_OK
         );
     }
@@ -322,7 +322,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createFractalRepresentation($pager, 'task_comment'),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -383,7 +383,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createFractalRepresentation($pager, 'task_attachment'),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -421,7 +421,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $links = $task->getLinkedItems();
 
         return View::create(
-            $this->createFractalRepresentation($links, 'task_linked_item'),
+            $this->dataSerialize($links),
             Response::HTTP_OK
         );
     }
@@ -469,7 +469,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
 
             return View::create(
-                $this->createFractalRepresentation($task, 'task'),
+                $this->dataSerialize($task),
                 $status,
                 array(
                     'Location' => $location,
@@ -510,6 +510,4 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         return $filter->filterRequest($request->query);
     }
-
-
 }

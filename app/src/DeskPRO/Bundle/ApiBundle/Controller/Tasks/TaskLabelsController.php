@@ -96,7 +96,7 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -131,7 +131,7 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
         }
 
         return View::create(
-            $this->createRepresentation($label),
+            $this->dataSerialize($label),
             Response::HTTP_OK
         );
     }
@@ -262,7 +262,7 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
             $location = $this->generateUrl('api_task_labels_get', array('id' => $label->getId()));
 
             return View::create(
-                $this->createRepresentation($label),
+                $this->dataSerialize($label),
                 $status,
                 array(
                     'Location' => $location,

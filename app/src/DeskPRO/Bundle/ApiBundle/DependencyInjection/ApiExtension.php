@@ -44,6 +44,26 @@ class ApiExtension extends Extension
 {
     public function load(array $config, ContainerBuilder $container)
     {
+        $config = $this->processConfiguration(new Configuration(), $config);
+
+        $types = [];
+
+        foreach ($config['data_serializer']['types'] as $type => $matchers) {
+            $classes = [];
+            if (isset($matchers['classes'])) {
+                foreach ($matchers['classes'] as $class) {
+                    $classes[] = $class;
+                    // automatically add the doctrine proxy name to the map as well
+                    $classes[] = 'Proxies\\__CG__\\' . $class;
+                }
+            }
+            $types[$type] = [
+                'classes' => $classes
+            ];
+        }
+
+        $container->setParameter('api.data_serializer.types', $types);
+
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__ . '/../Resources/config/services');
     }

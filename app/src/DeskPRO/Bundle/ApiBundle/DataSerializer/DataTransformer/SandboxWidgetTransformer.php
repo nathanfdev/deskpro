@@ -33,8 +33,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
 class SandboxWidgetTransformer extends AbstractDataSerializerTransformer
