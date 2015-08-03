@@ -48,11 +48,6 @@ define([
     $scope.$on('ticket.updated', function($event, ticket){
       if (ticket.id !== $ticket.id) return;
       if (!issues.length) return;
-      if (ticket.subject) {
-	      issues.each(function(issue){
-		      issues.update(issue, {summary: '[Ticket #' + $ticket.id + '] ' + ticket.subject});
-	      });
-      }
     });
 
     $scope.$watch('issues.length', function(l) {
