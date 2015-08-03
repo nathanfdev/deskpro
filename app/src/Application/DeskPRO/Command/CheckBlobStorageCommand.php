@@ -1,4 +1,5 @@
 <?php
+
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -25,38 +26,40 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class CleanupWeekly extends AbstractJob
+
+class CheckBlobStorageCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-    const DEFAULT_INTERVAL = 604800;
-
-    public function run()
+    protected function configure()
     {
-        $this->doRun();
-        App::getDb()->setIsolationDefault();
+        $this->setName('dp:check-blob-storage');
+        $this->addOption('clean', null, InputOption::VALUE_NONE, "DELETE records in blob_storage that have no parent blob record.");
+        $this->setHelp("Checks for records in blob_storage that have no parent blob record.");
     }
 
-    private function doRun()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $date = date('Y-m-d H:i:s', strtotime('-1 year'));
-
-        $num = App::getDb()->executeUpdate("
-            DELETE FROM login_log
-            WHERE date_created < ?
-        ", array($date));
-
-        if ($num) {
-            $this->logStatus("Cleaned up $num old login logs");
+        if ($input->getOption('clean')) {
+            $count = $this->getContainer()->getEm()->getRepository('DeskPRO:Blob')->cleanDanglingBlobStorageRows();
+            $output->writeln("<info>$count records have been cleaned.</info>");
+        } else {
+            $count = $this->getContainer()->getEm()->getRepository('DeskPRO:Blob')->countDanglingBlobStorageRows();
+            $output->writeln("<info>$count danling records exist. Use --clean option to delete them.</info>");
         }
+
+        return 0;
     }
 }

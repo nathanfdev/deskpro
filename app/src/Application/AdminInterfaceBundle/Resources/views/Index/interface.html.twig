@@ -153,9 +153,11 @@
 			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
 				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
 			</li>
-			<li ng-class="{'section-on': isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
+			{% if not app.getSetting('disable_admin_billing') %}
+				<li ng-class="{'section-on': isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+					<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+				</li>
+			{% endif %}
 			<li ng-class="{'section-on': !isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'Go to Admin Interface' : 'You are currently using the Admin Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right">
 				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
 			</li>
@@ -173,9 +175,11 @@
 			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
 				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
 			</li>
-			<li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
+			{% if not app.getSetting('disable_admin_billing') %}
+				<li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+					<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+				</li>
+			{% endif %}
 			<li ng-show="isBillingInterface" tooltip="Go to Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
 				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
 			</li>
@@ -187,9 +191,11 @@
 			<li class="dotdotdot" ng-hide="miniAppStrip" ng-click="miniAppStrip = true">
 				<span>&middot; &middot; &middot;</span>
 			</li>
-			<li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
+			{% if not app.getSetting('disable_admin_billing') %}
+				<li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+					<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+				</li>
+			{% endif %}
 			<li ng-show="!isBillingInterface" tooltip="You are currently using the Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
 				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
 			</li>

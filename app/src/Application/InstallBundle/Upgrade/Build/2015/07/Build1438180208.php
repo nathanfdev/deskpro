@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,34 +29,56 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CleanupWeekly extends AbstractJob
+class Build1438180208 extends AbstractBuild
 {
-    const DEFAULT_INTERVAL = 604800;
-
     public function run()
     {
-        $this->doRun();
-        App::getDb()->setIsolationDefault();
-    }
+        $this->out("Resetting date_resolved on archived tickets without it");
+        $db = $this->container->getDb();
 
-    private function doRun()
-    {
-        $date = date('Y-m-d H:i:s', strtotime('-1 year'));
+        $batch_size = 1000;
 
-        $num = App::getDb()->executeUpdate("
-            DELETE FROM login_log
-            WHERE date_created < ?
-        ", array($date));
+        while(true) {
+            $ticket_ids = $db->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE status = 'archived' AND date_resolved IS NULL
+                LIMIT $batch_size
+            ");
 
-        if ($num) {
-            $this->logStatus("Cleaned up $num old login logs");
+            if (!$ticket_ids) {
+                break;
+            }
+
+            foreach ($ticket_ids as $tid) {
+                // id_after = 200 is from Ticket::getStatusInt
+                $date_resolved = $db->fetchColumn("
+                    SELECT date_created
+                    FROM tickets_logs
+                    WHERE ticket_id = ? AND action_type = 'changed_status' AND id_after = 200
+                    ORDER BY id DESC
+                    LIMIT 1
+                ", array($tid));
+
+                if (!$date_resolved) {
+                    $db->executeUpdate("
+                        UPDATE tickets SET date_resolved = COALESCE(date_status, date_created, NOW())
+                        WHERE id = ?
+                    ", array($tid));
+                } else {
+                    $db->executeUpdate("
+                        UPDATE tickets SET date_resolved = ?
+                        WHERE id = ?
+                    ", array($date_resolved, $tid));
+                }
+            }
+
+            $this->out("Done batch of " . count($ticket_ids) . "...");
         }
     }
 }

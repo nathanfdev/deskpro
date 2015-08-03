@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,34 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CleanupWeekly extends AbstractJob
+class Build1437732745 extends AbstractBuild
 {
-    const DEFAULT_INTERVAL = 604800;
-
     public function run()
     {
-        $this->doRun();
-        App::getDb()->setIsolationDefault();
-    }
+        $this->out("Set `enable_plaintext_email` for each agent");
 
-    private function doRun()
-    {
-        $date = date('Y-m-d H:i:s', strtotime('-1 year'));
+        $db = $this->container->getDb();
+        $agent_ids = $db->fetchAllCol("SELECT id FROM people WHERE is_agent = 1");
 
-        $num = App::getDb()->executeUpdate("
-            DELETE FROM login_log
-            WHERE date_created < ?
-        ", array($date));
+        $batch = array();
+        foreach ($agent_ids as $aid) {
+            $batch[] = array(
+                'person_id' => $aid,
+                'name'      => 'agent.enable_plaintext_email',
+                'value_str' => '1'
+            );
+        }
 
-        if ($num) {
-            $this->logStatus("Cleaned up $num old login logs");
+        if ($batch) {
+            $db->batchInsert('people_prefs', $batch, true);
         }
     }
 }
