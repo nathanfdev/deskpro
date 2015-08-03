@@ -31,23 +31,37 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
-class SandboxWidgetTransformer extends FractalTransformer
+class DataTypeIdFinder
 {
-    public function getWhitelist()
+    /**
+     * @var PropertyAccessor
+     */
+    private $accessor;
+
+    public function __construct(PropertyAccessor $accessor)
     {
-        return ['id', 'name', 'inventory', 'parent', 'children'];
+        $this->accessor = $accessor;
     }
 
-    protected function transformExtras($data)
+    public function findDataId($data)
     {
-        return [
-            'inventory_warning' => $data->getInventory() < 5
-        ];
+        if (is_object($data)) {
+            $path = 'id';
+        } elseif (is_array($data)) {
+            $path = '[id]';
+        } else {
+            return null; // we can only find ids for arrays and objects
+        }
+
+        if (!$this->accessor->isReadable($data, $path)) {
+            return null;
+        }
+
+        return $this->accessor->getValue($data, $path);
     }
 }

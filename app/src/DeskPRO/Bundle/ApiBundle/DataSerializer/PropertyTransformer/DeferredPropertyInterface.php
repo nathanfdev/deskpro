@@ -31,36 +31,13 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer;
 
-
-use League\Fractal\Manager;
-use League\Fractal\Resource\ResourceInterface;
-use League\Fractal\Scope;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-class FractalScope extends Scope
+/**
+ * Some property transformers might want to defer calculation of the new value until a later time when it is
+ * more efficient (DoctrinePropertyTransformer does this). In these cases, an instance of DeferredPropertyInterface
+ * can be placed as the transformed value. See DoctrineDeferredProperty for an example.
+ */
+interface DeferredPropertyInterface
 {
-    /**
-     * Fire the main transformer.
-     *
-     * @internal
-     * @param  callable|\League\Fractal\TransformerAbstract $transformer
-     * @param  mixed $data
-     * @return array
-     */
-    protected function fireTransformer($transformer, $data)
-    {
-        $transformer = $this->getManager()->resolveTransformer($transformer, $data);
-
-        return parent::fireTransformer($transformer, $data);
-    }
-
-    /**
-     * @return FractalManager
-     */
-    public function getManager()
-    {
-        return parent::getManager();
-    }
 }

@@ -31,16 +31,47 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer;
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
 
-class TaskTransformer extends FractalTransformer
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
+
+/**
+ * Every "white listed" property in a DataSerializerTransformer is run through every PropertyTransformerInterface.
+ *
+ * The goal here is to take a value that is on the data we are serializing (be it an entity/object property, or a value on a key in an arbitrary array) and filter it in some way so that it can be properly serialized.
+ *
+ * For example, \DateTime objects need to be converted to the correct output format, and doctrine associations
+ * need to be turned into an array of IDs.
+ *
+ * This allows for various "plugins" or "PropertyTransformerInterface's" to be injected and used to
+ * manipulate certain properties or property values.
+ *
+ * See the Doctrine\DoctrinePropertyTransformer as an example of how you can plug in to this process.
+ *
+ * Everything is done in context, so you can get the data, property name, and value from the context.
+ *
+ * If you want to transform it, you can call $property_context->transform('new value').
+ *
+ * You can also check to see if the value was already transformed $property_context->isTransformed() and
+ * ignore it if so (but some transformers might not care, and want to transform previously transformed properties).
+ */
+interface PropertyTransformerInterface
 {
-    public function getWhitelist()
-    {
-        return ['id', 'title', 'is_done', 'percent_complete', 'date_created', 'task_type', 'date_due',
-            'date_event_start', 'date_event_end', 'creator', 'visibility', 'project', 'list', 'urgency', 'subtasks',
-            'labels', 'comments', 'attachments', 'linked_items', 'assigned'];
-    }
+    /**
+     * @param PropertyTransformationContext $property_context
+     */
+    public function transform(PropertyTransformationContext $property_context);
+
+    /**
+     * @param DeferredPropertyInterface $deferred_property
+     * @return bool true if supports this deferred property, false otherwise
+     */
+    public function supportsDeferredProperty(DeferredPropertyInterface $deferred_property);
+
+    /**
+     * @param DeferredPropertyInterface $deferred_property
+     * @return mixed
+     */
+    public function resolveDeferredProperty(DeferredPropertyInterface $deferred_property);
 }

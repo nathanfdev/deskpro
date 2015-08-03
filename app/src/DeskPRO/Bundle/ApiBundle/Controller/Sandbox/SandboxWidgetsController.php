@@ -75,14 +75,16 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *
      * @Get("/sandbox_widgets", name="api_sandbox_widgets")
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
         $widgets = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->findAll();
 
         $pager = new Pagerfanta(new ArrayAdapter($widgets));
+        $pager->setMaxPerPage(2);
+        $pager->setCurrentPage($request->query->get('page', 1));
 
         return View::create(
-            $this->createFractalRepresentation($pager, "sandbox_widget"),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -108,12 +110,12 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *
      * @Get("/sandbox_widgets/{id}", name="api_sandbox_widgets_get")
      */
-    public function getAction($id)
+    public function getAction(Request $request, $id)
     {
         $widget = $this->getWidget($id);
 
         return View::create(
-            $this->createFractalRepresentation($widget, "sandbox_widget"),
+            $this->dataSerialize($widget),
             Response::HTTP_OK
         );
     }
@@ -193,7 +195,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $this->getDoctrine()->getManager()->flush();
 
         return View::create(
-            array(),
+            [],
             Response::HTTP_OK
         );
     }
@@ -221,7 +223,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
             $this->getDoctrine()->getManager()->flush($widget);
 
             return View::create(
-                $this->createFractalRepresentation($widget, "sandbox_widget"),
+                $this->dataSerialize($widget),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_sandbox_widgets_get', array('id' => $widget->getId()))
@@ -243,6 +245,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         if (!$widget) {
             throw new NotFoundHttpException();
         }
+
         return $widget;
     }
 }

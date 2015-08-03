@@ -31,14 +31,11 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\Exception;
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
-
-class TaskAttachmentTransformer extends FractalTransformer
+/**
+ * All exceptions thrown by the DataSerializer package will be this or a sub-class of this.
+ */
+class DataSerializerException extends \Exception
 {
-    public function getWhitelist()
-    {
-        return ['id', 'task', 'comment', 'person', 'blob', 'date_created'];
-    }
 }

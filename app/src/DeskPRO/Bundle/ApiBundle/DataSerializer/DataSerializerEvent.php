@@ -31,14 +31,28 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
 
-class TaskLabelTransformer extends FractalTransformer
+use Symfony\Component\EventDispatcher\Event;
+
+class DataSerializerEvent extends Event
 {
-    public function getWhitelist()
+    /**
+     * @var DataSerializerContext
+     */
+    private $context;
+
+    public function __construct(DataSerializerContext $context)
     {
-        return ['id', 'label', 'task'];
+        $this->context = $context;
+    }
+
+    /**
+     * @return DataSerializerContext
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 }

@@ -31,45 +31,48 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
-
-use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
-use League\Fractal\Serializer\JsonApiSerializer;
-
-class FractalJsonSerializer extends JsonApiSerializer
+/**
+ * A stateful cache we use to store the transformations so we only ever execute a data transformer once
+ * per type/id pair (per view).
+ */
+class DataTransformerRegistry
 {
-    public function collection($resourceKey, array $data)
-    {
-        $data = $this->resolveDeferredValues($data);
+    private $transformed_data;
 
-        return parent::collection($resourceKey, $data);
+    public function __construct()
+    {
+        $this->transformed_data = [];
     }
 
-    /**
-     * The parent method wraps $data in an array, which we don't want.
-     */
-    public function item($resourceKey, array $data)
+    public function registerTransformed($type, $id, $transformed, $view = DataTransformerRequest::DEFAULT_VIEW)
     {
-        $data = $this->resolveDeferredValues($data);
-
-        return array($resourceKey ?: 'data' => $data);
-    }
-
-    protected function resolveDeferredValues(array $data)
-    {
-        $new = [];
-
-        foreach ($data as $key => $val) {
-            if (is_array($val)) {
-                $val = $this->resolveDeferredValues($val);
-            } elseif ($val instanceof DeferredIdentity) {
-                $val = $val->resolve();
-            }
-
-            $new[$key] = $val;
+        if (!array_key_exists($view, $this->transformed_data)) {
+            $this->transformed_data[$view] = [];
         }
 
-        return $new;
+        if (!array_key_exists($type, $this->transformed_data[$view])) {
+            $this->transformed_data[$view][$type] = [];
+        }
+
+        $this->transformed_data[$view][$type][$id] = $transformed;
+    }
+
+    public function getTransformed($type, $id, $view = DataTransformerRequest::DEFAULT_VIEW)
+    {
+        if (!array_key_exists($view, $this->transformed_data)) {
+            return null;
+        }
+
+        if (!array_key_exists($type, $this->transformed_data[$view])) {
+            return null;
+        }
+
+        if (!array_key_exists($id, $this->transformed_data[$view][$type])) {
+            return null;
+        }
+
+        return $this->transformed_data[$view][$type][$id];
     }
 }

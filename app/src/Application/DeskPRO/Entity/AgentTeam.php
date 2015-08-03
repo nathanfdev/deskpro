@@ -72,6 +72,8 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $avatar;
 
+    protected $project_members;
+
     /**
      * @return int
      */
@@ -83,6 +85,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->members = new ArrayCollection();
+        $this->project_members = new ArrayCollection();
     }
 
     public function addPerson(Entity\Person $person)
@@ -160,6 +163,13 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
                 'scale' => 0,
                 'nullable' => false,
                 'columnName' => 'name'
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'                     => 'project_members',
+                'targetEntity'                  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'                      => 'team',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

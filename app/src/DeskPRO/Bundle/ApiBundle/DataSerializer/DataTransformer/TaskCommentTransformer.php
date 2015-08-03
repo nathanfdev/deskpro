@@ -31,14 +31,20 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Fractal\Transformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-class TaskLinkedItemTransformer extends FractalTransformer
+class TaskCommentTransformer extends AbstractDataSerializerTransformer
 {
-    public function getWhitelist()
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'task', 'ticket', 'chat', 'article'];
+        return ['id', 'comment', 'person', 'date_created', 'task'];
+    }
+
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    {
+        return [];
     }
 }

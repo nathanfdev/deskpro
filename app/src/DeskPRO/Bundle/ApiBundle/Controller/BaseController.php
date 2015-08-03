@@ -35,22 +35,47 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
-use DeskPRO\Bundle\ApiBundle\View\Representation\ErrorRepresentation;
 use Symfony\Component\Form\FormInterface;
 
 class BaseController extends FOSRestController
 {
+    /** @const DATATYPE_STANDARD Standard and sort of unknown datatype. */
+    const DATATYPE_STANDARD = 1;
+    /** @const DATATYPE_GROUPED_COUNT Provided data is an array resulting from a grouped count query. */
+    const DATATYPE_GROUPED_COUNT = 2;
+    /** @const DATATYPE_COUNT_ONLY Standard datatype, but we only want the total results */
+    const DATATYPE_COUNT_ONLY = 3;
+
     /**
-     * @param mixed $input any array or object
-     * @param string $transformer the short name (no prefix) of the service name for the transformer you want to use
-     * @param int $datatype
      * @return array
      */
-    protected function createFractalRepresentation($input, $transformer, $datatype = 1)
+    protected function dataSerialize($data, $includes_string = null, $type = self::DATATYPE_STANDARD)
     {
-        return $this->get('api_view_representation_factory')->createFractalRepresentation($input, $transformer, $datatype);
-    }
+        // not passing an $includes_string will default to the master request's "include" GET param
+        if (null === $includes_string) {
+            $includes_string = $this->get('request_stack')->getMasterRequest()->query->get('include');
+        }
 
+        if (self::DATATYPE_STANDARD === $type) {
+            return $this->get('data_serializer')->serialize($data, $includes_string);
+        } elseif (self::DATATYPE_COUNT_ONLY === $type) {
+            if (is_object($data) && method_exists($data, 'count')) {
+                return [
+                    'meta' => [
+                        'count' => $data->count(),
+                        'total_count' => $data->count(),
+                    ]
+                ];
+            }
+
+            return [
+                'meta' => [
+                    'count' => $data['count'],
+                    'total_count' => $data['count'],
+                ]
+            ];
+        }
+    }
     /**
      * @param mixed $input any array or object
      * @return StandardRepresentation
