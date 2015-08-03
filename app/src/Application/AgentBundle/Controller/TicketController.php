@@ -2139,7 +2139,8 @@ class TicketController extends AbstractController
 
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-        $problems = array();
+        $open_problems = array();
+        $closed_problems = array();
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
             $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => false));
@@ -3754,7 +3755,8 @@ class TicketController extends AbstractController
             $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
         }
 
-        $problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+        $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+        $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => false));
 
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
             'ticket'                 => $ticket,
@@ -3768,7 +3770,8 @@ class TicketController extends AbstractController
             'custom_fields'          => $custom_fields,
             'new_custom_fields'      => $new_custom_fields->createView(),
             'billing_fields' => $billing_fields,
-            'problems' => $problems,
+            'open_problems' => $open_problems,
+            'closed_problems' => $closed_problems,
         ));
     }
 
