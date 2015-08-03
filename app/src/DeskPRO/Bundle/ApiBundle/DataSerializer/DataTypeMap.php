@@ -73,11 +73,10 @@ class DataTypeMap
      */
     public function findType($data)
     {
-        if (is_array($data) || $data instanceof \Traversable) {
-            foreach ($data as $item) {
-                $data = $item; // for the purposes of this method, we use the first element of an array/collection
-                break;
-            }
+        if (is_array($data)) {
+            $data = array_shift($data);
+        } elseif ($data instanceof \Traversable) {
+            $data = $data->current();
         }
 
         if (is_array($data) || $data instanceof \Traversable) {
@@ -88,9 +87,9 @@ class DataTypeMap
 
         if ($object_class && ($type = $this->findTypeForClass($object_class))) {
             return $type;
+        } else {
+            throw new \Exception("Type for $object_class not found.");
         }
-
-        return null;
     }
 
     /**

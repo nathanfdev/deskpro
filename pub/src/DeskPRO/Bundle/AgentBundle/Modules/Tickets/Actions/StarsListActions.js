@@ -1,20 +1,16 @@
 import { createAction } from "Ampliflux/actions";
-import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
+import Stars from "DeskPRO/Bundle/AgentBundle/Services/Api/Stars";
 
 export const loadStarCounts = createAction(
   "TICKETS_LOAD_TICKET_STAR_COUNTS",
-  (trigger) => {
-    DpApi.sendGet('DP_API/ticket_stars/all/counts').then(
+  (trigger) => Stars.loadAllStarCounts.then(
       (values) => trigger(values.getData())
-    );
-  }
+  )
 )
 
 export const loadStarTickets = createAction(
   "TICKETS_LOAD_TICKETS",
-  (trigger, star_name) => {
-    DpApi.sendGet('DP_API/ticket_stars/' + star_name + '/tickets').then(
+  (trigger, star_name) => Stars.loadTicketsForStar(star_name).then(
       values => trigger(values.getData())
-    );
-  }
+  )
 )
