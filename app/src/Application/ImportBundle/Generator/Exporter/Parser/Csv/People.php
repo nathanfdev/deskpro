@@ -65,7 +65,7 @@ final class People extends AbstractParser
         $collection    = new Entity\Collection();
 
         $people        = $this->getReaderData($this->getPersonReaderConfig());
-        $contact_data  = $this->exportOrganizationContactData();
+        $contact_data  = $this->exportPersonContactData();
         $custom_fields = $this->exportPersonCustomFields();
 
         foreach ($people as $num => $person) {
@@ -152,10 +152,10 @@ final class People extends AbstractParser
      *
      * @return Entity\Collection
      */
-    private function exportOrganizationContactData()
+    private function exportPersonContactData()
     {
         $config = $this->getReaderConfig(self::FILE_PEOPLE_CONTACT_DATA);
-        return $this->exportContactData($config, self::PERSON_PREFIX, 'organization_id');
+        return $this->exportContactData($config, self::PERSON_PREFIX, 'person_id');
     }
 
     /**

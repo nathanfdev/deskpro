@@ -76,6 +76,7 @@ final class Person extends AbstractImporter
             ->resetEmails()
             ->resetLabels()
             ->resetUsergroups()
+            ->resetContactData()
             ->resetCustomData()
         ;
 
@@ -111,6 +112,9 @@ final class Person extends AbstractImporter
             if ($user_group) {
                 $person->addUsergroup($user_group);
             }
+        }
+        foreach ($entity->getContactData() as $contact) {
+            $person->addContactData($this->createContactData($contact));
         }
         foreach ($entity->getCustomFields() as $custom_field) {
             $custom_field = $this->createPersonCustomData($custom_field);
@@ -208,6 +212,33 @@ final class Person extends AbstractImporter
         }
 
         return $user_group;
+    }
+
+    /**
+     * Returns person contact data entity
+     *
+     * @param Entity\ContactData $entity
+     * @return DeskPROEntity\PersonContactData
+     */
+    private function createContactData(Entity\ContactData $entity)
+    {
+        $contact = new DeskPROEntity\PersonContactData();
+        $contact
+            ->setContactType($entity->getContactType())
+            ->setComment($entity->getComment())
+            ->setField1($entity->getField1())
+            ->setField2($entity->getField2())
+            ->setField3($entity->getField3())
+            ->setField4($entity->getField4())
+            ->setField5($entity->getField5())
+            ->setField6($entity->getField6())
+            ->setField7($entity->getField7())
+            ->setField8($entity->getField8())
+            ->setField9($entity->getField9())
+            ->setField10($entity->getField10())
+        ;
+
+        return $contact;
     }
 
     /**

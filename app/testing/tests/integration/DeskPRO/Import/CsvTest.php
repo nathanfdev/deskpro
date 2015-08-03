@@ -327,6 +327,17 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertCount(8, $this->person_repository->findAll());
         $this->assertCount(2, $this->custom_data_person_repository->findAll());
 
+        $person = $this->person_repository->findOneByEmail('joe.smith@example.com');
+        $this->assertNotNull($person);
+
+        $contact_data1 = $person->getContactData('mobile');
+        $contact = $contact_data1[0];
+
+        $this->assertEquals('some comment', $contact->getComment());
+        $this->assertEquals('+7', $contact->getField1());
+        $this->assertEquals('1234567', $contact->getField2());
+        $this->assertEquals('phone', $contact->getField3());
+
         // Checking for tickets
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
             'subject' => 'How to submit a ticket',

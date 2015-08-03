@@ -17,9 +17,16 @@ class Person extends AbstractFixture
      */
     public function load(ObjectManager $manager)
     {
+        $contact_data = new Entity\PersonContactData();
+        $contact_data
+            ->setContactType('fax')
+            ->setComment('some comment')
+        ;
+
         $person = new Entity\Person();
         $person->setEmail('user@example.com');
         $person->setName('Old name');
+        $person->addContactData($contact_data);
 
         $manager->persist($person);
         $manager->flush();

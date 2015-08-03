@@ -1434,8 +1434,25 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Reset contact data
+     *
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        foreach ($this->contact_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->contact_data->clear();
+        $this->_onPropertyChanged('contact_data', null, $this->contact_data);
+
+        return $this;
+    }
+
+    /**
      * @param  null  $type
-     * @return array
+     * @return PersonContactData[]
      */
     public function getContactData($type = null)
     {
