@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use Doctrine\ORM\QueryBuilder;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
@@ -44,6 +45,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -251,7 +253,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
     /**
      * @APIDoc(
-     *      description="get attached members for a project",
+     *      description="get departments for a project",
      *      requirements={
      *          {
      *              "name"="id",
@@ -264,24 +266,80 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *          200="Success"
      *      }
      * )
-     *
-     * @Get("/projects/{id}/members", name="api_projects_members_get")
-     *
-     * @param $id
+     * @Get("/projects/{id}/departments", name="api_projects_departments_get")
+     * @param int $id
      * @return View
      */
-    public function getMembersAction($id)
+    public function getDepartmentsAction($id)
     {
-        $project = $this->getProject($id);
+        $id = (int) $id;
 
-        if (empty($project)) {
-            throw $this->createNotFoundException();
-        }
-
-        $members = $project->getMembers();
+        $query = $this->getProjectMemberQuery($id, 'DeskPRO:Department');
 
         return View::create(
-            $this->createRepresentation($members),
+            $this->createRepresentation($query->getArrayResult()),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @APIDoc(
+     *      description="get teams for a project",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/projects/{id}/teams", name="api_projects_teams_get")
+     * @param int $id
+     * @return View
+     */
+    public function getTeamsAction($id)
+    {
+        $id = (int) $id;
+
+        $query = $this->getProjectMemberQuery($id, 'DeskPRO:AgentTeam');
+
+        return View::create(
+            $this->createRepresentation($query->getArrayResult()),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @APIDoc(
+     *      description="get agents for a project",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/projects/{id}/agents", name="api_agents_teams_get")
+     * @param int $id
+     * @return View
+     */
+    public function getAgentsAction($id)
+    {
+        $id = (int) $id;
+
+        $query = $this->getProjectMemberQuery($id, 'DeskPRO:Person');
+
+        return View::create(
+            $this->createRepresentation($query->getArrayResult()),
             Response::HTTP_OK
         );
     }
@@ -321,6 +379,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             $this->oldMembers = $this->convertExistingMembers($project);
         }
 
+        /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
 
         $form->submit($submitted, $request->getMethod() !== 'PUT');
@@ -439,5 +498,23 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
             $em->flush();
         }
+    }
+
+    /**
+     * Get the Doctrine Query for a project member
+     * @param $id
+     * @param $object
+     * @return \Doctrine\ORM\Query
+     */
+    protected function getProjectMemberQuery($id, $object)
+    {
+        /** @var QueryBuilder $queryBuilder */
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->createQueryBuilder()->select('d')->from($object, 'd')
+            ->leftJoin('d.project_members', 'p')
+            ->where('p.project = :project')
+            ->setParameter('project', $id);
+
+        return $queryBuilder->getQuery();
     }
 }

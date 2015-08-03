@@ -162,6 +162,13 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
                 'columnName' => 'name'
             )
         );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'                     => 'project_members',
+                'targetEntity'                  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'                      => 'team',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToMany(array(
             'fieldName'    => 'members',

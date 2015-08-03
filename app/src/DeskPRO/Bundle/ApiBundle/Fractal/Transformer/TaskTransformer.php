@@ -37,10 +37,29 @@ use DeskPRO\Bundle\ApiBundle\Fractal\FractalTransformer;
 
 class TaskTransformer extends FractalTransformer
 {
+    /**
+     * Get the whitelist of allowed properties
+     * @return array
+     */
     public function getWhitelist()
     {
         return ['id', 'title', 'is_done', 'percent_complete', 'date_created', 'task_type', 'date_due',
             'date_event_start', 'date_event_end', 'creator', 'visibility', 'project', 'list', 'urgency', 'subtasks',
-            'labels', 'comments', 'attachments', 'linked_items', 'assigned'];
+            'comments', 'attachments', 'linked_items', 'assigned'];
+    }
+
+    /**
+     * Add additional fields, including transforming the labels array into text values
+     * @param $data
+     * @return array
+     */
+    public function transformExtras($data)
+    {
+        $labels = [];
+        foreach ($data->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        return ['labels' => $labels];
     }
 }
