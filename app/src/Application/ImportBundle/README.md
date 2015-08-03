@@ -33,6 +33,7 @@ IMPORT BUNDLE
     - [Exporter #4. ZenDesk](#exporter-4-zendesk)
         * [ZenDesk Exporter Configuration](#zendesk-exporter-configuration)
         * [ZenDesk Fixtures](#zendesk-fixtures)
+        * [ZenDesk Batch.json](#zendesk-batch.json)
 
 Commands
 ------------
@@ -233,11 +234,11 @@ Exporters
 
 #### Exporter #1. CSV
 
-Exports data from CSV files.
+Exports data from CSV files. Batching not supported.
 
 ###### CSV Files structure (input-path)
 
- - /input_path
+ - input_path/
      - articles.csv
         - article_custom_fields.csv
      - downloads.csv
@@ -829,7 +830,7 @@ Exports data from OsTicket database.
 
 ###### OsTicket Exporter Configuration
 
-Add `osticket_import` configuration to www/config.php
+Add `osticket_import` configuration to `config.php`
 
 ```php
 $DP_CONFIG['osticket_import'] = array(
@@ -899,7 +900,7 @@ Exports data from ZenDesk account. Supported tickets and people data export.
 
 ###### ZenDesk Exporter Configuration
 
-Add `zendesk_import` configuration to www/config.php
+Add `zendesk_import` configuration to `config.php`
 
 ```php
 $DP_CONFIG['zendesk_import'] = array(
@@ -917,6 +918,19 @@ $DP_CONFIG['zendesk_import'] = array(
 ```bash
 php cmd.php dpdev:import:fixtures person --offset=1000
 php cmd.php dpdev:import:fixtures ticket --offset=1000
+```
+
+###### ZenDesk Batch.json
+
+```json
+{
+  "batch_id" : 1,
+  "date_created": "2015-07-30 06:09:01",
+  "people_end_time": "2015-06-30 08:00:01",
+  "tickets_end_time": "2015-07-30 06:09:01",
+  "retry_after_time": "2015-07-30 06:11:01",
+  "has_remaining": true
+}
 ```
 
 Support for batching
