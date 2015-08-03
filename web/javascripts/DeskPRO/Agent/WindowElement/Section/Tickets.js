@@ -57,10 +57,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}, 20000);
 	},
 
-	initScope: function () {
-		var self = this;
 
-	},
 
 	_initSection: function(data) {
 		var self = this;
@@ -136,6 +133,38 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('#ticket_slas_launch_editor').on('click', function() {
 			$('#settingswin').trigger('dp_open', 'ticketslas');
 		});
+
+		if ($('#problems-section')) {
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-problems-updated', function (info) {
+				$('#problems-section [data-problem-id]').each(function () {
+					var id  = parseInt($(this).data('problem-id'))
+						, ass = info.associated.indexOf(id) > -1
+						, dis = info.disassociated.indexOf(id) > -1
+						;
+					if (!ass && !dis) return;
+					var $cnt = $('.counter', this);
+
+					console.info($cnt[0]);
+					// handle standard html
+					if ($cnt[0]) {
+						var val = parseInt($cnt.text());
+						// val !== val when val is NaN
+						val === val && ass && $cnt.text(++val);
+						val === val && dis && $cnt.text(--val);
+
+						// handle select options
+					} else {
+						var m = /(^.+)\((\d+)\)$/.exec($(this).text());
+						if (!m || m.length !== 3) return;
+						var val = parseInt(m[2]);
+						val === val && ass && val++;
+						val === val && dis && val--;
+						$(this).text(m[1] + '(' + val + ')');
+					}
+				});
+				//DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: info.ticket_id });
+			});
+		}
 
 		if ($('#ticket_slas_header').length) {
 			var header = $('#ticket_slas_header');
@@ -294,7 +323,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
-    this.sectionEl.find('.problems_select').each(function () {
+		this.sectionEl.find('#closed_problems_select').each(function () {
       var sel = $(this);
       if (sel.hasClass('with-select2')) return;
       DP.select(sel);
@@ -302,7 +331,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
       sel.on('change', function (ev) {
         var val = $(this).val();
         if (!val) return;
-        console.log(val);
         $(this).data('route', $(this).data('path').replace('0', $(this).val()))
         DeskPRO_Window.runPageRouteFromElement($(this), {event: ev});
       });

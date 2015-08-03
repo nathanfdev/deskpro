@@ -42,19 +42,20 @@
                         <div class="item-form">
                             <div class="select-value-wrap">
                                 <div class="select-value">
-                                    <label id="nav_closed_problem_label_{{ p.id }}"></label>
+                                    <label id="nav_closed_problem_label"></label>
                                     <i class="icon-caret-down"></i>
                                 </div>
-                                <select class="dpe_select invisible-trigger problems_select"
-                                        data-label-bound="#nav_closed_problem_label_{{ p.id }}"
+                                <select id="closed_problems_select"
+                                        class="dpe_select invisible-trigger problems_select"
+                                        data-label-bound="#nav_closed_problem_label"
                                         data-dropdown-css-class="invisible-trigger small filter-list"
                                         data-select-width="165"
                                         data-path="listpane:{{ path('agent_ticketsearch_runproblem', {'problem_id': 0}) }}"
                                         >
-                                    <option value="">{{ phrase('agent.problems.closed_incidents') }}</option>
+                                    <option value="">{{ phrase('agent.problems.closed_problems') }}</option>
                                     {% for p in closed_problems %}
-                                        <option value="{{ p.id }}">
-                                            {{ p.title }} ({{ problem_counts[p.id]|default(0) }})
+                                        <option value="{{ p.id }}" data-problem-id="{{ p.id }}">{{ p.title }}
+                                            ({{ problem_counts[p.id]|default(0) }})
                                         </option>
                                     {% endfor %}
                                 </select>

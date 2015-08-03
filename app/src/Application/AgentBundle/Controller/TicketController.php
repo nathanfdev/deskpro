@@ -66,6 +66,7 @@ use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Application\DeskPRO\Tickets\Problems\EventListener\TicketProblemsChangedListener;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
 use Orb\Util\DpStrings;
@@ -363,9 +364,11 @@ class TicketController extends AbstractController
             $agents_with_perm[$agent->id] = $agent->PermissionsManager->TicketChecker->canView($ticket);
         }
 
-        $problems = array();
+        $open_problems = array();
+        $closed_problems = array();
         if ($this->person->hasPerm('agent_problems.view')) {
-            $problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => false));
         }
 
 
@@ -422,7 +425,8 @@ class TicketController extends AbstractController
 
             'addable_slas'               => $addable_slas,
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
-            'problems' => $problems,
+            'open_problems'              => $open_problems,
+            'closed_problems'            => $closed_problems,
         );
 
         if (App::getSetting('core_tickets.enable_billing')) {
@@ -2029,7 +2033,10 @@ class TicketController extends AbstractController
                         $is_dep_changed = true;
                     }
                 });
+                $problemListener = new TicketProblemsChangedListener($this->em->getConnection());
+                $problemListener->setPersonContext($this->person);
                 $ticket->addPropertyChangedListener($event_listener);
+                $ticket->addPropertyChangedListener($problemListener);
 
                 if ($this->in->getBool('with_set_agent_parts')) {
                     $set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
@@ -2134,7 +2141,8 @@ class TicketController extends AbstractController
 
         $problems = array();
         if ($this->person->hasPerm('agent_problems.view')) {
-            $problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
+            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => false));
         }
 
         $data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
@@ -2144,7 +2152,8 @@ class TicketController extends AbstractController
             'custom_person_fields'=> $custom_person_fields,
             'custom_org_fields'   => $custom_org_fields,
             'new_custom_fields'   => $new_custom_fields->createView(),
-            'problems' => $problems,
+            'open_problems'       => $open_problems,
+            'closed_problems'       => $closed_problems,
         ));
 
         $client_messages = false;
@@ -4172,6 +4181,11 @@ class TicketController extends AbstractController
             }
 
             if ($this->settings->get('core.problems.enabled')) {
+
+                $problemListener = new TicketProblemsChangedListener($this->em->getConnection());
+                $problemListener->setPersonContext($this->person);
+                $ticket->addPropertyChangedListener($event_listener);
+
                 $id = (int)$request->get('problem_id');
                 $title = $this->in->getString('problem_title'); // sanitize
                 /** @var TicketChecker $checker */

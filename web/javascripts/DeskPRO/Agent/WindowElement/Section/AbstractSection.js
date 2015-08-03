@@ -89,9 +89,6 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 */
 	init: function() {},
 
-	initScope: function () {
-	},
-
 	onShow: function() { },
 	onFirstShow: function() { },
 	onHide: function() { },
@@ -194,20 +191,16 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		if (!contentEl) {
-			contentEl = $('.source-pane-instance', el);
-			if (!contentEl[0]) {
-				contentEl = $('section.content', el);
-				if (!contentEl.length) {
-					var html = [];
-					html.push('<div class="source-pane-wrapper"></div>');
-					html = html.join('');
-
-					el = $(html);
-					this.sectionEl.append(el);
-					contentEl = el;
-				}
-			}
-		}
+      contentEl = $('.source-pane-instance', el);
+    }
+    if (!contentEl || !contentEl[0]) {
+      contentEl = $('section.content', el);
+    }
+    if (!contentEl || !contentEl[0]) {
+      el = $('<div class="source-pane-wrapper"></div>');
+      this.sectionEl.append(el);
+      contentEl = el;
+    }
 		this.contentEl = contentEl;
 
 		contentEl.on('click', '.pane-tabs li', function(ev) {
@@ -219,25 +212,6 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			contentEl.find('.pane-content').hide().filter('.'+$(this).data('tab-id')).show().find('.dp-with-activate-listener').triggerHandler('dp_activated');
 		});
 
-		var attachPoint = el
-			, $scope      = DeskPRO_Window.$scope.$new()
-			;
-
-		self.$scope = $scope;
-		self.$q = DeskPRO_Window.$q;
-
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function ($compile) {
-			attachPoint.data('$ngControllerController', self);
-			$compile(attachPoint.contents())(self.$scope);
-			self.initScope();
-		}]);
-
-		this.addEvent('destroy', function () {
-			if (self.$scope) {
-				self.$scope.$destroy();
-				self.$scope = null;
-			}
-		});
 	},
 
 

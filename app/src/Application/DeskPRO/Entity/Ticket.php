@@ -3467,13 +3467,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                     $problem->tickets->removeElement($ticket);
                 }
             }
+            $this->problems->removeElement($old);
         }
 
-        $this->problems->clear();
         $this->problems->add($problem);
         $problem->tickets->add($this);
 
-        $this->_onPropertyChanged('problems', $this->problems, $this->problems);
+        $this->_onPropertyChanged('problems', null, $this->problems);
     }
 
     /**
@@ -3481,8 +3481,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function disassociateProblem()
     {
-        $this->problems->clear();
-        $this->_onPropertyChanged('problems', $this->problems, $this->problems);
+        foreach ($this->problems as $pk => $problem) {
+            foreach ($problem->tickets as $tk => $ticket) {
+                if ($ticket['id'] === $this->id) {
+                    $problem->tickets->remove($tk);
+                }
+            }
+            $this->problems->remove($pk);
+        }
+        $this->_onPropertyChanged('problems', null, $this->problems);
     }
 
     public static function loadMetadata(ClassMetadata $metadata)
