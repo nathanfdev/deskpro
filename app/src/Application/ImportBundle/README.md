@@ -28,7 +28,11 @@ IMPORT BUNDLE
         * [JSON Entity #6. Ticket](#json-entity-6-ticket)
         * [JSON Entity #7. Organization](#json-entity-7-organization)
     - [Exporter #3. OsTicket](#exporter-3-osticket)
+        * [OsTicket Exporter Configuration](#osticket-exporter-configuration)
+        * [OsTicket Fixtures](#osticket-fixtures)
     - [Exporter #4. ZenDesk](#exporter-4-zendesk)
+        * [ZenDesk Exporter Configuration](#zendesk-exporter-configuration)
+        * [ZenDesk Fixtures](#zendesk-fixtures)
 
 Commands
 ------------
@@ -567,27 +571,27 @@ Supported contact types:
 
 ###### JSON Files structure (input-path)
 
- - /input_path
-    - /1
-        - /articles
+ - input_path/
+    - 1/
+        - articles/
             - article1.json
             - article2.json
-        - /downloads
+        - downloads/
             - download1.json
             - download2.json
-        - /feedback
+        - feedback/
             - feedback1.json
             - feedback2.json
-        - /news
+        - news/
             - news1.json
             - news2.json
-        - /organizations
+        - organizations/
             - organization1.json
             - organization2.json
-        - /people
+        - people/
             - person1.json
             - person2.json
-        - /tickets
+        - tickets/
             - ticket1.json
             - ticket2.json
         - batch.json
@@ -810,12 +814,22 @@ Supported contact types:
 }
 ```
 
+###### JSON Batch.json
+
+```json
+{
+  "batch_id" : 1,
+  "date_created": "2015-07-30 06:09:01"
+}
+```
+
 #### Exporter #3. OsTicket
 
 Exports data from OsTicket database.
 
-Configuration
-Add `osticket_import` configuration to your www/config.php
+###### OsTicket Exporter Configuration
+
+Add `osticket_import` configuration to www/config.php
 
 ```php
 $DP_CONFIG['osticket_import'] = array(
@@ -826,7 +840,7 @@ $DP_CONFIG['osticket_import'] = array(
 );
 ```
 
-Fixtures:
+###### OsTicket Fixtures
 
 ```sql
 DELIMITER $$
@@ -881,10 +895,11 @@ DELIMITER ;
 
 #### Exporter #4. ZenDesk
 
-Exports data from ZenDesk account.
+Exports data from ZenDesk account. Supported tickets and people data export.
 
-Configuration
-Add `zendesk_import` configuration to your www/config.php
+###### ZenDesk Exporter Configuration
+
+Add `zendesk_import` configuration to www/config.php
 
 ```php
 $DP_CONFIG['zendesk_import'] = array(
@@ -897,8 +912,12 @@ $DP_CONFIG['zendesk_import'] = array(
 );
 ```
 
-Supported tickets and people data export.
+###### ZenDesk Fixtures
 
+```bash
+php cmd.php dpdev:import:fixtures person --offset=1000
+php cmd.php dpdev:import:fixtures ticket --offset=1000
+```
 
 Support for batching
 ------------
