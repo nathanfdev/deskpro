@@ -1,22 +1,25 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'redux/react';
+import * as AppActions from "../Actions/AppActions";
+import { Link } from 'react-router';
 
+@connect(state => ({
+  user: state.user,
+  dp_window: state.dp_window
+}))
 export default class AppSwitcher extends React.Component {
-  static propTypes = {
-    switchApp: PropTypes.func.isRequired,
-    activeAppId: PropTypes.string.isRequired
-  }
-
   renderAppIcon(appId, title, iconClass) {
-    const { activeAppId } = this.props;
-    const clickHandler = () => this.props.switchApp(appId);
+    const { dp_window, dispatch } = this.props;
+    const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const className = 'fa ' + iconClass;
-    const rowClassName = activeAppId === appId ? ' active' : '';
 
-    return (<li>
-      <a onClick={clickHandler} className={rowClassName}>
-        <i className={className}></i>
-      </a>
-    </li>);
+    return (
+      <li>
+        <Link to={`/index.php/agent/${appId}`}>
+          <i className={className}></i>
+        </Link>
+      </li>
+    );
   }
 
   render() {

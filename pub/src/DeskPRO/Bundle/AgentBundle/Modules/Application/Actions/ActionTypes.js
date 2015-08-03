@@ -5,4 +5,6 @@ export default keyMirror({
 	APP_SET_USER:    null,
 	APP_IS_LOADED:   null,
 	SET_ACTIVE_APP:  null,
+  ROUTING_STARTED: null,
+  TRANSITION_TO: null,
 });

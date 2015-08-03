@@ -6,6 +6,7 @@ import thunkMiddleware from 'redux/lib/middleware/thunk';
 import promiseMiddleware from 'redux-promise';
 import { Provider } from 'redux/react';
 import { composeReducers } from "Ampliflux/reducers";
+import BrowserHistory from 'react-router/lib/BrowserHistory';
 
 import * as app_stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Reducers/index";
 import * as ticket_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/index";
@@ -34,10 +35,12 @@ export default class AgentApp {
         "foobar": "Tickets"
       }
     };
+    
+    const hist = new BrowserHistory();
 
     React.render(
       <Provider redux={redux}>
-        {() => <DpAppContainer {...intlData} />}
+        {() => <DpAppContainer {...intlData} history={hist} />}
       </Provider>,
       document.getElementById('deskpro_app_window')
     );

@@ -36,6 +36,7 @@
     "react-hot-loader": "1.2.8",
     "react-hotify": "0.1.1",
     "react-intl": "1.2.0",
+    "react-router": "1.0.0-beta2",
     "redux": "0.12.0",
     "redux-actions": "0.7.0",
     "redux-promise": "0.4.0",

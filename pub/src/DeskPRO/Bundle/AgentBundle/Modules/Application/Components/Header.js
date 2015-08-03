@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'redux/react';
 
+@connect(state => ({
+  user: state.user
+}))
 export default class Header extends React.Component {
-
 	static propTypes = {
     user: PropTypes.object.isRequired
   }

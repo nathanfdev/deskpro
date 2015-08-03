@@ -10,8 +10,11 @@ use Application\DeskPRO\Routing\RouteCollection;
 $collection = new RouteCollection();
 
 $collection->create('agent', array(
-    'path'        => '/',
+    'path'        => '/{url}',
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+    'requirements' => [
+        'url' => '.*',
+    ],
 ));
 
 $collection->create('geoip', array(
