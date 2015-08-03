@@ -34,6 +34,8 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class TaskProjectTransformer extends AbstractDataSerializerTransformer
 {
@@ -44,6 +46,29 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var ProjectMember[]|ArrayCollection $members */
+        $members = $transformation_request->getDataToBeTransformed()->getMembers();
+
+        $groupedMembers = [
+            'departments' => [],
+            'teams' => [],
+            'agents' => [],
+        ];
+
+        foreach ($members as $member) {
+            if (!empty($member->getDepartment())) {
+                $groupedMembers['departments'][] = $member->getDepartment()->getId();
+            } else if (!empty($member->getTeam())) {
+                $groupedMembers['teams'][] = $member->getTeam()->getId();
+            } else {
+                $groupedMembers['agents'][] = $member->getPerson()->getId();
+            }
+        }
+
+        return [
+            'departments' => $groupedMembers['departments'],
+            'teams' => $groupedMembers['teams'],
+            'agents' => $groupedMembers['agents'],
+        ];
     }
 }
