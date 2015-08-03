@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
+use Orb\Util\Strings;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -101,6 +102,7 @@ class DataTypeMap
     public function findTypeForClass($object_class)
     {
         $object_class = $this->normalizeNamespaceString($object_class);
+
         foreach ($this->map as $type => $checks) {
             if (isset($checks['classes'])) {
                 foreach ($checks['classes'] as $class_name) {
@@ -110,6 +112,15 @@ class DataTypeMap
                     }
                 }
             }
+        }
+
+        // we did not find an explicit type from the map, so we can imply a type:
+        // take the non-qualified class name and go from camel -> underscore
+        // e.g. DeskPRO\Bundle\AppBundle\Entity\SandboxWidget => sandbox_widget
+        $class_name_parts = explode('\\', $object_class);
+        if (count($class_name_parts)) {
+            $class_name = end($class_name_parts);
+            return Strings::camelCaseToUnderscore($class_name);
         }
 
         return null;

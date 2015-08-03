@@ -12,31 +12,14 @@ parameters:
 
 api:
     data_serializer:
-        types:
-            sandbox_widget:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\SandboxWidget"
-            task:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\Task"
-            task_comment:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskComment"
-            task_attachment:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAttachment"
-            task_linked_item:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskLinkedItem"
-            task_label:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\LabelTask"
-            task_project:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskProject"
-            project_member:
-                classes:
-                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember"
+    # This is where we define the map, but you only need to do this if your "type" does not map
+    # directly to the underscore version of the object name. For example, if
+    # "DeskPRO\\Bundle\\AppBundle\\Entity\\SandboxWidget" is for type "sandbox_widget" then
+    # it does NOT need to be in this map because the naming convention is the default.
+    #    types:
+    #        sandbox_widget:
+    #            classes:
+    #                - "DeskPRO\\Bundle\\AppBundle\\Entity\\SandboxWidget"
 
 framework:
     esi:             { enabled: true }

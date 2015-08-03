@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
+use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -86,12 +87,28 @@ class DataTransformerFactory
     {
         $service_name = self::TRANSFORMER_SERVICE_PREFIX . $type;
 
+        $transformer = null;
         if (!$this->container->has($service_name)) {
-            $this->logger->error('could not find a data serializer transformer for type: ' . $type);
-            throw new DataSerializerException('could not find a data transformer for type: "' . $type . '"');
+            // the service does NOT exist, so we are going to try to initialize a Transformer based
+            // on convention...
+            $transformer_class = 'DeskPRO\\Bundle\\ApiBundle\\DataSerializer\\DataTransformer\\' . ucfirst(Strings::underscoreToCamelCase($type)) . 'Transformer';
+            if (!class_exists($transformer_class)) {
+                $log_string = 'could not find a data serializer transformer for type: "' . $type . '". Either declare a service with the name "' . $service_name . '" or create the class "' . $transformer_class . '"';
+                $this->logger->error($log_string);
+                throw new DataSerializerException($log_string);
+            }
+
+            $transformer = new $transformer_class;
+        } else {
+            $transformer = $this->container->get($service_name);
         }
 
-        $transformer = $this->container->get($service_name);
+        if (!$transformer instanceof AbstractDataSerializerTransformer) {
+            $log_string = 'All DataTransformers must extend "DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer" but the transformer "'. get_class($transformer) .'" does not.';
+            $this->logger->error($log_string);
+            throw new DataSerializerException($log_string);
+        }
+
         $this->injectSetters($transformer);
 
         return $transformer;
