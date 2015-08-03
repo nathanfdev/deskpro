@@ -4,8 +4,10 @@ DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../"
 cd $DIR_ROOT/app/tests/tools
 
 if [ -f logs/selenium.pid ]; then
+  if ps -p `cat logs/selenium.pid` > /dev/null; then
     echo "Already started"
     exit
+  fi
 fi
 
 export PATH=`pwd`/node_modules/phantomjs/bin:$PATH
