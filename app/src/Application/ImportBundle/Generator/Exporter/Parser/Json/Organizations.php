@@ -161,10 +161,13 @@ final class Organizations extends AbstractParser
             'importance',
             'date_created',
             'contact_data',
+            'custom_fields',
+            'labels',
         );
 
         return $this->hasRequiredColumns($organization, $columns)
             && $this->isArrayColumn($organization, 'contact_data')
+            && $this->isArrayColumn($organization, 'custom_fields')
             && $this->isArrayColumn($organization, 'labels');
     }
 }

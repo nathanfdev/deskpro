@@ -196,6 +196,7 @@ final class People extends AbstractParser
         return $this->hasRequiredColumns($person, $columns)
             && $this->isArrayColumn($person, 'emails')
             && $this->isArrayColumn($person, 'labels')
+            && $this->isArrayColumn($person, 'contact_data')
             && $this->isArrayColumn($person, 'custom_fields');
     }
 }
