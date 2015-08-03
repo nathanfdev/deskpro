@@ -24,3 +24,6 @@ services:
 
     data_serializer.transformer.task_project:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskProjectTransformer
+
+    data_serializer.transformer.ticket_filter:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TicketFiltersTransformer
