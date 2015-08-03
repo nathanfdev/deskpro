@@ -143,7 +143,8 @@ class Organizations extends AbstractParser
      */
     private function exportOrganizationCustomFields()
     {
-        return $this->exportCustomFields($this->getOrganizationsCustomFieldReaderConfig(), self::ORGANIZATION_PREFIX, 'organization_id');
+        $config = $this->getReaderConfig(self::FILE_ORGANIZATION_CUSTOM_FIELDS);
+        return $this->exportCustomFields($config, self::ORGANIZATION_PREFIX, 'organization_id');
     }
 
     /**
@@ -153,7 +154,8 @@ class Organizations extends AbstractParser
      */
     private function exportOrganizationContactData()
     {
-        return $this->exportContactData($this->getOrganizationContactDataReaderConfig(), self::ORGANIZATION_PREFIX, 'organization_id');
+        $config = $this->getReaderConfig(self::FILE_ORGANIZATION_CONTACT_DATA);
+        return $this->exportContactData($config, self::ORGANIZATION_PREFIX, 'organization_id');
     }
 
     /**
@@ -180,25 +182,5 @@ class Organizations extends AbstractParser
     private function getOrganizationReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_ORGANIZATIONS);
-    }
-
-    /**
-     * Returns reader config for organization contact data records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getOrganizationContactDataReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_ORGANIZATION_CONTACT_DATA);
-    }
-
-    /**
-     * Returns reader config for organization custom field records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getOrganizationsCustomFieldReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_ORGANIZATION_CUSTOM_FIELDS);
     }
 }

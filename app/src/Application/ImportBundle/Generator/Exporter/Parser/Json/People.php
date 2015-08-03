@@ -135,6 +135,11 @@ final class People extends AbstractParser
                 $entity->addUserGroup($user_group);
             }
 
+            $contact_data = $this->exportContactData($person['contact_data']);
+            foreach ($contact_data as $contact) {
+                $entity->addContact($contact);
+            }
+
             $custom_fields = $this->exportCustomFields($person['custom_fields']);
             foreach ($custom_fields as $custom_field) {
                 /** @var Entity\CustomField $custom_field */
@@ -184,6 +189,7 @@ final class People extends AbstractParser
             'emails',
             'labels',
             'user_groups',
+            'contact_data',
             'custom_fields',
         );
 

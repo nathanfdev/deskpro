@@ -17,5 +17,6 @@
   "emails": ["user@example.com"],
   "labels": ["label1", "label2"],
   "user_groups": [],
+  "contact_data": [],
   "custom_fields": []
 }

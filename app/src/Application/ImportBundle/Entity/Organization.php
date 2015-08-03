@@ -251,6 +251,7 @@ class Organization extends AbstractEntity
             /** @var ContactData $contact */
             $contact_data[] = $contact->toArray();
         }
+
         $custom_fields = array();
         foreach ($this->custom_fields as $custom_field) {
             /** @var CustomField $custom_field */

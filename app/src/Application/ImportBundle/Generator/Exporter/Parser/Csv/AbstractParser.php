@@ -52,6 +52,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     const FILE_FEEDBACK_CUSTOM_FIELDS     = 'feedback_custom_fields.csv';
     const FILE_NEWS                       = 'news.csv';
     const FILE_PEOPLE                     = 'people.csv';
+    const FILE_PEOPLE_CONTACT_DATA        = 'people_contact_data.csv';
     const FILE_PEOPLE_CUSTOM_FIELDS       = 'people_custom_fields.csv';
     const FILE_TICKETS                    = 'tickets.csv';
     const FILE_TICKET_MESSAGES            = 'ticket_messages.csv';

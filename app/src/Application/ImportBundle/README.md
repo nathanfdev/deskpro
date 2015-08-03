@@ -104,7 +104,7 @@ Destination path of generating json files.
 
 **--batch-config=**
 
-Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir
+Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir.
 
 **--verbose**
 
@@ -206,7 +206,7 @@ Destination path of generating json files.
 
 **--batch-config=**
 
-Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir
+Path to custom batch config file. If it is not specified, exporter looks for a batch config in output path dir.
 
 **--verbose**
 
@@ -247,6 +247,7 @@ Exports data from CSV files. Batching not supported.
         - feedback_custom_fields.csv
      - news.csv
      - people.csv
+        - people_contact_data.csv
         - people_custom_fields.csv
      - tickets.csv
         - ticket_messages.csv
@@ -381,6 +382,15 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | -------------------------- |-------------------------------------------------------------------------------|
 | person_id                  | reference to `people.csv` `id` or `email` column                              |
 | field_name                 |                                                                               |
+| value                      |                                                                               |
+
+**people_contact_data.csv**
+
+| Column name                | Description                                                                   |
+| -------------------------- |-------------------------------------------------------------------------------|
+| person_id                  | reference to `people.csv` `id` or `name` column                               |
+| contact_id                 |                                                                               |
+| field_name                 | `contact_type`, `comment` and contact type specific parameters                |
 | value                      |                                                                               |
 
 ###### CSV Entity #6. Ticket
@@ -737,6 +747,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "emails": ["user@example.com"],
   "labels": ["label1", "label2"],
   "user_groups": [],
+  "contact_data": [],
   "custom_fields": []
 }
 ```

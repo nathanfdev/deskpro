@@ -1,0 +1,6 @@
+person_id;contact_id;field_name;value
+1;contact_1;contact_type;fax
+1;contact_1;comment;some comment
+1;contact_1;country_calling_code;+7
+1;contact_1;number;1234567
+1;contact_1;type;phone
