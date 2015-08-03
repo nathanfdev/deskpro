@@ -78,7 +78,7 @@ export default class TasksNavProjects extends React.Component {
                         <div className="list-counter-bucket">
                             <a href="#" onClick={_this.toggleWindow.bind(_this, object)}><i className="fa fa-cog" /></a>
                             <a className="list-counter" href="#">
-                                {object.tasks.length}
+                                {object.tasks ? object.tasks.length : '0'}
                             </a>
                         </div>
                         <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={_this.props.switchTaskList.bind(_this, 'tasks?project=' + object.id)}><i

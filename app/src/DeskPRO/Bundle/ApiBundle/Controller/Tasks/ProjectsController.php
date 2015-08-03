@@ -189,6 +189,11 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     public function deleteAction($id)
     {
         $project = $this->getProject($id);
+
+        if (!$project) {
+            throw $this->createNotFoundException();
+        }
+
         $this->getDoctrine()->getManager()->remove($project);
         $this->getDoctrine()->getManager()->flush();
 
@@ -328,7 +333,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *          200="Success"
      *      }
      * )
-     * @Get("/projects/{id}/agents", name="api_agents_teams_get")
+     * @Get("/projects/{id}/agents", name="api_projects_agents_get")
      * @param int $id
      * @return View
      */
@@ -340,6 +345,112 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
         return View::create(
             $this->createRepresentation($query->getArrayResult()),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="add a department as a project member",
+     *      input={"class"="project", "id"=""},
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
+     * )
+     * @Post("/projects/{id}/departments", name="api_projects_departments_post")
+     * @param Request $request
+     * @param $id
+     * @return View
+     */
+    public function postDepartmentAction(Request $request, $id)
+    {
+        $project = $this->getProject($id);
+
+        $submitted = $request->request->all();
+
+        $departmentId = $submitted['id'];
+        $department = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Department')->find($departmentId);
+
+        if (!$department) {
+            throw $this->createNotFoundException();
+        }
+
+        $member = new ProjectMember();
+        $member->setDepartment($department);
+        $member->setProject($project);
+
+        $validate = [
+            'project' => $id,
+            'department' => $departmentId,
+        ];
+
+        /** @var Form $form */
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'projectmember', $member)->getForm();
+        $form->submit($validate, true);
+
+        if ($form->isValid()) {
+            $this->getDoctrine()->getManager()->persist($member);
+            $this->getDoctrine()->getManager()->flush();
+
+            $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
+
+            return View::create(
+                $this->dataSerialize($member),
+                Response::HTTP_CREATED,
+                array(
+                    'Location' => $location,
+                )
+            );
+        }
+
+        throw new InvalidFormException($form);
+    }
+
+    /**
+     * @APIDoc(
+     *      description="remove a relationship between a project and a department",
+     *      requirements={
+     *          {
+     *              "name"="projectId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="deptId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the department",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Delete("/projects/{projectId}/departments/{deptId}", name="api_projects_delete")
+     * @param $projectId
+     * @param $deptId
+     * @return View
+     */
+    public function deleteDepartmentAction($projectId, $deptId)
+    {
+        $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findOneBy([
+            'department' => (int) $deptId,
+            'project' => (int) $projectId,
+        ]);
+
+        if (!$member) {
+            throw $this->createNotFoundException();
+        }
+
+        $this->getDoctrine()->getManager()->remove($member);
+        $this->getDoctrine()->getManager()->flush();
+
+        return View::create(
+            array(),
             Response::HTTP_OK
         );
     }

@@ -2,28 +2,10 @@ services:
 
     # DATA TRANSFORMERS
     #
+    # NOTE: If you are making a transformer and no dependency injection is needed, you don't need
+    # to make it a service. Instead, you can make a class name by convention.
+    # For example the transformer for the type "sandbox_widget" just make the class:
+    # DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\SandboxWidgetTransformer
+    #
     # note: you don't need a tag for these to work. just make the prefix the same.
     #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
-    data_serializer.transformer.sandbox_widget:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\SandboxWidgetTransformer
-
-    data_serializer.transformer.task:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskTransformer
-
-    data_serializer.transformer.task_label:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskLabelTransformer
-
-    data_serializer.transformer.task_comment:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskCommentTransformer
-
-    data_serializer.transformer.task_attachment:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskAttachmentTransformer
-
-    data_serializer.transformer.task_linked_item:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskLinkedItemTransformer
-
-    data_serializer.transformer.task_project:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskProjectTransformer
-
-    data_serializer.transformer.ticket_filter:
-        class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TicketFiltersTransformer

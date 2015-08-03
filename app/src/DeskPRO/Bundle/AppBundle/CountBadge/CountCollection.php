@@ -26,49 +26,90 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DependencyInjection;
+namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
-class ApiExtension extends Extension
+/**
+ * Represents a collection of counts. Typically used when returning counts
+ * grouped by some sort of variable.
+ */
+class CountCollection implements \IteratorAggregate, \Countable
 {
-    public function load(array $config, ContainerBuilder $container)
+    /**
+     * @var array
+     */
+    private $group_meta;
+
+    /**
+     * @var Count[]
+     */
+    private $counts;
+
+    /**
+     * @param Count[] $counts       The actual counts
+     * @param array   $group_meta   Any information about this group of counts (e.g., how they are grouped).
+     */
+    public function __construct(array $counts, array $group_meta = array())
     {
-        $config = $this->processConfiguration(new Configuration(), $config);
+        $this->counts = $counts;
 
-        $types = [];
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
 
-        if (array_key_exists('data_serializer', $config)) {
-            if (array_key_exists('types', $config['data_serializer'])) {
-                foreach ($config['data_serializer']['types'] as $type => $matchers) {
-                    $classes = [];
-                    if (isset($matchers['classes'])) {
-                        foreach ($matchers['classes'] as $class) {
-                            $classes[] = $class;
-                            // automatically add the doctrine proxy name to the map as well
-                            $classes[] = 'Proxies\\__CG__\\' . $class;
-                        }
-                    }
-                    $types[$type] = [
-                        'classes' => $classes
-                    ];
-                }
-            }
-        }
+        $this->group_meta = $resolver->resolve($group_meta);
+    }
 
-        $container->setParameter('api.data_serializer.types', $types);
+    /**
+     * Sub-classes may implement this to define a custom resolver
+     * @param OptionsResolver $resolver
+     */
+    protected function configureOptions(OptionsResolver $resolver)
+    {
+    }
 
-        $loader = new YamlDirectoryLoader($container);
-        $loader->loadDir(__DIR__ . '/../Resources/config/services');
+    /**
+     * @param string $k
+     * @param mixed $default
+     * @return array
+     */
+    public function getGroupMeta($k, $default = null)
+    {
+        return array_key_exists($k, $this->group_meta) ? $this->group_meta[$k] : $default;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllGroupMeta()
+    {
+        return $this->group_meta;
+    }
+
+    /**
+     * @return Count[]
+     */
+    public function getCounts()
+    {
+        return $this->counts;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->counts);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return count($this->counts);
     }
 }

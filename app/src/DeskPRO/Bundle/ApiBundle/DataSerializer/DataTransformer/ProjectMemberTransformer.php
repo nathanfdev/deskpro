@@ -31,44 +31,19 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DependencyInjection;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
-class ApiExtension extends Extension
+class ProjectMemberTransformer extends AbstractDataSerializerTransformer
 {
-    public function load(array $config, ContainerBuilder $container)
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $config = $this->processConfiguration(new Configuration(), $config);
+        return ['id', 'project', 'department', 'team', 'person'];
+    }
 
-        $types = [];
-
-        if (array_key_exists('data_serializer', $config)) {
-            if (array_key_exists('types', $config['data_serializer'])) {
-                foreach ($config['data_serializer']['types'] as $type => $matchers) {
-                    $classes = [];
-                    if (isset($matchers['classes'])) {
-                        foreach ($matchers['classes'] as $class) {
-                            $classes[] = $class;
-                            // automatically add the doctrine proxy name to the map as well
-                            $classes[] = 'Proxies\\__CG__\\' . $class;
-                        }
-                    }
-                    $types[$type] = [
-                        'classes' => $classes
-                    ];
-                }
-            }
-        }
-
-        $container->setParameter('api.data_serializer.types', $types);
-
-        $loader = new YamlDirectoryLoader($container);
-        $loader->loadDir(__DIR__ . '/../Resources/config/services');
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    {
+        return [];
     }
 }
