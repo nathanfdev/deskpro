@@ -15,25 +15,28 @@ api:
         types:
             sandbox_widget:
                 classes:
-                    - "DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\SandboxWidget"
             task:
                 classes:
-                    - "DeskPRO\Bundle\AppBundle\Entity\Task"
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\Task"
             task_comment:
                 classes:
-                    - "DeskPRO\Bundle\AppBundle\Entity\TaskComment"
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskComment"
             task_attachment:
                 classes:
-                    - "DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAttachment"
             task_linked_item:
                 classes:
-                    - "DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem"
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskLinkedItem"
             task_label:
                 classes:
-                    - "DeskPRO\Bundle\AppBundle\Entity\LabelTask"
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\LabelTask"
             task_project:
                 classes:
-                    - "DeskPRO\Bundle\AppBundle\Entity\TaskProject"
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\TaskProject"
+            project_member:
+                classes:
+                    - "DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember"
 
 framework:
     esi:             { enabled: true }
