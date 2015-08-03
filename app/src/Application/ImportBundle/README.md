@@ -10,7 +10,7 @@ IMPORT BUNDLE
     - [Command #4. Import batch run](#command-4-import-batch-run)
 * [Exporters](#exporters)
     - [Exporter #1. CSV](#exporter-1-csv)
-        * [CSV Files map](#csv-files-map)
+        * [CSV Files structure (input-path)](#csv-files-structure-input-path)
         * [CSV Entity #1. Article](#csv-entity-1-article)
         * [CSV Entity #2. Download](#csv-entity-2-download)
         * [CSV Entity #3. Feedback](#csv-entity-3-feedback)
@@ -19,7 +19,7 @@ IMPORT BUNDLE
         * [CSV Entity #6. Ticket](#csv-entity-6-ticket)
         * [CSV Entity #7. Organization](#csv-entity-7-organization)
     - [Exporter #2. JSON](#exporter-2-json)
-        * [JSON Files map](#json-files-map)
+        * [JSON Files structure (input-path)](#json-files-structure-input-path)
         * [JSON Entity #1. Article](#json-entity-1-article)
         * [JSON Entity #2. Download](#json-entity-2-download)
         * [JSON Entity #3. Feedback](#json-entity-3-feedback)
@@ -231,24 +231,25 @@ Exporters
 
 Exports data from CSV files.
 
-###### CSV Files map
+###### CSV Files structure (input-path)
 
- - articles.csv
-    - article_custom_fields.csv
- - downloads.csv
- - feedback.csv
-    - feedback_attachments.csv
-    - feedback_custom_fields.csv
- - news.csv
- - people.csv
-    - people_custom_fields.csv
- - tickets.csv
-    - ticket_messages.csv
-    - ticket_attachments.csv
-    - ticket_custom_fields.csv
- - organizations.csv
-    - organization_contact_data.csv
-    - organization_custom_fields.csv
+ - /input_path
+     - articles.csv
+        - article_custom_fields.csv
+     - downloads.csv
+     - feedback.csv
+        - feedback_attachments.csv
+        - feedback_custom_fields.csv
+     - news.csv
+     - people.csv
+        - people_custom_fields.csv
+     - tickets.csv
+        - ticket_messages.csv
+        - ticket_attachments.csv
+        - ticket_custom_fields.csv
+     - organizations.csv
+        - organization_contact_data.csv
+        - organization_custom_fields.csv
 
 Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
@@ -563,6 +564,34 @@ Supported contact types:
 | value                      |                                                                               |
 
 #### Exporter #2. JSON
+
+###### JSON Files structure (input-path)
+
+ - /input_path
+    - /1
+        - /articles
+            - article1.json
+            - article2.json
+        - /downloads
+            - download1.json
+            - download2.json
+        - /feedback
+            - feedback1.json
+            - feedback2.json
+        - /news
+            - news1.json
+            - news2.json
+        - /organizations
+            - organization1.json
+            - organization2.json
+        - /people
+            - person1.json
+            - person2.json
+        - /tickets
+            - ticket1.json
+            - ticket2.json
+        - batch.json
+            
 
 ###### JSON Entity #1. Article
 
