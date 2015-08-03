@@ -45,11 +45,6 @@ define([
       }
     });
 
-    $scope.$on('ticket.updated', function($event, ticket){
-      if (ticket.id !== $ticket.id) return;
-      if (!issues.length) return;
-    });
-
     $scope.$watch('issues.length', function(l) {
       if (!l || l < 1) {
         $tabScope.btnBadge = null;
