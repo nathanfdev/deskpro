@@ -2033,9 +2033,9 @@ class TicketController extends AbstractController
                         $is_dep_changed = true;
                     }
                 });
+                $ticket->addPropertyChangedListener($event_listener);
                 $problemListener = new TicketProblemsChangedListener($this->em->getConnection());
                 $problemListener->setPersonContext($this->person);
-                $ticket->addPropertyChangedListener($event_listener);
                 $ticket->addPropertyChangedListener($problemListener);
 
                 if ($this->in->getBool('with_set_agent_parts')) {
@@ -4184,7 +4184,7 @@ class TicketController extends AbstractController
 
                 $problemListener = new TicketProblemsChangedListener($this->em->getConnection());
                 $problemListener->setPersonContext($this->person);
-                $ticket->addPropertyChangedListener($event_listener);
+                $ticket->addPropertyChangedListener($problemListener);
 
                 $id = (int)$request->get('problem_id');
                 $title = $this->in->getString('problem_title'); // sanitize

@@ -502,6 +502,7 @@ class AgentMessagesLoader extends LoaderAbstract
         $channels[] = 'agent-notify.tasks';
         $channels[] = 'agent.ticket-updated';
         $channels[] = 'agent.ticket-sla-updated';
+        $channels[] = 'agent.ticket-problems-updated';
         $channels[] = 'agent.ticket-draft-updated';
         $channels[] = 'agent.tweet-added';
         $channels[] = 'agent.tweet-updated';
