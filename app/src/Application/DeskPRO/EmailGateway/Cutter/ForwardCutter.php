@@ -79,7 +79,7 @@ class ForwardCutter
         }
 
         if (!$regex) {
-            $regex = '#^(FW|FWD|VL|WG|FS|VB|RV|VS):#i';
+            $regex = '#^(FW|FWD|VL|WG|FS|VB|RV|VS|TR):#i';
         }
 
         return $regex;

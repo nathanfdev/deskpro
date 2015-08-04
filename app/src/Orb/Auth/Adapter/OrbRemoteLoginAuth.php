@@ -226,7 +226,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
 
         $data = @json_decode($http_result->getBody(), true);
         if (!$data) {
-            throw \UnexpectedValueException('Invalid JSON returned from service');
+            throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
         if (isset($data['is_error'])) {
@@ -262,7 +262,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
 
         $service_data = @json_decode($http_result->getBody(), true);
         if (!$service_data) {
-            throw \UnexpectedValueException('Invalid JSON returned from service');
+            throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
         #------------------------------

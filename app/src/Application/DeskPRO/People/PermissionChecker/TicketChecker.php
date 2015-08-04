@@ -108,6 +108,7 @@ class TicketChecker extends AbstractChecker
         # Can't view certain deps
         #------------------------------
 
+        $this->person->loadHelper('AgentPermissions');
         if ($ticket->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($ticket->department)) {
             return false;
         }

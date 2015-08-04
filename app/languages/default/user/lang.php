@@ -4,6 +4,7 @@
     'user.lang.lang_title_danish'     => 'Danish',
     'user.lang.lang_title_default'    => 'English',
     'user.lang.lang_title_dutch'      => 'Dutch',
+    'user.lang.lang_title_english_gb' => 'English (UK)',
     'user.lang.lang_title_french'     => 'French',
     'user.lang.lang_title_german'     => 'German',
     'user.lang.lang_title_hungarian'  => 'Hungarian',

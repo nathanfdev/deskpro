@@ -99,6 +99,7 @@ final class News extends AbstractParser
         if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
+                ->setRawData($news)
                 ->setDestination('news_' . $num)
                 ->setOid($num)
                 ->setPersonEmail($news['person'])

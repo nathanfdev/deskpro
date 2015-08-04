@@ -622,6 +622,23 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 
     /**
+     * @param string $type 'agent' or 'user'
+     * @return bool
+     */
+    public function hasDeskproUsersource($type)
+    {
+        foreach ($this->usersource_assoc as $assoc) {
+            $us = $assoc->usersource;
+            if ($us->type == $type && $us->source_type == 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Try to guess an org name based on profile info.
      *
      * @return string
@@ -1457,7 +1474,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         return null;
     }
 
-    public function removeCustomDataForField(CustomDefPerson $field)
+    public function removeCustomDataForField($field)
     {
         $parent_id = null;
         $field_id = $field['id'];
@@ -1465,11 +1482,22 @@ class Person extends DomainObject implements HighlightableModelInterface
             $parent_id = $field->parent['id'];
         }
 
+        $change = false;
         foreach ($this->custom_data as $data) {
             if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+                $change = true;
                 $this->custom_data->removeElement($data);
-                $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
             }
+        }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
 
@@ -1498,11 +1526,25 @@ class Person extends DomainObject implements HighlightableModelInterface
             $custom_data['field'] = $field;
         }
 
+        $field = $custom_data->field;
+        if ($field->parent) {
+            foreach ($this->custom_data as $d) {
+                if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
+                    $this->custom_data->removeElement($d);
+                }
+            }
+        }
+
+        $this->custom_data->removeElement($custom_data);
+
         if ($value === null) {
             $this->custom_data->removeElement($custom_data);
-            $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
             return null;
+        }
+
+        if ($field->getTypeName() == 'choice') {
+
         }
 
         $custom_data[$value_type] = $value;
@@ -1510,6 +1552,8 @@ class Person extends DomainObject implements HighlightableModelInterface
         if ($is_new) {
             $this->addCustomData($custom_data);
         }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
 
         return $custom_data;
     }
@@ -1522,8 +1566,22 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function addCustomData(CustomDataPerson $data)
     {
         $this->custom_data->add($data);
-        $data->person = $this;
-        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+        $data['ticket'] = $this;
+
+        $field = $data->field;
+        $parent_id = null;
+        $field_id = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
+
+        if ($parent_id) {
+            $this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
+        } else {
+            $this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -2935,7 +2993,11 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 	public function clear()
 	{
-		$this->_permissions_manager->clear();
-		$this->_person_logger->clear();
+        if ($this->_permissions_manager) {
+            $this->_permissions_manager->clear();
+        }
+        if ($this->_person_logger) {
+            $this->_person_logger->clear();
+        }
 	}
 }

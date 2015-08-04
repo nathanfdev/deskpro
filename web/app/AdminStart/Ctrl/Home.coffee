@@ -1,7 +1,7 @@
 define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
   class AdminStart_Ctrl_Home extends StartBase
     @CTRL_ID = 'AdminStart_Ctrl_Home'
-    @DEPS    = ['$modal', '$location']
+    @DEPS    = ['$modal', '$location', 'AppState']
 
     init: ->
       @$scope.opt = {
@@ -20,6 +20,8 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
         @$scope.opt.timezone = tz.name()
       else
         console.log("Could not detect timezone")
+
+      $('body').addClass('done-load');
       return
 
     saveAndContinue: (isValid) ->
@@ -28,23 +30,25 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
       return if not isValid
 
       @$scope.is_loading = true
-      @Api.sendPostJson('/start-settings', {
-        deskpro_url:  @$scope.opt.deskpro_url,
-        deskpro_name: @$scope.opt.deskpro_name,
-        timezone:     @$scope.opt.timezone,
-        license_code: @$scope.opt.license
-      }).success( (data) =>
-        @$location.path('/cron')
+      @Api.sendPostJson('/start-settings', @$scope.opt).success((data) =>
+        if @AppState.hasCronRun()
+          @$location.path('/email')
+        else
+          @$location.path('/cron')
       ).error( (data) =>
         @$scope.is_loading = false
-        if data and data.error_code
-          @$scope.lic_error = data.error_code
+        if 'form_error' == data?.error_code
+          @$scope.error_message = data.error_message
         else
-          @$scope.lic_error = 'generic'
+          @$scope.lic_error = data.error_code || 'generic'
+
       )
 
     showRequestDemo: ->
-      url = @$scope.opt.deskpro_url
+      url   = @$scope.opt.deskpro_url
+      name  = if @$scope.opt.first_name then @$scope.opt.first_name + ' ' + (@$scope.opt.last_name+'')
+      email = @$scope.opt.email || ''
+
       @$modal.open({
         templateUrl: 'AdminInterface/Start/get-demo-modal.html',
         controller: ['$scope', '$modalInstance', '$http', 'Api', ($scope, $modalInstance, $http, Api) =>
@@ -56,9 +60,9 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
           }
 
           $scope.setInitialVals = (vals) ->
-            $scope.form_vals.user_name = vals.user_name
-            $scope.form_vals.email_address = vals.email_address
-            $scope.form_vals.org_name = vals.org_name
+            $scope.form_vals.user_name = name || vals.user_name
+            $scope.form_vals.email_address = email || vals.email_address
+            $scope.form_vals.org_name = if vals.org_name != 'Example' then vals.org_name else ''
             $scope.vals = vals
 
           $scope.dismiss = ->

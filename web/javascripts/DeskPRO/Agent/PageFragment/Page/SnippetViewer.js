@@ -915,18 +915,18 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		if (!snippet) {
 			snippet = {
 				id: 0,
-				category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(1).data('category-id'),
+        category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(0).data('category-id'),
 				shortcut_code: '',
 				title: [],
 				snippet: []
 			};
 		}
 
+
 		this.editingSnippet = snippet;
 		var editSnippetEl = this.getEl('edit_snippet');
 		editSnippetEl.find('input, textarea').val('');
 		editSnippetEl.find('input.snippet_id').val(snippet.id);
-		editSnippetEl.find('select.category_id').val(snippet.category_id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
 
     // resort categories
@@ -938,6 +938,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
       return _a > _b ? 1 : -1;
     }).remove();
     this.getEl('editsnippet_category_select').append($sorted);
+
+    editSnippetEl.find('select.category_id').val(snippet.category_id);
 
 		if (snippet && snippet.id) {
 			editSnippetEl.find('.is-edit-snippet').show();

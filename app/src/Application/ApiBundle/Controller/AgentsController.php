@@ -617,7 +617,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 // Check license
                 if (!defined('DPC_IS_CLOUD')) {
                     $max_agents = License::getLicense()->getMaxAgents();
-                    if ($max_agents && $max_agents < 100) {
+                    if ($max_agents) {
                         $active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
 
                         if ($active_agents >= $max_agents) {
@@ -1145,7 +1145,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $max_agents = License::getLicense()->getMaxAgents();
 
-        if ($max_agents && $max_agents < 100) {
+        if ($max_agents) {
             $active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
 
             if ($active_agents >= $max_agents) {

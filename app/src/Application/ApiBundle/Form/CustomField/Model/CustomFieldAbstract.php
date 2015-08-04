@@ -132,6 +132,9 @@ abstract class CustomFieldAbstract
         $field->setOption('custom_css_classname', $this->custom_css_classname);
         $field->setOption('agent_validation_resolve', $this->agent_validation_resolve ?: null);
 
+        $field->setOption('agent_validation_type', $this->agent_validation_type);
+        $field->setOption('validation_type', $this->validation_type);
+
         $this->setFieldProperties();
 
         $this->_em->beginTransaction();

@@ -302,6 +302,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                         $exception->getErrors())
                     );
 
+                    $logger->info(json_encode($exception->getEntity()->toArray()));
+
                     if ($r = $exception->getEntity()->getRawData()) {
                         foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
                             $logger->info($l);

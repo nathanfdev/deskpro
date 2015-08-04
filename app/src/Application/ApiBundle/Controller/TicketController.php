@@ -38,6 +38,7 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\SuperKeyPermission;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use Application\DeskPRO\Entity\CustomDataBilling;
 use Application\DeskPRO\Entity\Ticket as Ticket;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Tickets\SnippetFormatter;
@@ -1756,11 +1757,22 @@ class TicketController extends AbstractController implements ProtectedController
             $time = null;
         }
 
-        $comment = $this->in->getString('comment');
-
-        $charge = $ticket->addCharge($this->person, $time, $amount, $comment);
+        $charge = $ticket->addCharge($this->person, $time, $amount);
         $this->em->persist($ticket);
         $this->em->flush();
+
+        if ($comment = $this->in->getString('comment')) {
+            if ($field = $this->em->getRepository('DeskPRO:CustomDefBilling')->findOneBy(array('title' => 'Comment'))) {
+                $data = new CustomDataBilling();
+                $data->setField($field);
+                $data->setRootField($field);
+                $data->setValue(0);
+                $data->setInput($comment);
+                $data->ticket_charge = $charge;
+                $this->em->persist($data);
+                $this->em->flush();
+            }
+        }
 
         return $this->createApiCreateResponse(
             array('id' => $charge->id),

@@ -43,6 +43,8 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepo;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
+use Orb\Log\Logger;
+use Psr\Log\NullLogger;
 
 /**
  * This will be offered as a service to all Syncers. It aids them by taking care of common Syncer needs.
@@ -55,14 +57,32 @@ class SyncerHelper
      */
     private $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    public function __construct(EntityManager $em, Logger $logger = null)
     {
         $this->em = $em;
+        $this->logger = $logger;
     }
 
     public function getEm()
     {
         return $this->em;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    public function log($orb_logger_priority, $message, array $info = array())
+    {
+        if ($this->logger) {
+            $this->logger->log('SYNC: ' . $message, $orb_logger_priority, $info);
+        }
     }
 
     public function updateOrCreatePersonWithInfo(array $user_info, Person $person = null, Usersource $usersource)
@@ -144,6 +164,12 @@ class SyncerHelper
         $assoc->setDateUpdated(new \DateTime());
 
         return $assoc;
+    }
+
+    public function persistAndFlushEntity($entity)
+    {
+        $this->em->persist($entity);
+        $this->em->flush($entity);
     }
 
     /**

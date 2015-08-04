@@ -450,13 +450,14 @@ class Runner
                 }
             }
         } catch (\Exception $e) {
-            $this->logger->logDebug("--> Processor exception: {$e->getCode()} {$e->getMessage()}");
+            $message = substr($e->getMessage(), 0, 500);
+            $this->logger->logDebug("--> Processor exception: {$e->getCode()} " . $message);
             $result = array(
                 'status' => 'error',
                 'error_code' => 'server_error',
                 'source_info' => array(
                     'exception' => get_class($e),
-                    'message'   => $e->getMessage(),
+                    'message'   => $message,
                     'code'      => $e->getCode(),
                     'trace'     => KernelErrorHandler::formatBacktrace($e->getTrace())
                 )

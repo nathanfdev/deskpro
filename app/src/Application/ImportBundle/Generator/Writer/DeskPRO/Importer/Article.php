@@ -78,6 +78,12 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
         foreach ($entity->getCategories() as $category) {
             $article->addToCategory($this->findOrCreateArticleCategory($category));
         }
+        foreach ($entity->getCustomFields() as $custom_field) {
+            $custom_field = $this->createArticleCustomData($custom_field);
+            if ($custom_field) {
+                $article->addCustomData($custom_field);
+            }
+        }
 
         $this->records->add($article);
         return $this->records;
@@ -126,6 +132,21 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
         }
 
         return $category;
+    }
+
+    /**
+     * Returns custom def article entity
+     *
+     * @param Entity\CustomField $entity
+     *
+     * @return DeskPROEntity\CustomDataArticle
+     * @throws ImporterException
+     */
+    private function createArticleCustomData(Entity\CustomField $entity)
+    {
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ARTICLE);
+
+        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataArticle());
     }
 
     /**

@@ -1,9 +1,11 @@
 define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
   class AdminStart_Ctrl_Cron extends StartBase
     @CTRL_ID = 'AdminStart_Ctrl_Cron'
-    @DEPS    = ['$location', '$timeout']
+    @DEPS    = ['$location', '$timeout', 'AppState']
 
     init: ->
+      if @AppState.hasCronRun()
+        @$location.path('/email')
       return
 
     startWaiting: ->
