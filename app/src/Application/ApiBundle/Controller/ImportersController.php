@@ -147,7 +147,7 @@ class ImportersController extends AbstractController implements ProtectedControl
         $importer->setData('config', @$data['config']);
 
         if ($request->get('reset') && $is::STATUS_DONE === $importer->getData('status')) {
-            $is->cleanup($importer);
+            $is->cleanup($importer, true);
             $importer->setData('status', null);
             $importer->setData('log', null);
             $importer->setData('progress_start', null);

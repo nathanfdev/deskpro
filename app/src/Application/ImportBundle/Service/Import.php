@@ -298,7 +298,7 @@ class Import
         return $config;
     }
 
-    public function cleanup(DataStore $importer)
+    public function cleanup(DataStore $importer, $remove_record = false)
     {
         $readerConfigData = $importer->getData('config');
 
@@ -312,7 +312,9 @@ class Import
             $this->em->flush($importer);
         }
 
-        $this->em->remove($importer);
-        $this->em->flush();
+        if ($remove_record) {
+            $this->em->remove($importer);
+            $this->em->flush();
+        }
     }
 }

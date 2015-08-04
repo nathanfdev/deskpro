@@ -897,8 +897,6 @@ class KernelBooter
 
     static protected function checkImporter()
     {
-        if (defined('DPC_IS_CLOUD')) return;
-
         $trigger = dp_get_data_dir() . '/importer_cron.pid';
         $pid = @file_get_contents($trigger);
         if (false === $pid || (int)$pid) return;
