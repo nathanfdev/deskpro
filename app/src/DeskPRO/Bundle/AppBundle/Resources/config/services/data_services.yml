@@ -67,3 +67,11 @@ services:
   data.user_groups:
       class: DeskPRO\Bundle\AppBundle\DataService\UserGroupsDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticket_slas:
+      class: DeskPRO\Bundle\AppBundle\DataService\TicketSlasDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.slas:
+      class: DeskPRO\Bundle\AppBundle\DataService\SlasDataService
+      arguments: [@doctrine.orm.default_entity_manager]

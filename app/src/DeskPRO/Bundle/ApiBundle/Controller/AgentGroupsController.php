@@ -56,29 +56,29 @@ use FOS\RestBundle\Controller\Annotations\Delete;
 /**
  * API access to languages.
  */
-class UserGroupsController extends BaseController
+class AgentGroupsController extends BaseController
 {
     /**
      * Retrieve the list of custom fields available for tickets.
-     * @Get("/user_groups", name="api_user_groups")
+     * @Get("/agent_groups", name="api_agent_groups")
      */
     public function cgetAction()
     {
         $service = $this->get('data.user_groups');
         return View::create(
-            $this->DataSerialize($service->loadUserGroupsEnabled()),
+            $this->DataSerialize($service->loadAgentGroupsEnabled()),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Get("/user_groups/{id}", name="api_single_user_group")
+     * @Get("/agent_groups/{id}", name="api_single_agent_group")
      */
-    public function getUserGroup($id)
+    public function getAgentGroup($id)
     {
         $service = $this->get('data.user_groups');
         return View::create(
-            $this->DataSerialize($service->loadSingleUserGroupEnabled($id)),
+            $this->DataSerialize($service->loadSingleAgentGroupEnabled($id)),
             Response::HTTP_OK
         );
     }

@@ -35,100 +35,23 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 
-class UserGroupsDataService extends AbstractDataService
+class SlasDataService extends AbstractDataService
 {
-    protected function criteriaArray(array $args = [], $agents_only = null, $enabled = null)
+    public function loadAll()
     {
-        if ($agents_only === true) {
-            $args['is_agent_group'] = true;
-        } elseif ($agents_only === false) {
-            $args['is_agent_group'] = false;
-        }
-        if ($enabled === true) {
-            $args['is_enabled'] = true;
-        } elseif ($enabled === false) {
-            $args['is_enabled'] = false;
-        }
-
-        return $args;
+        return $this->getRepo()->findAll();
     }
 
-    /**
-     * @param mixed $person right now only ID is useful
-     *
-     * @return Person|null
-     */
-    public function loadAll($agents_only = null, $enabled = null)
+    public function loadSingle($sla_id)
     {
-        return $this->getRepo()->findBy($this->criteriaArray([], $agents_only, $enabled));
+        return $this->getRepo()->findOneBy(['id' => $sla_id]);
     }
-
-    public function loadOne($id, $agents_only = null, $enabled = null)
-    {
-        return $this->getRepo()->findOneBy(
-            $this->criteriaArray(['id' => $id], $agents_only, $enabled)
-        );
-    }
-
-    public function loadAgentGroups()
-    {
-        return $this->loadAll(true);
-    }
-
-    public function loadUserGroups()
-    {
-        return $this->loadAll(false);
-    }
-
-    public function loadAllEnabled()
-    {
-        return $this->loadAll(null, true);
-    }
-
-    public function loadAgentGroupsEnabled()
-    {
-        return $this->loadAll(true, true);
-    }
-
-    public function loadUserGroupsEnabled()
-    {
-        return $this->loadAll(false, true);
-    }
-
-
-    /**
-     * @param $email
-     *
-     * @return Person|null
-     */
-    public function loadSingle($id)
-    {
-        // using caution and not caching most PersonDataService methods
-        return $this->loadOne($id);
-    }
-
-    public function loadSingleEnabled($id)
-    {
-        return $this->loadOne($id, null, true);
-    }
-
-    public function loadSingleAgentGroupEnabled($id)
-    {
-        return $this->loadOne($id, true, true);
-    }
-
-    public function loadSingleUserGroupEnabled($id)
-    {
-        return $this->loadOne($id, false, true);
-    }
-
-
 
     /**
      * @return PersonRepo
      */
     public function getRepo()
     {
-        return $this->em->getRepository('DeskPRO:Usergroup');
+        return $this->em->getRepository('DeskPRO:Sla');
     }
 }
