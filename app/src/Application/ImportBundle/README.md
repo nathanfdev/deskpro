@@ -83,7 +83,7 @@ php cmd.php dp:export:check zendesk --verbose
 
 #### Command #2. Export run
 
-Reads data from an external source to json files.
+Parses data from an external source to json files.
 
 ```bash
 php cmd.php dp:export:run exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
@@ -142,7 +142,7 @@ php cmd.php dp:export:run zendesk --output-path="app/src/Application/ImportBundl
 
 #### Command #3. Import run
 
-Reads data from an external source to the DeskPRO database.
+Parses data from an external source to the DeskPRO database.
 
 ```
 php cmd.php dp:import:run exporter_type [--input-path=] [--verbose] [--dry-run]
@@ -185,7 +185,7 @@ php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundl
 
 ### Command #4. Import batch run
 
-Reads data from an external source to json files and the DeskPRO database.
+Parses data from an external source to json files and the DeskPRO database.
 
 ```
 php cmd.php dp:import:batch exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
