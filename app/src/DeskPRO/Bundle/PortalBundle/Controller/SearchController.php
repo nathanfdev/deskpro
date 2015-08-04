@@ -31,15 +31,20 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContext;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\StickyWordSearch;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Numbers;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class SearchController extends AbstractController
 {
@@ -62,7 +67,7 @@ class SearchController extends AbstractController
             $is_search = true;
 
             $se = $this->get('search_engine');
-            $contextFactory = new SearchContextFactory($this->container);
+            $contextFactory = new SearchContextFactory($this->getContainer());
             $context = $contextFactory->createUserSearchContext($person);
 
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
@@ -115,5 +120,65 @@ class SearchController extends AbstractController
                 'num_results' => $total,
             )
         );
+    }
+
+    /**
+     * @Route("/search/similar/{content_type}", name="portal_search_similar")
+     */
+    public function similarToAction(Request $request, $content_type)
+    {
+        $content = $request->get('content', '');
+
+        if (!$content) {
+            return $this->simpleJson(
+                array(
+                    'results' => array(),
+                    'words' => array()
+                )
+            );
+        }
+
+        $person = $this->getUser() ?: new PersonGuest();
+        $se = $this->get('search_engine');
+        $contextFactory = new SearchContextFactory($this->getContainer());
+        $context = $contextFactory->createUserSearchContext($person);
+        $sticky_search = new StickyWordSearch($this->getEm());
+        /** @var ResultSet $results */
+        $results = $se->getUserSearch()->similarTo($context, $content, array('limit_types' => array($content_type)));
+        $words = array();
+
+        $property_accessor = PropertyAccess::createPropertyAccessor();
+        foreach ($results->getResults() as $result) {
+            if (is_object($result)) {
+                $class = get_class($result);
+                $type = 'DeskPRO:' . substr($class, strrpos($class, '\\') + 1);
+                foreach ($sticky_search->getStickyWords($type, $property_accessor->getValue($result, 'id')) as $word) {
+                    if (count($words) < 100) {
+                        $words[] = $word;
+                    }
+                }
+            }
+        }
+
+
+        return $this->simpleJson(
+            array(
+                'results' => $results->getTypedResults(),
+                'words' => $words,
+            )
+        );
+    }
+
+    private function simpleJson(array $array)
+    {
+        return new JsonResponse(array('data' => $array));
+    }
+
+    /**
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface|DeskproContainer
+     */
+    private function getContainer()
+    {
+        return $this->container;
     }
 }
