@@ -79,3 +79,7 @@ services:
   data.ticket_layouts:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketLayoutsDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticket_macros:
+      class: DeskPRO\Bundle\AppBundle\DataService\TicketMacrosDataService
+      arguments: [@doctrine.orm.default_entity_manager]
