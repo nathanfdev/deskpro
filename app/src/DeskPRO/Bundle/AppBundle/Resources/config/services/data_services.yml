@@ -63,3 +63,7 @@ services:
   data.ticket_custom_fields:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketCustomFieldsDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.user_groups:
+      class: DeskPRO\Bundle\AppBundle\DataService\UserGroupsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
