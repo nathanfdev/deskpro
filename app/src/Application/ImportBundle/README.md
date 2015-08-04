@@ -257,9 +257,9 @@ Exports data from CSV files. Batching not supported.
 
 Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
-###### CSV Entity #1. Article
+##### CSV Entity #1. Article
 
-####### articles.csv
+###### articles.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -283,9 +283,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-###### CSV Entity #2. Download
+##### CSV Entity #2. Download
 
-####### downloads.csv
+###### downloads.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -305,9 +305,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | content_type               |                                                                               |
 | is_inline                  | boolean                                                                       |
 
-###### CSV Entity #3. Feedback
+##### CSV Entity #3. Feedback
 
-####### feedback.csv
+###### feedback.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -325,7 +325,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | label                      | could be empty (only one label is supported)                                  |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/feedback.csv`          |
 
-####### feedback_attachments.csv
+###### feedback_attachments.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -337,7 +337,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | content_type               |                                                                               |
 | is_inline                  | boolean                                                                       |
 
-#######feedback_custom_fields.csv
+###### feedback_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -362,9 +362,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | category                   | could be empty                                                                |
 | label                      | could be empty (only one label is supported)                                  |
 
-###### CSV Entity #5. Person
+##### CSV Entity #5. Person
 
-####### people.csv
+###### people.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -374,7 +374,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | is_agent                   | boolean                                                                       |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/people.csv`            |
 
-####### people_custom_fields.csv
+###### people_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -384,7 +384,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 Note: You should use reference to `id` or `email` column, not both together.
 
-####### people_contact_data.csv
+###### people_contact_data.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -393,9 +393,9 @@ Note: You should use reference to `id` or `email` column, not both together.
 | field_name                 | `contact_type`, `comment` and contact type specific parameters                |
 | value                      |                                                                               |
 
-###### CSV Entity #6. Ticket
+##### CSV Entity #6. Ticket
 
-####### tickets.csv
+###### tickets.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -407,7 +407,7 @@ Note: You should use reference to `id` or `email` column, not both together.
 | date_created               | created could be empty (current time)                                         |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/tickets.csv`           |
 
-####### ticket_messages.csv
+###### ticket_messages.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -417,7 +417,7 @@ Note: You should use reference to `id` or `email` column, not both together.
 | user                       | means a person email                                                          |
 | date_created               | created could be empty (current time)                                         |
 
-####### ticket_attachments.csv
+###### ticket_attachments.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -429,7 +429,7 @@ Note: You should use reference to `id` or `email` column, not both together.
 | content_type               |                                                                               |
 | is_inline                  | boolean                                                                       |
 
-####### ticket_custom_fields.csv
+###### ticket_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -437,9 +437,9 @@ Note: You should use reference to `id` or `email` column, not both together.
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-###### CSV Entity #7. Organization
+##### CSV Entity #7. Organization
 
-####### organizations.csv
+###### organizations.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -459,7 +459,7 @@ Note: You should use reference to `id` or `email` column, not both together.
 |-------------------|------------|-------------------------|-------------|--------------|
 | Some Organization | 1          | http://site.com/img.png | preview.png | image/png    | 
 
-####### organization_contact_data.csv
+###### organization_contact_data.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
