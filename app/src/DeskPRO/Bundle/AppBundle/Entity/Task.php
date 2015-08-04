@@ -495,6 +495,11 @@ class Task extends NotifyPropertyChangeEntity
         $this->setModelField('label', $label);
     }
 
+    public function removeLabel(LabelTask $label)
+    {
+        $this->labels->remove($label);
+    }
+
     /**
      * @param TaskComment $comment
      */
