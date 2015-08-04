@@ -70,8 +70,10 @@ class TaskTransformer extends AbstractDataSerializerTransformer
 
         $labels = [];
 
-        foreach ($data->getLabels() as $label) {
-            $labels[] = $label->getLabel();
+        if (!empty($data->getLabels())) {
+            foreach ($data->getLabels() as $label) {
+                $labels[] = $label->getLabel();
+            }
         }
 
         return ['labels' => $labels];

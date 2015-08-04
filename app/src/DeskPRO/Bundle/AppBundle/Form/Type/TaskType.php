@@ -98,6 +98,18 @@ class TaskType extends AbstractType
                     'class' => 'App:TaskProject',
                     'property' => 'title',
                 )
+            )
+            ->add(
+                'labels',
+                'collection',
+                array(
+                    'type' => 'label_task',
+                    'required' => false,
+                    'options' => array(
+                        'required' => false,
+                        'description' => 'the task labels',
+                    ),
+                )
             );
     }
 
@@ -105,6 +117,8 @@ class TaskType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Task',
+            'task' => null,
+            'entity_manager' => null,
         ));
     }
 }

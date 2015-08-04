@@ -454,9 +454,14 @@ class TasksController extends BaseController implements ClassResourceInterface
     {
         $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(
+            null,
+            'task',
+            $task,
+            ['task' => $task, 'entity_manager' => $this->getDoctrine()->getManager()]
+        )
+        ->getForm();
 
         $submitted = $request->request->all();
 

@@ -127,5 +127,6 @@ class LabelTask extends NotifyPropertyChangeEntity
     public function setTask(Task $task)
     {
         $this->setModelField('task', $task);
+        $task->addLabel($this);
     }
 }
