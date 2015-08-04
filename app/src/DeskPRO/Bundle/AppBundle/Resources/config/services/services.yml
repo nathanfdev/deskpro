@@ -13,3 +13,13 @@ services:
 
   translator.noop:
       class: DeskPRO\Bundle\AppBundle\Translator\NoopTranslator
+
+  file_locator.root_dir:
+      class: Symfony\Component\Config\FileLocator
+      arguments: [[%kernel.root_dir%]]
+
+  routing.resolver.copy_missing_routes:
+      class: DeskPRO\Bundle\AppBundle\Routing\CopyMissingRoutesLoader
+      arguments: [@file_locator.root_dir]
+      tags:
+        - { name: routing.loader }
