@@ -54,7 +54,6 @@ class TaskLabelType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder->add(
                 'label',
                 'text',

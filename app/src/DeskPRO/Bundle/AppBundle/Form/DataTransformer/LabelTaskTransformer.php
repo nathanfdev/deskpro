@@ -40,16 +40,32 @@ use Symfony\Component\Form\DataTransformerInterface;
 
 class LabelTaskTransformer implements DataTransformerInterface
 {
+    /**
+     * @var EntityManager
+     */
     private $entityManager;
 
+    /**
+     * @var Task
+     */
     private $task;
 
-    public function __construct(EntityManager $entityManager, $task)
+    /**
+     * Constructor
+     * @param EntityManager $entityManager
+     * @param Task $task
+     */
+    public function __construct(EntityManager $entityManager, Task $task)
     {
         $this->entityManager = $entityManager;
         $this->task = $task;
     }
 
+    /**
+     * Transform a label object to a string
+     * @param mixed $labelObject
+     * @return string
+     */
     public function transform($labelObject)
     {
         if (!is_null($labelObject) && $labelObject instanceof LabelTask) {
@@ -59,15 +75,20 @@ class LabelTaskTransformer implements DataTransformerInterface
         return '';
     }
 
+    /**
+     * Transform a label string to a label object (requires the task)
+     * @param mixed $label
+     * @return LabelTask|null|object
+     */
     public function reverseTransform($label)
     {
-        $labelObject = $this->entityManager->getRepository('App:LabelTask')->findOneBy(array('label' => $label));
+        $labelObject = $this->entityManager->getRepository('App:LabelTask')
+            ->findOneBy(array('label' => $label, 'task' => $this->task->getId()));
 
-        if (!$labelObject && !is_null($this->task)) {
+        if (!$labelObject) {
             $labelObject = new LabelTask();
-            $labelObject->setTask($this->task);
             $labelObject->setLabel($label);
-            $this->entityManager->persist($labelObject);
+            $labelObject->setTask($this->task);
         }
 
         return $labelObject;
