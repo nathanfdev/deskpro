@@ -57,9 +57,35 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     onFileSelect: (files) ->
+      @$scope.file_upload_error = null;
+
       file = files[0]
       for blob in @$scope.importer.config.blobs
         return false if blob.filename == file.name
+
+      if @$scope.id == 'csv'
+        allowed = [
+          'articles.csv',
+          'article_custom_fields.csv',
+          'downloads.csv',
+          'feedback.csv',
+          'feedback_attachments.csv',
+          'feedback_custom_fields.csv',
+          'news.csv',
+          'people.csv',
+          'people_custom_fields.csv',
+          'tickets.csv',
+          'ticket_messages.csv',
+          'ticket_attachments.csv',
+          'ticket_custom_fields.csv',
+          'organizations.csv',
+          'organization_contact_data.csv',
+          'organization_custom_fields.csv',
+        ]
+        f = files[0].name.toLowerCase()
+        if allowed.indexOf(f) == -1
+          @$scope.file_upload_error = 'The file you selected (' + f + ') does not match any of the expected files this importer supports.';
+          return
 
       @$scope.uploading = true
       @$upload.upload({
