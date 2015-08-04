@@ -38,11 +38,13 @@ export default class DpAppContainer extends React.Component {
 
   render() {
     const { dp_window, history } = this.props;
-    
+
+    const base_path = DP_BASE_URL.substr(DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3) + 1) + "/agent";
+
     if (dp_window.isLoaded) {
       return (
         <Router history={history}>
-          <Route path="index.php/agent" component={ReactRouterWrapper}>
+          <Route path={base_path} component={ReactRouterWrapper}>
             <Route name="tickets" path="tickets" component={TicketsApp} />
             <Route name="tasks" path="tasks" component={TasksApp} />
           </Route>
