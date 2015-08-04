@@ -9,13 +9,32 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
+// All hail the new UI! Add your other URLs in here.
 $collection->create('agent', array(
-    'path'        => '/{url}',
+    'path'        => '/',
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
-    'requirements' => [
-        'url' => '.*',
-    ],
 ));
+$collection->create('react_agent_tickets', array(
+    'path'        => '/tickets',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+));
+$collection->create('react_agent_tasks', array(
+    'path'        => '/tickets',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+));
+$collection->create('react_agent_users', array(
+    'path'        => '/users',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+));
+$collection->create('react_agent_feedback', array(
+    'path'        => '/feedback',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+));
+$collection->create('react_agent_publish', array(
+    'path'        => '/publish',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+));
+
 
 $collection->create('geoip', array(
     'path'        => '/geoip',
