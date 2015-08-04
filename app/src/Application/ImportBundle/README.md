@@ -27,6 +27,7 @@ IMPORT BUNDLE
         * [JSON Entity #5. Person](#json-entity-5-person)
         * [JSON Entity #6. Ticket](#json-entity-6-ticket)
         * [JSON Entity #7. Organization](#json-entity-7-organization)
+        * [JSON Batch.json](#json-batchjson)
     - [Exporter #3. OsTicket](#exporter-3-osticket)
         * [OsTicket Configuration](#osticket-configuration)
         * [OsTicket Fixtures](#osticket-fixtures)
@@ -236,24 +237,24 @@ Exports data from CSV files. Batching not supported.
 
 ##### CSV Files structure (input-path)
 
- - input_path/
-     - articles.csv
-        - article_custom_fields.csv
-     - downloads.csv
-     - feedback.csv
-        - feedback_attachments.csv
-        - feedback_custom_fields.csv
-     - news.csv
-     - people.csv
-        - people_contact_data.csv
-        - people_custom_fields.csv
-     - tickets.csv
-        - ticket_messages.csv
-        - ticket_attachments.csv
-        - ticket_custom_fields.csv
-     - organizations.csv
-        - organization_contact_data.csv
-        - organization_custom_fields.csv
+ - **input_path/**
+     - [articles.csv](#articlescsv)
+        - [article_custom_fields.csv](#article_custom_fieldscsv)
+     - [downloads.csv](#downloadscsv)
+     - [feedback.csv](#feedbackcsv)
+        - [feedback_attachments.csv](#feedback_attachmentscsv)
+        - [feedback_custom_fields.csv](#feedback_custom_fieldscsv)
+     - [news.csv](#newscsv)
+     - [people.csv](#peoplecsv)
+        - [people_contact_data.csv](#people_contact_datacsv)
+        - [people_custom_fields.csv](#people_custom_fieldscsv)
+     - [tickets.csv](#ticketscsv)
+        - [ticket_messages.csv](#ticket_messagescsv)
+        - [ticket_attachments.csv](#ticket_attachmentscsv)
+        - [ticket_custom_fields.csv](#ticket_custom_fieldscsv)
+     - [organizations.csv](#organizationscsv)
+        - [organization_contact_data.csv](#organization_contact_datacsv)
+        - [organization_custom_fields.csv](#organization_custom_fieldscsv)
 
 Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
@@ -275,7 +276,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | date_created               | created could be empty (current time)                                         |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/articles.csv`          |
 
-**article_custom_fields.csv**
+###### article_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -347,7 +348,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ##### CSV Entity #4. News
 
-**news.csv**
+###### news.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -584,30 +585,30 @@ Note: You should use reference to `id` or `email` column, not both together.
 
 ###### JSON Files structure (input-path)
 
- - input_path/
-    - 1/
-        - articles/
+ - **input_path/**
+    - **1/**
+        - **articles/**
             - article1.json
             - article2.json
-        - downloads/
+        - **downloads/**
             - download1.json
             - download2.json
-        - feedback/
+        - **feedback/**
             - feedback1.json
             - feedback2.json
-        - news/
+        - **news/**
             - news1.json
             - news2.json
-        - organizations/
+        - **organizations/**
             - organization1.json
             - organization2.json
-        - people/
+        - **people/**
             - person1.json
             - person2.json
-        - tickets/
+        - **tickets/**
             - ticket1.json
             - ticket2.json
-        - batch.json
+        - [batch.json](#json-batchjson)
             
 Example: `app/src/Application/ImportBundle/Resources/example/json`
 
