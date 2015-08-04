@@ -107,6 +107,11 @@ class SyncerHelper
             return false;
         }
 
+        if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($user_info['email'])) {
+            // gateway email, don't process
+            return false;
+        }
+
         if (!$person) {
             $person = Person::newContactPerson(array('email' => $user_info['email']));
             $this->em->persist($person);
