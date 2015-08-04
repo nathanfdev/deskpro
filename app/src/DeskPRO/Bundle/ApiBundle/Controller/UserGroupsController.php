@@ -78,7 +78,7 @@ class UserGroupsController extends BaseController
     {
         $service = $this->get('data.user_groups');
         return View::create(
-            $service->loadSingleEnabled($id),
+            $this->DataSerialize($service->loadSingleEnabled($id)),
             Response::HTTP_OK
         );
     }

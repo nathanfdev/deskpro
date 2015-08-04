@@ -12,6 +12,6 @@ export function loadAll() {
  * Count the number of tickets in each filter set and each filter within the filter set.
  * @return Promise.
  */
-export function count(user_group_id = 'all') {
+export function loadUserGroup(user_group_id = 'all') {
   return DpApi.sendGet('DP_API/user_groups/' + user_group_id);
 }

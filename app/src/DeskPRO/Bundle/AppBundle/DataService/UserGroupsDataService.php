@@ -57,13 +57,13 @@ class UserGroupsDataService extends AbstractDataService
      *
      * @return Person|null
      */
-    public function getSingle($id)
+    public function loadSingle($id)
     {
         // using caution and not caching most PersonDataService methods
         return $this->getRepo()->findOneBy(['id' => $id]);
     }
 
-    public function getSingleEnabled($id)
+    public function loadSingleEnabled($id)
     {
         return $this->getRepo()->findOneBy(['id' => $id, 'is_enabled' => 1]);
     }
