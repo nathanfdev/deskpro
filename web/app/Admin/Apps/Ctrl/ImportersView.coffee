@@ -1,6 +1,6 @@
 define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Server_Ctrl_ImportersView extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Server_Ctrl_ImportersView'
+  class Admin_Apps_Ctrl_ImportersView extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_Apps_Ctrl_ImportersView'
     @CTRL_AS = 'Ctrl'
     @DEPS = ['$upload', '$http', '$interval']
 
@@ -123,4 +123,4 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 
-  Admin_Server_Ctrl_ImportersView.EXPORT_CTRL()
+  Admin_Apps_Ctrl_ImportersView.EXPORT_CTRL()

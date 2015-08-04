@@ -1,6 +1,6 @@
 define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Server_Ctrl_ImportersList extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Server_Ctrl_ImportersList'
+  class Admin_Apps_Ctrl_ImportersList extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_Apps_Ctrl_ImportersList'
     @CTRL_AS = 'ImportersListCtrl'
     @DEPS = []
 
@@ -12,4 +12,4 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @$scope.list = res.data
 
 
-  Admin_Server_Ctrl_ImportersList.EXPORT_CTRL()
+  Admin_Apps_Ctrl_ImportersList.EXPORT_CTRL()

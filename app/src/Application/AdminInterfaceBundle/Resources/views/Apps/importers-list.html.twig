@@ -7,16 +7,16 @@
         </header>
         <article>
             <ul class="dp-item-list dp-icon-list">
-                <li ng-repeat="i in list" dp-state-mark="server.importers.view.{{ ng_var('i.id') }}">
+                <li ng-repeat="i in list" dp-state-mark="apps.importers.view.{{ ng_var('i.id') }}">
                     <aside>
-                        <a href="{{ ng_href('server.importers.view', '{id: i.id}') }}">
+                        <a href="{{ ng_href('apps.importers.view', '{id: i.id}') }}">
                             <img ng-src="/web/images/admin/icons/icon-{{ ng_var('i.id') }}.png" alt="Icon"
                                  style="width: 40px; height: 40px;"/>
                         </a>
                     </aside>
                     <div class="content">
                         <h4>
-                            <a href="{{ ng_href('server.importers.view', '{id: i.id}') }}">
+                            <a href="{{ ng_href('apps.importers.view', '{id: i.id}') }}">
                                 <span class="title-text">{{ ng_var('i.title') }}</span>
                             </a>
                         </h4>
