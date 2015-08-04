@@ -35,8 +35,7 @@ IMPORT BUNDLE
         * [ZenDesk Fixtures](#zendesk-fixtures)
         * [ZenDesk Batch.json](#zendesk-batch.json)
 
-Commands
-------------
+## Commands
 
 #### Command #1. Export check
 
@@ -184,7 +183,7 @@ php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundl
 ```
 
 
-#### Command #4. Import batch run
+### Command #4. Import batch run
 
 Reads data from an external source and writes to json files. Then reads json files and imports to database.
 
@@ -229,14 +228,13 @@ php cmd.php dp:import:batch zendesk --output-path="app/src/Application/ImportBun
 ```
 
 
-Exporters
-------------
+## Exporters
 
 #### Exporter #1. CSV
 
 Exports data from CSV files. Batching not supported.
 
-###### CSV Files structure (input-path)
+##### CSV Files structure (input-path)
 
  - input_path/
      - articles.csv
@@ -261,7 +259,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### CSV Entity #1. Article
 
-**articles.csv**
+####### articles.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -287,7 +285,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### CSV Entity #2. Download
 
-**downloads.csv**
+####### downloads.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -309,7 +307,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### CSV Entity #3. Feedback
 
-**feedback.csv**
+####### feedback.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -327,7 +325,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | label                      | could be empty (only one label is supported)                                  |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/feedback.csv`          |
 
-**feedback_attachments.csv**
+####### feedback_attachments.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -339,7 +337,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | content_type               |                                                                               |
 | is_inline                  | boolean                                                                       |
 
-**feedback_custom_fields.csv**
+#######feedback_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -347,7 +345,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-###### CSV Entity #4. News
+##### CSV Entity #4. News
 
 **news.csv**
 
@@ -366,7 +364,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### CSV Entity #5. Person
 
-**people.csv**
+####### people.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -376,7 +374,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | is_agent                   | boolean                                                                       |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/people.csv`            |
 
-**people_custom_fields.csv**
+####### people_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -384,7 +382,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-**people_contact_data.csv**
+Note: You should use reference to `id` or `email` column, not both together.
+
+####### people_contact_data.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -395,7 +395,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### CSV Entity #6. Ticket
 
-**tickets.csv**
+####### tickets.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -407,7 +407,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | date_created               | created could be empty (current time)                                         |
 | custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/tickets.csv`           |
 
-**ticket_messages.csv**
+####### ticket_messages.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -417,7 +417,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | user                       | means a person email                                                          |
 | date_created               | created could be empty (current time)                                         |
 
-**ticket_attachments.csv**
+####### ticket_attachments.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -429,7 +429,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | content_type               |                                                                               |
 | is_inline                  | boolean                                                                       |
 
-**ticket_custom_fields.csv**
+####### ticket_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -439,7 +439,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### CSV Entity #7. Organization
 
-**organizations.csv**
+####### organizations.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -459,7 +459,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 |-------------------|------------|-------------------------|-------------|--------------|
 | Some Organization | 1          | http://site.com/img.png | preview.png | image/png    | 
 
-**organization_contact_data.csv**
+####### organization_contact_data.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -577,6 +577,8 @@ Supported contact types:
 | organization_id            | reference to `organizations.csv` `id` or `name` column                        |
 | field_name                 |                                                                               |
 | value                      |                                                                               |
+
+Note: You should use reference to `id` or `email` column, not both together.
 
 #### Exporter #2. JSON
 
@@ -925,7 +927,7 @@ $DP_CONFIG['zendesk_import'] = array(
 );
 ```
 
-###### ZenDesk Fixtures
+##### ZenDesk Fixtures
 
 ```bash
 php cmd.php dpdev:import:fixtures person --offset=1000
@@ -945,8 +947,7 @@ php cmd.php dpdev:import:fixtures ticket --offset=1000
 }
 ```
 
-Support for batching
-------------
+#### Support for batching
 
 Common properties:
 
