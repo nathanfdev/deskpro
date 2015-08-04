@@ -174,7 +174,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         path.join(__dirname, "src/DeskPRO/Component")
       ]
     },
-    devtool: "eval",
+    devtool: "source-map",
     module: {
       loaders: [
         {
@@ -221,7 +221,6 @@ function getWebpackConfig(mode, isDevServer, isProd) {
   //---
 
   if (isProd) {
-    config.devtool = undefined;
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
       exclude: [/(node_modules|bower_components)/]
     }))
@@ -233,7 +232,6 @@ function getWebpackConfig(mode, isDevServer, isProd) {
 
   if (isDevServer) {
     config.debug = true;
-    config.devtool = "source-map";
 
     config.output.publicPath = "http://localhost:9666/pub/build/";
 
