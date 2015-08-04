@@ -70,15 +70,15 @@ function createReducers(reducers_path) {
     if(file == 'index.js' || !file.match(/\.js$/)) {
       continue;
     }
-    
+
     processed_files.push(file);
     var store_name = file.substr(0, file.length - 3);
     imports+= "import " + store_name + " from './" + store_name + "';\n";
     exports+= store_name + ",";
   }
-  
+
   console.log("[" + processed_files.join(", ") + "]");
-  
+
   var index = imports + "export default {"+ exports +"};";
   fs.writeFileSync(path.join(reducers_path, "index.js"), index);
 }
@@ -96,7 +96,7 @@ gulp.task('create-reducers', function(callback) {
       }
     }
   }
-  
+
   return callback();
 });
 
@@ -134,7 +134,7 @@ gulp.task('build-test', function(callback) {
     ],
     loader: "babel-loader?stage=0"
   }];
-  
+
   webpack(config).run(function(err, stats) {
     if(err) throw new gutil.PluginError("webpack", err);
     gutil.log("[webpack]", stats.toString({
@@ -174,7 +174,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         path.join(__dirname, "src/DeskPRO/Component")
       ]
     },
-    devtool: "inline-source-map",
+    devtool: "eval",
     module: {
       loaders: [
         {
@@ -221,7 +221,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
   //---
 
   if (isProd) {
-    config.devool = "source-map";
+    config.devtool = undefined;
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
       exclude: [/(node_modules|bower_components)/]
     }))
@@ -233,7 +233,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
 
   if (isDevServer) {
     config.debug = true;
-    config.devtool = "eval";
+    config.devtool = "source-map";
 
     config.output.publicPath = "http://localhost:9666/pub/build/";
 
