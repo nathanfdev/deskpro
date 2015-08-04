@@ -50,10 +50,10 @@ interface BlobAdapterInterface
     public function createBySourceData($source_data, $filename, $content_type);
 
     /**
-     * Creates a blob object by an importer attachment entity
+     * Creates a blob object by an importer entity
      *
-     * @param Entity\Attachment $attachment
+     * @param Entity\Blob $blob
      * @return DeskPROEntity\Blob
      */
-    public function createByAttachment(Entity\Attachment $attachment);
+    public function createByBlob(Entity\Blob $blob);
 }

@@ -33,7 +33,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro ticket importer
+ * DeskPRO ticket importer
  *
  * Class Ticket
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -207,7 +207,7 @@ final class Ticket extends AbstractImporter
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByAttachment($entity))
+            ->setBlob($this->blob_adapter->createByBlob($entity))
         ;
 
         return $attachment;
@@ -320,7 +320,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity
+     * Returns a ticket custom data entity
      *
      * @param Entity\CustomField $entity
      *

@@ -394,6 +394,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function getSupportedEntityTypes()
     {
         return array(
+            Entity\EntityInterface::TYPE_ORGANIZATION,
             Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_PERSON,
             Entity\EntityInterface::TYPE_ARTICLE,

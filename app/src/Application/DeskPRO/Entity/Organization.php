@@ -43,10 +43,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
 
-
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
+ * Class Organization
+ * @package Application\DeskPRO\Entity
  */
 class Organization extends DomainObject implements HighlightableModelInterface
 {
@@ -87,6 +88,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
     protected $importance = 0;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -250,10 +252,26 @@ class Organization extends DomainObject implements HighlightableModelInterface
         $this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
     }
 
+    /**
+     * Reset contact data
+     *
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        foreach ($this->contact_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->contact_data->clear();
+        $this->_onPropertyChanged('contact_data', null, $this->contact_data);
+
+        return $this;
+    }
 
     /**
      * @param  null  $type
-     * @return array
+     * @return Entity\OrganizationContactData[]
      */
     public function getContactData($type = null)
     {
@@ -335,6 +353,23 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->custom_data->clear();
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
+    }
+
+    /**
      * Add a custom data item to this ticket
      *
      * @param CustomDataOrganization $data
@@ -405,6 +440,17 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $custom_fields;
     }
 
+    /**
+     * Set organization picture
+     *
+     * @param Blob|null $blob
+     * @return $this
+     */
+    public function setPicture(Blob $blob = null)
+    {
+        $this->setModelField('picture_blob', $blob);
+        return $this;
+    }
 
     /**
      * Gets the URL to a picture for the org. If there is no picture for the org, a default one
@@ -472,9 +518,34 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return false;
     }
 
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->labels->clear();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * @return Entity\LabelOrganization[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
 
     /**
      * Add a label
+     *
      * @param Entity\LabelOrganization $label
      */
     public function addLabel(Entity\LabelOrganization $label)
@@ -493,12 +564,22 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $this->_label_manager;
     }
 
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
+    }
+
     public function __toString()
     {
         return $this->name;
     }
-
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {

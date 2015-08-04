@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro download importer
+ * DeskPRO download importer
  *
  * Class Download
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -85,12 +85,14 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setSlug($entity->getSlug())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setLanguage($this->findLanguage($entity->getLanguage()))
-            ->setBlob($this->blob_adapter->createByAttachment($entity->getAttachment()))
+            ->setBlob($this->blob_adapter->createByBlob($entity->getAttachment()))
             ->setCategory($this->findOrCreateDownloadCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
             ->setViewsCount($entity->getViewCount())
-            ->setNumDownloads($entity->getNumDownloads());
+            ->setNumDownloads($entity->getNumDownloads())
+            ->resetLabels()
+        ;
 
         $this->records->add($download);
         return $this->records;

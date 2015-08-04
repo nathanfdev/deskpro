@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news labels importer
+ * DeskPRO news labels importer
  *
  * Class NewsLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -56,22 +56,15 @@ final class NewsLabel extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $news   = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
-        $labels = $this->getExistingLabelsNames($news->getId());
+        $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
+        $news->resetLabels();
 
         foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for news with oid `%d` (Skipping)',
-                    $label, $news->getId()
-                ));
-            } else {
-                $news->addLabel($this->createNewsLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for news with oid `%d`',
-                    $label, $news->getId()
-                ));
-            }
+            $news->addLabel($this->createNewsLabel($label));
+            $this->logDebug(sprintf(
+                'Creating a new label `%s` for news with oid `%d`',
+                $label, $news->getId()
+            ));
         }
 
         return $this->records;
@@ -90,36 +83,5 @@ final class NewsLabel extends AbstractImporter
 
         $this->records->add($entity);
         return $entity;
-    }
-
-    /**
-     * Returns a collection of existing news label names
-     *
-     * @param int $id
-     *
-     * @return array
-     * @throws Mapper\MapperException
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getNewsLabelMapper()->findByNewsId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the news label mapper
-     *
-     * @return Mapper\NewsLabel
-     * @throws \Exception
-     */
-    private function getNewsLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_NEWS_LABEL);
     }
 }

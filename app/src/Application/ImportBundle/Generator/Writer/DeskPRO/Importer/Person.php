@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro person importer
+ * DeskPRO person importer
  *
  * Class Person
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -76,6 +76,8 @@ final class Person extends AbstractImporter
             ->resetEmails()
             ->resetLabels()
             ->resetUsergroups()
+            ->resetContactData()
+            ->resetCustomData()
         ;
 
         if ($entity->isAgent() && ! in_array('agent_all_safe_perms', $entity->getUserGroups(), true)) {
@@ -110,6 +112,9 @@ final class Person extends AbstractImporter
             if ($user_group) {
                 $person->addUsergroup($user_group);
             }
+        }
+        foreach ($entity->getContactData() as $contact) {
+            $person->addContactData($this->createContactData($contact));
         }
         foreach ($entity->getCustomFields() as $custom_field) {
             $custom_field = $this->createPersonCustomData($custom_field);
@@ -210,7 +215,34 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity
+     * Returns person contact data entity
+     *
+     * @param Entity\ContactData $entity
+     * @return DeskPROEntity\PersonContactData
+     */
+    private function createContactData(Entity\ContactData $entity)
+    {
+        $contact = new DeskPROEntity\PersonContactData();
+        $contact
+            ->setContactType($entity->getContactType())
+            ->setComment($entity->getComment())
+            ->setField1($entity->getField1())
+            ->setField2($entity->getField2())
+            ->setField3($entity->getField3())
+            ->setField4($entity->getField4())
+            ->setField5($entity->getField5())
+            ->setField6($entity->getField6())
+            ->setField7($entity->getField7())
+            ->setField8($entity->getField8())
+            ->setField9($entity->getField9())
+            ->setField10($entity->getField10())
+        ;
+
+        return $contact;
+    }
+
+    /**
+     * Returns person custom data entity
      *
      * @param Entity\CustomField $entity
      *

@@ -93,6 +93,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             ->attach(new Validator\News($validator))
             ->attach(new Validator\Person($validator))
             ->attach(new Validator\Ticket($validator))
+            ->attach(new Validator\Organization($validator))
         ;
     }
 
@@ -267,7 +268,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     private function validateExportingCollection($type, Entity\Collection $collection)
     {
         $exceptions = new ExceptionCollection();
-        $validators = $this->validators->getByRecordType($type);
+        $validators = $this->validators->getByEntityType($type);
 
         foreach ($collection as $entity) {
             $this->advanceProgressBar();

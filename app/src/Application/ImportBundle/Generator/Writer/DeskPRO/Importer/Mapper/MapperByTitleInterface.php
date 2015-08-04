@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 /**
- * Mapper interface to find existing DeskPro records by title
+ * Mapper interface to find existing DeskPRO records by title
  *
  * Interface MapperByTitleInterface
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper

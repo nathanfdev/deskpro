@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news importer
+ * DeskPRO news importer
  *
  * Class News
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -71,7 +71,9 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
             ->setCategory($this->findOrCreateNewsCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
-            ->setViewsCount($entity->getViewCount());
+            ->setViewsCount($entity->getViewCount())
+            ->resetLabels()
+        ;
 
         $this->records->add($news);
         return $this->records;
