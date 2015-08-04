@@ -96,12 +96,12 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
      * )
      * @Get("/projects/{id}", name="api_projects_get")
-     * @param int $id
+     * @param int $projectId
      * @return View
      */
-    public function getAction($id)
+    public function getAction($projectId)
     {
-        $project = $this->getProject($id);
+        $project = $this->getProject($projectId);
 
         if (empty($project)) {
             throw $this->createNotFoundException();
@@ -357,7 +357,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
+     *      output="Application\DeskPRO\Entity\Department"
      * )
      * @Post("/projects/{id}/departments", name="api_projects_departments_post")
      * @param Request $request
@@ -366,46 +366,47 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function postDepartmentAction(Request $request, $id)
     {
-        $project = $this->getProject($id);
+        return $this->postMember($request, $id, 'department');
+    }
 
-        $submitted = $request->request->all();
+    /**
+     * @ApiDoc(
+     *      description="add an agent team as a project member",
+     *      input={"class"="project", "id"=""},
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *      output="Application\DeskPRO\Entity\AgentTeam"
+     * )
+     * @Post("/projects/{id}/teams", name="api_projects_teams_post")
+     * @param Request $request
+     * @param $id
+     * @return View
+     */
+    public function postTeamAction(Request $request, $id)
+    {
+        return $this->postMember($request, $id, 'team');
+    }
 
-        $departmentId = $submitted['id'];
-        $department = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Department')->find($departmentId);
-
-        if (!$department) {
-            throw $this->createNotFoundException();
-        }
-
-        $member = new ProjectMember();
-        $member->setDepartment($department);
-        $member->setProject($project);
-
-        $validate = [
-            'project' => $id,
-            'department' => $departmentId,
-        ];
-
-        /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'projectmember', $member)->getForm();
-        $form->submit($validate, true);
-
-        if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($member);
-            $this->getDoctrine()->getManager()->flush();
-
-            $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
-
-            return View::create(
-                $this->dataSerialize($member),
-                Response::HTTP_CREATED,
-                array(
-                    'Location' => $location,
-                )
-            );
-        }
-
-        throw new InvalidFormException($form);
+    /**
+     * @ApiDoc(
+     *      description="add an agent as a project member",
+     *      input={"class"="project", "id"=""},
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *      output="Application\DeskPRO\Entity\Person"
+     * )
+     * @Post("/projects/{id}/agents", name="api_projects_agents_post")
+     * @param Request $request
+     * @param $id
+     * @return View
+     */
+    public function postAgentAction(Request $request, $id)
+    {
+        return $this->postMember($request, $id, 'person');
     }
 
     /**
@@ -430,7 +431,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/projects/{projectId}/departments/{deptId}", name="api_projects_delete")
+     * @Delete("/projects/{projectId}/departments/{deptId}", name="api_projects_department_delete")
      * @param $projectId
      * @param $deptId
      * @return View
@@ -442,6 +443,152 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             'project' => (int) $projectId,
         ]);
 
+        return $this->deleteMember($member);
+    }
+
+    /**
+     * @APIDoc(
+     *      description="remove a relationship between a project and an agent team",
+     *      requirements={
+     *          {
+     *              "name"="projectId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="teamId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the team",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Delete("/projects/{projectId}/departments/{teamId}", name="api_projects_team_delete")
+     * @param $projectId
+     * @param $teamId
+     * @return View
+     */
+    public function deleteTeamAction($projectId, $teamId)
+    {
+        $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findOneBy([
+            'team' => (int) $teamId,
+            'project' => (int) $projectId,
+        ]);
+
+        return $this->deleteMember($member);
+    }
+
+    /**
+     * @APIDoc(
+     *      description="remove a relationship between a project and an agent",
+     *      requirements={
+     *          {
+     *              "name"="projectId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="personId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the agent",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Delete("/projects/{projectId}/departments/{personId}", name="api_projects_agent_delete")
+     * @param $projectId
+     * @param $personId
+     * @return View
+     */
+    public function deleteAgentAction($projectId, $personId)
+    {
+        $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findOneBy([
+            'department' => (int) $personId,
+            'project' => (int) $projectId,
+        ]);
+
+        return $this->deleteMember($member);
+    }
+
+    /**
+     * Create a new member relationship for a department, team or perosn
+     * @param Request $request
+     * @param $projectId
+     * @param $type
+     * @return View
+     */
+    protected function postMember(Request $request, $projectId, $type)
+    {
+        $memberRepositories = [
+            'department' => 'DeskPRO:Department',
+            'team' => 'DeskPRO:AgentTeam',
+            'person' => 'DeskPRO:Person',
+        ];
+
+        if (!in_array($type, array_keys($memberRepositories))) {
+            throw new \InvalidArgumentException();
+        }
+
+        $project = $this->getProject($projectId);
+
+        $submitted = $request->request->all();
+
+        $objectId = $submitted['id'];
+        $object = $this->getDoctrine()->getManager()->getRepository($memberRepositories[$type])->find($objectId);
+
+        if (!$object) {
+            throw $this->createNotFoundException();
+        }
+
+        $member = new ProjectMember();
+        $member->setProject($project);
+        $setter = 'set' . ucfirst($type);
+        $member->$setter($object);
+
+        $validate = [
+            'project' => $projectId,
+            $type => $objectId,
+        ];
+
+        /** @var Form $form */
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'projectmember', $member)->getForm();
+        $form->submit($validate, true);
+
+        if ($form->isValid()) {
+            $this->getDoctrine()->getManager()->persist($member);
+            $this->getDoctrine()->getManager()->flush();
+
+            $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
+
+            return View::create(
+                $this->dataSerialize($object),
+                Response::HTTP_CREATED,
+                array(
+                    'Location' => $location,
+                )
+            );
+        }
+
+        throw new InvalidFormException($form);
+    }
+
+    /**
+     * Delete a project member relationship
+     * @param $member
+     * @return View
+     */
+    protected function deleteMember($member)
+    {
         if (!$member) {
             throw $this->createNotFoundException();
         }
@@ -456,6 +603,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
+     * Retrieve a single project
      * @param int $id
      * @return Project
      */

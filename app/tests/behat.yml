@@ -91,12 +91,13 @@ portal:
 e2e:
     suites:
         general:
-            mink_session: default
-            mink_javascript_session: default
+            mink_session: selenium2
+            mink_javascript_session: selenium2
             paths:
                 - %paths.base%/e2e/general
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\E2E\SeleniumContext:
                 - behatch:browser
                 - behatch:debug:
                     screenshotDir: %paths.base%/e2e/logs/screenshots
@@ -106,11 +107,12 @@ e2e:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
             # Set in boot.php via BEHAT_PARAMS env
-            #base_url: '/'
+            base_url: 'http://localhost:8888/'
             browser_name: "phantomjs"
             selenium2:
-                wd_host: "http://localhost:4444/wd/hub"
-            default_session: default
+              browser: phantomjs
+              wd_host: "http://127.0.0.1:4444/wd/hub"
+            default_session: selenium2
             sessions:
                 default:
                     selenium2: ~
@@ -121,12 +123,3 @@ e2e:
                 class: DeskPRO\Kernel\ApiKernel
                 env: test
                 debug: true
-
-
-
-
-
-
-
-
-

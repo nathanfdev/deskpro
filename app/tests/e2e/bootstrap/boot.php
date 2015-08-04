@@ -22,18 +22,20 @@ if ($exist = getenv('BEHAT_PARAMS')) {
     $exist = array();
 }
 
-if (!isset($exist['extensions']['Behat\MinkExtension']['base_url'])) {
+if (!isset($exist['extensions']['Behat\\\\MinkExtension']['base_url'])) {
     if (!defined('DP_E2E_BASE_URL')) {
         echo "config.test.php must defined DP_E2E_BASE_URL or your env must define BEHAT_PARAMS.";
         exit(1);
     }
 
     if (!isset($exist['extensions'])) $exist['extensions'] = array();
-    if (!isset($exist['extensions']['Behat\MinkExtension'])) $exist['extensions']['Behat\MinkExtension'] = array();
-    $exist['extensions']['Behat\MinkExtension']['base_url'] = DP_E2E_BASE_URL;
+    if (!isset($exist['extensions']['Behat\\\\MinkExtension'])) $exist['extensions']['Behat\\\\MinkExtension'] = array();
+    $exist['extensions']['Behat\\\\MinkExtension']['base_url'] = DP_E2E_BASE_URL;
 
     $exist = json_encode($exist);
-    putenv("BEHAT_PARAMS=".$exist);
+    putenv("BEHAT_PARAMS='".$exist."'");
+
+    //TODO This doesnt work
 }
 
 \Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT . '/vendor-src/php-utf8/');
