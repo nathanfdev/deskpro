@@ -106,7 +106,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             return $this->reader->getRowsCount($config);
 
         } catch (NotFoundResourceException $e) {
-            // Just skip and continue...
+            $this->logInfo(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
         }
 
         return 0;
@@ -129,7 +129,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             return $data;
 
         } catch (NotFoundResourceException $e) {
-            // Just skip and continue...
+            $this->logInfo(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
 
         } catch (CsvReaderException $e) {
             $this->logWarning(sprintf(
