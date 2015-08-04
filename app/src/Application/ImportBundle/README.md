@@ -383,7 +383,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-Note: You should use reference to `id` or `email` column, not both together.
+*Note:* You should use reference to `id` or `email` column, not both together.
 
 ###### people_contact_data.csv
 
@@ -393,6 +393,8 @@ Note: You should use reference to `id` or `email` column, not both together.
 | contact_id                 |                                                                               |
 | field_name                 | `contact_type`, `comment` and contact type specific parameters                |
 | value                      |                                                                               |
+
+*Note:* You should use reference to `id` or `email` column, not both together.
 
 ##### CSV Entity #6. Ticket
 
@@ -468,6 +470,8 @@ Note: You should use reference to `id` or `email` column, not both together.
 | contact_id                 |                                                                               |
 | field_name                 | `contact_type`, `comment` and contact type specific parameters                |
 | value                      |                                                                               |
+
+*Note:* You should use reference to `id` or `email` column, not both together.
 
 Supported contact types:
 
@@ -571,7 +575,7 @@ Supported contact types:
 | Some Organization | contact_10 | comment              | some comment                  |
 | Some Organization | contact_10 | url                  | http://site.com               |
 
-**organization_custom_fields.csv**
+###### organization_custom_fields.csv
 
 | Column name                | Description                                                                   |
 | -------------------------- |-------------------------------------------------------------------------------|
@@ -579,7 +583,7 @@ Supported contact types:
 | field_name                 |                                                                               |
 | value                      |                                                                               |
 
-Note: You should use reference to `id` or `email` column, not both together.
+*Note:* You should use reference to `id` or `email` column, not both together.
 
 #### Exporter #2. JSON
 
