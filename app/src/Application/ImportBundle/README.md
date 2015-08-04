@@ -83,8 +83,7 @@ php cmd.php dp:export:check zendesk --verbose
 
 #### Command #2. Export run
 
-Reads data from an external source, validate entities and write them to json files.
-Export could be run in json files only.
+Reads data from an external source to json files.
 
 ```bash
 php cmd.php dp:export:run exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
@@ -143,7 +142,7 @@ php cmd.php dp:export:run zendesk --output-path="app/src/Application/ImportBundl
 
 #### Command #3. Import run
 
-Reads data from an external source, validate entities and import them to deskpro database.
+Reads data from an external source to the DeskPRO database.
 
 ```
 php cmd.php dp:import:run exporter_type [--input-path=] [--verbose] [--dry-run]
@@ -186,7 +185,7 @@ php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundl
 
 ### Command #4. Import batch run
 
-Reads data from an external source and writes to json files. Then reads json files and imports to database.
+Reads data from an external source to json files and the DeskPRO database.
 
 ```
 php cmd.php dp:import:batch exporter_type [--input-path=] [--output-path=""] [--verbose] [--dry-run]
@@ -847,7 +846,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 Exports data from OsTicket database.
 
-###### OsTicket Configuration
+##### OsTicket Configuration
 
 Add `osticket_import` configuration to `config.php`
 
@@ -860,7 +859,7 @@ $DP_CONFIG['osticket_import'] = array(
 );
 ```
 
-###### OsTicket Fixtures
+##### OsTicket Fixtures
 
 ```sql
 DELIMITER $$
@@ -917,7 +916,7 @@ DELIMITER ;
 
 Exports data from ZenDesk account. Supported tickets and people data export.
 
-###### ZenDesk Configuration
+##### ZenDesk Configuration
 
 Add `zendesk_import` configuration to `config.php`
 
@@ -939,7 +938,7 @@ php cmd.php dpdev:import:fixtures person --offset=1000
 php cmd.php dpdev:import:fixtures ticket --offset=1000
 ```
 
-###### ZenDesk Batch.json
+##### ZenDesk Batch.json
 
 ```json
 {
