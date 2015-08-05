@@ -36,7 +36,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-class TicketFiltersTransformer extends AbstractDataSerializerTransformer
+class TicketFilterTransformer extends AbstractDataSerializerTransformer
 {
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
@@ -57,13 +57,6 @@ class TicketFiltersTransformer extends AbstractDataSerializerTransformer
     {
         /** @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
         // $data = $transformation_request->getDataToBeTransformed();
-        //
-        // $labels = [];
-        //
-        // foreach ($data->getLabels() as $label) {
-        //     $labels[] = $label->getLabel();
-        // }
-        //
-        // return ['labels' => $labels];
+        return [];
     }
 }

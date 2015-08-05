@@ -55,6 +55,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 
 /**
  * API access to TicketFilterSet entities.
@@ -277,9 +278,8 @@ class TicketFilterSetsController extends BaseController
         $groupby = $request->query->get('group_by');
         $filter_set_count = $this->getFilterSetTicketsCount($set, $groupby);
 
-        $view_factory = $this->get('api_view_representation_factory');
         return View::create(
-            $view_factory->DataSerialize($filter_set_count),
+            $this->DataSerialize(new PrimitiveArray($filter_set_count)),
             Response::HTTP_OK
         );
     }
@@ -318,9 +318,8 @@ class TicketFilterSetsController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        $view_factory = $this->get('api_view_representation_factory');
         return View::create(
-            $view_factory->DataSerialize($set->getFilters()),
+            $this->DataSerialize($set->getFilters()),
             Response::HTTP_OK
         );
     }
@@ -355,9 +354,8 @@ class TicketFilterSetsController extends BaseController
             $filter_set_counts[] = $this->getFilterSetTicketsCount($set, $groupby);
         }
 
-        $view_factory = $this->get('api_view_representation_factory');
         return View::create(
-            $view_factory->DataSerialize($filter_set_counts),
+            $this->DataSerialize(new PrimitiveArray($filter_set_counts)),
             Response::HTTP_OK
         );
     }
