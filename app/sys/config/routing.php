@@ -24,7 +24,6 @@ $collection->addCollection($col);
 // to be removed shortly
 //
 $col = $loader->import(DP_ROOT . '/src/Application/UserBundle/Resources/config/user-routing.php');
-$col->addPrefix('/old-portal-route');
 $collection->addCollection($col);
 //
 //
