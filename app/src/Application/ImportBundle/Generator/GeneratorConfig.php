@@ -128,6 +128,7 @@ class GeneratorConfig
             ExporterInterface::TYPE_JSON,
             ExporterInterface::TYPE_OS_TICKET,
             ExporterInterface::TYPE_ZENDESK,
+            ExporterInterface::TYPE_DESKPRO,
         );
 
         return in_array($this->exporter_type, $batch_exporters, true);
@@ -159,6 +160,7 @@ class GeneratorConfig
             ExporterInterface::TYPE_JSON      => 'Application\ImportBundle\Generator\Exporter\JsonFactory',
             ExporterInterface::TYPE_OS_TICKET => 'Application\ImportBundle\Generator\Exporter\OsTicketFactory',
             ExporterInterface::TYPE_ZENDESK   => 'Application\ImportBundle\Generator\Exporter\ZenDeskFactory',
+            ExporterInterface::TYPE_DESKPRO   => 'Application\ImportBundle\Generator\Exporter\DeskPROFactory',
         );
 
         if (!isset($factories[$this->exporter_type])) {
@@ -195,7 +197,7 @@ class GeneratorConfig
     /**
      * Returns exporter batch config
      *
-     * @return BatchConfigInterface
+     * @return AbstractBatchConfig
      */
     public function getExporterBatchConfig()
     {

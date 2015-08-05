@@ -436,7 +436,7 @@ class NewTicket
 
         switch ($this->billing_type) {
             case 'amount':
-                $ticket->addCharge($this->_person_context, null, floatval($this->billing_amount), $this->billing_comment);
+                $ticket->addCharge($this->_person_context, null, floatval($this->billing_amount));
                 break;
 
             case 'time':
@@ -445,7 +445,7 @@ class NewTicket
                     + 60 * $this->billing_minutes
                     + $this->billing_seconds
                 );
-                $ticket->addCharge($this->_person_context, $time, null, $this->billing_comment);
+                $ticket->addCharge($this->_person_context, $time, null);
         }
 
         $this->_em->persist($ticket);

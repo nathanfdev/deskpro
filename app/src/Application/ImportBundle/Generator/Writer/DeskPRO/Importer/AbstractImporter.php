@@ -30,11 +30,12 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\MapperInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Abstract DeskPro importer
- * Finds or creates DeskPro entities
+ * Abstract DeskPRO importer
+ * Finds or creates DeskPRO entities
  *
  * Class AbstractImporter
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -111,27 +112,127 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      */
     protected function findOrCreateOrganization($title)
     {
+        if (!$title) return null;
         /** @var Mapper\Organization $mapper */
         $mapper       = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
-        $organization = null;
 
-        if ($title) {
-            $organization = $mapper->findOneByTitle($title, false);
-            if ($organization) {
-                $this->logDebug(sprintf(
-                    'Found existing organization `%d` with title `%s`',
-                    $organization->getId(), $organization->getName()
-                ));
-            } else {
-                $organization = new DeskPROEntity\Organization();
-                $organization->setName($title);
+        $organization = $mapper->findOneByTitle($title, false);
+        if ($organization) {
+            $this->logDebug(sprintf(
+                'Found existing organization `%d` with title `%s`',
+                $organization->getId(), $organization->getName()
+            ));
+        } else {
+            $organization = new DeskPROEntity\Organization();
+            $organization->setName($title);
 
-                $this->records->add($organization);
-                $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
-            }
+            $this->records->add($organization);
+            $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
         }
 
         return $organization;
+    }
+
+    /**
+     * Returns custom def person entity
+     *
+     * @param MapperInterface                  $mapper
+     * @param Entity\CustomField               $entity
+     * @param DeskPROEntity\CustomDataAbstract $custom_field
+     *
+     * @return DeskPROEntity\CustomDataTicket
+     * @throws ImporterException
+     */
+    protected function createCustomData(MapperInterface $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
+    {
+        $custom_field_def = $mapper->findOneBy(array(
+            'title'  => $entity->getKey(),
+            'parent' => null,
+        ));
+
+        switch ($custom_field_def->getTypeName()) {
+            case Entity\CustomField::FIELD_TYPE_TEXT:
+            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setInput($entity->getValue())
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_TOGGLE:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setValue($entity->getValue() ? 1 : 0);
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DATE:
+            case Entity\CustomField::FIELD_TYPE_DATETIME:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0)
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_CHOICE:
+                /** @var DeskPROEntity\CustomDataAbstract $choice */
+                $choice = $this->findChoiceCustomDef($mapper, $entity->getValue(), $custom_field_def);
+                $custom_field
+                    ->setField($choice)
+                    ->setRootField($custom_field_def)
+                    ->setValue(1)
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DISPLAY:
+            case Entity\CustomField::FIELD_TYPE_HIDDEN:
+                return null;
+
+            default:
+                throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
+        }
+
+        $this->records->add($custom_field);
+        return $custom_field;
+    }
+
+    /**
+     * Find a choice custom def entity
+     * We store value for choice custom fields like "A > A1"
+     *
+     * MyField
+     *   Option A
+     *     |- Option A1
+     *     |- Option A2
+     *   Option B
+     *     |- Option B1
+     *     |- Option B2
+     *
+     * @param MapperInterface                 $mapper
+     * @param array|string                    $choice_chain
+     * @param DeskPROEntity\CustomDefAbstract $parent
+     *
+     * @return DeskPROEntity\CustomDefAbstract
+     */
+    protected function findChoiceCustomDef(MapperInterface $mapper, $choice_chain, DeskPROEntity\CustomDefAbstract $parent)
+    {
+        if (is_string($choice_chain)) {
+            $choice_chain = explode('>', $choice_chain);
+            $choice_chain = array_map('trim', $choice_chain);
+        }
+
+        $custom_field_def = $mapper->findOneBy(array(
+            'title'  => array_shift($choice_chain),
+            'parent' => $parent,
+        ));
+
+        return empty($choice_chain) ? $custom_field_def : $this->findChoiceCustomDef($mapper, $choice_chain, $custom_field_def);
     }
 
     /**

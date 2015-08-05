@@ -14,19 +14,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       # DEBUG
       @$scope.paymentForm.mode = 'new'
       @$scope.paymentForm.new_card = {
-        number: '4929000000006',
-        cv2: '123',
-        name: 'CN',
-        expire_yy: '18'
-        expire_mm: '01',
-        type: 'visa'
+        number: '',
+        cv2: '',
+        name: '',
+        expire_yy: ''
+        expire_mm: '',
+        type: ''
       }
       @$scope.paymentForm.address = {
-        country: 'UK',
-        city: 'London',
+        country: '',
+        city: '',
         state: '',
-        post_code: 'W14 0QA',
-        address: 'Flat D, 27 Aynhoe Road'
+        post_code: '',
+        address: ''
       }
 
       @$scope.month_opts = []

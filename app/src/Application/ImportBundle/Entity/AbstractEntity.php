@@ -44,7 +44,7 @@ abstract class AbstractEntity implements EntityInterface
     protected $raw_data = array();
 
     /**
-     * @var int
+     * @var int|string
      */
     protected $oid;
 
@@ -82,12 +82,12 @@ abstract class AbstractEntity implements EntityInterface
     /**
      * Set entity oid
      *
-     * @param int $oid
+     * @param int|string $oid
      * @return $this
      */
     public function setOid($oid)
     {
-        $this->oid = (int)$oid;
+        $this->oid = $oid;
         return $this;
     }
 

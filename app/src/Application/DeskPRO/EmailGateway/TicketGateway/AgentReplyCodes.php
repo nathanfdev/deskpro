@@ -283,8 +283,14 @@ class AgentReplyCodes implements Loggable
 
             case 'note':
             case 'isnote':
-            $this->getLogger()->logDebug('[AgentReplyCodes] Message is a note');
+                $this->getLogger()->logDebug('[AgentReplyCodes] Message is a note');
                 $this->props['is_note'] = true;
+                break;
+
+            case 'reply':
+            case 'isreply':
+                $this->getLogger()->logDebug('[AgentReplyCodes] Message is a reply');
+                $this->props['is_reply'] = true;
                 break;
 
             case 'assign':

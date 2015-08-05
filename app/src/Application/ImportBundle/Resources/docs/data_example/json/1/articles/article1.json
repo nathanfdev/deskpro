@@ -15,5 +15,6 @@
   "date_published": null,
   "date_end": null,
   "categories": ["Category 1"],
-  "labels": ["Label 1"]
+  "labels": ["Label 1"],
+  "custom_fields": []
 }

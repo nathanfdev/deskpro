@@ -42,6 +42,11 @@ use LimitIterator;
  */
 class CsvReader extends BaseReader implements CsvReaderInterface
 {
+    /**
+     * Constructor
+     *
+     * @param CsvConfig $config
+     */
     public function __construct(CsvConfig $config)
     {
         parent::__construct($config);
@@ -52,8 +57,10 @@ class CsvReader extends BaseReader implements CsvReaderInterface
      */
     public function getRowsCount(CsvConfig $config)
     {
-        $count = 0;
+        $this->detectDelimiter($config);
         $iterator = $this->getIterator($config);
+
+        $count = 0;
         foreach ($iterator as $row) {
             if (is_array($row)) {
                 $count++;
@@ -73,12 +80,13 @@ class CsvReader extends BaseReader implements CsvReaderInterface
      */
     public function getData(CsvConfig $config)
     {
+        $this->detectDelimiter($config);
         $iterator = $this->getIterator($config);
 
         $header = null;
         $data   = array();
         foreach ($iterator as $row) {
-            if (is_array($row) === false || count(Arrays::removeEmptyString($row)) === 0) {
+            if ( ! $this->isValidRow($row)) {
                 continue;
             }
 
@@ -105,6 +113,14 @@ class CsvReader extends BaseReader implements CsvReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isReady()
+    {
+        return true;
+    }
+
+    /**
      * Returns spl file object iterator
      *
      * @param CsvConfig $config
@@ -118,7 +134,7 @@ class CsvReader extends BaseReader implements CsvReaderInterface
             throw new InvalidResourceException(sprintf('This is not a local file "%s".', $config->getResource()));
         }
 
-        if (!file_exists($config->getResource())) {
+        if ( ! file_exists($config->getResource())) {
             throw new NotFoundResourceException(sprintf('File "%s" not found.', $config->getResource()));
         }
 
@@ -135,11 +151,36 @@ class CsvReader extends BaseReader implements CsvReaderInterface
     }
 
     /**
-     * todo?
+     * Detect a delimiter
+     *
+     * @param CsvConfig $config
+     */
+    private function detectDelimiter(CsvConfig $config)
+    {
+        $delimiters = array_diff(array(';', ','), array($config->getDelimiter()));
+
+        while (true) {
+            $iterator = $this->getIterator($config);
+            $iterator->rewind();
+
+            $row = $iterator->current();
+            if ($this->isValidRow($row) || empty($delimiters)) {
+                return;
+            }
+
+            $config->setDelimiter(array_shift($delimiters));
+        }
+
+    }
+
+    /**
+     * Checks if row is array
+     *
+     * @param mixed $row
      * @return bool
      */
-    public function isReady()
+    private function isValidRow($row)
     {
-        return true;
+        return is_array($row) && count(Arrays::removeEmptyString($row)) > 1;
     }
 }

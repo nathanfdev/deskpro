@@ -86,11 +86,6 @@ final class Batch extends AbstractBatchParser
         if ($config['retry_after_time']) {
             $batch_config->setRetryAfterTime(new DateTime($config['retry_after_time']));
         }
-        if ($config['has_remaining']) {
-            $batch_config->setHasRemaining($config['has_remaining']);
-        } else {
-            $batch_config->setHasRemaining(false);
-        }
 
         return $batch_config;
     }

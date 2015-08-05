@@ -48,20 +48,46 @@ class CustomDataArticle extends CustomDataAbstract
     protected $article;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefArticle
+     * @var CustomDefArticle
      */
     protected $field = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefArticle
+     * @var CustomDefArticle
      */
     protected $root_field = null;
 
+    /**
+     * @return int
+     */
     public function getArticleId()
     {
         return $this->article['id'];
     }
 
+    /**
+     * Set a field
+     *
+     * @param CustomDefArticle $field
+     * @return $this
+     */
+    public function setField(CustomDefArticle $field = null)
+    {
+        $this->setModelField('field', $field);
+        return $this;
+    }
+
+    /**
+     * Set a root field
+     *
+     * @param CustomDefArticle $field
+     * @return $this
+     */
+    public function setRootField(CustomDefArticle $field = null)
+    {
+        $this->setModelField('root_field', $field);
+        return $this;
+    }
 
 
     ############################################################################

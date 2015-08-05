@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ReaderInterface;
 use DateTime;
 
 /**
@@ -35,7 +36,7 @@ use DateTime;
  * Interface ZenDeskReaderInterface
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-interface ZenDeskReaderInterface
+interface ZenDeskReaderInterface extends ReaderInterface
 {
     const CODE_UNAUTHORIZED          = 401;
     const CODE_UN_PROCESSABLE_ENTITY = 422;

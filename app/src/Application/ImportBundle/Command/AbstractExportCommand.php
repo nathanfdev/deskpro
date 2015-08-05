@@ -36,6 +36,7 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
+use Application\ImportBundle\Reader\DeskPRO\Factory as DeskPROReaderFactory;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -125,12 +126,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 InputOption::VALUE_NONE,
                 'Whether to load config from DB'
             )
-            ->addOption(
-                'skip-pid-check',
-                'pid',
-                InputOption::VALUE_NONE,
-                'Skip pid check'
-            )
         ;
     }
 
@@ -139,7 +134,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$input->getOption('skip-pid-check')) {
+        if (!$input->getOption('batch')) {
             $pid_file = dp_get_data_dir() . '/importer.pid';
             if (file_exists($pid_file)) {
                 throw new \Exception('Import/Export already in process');
@@ -161,6 +156,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ExporterInterface::TYPE_JSON,
             ExporterInterface::TYPE_OS_TICKET,
             ExporterInterface::TYPE_ZENDESK,
+            ExporterInterface::TYPE_DESKPRO,
         );
 
         if (!in_array($input->getArgument('script'), $allowed)) {
@@ -225,7 +221,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         // todo always verbose mode by now
         // todo check for progress bar in unattended mode
         $arguments[] = '-vvv';
-        $arguments[] = '--skip-pid-check';
 
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
@@ -246,10 +241,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
-            $config          = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $config          = $this->createGeneratorConfig($input);
             $exporter_config = $config->getExporterBatchConfig();
 
-            if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
+            if ($exporter_config instanceof Generator\Exporter\Parser\AbstractBatchConfig) {
                 $rerun = $exporter_config->getHasRemaining();
                 if ($rerun) {
                     $output->writeln("<info>Running next batch</info>");
@@ -276,7 +271,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         try {
-            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $config = $this->createGeneratorConfig($input);
             $logger = $this->createLogger($config, $input, $output);
 
             if ($config->isSilent()) {
@@ -301,6 +296,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                         $exception->getEntity()->getOid(),
                         $exception->getErrors())
                     );
+
+                    $logger->info(json_encode($exception->getEntity()->toArray()));
 
                     if ($r = $exception->getEntity()->getRawData()) {
                         foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
@@ -362,12 +359,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * The export is executing in the order of the entity type collection
      *
      * @param InputInterface $input
-     * @param array          $supported_types
      *
      * @return GeneratorConfig
      * @throws RuntimeException
      */
-    protected function createGeneratorConfig(InputInterface $input, array $supported_types)
+    protected function createGeneratorConfig(InputInterface $input)
     {
         $config = new GeneratorConfig();
 
@@ -375,30 +371,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $this->setParamsByInputInterface($config, $input);
         $this->setBatchConfigByInputInterface($config, $input);
 
-        foreach ($supported_types as $type) {
-            $config->addEntityType($type);
-        }
-
         $this->checkConfiguration($config);
 
         return $config;
-    }
-
-    /**
-     * Returns a list of supported entity types
-     *
-     * @return string[]
-     */
-    protected function getSupportedEntityTypes()
-    {
-        return array(
-            Entity\EntityInterface::TYPE_TICKET,
-            Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_ARTICLE,
-            Entity\EntityInterface::TYPE_DOWNLOAD,
-            Entity\EntityInterface::TYPE_FEEDBACK,
-            Entity\EntityInterface::TYPE_NEWS,
-        );
     }
 
     /**
@@ -466,6 +441,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                     break;
                 case ExporterInterface::TYPE_OS_TICKET:
                     $readerConfig = OsTicketReaderFactory::getDefaultConfig();
+                    break;
+                case ExporterInterface::TYPE_DESKPRO:
+                    $readerConfig = DeskPROReaderFactory::getDefaultConfig();
                     break;
                 default:
                     throw new \RuntimeException('No reader config defined');
@@ -610,20 +588,23 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      *
      * @return ProgressBar|null
      */
-    protected function createAndSetProgressBar(Generator\Generator $generator, OutputInterface $output)
+    protected function createAndSetProgressBar(Generator\Generator $generator, InputInterface $input, OutputInterface $output)
     {
-        if ($generator->getConfig()->isProgressbarEnabled()) {
-            $total_count = $generator->getTotalRecordsCount();
-            $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
-
-            $progress_bar = new ProgressBar($output, $total_count);
-            $progress_bar->start();
-
-            $generator->setProgressBarHelper($progress_bar);
-            return $progress_bar;
+        if (!$generator->getConfig()->isProgressbarEnabled()) {
+            return null;
         }
 
-        return null;
+        $total_count = $generator->getTotalRecordsCount();
+        $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
+
+        $progress_bar = $input->getOption('config-from-db')
+            ? $this->getContainer()->get('deskpro.import')->createProgressBar($total_count)
+            : new ProgressBar($output, $total_count);
+
+        $progress_bar->start();
+
+        $generator->setProgressBarHelper($progress_bar);
+        return $progress_bar;
     }
 
     /**

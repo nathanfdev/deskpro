@@ -49,13 +49,13 @@ class CustomDataFeedback extends CustomDataAbstract
     protected $feedback;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     * @var CustomDefFeedback
      */
 
     protected $field = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     * @var CustomDefFeedback
      */
 
     protected $root_field = null;
@@ -63,6 +63,30 @@ class CustomDataFeedback extends CustomDataAbstract
     public function getFeedbackId()
     {
         return $this->feedback['id'];
+    }
+
+    /**
+     * Set a field
+     *
+     * @param CustomDefFeedback $field
+     * @return $this
+     */
+    public function setField(CustomDefFeedback $field = null)
+    {
+        $this->setModelField('field', $field);
+        return $this;
+    }
+
+    /**
+     * Set a root field
+     *
+     * @param CustomDefFeedback $field
+     * @return $this
+     */
+    public function setRootField(CustomDefFeedback $field = null)
+    {
+        $this->setModelField('root_field', $field);
+        return $this;
     }
 
     ############################################################################

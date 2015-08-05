@@ -164,7 +164,7 @@ class OrbRemoteCallAuth implements AdapterInterface
 
         $data = @json_decode($http_result->getBody(), true);
         if (!$userdata) {
-            throw \UnexpectedValueException('Invalid JSON returned from service');
+            throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
         if (isset($data['is_error'])) {

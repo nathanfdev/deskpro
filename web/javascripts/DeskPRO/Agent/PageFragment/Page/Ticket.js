@@ -1403,6 +1403,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
+		// open links in new window
+		$(messageEl).find('a').on('click', function(ev) {
+			if ($(this).hasClass('cboxElement')) {
+				return;
+			}
+
+			ev.preventDefault();
+			ev.stopPropagation();
+			var o = window.open($(this).attr('href'));
+			o.opener = null;
+		});
+
 		DeskPRO_Window.initStickyTips(messageEl);
 		var $triggers = messageEl.find('.with-stickytip');
 		self.addEvent('destroy', function(){

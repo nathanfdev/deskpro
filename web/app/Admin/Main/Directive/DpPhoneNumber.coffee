@@ -32,10 +32,10 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
         # when we get the dpPhoneNumber attribute value, setup intlTelInput
         attr.$observe 'dpPhoneNumber', (reg) ->
           element.intlTelInput({
+              defaultCountry: reg.toLowerCase(),
               autoPlaceholder: true,
               autoFormat: true,
-              nationalMode: true,
-              defaultCountry: reg.toLowerCase(),
+              nationalMode: true
           })
           element.intlTelInput("setNumber", element.val())
           element.intlTelInput('utilsLoaded')
@@ -44,6 +44,7 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
               ngModel.$setViewValue(element.intlTelInput('getNumber'))
             )
           )
+
 
     }
   ]

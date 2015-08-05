@@ -1157,6 +1157,20 @@ article.content-message {
 	}
 }
 
+table.dp_message_table {
+  border-collapse: collapse;
+  border: 1px solid #444;
+}
+
+table.dp_message_table td, table.dp_message_table th,
+table.dp_message_table tbody td, table.dp_message_table tbody th,
+table.dp_message_table tbody tr td, table.dp_message_table tbody tr th,
+table.dp_message_table tr td, table.dp_message_table tr th {
+  border: 1px solid #444;
+  padding: 4px;
+  vertical-align: top;
+}
+
 article.content-message .message-toggle-btn {
 	line-height: 100%;
 	margin-top: 8px;
@@ -6718,6 +6732,7 @@ table.prop-table {
 	border: 0;
 	padding: 0;
 	margin: 0;
+    table-layout: fixed;
 
 	th {
 		color: #7E7E7E;
@@ -6735,6 +6750,7 @@ table.prop-table {
 		font-size: 13px;
 		vertical-align: middle;
 		border-top: 1px solid #D5E3EE;
+        word-wrap: break-word;
 	}
 
 	.error-msg {

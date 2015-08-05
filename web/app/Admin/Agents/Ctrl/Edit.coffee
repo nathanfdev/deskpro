@@ -86,8 +86,8 @@ define [
           }
           @perm_form = null
 
-        if result.data.default_country_code
-          @default_phone_number_region = result.data.default_country_code
+        if result.data.default_country.value
+          @default_phone_number_region = result.data.default_country.value
         @primary_phone_number_region = result.data.default_country.value || @default_phone_number_region
 
         @teams  = result.data.teams.agent_teams
@@ -102,6 +102,9 @@ define [
 
         @agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
         @form = @agentFormModel.form
+
+        if @form.primary_phone
+          @primary_phone_number_region = @form.primary_phone.region
 
         @$scope.$watch('EditCtrl.form.agent_groups', =>
           @updateEffectiveUgPerms()

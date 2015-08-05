@@ -12,11 +12,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @$scope.log_download_url = if val then @$http.formatApiUrl('/server/importers/'+@$scope.id+'/download-log') else null
 
       @$scope.$watch 'importer.status', (val) =>
-        if val && 'testing' != val && 'done' != val
+        if val && 'testing' != val && 'done' != val && 'error' != val
           @updateImportStatus = @$interval (=> @importGet()), 1000 if !@updateImportStatus
         else if @updateImportStatus
           @$interval.cancel @updateImportStatus
           @updateImportStatus = null
+
+        if 'done' == val || 'error' == val
+          @$scope.done = true
 
       @$scope.$on '$destroy', =>
         @$interval.cancel @updateImportStatus
@@ -36,7 +39,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
               @$scope.ready = val && val.subdomain && val.username && (val.password || val.token)
             true
           )
-        else if 'osticket' == @$scope.importer?.id
+        else if 'osticket' == @$scope.importer?.id || 'deskpro' == @$scope.importer?.id
           @$scope.$watch(
             'importer.config'
             (val) =>
@@ -94,22 +97,31 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     importReset: =>
+      @$scope.done = false
       @importSave true
 
 
 
     importTest: ->
-      @$scope.importer.status = 'testing'
       @$scope.busy = true
-      @Api.sendGet("/server/importers/#{@$scope.id}/test").then(
-        (res) =>
-          @$scope.busy = false
-          @$scope.test_error = !res.data.result
-          @$scope.test_error_message = res.data.error_message
+      @importSave().then(
+        =>
+          @$scope.importer.status = 'testing'
+          @Api.sendGet("/server/importers/#{@$scope.id}/test").then(
+            (res) =>
+            @$scope.busy = false
+            @$scope.test_error = !res.data.result
+            @$scope.test_error_message = res.data.error_message
+            (res) =>
+              @$scope.busy = false
+              @$scope.test_error = true
+          )
         (res) =>
           @$scope.busy = false
           @$scope.test_error = true
       )
+
+
 
 
 

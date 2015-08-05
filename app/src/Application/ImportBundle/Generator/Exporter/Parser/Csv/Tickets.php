@@ -64,9 +64,11 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $tickets    = $this->getReaderData($this->getTicketReaderConfig());
-        $messages   = $this->exportMessages();
+        $collection    = new Entity\Collection();
+
+        $tickets       = $this->getReaderData($this->getTicketReaderConfig());
+        $messages      = $this->exportMessages();
+        $custom_fields = $this->exportTicketCustomFields();
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
@@ -79,6 +81,17 @@ final class Tickets extends AbstractParser
                         if ($entity->getDestination() === $message_entity->getDestination()) {
                             $entity->addMessage($message_entity);
                         }
+                    }
+                    foreach ($custom_fields as $custom_field_entity) {
+                        /** @var Entity\CustomField $custom_field_entity */
+                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
+                            $entity->addCustomField($custom_field_entity);
+                        }
+                    }
+
+                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $ticket);
+                    foreach ($inline_custom_fields as $custom_field_entity) {
+                        $entity->addCustomField($custom_field_entity);
                     }
 
                     $collection->attach($entity);
@@ -109,14 +122,15 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
+                ->setRawData($ticket)
                 ->setDestination(self::TICKET_PREFIX . $ticket['id'])
                 ->setOid($ticket['id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setSubject($ticket['subject'])
                 ->setPersonEmail($ticket['user'])
                 ->setAgentEmail($ticket['agent'])
-                ->setStatus($ticket['status'] ?: DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
+                ->setStatus($ticket['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
+                ->setDateCreated($this->getFromStringOrCurrentDateTime(@$ticket['date_created']));
 
             return $entity;
         }
@@ -177,11 +191,12 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
+                ->setRawData($message)
                 ->setDestination(self::TICKET_PREFIX . $message['ticket_id'])
                 ->setOid($message['message_id'])
                 ->setPersonEmail($message['user'])
                 ->setMessageText($message['message_text'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($message['date_created']));
+                ->setDateCreated($this->getFromStringOrCurrentDateTime(@$message['date_created']));
 
             return $entity;
         }
@@ -200,6 +215,16 @@ final class Tickets extends AbstractParser
     }
 
     /**
+     * Returns a collection of ticket custom field data
+     *
+     * @return Entity\Collection
+     */
+    private function exportTicketCustomFields()
+    {
+        return $this->exportCustomFields($this->getTicketCustomFieldReaderConfig(), self::TICKET_PREFIX, 'ticket_id');
+    }
+
+    /**
      * Check if ticket has all required columns
      *
      * @param array $ticket
@@ -213,7 +238,6 @@ final class Tickets extends AbstractParser
             'user',
             'agent',
             'status',
-            'date_created',
         );
 
         return $this->hasRequiredColumns($ticket, $columns);
@@ -238,7 +262,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader config of ticket records
+     * Returns reader config for ticket records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -248,7 +272,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader config of ticket message records
+     * Returns reader config for ticket message records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -258,12 +282,22 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader config of ticket attachment records
+     * Returns reader config for ticket attachment records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
     private function getTicketAttachmentReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
+    }
+
+    /**
+     * Returns reader config for ticket custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getTicketCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_TICKET_CUSTOM_FIELDS);
     }
 }

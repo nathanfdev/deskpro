@@ -514,18 +514,62 @@
 			</ul>
 		{% endif %}
 	</div>
+{% elseif log.action_type == 'new_billing' %}
+    Added new billing row #{{ log.id_object }}:<br/>
+    {% if log.details.old_amount or log.details.new_amount %}
+        Charge: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
+    {% endif %}
+    {% if log.details.old_time or log.details.new_time %}
+        Charge: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
+    {% endif %}
+    {% for v in log.details.custom_data if v.value_before or v.value_after %}
+        {{ v.field_name }}: <span class="new-val">{{ v.value_after }}</span><br />
+    {% endfor %}
 {% elseif log.action_type == 'modify_billing' %}
-	Billing ID #{{ log.id_object }} modified<br/>
-	{% if log.details.old_amount or log.details.new_amount %}
-		Set charge from <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span> to <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br/>
-	{% endif %}
-	{% if log.details.old_time or log.details.new_time %}
-		Set time from <span class="old-val">{{ log.details.old_time | number_format }}</span> to <span class="old-val">{{ log.details.new_time | number_format}}</span><br/>
-	{% endif %}
-	{% if log.details.old_comment != log.details.new_comment %}
-		Old Comment: {{ log.details.old_comment }} <br/>
-		New Comment: {{ log.details.new_comment }} <br/>
-	{% endif %}
+	Changed billing row #{{ log.id_object }} to:<br/>
+
+    {% if log.details.old_amount or log.details.new_amount %}
+        Charge: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
+    {% endif %}
+    {% if log.details.old_time or log.details.new_time %}
+        Charge: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
+    {% endif %}
+    {% if log.details.old_created or log.details.new_created %}
+        Created: <span class="new-val">{{ log.details.new_created | date('fulltime', app.user.timezone)}}</span><br />
+    {% endif %}
+    {% for v in log.details.custom_data if v.value_before or v.value_after %}
+        {{ v.field_name }}: <span class="new-val">{{ v.value_after }}</span><br/>
+    {% endfor %}
+
+    View old data <span class="new-val expand" data-set=".set-billing-modify">click to expand</span>
+        <div class="expand-set set-billing-modify" style="display: none">
+            {% if log.details.old_amount or log.details.new_amount %}
+                Charge: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
+            {% endif %}
+            {% if log.details.old_time or log.details.new_time %}
+                Charge: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
+            {% endif %}
+            {% for v in log.details.custom_data if v.value_before %}
+                {{ v.field_name }}: <span class="old-val">{{ v.value_before }}</span><br />
+            {% endfor %}
+        </div>
+{% elseif log.action_type == 'delete_billing' %}
+    Deleted billing row #{{ log.id_object }}:<br/>
+    View old data <span class="new-val expand" data-set=".set-billing-modify">click to expand</span>
+    <div class="expand-set set-billing-modify" style="display: none">
+        {% if log.details.old_amount or log.details.new_amount %}
+            Charge: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
+        {% endif %}
+        {% if log.details.old_time or log.details.new_time %}
+            Charge: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
+        {% endif %}
+        {% if log.details.old_created or log.details.new_created %}
+            Created: <span class="old-val">{{ log.details.old_created | date('fulltime', app.user.timezone)}}</span><br />
+        {% endif %}
+        {% for v in log.details.custom_data if v.value_before or v.value_after %}
+            {{ v.field_name }}: <span class="old-val">{{ v.value_before }}</span><br/>
+        {% endfor %}
+    </div>
 {% elseif log.action_type == 'changed_participants' or log.action_type == 'changed_agent_participants' or log.action_type == 'changed_user_participants' %}
 	<span class="new-val expand" data-set=".set-detail">
 		{% if log.action_type == 'changed_agent_participants' %}
@@ -555,6 +599,12 @@
 		default (primary email)
 	{% else %}
 		{{ log.details.new_email }}
+	{% endif %}
+{% elseif log.action_type == 'message_note_status' %}
+	Message #{{ log.details.message_id }}
+	<a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: log.details.message_id, _rt: security_token('request_token', 10800)}) }}" onclick="window.open($(this).attr('href'), 'msgwin', 'status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=600,width=780'); return false;">{{ phrase('agent.general.view') }} <i class="icon-external-link" style="font-size: 11px;"></i></a>
+	{% if log.details.is_agent_note %}was converted into a note
+	{% else %}was converted into a reply
 	{% endif %}
 {% elseif log.action_type == 'ticket_sla_status' %}
 	SLA #{{ log.details.sla_id }} {{ log.details.sla_title }} status changed from

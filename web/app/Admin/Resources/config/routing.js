@@ -195,14 +195,14 @@ define(function() {
 
   routes.push({
     id: 'setup.languages.edit',
-    url: '/{id:[a-z]+}',
+    url: '/{id:[a-z_]+}',
     templateName: 'Languages/edit.html',
     controller: 'Admin_Languages_Ctrl_Edit'
   });
 
   routes.push({
     id: 'setup.languages.install',
-    url: '/{id:install\\-[a-z]+}',
+    url: '/{id:install\\-[a-z_]+}',
     templateName: 'Languages/install.html',
     controller: 'Admin_Languages_Ctrl_Install'
   });
@@ -222,7 +222,7 @@ define(function() {
 
   routes.push({
     id: 'setup.phrases',
-    url: '/{id:phrases\\-[a-z]+}',
+    url: '/{id:phrases\\-[a-z_]+}',
     templateName: 'Languages/phrases-list.html',
     controller: 'Admin_Languages_Ctrl_PhraseList'
   });
@@ -776,10 +776,40 @@ define(function() {
   //# Billing
   //###
   routes.push({
-    id: 'tickets.timelog_billing',
-    url: '/timelog_billing',
-    templateName: 'TicketSettings/timelog-billing-settings.html',
+    id: 'tickets.timelog_billing_settings',
+    url: '/timelog_billing/settings',
+    templateName: 'TicketBilling/settings.html',
     controller: 'Admin_TicketSettings_Ctrl_TicketSettings'
+  });
+
+  routes.push({
+    id: 'tickets.timelog_billing_fields',
+    url: '/timelog_billing/fields',
+    templateName: 'TicketBilling/fields.html',
+    controller: 'Admin_TicketBilling_Ctrl_Fields'
+  });
+
+  routes.push({
+    id: 'tickets.timelog_billing_fields.gocreate',
+    url: '/go-create',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) {
+      $state.go('tickets.timelog_billing_fields.create', $stateParams);
+    }]
+  });
+
+  routes.push({
+    id: 'tickets.timelog_billing_fields.create',
+    url: '/create',
+    templateName: 'CustomFields/Billing/edit.html',
+    controller: 'Admin_CustomFields_Billing_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'tickets.timelog_billing_fields.edit',
+    url: '/{id:[0-9]+}',
+    templateName: 'CustomFields/Billing/edit.html',
+    controller: 'Admin_CustomFields_Billing_Ctrl_Edit'
   });
 
   //###

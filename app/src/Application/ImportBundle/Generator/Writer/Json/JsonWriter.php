@@ -119,16 +119,12 @@ final class JsonWriter extends AbstractWriter
         if ( ! $this->config) {
             throw new Exception('Generator configuration is not defined');
         }
-        if ($this->config->isBatchExporter()) {
-            if ( ! $this->batch_config) {
-                throw new Exception('Batch configuration is not defined');
-            }
 
-            return $this->config->getOutputPath() . $this->batch_config->getId() . '/';
+        $id = $this->batch_config && $this->batch_config->getId()
+            ? $this->batch_config->getId()
+            : 1;
 
-        } else {
-            return $this->config->getOutputPath() . '1/';
-        }
+        return $this->config->getOutputPath() . $id;
     }
 
     /**
@@ -155,6 +151,6 @@ final class JsonWriter extends AbstractWriter
     private function getEntityPath(Entity\EntityInterface $entity)
     {
         $destination = $this->mapping->getByEntityType($entity->getType());
-        return $this->getDestinationOutputPath($destination) . $entity->getDestination() . '.json';
+        return $this->getDestinationOutputPath($destination) . '/' . $entity->getDestination() . '.json';
     }
 }

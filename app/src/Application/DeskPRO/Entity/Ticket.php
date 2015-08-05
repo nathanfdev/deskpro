@@ -940,10 +940,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetParticipants()
     {
-        foreach ($this->participants as $participant) {
-            App::getOrm()->remove($participant);
-        }
-
         $this->participants->clear();
         $this->_onPropertyChanged('participants', null, $this->participants);
 
@@ -1216,10 +1212,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * @param  Person            $agent
      * @param  int               $time
      * @param  int               $amount
-     * @param  string            $comment
      * @return TicketCharge|null
      */
-    public function addCharge(Person $agent, $time, $amount = null, $comment = '')
+    public function addCharge(Person $agent, $time, $amount = null)
     {
         if ($time !== null) {
             $time = intval($time);
@@ -1241,7 +1236,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $charge = new TicketCharge();
         $charge->charge_time = $time;
         $charge->amount = $amount;
-        $charge->comment = strval($comment);
         $charge->ticket = $this;
         $charge->person = $this->person;
         $charge->organization = $this->organization;
@@ -1360,10 +1354,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetMessages()
     {
-        foreach ($this->messages as $message) {
-            App::getOrm()->remove($message);
-        }
-
+        $this->messages->clear();
         $this->messages->clear();
         $this->_onPropertyChanged('messages', null, $this->messages);
 
@@ -1586,6 +1577,23 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->custom_data->clear();
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
+    }
+
+    /**
      * Add a custom data item to this ticket
      *
      * @param CustomDataTicket $data
@@ -1660,10 +1668,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        foreach ($this->labels as $label) {
-            App::getOrm()->remove($label);
-        }
-
         $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
@@ -2386,10 +2390,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setStatus($status)
     {
-        $this['date_status'] = new \DateTime();
-
         $old_status  = $this->status;
         $old_status_code = $this->getStatusCode();
+
+        $status_code = $status;
+        $hstatus = null;
+        if (strpos($status, '.')) {
+            list($status, $hstatus) = explode('.', $status, 2);
+        }
+
+        // Note: No early return here
+        // and no logic here about checking old status against new status
+        // because default status is awaiting_agent and we still need to run
+        // through all of this date_X sets on newticket. If we returned early
+        // that wouldn't run because awaiting_agent==awaiting_agent
+
+        $this['date_status'] = new \DateTime();
 
         if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
             $this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
@@ -2419,20 +2435,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $this->setModelField('date_archived', null);
         }
 
-        if ($status == 'resolved' && !$this->date_resolved) {
+        // date_resolved matters with either resolved or archived
+        // because to reach archived, you must "go through" resolved first
+        if (($status == 'resolved' || $status == 'archived') && !$this->date_resolved) {
             $this['date_resolved'] = new \DateTime();
         }
-        if ($status != 'resolved' && $this->date_resolved) {
+        if ($status != 'resolved' && $status != 'archived' && $this->date_resolved) {
             $this->setModelField('date_resolved', null);
         }
 
         if ($status != 'awaiting_agent' && $this->is_hold) {
             $this['is_hold'] = false;
-        }
-        $status_code = $status;
-        $hstatus = null;
-        if (strpos($status, '.')) {
-            list($status, $hstatus) = explode('.', $status, 2);
         }
 
         if (!$status || !in_array($status, array(
@@ -3696,6 +3709,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'language',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Language',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'language_id',
                 'referencedColumnName' => 'id',
@@ -3707,6 +3721,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'department',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Department',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'department_id',
                 'referencedColumnName' => 'id',
@@ -3762,6 +3777,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'person',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'person_id',
                 'referencedColumnName' => 'id',
@@ -3818,6 +3834,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'organization',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Organization',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'organization_id',
                 'referencedColumnName' => 'id',

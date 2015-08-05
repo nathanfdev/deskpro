@@ -26,5 +26,6 @@
       "content_type": "csv",
       "is_inline": false
     }
-  ]
+  ],
+  "custom_fields": []
 }

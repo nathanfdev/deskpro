@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
@@ -35,6 +36,7 @@ use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\ImporterInterface;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\SkipDuplicateInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\Util;
 
@@ -108,15 +110,17 @@ final class DeskProWriter extends AbstractWriter
 
                 /** @var ImporterInterface $importer */
                 $records = $importer->getDoctrineEntities($entity);
+
                 foreach ($records as $record) {
-                    if ($this->config->isDryRun() === false) {
-                        $this->entity_manager->persist($record);
-                    }
+                    if ($this->config->isDryRun() !== false) continue;
+                    $this->entity_manager->persist($record);
                 }
 
                 $this->entity_manager->flush();
                 $this->entity_manager->clear();
                 $this->entity_watcher->flushUpdatesQuiet();
+
+
 
                 foreach ($records as $r) {
                     $this->logDebug(sprintf("Persisted %s #%s", Util::getBaseClassname($r), method_exists($r, 'getId') ? $r->getId() : '_'));

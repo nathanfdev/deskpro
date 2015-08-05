@@ -788,9 +788,9 @@ class TemplatingExtension extends \Twig_Extension
         return implode('', $new_format);
     }
 
-    public function timeLength($length, $max_unit = null)
+    public function timeLength($length, $max_unit = null, $as_html = false)
     {
-        return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit);
+        return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit, $as_html);
     }
 
     public function momentJsFormat($format)

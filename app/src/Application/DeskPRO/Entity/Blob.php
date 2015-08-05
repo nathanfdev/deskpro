@@ -356,9 +356,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function getEmbedCode($for_ticket = false, $type = 'image')
     {
         if ($for_ticket) {
-            return '[attach:' . $type . ':' . $this->getAuthId() . ':' . $this->filename . ']';
+            return '[attach:' . $type . ':' . $this->getAuthId() . ':' . $this->getFilenameSafe() . ']';
         } else {
-            return '[attach:' . $this->getAuthId() . ':' . $this->filename . ']';
+            return '[attach:' . $this->getAuthId() . ':' . $this->getFilenameSafe() . ']';
         }
     }
 

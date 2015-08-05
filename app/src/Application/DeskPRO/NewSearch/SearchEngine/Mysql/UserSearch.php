@@ -41,6 +41,8 @@ class UserSearch implements UserSearchInterface
 {
     const MAX_WORDS = 25;
 
+    const LIMIT = 20;
+
     /**
      * @var \Application\DeskPRO\DBAL\Connection
      */
@@ -72,7 +74,7 @@ class UserSearch implements UserSearchInterface
     public function search(SearchContextInterface $context, $query, array $options = null)
     {
         $options      = new OptionsArray($options ?: array());
-        $per_page     = Numbers::bound($options->get('per_page', 50), 1, 100);
+        $per_page = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
         $page         = max($options->get('page', 1), 1);
         $ignore_perms = $options->get('ignore_perms');
 
@@ -186,7 +188,8 @@ class UserSearch implements UserSearchInterface
         $content = $content ?: '';
         $content = Strings::utf8_accents_to_ascii($content);
         $content = strtolower($content);
-        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
+//        todo?
+//        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
         $content = preg_replace('#\s+#', ' ', $content);
         $content = explode(' ', $content);
         $content = array_filter($content, function ($s) { return isset($s[2]); });

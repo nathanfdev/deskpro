@@ -139,7 +139,9 @@ class DpKernel extends AbstractKernel
         // so enable it temporarily while the container builds
         $v = libxml_disable_entity_loader(false);
 
+        $GLOBALS['DP_CONTAINER_IS_BUILDING'] = true;
         parent::initializeContainer();
+        unset($GLOBALS['DP_CONTAINER_IS_BUILDING']);
 
         libxml_disable_entity_loader($v);
     }

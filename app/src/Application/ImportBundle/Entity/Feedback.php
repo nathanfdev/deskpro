@@ -67,11 +67,17 @@ final class Feedback extends AbstractContentEntity
     private $attachments;
 
     /**
+     * @var Collection
+     */
+    private $custom_fields;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->attachments = new Collection();
+        $this->attachments   = new Collection();
+        $this->custom_fields = new Collection();
     }
 
     /**
@@ -178,6 +184,24 @@ final class Feedback extends AbstractContentEntity
     }
 
     /**
+     * @return Collection
+     */
+    public function getCustomFields()
+    {
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param CustomField $custom_field
+     * @return $this
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields->attach($custom_field);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isStatusValid()
@@ -207,6 +231,12 @@ final class Feedback extends AbstractContentEntity
             $attachments[] = $attachment->toArray();
         }
 
+        $custom_fields = array();
+        foreach ($this->custom_fields as $custom_field) {
+            /** @var CustomField $custom_field */
+            $custom_fields[] = $custom_field->toArray();
+        }
+
         return array(
             'oid'            => $this->oid,
             'person'         => $this->person_email,
@@ -225,6 +255,7 @@ final class Feedback extends AbstractContentEntity
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
             'attachments'    => $attachments,
+            'custom_fields'  => $custom_fields,
         );
     }
 
