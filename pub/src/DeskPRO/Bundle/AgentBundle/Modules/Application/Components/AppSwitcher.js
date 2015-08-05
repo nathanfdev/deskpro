@@ -28,7 +28,7 @@ export default class AppSwitcher extends React.Component {
         <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
           {this.renderAppIcon('users', 'Users', 'fa-users')}
-          {this.renderAppIcon('chats', 'Chat', 'fa-comments-o')}
+          {this.renderAppIcon('chat', 'Chat', 'fa-comments-o')}
           {this.renderAppIcon('feedback', 'Feedback', 'fa-thumbs-up')}
           {this.renderAppIcon('publish', 'Publish', 'fa-edit')}
           {this.renderAppIcon('tasks', 'Tasks', 'fa-check-square-o')}
