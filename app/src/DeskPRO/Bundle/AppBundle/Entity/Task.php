@@ -178,7 +178,7 @@ class Task extends NotifyPropertyChangeEntity
 
     /**
      * @var LabelTask[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task")
+     * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"persist"})
      * @Serializer\Expose()
      */
     protected $labels;
@@ -217,6 +217,7 @@ class Task extends NotifyPropertyChangeEntity
     public function __construct(Person $creator)
     {
         $this->subtasks = new ArrayCollection();
+        $this->labels = new ArrayCollection();
         $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }

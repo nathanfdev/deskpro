@@ -58,27 +58,14 @@ class LabelTaskType extends AbstractType
         return 'label_task';
     }
 
+    public function getParent()
+    {
+        return 'text';
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
-        $builder->add(
-            'label',
-            'text',
-            array(
-                'description' => 'the label',
-                'required' => true,
-            )
-        )
-        ->add(
-            'task',
-            'entity',
-            array(
-                'class' => 'App:Task',
-                'property' => 'title',
-                'required' => true,
-            )
-        );
-        $builder->get('label')->addModelTransformer(new LabelTaskTransformer($this->entityManager, $options['task']));
+        $builder->addModelTransformer(new LabelTaskTransformer($this->entityManager, $options['task']));
     }
 
     /**
