@@ -517,6 +517,9 @@ class AgentMessagesLoader extends LoaderAbstract
 
         $channels[] = 'agent.filter-update';
 
+        $channels[] = 'agent.problems-created';
+        $channels[] = 'agent.problems-updated';
+
         if (isset($_REQUEST['chat_ids']) && is_array($_REQUEST['chat_ids'])) {
             foreach ($_REQUEST['chat_ids'] as $chat_id) {
                 $chat_id = (int)$chat_id;
