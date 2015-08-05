@@ -1,10 +1,10 @@
 import { createAction } from "Ampliflux/actions";
-import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
+import * as TicketLabels from "DeskPRO/Bundle/AgentBundle/Services/Api/TicketLabels";
 
 export const loadLabels = createAction(
   "TICKETS_LOAD_TICKET_LABELS",
   (trigger) => {
-    DpApi.sendGet('DP_API/ticket_labels').then(
+    TicketLabels.loadLabels().then(
       (values) => trigger(values.getData())
     );
   }
@@ -13,7 +13,7 @@ export const loadLabels = createAction(
 export const loadLabelTickets = createAction(
   "TICKETS_LOAD_TICKETS",
   (trigger, label_name) => {
-    DpApi.sendGet('DP_API/ticket_labels/' + label_name + '/tickets').then(
+    TicketLabels.loadLabelTickets(label_name).then(
       values => trigger(values.getData())
     );
   }

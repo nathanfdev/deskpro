@@ -1,4 +1,3 @@
-/** Load all departments. */
 export function loadPeople(options) {
     let req = [];
     if(options.is_me) {
