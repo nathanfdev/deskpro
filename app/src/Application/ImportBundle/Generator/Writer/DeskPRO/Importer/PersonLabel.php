@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro person labels importer
+ * DeskPRO person labels importer
  *
  * Class PersonLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -57,21 +57,14 @@ final class PersonLabel extends AbstractImporter
         $this->records = new ArrayCollection();
 
         $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
-        $labels = $this->getExistingLabelsNames($person->getId());
+        $person->resetLabels();
 
         foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for person with oid `%d` (Skipping)',
-                    $label, $person->getId()
-                ));
-            } else {
-                $person->addLabel($this->createPersonLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for person with oid `%d`',
-                    $label, $person->getId()
-                ));
-            }
+            $person->addLabel($this->createPersonLabel($label));
+            $this->logDebug(sprintf(
+                'Creating a new label `%s` for person with oid `%d`',
+                $label, $person->getId()
+            ));
         }
 
         return $this->records;
@@ -90,36 +83,5 @@ final class PersonLabel extends AbstractImporter
 
         $this->records->add($entity);
         return $entity;
-    }
-
-    /**
-     * Returns a collection of existing person label names
-     *
-     * @param int $id
-     *
-     * @return array
-     * @throws Mapper\MapperException
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getPersonLabelMapper()->findByPersonId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the person label mapper
-     *
-     * @return Mapper\PersonLabel
-     * @throws \Exception
-     */
-    private function getPersonLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_LABEL);
     }
 }

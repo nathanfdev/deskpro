@@ -29,7 +29,7 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
      */
     public function runBefore()
     {
-        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv_inline_custom_data';
+        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv_inline_custom_data';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
 
         if ( ! is_dir($this->output_path)) {
@@ -101,6 +101,12 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
 
         $feedback = $this->getContent('1/feedback/feedback_1.json');
         $this->assertCount(2, $feedback['custom_fields']);
+
+        // Checking for organizations
+        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
+
+        $organization = $this->getContent('1/organizations/organization_some_organization.json');
+        $this->assertCount(2, $organization['custom_fields']);
     }
 
     /**

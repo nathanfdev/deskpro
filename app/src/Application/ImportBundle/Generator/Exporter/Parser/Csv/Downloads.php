@@ -102,7 +102,7 @@ final class Downloads extends AbstractParser
             $entity = new Entity\Download();
             $entity
                 ->setRawData($download)
-                ->setDestination(self::DOWNLOAD_PREFIX . $num)
+                ->setDestination($this->formatDestination(self::DOWNLOAD_PREFIX, $num))
                 ->setOid($num)
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])

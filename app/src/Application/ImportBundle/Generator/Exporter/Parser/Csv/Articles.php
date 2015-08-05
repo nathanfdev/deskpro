@@ -116,7 +116,7 @@ final class Articles extends AbstractParser
             $entity     = new Entity\Article();
             $entity
                 ->setRawData($article)
-                ->setDestination(self::ARTICLE_PREFIX . $article_id)
+                ->setDestination($this->formatDestination(self::ARTICLE_PREFIX, $article_id))
                 ->setOid($article_id)
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])

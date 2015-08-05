@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro article importer
+ * DeskPRO article importer
  *
  * Class Article
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -73,7 +73,10 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
             ->setDatePublished($entity->getDatePublished())
             ->setDateEnd($entity->getDateEnd())
             ->setEndAction($entity->getEndAction())
-            ->setViewsCount($entity->getViewCount());
+            ->setViewsCount($entity->getViewCount())
+            ->resetCustomData()
+            ->resetLabels()
+        ;
 
         foreach ($entity->getCategories() as $category) {
             $article->addToCategory($this->findOrCreateArticleCategory($category));

@@ -133,6 +133,11 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     private $user_groups = array();
 
     /**
+     * @var ContactData[]
+     */
+    private $contact_data;
+
+    /**
      * @var Collection
      */
     private $custom_fields;
@@ -142,6 +147,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
      */
     public function __construct()
     {
+        $this->contact_data  = new Collection();
         $this->custom_fields = new Collection();
     }
 
@@ -575,6 +581,28 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
+     * Returns person contact data
+     *
+     * @return Collection|ContactData[]
+     */
+    public function getContactData()
+    {
+        return $this->contact_data;
+    }
+
+    /**
+     * Add an person contact data
+     *
+     * @param ContactData $contact
+     * @return $this
+     */
+    public function addContact(ContactData $contact)
+    {
+        $this->contact_data->attach($contact);
+        return $this;
+    }
+
+    /**
      * Returns a collection of person custom fields
      *
      * @return Collection
@@ -605,6 +633,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             throw new \Exception('Date created is not set up');
         }
 
+        $contact_data = array();
+        foreach ($this->contact_data as $contact) {
+            /** @var ContactData $contact */
+            $contact_data[] = $contact->toArray();
+        }
+
         $custom_fields = array();
         foreach ($this->custom_fields as $custom_field) {
             /** @var CustomField $custom_field */
@@ -630,6 +664,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             'emails'                => $this->emails,
             'labels'                => $this->labels,
             'user_groups'           => $this->user_groups,
+            'contact_data'          => $contact_data,
             'custom_fields'         => $custom_fields,
         );
     }

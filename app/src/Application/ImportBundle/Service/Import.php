@@ -130,7 +130,27 @@ class Import
         $importer = new DataStore();
         $importer['name'] = $name;
         $importer->setData('id', $id);
-        $importer->setData('title', ucfirst($id));
+
+        switch ($id) {
+            case 'csv':
+                $title = 'CSV';
+                $desc  = 'Import from CSV (comma-separated values) files.';
+                break;
+            case 'osticket':
+                $title = 'osTicket';
+                $desc  = 'Import from an osTicket database.';
+                break;
+            case 'zendesk':
+                $title = 'ZenDesk';
+                $desc  = 'Import from a ZenDesk helpdesk.';
+                break;
+            default:
+                $title = ucfirst($id);
+                $desc  = "Import from $title";
+        }
+
+        $importer->setData('title', $title);
+        $importer->setData('description', $desc);
 
         if (ExporterInterface::TYPE_CSV === $id) {
             $data = array('blobs' => array());
@@ -278,9 +298,6 @@ class Import
         return $config;
     }
 
-    /**
-     * @param DataStore $importer
-     */
     public function cleanup(DataStore $importer)
     {
         $readerConfigData = $importer->getData('config');
@@ -292,6 +309,7 @@ class Import
                 : exec("rm -rf {$tmp}");
 
             unset($readerConfigData['temp']);
+            $this->em->flush($importer);
         }
 
         $importer->setData('status', null);

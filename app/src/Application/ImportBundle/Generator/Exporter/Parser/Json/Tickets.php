@@ -105,7 +105,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination('ticket_' . $ticket['oid'])
+                ->setDestination($this->formatDestination('ticket_', $ticket['oid']))
                 ->setOid($ticket['oid'])
                 ->setRef($ticket['ref'])
                 ->setDepartment($ticket['department'])
@@ -168,7 +168,7 @@ final class Tickets extends AbstractParser
         if ($this->isPriorityValid($priority)) {
             $entity = new Entity\TicketPriority();
             $entity
-                ->setDestination('priority_' . $priority['oid'])
+                ->setDestination($this->formatDestination('priority_', $priority['oid']))
                 ->setOid($priority['oid'])
                 ->setTitle($priority['title'])
                 ->setValue($priority['value']);
@@ -226,7 +226,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination('message_' . $message['oid'])
+                ->setDestination($this->formatDestination('message_', $message['oid']))
                 ->setOid($message['oid'])
                 ->setPersonEmail($message['person'])
                 ->setMessageText($message['message_text'])

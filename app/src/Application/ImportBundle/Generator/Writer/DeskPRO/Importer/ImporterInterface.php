@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro importer interface
+ * DeskPRO importer interface
  *
  * Interface ImporterInterface
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -47,7 +47,7 @@ interface ImporterInterface
     public function getEntityType();
 
     /**
-     * Returns a collection of the importing DeskPro doctrine entities
+     * Returns a collection of the importing DeskPRO doctrine entities
      *
      * @param Entity\EntityInterface $entity
      *

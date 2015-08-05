@@ -52,7 +52,9 @@ class JsonFactory extends AbstractFactory
             ->attach(new Parser\Json\Articles($reader))
             ->attach(new Parser\Json\News($reader))
             ->attach(new Parser\Json\People($reader))
-            ->attach(new Parser\Json\Tickets($reader));
+            ->attach(new Parser\Json\Tickets($reader))
+            ->attach(new Parser\Json\Organizations($reader))
+        ;
 
         return new Json($parsers, $reader);
     }

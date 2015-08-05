@@ -53,7 +53,12 @@ class ImporterHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $log = $this->importer->getData('log').(string)$record['formatted'];
+        $str = (string)$record['formatted'];
+
+        $str = str_replace(DP_WEB_ROOT, '', $str);
+        $str = str_replace(dp_get_data_dir(), '/DP_DATA', $str);
+
+        $log = $this->importer->getData('log').$str;
         if (isset($log[300000])) {
             $log = substr($log, strpos($log, "\n", strlen($log) - 300000));
             $log = trim($log);

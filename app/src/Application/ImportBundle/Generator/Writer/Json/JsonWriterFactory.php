@@ -47,7 +47,9 @@ class JsonWriterFactory extends AbstractFactory
             ->attach(new Destination\Feedback())
             ->attach(new Destination\News())
             ->attach(new Destination\Person())
-            ->attach(new Destination\Ticket());
+            ->attach(new Destination\Ticket())
+            ->attach(new Destination\Organization())
+        ;
 
         return new JsonWriter($mapping);
     }

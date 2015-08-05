@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback importer
+ * DeskPRO feedback importer
  *
  * Class Feedback
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -89,7 +89,9 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             ->setCategory($this->findOrCreateFeedbackCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
-            ->setViewsCount($entity->getViewCount());
+            ->setViewsCount($entity->getViewCount())
+            ->resetCustomData()
+        ;
 
         foreach ($entity->getAttachments() as $attachment) {
             $feedback->addAttachment($this->createAttachment(
@@ -149,7 +151,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the importing DeskPro doctrine feedback attachment entity
+     * Returns the importing DeskPRO doctrine feedback attachment entity
      *
      * @param Entity\Attachment $entity
      * @param string            $person_email
@@ -162,7 +164,8 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
         $attachment = new DeskPROEntity\FeedbackAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByAttachment($entity));
+            ->setBlob($this->blob_adapter->createByBlob($entity))
+        ;
 
         $this->records->add($attachment);
         return $attachment;

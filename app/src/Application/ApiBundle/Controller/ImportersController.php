@@ -89,9 +89,10 @@ class ImportersController extends AbstractController implements ProtectedControl
         foreach ($importers as $importer) {
             /** @var $importer DataStoreEntity */
             $ret[] = array(
-                'id' => str_replace('importers.', '', $importer['name']),
-                'title' => $importer->getData('title'),
-                'status' => $importer->getData('status'),
+                'id'          => str_replace('importers.', '', $importer['name']),
+                'title'       => $importer->getData('title'),
+                'description' => $importer->getData('description'),
+                'status'      => $importer->getData('status'),
             );
         }
 
