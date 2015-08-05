@@ -1,2 +1,2 @@
-import ChatRoomsNavFrame from './ChatRoomsNavFrame';
-export default {ChatRoomsNavFrame,};
+import ChatConversationsNavFrame from './ChatConversationsNavFrame';
+export default {ChatConversationsNavFrame,};
