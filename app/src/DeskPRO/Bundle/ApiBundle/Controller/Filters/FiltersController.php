@@ -59,6 +59,8 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+
 class FiltersController extends BaseController
 {
     /**
@@ -191,14 +193,14 @@ class FiltersController extends BaseController
         if ($groupby) {
             $view_factory = $this->get('api_view_representation_factory');
             return View::create(
-                $view_factory->DataSerialize($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
+                $this->DataSerialize(new PrimitiveArray($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT)),
                 Response::HTTP_OK
             );
         } else {
             return View::create(
-                $this->DataSerialize(array(
+                $this->DataSerialize(new PrimitiveArray(array(
                     'count' => $tickets_query->fetchCount()
-                )),
+                ))),
                 Response::HTTP_OK
             );
         }

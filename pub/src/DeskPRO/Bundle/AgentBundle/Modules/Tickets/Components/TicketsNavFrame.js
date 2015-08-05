@@ -1,7 +1,7 @@
 import React from "react";
 import { IntlMixin, FormattedMessage, FormattedNumber } from "react-intl";
 
-import TicketsTabFilters from "./FiltersTab/TicketsTabFilters";
+import TicketsTabFilterSets from "./FiltersTab/TicketsTabFilterSets";
 import TicketsTabLabels from "./LabelsTab/TicketsTabLabels";
 import TicketsTabStars from "./StarsTab/TicketsTabStars";
 
@@ -25,15 +25,15 @@ export default class TicketsNavContent extends React.Component {
     this.state = {
       showTab: "filters"
     };
-    
+
     this.intl = IntlMixin;
-    
+
     const { dispatch } = this.props;
     dispatch(TicketActions.loadFilterSets());
     dispatch(TicketActions.loadFilterSetsCounts());
     dispatch(LabelActions.loadLabels());
   }
-  
+
   changeTab(newTab) {
     let newState = {
       ...this.state,
@@ -41,7 +41,7 @@ export default class TicketsNavContent extends React.Component {
     }
     this.setState(newState);
   }
-  
+
   renderTab(key, title) {
     let link_class = 'show-' + key;
     let tab_class = '';
@@ -55,7 +55,7 @@ export default class TicketsNavContent extends React.Component {
       </li>
     );
   }
-  
+
   render() {
     const {
       FilterSetsList,
@@ -65,7 +65,7 @@ export default class TicketsNavContent extends React.Component {
       Translations,
       dispatch
     } = this.props;
-    
+
     let tab = null;
     switch(this.state.showTab) {
     case "labels":
@@ -76,14 +76,14 @@ export default class TicketsNavContent extends React.Component {
       break;
     case "filters":
     default:
-      tab = <TicketsTabFilters
+      tab = <TicketsTabFilterSets
               filterSetsList={FilterSetsList}
               filterSetsCounts={FilterSetsCounts}
               {...bindActionCreators(TicketActions, dispatch)}
               {...this.props} />
       break;
     }
-    
+
     return (
       <section className="ticket-nav-frame dp-nav-frame">
         <aside className="sidebar has-tabs">
@@ -102,9 +102,9 @@ export default class TicketsNavContent extends React.Component {
             {this.renderTab('labels', 'Labels')}
             {this.renderTab('stars', 'Stars')}
           </ul>
-    
+
           {tab}
-    
+
         </aside>
       </section>
     );
