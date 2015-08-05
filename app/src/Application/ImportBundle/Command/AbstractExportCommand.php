@@ -377,23 +377,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Returns a list of supported entity types
-     *
-     * @return string[]
-     */
-    protected function getSupportedEntityTypes()
-    {
-        return array(
-            Entity\EntityInterface::TYPE_TICKET,
-            Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_ARTICLE,
-            Entity\EntityInterface::TYPE_DOWNLOAD,
-            Entity\EntityInterface::TYPE_FEEDBACK,
-            Entity\EntityInterface::TYPE_NEWS,
-        );
-    }
-
-    /**
      * Use project config to set up generator config params
      *
      * @param GeneratorConfig $config

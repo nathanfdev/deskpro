@@ -34,7 +34,6 @@ use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
-use Doctrine\DBAL\DriverManager;
 use Exception;
 
 /**
@@ -77,13 +76,17 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var EntityRepository\CustomDefPerson $custom_def_person_repository */
         $custom_def_person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
-        $custom_def_ticket_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
+        $custom_def_ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
         /** @var EntityRepository\CustomDefFeedback $custom_def_feedback_repository */
-        $custom_def_feedback_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefFeedback');
+        $custom_def_feedback_repository = $entity_manager->getRepository(
+            'Application\DeskPRO\Entity\CustomDefFeedback'
+        );
         /** @var EntityRepository\CustomDefOrganization $custom_def_organization_repository */
-        $custom_def_organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefOrganization');
+        $custom_def_organization_repository = $entity_manager->getRepository(
+            'Application\DeskPRO\Entity\CustomDefOrganization'
+        );
         /** @var EntityRepository\CustomDefArticle $custom_def_article_repository */
-        $custom_def_article_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefArticle');
+        $custom_def_article_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefArticle');
         /** @var EntityRepository\Department $departmentRepository */
         $departmentRepository = $entity_manager->getRepository('Application\DeskPRO\Entity\Department');
         /** @var EntityRepository\Download $download_repository */
@@ -107,7 +110,9 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var EntityRepository\LabelNews $news_label_repository */
         $news_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelNews');
         /** @var EntityRepository\Organization $organization_repository */
-        $organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Organization');
+        $organization_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
+        /** @var EntityRepository\LabelOrganization $organization_label_repository */
+        $organization_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelOrganization');
         /** @var EntityRepository\Person $person_repository */
         $person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
         /** @var EntityRepository\LabelPerson $person_label_repository */

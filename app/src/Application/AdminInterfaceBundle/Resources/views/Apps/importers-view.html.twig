@@ -23,21 +23,49 @@
             </div>
         </article>
 
+        <article class="form-horizontal dp-form" ng-if="!importer.status">
+            <div class="panel panel-fill indent">
+                <div class="panel-body">
+                    <div class="form-group" ng-if="'csv' === id">
+                        <p>
+                            The CSV importer reads data from specific CSV files that contain data in a specific format.
+                        </p>
+
+                        <p>
+                            <a href="https://manuals.deskpro.com/html/admin/importing-data/importing-csv.html"
+                               target="_blank" class="btn btn-default" style="margin-top: 10px;">Read more about
+                                supported CSV files and formats &rarr;</a>
+                        </p>
+                    </div>
+                    <div class="form-group" ng-if="'osticket' === id">
+                        <p>
+                            This importer reads data from an existing osTicket database.
+                        </p>
+
+                        <p>
+                            <a href="https://manuals.deskpro.com/html/admin/importing-data/importing-osticket.html"
+                               target="_blank" class="btn btn-default" style="margin-top: 10px;">Read more about
+                                importing from osTicket &rarr;</a>
+                        </p>
+                    </div>
+                    <div class="form-group" ng-if="'zendesk' === id">
+                        <p>
+                            This improter reads data from an existing ZenDesk helpdesk.
+                        </p>
+
+                        <p>
+                            <a href="https://manuals.deskpro.com/html/admin/importing-data/importing-zendesk.html"
+                               target="_blank" class="btn btn-default" style="margin-top: 10px;">Read more about
+                                importing from ZenDesk &rarr;</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
         <article class="form-horizontal dp-form">
             <div class="panel panel-fill indent">
                 <div class="panel-body">
-
-                    <h3>
-                        <img ng-src="/web/images/admin/icons/icon-{{ ng_var('id') }}.png" alt="Icon"
-                             style="width: 50px;"/>
-                        &nbsp;
-                        {{ ng_var('importer.title') }}
-                        &nbsp;
-                        <span ng-if="busy || importer.status && 'testing' !== importer.status && 'done' !== importer.status">
-                            <i class="fa fa-spinner fa-spin"></i>
-                        </span>
-                    </h3>
-                    <br/>
 
                     <div ng-if="!importer.status">
                         {# CSV #}
