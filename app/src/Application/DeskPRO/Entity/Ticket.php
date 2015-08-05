@@ -2410,10 +2410,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             list($status, $hstatus) = explode('.', $status, 2);
         }
 
-        if ($status == $old_status_code) {
-            // nochange
-            return $this;
-        }
+        // Note: No early return here
+        // and no logic here about checking old status against new status
+        // because default status is awaiting_agent and we still need to run
+        // through all of this date_X sets on newticket. If we returned early
+        // that wouldn't run because awaiting_agent==awaiting_agent
 
         $this['date_status'] = new \DateTime();
 
