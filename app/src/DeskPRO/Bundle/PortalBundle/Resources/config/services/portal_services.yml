@@ -23,3 +23,7 @@ services:
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
+
+  portal_search_serializer:
+      class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
+      arguments: [@router]

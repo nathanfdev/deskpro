@@ -49,6 +49,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface|DeskproContainer
+     */
+    protected function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
      * @return \DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator
      */
     public function createPageTitle()

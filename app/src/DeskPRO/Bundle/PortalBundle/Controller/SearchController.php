@@ -130,7 +130,7 @@ class SearchController extends AbstractController
         $content = $request->get('content', '');
 
         if (!$content) {
-            return $this->simpleJson(
+            return $this->makeJsonResponse(
                 array(
                     'results' => array(),
                     'words' => array()
@@ -144,7 +144,11 @@ class SearchController extends AbstractController
         $context = $contextFactory->createUserSearchContext($person);
         $sticky_search = new StickyWordSearch($this->getEm());
         /** @var ResultSet $results */
-        $results = $se->getUserSearch()->similarTo($context, $content, array('limit_types' => array($content_type)));
+        $results = $se->getUserSearch()->similarTo(
+            $context,
+            $content,
+            array('limit_types' => array($content_type))
+        );
         $words = array();
 
         $property_accessor = PropertyAccess::createPropertyAccessor();
@@ -160,25 +164,28 @@ class SearchController extends AbstractController
             }
         }
 
+        $typed_results = $results->getTypedResults();
+        $serialized_results = $this->get('portal_search_serializer')->serializeArray($typed_results);
 
-        return $this->simpleJson(
+        return $this->makeJsonResponse(
             array(
-                'results' => $results->getTypedResults(),
+                'results' => $serialized_results,
                 'words' => $words,
             )
         );
     }
 
-    private function simpleJson(array $array)
+    protected function makeJsonResponse(array $array)
     {
-        return new JsonResponse(array('data' => $array));
-    }
+        $response = new JsonResponse(array('data' => $array));
 
-    /**
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface|DeskproContainer
-     */
-    private function getContainer()
-    {
-        return $this->container;
+        // if its 5.4+ make the results pretty
+        if (constant('JSON_PRETTY_PRINT')) {
+            $options = $response->getEncodingOptions();
+            $options = $options | JSON_PRETTY_PRINT;
+            $response->setEncodingOptions($options);
+        }
+
+        return $response;
     }
 }
