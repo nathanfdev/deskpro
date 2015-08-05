@@ -333,6 +333,6 @@ class NewsController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe_everything'));
 
-        return $this->redirectToRoute('portal_index');
+        return $this->redirectToRoute('portal_home');
     }
 }

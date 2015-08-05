@@ -50,11 +50,11 @@ class ProfileController extends AbstractController
     public function registerAction(Request $request)
     {
         if ($this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('portal_index');
+            return $this->redirectToRoute('portal_home');
         }
 
         if (!$this->getBrandSetting('core.reg_enabled')) {
-            return $this->redirectToRoute('portal_index');
+            return $this->redirectToRoute('portal_home');
         }
 
         // Registration "intercept": to implement a registration intercept, don't use this

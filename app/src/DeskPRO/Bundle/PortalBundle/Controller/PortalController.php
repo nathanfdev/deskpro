@@ -114,7 +114,7 @@ class PortalController extends AbstractController
             return $this->redirectToRoute('portal_login');
         }
 
-        return $this->redirectToRoute('portal_index');
+        return $this->redirectToRoute('portal_home');
     }
 
     /**
@@ -133,7 +133,7 @@ class PortalController extends AbstractController
                 break;
         }
 
-        return $this->redirectToRoute('portal_index');
+        return $this->redirectToRoute('portal_home');
     }
 
     /**

@@ -307,6 +307,6 @@ class ArticlesController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe_everything'));
 
-        return $this->redirectToRoute('portal_index');
+        return $this->redirectToRoute('portal_home');
     }
 }

@@ -51,7 +51,7 @@ class BreadcrumbBuilder
     {
         $this->b = new Breadcrumbs();
         $this->b->add(
-            'portal_index',
+            'portal_home',
             null,
             Breadcrumbs::PORTAL,
             array('phrase' => 'portal.general.nav-portal')

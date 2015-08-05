@@ -337,6 +337,6 @@ class DownloadsController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe_everything'));
 
-        return $this->redirectToRoute('portal_index');
+        return $this->redirectToRoute('portal_home');
     }
 }

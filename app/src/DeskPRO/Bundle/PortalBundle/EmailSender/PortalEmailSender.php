@@ -95,7 +95,7 @@ class PortalEmailSender
             $verify_url = null;
         }
 
-        $portal_url = $this->getRouter()->generate('portal_index', array(), UrlGeneratorInterface::ABSOLUTE_URL);
+        $portal_url = $this->getRouter()->generate('portal_home', array(), UrlGeneratorInterface::ABSOLUTE_URL);
 
         $this->sendToPerson(
             $person,

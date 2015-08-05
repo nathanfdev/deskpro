@@ -250,7 +250,7 @@ class PortalSupportExtension extends \Twig_Extension
 
         switch ($page) {
             case 'home':
-                return $route === 'portal_index';
+                return $route === 'portal_home';
             case 'kb':
                 return preg_match('#^portal_kb#', $route);
             case 'news':

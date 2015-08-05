@@ -55,7 +55,7 @@ class PasswordController extends AbstractController
         $isResetting = $_route === 'portal_reset_password';
 
         if ($this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('portal_index');
+            return $this->redirectToRoute('portal_home');
         }
 
         $form = $this->createForm('request_password_reset', array('email' => $request->get('email', '')));
