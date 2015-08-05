@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\EventListener\ProblemListener;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\HttpFoundation\Session as HttpSession;
 use Application\DeskPRO\Tickets\Problems\EventListener\TicketProblemsChangedListener;
@@ -286,6 +287,8 @@ class ClientMessage extends AbstractEntityRepository
 
             $channels[] = SlaClientMessageSender::CHANNEL;
             $channels[] = TicketProblemsChangedListener::CHANNEL;
+            $channels[] = ProblemListener::CHANNEL_NEW;
+            $channels[] = ProblemListener::CHANNEL_UPDATE;
         }
 
         // They're automatically subscribed to their own chats of course

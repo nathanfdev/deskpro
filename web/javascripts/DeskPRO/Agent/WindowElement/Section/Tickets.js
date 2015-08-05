@@ -144,7 +144,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					if (!ass && !dis) return;
 					var $cnt = $('.counter', this);
 
-					console.info($cnt[0]);
 					// handle standard html
 					if ($cnt[0]) {
 						var val = parseInt($cnt.text());
@@ -163,6 +162,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					}
 				});
 				//DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: info.ticket_id });
+			});
+
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-created', function (info) {
+				console.info(info);
 			});
 		}
 

@@ -30,6 +30,7 @@ namespace Application\DeskPRO\Entity;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -81,6 +82,21 @@ class Problem extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Problem';
+
+        if (defined('DP_INTERFACE') && DP_INTERFACE != 'install') {
+            foreach (array(
+                         Events::prePersist,
+                         Events::postPersist,
+                         Events::preUpdate,
+                         Events::postUpdate
+                     ) as $event) {
+                $metadata->addEntityListener(
+                    $event,
+                    'Application\DeskPRO\Entity\EventListener\ProblemListener',
+                    'on'.ucfirst($event)
+                );
+            }
+        }
 
         $metadata->setPrimaryTable(
             array(
