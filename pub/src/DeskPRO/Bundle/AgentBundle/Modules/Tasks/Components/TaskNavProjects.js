@@ -55,7 +55,6 @@ export default class TasksNavProjects extends React.Component {
 
     render() {
         const {projectList, agentList, teamList, departmentList, createdProject} = this.props;
-
         // Workaround to bind toggleWindow to every edit link
         let _this = this;
 
@@ -78,7 +77,7 @@ export default class TasksNavProjects extends React.Component {
                         <div className="list-counter-bucket">
                             <a href="#" onClick={_this.toggleWindow.bind(_this, object)}><i className="fa fa-cog" /></a>
                             <a className="list-counter" href="#">
-                                {object.tasks ? object.tasks.length : '0'}
+                                {object.remaining}
                             </a>
                         </div>
                         <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={_this.props.switchTaskList.bind(_this, 'tasks?project=' + object.id)}><i

@@ -58,7 +58,12 @@ export function loadProjects(params = {}) {
  * @return Promise
  */
 export function loadLabels(params = {}) {
-  return DpApi.sendGet('DP_API/task_labels?' + compileParams(params));
+  let query = {
+    group: true,
+    ...params
+  };
+
+  return DpApi.sendGet('DP_API/task_labels?' + compileParams(query));
 }
 
 /**

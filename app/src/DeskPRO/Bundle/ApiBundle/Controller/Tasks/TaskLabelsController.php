@@ -90,6 +90,11 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
+        $group = $request->query->get('group', false);
+
+        if (!empty($group)) {
+            $task_labels = $task_labels->groupBy('l.label');
+        }
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($task_labels));
         $pager->setMaxPerPage($count);
