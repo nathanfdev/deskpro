@@ -94,7 +94,7 @@ class TeamsController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->DataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -129,7 +129,7 @@ class TeamsController extends BaseController implements ClassResourceInterface
         }
 
         return View::create(
-            $this->createRepresentation($team),
+            $this->DataSerialize($team),
             Response::HTTP_OK
         );
     }
@@ -260,7 +260,7 @@ class TeamsController extends BaseController implements ClassResourceInterface
             $location = $this->generateUrl('api_teams_get', array('id' => $team->getId()));
 
             return View::create(
-                $this->createRepresentation($team),
+                $this->DataSerialize($team),
                 $status,
                 array(
                     'Location' => $location,

@@ -88,7 +88,7 @@ class AgentTeamsController extends BaseController
     {
         $repo = $this->getEm()->getRepository('DeskPRO:AgentTeam');
         return View::create(
-            $this->createRepresentation($repo->findAll()),
+            $this->DataSerialize($repo->findAll()),
             Response::HTTP_OK
         );
     }
@@ -117,14 +117,14 @@ class AgentTeamsController extends BaseController
     {
         $repo = $this->getEm()->getRepository('DeskPRO:AgentTeam');
         $findings = $repo->findBy(['id' => $id]);
-        
+
         if (!$findings || count($findings) < 1) {
             throw $this->createNotFoundException();
         }
         $item = $findings[0];
-        
+
         return View::create(
-            $this->createRepresentation($item),
+            $this->DataSerialize($item),
             Response::HTTP_OK
         );
     }

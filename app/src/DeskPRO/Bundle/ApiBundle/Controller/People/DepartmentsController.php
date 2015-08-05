@@ -94,7 +94,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->DataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -129,7 +129,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
         }
 
         return View::create(
-            $this->createRepresentation($department),
+            $this->DataSerialize($department),
             Response::HTTP_OK
         );
     }
@@ -260,7 +260,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
             $location = $this->generateUrl('api_departments_get', array('id' => $department->getId()));
 
             return View::create(
-                $this->createRepresentation($department),
+                $this->DataSerialize($department),
                 $status,
                 array(
                     'Location' => $location,

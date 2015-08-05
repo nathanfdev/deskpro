@@ -103,7 +103,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->DataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -138,7 +138,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
         }
 
         return View::create(
-            $this->createRepresentation($person),
+            $this->DataSerialize($person),
             Response::HTTP_OK
         );
     }
@@ -269,7 +269,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
             $location = $this->generateUrl('api_people_get', array('id' => $person->getId()));
 
             return View::create(
-                $this->createRepresentation($person),
+                $this->DataSerialize($person),
                 $status,
                 array(
                     'Location' => $location,

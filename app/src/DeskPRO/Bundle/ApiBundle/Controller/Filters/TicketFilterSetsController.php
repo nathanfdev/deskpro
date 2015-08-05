@@ -78,7 +78,7 @@ class TicketFilterSetsController extends BaseController
             ->findBy(array(), array('display_order' => 'ASC'));
 
         return View::create(
-            $this->createRepresentation($sets),
+            $this->DataSerialize($sets),
             Response::HTTP_OK
         );
     }
@@ -111,7 +111,7 @@ class TicketFilterSetsController extends BaseController
             throw new NotFoundHttpException();
         } else {
             return View::create(
-                $this->createRepresentation($set),
+                $this->DataSerialize($set),
                 Response::HTTP_OK
             );
         }
@@ -136,7 +136,7 @@ class TicketFilterSetsController extends BaseController
 
         return $this->handleFormSubmission($request, $set);
     }
-    
+
     /**
      * @ApiDoc(
      *      description="Edit an existing filter set",
@@ -153,14 +153,14 @@ class TicketFilterSetsController extends BaseController
     public function putAction(Request $request, $id)
     {
         $set = $this->getEm()->find('App:TicketFilterSet', $id);
-        
+
         if (!$set) {
             throw new NotFoundHttpException();
         } else {
             return $this->handleFormSubmission($request, $set);
         }
     }
-    
+
     /**
      * @ApiDoc(
      *      description="Reorder filter sets.",
@@ -175,28 +175,28 @@ class TicketFilterSetsController extends BaseController
     public function postReorderAction(Request $request)
     {
         $data = $request->request->all();
-        
+
         if (!is_array($data) || !isset($data['display_order'])) {
             throw new NotFoundHttpException();
         }
-        
+
         $results = array();
         foreach ($data['display_order'] as $order => $filter_set_id) {
             $filter_set = $this->getEm()->find('App:TicketFilterSet', $filter_set_id);
-            
+
             if (!$filter_set) {
                 continue;
             }
-            
+
             $filter_set->setDisplayOrder($order);
             $this->getEm()->persist($filter_set);
             $results[$order] = $filter_set_id;
         }
-        
+
         $this->getEm()->flush();
-        
+
         return View::create(
-            $this->createRepresentation($results),
+            $this->DataSerialize($results),
             Response::HTTP_OK
         );
     }
@@ -279,11 +279,11 @@ class TicketFilterSetsController extends BaseController
 
         $view_factory = $this->get('api_view_representation_factory');
         return View::create(
-            $view_factory->createRepresentation($filter_set_count),
+            $view_factory->DataSerialize($filter_set_count),
             Response::HTTP_OK
         );
     }
-    
+
     /**
      * @ApiDoc(
      *      description="get the filters within a filter set",
@@ -320,7 +320,7 @@ class TicketFilterSetsController extends BaseController
 
         $view_factory = $this->get('api_view_representation_factory');
         return View::create(
-            $view_factory->createRepresentation($set->getFilters()),
+            $view_factory->DataSerialize($set->getFilters()),
             Response::HTTP_OK
         );
     }
@@ -357,7 +357,7 @@ class TicketFilterSetsController extends BaseController
 
         $view_factory = $this->get('api_view_representation_factory');
         return View::create(
-            $view_factory->createRepresentation($filter_set_counts),
+            $view_factory->DataSerialize($filter_set_counts),
             Response::HTTP_OK
         );
     }
@@ -365,17 +365,17 @@ class TicketFilterSetsController extends BaseController
     protected function handleFormSubmission(Request $request, TicketFilterSet $set)
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-        
+
         $form = $this->get('form.factory')
             ->createNamedBuilder(null, 'filter_set', $set)
             ->getForm();
 
         $submitted = $request->request->all();
-        
+
         if(array_key_exists('is_default', $submitted)) {
             $submitted['is_default'] = $submitted['is_default'] == true;
         }
-        
+
         $form->submit($submitted, 'PUT' !== $request->getMethod());
 
         if ($form->isValid()) {
@@ -383,7 +383,7 @@ class TicketFilterSetsController extends BaseController
             $this->getEm()->flush($set);
 
             return View::create(
-                $this->createRepresentation($set),
+                $this->DataSerialize($set),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_ticket_filter_sets_get', array('id' => $set->getId()))
