@@ -177,14 +177,7 @@ class UsersourceAuthAdapterFactory
 
     protected function _getAdapterLogger()
     {
-        static $logger = null;
-
-        if ($logger === null) {
-            $logger = new \Orb\Log\Logger();
-            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
-        }
-
-        return $logger;
+        return App::$container->getUsersourceLogger();
     }
 
 

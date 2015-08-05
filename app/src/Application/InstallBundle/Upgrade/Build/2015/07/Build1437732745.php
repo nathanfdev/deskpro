@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,37 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage DependencyInection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Usersource\Sync\Syncer\DbTableSyncer;
-use Application\DeskPRO\Usersource\Sync\Syncer\LdapSyncer;
-use Application\DeskPRO\Usersource\Sync\SyncerHelper;
-use Application\DeskPRO\Usersource\Sync\SyncManager;
-
-class UsersourceSyncManagerService
+class Build1437732745 extends AbstractBuild
 {
-    public static function create(DeskproContainer $container)
+    public function run()
     {
-        $us_logger = null;
-        if (App::getConfig('debug.enable_usersource_log')) {
-            // only instantiate the helper with the usersource logger if its enabled
-            $us_logger = $container->getUsersourceLogger();
+        $this->out("Set `enable_plaintext_email` for each agent");
+
+        $db = $this->container->getDb();
+        $agent_ids = $db->fetchAllCol("SELECT id FROM people WHERE is_agent = 1");
+
+        $batch = array();
+        foreach ($agent_ids as $aid) {
+            $batch[] = array(
+                'person_id' => $aid,
+                'name'      => 'agent.enable_plaintext_email',
+                'value_str' => '1'
+            );
         }
 
-        $helper = new SyncerHelper($container->getEm(), $us_logger);
-
-        $syncers = array();
-
-        $syncers[] = new DbTableSyncer($helper);
-        $syncers[] = new LdapSyncer($helper);
-
-        $sm = new SyncManager($syncers, $container->getEm(), $container->getJobQueue(), $container->getSystemService('usersource_manager'), $helper);
-
-        return $sm;
+        if ($batch) {
+            $db->batchInsert('people_prefs', $batch, true);
+        }
     }
 }

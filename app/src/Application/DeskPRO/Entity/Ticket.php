@@ -2390,10 +2390,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setStatus($status)
     {
-        $this['date_status'] = new \DateTime();
-
         $old_status  = $this->status;
         $old_status_code = $this->getStatusCode();
+
+        $status_code = $status;
+        $hstatus = null;
+        if (strpos($status, '.')) {
+            list($status, $hstatus) = explode('.', $status, 2);
+        }
+
+        // Note: No early return here
+        // and no logic here about checking old status against new status
+        // because default status is awaiting_agent and we still need to run
+        // through all of this date_X sets on newticket. If we returned early
+        // that wouldn't run because awaiting_agent==awaiting_agent
+
+        $this['date_status'] = new \DateTime();
 
         if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
             $this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
@@ -2423,20 +2435,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $this->setModelField('date_archived', null);
         }
 
-        if ($status == 'resolved' && !$this->date_resolved) {
+        // date_resolved matters with either resolved or archived
+        // because to reach archived, you must "go through" resolved first
+        if (($status == 'resolved' || $status == 'archived') && !$this->date_resolved) {
             $this['date_resolved'] = new \DateTime();
         }
-        if ($status != 'resolved' && $this->date_resolved) {
+        if ($status != 'resolved' && $status != 'archived' && $this->date_resolved) {
             $this->setModelField('date_resolved', null);
         }
 
         if ($status != 'awaiting_agent' && $this->is_hold) {
             $this['is_hold'] = false;
-        }
-        $status_code = $status;
-        $hstatus = null;
-        if (strpos($status, '.')) {
-            list($status, $hstatus) = explode('.', $status, 2);
         }
 
         if (!$status || !in_array($status, array(

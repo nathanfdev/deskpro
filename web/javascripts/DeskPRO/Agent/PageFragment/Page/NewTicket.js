@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		el.find('select').addClass('with-select2');
+		el.find('select').not('[data-no-select2]').addClass('with-select2');
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
@@ -159,7 +159,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var ol = $(this).text().length;
 				if (ol > len) len = ol;
 			});
-			$(this).width((10 * len) + 25);
+			$(this).width((10 * len) + 50);
 		});
 
 		var depSel = this.getEl('dep');
