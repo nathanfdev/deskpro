@@ -49,7 +49,7 @@ class Import
         ExporterInterface::TYPE_CSV,
         ExporterInterface::TYPE_OS_TICKET,
         ExporterInterface::TYPE_ZENDESK,
-        ExporterInterface::TYPE_DESKPRO,
+//        ExporterInterface::TYPE_DESKPRO,
     );
 
     const STATUS_PENDING     = 'pending';
