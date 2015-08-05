@@ -68,7 +68,7 @@ class LabelTaskTransformer implements DataTransformerInterface
      */
     public function transform($labelObject)
     {
-        if (!is_null($labelObject) && $labelObject instanceof LabelTask) {
+        if (!is_null($labelObject) && ($labelObject instanceof LabelTask)) {
             return $labelObject->getLabel();
         }
 

@@ -66,6 +66,7 @@ class LabelTaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addModelTransformer(new LabelTaskTransformer($this->entityManager, $options['task']));
+        $builder->addViewTransformer(new LabelTaskTransformer($this->entityManager, $options['task']));
     }
 
     /**
