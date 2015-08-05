@@ -31,40 +31,66 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
-use Doctrine\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ChatCounters
+ * Class ChatCountersCriteria
  */
-class ChatCounters
+class ChatCountersCriteria
 {
     /**
-     * @var EntityManager
+     * @var array
      */
-    private $em;
+    private $filters = [];
 
     /**
-     * ChatCounters constructor.
+     * @var string
+     */
+    private $group_by;
+
+    /**
+     * ChatCountersCriteria constructor.
      *
-     * @param EntityManager $em
+     * @param array $filters
+     * @param string $group_by
      */
-    public function __construct(EntityManager $em)
+    private function __construct(array $filters, $group_by)
     {
-        $this->em = $em;
+        $this->filters = $filters;
+        $this->group_by = $group_by;
     }
+
 
     /**
-     * @param ChatCountersCriteria $criteria
-     * @return Count
+     * @param Request $request
+     * @return ChatCountersCriteria
      */
-    public function countChats(ChatCountersCriteria $criteria)
+    public static function fromRequest(Request $request, OptionsResolver $resolver)
     {
-        $qb = $this->em->createQueryBuilder();
+        $params = $request->query->all();
 
-        $qb->select('count(c)')
-           ->from('DeskPRO:ChatConversation', 'c');
+        $group_by = null;
+        if (array_key_exists('group_by', $params)) {
+            $group_by = $params['group_by'];
+            unset($params['group_by']);
+        }
 
-        return new Count($qb->getQuery()->getSingleScalarResult());
+        $resolver->setDefined(['agent_id', 'department_id', 'date_created']);
+        $resolver->setAllowedValues('agent_id', function($value) {
+            return ctype_digit($value);
+        });
+        $resolver->setAllowedValues('department_id', function($value) {
+            return ctype_digit($value);
+        });
+        $resolver->setAllowedValues('date_created', function($value) {
+            return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
+        });
+
+        $filters = $resolver->resolve($params);
+
+        return new self($filters, $group_by);
     }
+
+
 }

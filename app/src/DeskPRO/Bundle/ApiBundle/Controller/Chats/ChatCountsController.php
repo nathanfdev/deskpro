@@ -39,6 +39,10 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountersCriteria;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ChatCountsController
@@ -50,6 +54,7 @@ class ChatCountsController extends BaseController
      *      description="Get chats count",
      *      statusCodes={
      *          200="Success",
+     *          400="Bad Request",
      *          404="Not Found"
      *      },
      *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
@@ -61,7 +66,13 @@ class ChatCountsController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCounters $counter */
         $counter = $this->get('data.chat.chat_counters');
 
-        $count = $counter->countChats();
+        try {
+            $criteria = ChatCountersCriteria::fromRequest($request, new OptionsResolver());
+        } catch (UndefinedOptionsException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        $count = $counter->countChats($criteria);
         
         return View::create(
             $this->createRepresentation($count),
