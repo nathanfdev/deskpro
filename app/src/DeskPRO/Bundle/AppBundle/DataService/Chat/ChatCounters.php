@@ -29,32 +29,41 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
+
+use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 
 /**
- * Represents a count, typically used to show counters/badges in a UI.
+ * Class ChatCounters
  */
-class Count
+class ChatCounters
 {
     /**
-     * @var int
+     * @var EntityManager
      */
-    private $count;
+    private $em;
 
     /**
-     * @var CountsGroup
-     */
-    private $nested;
-
-    /**
-     * Count constructor.
+     * ChatCounters constructor.
      *
-     * @param int $count
-     * @param CountsGroup $nested
+     * @param EntityManager $em
      */
-    public function __construct($count, CountsGroup $nested = null)
+    public function __construct(EntityManager $em)
     {
-        $this->count = $count;
-        $this->nested = $nested;
+        $this->em = $em;
+    }
+
+    /**
+     * @return int
+     */
+    public function countChats()
+    {
+        $qb = $this->em->createQueryBuilder();
+
+        $qb->select('count(c)')
+           ->from('DeskPRO:ChatConversation', 'c');
+
+        return new Count($qb->getQuery()->getSingleScalarResult());
     }
 }

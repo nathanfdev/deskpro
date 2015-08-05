@@ -31,85 +31,31 @@
 
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 /**
  * Represents a collection of counts. Typically used when returning counts
  * grouped by some sort of variable.
  */
-class CountCollection implements \IteratorAggregate, \Countable
+class CountsGroup
 {
     /**
-     * @var array
+     * @var string
      */
-    private $group_meta;
+    private $grouped_by;
 
     /**
-     * @var Count[]
+     * @var GroupedCount[]
      */
     private $counts;
 
     /**
-     * @param Count[] $counts       The actual counts
-     * @param array   $group_meta   Any information about this group of counts (e.g., how they are grouped).
+     * CountsGroup constructor.
+     *
+     * @param string $grouped_by
+     * @param GroupedCount[] $counts
      */
-    public function __construct(array $counts, array $group_meta = array())
+    public function __construct($grouped_by, array $counts)
     {
+        $this->grouped_by = $grouped_by;
         $this->counts = $counts;
-
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->group_meta = $resolver->resolve($group_meta);
-    }
-
-    /**
-     * Sub-classes may implement this to define a custom resolver
-     * @param OptionsResolver $resolver
-     */
-    protected function configureOptions(OptionsResolver $resolver)
-    {
-    }
-
-    /**
-     * @param string $k
-     * @param mixed $default
-     * @return array
-     */
-    public function getGroupMeta($k, $default = null)
-    {
-        return array_key_exists($k, $this->group_meta) ? $this->group_meta[$k] : $default;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllGroupMeta()
-    {
-        return $this->group_meta;
-    }
-
-    /**
-     * @return Count[]
-     */
-    public function getCounts()
-    {
-        return $this->counts;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->counts);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function count()
-    {
-        return count($this->counts);
     }
 }
