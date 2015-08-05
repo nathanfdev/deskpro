@@ -48,10 +48,12 @@ export default class DpAppContainer extends React.Component {
   render() {
     const { dp_window, history } = this.props;
     const base_path = this.workOutBasePath();
+    const default_path = `${base_path}/tickets`;
 
     if (dp_window.isLoaded) {
       return (
         <Router history={history}>
+          <Redirect from={base_path} to={default_path} />
           <Route path={base_path} component={ReactRouterWrapper}>
             <Route name="tickets" path="tickets" component={TicketsApp} />
             <Route name="tasks" path="tasks" component={TasksApp} />
