@@ -9,6 +9,7 @@ parameters:
   fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
   hateoas.serializer.json_hal.class: DeskPRO\Bundle\ApiBundle\Serializer\HateoasJsonApiSerializer
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
+  file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
 
 framework:
     esi:             { enabled: true }

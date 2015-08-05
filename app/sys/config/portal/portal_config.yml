@@ -8,6 +8,7 @@ parameters:
   doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
   templating.globals.class: DeskPRO\Bundle\AppBundle\Twig\GlobalVariables
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
+  file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
 
 framework:
     esi:             { enabled: true }

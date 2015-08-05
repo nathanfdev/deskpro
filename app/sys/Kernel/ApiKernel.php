@@ -41,10 +41,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Kernel;
 
-class ApiKernel extends Kernel
+class ApiKernel extends BaseKernel
 {
+    public function getName()
+    {
+        return 'api';
+    }
+
     /**
      * Returns an array of bundles to register.
      *
@@ -229,11 +233,6 @@ class ApiKernel extends Kernel
         $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
 
         $cache->write($content, $container->getResources());
-    }
-
-    public function getName()
-    {
-        return 'api';
     }
 
     /**

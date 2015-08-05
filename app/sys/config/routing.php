@@ -10,32 +10,29 @@ use Application\DeskPRO\Routing\RouteCollection;
 $collection = new RouteCollection();
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php'));
 
+// NEW API ROUTES
+$col = $loader->import(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Resources/config/routing_api.yml');
+$col->addPrefix('/api/v2');
+$collection->addCollection($col);
+
+// NEW PORTAL ROUTES
+$col = $loader->import(DP_ROOT.'/src/DeskPRO/Bundle/PortalBundle/Resources/config/routing_portal.yml');
+$collection->addCollection($col);
+
+
 //
 // to be removed shortly
 //
-$collection->addCollection($loader->import(DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php'));
+$col = $loader->import(DP_ROOT . '/src/Application/UserBundle/Resources/config/user-routing.php');
+$col->addPrefix('/old-portal-route');
+$collection->addCollection($col);
 //
 //
 //
 
-$col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php');
-$col->addPrefix('/agent');
-$collection->addCollection($col);
-
-$col = $loader->import(DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php');
-$col->addPrefix('/admin');
-$collection->addCollection($col);
 
 $col = $loader->import(DP_ROOT.'/src/Application/LegacyApiBundle/Resources/config/api-routing.php');
 $col->addPrefix('/api');
-$collection->addCollection($col);
-
-$col = $loader->import(DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php');
-$col->addPrefix('/reports');
-$collection->addCollection($col);
-
-$col = $loader->import(DP_ROOT.'/src/Application/EmailBundle/Resources/config/email-routing.php');
-$col->addPrefix('/email');
 $collection->addCollection($col);
 
 if (defined('DPC_IS_CLOUD')) {

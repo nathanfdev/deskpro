@@ -94,7 +94,7 @@ Feature: Generate URLs
     When I generate urls for:
       | route                 | params                              |
       | agent_interface       |                                     |
-      | admin_interface       |                                     |
+      | admin                 |                                     |
       | serve_blob            | blob_auth_id=foo&filename=bar       |
       | serve_default_picture | s=foo                               |
       | serve_blob_sizefit    | blob_auth_id=foo&filename=bar&s=goo |

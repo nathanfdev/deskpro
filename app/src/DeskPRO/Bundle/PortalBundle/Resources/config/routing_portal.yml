@@ -1,16 +1,11 @@
-# Links to known existing URLs (admin, agent, file.php, etc)
-# these are duplicates from DpKernel's config
-admin_interface:
-    path: /admin
-agent_interface:
-    path: /agent
-serve_blob:
-    path: '/file.php/{blob_auth_id}/{filename}'
-
 # Annotations
 portal:
     resource: "@PortalBundle/Controller"
     type:     annotation
+
+# This is HTTP CACHE specific
+user_context_hash:
+    path: /_portal_user_hash
 
 # START security routes
 ########################################################################################################################
