@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -65,10 +66,21 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
             }
         }
 
+        /** @var Task[]|ArrayCollection $tasks */
+        $tasks = $transformation_request->getDataToBeTransformed()->getTasks();
+
+        $remaining = 0;
+        foreach ($tasks as $task) {
+            if ($task->isDone()) {
+                $remaining++;
+            }
+        }
+
         return [
             'departments' => $groupedMembers['departments'],
             'teams' => $groupedMembers['teams'],
             'agents' => $groupedMembers['agents'],
+            'remaining' => $remaining,
         ];
     }
 }

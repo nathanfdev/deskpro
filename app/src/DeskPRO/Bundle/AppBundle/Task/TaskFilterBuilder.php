@@ -94,7 +94,7 @@ class TaskFilterBuilder
             'creator' => ['field' => 'creator'],
             'project' => ['field' => 'project'],
             'is_done' => ['field' => 'is_done'],
-            'label' => ['field' => 'id', 'table' => ['t.labels', 'l']],
+            'label' => ['field' => 'label', 'table' => ['t.labels', 'l']],
         ];
 
         foreach($request->all() as $item => $value) {
@@ -106,44 +106,32 @@ class TaskFilterBuilder
                     $value = substr($value, 4);
                 }
 
-                // Default to null
-                $returnValue = null;
-
                 // If the value is set to 'me', get the current user's ID, teams and departments
                 if ($value === 'me') {
                     switch($allowedFilters[$item]['field']) {
                         case 'team':
-                            $returnValue = implode(',', $this->user->getTeamIds());
+                            $value = implode(',', $this->user->getTeamIds());
                             break;
                         case 'department':
                             // TODO perm_check
                             $this->user->loadHelper('AgentPermissions');
-                            $returnValue = implode(',', $this->user->getAllowedDepartments());
+                            $value = implode(',', $this->user->getAllowedDepartments());
                             break;
                         default:
-                            $returnValue = $this->user->getId();
+                            $value = $this->user->getId();
                     }
-                } else {
-                    if (!empty($value) && !in_array($value, ['null', 'false', 'true'])) {
-                        // Clean the IDs, including those in a comma-separated string
-                        $ids = explode(',', $value);
-                        $ids = array_map(function($id) {
-                            return (int) $id;
-                        }, $ids);
-                        $returnValue = implode(',', $ids);
-                    } else if (!empty($value) && ($value === 'false' || $value === 'true')) {
-                        // Clean false and true
-                        $returnValue = ($value === 'true');
-                    }
+                } else if (!empty($value) && ($value === 'false' || $value === 'true')) {
+                    // Clean false and true
+                    $value = ($value === 'true');
                 }
 
                 // Add the not indicator back to the output
                 if ($not) {
-                    $returnValue = 'not_' . $returnValue;
+                    $value = 'not_' . $value;
                 }
 
                 $filter[$item] = $allowedFilters[$item];
-                $filter[$item]['value'] = $returnValue;
+                $filter[$item]['value'] = $value;
             }
         }
 

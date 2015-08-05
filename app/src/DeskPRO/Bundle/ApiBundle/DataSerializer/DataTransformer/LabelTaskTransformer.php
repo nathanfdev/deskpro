@@ -36,7 +36,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-class TaskLabelTransformer extends AbstractDataSerializerTransformer
+class LabelTaskTransformer extends AbstractDataSerializerTransformer
 {
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
