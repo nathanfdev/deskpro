@@ -97,6 +97,7 @@ class ezcMailFileParser extends ezcMailPartParser
     private $dataWritten = false;
 
 	public $_dp_parse_failed = false;
+    public $_dp_enc_type;
 
     /**
      * Constructs a new ezcMailFileParser with maintype $mainType subtype $subType
@@ -222,7 +223,9 @@ class ezcMailFileParser extends ezcMailPartParser
         switch ( strtolower( $this->headers['Content-Transfer-Encoding'] ) )
         {
             case 'base64':
-                stream_filter_append( $this->fp, 'convert.base64-decode' );
+                // not using a stream filter because it failing on some
+                // strings (not sure why, but manually decoding it in parseBody worked)
+                $this->_dp_enc_type = 'base64';
                 break;
             case 'quoted-printable':
                 // fetch the type of linebreak
@@ -271,9 +274,15 @@ class ezcMailFileParser extends ezcMailPartParser
 
 			// If the attachment is corrupt it'll cause an error in some
 			// cases when we try to decode it if using a stream filter
-            if (!@fwrite( $this->fp, $line )) {
-				$this->_dp_parse_failed = true;
-			}
+            if ($this->_dp_enc_type === 'base64') {
+                if (fwrite( $this->fp, base64_decode($line) ) === false) {
+                    $this->_dp_parse_failed = true;
+                }
+            } else {
+                if (fwrite( $this->fp, $line ) === false) {
+                    $this->_dp_parse_failed = true;
+                }
+            }
         }
     }
 
