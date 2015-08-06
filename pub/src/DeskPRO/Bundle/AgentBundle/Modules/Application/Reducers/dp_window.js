@@ -7,6 +7,7 @@ export default class dp_window extends Reducer {
 			isLoaded: false,
 			activeAppId: 'tickets',
 			collapsedNav: false,
+			expandedSwitcher: false,
 		};
 	}
 
@@ -25,7 +26,6 @@ export default class dp_window extends Reducer {
 	}
 
 	collapseNav(state, action) {
-		console.log("PROUT");
 		return {
 			...state,
 			collapseNav: true
@@ -33,10 +33,24 @@ export default class dp_window extends Reducer {
 	}
 
 	expandNav(state, action) {
-		console.log("POUET");
 		return {
 			...state,
 			collapseNav: false
+		};
+	}
+
+	expandSwitcher(state, action) {
+		console.log("KOIN");
+		return {
+			...state,
+			expandedSwitcher: true
+		};
+	}
+
+	collapseSwitcher(state, action) {
+		return {
+			...state,
+			expandedSwitcher: false
 		};
 	}
 
@@ -45,5 +59,7 @@ export default class dp_window extends Reducer {
 		.r(ActionTypes.SET_ACTIVE_APP, this.setActiveApp)
 		.r(ActionTypes.COLLAPSE_NAV, this.collapseNav)
 		.r(ActionTypes.EXPAND_NAV, this.expandNav)
+		.r(ActionTypes.EXPAND_SWITCHER, this.expandSwitcher)
+		.r(ActionTypes.COLLAPSE_SWITCHER, this.collapseSwitcher)
 	}
 }

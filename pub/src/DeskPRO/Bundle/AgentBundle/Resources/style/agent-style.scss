@@ -17,6 +17,7 @@ html, body {
 
 $window-header-height: 44px;
 $app-switcher-width: 55px;
+$app-switcher-expanded-width: 150px;
 $nav-frame-width: 220px;
 $nav-collapsed-width: 10px;
 
@@ -49,6 +50,37 @@ $tab-frame-width: 100%;
     bottom: 0;
     width: $app-switcher-width;
     z-index: 100;
+
+    transition: all 0.25s ease;
+
+    .app-switcher-size-toggle {
+        display: block;
+        text-align: center;
+        position: absolute;
+        color: #fff;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-decoration: none;
+    }
+
+    .app-switcher-collapse {
+        display: none;
+    }
+    .app-switcher-expand {
+        display: block;
+    }
+
+    &.expanded {
+        width: $app-switcher-expanded-width;
+
+        .app-switcher-collapse {
+            display: block;
+        }
+        .app-switcher-expand {
+            display: none;
+        }
+    }
   }
 
   .dp-nav-frame {
@@ -86,6 +118,10 @@ $tab-frame-width: 100%;
             display: block;
         }
     }
+
+    &.shifted {
+        left: $app-switcher-expanded-width;
+    }
   }
 
   .dp-content-outer-frame {
@@ -114,6 +150,14 @@ $tab-frame-width: 100%;
 
     &.expanded {
         left: $app-switcher-width + $nav-collapsed-width;
+    }
+    &.shifted {
+        left: $app-switcher-expanded-width + $nav-frame-width;
+        width: $list-frame-width - ($app-switcher-expanded-width - $app-switcher-width);
+
+        &.expanded {
+            left: $app-switcher-expanded-width + $nav-collapsed-width;
+        }
     }
   }
 

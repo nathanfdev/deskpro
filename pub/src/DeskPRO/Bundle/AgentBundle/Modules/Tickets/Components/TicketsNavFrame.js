@@ -58,6 +58,19 @@ export default class TicketsNavContent extends React.Component {
     );
   }
 
+  getClasses(dp_window) {
+      let classes = ['ticket-nav-frame', 'dp-nav-frame'];
+
+      if(dp_window.collapseNav) {
+          classes.push('collapsed');
+      }
+      if(dp_window.expandedSwitcher) {
+          classes.push('shifted');
+      }
+
+      return classes.join(' ');
+  }
+
   render() {
     const {
       FilterSetsList,
@@ -87,10 +100,8 @@ export default class TicketsNavContent extends React.Component {
       break;
     }
 
-    const nav_classes = "ticket-nav-frame dp-nav-frame" + (dp_window.collapseNav ? ' collapsed' : '');
-
     return (
-      <section className={nav_classes}>
+      <section className={this.getClasses(dp_window)}>
         <aside className="sidebar has-tabs">
           <div className="sidebar-title">
             <span className="sidebar-type-icon">

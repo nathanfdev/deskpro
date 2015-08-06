@@ -9,4 +9,6 @@ export default keyMirror({
   TRANSITION_TO: null,
   COLLAPSE_NAV: null,
   EXPAND_NAV: null,
+  COLLAPSE_SWITCHER: null,
+  EXPAND_SWITCHER: null
 });
