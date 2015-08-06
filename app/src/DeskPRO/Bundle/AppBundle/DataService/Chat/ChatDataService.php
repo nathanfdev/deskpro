@@ -75,7 +75,7 @@ class ChatDataService
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('count(c)')
-            ->from('DeskPRO:ChatConversation', 'c');
+           ->from('DeskPRO:ChatConversation', 'c');
 
         $criteria->applyFilters($qb);
 
@@ -97,8 +97,7 @@ class ChatDataService
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('count(c) as value')
-            ->from('DeskPRO:ChatConversation', 'c');
-
+           ->from('DeskPRO:ChatConversation', 'c');
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
 

@@ -103,22 +103,24 @@ class ChatDataServiceCriteria
      */
     public function applyGroupBy(QueryBuilder $qb)
     {
-        if (!$field = $this->group_by) {
-            return;
+        if (!$this->isGrouped()) {
+            throw new \LogicException('Cannot group without group_by');
         }
 
         $alias = $qb->getRootAliases()[0];
-
-        switch ($field) {
+        switch ($this->group_by) {
             case 'date_created':
                 $qb->addSelect("SUBSTRING($alias.date_created, 1, 10) as group_name");
-                $qb->leftJoin("$alias.agent", 'a');
+                break;
+
+            case 'date_period':
+                $qb->addSelect($this->getDatePeriodGroupSelectDql($alias));
                 break;
 
             case 'agent':
             case 'department':
                 $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("$alias.$field", 'g');
+                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
                 break;
         }
 
@@ -151,6 +153,46 @@ class ChatDataServiceCriteria
     }
 
     /**
+     * Get group name SELECT clause when grouped by date_period
+     *
+     * Selects the following groups:
+     *
+     * today
+     * yesterday
+     * this_week
+     * this_month
+     * last_month
+     * this_year
+     * ever
+     *
+     * @param string $alias
+     * @return string
+     */
+    private function getDatePeriodGroupSelectDql($alias)
+    {
+        $today = date('Y-m-d', strtotime('today'));
+        $yesterday = date('Y-m-d', strtotime('yesterday'));
+        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
+        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
+        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
+        $firstDayOfThisYear = date('Y-01-01');
+
+        $target = "SUBSTRING($alias.date_created, 1, 10)";
+
+        $groupSelectDql = "(CASE
+            WHEN $target  = '$today' THEN 'today'
+            WHEN $target  = '$yesterday' THEN 'yesterday'
+            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
+            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
+            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
+            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
+            ELSE 'ever'
+        END) as group_name";
+
+        return $groupSelectDql;
+    }
+
+    /**
      * @param Request $request
      * @param OptionsResolver $resolver
      * @return array
@@ -168,7 +210,7 @@ class ChatDataServiceCriteria
         $resolver->setAllowedValues('date_created', function($value) {
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
         });
-        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created']);
+        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
 
         $params = $resolver->resolve($request->query->all());
 
