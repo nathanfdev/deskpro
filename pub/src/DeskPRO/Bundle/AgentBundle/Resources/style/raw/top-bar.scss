@@ -26,12 +26,18 @@ $text-top-margin: 9px;
 
   // Deskpro logo (top left)
   .logo {
-    display: inline-block;
+    display: block;
+    float: left;
     width: 55px;
     height: $inner-top-bar-height;
     @include retina-image("../img/deskpro-logo", 25px 25px);
     background-repeat: no-repeat;
     background-position: center center;
+  }
+
+  & > span {
+      display: block;
+      margin-top: 12px;
   }
 
   .agent-ims, .switchboard {
