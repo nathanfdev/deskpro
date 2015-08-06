@@ -935,14 +935,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset the participants collection
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetParticipants()
     {
         $this->participants->clear();
-        $this->_onPropertyChanged('participants', null, $this->participants);
-
         return $this;
     }
 
@@ -1349,15 +1347,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset the message collection
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetMessages()
     {
         $this->messages->clear();
-        $this->messages->clear();
-        $this->_onPropertyChanged('messages', null, $this->messages);
-
         return $this;
     }
 
@@ -1578,18 +1573,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 
@@ -1668,9 +1657,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels->clear();
-        $this->_onPropertyChanged('labels', null, $this->labels);
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
 
+        $this->_onPropertyChanged('labels', null, $this->labels);
         return $this;
     }
 

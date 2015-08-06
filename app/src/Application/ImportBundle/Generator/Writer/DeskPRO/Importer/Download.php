@@ -91,7 +91,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setDatePublished($entity->getDatePublished())
             ->setViewsCount($entity->getViewCount())
             ->setNumDownloads($entity->getNumDownloads())
-            ->resetLabels()
         ;
 
         $this->records->add($download);

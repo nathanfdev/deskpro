@@ -185,12 +185,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     public function resetLabels()
     {
         foreach ($this->labels as $data) {
-            App::getOrm()->remove($data);
+            $this->labels->removeElement($data);
         }
 
-        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
-
         return $this;
     }
 

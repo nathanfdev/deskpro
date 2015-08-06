@@ -78,7 +78,6 @@ final class Organization extends AbstractImporter
             ->setImportance($entity->getImportance())
             ->setDateCreated($entity->getDateCreated())
             ->resetContactData()
-            ->resetLabels()
             ->resetCustomData()
         ;
 

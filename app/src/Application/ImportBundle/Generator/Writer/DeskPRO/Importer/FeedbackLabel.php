@@ -56,14 +56,24 @@ final class FeedbackLabel extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $feedback = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
-        $feedback->resetLabels();
+        $oldEntity = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
+        $type = 'feedback';
+        $newLabels = $entity->getLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $feedback->addLabel($this->createFeedbackLabel($label));
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for feedback with oid `%d`',
-                $label, $feedback->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
@@ -76,7 +86,7 @@ final class FeedbackLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelFeedback
      */
-    private function createFeedbackLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelFeedback();
         $entity->setLabel($label);

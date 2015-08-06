@@ -56,14 +56,25 @@ final class ArticleLabel extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
-        $article->resetLabels();
+        $oldEntity = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
 
-        foreach ($entity->getLabels() as $label) {
-            $article->addLabel($this->createArticleLabel($label));
+        $type = 'article';
+        $newLabels = $entity->getLabels();
+
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for article with oid `%d`',
-                $label, $article->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 

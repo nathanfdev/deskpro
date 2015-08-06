@@ -55,18 +55,27 @@ final class OrganizationLabel extends AbstractImporter
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
-        $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
-        $organization->resetLabels();
+        $oldEntity  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
+        $type = 'organization';
+        $newLabels = $entity->getLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $organization->addLabel($this->createOrganizationLabel($label));
-            $this->logInfo(sprintf(
-                'Creating a new label `%s` for organization with oid `%d`',
-                $label, $organization->getId()
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
+            $this->logDebug(sprintf(
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
-        $this->records->add($organization);
         return $this->records;
     }
 
@@ -76,11 +85,11 @@ final class OrganizationLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelOrganization
      */
-    private function createOrganizationLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelOrganization();
         $entity->setLabel($label);
-
+        $this->records->add($entity);
         return $entity;
     }
 }

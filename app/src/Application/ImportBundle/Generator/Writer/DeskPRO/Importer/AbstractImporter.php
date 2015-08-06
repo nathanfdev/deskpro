@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Entity;
@@ -320,5 +322,14 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected function getOrganizationMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
+    }
+
+    /**
+     * todo inject
+     * @param DomainObject $entity
+     */
+    protected function removeEntity(DomainObject $entity)
+    {
+        App::getOrm()->remove($entity);
     }
 }

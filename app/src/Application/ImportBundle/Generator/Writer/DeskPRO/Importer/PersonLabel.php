@@ -56,14 +56,24 @@ final class PersonLabel extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
-        $person->resetLabels();
+        $oldEntity = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
+        $type = 'person';
+        $newLabels = $entity->getLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $person->addLabel($this->createPersonLabel($label));
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for person with oid `%d`',
-                $label, $person->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
@@ -76,7 +86,7 @@ final class PersonLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelPerson
      */
-    private function createPersonLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelPerson();
         $entity->setLabel($label);

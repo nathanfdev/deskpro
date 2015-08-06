@@ -146,8 +146,7 @@ class CustomDataBilling extends CustomDataAbstract
             array(
                 'fieldName' => 'ticket_charge',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCharge',
-                'mappedBy' => null,
-                'inversedBy' => null,
+                'inversedBy' => 'custom_data',
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'ticket_charge_id',

@@ -10,7 +10,7 @@
                             <img ng-src="/web/images/admin/icons/icon-{{ ng_var('id') }}.png" alt="Icon" style="width: 50px;"/>
                         </div>
                         <div style="float:right">
-                            <span ng-if="busy || importer.status && 'testing' !== importer.status && 'done' !== importer.status">
+                            <span ng-if="busy || !done && importer.status && 'testing' !== importer.status">
                                 <i class="fa fa-spinner fa-4x fa-spin"></i>
                             </span>
                         </div>
@@ -352,7 +352,7 @@
                         <br/>
 
                         <textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;" scroll-glue>{{ ng_var('importer.log') }}</textarea>
-                        <div ng-show="log_download_url && 'done' === importer.status" style="margin-top: 2px;">
+                        <div ng-show="log_download_url && done" style="margin-top: 2px;">
                           <a class="btn btn-default btn-xs" ng-href="{{ ng_var('log_download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log</a>
                         </div>
 

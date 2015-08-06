@@ -1444,18 +1444,12 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset contact data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetContactData()
     {
-        foreach ($this->contact_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->contact_data->clear();
-        $this->_onPropertyChanged('contact_data', null, $this->contact_data);
-
         return $this;
     }
 
@@ -1526,6 +1520,12 @@ class Person extends DomainObject implements HighlightableModelInterface
         if ($change) {
             $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
+    }
+
+    public function removeCustomData(CustomDataPerson $data)
+    {
+        $this->custom_data->removeElement($data);
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -1615,18 +1615,12 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 
@@ -2009,14 +2003,12 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset emails collection
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetEmails()
     {
         $this->emails->clear();
-        $this->_onPropertyChanged('emails', null, $this->emails);
-
         return $this;
     }
 
@@ -2088,14 +2080,12 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * Remove all usergroups
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetUsergroups()
     {
         $this->usergroups->clear();
-        $this->_onPropertyChanged('usergroups', null, $this->usergroups);
-
         return $this;
     }
 
@@ -2145,11 +2135,11 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        foreach ($this->labels as $label) {
-            $this->labels->removeElement($label);
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
         }
-        $this->_onPropertyChanged('labels', null, $this->labels);
 
+        $this->_onPropertyChanged('labels', null, $this->labels);
         return $this;
     }
 

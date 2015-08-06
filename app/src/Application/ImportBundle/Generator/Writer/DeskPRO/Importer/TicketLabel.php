@@ -56,18 +56,27 @@ final class TicketLabel extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
-        $ticket->resetLabels();
+        $oldEntity = $this->getTicketMapper()->findOneByRef($entity->getRef());
+        $type = 'ticket';
+        $newLabels = $entity->getLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $ticket->addLabel($this->createTicketLabel($label));
-            $this->logInfo(sprintf(
-                'Creating a new label `%s` for ticket with oid `%d`',
-                $label, $ticket->getId()
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
+            $this->logDebug(sprintf(
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
-        $this->records->add($ticket);
         return $this->records;
     }
 
@@ -81,7 +90,7 @@ final class TicketLabel extends AbstractImporter
     {
         $entity = new DeskPROEntity\LabelTicket();
         $entity->setLabel($label);
-
+        $this->records->add($entity);
         return $entity;
     }
 }

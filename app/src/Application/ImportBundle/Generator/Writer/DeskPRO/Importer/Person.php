@@ -73,7 +73,6 @@ final class Person extends AbstractImporter
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
             ->setOrganizationPosition($entity->getOrganizationPosition())
             ->resetEmails()
-            ->resetLabels()
             ->resetUsergroups()
             ->resetContactData()
             ->resetCustomData()
