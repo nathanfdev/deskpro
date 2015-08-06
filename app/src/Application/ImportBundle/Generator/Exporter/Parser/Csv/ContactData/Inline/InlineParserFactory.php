@@ -39,7 +39,7 @@ class InlineParserFactory
     /**
      * @return InlineParser
      */
-    public static function create()
+    public static function getParser()
     {
         static $parser;
 

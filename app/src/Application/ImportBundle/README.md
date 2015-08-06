@@ -273,7 +273,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | category                   | could be empty                                                                |
 | label                      | could be empty (only one label is supported)                                  |
 | date_created               | created could be empty (current time)                                         |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/articles.csv`          |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/articles.csv`                      |
 
 ###### article_custom_fields.csv
 
@@ -323,7 +323,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | date_created               | created could be empty (current time)                                         |
 | date_published             | created could be empty (current time)                                         |
 | label                      | could be empty (only one label is supported)                                  |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/feedback.csv`          |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/feedback.csv`                      |
 
 ###### feedback_attachments.csv
 
@@ -372,7 +372,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | name                       |                                                                               |
 | email                      |                                                                               |
 | is_agent                   | boolean                                                                       |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/people.csv`            |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/people.csv`                        |
 
 ###### people_custom_fields.csv
 
@@ -407,7 +407,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | agent                      | means a person email                                                          |
 | status                     |                                                                               |
 | date_created               | created could be empty (current time)                                         |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/tickets.csv`           |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/tickets.csv`                       |
 
 ###### ticket_messages.csv
 
@@ -453,7 +453,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | blob_path                  |                                                                               |
 | file_name                  |                                                                               |
 | content_type               |                                                                               |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/organizations.csv`     |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/organizations.csv`                 |
 
  Example:
  
