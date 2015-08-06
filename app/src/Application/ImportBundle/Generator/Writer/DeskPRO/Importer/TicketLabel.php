@@ -86,7 +86,7 @@ final class TicketLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelTicket
      */
-    private function createTicketLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelTicket();
         $entity->setLabel($label);
