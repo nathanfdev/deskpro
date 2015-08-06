@@ -21,7 +21,6 @@ Feature: /projects endpoint
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
     And the JSON node "data.links" should exist
-    And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
   Scenario: I try to make a broken POST request without a title
     When I send a POST request to "/api/v2/projects" with body:
@@ -45,13 +44,8 @@ Feature: /projects endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
-    And the JSON node "meta.count" should be equal to 1
-    And the JSON node "meta.page" should be equal to 1
-    And the JSON node "meta.total_pages" should be equal to 1
-    And the JSON node "meta.total_count" should be equal to 1
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "My test project"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/projects/1"
 
   Scenario: I modify a project
     When I send a PUT request to "/api/v2/projects/1" with body:
@@ -70,7 +64,6 @@ Feature: /projects endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "New project title"
-    And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
   Scenario: I POST a task to a project
     When I send a POST request to "/api/v2/tasks" with body:
@@ -89,7 +82,6 @@ Feature: /projects endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "Test project task"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/tasks/2"
 
   Scenario: I DELETE a single project
     When I send a DELETE request to "/api/v2/projects/1"

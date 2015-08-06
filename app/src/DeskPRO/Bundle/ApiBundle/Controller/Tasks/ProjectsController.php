@@ -99,9 +99,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      * @param int $projectId
      * @return View
      */
-    public function getAction($projectId)
+    public function getAction($id)
     {
-        $project = $this->getProject($projectId);
+        $project = $this->getProject($id);
 
         if (empty($project)) {
             throw $this->createNotFoundException();
@@ -632,7 +632,11 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
         $submitted = $request->request->all();
         $this->storedMembers = $this->convertMembers($submitted);
-        $submitted = array('title' => $submitted['title']);
+
+        $data = [];
+        if (!empty($submitted['title'])) {
+            $data = ['title' => $submitted['title']];
+        }
 
         if ($request->getMethod() === 'PUT') {
             $this->oldMembers = $this->convertExistingMembers($project);
@@ -641,7 +645,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
 
-        $form->submit($submitted, $request->getMethod() !== 'PUT');
+        $form->submit($data, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->persist($project);
