@@ -1,2 +1,2 @@
-name,blob_path,file_name,content_type,importance,custom "Text field",custom "Radio button field"
-some organization,/deskpro/www/app/src/Application/ImportBundle/Resources/example/csv/organizations.csv,organizations.csv,csv,10,some text 1,Choice 1
+name,blob_path,file_name,content_type,importance,custom "Text field",custom "Radio button field",twitter
+some organization,/deskpro/www/app/src/Application/ImportBundle/Resources/example/csv/organizations.csv,organizations.csv,csv,10,some text 1,Choice 1,twitter_acc_id

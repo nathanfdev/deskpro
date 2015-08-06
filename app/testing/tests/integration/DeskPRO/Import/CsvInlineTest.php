@@ -7,12 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class CsvInlineCustomDataTest
+ * Class CsvInlineTest
  * @package DpIntegrationTests\DeskPRO\Import
  *
  * @group importer
  */
-class CsvInlineCustomDataTest extends \DpIntegrationTestCase
+class CsvInlineTest extends \DpIntegrationTestCase
 {
     /**
      * @var string
@@ -107,6 +107,7 @@ class CsvInlineCustomDataTest extends \DpIntegrationTestCase
 
         $organization = $this->getContent('1/organizations/organization_some_organization.json');
         $this->assertCount(2, $organization['custom_fields']);
+        $this->assertCount(1, $organization['contact_data']);
     }
 
     /**
