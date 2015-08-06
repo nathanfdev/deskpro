@@ -40,7 +40,7 @@ final class Feedback extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_FEEDBACK;
     }

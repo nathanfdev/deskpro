@@ -200,7 +200,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
         }
 
-        $this->records->add($custom_field);
         return $custom_field;
     }
 
@@ -312,5 +311,16 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected function getTicketMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET);
+    }
+
+    /**
+     * Returns the organization mapper
+     *
+     * @return Mapper\Organization
+     * @throws \Exception
+     */
+    protected function getOrganizationMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
     }
 }

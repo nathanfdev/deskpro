@@ -297,7 +297,25 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->labels->clear();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
      * Add a label
+     *
      * @param \Application\DeskPRO\Entity\LabelDownload $label
      */
     public function addLabel(LabelDownload $label)

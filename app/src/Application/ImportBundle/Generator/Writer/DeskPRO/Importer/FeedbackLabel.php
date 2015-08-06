@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback labels importer
+ * DeskPRO feedback labels importer
  *
  * Class FeedbackLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -57,21 +57,14 @@ final class FeedbackLabel extends AbstractImporter
         $this->records = new ArrayCollection();
 
         $feedback = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
-        $labels   = $this->getExistingLabelsNames($feedback->getId());
+        $feedback->resetLabels();
 
         foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for feedback with oid `%d` (Skipping)',
-                    $label, $feedback->getId()
-                ));
-            } else {
-                $feedback->addLabel($this->createFeedbackLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for feedback with oid `%d`',
-                    $label, $feedback->getId()
-                ));
-            }
+            $feedback->addLabel($this->createFeedbackLabel($label));
+            $this->logDebug(sprintf(
+                'Creating a new label `%s` for feedback with oid `%d`',
+                $label, $feedback->getId()
+            ));
         }
 
         return $this->records;
@@ -90,36 +83,5 @@ final class FeedbackLabel extends AbstractImporter
 
         $this->records->add($entity);
         return $entity;
-    }
-
-    /**
-     * Returns a collection of existing feedback label names
-     *
-     * @param int $id
-     *
-     * @return array
-     * @throws Mapper\MapperException
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getFeedbackLabelMapper()->findByFeedbackId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the feedback label mapper
-     *
-     * @return Mapper\FeedbackLabel
-     * @throws \Exception
-     */
-    private function getFeedbackLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK_LABEL);
     }
 }

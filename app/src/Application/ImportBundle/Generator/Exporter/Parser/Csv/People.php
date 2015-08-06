@@ -65,6 +65,7 @@ final class People extends AbstractParser
         $collection    = new Entity\Collection();
 
         $people        = $this->getReaderData($this->getPersonReaderConfig());
+        $contact_data  = $this->exportPersonContactData();
         $custom_fields = $this->exportPersonCustomFields();
 
         foreach ($people as $num => $person) {
@@ -73,6 +74,12 @@ final class People extends AbstractParser
             try {
                 $entity = $this->exportPerson($person);
                 if ($entity) {
+                    foreach ($contact_data as $contact) {
+                        /** @var Entity\ContactData $contact */
+                        if ($entity->getDestination() === $contact->getDestination()) {
+                            $entity->addContact($contact);
+                        }
+                    }
                     foreach ($custom_fields as $custom_field_entity) {
                         /** @var Entity\CustomField $custom_field_entity */
                         if ($entity->getDestination() === $custom_field_entity->getDestination()) {
@@ -115,7 +122,7 @@ final class People extends AbstractParser
             $entity    = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination(self::PERSON_PREFIX . $person_id)
+                ->setDestination($this->formatDestination(self::PERSON_PREFIX, $person_id))
                 ->setOid($person_id)
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])
@@ -136,7 +143,19 @@ final class People extends AbstractParser
      */
     private function exportPersonCustomFields()
     {
-        return $this->exportCustomFields($this->getPersonCustomFieldReaderConfig(), self::PERSON_PREFIX, 'person_id');
+        $config = $this->getReaderConfig(self::FILE_PEOPLE_CUSTOM_FIELDS);
+        return $this->exportCustomFields($config, self::PERSON_PREFIX, 'person_id');
+    }
+
+    /**
+     * Returns a collection of people contact data
+     *
+     * @return Entity\Collection
+     */
+    private function exportPersonContactData()
+    {
+        $config = $this->getReaderConfig(self::FILE_PEOPLE_CONTACT_DATA);
+        return $this->exportContactData($config, self::PERSON_PREFIX, 'person_id');
     }
 
     /**
@@ -163,16 +182,6 @@ final class People extends AbstractParser
     private function getPersonReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_PEOPLE);
-    }
-
-    /**
-     * Returns reader config for people custom field records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getPersonCustomFieldReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_PEOPLE_CUSTOM_FIELDS);
     }
 
     /**

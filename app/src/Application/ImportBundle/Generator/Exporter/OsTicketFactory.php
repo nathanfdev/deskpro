@@ -52,7 +52,9 @@ class OsTicketFactory extends AbstractFactory
             ->attach(new Parser\OsTicket\Articles($reader))
             ->attach(new Parser\OsTicket\News($reader))
             ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader));
+            ->attach(new Parser\OsTicket\Tickets($reader))
+            ->attach(new Parser\OsTicket\Organizations($reader))
+        ;
 
         return new Osticket($parsers, $reader);
     }

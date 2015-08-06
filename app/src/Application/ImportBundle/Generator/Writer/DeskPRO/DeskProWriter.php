@@ -118,8 +118,13 @@ final class DeskProWriter extends AbstractWriter
                 $this->entity_manager->clear();
                 $this->entity_watcher->flushUpdatesQuiet();
 
-                foreach ($records as $r) {
-                    $this->logDebug(sprintf("Persisted %s #%s", Util::getBaseClassname($r), method_exists($r, 'getId') ? $r->getId() : '_'));
+                foreach ($records as $record) {
+                    $this->logDebug(sprintf(
+                        "Persisted %s #%s",
+
+                        Util::getBaseClassname($record),
+                        method_exists($record, 'getId') ? $record->getId() : '_'
+                    ));
                 }
 
             } catch (Importer\Mapper\MapperException $e) {

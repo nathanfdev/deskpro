@@ -80,6 +80,7 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\News($reader))
             ->attach($people)
             ->attach(new Parser\ZenDesk\Tickets($reader, $ticket_people, $tickets_mapper, new Client()))
+            ->attach(new Parser\ZenDesk\Organizations($reader))
         ;
 
         return new ZenDesk($parsers, $reader);
