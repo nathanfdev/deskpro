@@ -33,11 +33,12 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class ChatCountersCriteria
+ * Class ChatDataServiceCriteria
  */
-class ChatCountersCriteria
+class ChatDataServiceCriteria
 {
     /**
      * @var array
@@ -50,7 +51,7 @@ class ChatCountersCriteria
     private $group_by;
 
     /**
-     * ChatCountersCriteria constructor.
+     * ChatDataServiceCriteria constructor.
      *
      * @param array $filters
      * @param string $group_by
@@ -64,11 +65,11 @@ class ChatCountersCriteria
 
     /**
      * @param Request $request
-     * @return ChatCountersCriteria
+     * @return ChatDataServiceCriteria
      */
     public static function fromRequest(Request $request, OptionsResolver $resolver)
     {
-        $params = $request->query->all();
+        $params = self::resolveParams($request, $resolver);
 
         $group_by = null;
         if (array_key_exists('group_by', $params)) {
@@ -76,21 +77,101 @@ class ChatCountersCriteria
             unset($params['group_by']);
         }
 
-        $resolver->setDefined(['agent_id', 'department_id', 'date_created']);
-        $resolver->setAllowedValues('agent_id', function($value) {
+        $filters = $params;
+
+        return new self($filters, $group_by);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGrouped()
+    {
+        return (bool) $this->group_by;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupBy()
+    {
+        return $this->group_by;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     */
+    public function applyGroupBy(QueryBuilder $qb)
+    {
+        if (!$field = $this->group_by) {
+            return;
+        }
+
+        $alias = $qb->getRootAliases()[0];
+
+        switch ($field) {
+            case 'date_created':
+                $qb->addSelect("SUBSTRING($alias.date_created, 1, 10) as group_name");
+                $qb->leftJoin("$alias.agent", 'a');
+                break;
+
+            case 'agent':
+            case 'department':
+                $qb->addSelect('g.id as group_name');
+                $qb->leftJoin("$alias.$field", 'g');
+                break;
+        }
+
+        $qb->groupBy('group_name');
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     */
+    public function applyFilters(QueryBuilder $qb)
+    {
+        $alias = $qb->getRootAliases()[0];
+
+        foreach ($this->filters as $field => $value) {
+            switch ($field) {
+                case 'date_created':
+                    list($from, $to) = explode(':', $value);
+                    $qb->andWhere($qb->expr()->gte("SUBSTRING($alias.date_created, 1, 10)", ':from'));
+                    $qb->andWhere($qb->expr()->lte("SUBSTRING($alias.date_created, 1, 10)", ':to'));
+                    $qb->setParameters(compact('from', 'to'));
+                    break;
+
+                case 'agent':
+                case 'department':
+                    $qb->andWhere($qb->expr()->eq("$alias.$field", ":$field"));
+                    $qb->setParameter($field, $value);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param OptionsResolver $resolver
+     * @return array
+     */
+    private static function resolveParams(Request $request, OptionsResolver $resolver)
+    {
+        $resolver->setDefined(['agent', 'department', 'date_created', 'group_by']);
+
+        $resolver->setAllowedValues('agent', function($value) {
             return ctype_digit($value);
         });
-        $resolver->setAllowedValues('department_id', function($value) {
+        $resolver->setAllowedValues('department', function($value) {
             return ctype_digit($value);
         });
         $resolver->setAllowedValues('date_created', function($value) {
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
         });
+        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created']);
 
-        $filters = $resolver->resolve($params);
+        $params = $resolver->resolve($request->query->all());
 
-        return new self($filters, $group_by);
+        return $params;
     }
-
-
 }

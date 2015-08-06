@@ -64,6 +64,6 @@ services:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketCustomFieldsDataService
       arguments: [@doctrine.orm.default_entity_manager]
 
-  data.chat.chat_counters:
-      class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCounters
+  data.chat:
+      class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
       arguments: [@doctrine.orm.default_entity_manager]

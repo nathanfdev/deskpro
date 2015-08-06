@@ -44,11 +44,11 @@ class GroupedCount extends Count
     /**
      * GroupedCount constructor.
      *
-     * @param int $group
+     * @param string $group
      * @param int $count
      * @param CountsGroup $nested
      */
-    public function __construct($group, $count, CountsGroup $nested)
+    public function __construct($group, $count, CountsGroup $nested = null)
     {
         parent::__construct($count, $nested);
         $this->group = $group;

@@ -53,9 +53,17 @@ class CountsGroup
      * @param string $grouped_by
      * @param GroupedCount[] $counts
      */
-    public function __construct($grouped_by, array $counts)
+    public function __construct($grouped_by, array $counts = [])
     {
         $this->grouped_by = $grouped_by;
         $this->counts = $counts;
+    }
+
+    /**
+     * @param GroupedCount $count
+     */
+    public function add(GroupedCount $count)
+    {
+        $this->counts[] = $count;
     }
 }

@@ -32,12 +32,15 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\QueryException;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
- * Class ChatCounters
+ * Class ChatDataService
  */
-class ChatCounters
+class ChatDataService
 {
     /**
      * @var EntityManager
@@ -45,7 +48,7 @@ class ChatCounters
     private $em;
 
     /**
-     * ChatCounters constructor.
+     * ChatDataService constructor.
      *
      * @param EntityManager $em
      */
@@ -55,16 +58,59 @@ class ChatCounters
     }
 
     /**
-     * @param ChatCountersCriteria $criteria
+     * @param ChatDataServiceCriteria $criteria
      * @return Count
      */
-    public function countChats(ChatCountersCriteria $criteria)
+    public function countChats(ChatDataServiceCriteria $criteria)
+    {
+        return $criteria->isGrouped() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
+    }
+
+    /**
+     * @param ChatDataServiceCriteria $criteria
+     * @return Count
+     */
+    private function countFlat(ChatDataServiceCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('count(c)')
-           ->from('DeskPRO:ChatConversation', 'c');
+            ->from('DeskPRO:ChatConversation', 'c');
 
-        return new Count($qb->getQuery()->getSingleScalarResult());
+        $criteria->applyFilters($qb);
+
+        try {
+            $count = $qb->getQuery()->getSingleScalarResult();
+        } catch (QueryException $e) {
+            $count = 0;
+        }
+
+        return new Count($count);
+    }
+
+    /**
+     * @param ChatDataServiceCriteria $criteria
+     * @return Count
+     */
+    private function countGrouped(ChatDataServiceCriteria $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
+
+        $qb->select('count(c) as value')
+            ->from('DeskPRO:ChatConversation', 'c');
+
+        $criteria->applyFilters($qb);
+        $criteria->applyGroupBy($qb);
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        $count = 0;
+        $nested = new CountsGroup($criteria->getGroupBy());
+        foreach ($result as $group) {
+            $count += $group['value'];
+            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+        }
+
+        return new Count($count, $nested);
     }
 }
