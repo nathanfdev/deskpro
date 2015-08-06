@@ -118,7 +118,7 @@ class ChatCountsController extends BaseController
         $chats = $dataService->selectChats($criteria, $page, $count);
 
         return View::create(
-            $this->createRepresentation($chats),
+            $this->dataSerialize($chats),
             Response::HTTP_OK
         );
     }
