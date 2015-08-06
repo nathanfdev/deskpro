@@ -314,6 +314,7 @@ class Import
 
         $importer->setData('status', null);
         $importer->setData('log', null);
+        $importer->setData('log_updated', null);
         $importer->setData('progress_start', null);
         $importer->setData('progress_step', null);
         $importer->setData('progress_max', null);
