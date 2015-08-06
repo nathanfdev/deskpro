@@ -1,4 +1,5 @@
 <?php
+
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -25,62 +26,61 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline;
 
+use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity\ContactData;
-use Orb\Util\PhoneNumbers;
 
 /**
- * Abstract phone contact data helper
- *
- * Class AbstractPhone
- * @package Application\ImportBundle\ContactData
+ * Class InlineParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline
  */
-abstract class AbstractPhone extends AbstractContactData
+class InlineParser
 {
     /**
-     * Parses number to a contact data entity
+     * @var ContactType\ContactTypeInterface[]
+     */
+    private $contact_types;
+
+    /**
+     * Constructor
      *
-     * @param string $number
-     * @return array
+     * @param ContactType\Collection $contact_types
      */
-    public function parseNumberToEntity($number)
+    public function __construct(ContactType\Collection $contact_types)
     {
-        $contact = new ContactData();
-        $contact
-            ->setRawData($number)
-            ->setContactType($this->getType())
-            ->setField1(PhoneNumbers::getRegionForNumber($number))
-            ->setField2(PhoneNumbers::toE164Format($number))
-            ->setField3(PhoneNumbers::getType($number))
-        ;
-
-        return $contact;
+        $this->contact_types = $contact_types;
     }
 
     /**
-     * {@inheritdoc}
+     * Parses inline contact data from entity
+     *
+     * @param array $entity
+     * @return ContactData[]
      */
-    public function toEntity(array $data)
+    public function parse(array $entity)
     {
-        $contact = parent::toEntity($data);
+        $contact_data = array();
+        foreach ($this->contact_types as $contact_type) {
+            $value = $contact_type->getValue($entity);
+            if ( ! $value) {
+                continue;
+            }
 
-        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
-        $contact->setField2(isset($data['number']) ? $data['number'] : '');
-        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
+            $handler = ContactDataFactory::getHandler($contact_type->getContactType());
+            if ( ! method_exists($handler, $contact_type->getMethod())) {
+                throw new \RuntimeException(sprintf(
+                    'Contact type `%s` has no method `%s`',
+                    $contact_type->getContactType(), $contact_type->getMethod()
+                ));
+            }
 
-        return $contact;
-    }
+            $contact = $handler->{$contact_type->getMethod()}($value);
+            if ($contact instanceof ContactData) {
+                $contact_data[] = $contact;
+            }
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray(ContactData $entity)
-    {
-        return array_merge(parent::toArray($entity), array(
-            'country_calling_code' => $entity->getField1(),
-            'number'               => $entity->getField2(),
-            'type'                 => $entity->getField3(),
-        ));
+        return $contact_data;
     }
 }

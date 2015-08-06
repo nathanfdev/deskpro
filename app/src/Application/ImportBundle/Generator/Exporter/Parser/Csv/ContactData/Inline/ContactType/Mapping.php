@@ -25,62 +25,45 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
-
-use Application\ImportBundle\Entity\ContactData;
-use Orb\Util\PhoneNumbers;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
 
 /**
- * Abstract phone contact data helper
- *
- * Class AbstractPhone
- * @package Application\ImportBundle\ContactData
+ * Class Mapping
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
  */
-abstract class AbstractPhone extends AbstractContactData
+class Mapping extends AbstractContactType
 {
     /**
-     * Parses number to a contact data entity
+     * @var array
+     */
+    private $mapping;
+
+    /**
+     * Constructor
      *
-     * @param string $number
-     * @return array
+     * @param string $contact_type
+     * @param array  $mapping
+     * @param string $method
      */
-    public function parseNumberToEntity($number)
+    public function __construct($contact_type, array $mapping, $method = 'toEntity')
     {
-        $contact = new ContactData();
-        $contact
-            ->setRawData($number)
-            ->setContactType($this->getType())
-            ->setField1(PhoneNumbers::getRegionForNumber($number))
-            ->setField2(PhoneNumbers::toE164Format($number))
-            ->setField3(PhoneNumbers::getType($number))
-        ;
-
-        return $contact;
+        parent::__construct($contact_type, $method);
+        $this->mapping = $mapping;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toEntity(array $data)
+    public function getValue(array $entity)
     {
-        $contact = parent::toEntity($data);
+        $value = array();
 
-        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
-        $contact->setField2(isset($data['number']) ? $data['number'] : '');
-        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
+        foreach ($this->mapping as $property => $original_property) {
+            if (array_key_exists($original_property, $entity)) {
+                $value[$property] = $entity[$original_property];
+            }
+        }
 
-        return $contact;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray(ContactData $entity)
-    {
-        return array_merge(parent::toArray($entity), array(
-            'country_calling_code' => $entity->getField1(),
-            'number'               => $entity->getField2(),
-            'type'                 => $entity->getField3(),
-        ));
+        return ! empty($value) ? $value : null;
     }
 }

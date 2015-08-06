@@ -25,62 +25,22 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
-
-use Application\ImportBundle\Entity\ContactData;
-use Orb\Util\PhoneNumbers;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Abstract phone contact data helper
- *
- * Class AbstractPhone
- * @package Application\ImportBundle\ContactData
+ * Class Collection
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
  */
-abstract class AbstractPhone extends AbstractContactData
+class Collection extends AbstractCollection
 {
     /**
-     * Parses number to a contact data entity
-     *
-     * @param string $number
-     * @return array
+     * @param ContactTypeInterface $contact_type
+     * @return $this
      */
-    public function parseNumberToEntity($number)
+    public function attach(ContactTypeInterface $contact_type)
     {
-        $contact = new ContactData();
-        $contact
-            ->setRawData($number)
-            ->setContactType($this->getType())
-            ->setField1(PhoneNumbers::getRegionForNumber($number))
-            ->setField2(PhoneNumbers::toE164Format($number))
-            ->setField3(PhoneNumbers::getType($number))
-        ;
-
-        return $contact;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toEntity(array $data)
-    {
-        $contact = parent::toEntity($data);
-
-        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
-        $contact->setField2(isset($data['number']) ? $data['number'] : '');
-        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
-
-        return $contact;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray(ContactData $entity)
-    {
-        return array_merge(parent::toArray($entity), array(
-            'country_calling_code' => $entity->getField1(),
-            'number'               => $entity->getField2(),
-            'type'                 => $entity->getField3(),
-        ));
+        $this->collection[$contact_type->getContactType()] = $contact_type;
+        return $this;
     }
 }

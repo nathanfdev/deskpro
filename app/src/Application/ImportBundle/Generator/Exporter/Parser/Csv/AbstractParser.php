@@ -196,7 +196,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($entity && $this->isAttachmentValid($attachment, $ref_column)) {
             $entity
                 ->setPersonEmail($attachment['person'])
-                ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
+                ->setAsInline($this->isBooleanTrue($attachment['is_inline']))
+            ;
 
             return $entity;
         }

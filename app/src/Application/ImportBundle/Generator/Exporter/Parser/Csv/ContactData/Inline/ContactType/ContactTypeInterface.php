@@ -25,62 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
 
 use Application\ImportBundle\Entity\ContactData;
-use Orb\Util\PhoneNumbers;
 
 /**
- * Abstract phone contact data helper
- *
- * Class AbstractPhone
- * @package Application\ImportBundle\ContactData
+ * Interface ContactTypeInterface
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
  */
-abstract class AbstractPhone extends AbstractContactData
+interface ContactTypeInterface
 {
     /**
-     * Parses number to a contact data entity
-     *
-     * @param string $number
-     * @return array
+     * @return string
      */
-    public function parseNumberToEntity($number)
-    {
-        $contact = new ContactData();
-        $contact
-            ->setRawData($number)
-            ->setContactType($this->getType())
-            ->setField1(PhoneNumbers::getRegionForNumber($number))
-            ->setField2(PhoneNumbers::toE164Format($number))
-            ->setField3(PhoneNumbers::getType($number))
-        ;
-
-        return $contact;
-    }
+    public function getContactType();
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function toEntity(array $data)
-    {
-        $contact = parent::toEntity($data);
-
-        $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
-        $contact->setField2(isset($data['number']) ? $data['number'] : '');
-        $contact->setField3(isset($data['type']) ? $data['type'] : 'phone');
-
-        return $contact;
-    }
+    public function getMethod();
 
     /**
-     * {@inheritdoc}
+     * @param array $entity
+     * @return ContactData
      */
-    public function toArray(ContactData $entity)
-    {
-        return array_merge(parent::toArray($entity), array(
-            'country_calling_code' => $entity->getField1(),
-            'number'               => $entity->getField2(),
-            'type'                 => $entity->getField3(),
-        ));
-    }
+    public function getValue(array $entity);
 }
