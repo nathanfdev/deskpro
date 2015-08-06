@@ -10,7 +10,7 @@
 	<span class="sf-toolbar-info-with-delimiter">mode: {{ collector.mode }}</span>
 	<span>
 		<img
-			src="{{ asset('web/images/flags/'~collector.languageImage) }}"
+			src="{{ asset('images/flags/'~collector.languageImage) }}"
 			alt="{{ collector.languageCode }}" />
 	</span>
 	</span>
@@ -29,7 +29,7 @@
 		<div class="sf-toolbar-info-piece">
 			<b>Language</b>
 			<img
-				src="{{ asset('web/images/flags/'~collector.languageImage) }}"
+				src="{{ asset('images/flags/'~collector.languageImage) }}"
 				alt="{{ collector.languageCode }}" />
 			{{ collector.languageCode }} -
 			{{ collector.languageId }}
@@ -73,7 +73,7 @@
 		<tr>
 			<th>Language</th>
 			<td><img
-					src="{{ asset('web/images/flags/'~collector.languageImage) }}"
+					src="{{ asset('images/flags/'~collector.languageImage) }}"
 					alt="{{ collector.languageCode }}" />
 				{{ collector.languageCode }}</td>
 			<td>{{ collector.languageId }}</td>
