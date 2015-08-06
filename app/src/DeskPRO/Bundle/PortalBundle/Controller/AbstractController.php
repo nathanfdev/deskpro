@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Language;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
@@ -49,7 +50,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface|DeskproContainer
+     * @return DeskproContainer|\Symfony\Component\DependencyInjection\ContainerInterface
      */
     protected function getContainer()
     {

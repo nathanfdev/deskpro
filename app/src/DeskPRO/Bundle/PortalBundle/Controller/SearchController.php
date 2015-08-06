@@ -149,29 +149,30 @@ class SearchController extends AbstractController
             $content,
             array('limit_types' => array($content_type))
         );
-        $words = array();
 
-        $property_accessor = PropertyAccess::createPropertyAccessor();
-        foreach ($results->getResults() as $result) {
-            if (is_object($result)) {
-                $class = get_class($result);
-                $type = 'DeskPRO:' . substr($class, strrpos($class, '\\') + 1);
-                foreach ($sticky_search->getStickyWords($type, $property_accessor->getValue($result, 'id')) as $word) {
-                    if (count($words) < 100) {
-                        $words[] = $word;
-                    }
-                }
-            }
-        }
 
         $search_results = $results->getTypedResults();
 
-        // filter out the unwanted types from response
+        // filter out the unwanted types from response and get the "words" for allowed objects
+        $property_accessor = PropertyAccess::createPropertyAccessor();
         $typed_results = array();
+        $words = array();
         $allowed_types = array('article','news','download','feedback');
         foreach ($search_results as $result) {
             if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
                 $typed_results[] = $result;
+
+                $object = $result['object'];
+                if (is_object($object)) {
+                    $class = get_class($object);
+                    $type = 'DeskPRO:' . substr($class, strrpos($class, '\\') + 1);
+                    $id = $property_accessor->getValue($object, 'id');
+                    foreach ($sticky_search->getStickyWords($type, $id) as $word) {
+                        if (count($words) < 100) {
+                            $words[] = $word;
+                        }
+                    }
+                }
             }
         }
         $serialized_results = $this->get('portal_search_serializer')->serializeArray($typed_results);
