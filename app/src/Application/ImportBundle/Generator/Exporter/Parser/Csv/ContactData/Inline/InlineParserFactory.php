@@ -62,9 +62,9 @@ class InlineParserFactory
                 ->attach(new ContactType\Mapping(ContactData::TYPE_LINKED_IN, array(
                     'profile_url' => 'linkedin',
                 )))
-                ->attach(new ContactType\Value(ContactData::TYPE_MOBILE, 'parseNumberToEntity', 'fax'))
-                ->attach(new ContactType\Value(ContactData::TYPE_FAX, 'parseNumberToEntity', 'mobile'))
-                ->attach(new ContactType\Value(ContactData::TYPE_PHONE, 'parseNumberToEntity', 'phone'))
+                ->attach(new ContactType\Value(ContactData::TYPE_MOBILE, 'mobile', 'parseNumberToEntity'))
+                ->attach(new ContactType\Value(ContactData::TYPE_FAX, 'fax', 'parseNumberToEntity'))
+                ->attach(new ContactType\Value(ContactData::TYPE_PHONE, 'phone', 'parseNumberToEntity'))
                 ->attach(new ContactType\Mapping(ContactData::TYPE_SKYPE, array(
                     'username' => 'skype',
                 )))

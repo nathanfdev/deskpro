@@ -107,7 +107,7 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
         $organization = $this->getContent('1/organizations/organization_some_organization.json');
         $this->assertCount(2, $organization['custom_fields']);
-        $this->assertCount(1, $organization['contact_data']);
+        $this->assertCount(3, $organization['contact_data']);
     }
 
     /**
