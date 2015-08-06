@@ -31,7 +31,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
 
@@ -61,13 +60,13 @@ class ChatCountCriteria extends ChatSelectCriteria
 
 
     /**
-     * @param Request $request
+     * @param array $params
      * @return ChatCountCriteria
      */
-    public static function fromRequest(Request $request, OptionsResolver $resolver)
+    public static function fromParameters(array $params, OptionsResolver $resolver)
     {
         self::configureResolver($resolver);
-        $params = $resolver->resolve($request->query->all());
+        $params = $resolver->resolve($params);
 
         $group_by = null;
         if (array_key_exists('group_by', $params)) {

@@ -31,7 +31,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
 
@@ -57,13 +56,13 @@ class ChatSelectCriteria
 
 
     /**
-     * @param Request $request
+     * @param array $params
      * @return ChatCountCriteria
      */
-    public static function fromRequest(Request $request, OptionsResolver $resolver)
+    public static function fromParameters(array $params, OptionsResolver $resolver)
     {
         self::configureResolver($resolver);
-        $filters = $resolver->resolve($request->query->all());
+        $filters = $resolver->resolve($params);
 
         return new self($filters);
     }

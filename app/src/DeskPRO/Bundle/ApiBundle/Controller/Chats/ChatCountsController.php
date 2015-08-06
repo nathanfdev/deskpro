@@ -68,7 +68,7 @@ class ChatCountsController extends BaseController
         $dataService = $this->get('data.chat');
 
         try {
-            $criteria = ChatCountCriteria::fromRequest($request, new OptionsResolver());
+            $criteria = ChatCountCriteria::fromParameters($request->query->all(), new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
@@ -98,16 +98,27 @@ class ChatCountsController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
         $dataService = $this->get('data.chat');
 
+
+        $params = $request->query->all();
+        if (array_key_exists('page', $params)) {
+            unset($params['page']);
+        }
+        if (array_key_exists('count', $params)) {
+            unset($params['count']);
+        }
+
         try {
-            $criteria = ChatSelectCriteria::fromRequest($request, new OptionsResolver());
+            $criteria = ChatSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $count = $dataService->selectChats($criteria);
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+        $chats = $dataService->selectChats($criteria, $page, $count);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->createRepresentation($chats),
             Response::HTTP_OK
         );
     }

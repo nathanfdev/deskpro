@@ -33,6 +33,8 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\QueryException;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
@@ -57,7 +59,13 @@ class ChatDataService
         $this->em = $em;
     }
 
-    public function selectChats(ChatSelectCriteria $criteria)
+    /**
+     * @param ChatSelectCriteria $criteria
+     * @param int $page
+     * @param int $count
+     * @return Pagerfanta
+     */
+    public function selectChats(ChatSelectCriteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -65,9 +73,11 @@ class ChatDataService
            ->from('DeskPRO:ChatConversation', 'c');
         $criteria->applyFilters($qb);
 
-//        \Doctrine\Common\Util\Debug::dump($qb->getQuery()->getDQL());
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
 
-        return $qb->getQuery()->getArrayResult();
+        return $pager;
     }
 
     /**
