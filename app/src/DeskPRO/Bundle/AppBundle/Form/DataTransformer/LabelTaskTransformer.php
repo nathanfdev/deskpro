@@ -77,7 +77,7 @@ class LabelTaskTransformer implements DataTransformerInterface
 
     /**
      * Transform a label string to a label object (requires the task)
-     * @param mixed $label
+     * @param string $label
      * @return LabelTask|null|object
      */
     public function reverseTransform($label)
