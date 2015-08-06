@@ -9,6 +9,7 @@ import { connect } from 'redux/react';
 import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";
+import * as AppActions from "../../Application/Actions/AppActions";
 
 import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
 
@@ -18,6 +19,7 @@ import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
   LabelsList: state.LabelsList,
   StarsCounts: state.StarsCounts,
   Translations: state.Translations,
+  dp_window: state.dp_window,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
@@ -63,7 +65,8 @@ export default class TicketsNavContent extends React.Component {
       LabelsList,
       StarsCounts,
       Translations,
-      dispatch
+      dispatch,
+      dp_window
     } = this.props;
 
     let tab = null;
@@ -84,8 +87,10 @@ export default class TicketsNavContent extends React.Component {
       break;
     }
 
+    const nav_classes = "ticket-nav-frame dp-nav-frame" + (dp_window.collapseNav ? ' collapsed' : '');
+
     return (
-      <section className="ticket-nav-frame dp-nav-frame">
+      <section className={nav_classes}>
         <aside className="sidebar has-tabs">
           <div className="sidebar-title">
             <span className="sidebar-type-icon">
@@ -94,7 +99,7 @@ export default class TicketsNavContent extends React.Component {
             </span>
             <h1><FormattedMessage message={getIntlMessage(Translations, "foobar")} /></h1>
             <hr />
-            <a href="#" className="slider-control"></a>
+            <a href="#" onClick={() => dispatch(AppActions.collapseNav())} className="slider-control"></a>
           </div>
 
           <ul className="tabs sidebar-tabs">
@@ -106,6 +111,7 @@ export default class TicketsNavContent extends React.Component {
           {tab}
 
         </aside>
+        <a className="nav-expand-button" onClick={() => dispatch(AppActions.expandNav())} href="#">&nbsp;</a>
       </section>
     );
   }

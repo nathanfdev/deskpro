@@ -1,22 +1,49 @@
 import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import { Reducer } from "Ampliflux/reducers";
 
-const initialState = {
-	isLoaded: false,
-	activeAppId: 'tickets'
-};
+export default class dp_window extends Reducer {
+	getInitialState() {
+		return {
+			isLoaded: false,
+			activeAppId: 'tickets',
+			collapsedNav: false,
+		};
+	}
 
-const r = handleActions({
-	[ActionTypes.APP_IS_LOADED]: (state, action) => ({
-		...state,
-		isLoaded: true
-	}),
-	[ActionTypes.SET_ACTIVE_APP]: (state, action) => ({
-		...state,
-		activeAppId: action.payload
-	})
-}, initialState);
+	appHasLoaded(state, action) {
+		return {
+			...state,
+			isLoaded: true
+		};
+	}
 
-export default (state, action = {type: null}) => {
-	return r(state, action);
+	setActiveApp(state, action) {
+		return {
+			...state,
+			activeAppId: action.payload
+		};
+	}
+
+	collapseNav(state, action) {
+		console.log("PROUT");
+		return {
+			...state,
+			collapseNav: true
+		};
+	}
+
+	expandNav(state, action) {
+		console.log("POUET");
+		return {
+			...state,
+			collapseNav: false
+		};
+	}
+
+	registerHandlers() {this
+		.r(ActionTypes.APP_IS_LOADED, this.appHasLoaded)
+		.r(ActionTypes.SET_ACTIVE_APP, this.setActiveApp)
+		.r(ActionTypes.COLLAPSE_NAV, this.collapseNav)
+		.r(ActionTypes.EXPAND_NAV, this.expandNav)
+	}
 }

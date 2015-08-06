@@ -4,11 +4,12 @@ import { connect } from 'redux/react';
 import * as TicketActions from "../Actions/FiltersActions";
 
 @connect(state => ({
-  TicketsList: state.TicketsList
+  TicketsList: state.TicketsList,
+  dp_window: state.dp_window
 }))
 export default class TicketsListFrame extends React.Component {
   render() {
-    const { TicketsList } = this.props;
+    const { TicketsList, dp_window } = this.props;
 
     let tickets = TicketsList.TicketsList.map((ticket) => {
       return (
@@ -43,8 +44,10 @@ export default class TicketsListFrame extends React.Component {
       );
     });
 
+    const my_classes = "ticket-list-frame dp-list-frame" + (dp_window.collapseNav ? ' expanded' : '');
+
     return (
-      <section className="ticket-list-frame dp-list-frame">
+      <section className={my_classes}>
         <div className="ticket-list">
           <div className="tickets-control-bar">
 

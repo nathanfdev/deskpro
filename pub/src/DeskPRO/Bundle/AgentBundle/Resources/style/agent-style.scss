@@ -18,6 +18,7 @@ html, body {
 $window-header-height: 44px;
 $app-switcher-width: 55px;
 $nav-frame-width: 220px;
+$nav-collapsed-width: 10px;
 
 $list-frame-width: 450px;
 $tab-frame-width: 100%;
@@ -63,6 +64,28 @@ $tab-frame-width: 100%;
     width: $nav-frame-width;
     z-index: 100;
     overflow-y: auto;
+
+    transition: all 0.25s ease;
+
+    a.nav-expand-button {
+        display: none;
+        background-color: #4681B2;
+        width: $nav-collapsed-width;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 500;
+        bottom: 0;
+    }
+
+    &.collapsed {
+        width: $nav-collapsed-width;
+        overflow-y: hidden;
+
+        a.nav-expand-button {
+            display: block;
+        }
+    }
   }
 
   .dp-content-outer-frame {
@@ -86,6 +109,12 @@ $tab-frame-width: 100%;
     border-right: 1px solid darken(#f8f8f8, 10%);
     height: auto;
     overflow-y: auto;
+
+    transition: all 0.25s ease;
+
+    &.expanded {
+        left: $app-switcher-width + $nav-collapsed-width;
+    }
   }
 
   .dp-tab-frame {
@@ -94,7 +123,12 @@ $tab-frame-width: 100%;
     left: $app-switcher-width + $nav-frame-width + $list-frame-width;
     right: 0;
     bottom: 0;
-    
+    transition: all 0.25s ease;
+
+    &.expanded {
+        left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
+    }
+
     .blank-text {
       font-size: 12px;
       position: absolute;
@@ -104,11 +138,11 @@ $tab-frame-width: 100%;
       line-height: 1em;
       margin-top: -71px;
       font-style: italic;
-      
+
       p {
         color: #999;
       }
-      
+
       .hero-icon {
         font-size: 100px;
         margin-bottom: 30px;

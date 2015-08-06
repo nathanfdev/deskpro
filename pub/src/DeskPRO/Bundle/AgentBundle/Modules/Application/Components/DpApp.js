@@ -14,13 +14,13 @@ import { routingStarted } from "../Actions/AppActions";
 @connect(state => ({
   ...state
 }))
-export default class DpApp extends React.Component {  
+export default class DpApp extends React.Component {
   constructor(props) {
     super(props);
     const { dispatch, router } = this.props;
     dispatch(routingStarted(router));
   }
-  
+
   render() {
     return (
       <div className="dp-window">
@@ -28,8 +28,8 @@ export default class DpApp extends React.Component {
         <AppSwitcher />
 
         {this.props.children}
-    
-        <TabFrame />
+
+        <TabFrame {...this.props} />
       </div>
     );
   }
