@@ -535,6 +535,19 @@ class DeskproContainer extends Container
     }
 
 
+    public function getUsersourceLogger()
+    {
+        static $logger = null;
+
+        if ($logger === null) {
+            $logger = new \Orb\Log\Logger();
+            $logger->addWriter(new \Orb\Log\Writer\Stream($this->getLogDir() . '/usersource_log.log'));
+        }
+
+        return $logger;
+    }
+
+
     /**
      * Get the person activity logger
      *

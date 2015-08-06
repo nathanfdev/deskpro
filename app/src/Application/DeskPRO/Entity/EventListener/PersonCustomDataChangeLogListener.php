@@ -60,6 +60,10 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPreUpdate(CustomDataPerson $data, PreUpdateEventArgs $event)
     {
+        if (!$data->person) {
+            return;
+        }
+
         $old = clone $data;
         foreach ($event->getEntityChangeSet() as $field => $change) {
             $old[$field] = $change[0];
@@ -84,6 +88,10 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPrePersist(CustomDataPerson $data)
     {
+        if (!$data->person) {
+            return;
+        }
+
         $val = $this->custom_field_manager->renderTextForData($data);
         $change = new ChangeArray('custom_data', null, $val);
         $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);

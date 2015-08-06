@@ -263,13 +263,16 @@ class TicketLogGenerator
 
             case 'custom_field':
             case 'custom_data':
+                if (empty($old['value']) && empty($new['value'])) {
+                    return array();
+                }
                 return array(
                     'action_type'  => 'changed_custom_field',
-                    'value_before' => $old ? @$old['value'] : null,
-                    'value_after' => $new ? @$new['value'] : null,
+                    'value_before' => !empty($old['value']) ? $old['value'] : null,
+                    'value_after'  => !empty($new['value']) ? $new['value'] : null,
 
-                    'field_id'   => $old ? $old['field_def']->id : null,
-                    'field_name' => $old ? $old['field_def']->title : null
+                    'field_id'   => !empty($old['field_def']) ? $old['field_def']->id : null,
+                    'field_name' => !empty($old['field_def']) ? $old['field_def']->title : null
                 );
                 break;
 

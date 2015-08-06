@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,37 +29,56 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage DependencyInection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Usersource\Sync\Syncer\DbTableSyncer;
-use Application\DeskPRO\Usersource\Sync\Syncer\LdapSyncer;
-use Application\DeskPRO\Usersource\Sync\SyncerHelper;
-use Application\DeskPRO\Usersource\Sync\SyncManager;
-
-class UsersourceSyncManagerService
+class Build1438180208 extends AbstractBuild
 {
-    public static function create(DeskproContainer $container)
+    public function run()
     {
-        $us_logger = null;
-        if (App::getConfig('debug.enable_usersource_log')) {
-            // only instantiate the helper with the usersource logger if its enabled
-            $us_logger = $container->getUsersourceLogger();
+        $this->out("Resetting date_resolved on archived tickets without it");
+        $db = $this->container->getDb();
+
+        $batch_size = 1000;
+
+        while(true) {
+            $ticket_ids = $db->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE status = 'archived' AND date_resolved IS NULL
+                LIMIT $batch_size
+            ");
+
+            if (!$ticket_ids) {
+                break;
+            }
+
+            foreach ($ticket_ids as $tid) {
+                // id_after = 200 is from Ticket::getStatusInt
+                $date_resolved = $db->fetchColumn("
+                    SELECT date_created
+                    FROM tickets_logs
+                    WHERE ticket_id = ? AND action_type = 'changed_status' AND id_after = 200
+                    ORDER BY id DESC
+                    LIMIT 1
+                ", array($tid));
+
+                if (!$date_resolved) {
+                    $db->executeUpdate("
+                        UPDATE tickets SET date_resolved = COALESCE(date_status, date_created, NOW())
+                        WHERE id = ?
+                    ", array($tid));
+                } else {
+                    $db->executeUpdate("
+                        UPDATE tickets SET date_resolved = ?
+                        WHERE id = ?
+                    ", array($date_resolved, $tid));
+                }
+            }
+
+            $this->out("Done batch of " . count($ticket_ids) . "...");
         }
-
-        $helper = new SyncerHelper($container->getEm(), $us_logger);
-
-        $syncers = array();
-
-        $syncers[] = new DbTableSyncer($helper);
-        $syncers[] = new LdapSyncer($helper);
-
-        $sm = new SyncManager($syncers, $container->getEm(), $container->getJobQueue(), $container->getSystemService('usersource_manager'), $helper);
-
-        return $sm;
     }
 }

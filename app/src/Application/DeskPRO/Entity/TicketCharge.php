@@ -302,6 +302,12 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         $field_manager = App::getContainer()->getSystemService('billing_fields_manager');
         $field_manager->addApiData($this, $data);
 
+        if ($first = $this->custom_data->first()) {
+            if ('Comment' === $first->field['title']) {
+                $data['comment'] = $first['input'];
+            }
+        }
+
         return $data;
     }
 

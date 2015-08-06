@@ -76,6 +76,11 @@ class ezcMailFileParser extends ezcMailPartParser
     private $fileName = null;
 
     /**
+     * @var string
+     */
+    private $displayFileName = null;
+
+    /**
      * Static counter used to generate unique directory names.
      *
      * @var int
@@ -128,10 +133,18 @@ class ezcMailFileParser extends ezcMailPartParser
             $fileName = "filename";
         }
 
+        // DeskPRO Edit: Same logic as in rfc2231_implementation.php
+        // to fix ezc bug #13038
+        if (preg_match( '@^=\?[^?]+\?[QqBb]\?@', $fileName)) {
+            $fileName = ezcMailTools::mimeDecode($fileName);
+        }
+
 		$fileName = trim($fileName);
 		if (!$fileName) {
 			$fileName = 'filename';
 		}
+
+        $this->displayFileName = $fileName;
 
         // clean file name (replace unsafe characters with underscores)
 		$fileName = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $fileName);
@@ -318,6 +331,11 @@ class ezcMailFileParser extends ezcMailPartParser
             $filePart->dispositionType = ezcMailFile::DISPLAY_ATTACHMENT;
         }
         $filePart->size = filesize( $this->fileName );
+
+        if (!empty($filePart->contentDisposition)) {
+            $filePart->contentDisposition->displayFileName = $this->displayFileName;
+        }
+
         return $filePart;
     }
 }

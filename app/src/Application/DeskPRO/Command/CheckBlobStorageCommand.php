@@ -1,12 +1,13 @@
 <?php
+
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,41 +26,40 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage DependencyInection
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Usersource\Sync\Syncer\DbTableSyncer;
-use Application\DeskPRO\Usersource\Sync\Syncer\LdapSyncer;
-use Application\DeskPRO\Usersource\Sync\SyncerHelper;
-use Application\DeskPRO\Usersource\Sync\SyncManager;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class UsersourceSyncManagerService
+
+class CheckBlobStorageCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-    public static function create(DeskproContainer $container)
+    protected function configure()
     {
-        $us_logger = null;
-        if (App::getConfig('debug.enable_usersource_log')) {
-            // only instantiate the helper with the usersource logger if its enabled
-            $us_logger = $container->getUsersourceLogger();
+        $this->setName('dp:check-blob-storage');
+        $this->addOption('clean', null, InputOption::VALUE_NONE, "DELETE records in blob_storage that have no parent blob record.");
+        $this->setHelp("Checks for records in blob_storage that have no parent blob record.");
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->getOption('clean')) {
+            $count = $this->getContainer()->getEm()->getRepository('DeskPRO:Blob')->cleanDanglingBlobStorageRows();
+            $output->writeln("<info>$count records have been cleaned.</info>");
+        } else {
+            $count = $this->getContainer()->getEm()->getRepository('DeskPRO:Blob')->countDanglingBlobStorageRows();
+            $output->writeln("<info>$count danling records exist. Use --clean option to delete them.</info>");
         }
 
-        $helper = new SyncerHelper($container->getEm(), $us_logger);
-
-        $syncers = array();
-
-        $syncers[] = new DbTableSyncer($helper);
-        $syncers[] = new LdapSyncer($helper);
-
-        $sm = new SyncManager($syncers, $container->getEm(), $container->getJobQueue(), $container->getSystemService('usersource_manager'), $helper);
-
-        return $sm;
+        return 0;
     }
 }

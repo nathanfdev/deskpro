@@ -209,15 +209,17 @@
 							</strong>
 						</a></article>
 					</td>
-					<td class="dp-item" width="25%">
-						<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');" onclick="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
-							<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
-							<strong>
-								Manage your DeskPRO license.
-							</strong>
-						</a></article>
-					</td>
+					{% if not app.getSetting('disable_admin_billing') %}
+						<td class="dp-item" width="25%">
+							<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');" onclick="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
+								<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
+								<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
+								<strong>
+									Manage your DeskPRO license.
+								</strong>
+							</a></article>
+						</td>
+					{% endif %}
 				</tr>
 			</tbody>
 		</table>
