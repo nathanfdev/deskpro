@@ -36,95 +36,36 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class ChatDataServiceCriteria
+ * Class ChatSelectCriteria
  */
-class ChatDataServiceCriteria
+class ChatSelectCriteria
 {
     /**
      * @var array
      */
-    private $filters = [];
+    protected $filters = [];
 
     /**
-     * @var string
-     */
-    private $group_by;
-
-    /**
-     * ChatDataServiceCriteria constructor.
+     * ChatCountCriteria constructor.
      *
      * @param array $filters
-     * @param string $group_by
      */
-    private function __construct(array $filters, $group_by)
+    protected function __construct(array $filters)
     {
         $this->filters = $filters;
-        $this->group_by = $group_by;
     }
 
 
     /**
      * @param Request $request
-     * @return ChatDataServiceCriteria
+     * @return ChatCountCriteria
      */
     public static function fromRequest(Request $request, OptionsResolver $resolver)
     {
-        $params = self::resolveParams($request, $resolver);
+        self::configureResolver($resolver);
+        $filters = $resolver->resolve($request->query->all());
 
-        $group_by = null;
-        if (array_key_exists('group_by', $params)) {
-            $group_by = $params['group_by'];
-            unset($params['group_by']);
-        }
-
-        $filters = $params;
-
-        return new self($filters, $group_by);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGrouped()
-    {
-        return (bool) $this->group_by;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroupBy()
-    {
-        return $this->group_by;
-    }
-
-    /**
-     * @param QueryBuilder $qb
-     */
-    public function applyGroupBy(QueryBuilder $qb)
-    {
-        if (!$this->isGrouped()) {
-            throw new \LogicException('Cannot group without group_by');
-        }
-
-        $alias = $qb->getRootAliases()[0];
-        switch ($this->group_by) {
-            case 'date_created':
-                $qb->addSelect("SUBSTRING($alias.date_created, 1, 10) as group_name");
-                break;
-
-            case 'date_period':
-                $qb->addSelect($this->getDatePeriodGroupSelectDql($alias));
-                break;
-
-            case 'agent':
-            case 'department':
-                $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
-                break;
-        }
-
-        $qb->groupBy('group_name');
+        return new self($filters);
     }
 
     /**
@@ -143,6 +84,12 @@ class ChatDataServiceCriteria
                     $qb->setParameters(compact('from', 'to'));
                     break;
 
+                case 'date_period':
+                    $datePeriodCaseWhen = $this->getDatePeriodCaseWhenDql($alias);
+                    $qb->andWhere("$datePeriodCaseWhen = :date_period");
+                    $qb->setParameter('date_period', $value);
+                    break;
+
                 case 'agent':
                 case 'department':
                     $qb->andWhere($qb->expr()->eq("$alias.$field", ":$field"));
@@ -153,9 +100,9 @@ class ChatDataServiceCriteria
     }
 
     /**
-     * Get group name SELECT clause when grouped by date_period
+     * Get date_period CASE-WHEN DQL clause
      *
-     * Selects the following groups:
+     * Handles the following groups:
      *
      * today
      * yesterday
@@ -168,7 +115,7 @@ class ChatDataServiceCriteria
      * @param string $alias
      * @return string
      */
-    private function getDatePeriodGroupSelectDql($alias)
+    protected function getDatePeriodCaseWhenDql($alias)
     {
         $today = date('Y-m-d', strtotime('today'));
         $yesterday = date('Y-m-d', strtotime('yesterday'));
@@ -187,19 +134,17 @@ class ChatDataServiceCriteria
             WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
             WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
             ELSE 'ever'
-        END) as group_name";
+        END)";
 
         return $groupSelectDql;
     }
 
     /**
-     * @param Request $request
      * @param OptionsResolver $resolver
-     * @return array
      */
-    private static function resolveParams(Request $request, OptionsResolver $resolver)
+    protected static function configureResolver(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['agent', 'department', 'date_created', 'group_by']);
+        $resolver->setDefined(['agent', 'department', 'date_created', 'date_period']);
 
         $resolver->setAllowedValues('agent', function($value) {
             return ctype_digit($value);
@@ -210,10 +155,8 @@ class ChatDataServiceCriteria
         $resolver->setAllowedValues('date_created', function($value) {
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
         });
-        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
-
-        $params = $resolver->resolve($request->query->all());
-
-        return $params;
+        $resolver->setAllowedValues('date_period', [
+            'today', 'yesterday', 'this_week', 'this_month', 'last_month', 'this_year', 'ever'
+        ]);
     }
 }

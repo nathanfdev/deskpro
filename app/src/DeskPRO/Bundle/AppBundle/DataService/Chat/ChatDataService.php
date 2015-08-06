@@ -57,26 +57,38 @@ class ChatDataService
         $this->em = $em;
     }
 
+    public function selectChats(ChatSelectCriteria $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
+
+        $qb->select('c')
+           ->from('DeskPRO:ChatConversation', 'c');
+        $criteria->applyFilters($qb);
+
+//        \Doctrine\Common\Util\Debug::dump($qb->getQuery()->getDQL());
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
     /**
-     * @param ChatDataServiceCriteria $criteria
+     * @param ChatCountCriteria $criteria
      * @return Count
      */
-    public function countChats(ChatDataServiceCriteria $criteria)
+    public function countChats(ChatCountCriteria $criteria)
     {
         return $criteria->isGrouped() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
     }
 
     /**
-     * @param ChatDataServiceCriteria $criteria
+     * @param ChatCountCriteria $criteria
      * @return Count
      */
-    private function countFlat(ChatDataServiceCriteria $criteria)
+    private function countFlat(ChatCountCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('count(c)')
            ->from('DeskPRO:ChatConversation', 'c');
-
         $criteria->applyFilters($qb);
 
         try {
@@ -89,10 +101,10 @@ class ChatDataService
     }
 
     /**
-     * @param ChatDataServiceCriteria $criteria
+     * @param ChatCountCriteria $criteria
      * @return Count
      */
-    private function countGrouped(ChatDataServiceCriteria $criteria)
+    private function countGrouped(ChatCountCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 

@@ -40,7 +40,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataServiceCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -61,19 +62,50 @@ class ChatCountsController extends BaseController
      * )
      * @Get("/user_chats/counts", name="api_chats_count")
      */
-    public function getAction(Request $request)
+    public function getCountsAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $counter */
-        $counter = $this->get('data.chat');
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
+        $dataService = $this->get('data.chat');
 
         try {
-            $criteria = ChatDataServiceCriteria::fromRequest($request, new OptionsResolver());
+            $criteria = ChatCountCriteria::fromRequest($request, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $count = $counter->countChats($criteria);
+        $count = $dataService->countChats($criteria);
         
+        return View::create(
+            $this->createRepresentation($count),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get chats",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     * )
+     * @Get("/user_chats", name="api_chats")
+     */
+    public function getAction(Request $request)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
+        $dataService = $this->get('data.chat');
+
+        try {
+            $criteria = ChatSelectCriteria::fromRequest($request, new OptionsResolver());
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        $count = $dataService->selectChats($criteria);
+
         return View::create(
             $this->createRepresentation($count),
             Response::HTTP_OK
