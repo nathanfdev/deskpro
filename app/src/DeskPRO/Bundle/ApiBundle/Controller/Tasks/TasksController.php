@@ -465,6 +465,11 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $submitted = $request->request->all();
 
+        // TODO Remove this. Terrible fix for what is essentially a transformer problem.
+        if (empty($submitted['labels']) && $request->getMethod() !== 'PUT') {
+            $submitted['labels'] = [];
+        }
+
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {

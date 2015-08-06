@@ -3,6 +3,8 @@ import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";
+import Formsy from "formsy-react";
+import FRC from "../../../../../Component/FormComponents/main.js";
 
 @connect(state => ({
   taskFrameList: state.taskFrameList
@@ -29,6 +31,12 @@ export default class TasksListFrame extends React.Component {
     this.forceUpdate();
 
     this.props.dispatch(TaskActions.editTask(newValues, reload));
+  }
+
+  createTask(source, model) {
+    this.props.dispatch(TaskActions.createTask({
+      title : model.title
+    }, source));
   }
 
   render() {
@@ -111,6 +119,11 @@ export default class TasksListFrame extends React.Component {
             </a>
           </span>
         </div>
+
+        <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
+          <FRC.Input name="title" type="text" />
+          <button type="submit" value="Save" className="button">Add</button>
+        </Formsy.Form>
 
         {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map(function(object) {
           let cardClass = object.is_done ? "card task-card task-card-completed" : "card task-card";
