@@ -87,7 +87,7 @@ final class ArticleLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelArticle
      */
-    private function createArticleLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelArticle();
         $entity->setLabel($label);

@@ -92,7 +92,8 @@
 
                                     <a href="javascript:;" class="btn btn-default file-upload-wrapper">
                                         <i class="fa fa-upload"></i>
-                                        <input type="file" ng-file-select="Ctrl.onFileSelect($files)" accept=".csv"/>
+                                        <input type="file" ng-file-select="Ctrl.onFileSelect($files)"
+                                               accept=".zip,.csv"/>
                                         Upload CSV File
                                     </a>
                                 </div>
@@ -312,7 +313,7 @@
 
 
                     <div ng-if="'testing' === importer.status && !busy">
-                        <div ng-if="test_error">
+                        <div ng-if="test_error" class="text-danger">
                             {{ ng_var('test_error_message') }}
                         </div>
                         <div ng-if="!test_error">
@@ -384,7 +385,7 @@
 
                     <button class="btn btn-primary"
                             ng-click="Ctrl.importStart()"
-                            ng-if="'testing' === importer.status"
+                            ng-if="'testing' === importer.status && !test_error"
                             >
                         Start Import &rarr;
                     </button>

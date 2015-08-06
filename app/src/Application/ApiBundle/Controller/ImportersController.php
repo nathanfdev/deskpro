@@ -147,8 +147,8 @@ class ImportersController extends AbstractController implements ProtectedControl
         $importer->setData('config', @$data['config']);
         $this->em->flush($importer);
 
-        $status = $importer->getData('status');
-        if ($request->get('reset') && $is::STATUS_DONE === $status || $is::STATUS_ERROR === $status) {
+        $importer->getData('status');
+        if ($request->get('reset')) {
             $is->cleanup($importer);
         }
 
@@ -165,15 +165,15 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function testAction($id, Request $request)
     {
-        $is = $this->is();
-        $importer = $is->getImporter($id);
-        $config = $is->createGeneratorConfig($importer);
-
-        /** @var Generator $generator */
-        $this->container->set('deskpro.import.config', $config);
-        $generator = $this->container->get('deskpro.import.generator');
-
         try {
+            $is = $this->is();
+            $importer = $is->getImporter($id);
+            $config = $is->createGeneratorConfig($importer);
+
+            /** @var Generator $generator */
+            $this->container->set('deskpro.import.config', $config);
+            $generator = $this->container->get('deskpro.import.generator');
+
             $res = $this->createJsonResponse(array('result' => $generator->isReady()));
         } catch (\Exception $e) {
             $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));

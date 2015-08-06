@@ -64,12 +64,8 @@ class ImporterHandler extends AbstractProcessingHandler
             $log = trim($log);
         }
 
-        if ($this->importer->getData('log_updated')) {
-            sleep(1000);
-        }
-
         $this->importer->setData('log', $log);
-        $this->importer->setData('log_updated', time());
+        $this->importer->setData('updated', time());
 
         if ($this->last_time - time() > 1 || $this->count++ % 5 === 0 || !$this->importer->getId()) {
             $this->em->flush($this->importer);

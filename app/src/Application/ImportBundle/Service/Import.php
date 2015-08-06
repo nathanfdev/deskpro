@@ -217,20 +217,26 @@ class Import
         if (!file_exists($tmp)) {
             mkdir($tmp.'/in', 0777, true);
             mkdir($tmp.'/out', 0777, true);
-        }
 
-        /**
-         * copy blobs to temp dir
-         */
-        if (@$config['blobs']) {
+            /**
+             * copy blobs to temp dir
+             */
+            if (@$config['blobs']) {
 
-            $storage = $this->c->getBlobStorage();
+                $storage = $this->c->getBlobStorage();
 
-            foreach ($config['blobs'] as $blobData) {
-                if (!$blob = $this->em->find('DeskPRO:Blob', $blobData['id'])) {
-                    continue;
+                foreach ($config['blobs'] as $blobData) {
+                    if (!$blob = $this->em->find('DeskPRO:Blob', $blobData['id'])) {
+                        continue;
+                    }
+                    $storage->copyBlobRecordToFile($tmp.'/in/'.$blob['filename'], $blob);
+
+                    if ('application/zip' === $blob['content_type']) {
+                        /** @var \Orb\Zip\Zip $zipper */
+                        $zipper = $this->c->getSystemService('zipper');
+                        $zipper->decompressZip($tmp.'/in/'.$blob['filename'], $tmp.'/in');
+                    }
                 }
-                $storage->copyBlobRecordToFile($tmp . '/in/' . $blob['filename'], $blob);
             }
         }
 
@@ -258,6 +264,7 @@ class Import
     {
         $importer = $this->getImporter($id);
         $importer->setData('status', $state);
+        $importer->setData('updated', time());
         $this->em->flush($importer);
     }
 
@@ -270,8 +277,7 @@ class Import
         $importer = $this->initReader($id);
 
         // set pointer to current import
-        $importer->setData('status', self::STATUS_PENDING);
-        $this->em->flush($importer);
+        $this->setStatus($id, self::STATUS_PENDING);
         $this->setCurrentName($id);
 
         // trigger cron to start console command

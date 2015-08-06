@@ -86,7 +86,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           'organization_custom_fields.csv',
         ]
         f = files[0].name.toLowerCase()
-        if allowed.indexOf(f) == -1
+        if allowed.indexOf(f) == -1 && 'application/zip' != files[0].type
           @$scope.file_upload_error = 'The file you selected (' + f + ') does not match any of the expected files this importer supports.';
           return
 
@@ -112,7 +112,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @Api.sendGet('/server/importers/' + @$scope.id).then (res) =>
         @$scope.importer = res.data
         updated = @$scope.importer.log_updated
-        if updated && Math.round(Date.now() / 1000) > updated - 60
+        if updated && Math.round(Date.now() / 1000) > updated - 600
           return @$scope.importer.status = 'error'
 
 
