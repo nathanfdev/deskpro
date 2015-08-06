@@ -631,7 +631,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $status = $project->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         $submitted = $request->request->all();
-        $this->storedMembers = $this->convertMembers($submitted);
+//        $this->storedMembers = $this->convertMembers($submitted);
 
         $data = [];
         if (!empty($submitted['title'])) {
@@ -643,7 +643,12 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         }
 
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(
+            null,
+            'project',
+            $project,
+            ['project' => $project, 'entity_manager' => $this->getDoctrine()->getManager()]
+        )->getForm();
 
         $form->submit($data, $request->getMethod() !== 'PUT');
 
@@ -653,7 +658,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
             $location = $this->generateUrl('api_projects_get', array('id' => $project->getId()));
 
-            $this->addMembers($project);
+//            $this->addMembers($project);
 
             return View::create(
                 $this->createRepresentation($project),

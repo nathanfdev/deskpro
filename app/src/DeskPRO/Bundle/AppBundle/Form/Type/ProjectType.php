@@ -23,6 +23,21 @@ class ProjectType extends AbstractType
             array(
                 'description' => 'the project title',
             )
+        )
+        ->add(
+            'departments',
+            'collection',
+            array(
+                'type' => 'department',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'options' => array(
+                    'task' => $options['project'],
+                    'required' => false,
+                    'description' => 'project members which are departments',
+                ),
+            )
         );
     }
 
@@ -30,6 +45,8 @@ class ProjectType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskProject',
+            'project' => null,
+            'entity_manager' => null,
         ));
     }
 }
