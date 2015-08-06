@@ -164,7 +164,16 @@ class SearchController extends AbstractController
             }
         }
 
-        $typed_results = $results->getTypedResults();
+        $search_results = $results->getTypedResults();
+
+        // filter out the unwanted types from response
+        $typed_results = array();
+        $allowed_types = array('article','news','download','feedback');
+        foreach ($search_results as $result) {
+            if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
+                $typed_results[] = $result;
+            }
+        }
         $serialized_results = $this->get('portal_search_serializer')->serializeArray($typed_results);
 
         return $this->makeJsonResponse(
