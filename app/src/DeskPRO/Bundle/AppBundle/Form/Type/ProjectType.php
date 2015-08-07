@@ -33,7 +33,7 @@ class ProjectType extends AbstractType
                 'allow_delete' => true,
                 'delete_empty' => true,
                 'options' => array(
-                    'task' => $options['project'],
+                    'project' => $options['project'],
                     'required' => false,
                     'description' => 'project members which are departments',
                 ),
