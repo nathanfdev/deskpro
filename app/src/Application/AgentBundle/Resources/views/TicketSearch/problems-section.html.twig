@@ -11,6 +11,19 @@
         </header>
 
         <article>
+            <script type="text/html">
+                {% set _url = path('agent_ticketsearch_runproblem', {'problem_id': '0000'}) %}
+                <li class="is-nav-item">
+                    <div class="item" data-route="listpane:{{ _url }}">
+                        <h3></h3>
+
+                        <div class="float-side">
+                            <em style="cursor:pointer" data-route="listpane:{{ _url }}"
+                                class="counter list-counter">0</em>
+                        </div>
+                    </div>
+                </li>
+            </script>
             <ul id="tickets_outline_problems" class="nav-list">
 
                 {% if 0 == open_problems|length and 0 == closed_problems|length %}

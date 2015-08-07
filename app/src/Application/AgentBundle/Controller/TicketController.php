@@ -367,8 +367,14 @@ class TicketController extends AbstractController
         $open_problems = array();
         $closed_problems = array();
         if ($this->person->hasPerm('agent_problems.view')) {
-            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
-            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => false));
+            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+                array('is_open' => true),
+                array('title' => 'asc')
+            );
+            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+                array('is_open' => false),
+                array('title' => 'asc')
+            );
         }
 
 
@@ -2142,8 +2148,14 @@ class TicketController extends AbstractController
         $open_problems = array();
         $closed_problems = array();
         if ($this->person->hasPerm('agent_problems.view')) {
-            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
-            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => false));
+            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+                array('is_open' => true),
+                array('title' => 'asc')
+            );
+            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+                array('is_open' => false),
+                array('title' => 'asc')
+            );
         }
 
         $data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
@@ -3755,8 +3767,14 @@ class TicketController extends AbstractController
             $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
         }
 
-        $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => true));
-        $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(array('is_open' => false));
+        $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+            array('is_open' => true),
+            array('title' => 'asc')
+        );
+        $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+            array('is_open' => false),
+            array('title' => 'asc')
+        );
 
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
             'ticket'                 => $ticket,

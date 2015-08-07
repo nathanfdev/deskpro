@@ -49,9 +49,9 @@ class ProblemListener
     protected $updates;
 
     /**
-     * @var \SplQueue
+     * @var int
      */
-    protected $inserts;
+    protected $inserts = 0;
 
     /**
      * @var array
@@ -61,7 +61,6 @@ class ProblemListener
     public function __construct(DeskproContainer $container)
     {
         $this->updates = new \SplQueue();
-        $this->inserts = new \SplQueue();
         $this->conn = $container->getEm()->getConnection();
     }
 
@@ -82,8 +81,9 @@ class ProblemListener
      */
     public function onPrePersist(Problem $problem)
     {
+        $a = 1;
         if (!$problem->id) {
-            $this->inserts->enqueue($problem);
+            $this->inserts++;
         }
     }
 
@@ -100,10 +100,10 @@ class ProblemListener
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(
                     array(
-                        'problem_id' => $problem->id,
-                        'problem_title' => $problem->title,
-                        'incidents' => $problem->tickets->count(),
-                        'is_open' => $problem->is_open,
+                        'problem_id' => $p->id,
+                        'problem_title' => $p->title,
+                        'incidents' => $p->tickets->count(),
+                        'is_open' => $p->is_open,
                     )
                 )
             );
@@ -119,23 +119,21 @@ class ProblemListener
      */
     public function onPostPersist(Problem $problem)
     {
-        while (!$this->inserts->isEmpty()) {
-            $p = $this->inserts->dequeue();
-            $this->queue[] = array(
-                'channel' => self::CHANNEL_NEW,
-                'auth' => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(
-                    array(
-                        'problem_id' => $problem->id,
-                        'problem_title' => $problem->title,
-                        'incidents' => $problem->tickets->count(),
-                    )
+        $this->queue[] = array(
+            'channel' => self::CHANNEL_NEW,
+            'auth' => DpStrings::random(15, Strings::CHARS_KEY),
+            'date_created' => date('Y-m-d H:i:s'),
+            'data' => serialize(
+                array(
+                    'id' => $problem->id,
+                    'title' => $problem->title,
+                    'incidents' => $problem->tickets->count(),
                 )
-            );
-        }
+            )
+        );
+        $this->inserts--;
 
-        if ($this->inserts->isEmpty() && $this->queue) {
+        if (0 === $this->inserts) {
             $this->sendQueue();
         }
     }

@@ -178,7 +178,13 @@ pageMeta.baseId = '{{ baseId }}';
 					</th>
 					<td>
 
-						{% set problems = [{title: phrase('agent.problems.open_problems'), children: open_problems}, {title: phrase('agent.problems.closed_problems'), children: closed_problems}] %}
+                        {% set problems = [] %}
+                        {% if open_problems|length %}
+                            {% set problems = [{title: phrase('agent.problems.open_problems'), children: open_problems}]|merge(problems) %}
+                        {% endif %}
+                        {% if closed_problems|length %}
+                            {% set problems = [{title: phrase('agent.problems.closed_problems'), children: closed_problems}]|merge(problems) %}
+                        {% endif %}
 						{% if app.user.hasPerm('agent_problems.create') %}
 							{% set problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(problems) %}
 						{% endif %}

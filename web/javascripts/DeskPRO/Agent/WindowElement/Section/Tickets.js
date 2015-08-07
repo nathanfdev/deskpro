@@ -1,5 +1,39 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement.Section');
 
+// not implemented in jQuery 1.7
+parseHTML = function (data, context, keepScripts) {
+
+  if (typeof data !== "string") {
+    return [];
+  }
+  if (typeof context === "boolean") {
+    keepScripts = context;
+    context = false;
+  }
+  // document.implementation stops scripts or inline event handlers from
+  // being executed immediately
+  context = context || document.implementation.createHTMLDocument
+    ? document.implementation.createHTMLDocument("")
+    : document;
+
+  var parsed  = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/.exec(data),
+      scripts = !keepScripts && [];
+
+  // Single tag
+  if (parsed) {
+    return [context.createElement(parsed[1])];
+  }
+
+  parsed = jQuery.buildFragment([data], $(context), scripts);
+  parsed = parsed.fragment;
+
+  if (scripts && scripts.length) {
+    jQuery(scripts).remove();
+  }
+
+  return $(jQuery.merge([], parsed.childNodes));
+};
+
 DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
@@ -135,6 +169,37 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		});
 
 		if ($('#problems-section')) {
+
+      DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-created', function (info) {
+        var $list    = $('#tickets_outline_problems')
+          , tpl      = $.trim($list.prev('script').text())
+          , $item    = parseHTML(tpl)
+          , $counter = $item.find('.counter')
+          , $h3      = $item.find('h3')
+          ;
+
+        $item.attr('data-problem-id', info.id);
+        $h3.text(info.title);
+        $h3.parent().data('route', $h3.parent().data('route').replace('0000', info.id));
+        $counter.text(info.incidents).data('route', $counter.data('route').replace('0000', info.id));
+
+        if ($list.children('.is-nav-item').length) {
+          $item.insertAfter($list.children('.is-nav-item:last'));
+        } else {
+          $list.append($item);
+          $list.children('no-data').hide();
+        }
+
+        var $items = $list.children('.is-nav-item').get();
+        $items.sort(function (a, b) {
+          return $(a).find('h3:first').text().toUpperCase().localeCompare($(b).find('h3:first').text().toUpperCase());
+        })
+        $.each($items, function (idx, itm) {
+          $list.append(itm);
+        });
+
+      });
+
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-problems-updated', function (info) {
 				$('#problems-section [data-problem-id]').each(function () {
 					var id  = parseInt($(this).data('problem-id'))
@@ -161,11 +226,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						$(this).text(m[1] + '(' + val + ')');
 					}
 				});
-				//DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: info.ticket_id });
-			});
-
-			DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-created', function (info) {
-				console.info(info);
 			});
 		}
 
