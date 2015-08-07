@@ -24,7 +24,6 @@ class TaskFilterBuilderTest extends PortalTestCase
         $this->em = $this->getContainer()->get('doctrine')->getManager();
 
         // Install the API dataset
-        // TODO remove re-install flag
         $this->installDataSet('api');
     }
 

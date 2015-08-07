@@ -35,10 +35,12 @@ namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use Symfony\Component\Form\DataTransformerInterface;
 
-class LabelTaskTransformer implements DataTransformerInterface
+class DepartmentProjectMemberTransformer implements DataTransformerInterface
 {
     /**
      * @var EntityManager
@@ -53,44 +55,46 @@ class LabelTaskTransformer implements DataTransformerInterface
     /**
      * Constructor
      * @param EntityManager $entityManager
-     * @param Task $task
+     * @param TaskProject $project
      */
-    public function __construct(EntityManager $entityManager, Task $task)
+    public function __construct(EntityManager $entityManager, TaskProject $project)
     {
         $this->entityManager = $entityManager;
-        $this->task = $task;
+        $this->project = $project;
     }
 
     /**
-     * Transform a label object to a string
-     * @param mixed $labelObject
+     * Transform a Project Member into a department ID
+     * @param mixed $memberObject
      * @return string
      */
-    public function transform($labelObject)
+    public function transform($memberObject)
     {
-        if (!is_null($labelObject) && ($labelObject instanceof LabelTask)) {
-            return $labelObject->getLabel();
+        if (!is_null($memberObject) && ($memberObject instanceof ProjectMember)) {
+            return $memberObject->getDepartment()->getId();
         }
 
-        return '';
+        return null;
     }
 
     /**
-     * Transform a label string to a label object (requires the task)
-     * @param string $label
+     * Transform a department entity into a Project Member
+     * @param string $deptId
      * @return LabelTask|null|object
      */
-    public function reverseTransform($label)
+    public function reverseTransform($deptId)
     {
-        $labelObject = $this->entityManager->getRepository('App:LabelTask')
-            ->findOneBy(array('label' => $label, 'task' => $this->task->getId()));
+        $member = $this->entityManager->getRepository('App:ProjectMember')
+            ->findOneBy(array('department' => $deptId, 'project' => $this->project->getId()));
+        $department = $this->entityManager->getRepository('DeskPRO:Department')
+            ->find($deptId);
 
-        if (!$labelObject) {
-            $labelObject = new LabelTask();
-            $labelObject->setLabel($label);
-            $labelObject->setTask($this->task);
+        if (!$member) {
+            $member = new ProjectMember();
+            $member->setDepartment($department);
+            $member->setProject($this->project);
         }
 
-        return $labelObject;
+        return $member;
     }
 }

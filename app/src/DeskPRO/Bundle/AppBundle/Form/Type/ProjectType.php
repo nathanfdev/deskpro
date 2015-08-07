@@ -24,12 +24,29 @@ class ProjectType extends AbstractType
                 'description' => 'the project title',
             )
         );
+//        ->add(
+//            'departments',
+//            'collection',
+//            array(
+//                'type' => 'department',
+//                'allow_add' => true,
+//                'allow_delete' => true,
+//                'delete_empty' => true,
+//                'options' => array(
+//                    'project' => $options['project'],
+//                    'required' => false,
+//                    'description' => 'project members which are departments',
+//                ),
+//            )
+//        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskProject',
+            'project' => null,
+            'entity_manager' => null,
         ));
     }
 }

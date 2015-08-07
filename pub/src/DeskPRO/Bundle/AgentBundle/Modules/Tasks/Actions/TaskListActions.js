@@ -148,11 +148,11 @@ export const loadTaskList = createAction(
 export const failedTask = createAction("TASKS_POST_TASK_FAIL");
 export const createTask = createAction(
   "TASKS_POST_TASK",
-  (trigger, data) => {
+  (trigger, data, source = 'tasks') => {
     Tasks.createTask(data).then(
       (value) => {
         trigger(value.getData());
-        trigger(null, loadTaskList());
+        trigger(null, loadTaskList(source));
       },
       (value) => trigger(value.xhr.responseJSON, failedTask)
     );

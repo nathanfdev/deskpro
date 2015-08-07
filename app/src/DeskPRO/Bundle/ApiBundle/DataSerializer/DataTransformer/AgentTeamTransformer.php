@@ -36,56 +36,18 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-class PersonTransformer extends AbstractDataSerializerTransformer
+class AgentTeamTransformer extends AbstractDataSerializerTransformer
 {
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
             'id',
-            'picture_blob',
-            'disable_picture',
-            'gravatar_url',
-            'is_contact',
-            'is_user',
-            'is_agent',
-            'was_agent',
-            'can_agent',
-            'can_admin',
-            'can_billing',
-            'is_vacation_mode',
-            'disable_autoresponses',
-            'disable_autoresponses_log',
-            'is_confirmed',
-            'is_agent_confirmed',
-            'is_deleted',
-            'is_disabled',
-            'importance',
-            'creation_system',
             'name',
-            'first_name',
-            'last_name',
-            'title_prefix',
-            'override_display_name',
-            'summary',
-            'language',
-            'organization',
-            'organization_position',
-            'organization_manager',
-            'timezone',
-            'primary_email',
-            'emails',
-            'phone_numbers',
-            'date_created',
-            'date_last_login',
-            'browser',
-            'assigned_tasks',
         ];
     }
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
-        $data = $transformation_request->getDataToBeTransformed();
         return [];
     }
 }

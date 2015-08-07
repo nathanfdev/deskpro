@@ -21,8 +21,6 @@ Feature: /subtasks endpoint
     And the header "Location" should be equal to "/api/v2/subtasks/1"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test subtask"
-    And the JSON node "data.links" should exist
-    And the JSON node "data.links.self" should be equal to "/api/v2/subtasks/1"
 
   Scenario: I GET a single subtask
     When I send a GET request to "/api/v2/subtasks/1"
@@ -31,33 +29,22 @@ Feature: /subtasks endpoint
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test subtask"
     And the JSON node "data.is_done" should be equal to 0
-    And the JSON node "data.links.self" should be equal to "/api/v2/subtasks/1"
 
   Scenario: I GET subtasks
     When I send a GET request to "/api/v2/subtasks"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
-    And the JSON node "meta.count" should be equal to 1
-    And the JSON node "meta.page" should be equal to 1
-    And the JSON node "meta.total_pages" should be equal to 1
-    And the JSON node "meta.total_count" should be equal to 1
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "My test subtask"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/subtasks/1"
 
   Scenario: I GET subtasks for a particular task
     When I send a GET request to "/api/v2/tasks/1/subtasks"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
-    And the JSON node "meta.count" should be equal to 1
-    And the JSON node "meta.page" should be equal to 1
-    And the JSON node "meta.total_pages" should be equal to 1
-    And the JSON node "meta.total_count" should be equal to 1
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "My test subtask"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/subtasks/1"
 
   Scenario: I modify a subtask
     When I send a PUT request to "/api/v2/subtasks/1" with body:
@@ -76,7 +63,6 @@ Feature: /subtasks endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.is_done" should be equal to true
-    And the JSON node "data.links.self" should be equal to "/api/v2/subtasks/1"
 
   Scenario: I try to remove the title from the subtask
     When I send a PUT request to "/api/v2/subtasks/1" with body:

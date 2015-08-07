@@ -104,7 +104,6 @@ class TaskType extends AbstractType
                 'collection',
                 array(
                     'type' => 'label_task',
-                    'required' => false,
                     'allow_add' => true,
                     'allow_delete' => true,
                     'delete_empty' => true,
