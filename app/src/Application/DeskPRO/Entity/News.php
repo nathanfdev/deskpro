@@ -169,6 +169,11 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $this;
     }
 
+    public function getCategoryId()
+    {
+        return $this->category['id'];
+    }
+
     public function getCategoryPath()
     {
         $path = array();

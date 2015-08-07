@@ -34,7 +34,9 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use Doctrine\ORM\EntityManager;
+use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -45,9 +47,15 @@ class NewsDataService extends AbstractDataService
      */
     private $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var PortalPermissionsManager
+     */
+    private $permissions_manager;
+
+    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
     {
         $this->em = $em;
+        $this->permissions_manager = $permissions_manager;
     }
 
     /**
@@ -69,9 +77,10 @@ class NewsDataService extends AbstractDataService
      *
      * @return Pagerfanta
      */
-    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page)
+    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person)
     {
         $em = $this->em;
+        $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
             array(
@@ -79,8 +88,9 @@ class NewsDataService extends AbstractDataService
                 $category,
                 $page,
                 $max_per_page,
+                $person
             ),
-            function () use ($em, $category, $max_per_page, $page) {
+            function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('n')
@@ -88,12 +98,30 @@ class NewsDataService extends AbstractDataService
                     ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
                     ->orderBy('n.id', 'DESC');
 
+                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedNewsCategories();
                 if ($category) {
-                    $qb->leftJoin('n.category', 'c')
-                        ->andWhere('c = :cat')->setParameter('cat', $category);
+                    // find allowed ids
+                    $cat_ids = $category->getTreeIds(true);
+                    $using_ids = array();
+                    foreach ($cat_ids as $cat_id) {
+                        if (in_array($cat_id, $allowed_ids)) {
+                            $using_ids[] = $cat_id;
+                        }
+                    }
+                } else {
+                    $using_ids = $allowed_ids;
                 }
 
-                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                if (empty($using_ids)) {
+                    // nocategories are allowed, so no articles are either, returning a blank array pager
+                    $pager = new Pagerfanta(new ArrayAdapter(array()));
+                } else {
+                    $qb->leftJoin('n.category', 'c')
+                        ->andWhere('c IN (:cat)')->setParameter('cat', $using_ids);
+
+                    $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                }
+
                 $pager->setMaxPerPage($max_per_page);
                 $pager->setCurrentPage($page);
 
@@ -115,7 +143,7 @@ class NewsDataService extends AbstractDataService
      * @return NewsCategory[]
      *
      */
-    public function getCategoryChildren($category)
+    public function getCategoryChildren($category, Person $person)
     {
         $that = $this;
 
@@ -123,10 +151,15 @@ class NewsDataService extends AbstractDataService
             array(
                 'getCategoryChildren',
                 $category,
+                $person
             ),
-            function () use ($that, $category) {
+            function () use ($that, $category, $person) {
+                $allowed_ids = $that->permissions_manager->getPermissionsBagForPerson(
+                    $person
+                )->getAllowedNewsCategories();
+
                 if (!$category) { // get root categories
-                    return $that->getNewsCategoriesRepo()->findBy(array('parent' => null));
+                    return $that->getNewsCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));
                 }
 
                 if (!$category instanceof NewsCategory) { // if not already category, try to make it one
@@ -135,7 +168,16 @@ class NewsDataService extends AbstractDataService
                     }
                 }
 
-                return $category->children;
+                $children = $category->children;
+
+                $result = array();
+                foreach ($children as $child) {
+                    if (in_array($child->getId(), $allowed_ids)) {
+                        $result[] = $child;
+                    }
+                }
+
+                return $result;
             }
         );
     }

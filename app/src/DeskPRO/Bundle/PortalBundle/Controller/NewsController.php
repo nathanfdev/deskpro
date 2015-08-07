@@ -53,6 +53,7 @@ class NewsController extends AbstractController
     public function indexAction(Request $request, $_format)
     {
         $page = $request->query->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -61,7 +62,8 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 null,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
@@ -104,6 +106,7 @@ class NewsController extends AbstractController
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
         $page = $request->query->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -112,7 +115,8 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 $category,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
@@ -150,7 +154,7 @@ class NewsController extends AbstractController
         // PAGER
         //
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $count);
+        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $count, $person);
 
         //
         // RENDER THEME

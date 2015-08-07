@@ -101,6 +101,74 @@ class PortalPermissionsLoader
         );
     }
 
+    public function loadAllowedFeedbackCategories(Person $person)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'loadAllowedFeedbackCategories',
+                $person,
+            ),
+            function () use ($that, $person) {
+                $person->loadHelper('PermissionsManager');
+
+                return $person->PermissionsManager->FeedbackCategories->getAllowedCategories();
+            }
+        );
+    }
+
+    public function loadAllowedNewsCategories(Person $person)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'loadAllowedNewsCategories',
+                $person,
+            ),
+            function () use ($that, $person) {
+                $person->loadHelper('PermissionsManager');
+
+                return $person->PermissionsManager->NewsCategories->getAllowedCategories();
+            }
+        );
+    }
+
+    public function loadAllowedArticleCategories(Person $person)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'loadAllowedArticleCategories',
+                $person,
+            ),
+            function () use ($that, $person) {
+                $person->loadHelper('PermissionsManager');
+
+                return $person->PermissionsManager->ArticleCategories->getAllowedCategories();
+            }
+        );
+    }
+
+    public function loadAllowedDownloadCategories(Person $person)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'loadAllowedDownloadCategories',
+                $person,
+            ),
+            function () use ($that, $person) {
+                $person->loadHelper('PermissionsManager');
+
+                return $person->PermissionsManager->DownloadCategories->getAllowedCategories();
+            }
+        );
+    }
+
     /**
      * FOR INTERNAL USE (public method because of closures)
      *

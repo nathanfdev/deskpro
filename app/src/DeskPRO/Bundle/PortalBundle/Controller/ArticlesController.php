@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -53,6 +54,7 @@ class ArticlesController extends AbstractController
     public function indexAction(Request $request, $_format)
     {
         $page = $request->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -61,7 +63,8 @@ class ArticlesController extends AbstractController
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 null,
                 $page,
-                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array(
@@ -104,6 +107,7 @@ class ArticlesController extends AbstractController
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
         $page = $request->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -112,7 +116,8 @@ class ArticlesController extends AbstractController
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 $category,
                 $page,
-                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array(
@@ -148,7 +153,7 @@ class ArticlesController extends AbstractController
         // PAGER
         //
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count);
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person);
 
         //
         // RENDER THEME

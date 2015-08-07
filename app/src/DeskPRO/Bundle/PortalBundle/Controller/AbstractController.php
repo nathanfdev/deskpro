@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\People\PersonGuest;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -47,6 +48,34 @@ class AbstractController extends BaseController
     public function getUser()
     {
         return parent::getUser();
+    }
+
+    /**
+     * @return Person|PersonGuest
+     */
+    public function getCurrentPerson()
+    {
+        return $this->getUser() ?: new PersonGuest();
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
+     */
+    protected function getPermissionBagForCurrentUser()
+    {
+        return $this->getPermissionBag($this->getUser());
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
+     */
+    protected function getPermissionBag(Person $person = null)
+    {
+        if ($person) {
+            return $this->get('portal_permissions_manager')->getPermissionsBagForPerson($person);
+        }
+
+        return $this->get('portal_permissions_manager')->getPermissionsBagForGuest();
     }
 
     /**

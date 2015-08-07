@@ -54,6 +54,7 @@ class DownloadsController extends AbstractController
     public function indexAction(Request $request, $_format)
     {
         $page = $request->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -62,7 +63,8 @@ class DownloadsController extends AbstractController
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 null,
                 $request->query->get('page', 1),
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
@@ -106,6 +108,7 @@ class DownloadsController extends AbstractController
     public function browseAction(Request $request, DownloadCategory $category, $_format)
     {
         $page = $request->query->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -114,7 +117,8 @@ class DownloadsController extends AbstractController
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 $category,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
@@ -149,7 +153,7 @@ class DownloadsController extends AbstractController
         // PAGER
         //
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $page, $count);
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $page, $count, $person);
 
         //
         // RENDER THEME

@@ -118,6 +118,7 @@ class PortalPermissionsManager
     {
         // execute a SQL statement to update the portal.global_cache_timestamp setting
         $this->conn->executeQuery('REPLACE INTO settings SET name = "'.static::CACHE_TIMESTAMP_SETTING_NAME.'", value = '.time());
+        $this->conn->executeQuery('DELETE FROM permissions_cache');
 
         // force a reload of global settings so our update to the timestamp is immediately applied
         $this->settingsResolver->getGlobalSettings(true)->get(static::CACHE_TIMESTAMP_SETTING_NAME);
@@ -146,12 +147,21 @@ class PortalPermissionsManager
             $permissions_map = $generate();
         }
 
-        $allowed_departments = $this->getAllowedDepartmentIds(new PersonGuest());
+        $person_guest = new PersonGuest();
+        $allowed_departments = $this->getAllowedDepartmentIds($person_guest);
+        $allowed_feedback_categories = $this->getAllowedFeedbackCategoryIds($person_guest);
+        $allowed_news_categories = $this->getAllowedNewsCategoryIds($person_guest);
+        $allowed_article_categories = $this->getAllowedArticleCategoryIds($person_guest);
+        $allowed_download_categories = $this->getAllowedDownloadCategoryIds($person_guest);
 
         return new PermissionsBag(
             $permissions_map,
             isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : array(),
-            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array()
+            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array(),
+            $allowed_feedback_categories,
+            $allowed_news_categories,
+            $allowed_article_categories,
+            $allowed_download_categories
         );
     }
 
@@ -185,17 +195,45 @@ class PortalPermissionsManager
         }
 
         $allowed_departments = $this->getAllowedDepartmentIds($person);
+        $allowed_feedback_categories = $this->getAllowedFeedbackCategoryIds($person);
+        $allowed_news_categories = $this->getAllowedNewsCategoryIds($person);
+        $allowed_article_categories = $this->getAllowedArticleCategoryIds($person);
+        $allowed_download_categories = $this->getAllowedDownloadCategoryIds($person);
 
         return new PermissionsBag(
             $permissions_map,
             isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : array(),
-            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array()
+            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array(),
+            $allowed_feedback_categories,
+            $allowed_news_categories,
+            $allowed_article_categories,
+            $allowed_download_categories
         );
     }
 
     protected function getAllowedDepartmentIds(Person $person)
     {
         return $this->permissions_loader->loadAllowedDepartments($person);
+    }
+
+    protected function getAllowedFeedbackCategoryIds(Person $person)
+    {
+        return $this->permissions_loader->loadAllowedFeedbackCategories($person);
+    }
+
+    protected function getAllowedNewsCategoryIds(Person $person)
+    {
+        return $this->permissions_loader->loadAllowedNewsCategories($person);
+    }
+
+    protected function getAllowedArticleCategoryIds(Person $person)
+    {
+        return $this->permissions_loader->loadAllowedArticleCategories($person);
+    }
+
+    protected function getAllowedDownloadCategoryIds(Person $person)
+    {
+        return $this->permissions_loader->loadAllowedDownloadCategories($person);
     }
 
     /**
@@ -261,14 +299,25 @@ class PortalPermissionsManager
      * @param Person $person
      *
      * @return array
+     * @deprecated use getPermissionsBagForPerson - this is meant to be used internally
      */
     public function generatePermissionsMapForPerson(Person $person)
     {
+        // sometimes a guest object might sneak through here
+        // but we always want to benefit from the same caching for guests
+        if ($person instanceof PersonGuest) {
+            return $this->generatePermissionsMapForGuest();
+        }
+
         $usergoupIds = $this->usergroup_decider->getUsergroupIdsForPerson($person);
 
         return $this->permissions_loader->loadPermissions($usergoupIds);
     }
 
+    /**
+     * @return mixed|null
+     * @deprecated use getPermissionsBagForGuest - this is meant to be used internally
+     */
     public function generatePermissionsMapForGuest()
     {
         $usergoupIds = $this->usergroup_decider->getUsergroupIdsForGuest();

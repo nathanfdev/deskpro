@@ -259,6 +259,18 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return implode($sep, $cats);
     }
 
+    public function getCategoryIds()
+    {
+        $ids = array();
+
+        foreach ($this->categories as $cat) {
+            /** @var ArticleCategory $cat */
+            $ids[] = $cat->getId();
+        }
+
+        return $ids;
+    }
+
     public function getCategoryPath($index = 0)
     {
         $path = array();
