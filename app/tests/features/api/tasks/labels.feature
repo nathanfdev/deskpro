@@ -21,8 +21,6 @@ Feature: /task_labels endpoint
     And the header "Location" should be equal to "/api/v2/task_labels/1"
     And the JSON node "data" should exist
     And the JSON node "data.label" should be equal to "test"
-    And the JSON node "data.links" should exist
-    And the JSON node "data.links.self" should be equal to "/api/v2/task_labels/1"
 
   Scenario: I GET a single label
     When I send a GET request to "/api/v2/task_labels/1"
@@ -30,33 +28,18 @@ Feature: /task_labels endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.label" should be equal to "test"
-    And the JSON node "data.links.self" should be equal to "/api/v2/task_labels/1"
 
   Scenario: I GET labels
     When I send a GET request to "/api/v2/task_labels"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
-    And the JSON node "meta.count" should be equal to 1
-    And the JSON node "meta.page" should be equal to 1
-    And the JSON node "meta.total_pages" should be equal to 1
-    And the JSON node "meta.total_count" should be equal to 1
+    And the JSON node "meta.pagination.count" should be equal to 1
+    And the JSON node "meta.pagination.current_page" should be equal to 1
+    And the JSON node "meta.pagination.total_pages" should be equal to 1
+    And the JSON node "meta.pagination.total" should be equal to 1
     And the JSON node "data" should exist
     And the JSON node "data[0].label" should be equal to "test"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/task_labels/1"
-
-  Scenario: I GET the labels for a single task
-    When I send a GET request to "/api/v2/tasks/1/labels"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "meta" should exist
-    And the JSON node "meta.count" should be equal to 1
-    And the JSON node "meta.page" should be equal to 1
-    And the JSON node "meta.total_pages" should be equal to 1
-    And the JSON node "meta.total_count" should be equal to 1
-    And the JSON node "data" should exist
-    And the JSON node "data[0].label" should be equal to "test"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/task_labels/1"
 
   Scenario: I modify a label
     When I send a PUT request to "/api/v2/task_labels/1" with body:
@@ -75,7 +58,6 @@ Feature: /task_labels endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.label" should be equal to "modified"
-    And the JSON node "data.links.self" should be equal to "/api/v2/task_labels/1"
 
   Scenario: I try to POST a bad label without a parent task
     When I send a POST request to "/api/v2/task_labels" with body:

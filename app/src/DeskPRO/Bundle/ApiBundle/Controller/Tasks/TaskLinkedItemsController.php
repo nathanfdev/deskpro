@@ -70,7 +70,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      */
     public function cgetAction(Request $request)
     {
-        $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItems')->findAll();
+        $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->findAll();
 
         return View::create(
             $this->dataSerialize($taskLinks),

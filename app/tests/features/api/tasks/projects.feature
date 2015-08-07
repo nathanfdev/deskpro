@@ -20,7 +20,6 @@ Feature: /projects endpoint
     And the header "Location" should be equal to "/api/v2/projects/1"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
-    And the JSON node "data.links" should exist
 
   Scenario: I try to make a broken POST request without a title
     When I send a POST request to "/api/v2/projects" with body:
@@ -37,7 +36,6 @@ Feature: /projects endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
-    And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
   Scenario: I GET projects
     When I send a GET request to "/api/v2/projects"
