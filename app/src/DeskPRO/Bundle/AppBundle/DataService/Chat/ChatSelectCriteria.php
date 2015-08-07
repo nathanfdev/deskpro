@@ -81,8 +81,8 @@ class ChatSelectCriteria
             switch ($field) {
                 case 'date_created':
                     list($from, $to) = explode(':', $value);
-                    $qb->andWhere($qb->expr()->gte("SUBSTRING($alias.date_created, 1, 10)", ':from'));
-                    $qb->andWhere($qb->expr()->lte("SUBSTRING($alias.date_created, 1, 10)", ':to'));
+                    $qb->andWhere($qb->expr()->gte("DATE($alias.date_created)", ':from'));
+                    $qb->andWhere($qb->expr()->lte("DATE($alias.date_created)", ':to'));
                     $qb->setParameters(compact('from', 'to'));
                     break;
 
@@ -126,7 +126,7 @@ class ChatSelectCriteria
         $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
         $firstDayOfThisYear = date('Y-01-01');
 
-        $target = "SUBSTRING($alias.date_created, 1, 10)";
+        $target = "DATE($alias.date_created)";
 
         $groupSelectDql = "(CASE
             WHEN $target  = '$today' THEN 'today'

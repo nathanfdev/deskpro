@@ -67,8 +67,8 @@ class ChatCountsController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
         $dataService = $this->get('data.chat');
 
+        $params = $request->query->all();
         try {
-            $params = $request->query->all();
             $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), $this->getUser());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());

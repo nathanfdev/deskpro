@@ -110,11 +110,19 @@ class ChatCountCriteria extends ChatSelectCriteria
         $alias = $qb->getRootAliases()[0];
         switch ($this->group_by) {
             case 'date_created':
-                $qb->addSelect("SUBSTRING($alias.date_created, 1, 10) as group_name");
+                $qb->addSelect("DATE($alias.date_created) as group_name");
                 break;
 
             case 'date_period':
                 $qb->addSelect($this->getDatePeriodCaseWhenDql($alias) . ' as group_name');
+
+                // select hidden group_order to use in ORDER BY
+                $qb->addSelect(
+                    "FIELD(" . $this->getDatePeriodCaseWhenDql($alias) . ",
+                        'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever'
+                    ) as HIDDEN group_order");
+                $qb->orderBy('group_order');
+
                 break;
 
             case 'agent':
