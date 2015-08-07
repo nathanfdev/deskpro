@@ -41,7 +41,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\AgentTeam as Team;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
-use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
@@ -52,7 +51,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      @ORM\UniqueConstraint(name="department_unique", columns={"project_id", "department_id"})
  *  }
  * )
- * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
@@ -66,7 +64,6 @@ class ProjectMember extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -76,7 +73,6 @@ class ProjectMember extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
      */
     protected $project;
 
@@ -84,7 +80,6 @@ class ProjectMember extends NotifyPropertyChangeEntity
      * @var Person
 	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     * @Serializer\Expose()
      */
     protected $person;
 
@@ -92,7 +87,6 @@ class ProjectMember extends NotifyPropertyChangeEntity
      * @var Team
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     * @Serializer\Expose()
      */
     protected $team;
 
@@ -100,7 +94,6 @@ class ProjectMember extends NotifyPropertyChangeEntity
      * @var Department
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
      * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     * @Serializer\Expose()
      */
     protected $department;
 

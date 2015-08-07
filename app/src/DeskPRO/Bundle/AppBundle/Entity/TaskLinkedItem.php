@@ -40,7 +40,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
@@ -51,7 +50,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      @ORM\UniqueConstraint(name="article_unique", columns={"task_id", "article_id"})
  *  }
  * )
- * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
@@ -65,7 +63,6 @@ class TaskLinkedItem extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -75,7 +72,6 @@ class TaskLinkedItem extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
      */
     protected $task;
 
@@ -83,7 +79,6 @@ class TaskLinkedItem extends NotifyPropertyChangeEntity
      * @var Ticket
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
      * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
-     * @Serializer\Expose()
      */
     protected $ticket;
 
@@ -91,7 +86,6 @@ class TaskLinkedItem extends NotifyPropertyChangeEntity
      * @var ChatConversation
 	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
      * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
-     * @Serializer\Expose()
      */
     protected $chat;
 
@@ -99,7 +93,6 @@ class TaskLinkedItem extends NotifyPropertyChangeEntity
      * @var Article
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
-     * @Serializer\Expose()
      */
     protected $article;
 
