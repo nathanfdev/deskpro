@@ -138,8 +138,24 @@ export const loadTaskList = createAction(
     Tasks.loadAddress(data).then(
       (value) => {
         let result = value.getData();
-        result['source'] = data;
-        trigger(result);
+
+        let projects = [];
+
+        result.data.forEach(function(task) {
+          if (task.project !== null && projects.indexOf(task.project) === -1) {
+            projects.push(task.project);
+          }
+        });
+
+        Tasks.loadProjects({
+          ids: projects.join(',')
+        }).then(
+          (value) => {
+            result['projects'] = value.getData();
+            result['source'] = data;
+            trigger(result);
+          }
+        );
       }
     );
   }

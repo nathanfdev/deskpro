@@ -70,7 +70,15 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function cgetAction(Request $request)
     {
-        $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
+        $query = $request->query->all();
+
+        if (!empty($query['ids'])) {
+            $projects = $this->selectProjects(explode(',', $query['ids']));
+
+            $projects = $projects->getResult();
+        } else {
+            $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
+        }
 
         return View::create(
             $this->dataSerialize($projects),
@@ -96,7 +104,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
      * )
      * @Get("/projects/{id}", name="api_projects_get")
-     * @param int $projectId
+     * @param int $id
      * @return View
      */
     public function getAction($id)
@@ -707,15 +715,17 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         );
 
         foreach ($project->getMembers() as $member) {
-            if (!empty($member->getDepartment())) {
-                $id = $member->getId();
-                $members['departments'][$id] = $member->getDepartment()->getId();
-            } else if (!empty($member->getTeam())) {
-                $id = $member->getId();
-                $members['teams'][$id] = $member->getTeam()->getId();
-            } else if (!empty($member->getPerson())) {
-                $id = $member->getId();
-                $members['people'][$id] = $member->getPerson()->getId();
+            $department = $member->getDepartment();
+            $team = $member->getTeams();
+            $agent = $member->getPerson();
+            $memberId = $member->getId();
+
+            if (!empty($department)) {
+                $members['departments'][$memberId] = $department->getId();
+            } else if (!empty($team)) {
+                $members['teams'][$memberId] = $team->getId();
+            } else if (!empty($agent)) {
+                $members['people'][$memberId] = $agent->getId();
             }
         }
 
@@ -784,5 +794,26 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             ->setParameter('project', $id);
 
         return $queryBuilder->getQuery();
+    }
+
+    /**
+     * Get a Doctrine Query for getting certain projects
+     * @param $projectIds
+     * @return \Doctrine\ORM\Query
+     */
+    protected function selectProjects($projectIds)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Clean the IDs
+        $projectIds = array_map(function($value) {
+            return (int) $value;
+        }, $projectIds);
+
+        $query = $entityManager->createQueryBuilder()->select('p')->from('App:TaskProject', 'p')
+            ->where('p.id IN (:projectIds)')
+            ->setParameter('projectIds', $projectIds);
+
+        return $query->getQuery();
     }
 }

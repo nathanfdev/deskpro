@@ -5,7 +5,8 @@ export default class TaskFrameList extends Reducer {
   getInitialState() {
     return {
       taskFrameList: null,
-      taskFrameSource: null
+      taskFrameSource: null,
+      taskFrameProjects: null
     };
   }
   
@@ -13,7 +14,8 @@ export default class TaskFrameList extends Reducer {
     return {
       ...state,
       taskFrameList: action.payload.data,
-      taskFrameSource: action.payload.source
+      taskFrameSource: action.payload.source,
+      taskFrameProjects: action.payload.projects.data
     };
   }
   

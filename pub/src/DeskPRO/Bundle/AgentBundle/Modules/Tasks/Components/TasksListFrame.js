@@ -42,6 +42,15 @@ export default class TasksListFrame extends React.Component {
   render() {
     const {taskFrameList} = this.props;
     const _this = this;
+    let projects = {};
+
+    // Attach IDs to the projects
+    if (taskFrameList.taskFrameProjects) {
+      taskFrameList.taskFrameProjects.forEach(function(project) {
+        projects[project.id.toString()] = project;
+      });
+    }
+
     return (
       <section className="task-list-frame dp-list-frame">
       <div className="ticket-list">
@@ -167,9 +176,10 @@ export default class TasksListFrame extends React.Component {
                   year="numeric" /> : 'N/A' }
                 </div>
 
-                <span className="disc"></span>
+                {object.project ? <span>
+                  <span className="disc"></span><i className="fa fa-book"/> {projects[object.project].title}
+                </span> : ''}
 
-                <i className="fa fa-book"/> Project Title
                 <span className="disc"></span>
 
                 <div>
