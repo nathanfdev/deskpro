@@ -34,10 +34,10 @@ use Application\ImportBundle\Entity\ContactData;
 /**
  * Inline contact data parser
  *
- * Class InlineParser
+ * Class InlineContactData
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline
  */
-class InlineParser
+class InlineContactData
 {
     /**
      * @var ContactType\ContactTypeInterface[]

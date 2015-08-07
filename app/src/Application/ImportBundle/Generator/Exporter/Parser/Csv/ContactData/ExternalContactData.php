@@ -27,11 +27,38 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData;
 
+use Application\ImportBundle\Generator\Exporter\Parser\Csv\AbstractParser;
+use Application\ImportBundle\Entity;
+
 /**
- * Class External
+ * Class ExternalContactData
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData
  */
-class External
+final class ExternalContactData extends AbstractParser
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_CONTACT_DATA;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        $collection = new Entity\Collection();
+
+        return $collection;
+    }
 }

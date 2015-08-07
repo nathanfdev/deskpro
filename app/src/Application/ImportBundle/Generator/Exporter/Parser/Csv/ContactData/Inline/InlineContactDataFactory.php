@@ -33,15 +33,15 @@ use Application\ImportBundle\Entity\ContactData;
 /**
  * Inline contact data parser factory
  *
- * Class InlineParserFactory
+ * Class InlineContactDataFactory
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline
  */
-class InlineParserFactory
+class InlineContactDataFactory
 {
     /**
      * Returns inline contact data parser
      *
-     * @return InlineParser
+     * @return InlineContactData
      */
     public static function getParser()
     {
@@ -79,7 +79,7 @@ class InlineParserFactory
                     'url' => 'website',
                 )));
 
-            $parser = new InlineParser($contact_types);
+            $parser = new InlineContactData($contact_types);
         }
 
         return $parser;

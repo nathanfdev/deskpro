@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\InlineParserFactory;
+use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\InlineContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
@@ -537,7 +537,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function exportInlineContactData(array $entity)
     {
-        $parser = InlineParserFactory::getParser();
+        $parser = InlineContactDataFactory::getParser();
         return $parser->parse($entity);
     }
 }
