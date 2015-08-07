@@ -31,12 +31,16 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inl
 use Application\ImportBundle\Entity\ContactData;
 
 /**
+ * Inline contact data parser factory
+ *
  * Class InlineParserFactory
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline
  */
 class InlineParserFactory
 {
     /**
+     * Returns inline contact data parser
+     *
      * @return InlineParser
      */
     public static function getParser()

@@ -25,48 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData;
 
 /**
- * Mapping contact data configuration
- * If we need more that one field to set contact data property (e.g. address) or if we can use "toEntity" method
- *
- * Class Mapping
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
+ * Class External
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData
  */
-class Mapping extends AbstractContactType
+class External
 {
-    /**
-     * @var array
-     */
-    private $mapping;
 
-    /**
-     * Constructor
-     *
-     * @param string $contact_type
-     * @param array  $mapping
-     * @param string $method
-     */
-    public function __construct($contact_type, array $mapping, $method = 'toEntity')
-    {
-        parent::__construct($contact_type, $method);
-        $this->mapping = $mapping;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValue(array $entity)
-    {
-        $value = array();
-
-        foreach ($this->mapping as $property => $original_property) {
-            if (array_key_exists($original_property, $entity)) {
-                $value[$property] = $entity[$original_property];
-            }
-        }
-
-        return ! empty($value) ? $value : null;
-    }
 }

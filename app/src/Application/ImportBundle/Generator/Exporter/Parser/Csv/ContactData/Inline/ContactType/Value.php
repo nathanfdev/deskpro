@@ -28,6 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
 
 /**
+ * Custom contact data configuration
+ * Returns single raw value, uses for phone contact types
+ *
  * Class Value
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
  */

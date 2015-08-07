@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
 
 /**
+ * Base contact type configuration
+ *
  * Class AbstractProperty
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
  */
@@ -64,7 +66,7 @@ abstract class AbstractContactType implements ContactTypeInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getMethod()
     {

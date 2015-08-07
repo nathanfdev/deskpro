@@ -29,12 +29,16 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inl
 use Application\ImportBundle\AbstractCollection;
 
 /**
+ * Contact type configuration collection
+ *
  * Class Collection
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
  */
 class Collection extends AbstractCollection
 {
     /**
+     * Add configuration
+     *
      * @param ContactTypeInterface $contact_type
      * @return $this
      */

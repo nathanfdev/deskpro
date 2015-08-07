@@ -32,6 +32,8 @@ use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity\ContactData;
 
 /**
+ * Inline contact data parser
+ *
  * Class InlineParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline
  */

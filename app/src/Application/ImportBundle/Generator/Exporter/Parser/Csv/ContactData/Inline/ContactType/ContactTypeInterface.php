@@ -27,27 +27,33 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
 
-use Application\ImportBundle\Entity\ContactData;
-
 /**
+ * Contact type configuration
+ *
  * Interface ContactTypeInterface
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
  */
 interface ContactTypeInterface
 {
     /**
+     * Returns supported contact type
+     *
      * @return string
      */
     public function getContactType();
 
     /**
+     * Returns method of contact data helper to parse data into ContactData entity
+     *
      * @return string
      */
     public function getMethod();
 
     /**
+     * Returns contact data raw value
+     *
      * @param array $entity
-     * @return ContactData
+     * @return mixed|array
      */
     public function getValue(array $entity);
 }
