@@ -56,13 +56,15 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
             'agents' => [],
         ];
 
-        foreach ($members as $member) {
-            if (!empty($member->getDepartment())) {
-                $groupedMembers['departments'][] = $member->getDepartment()->getId();
-            } else if (!empty($member->getTeam())) {
-                $groupedMembers['teams'][] = $member->getTeam()->getId();
-            } else {
-                $groupedMembers['agents'][] = $member->getPerson()->getId();
+        if (!empty($members)) {
+            foreach ($members as $member) {
+                if (!empty($member->getDepartment())) {
+                    $groupedMembers['departments'][] = $member->getDepartment()->getId();
+                } else if (!empty($member->getTeam())) {
+                    $groupedMembers['teams'][] = $member->getTeam()->getId();
+                } else {
+                    $groupedMembers['agents'][] = $member->getPerson()->getId();
+                }
             }
         }
 

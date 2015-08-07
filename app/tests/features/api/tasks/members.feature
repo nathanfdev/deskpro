@@ -26,14 +26,14 @@ Feature: /project_members endpoint
     And the response status code should be 201
     And the header "Location" should be equal to "/api/v2/project_members/1"
     And the JSON node "data" should exist
-    And the JSON node "data.person.id" should be equal to "1"
+    And the JSON node "data.person" should be equal to "1"
 
   Scenario: I GET a single member
     When I send a GET request to "/api/v2/project_members/1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.person.id" should be equal to "1"
+    And the JSON node "data.person" should be equal to "1"
 
   Scenario: I modify a member
     When I send a PUT request to "/api/v2/project_members/1" with body:
@@ -51,9 +51,8 @@ Feature: /project_members endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.team.id" should be equal to "1"
+    And the JSON node "data.team" should be equal to "1"
     And the JSON node "data.person" should exist
-    And the JSON node "data.person.id" should not exist
 
   Scenario: I DELETE a single task
     When I send a DELETE request to "/api/v2/project_members/1"

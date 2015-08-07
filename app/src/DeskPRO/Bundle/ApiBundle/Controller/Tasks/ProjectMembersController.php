@@ -86,7 +86,7 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
         }
 
         return View::create(
-            $this->createRepresentation($member),
+            $this->dataSerialize($member),
             Response::HTTP_OK
         );
     }
@@ -225,7 +225,7 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -272,7 +272,7 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
             $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
 
             return View::create(
-                $this->createRepresentation($member),
+                $this->dataSerialize($member),
                 $status,
                 array(
                     'Location' => $location,

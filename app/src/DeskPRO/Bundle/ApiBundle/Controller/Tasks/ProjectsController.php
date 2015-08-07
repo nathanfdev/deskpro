@@ -108,7 +108,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         }
 
         return View::create(
-            $this->createRepresentation($project),
+            $this->dataSerialize($project),
             Response::HTTP_OK
         );
     }
@@ -251,7 +251,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -282,7 +282,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $query = $this->getProjectMemberQuery($id, 'DeskPRO:Department');
 
         return View::create(
-            $this->createRepresentation($query->getArrayResult()),
+            $this->dataSerialize($query->getArrayResult()),
             Response::HTTP_OK
         );
     }
@@ -313,7 +313,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $query = $this->getProjectMemberQuery($id, 'DeskPRO:AgentTeam');
 
         return View::create(
-            $this->createRepresentation($query->getArrayResult()),
+            $this->dataSerialize($query->getArrayResult()),
             Response::HTTP_OK
         );
     }
@@ -344,7 +344,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $query = $this->getProjectMemberQuery($id, 'DeskPRO:Person');
 
         return View::create(
-            $this->createRepresentation($query->getArrayResult()),
+            $this->dataSerialize($query->getArrayResult()),
             Response::HTTP_OK
         );
     }
@@ -661,7 +661,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             $this->addMembers($project);
 
             return View::create(
-                $this->createRepresentation($project),
+                $this->dataSerialize($project),
                 $status,
                 array(
                     'Location' => $location,

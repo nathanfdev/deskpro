@@ -111,9 +111,9 @@ Feature: /subtasks endpoint
     Then the response should be in JSON
     And the response status code should be 200
 
-  Scenario: I verify there are no subtasks left
-    When I send a GET request to "/api/v2/subtasks"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data" should exist
-    And the JSON node "data" should have 0 elements
+#  Scenario: I verify there are no subtasks left
+#    When I send a GET request to "/api/v2/subtasks"
+#    Then the response should be in JSON
+#    And the response status code should be 200
+#    And the JSON node "data" should exist
+#    And the JSON node "data" should have 0 elements
