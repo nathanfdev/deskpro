@@ -89,8 +89,6 @@ class DepartmentProjectMemberTransformer implements DataTransformerInterface
         $department = $this->entityManager->getRepository('DeskPRO:Department')
             ->find($deptId);
 
-        // Find the
-
         if (!$member) {
             $member = new ProjectMember();
             $member->setDepartment($department);

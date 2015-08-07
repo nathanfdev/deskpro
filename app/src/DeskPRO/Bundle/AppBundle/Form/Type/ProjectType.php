@@ -23,22 +23,22 @@ class ProjectType extends AbstractType
             array(
                 'description' => 'the project title',
             )
-        )
-        ->add(
-            'departments',
-            'collection',
-            array(
-                'type' => 'department',
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'options' => array(
-                    'project' => $options['project'],
-                    'required' => false,
-                    'description' => 'project members which are departments',
-                ),
-            )
         );
+//        ->add(
+//            'departments',
+//            'collection',
+//            array(
+//                'type' => 'department',
+//                'allow_add' => true,
+//                'allow_delete' => true,
+//                'delete_empty' => true,
+//                'options' => array(
+//                    'project' => $options['project'],
+//                    'required' => false,
+//                    'description' => 'project members which are departments',
+//                ),
+//            )
+//        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
