@@ -55,7 +55,8 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'project',
             'list',
             'urgency',
-            'assigned'
+            'assigned',
+            'linked_items',
         ];
     }
 

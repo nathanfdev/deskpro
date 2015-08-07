@@ -140,10 +140,15 @@ export const loadTaskList = createAction(
         let result = value.getData();
 
         let projects = [];
+        let linked_items = [];
 
         result.data.forEach(function(task) {
           if (task.project !== null && projects.indexOf(task.project) === -1) {
             projects.push(task.project);
+          }
+
+          if (task.linked_items !== null && projects.indexOf(task.linked_items.id) === -1) {
+            linked_items.push(task.linked_items.id);
           }
         });
 
@@ -152,10 +157,17 @@ export const loadTaskList = createAction(
         }).then(
           (value) => {
             result['projects'] = value.getData();
-            result['source'] = data;
-            trigger(result);
+          }
+        ).then(
+          () => {
+            //Tasks.loadLinks({
+            //  ids:
+            //})
           }
         );
+
+        result['source'] = data;
+        trigger(result);
       }
     );
   }
