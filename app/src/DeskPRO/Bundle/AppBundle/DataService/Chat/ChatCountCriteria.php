@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
+use Application\DeskPRO\Entity\Person;
 
 /**
  * Class ChatCountCriteria
@@ -61,11 +62,13 @@ class ChatCountCriteria extends ChatSelectCriteria
 
     /**
      * @param array $params
+     * @param OptionsResolver $resolver
+     * @param Person $me
      * @return ChatCountCriteria
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver)
+    public static function fromParameters(array $params, OptionsResolver $resolver, Person $me)
     {
-        self::configureResolver($resolver);
+        self::configureResolver($resolver, $me);
         $params = $resolver->resolve($params);
 
         $group_by = null;
@@ -126,10 +129,11 @@ class ChatCountCriteria extends ChatSelectCriteria
 
     /**
      * @param OptionsResolver $resolver
+     * @param Person $me
      */
-    protected static function configureResolver(OptionsResolver $resolver)
+    protected static function configureResolver(OptionsResolver $resolver, Person $me)
     {
-        parent::configureResolver($resolver);
+        parent::configureResolver($resolver, $me);
 
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
         $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);

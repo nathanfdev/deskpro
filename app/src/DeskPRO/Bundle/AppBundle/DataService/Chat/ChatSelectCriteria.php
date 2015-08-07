@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
+use Application\DeskPRO\Entity\Person;
 
 /**
  * Class ChatSelectCriteria
@@ -57,11 +58,13 @@ class ChatSelectCriteria
 
     /**
      * @param array $params
-     * @return ChatCountCriteria
+     * @param OptionsResolver $resolver
+     * @param Person $me
+     * @return ChatSelectCriteria
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver)
+    public static function fromParameters(array $params, OptionsResolver $resolver, Person $me)
     {
-        self::configureResolver($resolver);
+        self::configureResolver($resolver, $me);
         $filters = $resolver->resolve($params);
 
         return new self($filters);
@@ -140,13 +143,17 @@ class ChatSelectCriteria
 
     /**
      * @param OptionsResolver $resolver
+     * @param Person $me
      */
-    protected static function configureResolver(OptionsResolver $resolver)
+    protected static function configureResolver(OptionsResolver $resolver, Person $me)
     {
         $resolver->setDefined(['agent', 'department', 'date_created', 'date_period']);
 
+        $resolver->setNormalizer('agent', function($options, $value) use ($me) {
+            return $value === 'me' ? $me->getId() : $value;
+        });
         $resolver->setAllowedValues('agent', function($value) {
-            return ctype_digit($value);
+            return ctype_digit($value) || ($value === 'me');
         });
         $resolver->setAllowedValues('department', function($value) {
             return ctype_digit($value);

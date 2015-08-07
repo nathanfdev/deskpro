@@ -68,7 +68,8 @@ class ChatCountsController extends BaseController
         $dataService = $this->get('data.chat');
 
         try {
-            $criteria = ChatCountCriteria::fromParameters($request->query->all(), new OptionsResolver());
+            $params = $request->query->all();
+            $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), $this->getUser());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
@@ -108,7 +109,7 @@ class ChatCountsController extends BaseController
         }
 
         try {
-            $criteria = ChatSelectCriteria::fromParameters($params, new OptionsResolver());
+            $criteria = ChatSelectCriteria::fromParameters($params, new OptionsResolver(), $this->getUser());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
