@@ -1,20 +1,26 @@
 import React from 'react';
 import { connect } from 'redux/react';
-import { loadChatConversationsList } from '../Actions/chatConversationsNavFrameActions'
+import * as actions from '../Actions/chatConversationsNavFrameActions'
+import DatePeriodConversationsCount from './DatePeriodConversationsCount';
+import AgentConversationsCount from './AgentConversationsCount';
 
 @connect(state => ({
-  groups: state.ChatConversationsNavFrame.groups,
+  myChats: state.ChatConversationsNavFrame.myChats,
+  allChats: state.ChatConversationsNavFrame.allChats,
 }))
 export default class ChatConversationsNavFrame extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {conversationKey: 0};
-    this.props.dispatch(loadChatConversationsList());
+    this.props.dispatch(actions.loadMyChatConversationsCounts());
+    this.props.dispatch(actions.loadAllChatConversationsCounts());
   }
 
   render() {
-    const {my, all} = this.props.groups;
+    const {myChats, allChats} = this.props;
+
+    console.log("myChats: ", myChats.nested);
+    console.log("allChats: ", allChats.nested);
 
     return (
       <section className="task-nav-frame dp-nav-frame">
@@ -45,12 +51,14 @@ export default class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   My Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter" href="#">{my.count}</a>
+                    <a className="list-counter" href="#">{myChats.count}</a>
                   </div>
                 </div>
                 
                 <ul>
-                  {my.conversations.map(conversation => this.renderConversation(conversation))}
+                  {myChats.nested.counts.map(count => (
+                      <DatePeriodConversationsCount key={'period-' + count.group} count={count.count} period={count.group} />
+                  ))}
                 </ul>
               
               </section>
@@ -59,12 +67,14 @@ export default class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   All Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter" href="#">{all.count}</a>
+                    <a className="list-counter" href="#">{allChats.count}</a>
                   </div>
                 </div>
                 
                 <ul>
-                  {all.conversations.map(conversation => this.renderConversation(conversation))}
+                  {allChats.nested.counts.map(count => (
+                      <AgentConversationsCount key={'agent-' + count.group} count={count.count} agent={count.group} />
+                  ))}
                 </ul>
               
               </section>
@@ -73,17 +83,6 @@ export default class ChatConversationsNavFrame extends React.Component {
           </aside>
         </div>
       </section>
-    );
-  }
-
-  renderConversation({title, count}) {
-    return (
-      <li key={this.state.conversationKey++}>
-        <div className="list-counter-bucket">
-          <a className="list-counter" href="#">{count}</a>
-        </div>
-        <a href="#" className="item">{title}</a>
-      </li>
     );
   }
 }

@@ -1,23 +1,18 @@
-import { createAction } from "Ampliflux/actions";
+import { createAction } from 'Ampliflux/actions';
+import * as types from './actionTypes';
+import * as Chat from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
 
-export const loadChatConversationsList = createAction(
-  'CHAT_LOAD_CONVERSATIONS_LIST',
-  trigger => trigger({
-  	my: {
-  	  count: 10,
-  	  conversations: [
-  	    {title: 'Today', count: 5}, 
-  	    {title: 'Yeserday', count: 7}, 
-  	    {title: 'This Week', count: 15},
-  	  ]
-  	},
-  	all: {
-  	  count: 33,
-  	  conversations: [
-  	    {title: 'Person1', count: 6},
-  	    {title: 'Person2', count: 9},
-  	    {title: 'Person3', count: 17},
-  	  ]
-  	},
-  })
+export const loadMyChatConversationsCounts = createAction(
+  types.CHAT_LOAD_MY_CONVERSATIONS_COUNTS,
+  trigger => Chat.loadMyChatConversationsCounts().then(promise => trigger(promise.getData().data))
+);
+
+export const loadAllChatConversationsCounts = createAction(
+  types.CHAT_LOAD_ALL_CONVERSATIONS_COUNTS,
+  trigger => Chat.loadAllChatConversationsCounts().then(promise => trigger(promise.getData().data))
+);
+
+export const loadAgentName = createAction(
+  types.CHAT_LOAD_AGENT_NAME,
+  (trigger, id) => trigger({id, name: 'Vasya'})
 );
