@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9f01cfe587aa523745e812707a88e8b2",
+    "hash": "3349ca5d8f7dbb1da1de8767aa811cea",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -72,6 +72,68 @@
                 "sdk"
             ],
             "time": "2013-05-29 01:30:06"
+        },
+        {
+            "name": "beberlei/DoctrineExtensions",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/DoctrineExtensions.git",
+                "reference": "2d1b8bd7087ada868408f14a38d9cd88e126bec8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/DoctrineExtensions/zipball/2d1b8bd7087ada868408f14a38d9cd88e126bec8",
+                "reference": "2d1b8bd7087ada868408f14a38d9cd88e126bec8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "doctrine/orm": "~2.1",
+                "nesbot/carbon": "*",
+                "phpunit/phpunit": "~4.5",
+                "symfony/yaml": "~2.6",
+                "zf1/zend-date": "~1.12",
+                "zf1/zend-registry": "~1.12"
+            },
+            "suggest": {
+                "nesbot/carbon": "Alternative to DateTime",
+                "zf1/zend-date": "Alternative to DateTime"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DoctrineExtensions\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Steve Lacey",
+                    "email": "steve@stevelacey.net"
+                }
+            ],
+            "description": "A set of extensions to Doctrine 2 that add support for additional query functions available in MySQL and Oracle.",
+            "keywords": [
+                "database",
+                "doctrine",
+                "orm"
+            ],
+            "time": "2015-08-06 13:16:43"
         },
         {
             "name": "behat/behat",
@@ -644,7 +706,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/3c2c71aca37e1fb7ffda8b2f940b0d720579b3bb",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/87f46480b4563be774f9d080ef0c5d9bd5931e7c",
                 "reference": "3c2c71aca37e1fb7ffda8b2f940b0d720579b3bb",
                 "shasum": ""
             },
@@ -1084,7 +1146,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/e0e7b9ea3592c2c8140a92b61e065add7ee182d3",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/252a1c1158033c0063cbd894ce546ea51f072672",
                 "reference": "2f28f691d8bba2aedb3537d12917d92ba3f63cb8",
                 "shasum": ""
             },
@@ -1247,7 +1309,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/c5ff0542772102ddd4e2fbe173e9ad40ad67c22f",
+                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/817c2d233fde0fe85cb7e4d25d43fbfcd028aef8",
                 "reference": "c5ff0542772102ddd4e2fbe173e9ad40ad67c22f",
                 "shasum": ""
             },
@@ -1479,7 +1541,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/78954cce4962a4655ff47c0751eb78021fbaf2cc",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/087f738cf8f984807efa44e6405d28b5f6009d2f",
                 "reference": "70c580174e4e16a79296a02256fb40a34192731c",
                 "shasum": ""
             },
@@ -1801,7 +1863,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/ba4a401a62a7f1543a82e908b3c05359cf43f1ab",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/60471548dc046d7ff260e04c6920e78f4164c2aa",
                 "reference": "ba4a401a62a7f1543a82e908b3c05359cf43f1ab",
                 "shasum": ""
             },
@@ -3449,7 +3511,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/f48c8c010e9fd133ff21b0cec59729a22b550c22",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/e22d3e8318eb541ea868b9f8f81e342f4cd43b30",
                 "reference": "976e7df01b5fea711bf83295e2fc725869e10821",
                 "shasum": ""
             },
@@ -6308,7 +6370,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/7177ef70f6b48a8ccd728b80575a9a36b8a608ed",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/191fa9b195f46194838485fccc03f334a14eaca1",
                 "reference": "3fddea8dd177f365b2b8fe0bfa89e75ffdd4615d",
                 "shasum": ""
             },
