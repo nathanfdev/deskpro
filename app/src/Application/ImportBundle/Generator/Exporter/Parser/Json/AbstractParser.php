@@ -28,8 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\Json\JsonConfig;
@@ -51,13 +51,20 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor
      *
      * @param JsonReaderInterface $reader
+     * @param FormatterInterface  $formatter
      */
-    public function __construct(JsonReaderInterface $reader)
+    public function __construct(JsonReaderInterface $reader, FormatterInterface $formatter)
     {
-        $this->reader = $reader;
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
     }
 
     /**

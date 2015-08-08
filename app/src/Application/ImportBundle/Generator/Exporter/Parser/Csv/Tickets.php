@@ -238,7 +238,8 @@ final class Tickets extends AbstractParser
      */
     private function exportTicketAttachments()
     {
-        return $this->exportAttachments($this->getTicketAttachmentReaderConfig(), self::MESSAGE_PREFIX, 'message_id');
+        $config = $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
+        return $this->exportAttachments($config, self::MESSAGE_PREFIX, 'message_id');
     }
 
     /**
@@ -248,7 +249,8 @@ final class Tickets extends AbstractParser
      */
     private function exportTicketCustomFields()
     {
-        return $this->exportCustomFields($this->getTicketCustomFieldReaderConfig(), self::TICKET_PREFIX, 'ticket_id');
+        $config = $this->getReaderConfig(self::FILE_TICKET_CUSTOM_FIELDS);
+        return $this->exportCustomFields($config, self::TICKET_PREFIX, 'ticket_id');
     }
 
     /**
@@ -269,25 +271,5 @@ final class Tickets extends AbstractParser
     private function getTicketMessageReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_TICKET_MESSAGES);
-    }
-
-    /**
-     * Returns reader config for ticket attachment records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getTicketAttachmentReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
-    }
-
-    /**
-     * Returns reader config for ticket custom field records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getTicketCustomFieldReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_TICKET_CUSTOM_FIELDS);
     }
 }

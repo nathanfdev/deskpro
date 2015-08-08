@@ -170,7 +170,8 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackAttachments()
     {
-        return $this->exportAttachments($this->getFeedbackAttachmentsReaderConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
+        $config = $this->getFeedbackAttachmentsReaderConfig();
+        return $this->exportAttachments($config, self::FEEDBACK_PREFIX, 'feedback_id');
     }
 
     /**
@@ -180,7 +181,8 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackCustomFields()
     {
-        return $this->exportCustomFields($this->getFeedbackCustomFieldReaderConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
+        $config = $this->getFeedbackCustomFieldReaderConfig();
+        return $this->exportCustomFields($config, self::FEEDBACK_PREFIX, 'feedback_id');
     }
 
     /**

@@ -25,43 +25,60 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
-
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Json\JsonReader;
-use Application\ImportBundle\Reader\Json\JsonReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Json data exporter factory
- *
- * Class JsonFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class TransformerConfiguration
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class JsonFactory extends AbstractFactory
+class TransformerConfiguration
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    private $transformer_type;
+
+    /**
+     * @var array
+     */
+    private $options;
+
+    /**
+     * Constructor
+     *
+     * @param string $transformer_type
+     * @param array  $options
+     */
+    public function __construct($transformer_type, array $options = array())
     {
-        /** @var JsonReaderInterface $reader */
-        $reader    = new JsonReader($config);
-        $formatter = FormatterFactory::create();
+        $this->transformer_type = $transformer_type;
+        $this->options          = $options;
+    }
 
+    /**
+     * @return string
+     */
+    public function getTransformerType()
+    {
+        return $this->transformer_type;
+    }
 
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Json\Downloads($reader, $formatter))
-            ->attach(new Parser\Json\Feedback($reader, $formatter))
-            ->attach(new Parser\Json\Articles($reader, $formatter))
-            ->attach(new Parser\Json\News($reader, $formatter))
-            ->attach(new Parser\Json\People($reader, $formatter))
-            ->attach(new Parser\Json\Tickets($reader, $formatter))
-            ->attach(new Parser\Json\Organizations($reader, $formatter))
-        ;
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
 
-        return new Json($parsers, $reader);
+    /**
+     * @param $transformer_type
+     * @param array $options
+     *
+     * @return static
+     */
+    public static function create($transformer_type, array $options = array())
+    {
+        return new static($transformer_type, $options);
     }
 }

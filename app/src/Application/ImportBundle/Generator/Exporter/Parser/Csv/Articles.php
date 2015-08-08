@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
@@ -109,15 +110,14 @@ final class Articles extends AbstractParser
      */
     private function exportArticle($num, array $data)
     {
-        if ( ! isset($data['id'])) {
-            $data['id'] = 'num_' . $num;
-        }
-
-        $data['destination'] = self::ARTICLE_PREFIX . $data['id'];
-
         $configuration = array(
-            'id'           => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::ARTICLE_PREFIX,
+                'ref'     => 'id',
+            )),
             'person'       => TransformerInterface::TYPE_STRING,
             'title'        => TransformerInterface::TYPE_STRING,
             'content'      => TransformerInterface::TYPE_STRING,
@@ -161,7 +161,8 @@ final class Articles extends AbstractParser
      */
     private function exportArticleCustomFields()
     {
-        return $this->exportCustomFields($this->getArticleCustomFieldReaderConfig(), self::ARTICLE_PREFIX, 'article_id');
+        $config = $this->getReaderConfig(self::FILE_ARTICLE_CUSTOM_FIELDS);
+        return $this->exportCustomFields($config, self::ARTICLE_PREFIX, 'article_id');
     }
 
     /**
@@ -172,15 +173,5 @@ final class Articles extends AbstractParser
     private function getArticleReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_ARTICLES);
-    }
-
-    /**
-     * Returns reader config for articles custom field records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getArticleCustomFieldReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_ARTICLE_CUSTOM_FIELDS);
     }
 }

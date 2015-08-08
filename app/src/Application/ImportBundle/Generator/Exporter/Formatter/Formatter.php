@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Formatter;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -57,8 +58,14 @@ class Formatter implements FormatterInterface
     {
         $transformed = $entity;
         foreach ($configuration as $property => $transformer_type) {
-            $transformer = $this->transformers->getByType($transformer_type);
-            $transformed[$property] = $transformer->transform($entity, $property);
+            if ($transformer_type instanceof TransformerConfiguration) {
+                $transformer = $this->transformers->getByType($transformer_type->getTransformerType());
+                $transformed[$property] = $transformer->transform($transformed, $property, $transformer_type->getOptions());
+
+            } else {
+                $transformer = $this->transformers->getByType($transformer_type);
+                $transformed[$property] = $transformer->transform($transformed, $property);
+            }
         }
 
         return $transformed;

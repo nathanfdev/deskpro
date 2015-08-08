@@ -48,8 +48,9 @@ interface TransformerInterface
     /**
      * @param array  $entity
      * @param string $property
+     * @param array  $options
      *
      * @return mixed
      */
-    public function transform(array $entity, $property);
+    public function transform(array $entity, $property, array $options = array());
 }

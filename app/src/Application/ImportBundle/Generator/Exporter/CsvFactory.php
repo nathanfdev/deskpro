@@ -46,10 +46,10 @@ class CsvFactory extends AbstractFactory
      */
     static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
+        /** @var CsvReaderInterface $reader */
+        $reader    = new CsvReader($config);
         $formatter = FormatterFactory::create();
 
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\Csv\Downloads($reader, $formatter))

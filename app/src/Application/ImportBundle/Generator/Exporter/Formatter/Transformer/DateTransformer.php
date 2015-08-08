@@ -64,7 +64,7 @@ final class DateTransformer implements TransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform(array $entity, $property)
+    public function transform(array $entity, $property, array $options = array())
     {
         if (array_key_exists($property, $entity)) {
             $value = $entity[$property];
@@ -78,6 +78,10 @@ final class DateTransformer implements TransformerInterface
                     $this->logger->warning($e->getMessage());
                 }
             }
+        }
+
+        if (isset($options['null']) && $options['null'] === true) {
+            return null;
         }
 
         return new DateTime();

@@ -46,11 +46,24 @@ final class DestinationTransformer implements TransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform(array $entity, $property)
+    public function transform(array $entity, $property, array $options = array())
     {
         $value = null;
         if (array_key_exists($property, $entity)) {
             $value = $entity[$property];
+        }
+        if (isset($options['ref'])) {
+            $ref = (array)$options['ref'];
+
+            foreach ($ref as $ref_property) {
+                if (array_key_exists($ref_property, $entity)) {
+                    $value = $entity[$ref_property];
+                    break;
+                }
+            }
+        }
+        if ( ! $value && isset($options['default'])) {
+            $value = (string)$options['default'];
         }
         if ( ! $value) {
             throw new TransformerException('Empty destination property', $this->getType(), $entity, $property);
@@ -62,6 +75,9 @@ final class DestinationTransformer implements TransformerInterface
 
         if ( ! $filename) {
             throw new TransformerException('Empty destination filename', $this->getType(), $entity, $property);
+        }
+        if (isset($options['prefix'])) {
+            $filename = rtrim($options['prefix'], '_') . '_' . $filename;
         }
 
         return $filename;
