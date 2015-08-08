@@ -30,9 +30,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData;
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * Class MultipleContactData
@@ -40,6 +40,21 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
  */
 class MultipleContactData extends AbstractGenerator
 {
+    /**
+     * @var FormatterInterface
+     */
+    private $formatter;
+
+    /**
+     * Constructor
+     *
+     * @param FormatterInterface $formatter
+     */
+    public function __construct(FormatterInterface $formatter)
+    {
+        $this->formatter = $formatter;
+    }
+
     /**
      * Returns a collection of organization contact data entities
      *
@@ -57,27 +72,21 @@ class MultipleContactData extends AbstractGenerator
         foreach ($contact_info as $destination => $contacts) {
             foreach ($contacts as $oid => $contact) {
                 try {
-                    if ($this->isContactValid($contact)) {
-                        $handler = ContactDataFactory::getHandler($contact['contact_type']);
-                        $entity  = $handler->toEntity($contact);
-                        $entity
-                            ->setOid($oid)
-                            ->setDestination($destination)
-                        ;
+                    $handler = ContactDataFactory::getHandler(@$contact['contact_type']);
+                    $entity = $handler->toEntity($contact);
+                    $entity
+                        ->setOid($oid)
+                        ->setDestination($destination);
 
-                        $collection->attach($entity);
-                        $this->logInfo(sprintf('Entity `%s%s` parsed successfully!', $entity->getDestination()));
-                    } else {
-                        $this->logWarning(sprintf('Invalid contact record `%d` found (Skipping)', $destination));
-                    }
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
-                } catch (NoColumnException $e) {
+                } catch (\RuntimeException $e) {
                     $this->logWarning(sprintf(
-                        'Invalid contact record `%d` found (Skipping): %s',
-                        $destination, $e->getMessage()
+                        'Invalid contact field record `%d` found (Skipping): %s',
+                        $oid, $e->getMessage()
                     ));
                 }
-
             }
         }
 
@@ -98,16 +107,34 @@ class MultipleContactData extends AbstractGenerator
         $contact_info = array();
         foreach ($data as $num => $field) {
             try {
-                if ($this->isContactFieldValid($field, $ref_column)) {
-                    $destination = DestinationFormatter::transform($destination_prefix, $field[$ref_column]);
-                    $contact_info[$destination][$field['contact_id']][$field['field_name']] = $field['value'];
-
-                    $this->logInfo(sprintf('Contact field `%s` parsed successfully!', $destination));
-                } else {
-                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping)', $num));
+                if (isset($field[$ref_column])) {
+                    $field['destination'] = $destination_prefix . $field[$ref_column];
                 }
 
-            } catch (NoColumnException $e) {
+                $configuration = array(
+                    $ref_column   => TransformerInterface::TYPE_STRING,
+                    'contact_id'  => TransformerInterface::TYPE_STRING,
+                    'destination' => TransformerInterface::TYPE_DESTINATION,
+                    'field_name'  => TransformerInterface::TYPE_STRING,
+                    'value'       => TransformerInterface::TYPE_STRING,
+                );
+
+                $formatted = $this->formatter->format($field, $configuration);
+
+                if ( ! $formatted['destination']) {
+                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty destination', $num));
+                }
+                if ( ! $formatted['contact_id']) {
+                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty contact_id', $num));
+                }
+                if ( ! $formatted['field_name']) {
+                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty field_name', $num));
+                }
+
+                $contact_info[$formatted['destination']][$formatted['contact_id']][$formatted['field_name']] = $formatted['value'];
+                $this->logInfo(sprintf('Contact field `%s` parsed successfully!', $formatted['destination']));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid contact field record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -116,40 +143,5 @@ class MultipleContactData extends AbstractGenerator
         }
 
         return $contact_info;
-    }
-
-    /**
-     * Check if contact data field has all required columns
-     *
-     * @param array  $contact
-     * @param string $ref_column
-     *
-     * @return bool
-     */
-    protected function isContactFieldValid(array $contact, $ref_column)
-    {
-        $columns = array(
-            $ref_column,
-            'contact_id',
-            'field_name',
-            'value',
-        );
-
-        return ColumnHelper::hasRequiredColumns($contact, $columns);
-    }
-
-    /**
-     * Check if contact data has all required columns
-     *
-     * @param array $contact
-     * @return bool
-     */
-    protected function isContactValid(array $contact)
-    {
-        $columns = array(
-            'contact_type',
-        );
-
-        return ColumnHelper::hasRequiredColumns($contact, $columns);
     }
 }

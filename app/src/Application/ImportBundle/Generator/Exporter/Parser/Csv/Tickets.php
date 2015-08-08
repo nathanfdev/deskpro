@@ -29,10 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Orb\Util\Strings;
 
 /**
@@ -77,33 +75,30 @@ final class Tickets extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportTicket($ticket);
-                if ($entity) {
-                    foreach ($messages as $message_entity) {
-                        /** @var Entity\TicketMessage $message_entity */
-                        if ($entity->getDestination() === $message_entity->getDestination()) {
-                            $entity->addMessage($message_entity);
-                        }
-                    }
-                    foreach ($custom_fields as $custom_field_entity) {
-                        /** @var Entity\CustomField $custom_field_entity */
-                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                            $entity->addCustomField($custom_field_entity);
-                        }
-                    }
+                $entity = $this->exportTicket($num, $ticket);
 
-                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $ticket);
-                    foreach ($inline_custom_fields as $custom_field_entity) {
+                foreach ($messages as $message_entity) {
+                    /** @var Entity\TicketMessage $message_entity */
+                    if ($entity->getDestination() === $message_entity->getDestination()) {
+                        $entity->addMessage($message_entity);
+                    }
+                }
+                foreach ($custom_fields as $custom_field_entity) {
+                    /** @var Entity\CustomField $custom_field_entity */
+                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
                         $entity->addCustomField($custom_field_entity);
                     }
-
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid ticket record `%d` found (Skipping)', $num));
                 }
 
-            } catch (NoColumnException $e) {
+                $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $ticket);
+                foreach ($inline_custom_fields as $custom_field_entity) {
+                    $entity->addCustomField($custom_field_entity);
+                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -117,29 +112,44 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket entity
      *
-     * @param array $ticket
+     * @param int   $num
+     * @param array $data
+     *
      * @return Entity\Ticket|null
      */
-    private function exportTicket(array $ticket)
+    private function exportTicket($num, array $data)
     {
-        if ($this->isTicketValid($ticket)) {
-            $entity = new Entity\Ticket();
-            $entity
-                ->setRawData($ticket)
-                ->setDestination(DestinationFormatter::transform(self::TICKET_PREFIX, $ticket['id']))
-                ->setOid($ticket['id'])
-                ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
-                ->setSubject($ticket['subject'])
-                ->setPersonEmail($ticket['user'])
-                ->setAgentEmail($ticket['agent'])
-                ->setStatus($ticket['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
-                ->setDateCreated(DateFormatter::transform(@$ticket['date_created'], $this->logger))
-            ;
-
-            return $entity;
+        if ( ! isset($data['id'])) {
+            $data['id'] = 'num_' . $num;
         }
 
-        return null;
+        $data['destination'] = self::TICKET_PREFIX . $data['id'];
+
+        $configuration = array(
+            'id'           => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'subject'      => TransformerInterface::TYPE_STRING,
+            'user'         => TransformerInterface::TYPE_STRING,
+            'agent'        => TransformerInterface::TYPE_STRING,
+            'status'       => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity = new Entity\Ticket();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
+            ->setSubject($formatted['subject'])
+            ->setPersonEmail($formatted['user'])
+            ->setAgentEmail($formatted['agent'])
+            ->setStatus($formatted['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
+            ->setDateCreated($formatted['date_created'])
+        ;
+
+        return $entity;
     }
 
     /**
@@ -155,25 +165,22 @@ final class Tickets extends AbstractParser
 
         foreach ($messages as $num => $message) {
             try {
-                $entity = $this->exportMessage($message);
-                if ($entity) {
-                    foreach ($attachments as $attachment) {
-                        /** @var Entity\Attachment $attachment */
-                        if ($attachment->getDestination() === self::MESSAGE_PREFIX . $entity->getOid()) {
-                            $entity->addAttachment($attachment);
-                        }
-                    }
+                $entity = $this->exportMessage($num, $message);
 
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf(
-                        'Entity `%s%s` parsed successfully!',
-                        self::MESSAGE_PREFIX,  $entity->getOid()
-                    ));
-                } else {
-                    $this->logWarning(sprintf('Invalid ticket message record `%d` found (Skipping)', $num));
+                foreach ($attachments as $attachment) {
+                    /** @var Entity\Attachment $attachment */
+                    if ($attachment->getDestination() === self::MESSAGE_PREFIX . $entity->getOid()) {
+                        $entity->addAttachment($attachment);
+                    }
                 }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf(
+                    'Entity `%s%s` parsed successfully!',
+                    self::MESSAGE_PREFIX,  $entity->getOid()
+                ));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -187,26 +194,41 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket message
      *
-     * @param array $message
+     * @param int   $num
+     * @param array $data
+     *
      * @return Entity\TicketMessage|null
      */
-    private function exportMessage(array $message)
+    private function exportMessage($num, array $data)
     {
-        if ($this->isMessageValid($message)) {
-            $entity = new Entity\TicketMessage();
-            $entity
-                ->setRawData($message)
-                ->setDestination(DestinationFormatter::transform(self::TICKET_PREFIX, $message['ticket_id']))
-                ->setOid($message['message_id'])
-                ->setPersonEmail($message['user'])
-                ->setMessageText($message['message_text'])
-                ->setDateCreated(DateFormatter::transform(@$message['date_created'], $this->logger))
-            ;
-
-            return $entity;
+        if ( ! isset($data['message_id'])) {
+            $data['message_id'] = 'num_' . $num;
+        }
+        if (isset($data['ticket_id'])) {
+            $data['destination'] = self::TICKET_PREFIX . $data['ticket_id'];
         }
 
-        return null;
+        $configuration = array(
+            'ticket_id'    => TransformerInterface::TYPE_STRING,
+            'message_id'   => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'message_text' => TransformerInterface::TYPE_STRING,
+            'user'         => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\TicketMessage();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['message_id'])
+            ->setPersonEmail($formatted['user'])
+            ->setMessageText($formatted['message_text'])
+            ->setDateCreated($formatted['date_created'])
+        ;
+
+        return $entity;
     }
 
     /**
@@ -227,43 +249,6 @@ final class Tickets extends AbstractParser
     private function exportTicketCustomFields()
     {
         return $this->exportCustomFields($this->getTicketCustomFieldReaderConfig(), self::TICKET_PREFIX, 'ticket_id');
-    }
-
-    /**
-     * Check if ticket has all required columns
-     *
-     * @param array $ticket
-     * @return bool
-     */
-    private function isTicketValid(array $ticket)
-    {
-        $columns = array(
-            'id',
-            'subject',
-            'user',
-            'agent',
-            'status',
-        );
-
-        return ColumnHelper::hasRequiredColumns($ticket, $columns);
-    }
-
-    /**
-     * Check if ticket message has all required columns
-     *
-     * @param array $message
-     * @return bool
-     */
-    private function isMessageValid(array $message)
-    {
-        $columns = array(
-            'ticket_id',
-            'message_id',
-            'message_text',
-            'user',
-        );
-
-        return ColumnHelper::hasRequiredColumns($message, $columns);
     }
 
     /**

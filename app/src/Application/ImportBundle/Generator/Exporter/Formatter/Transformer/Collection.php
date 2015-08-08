@@ -25,42 +25,36 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Csv data exporter factory
- *
- * Class CsvFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class Collection
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class CsvFactory extends AbstractFactory
+final class Collection extends AbstractCollection
 {
     /**
-     * {@inheritdoc}
+     * @param TransformerInterface $formatter
+     * @return $this
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function attach(TransformerInterface $formatter)
     {
-        $formatter = FormatterFactory::create();
+        $this->collection[$formatter->getType()] = $formatter;
+        return $this;
+    }
 
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
-        ;
+    /**
+     * @param string $type
+     * @return TransformerInterface
+     */
+    public function getByType($type)
+    {
+        if ( ! $this->collection[$type]) {
+            throw new \RuntimeException(sprintf('Formatter transformer `%s` not found', $type));
+        }
 
-        return new Csv($parsers, $reader);
+        return $this->collection[$type];
     }
 }

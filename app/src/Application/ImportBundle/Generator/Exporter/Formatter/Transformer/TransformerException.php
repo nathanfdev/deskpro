@@ -25,22 +25,67 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Formatter;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Class BooleanFormatter
- * @package Application\ImportBundle\Generator\Exporter\Formatter
+ * Class TransformerException
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class BooleanFormatter
+final class TransformerException extends \RuntimeException
 {
     /**
-     * Returns true if value is "true" or intval of value = 1
-     *
-     * @param int|string $value
-     * @return bool
+     * @var string
      */
-    public static function transform($value)
+    private $transformer_type;
+
+    /**
+     * @var array
+     */
+    private $entity;
+
+    /**
+     * @var string
+     */
+    private $property;
+
+    /**
+     * Constructor
+     *
+     * @param string $message
+     * @param string $transformer_type
+     * @param array  $entity
+     * @param string $property
+     */
+    public function __construct($message, $transformer_type, array $entity, $property)
     {
-        return $value === 'true' || (int)$value === 1;
+        parent::__construct($message);
+
+        $this->transformer_type = $transformer_type;
+        $this->entity           = $entity;
+        $this->property         = $property;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransformerType()
+    {
+        return $this->transformer_type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProperty()
+    {
+        return $this->property;
     }
 }

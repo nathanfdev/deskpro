@@ -187,10 +187,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Entity `person_6` parsed successfully!', $output);
         $this->assertContains('Entity `article_1` parsed successfully!', $output);
         $this->assertContains('Entity `article_2` parsed successfully!', $output);
-        $this->assertContains('Entity `download_0` parsed successfully!', $output);
+        $this->assertContains('Entity `download_num_0` parsed successfully!', $output);
         $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
-        $this->assertContains('Entity `news_0` parsed successfully!', $output);
-        $this->assertContains('Entity `news_1` parsed successfully!', $output);
+        $this->assertContains('Entity `news_num_0` parsed successfully!', $output);
+        $this->assertContains('Entity `news_num_1` parsed successfully!', $output);
         $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
@@ -288,10 +288,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->seeFileFound('1/tickets/ticket_145.json');
         $this->helper->seeInThisFile('Another Ticket');
 
-        $this->helper->seeFileFound('1/news/news_0.json');
+        $this->helper->seeFileFound('1/news/news_num_0.json');
         $this->helper->seeInThisFile('News Title 1');
 
-        $this->helper->seeFileFound('1/downloads/download_0.json');
+        $this->helper->seeFileFound('1/downloads/download_num_0.json');
         $this->helper->seeInThisFile('Download 1');
 
         $this->helper->seeFileFound('1/organizations/organization_some_organization.json');
@@ -331,6 +331,8 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertNotNull($person);
 
         $contact_data1 = $person->getContactData('mobile');
+        $this->assertNotEmpty($contact_data1);
+
         $contact = $contact_data1[0];
 
         $this->assertEquals('some comment', $contact->getComment());

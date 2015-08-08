@@ -27,9 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\BooleanFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\MultipleContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\InlineContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
@@ -72,13 +72,20 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor
      *
      * @param CsvReaderInterface $reader
+     * @param FormatterInterface $formatter
      */
-    public function __construct(CsvReaderInterface $reader)
+    public function __construct(CsvReaderInterface $reader, FormatterInterface $formatter)
     {
-        $this->reader = $reader;
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
     }
 
     /**
@@ -162,15 +169,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         foreach ($attachments as $num => $attachment) {
             try {
                 $entity = $this->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf(
-                        'Attachment of entity `%s%s` parsed successfully!',
-                        $destination_prefix, $entity->getOid())
-                    );
-                } else {
-                    $this->logWarning(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
-                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf(
+                    'Attachment of entity `%s%s` parsed successfully!',
+                    $destination_prefix, $entity->getOid())
+                );
 
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
@@ -188,44 +192,28 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      *
      * @param int    $num
      * @param string $destination_prefix
-     * @param array  $attachment
+     * @param array  $data
      * @param string $ref_column
      *
      * @return Entity\Attachment|null
      */
-    protected function exportAttachment($num, $destination_prefix, array $attachment, $ref_column)
+    protected function exportAttachment($num, $destination_prefix, array $data, $ref_column)
     {
-        /** @var Entity\Attachment $entity */
-        $entity = $this->exportBlob($num, $destination_prefix, $attachment, $ref_column, new Entity\Attachment());
-        if ($entity && $this->isAttachmentValid($attachment, $ref_column)) {
-            $entity
-                ->setPersonEmail($attachment['person'])
-                ->setAsInline(BooleanFormatter::transform($attachment['is_inline']))
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if an attachment has all required columns
-     *
-     * @param array  $attachment
-     * @param string $ref_column
-     *
-     * @return bool
-     */
-    protected function isAttachmentValid(array $attachment, $ref_column)
-    {
-        $columns = array(
-            'person',
-            'is_inline',
+        $configuration = array(
+            'person'    => TransformerInterface::TYPE_STRING,
+            'is_inline' => TransformerInterface::TYPE_BOOLEAN,
         );
 
-        return $this->isBlobValid($attachment, $ref_column)
-            && ColumnHelper::hasRequiredColumns($attachment, $columns);
+        $formatted = $this->formatter->format($data, $configuration);
+
+        /** @var Entity\Attachment $entity */
+        $entity = $this->exportBlob($num, $destination_prefix, $data, $ref_column, new Entity\Attachment());
+        $entity
+            ->setPersonEmail($formatted['person'])
+            ->setAsInline($formatted['is_inline'])
+        ;
+
+        return $entity;
     }
 
     /**
@@ -233,55 +221,40 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      *
      * @param int              $num
      * @param string           $destination_prefix
-     * @param array            $blob
+     * @param array            $data
      * @param string           $ref_column
      * @param Entity\Blob|null $entity
      *
      * @return Entity\Blob|null
      */
-    protected function exportBlob($num, $destination_prefix, array $blob, $ref_column, Entity\Blob $entity = null)
+    protected function exportBlob($num, $destination_prefix, array $data, $ref_column, Entity\Blob $entity = null)
     {
-        if ($this->isBlobValid($blob, $ref_column)) {
-            $entity = $entity ? : new Entity\Blob();
-            $entity
-                ->setRawData($blob)
-                ->setDestination(DestinationFormatter::transform($destination_prefix, $blob[$ref_column]))
-                ->setOid($num)
-                ->setBlobUrl(@$blob['blob_url'])
-                ->setBlobPath(@$blob['blob_path'])
-                ->setFileName($blob['file_name'])
-                ->setContentType($blob['content_type'])
-            ;
-
-            return $entity;
+        if (isset($data[$ref_column])) {
+            $data['destination'] = $destination_prefix . $data[$ref_column];
         }
 
-        return null;
-    }
-
-    /**
-     * Check if a blob has all required columns
-     *
-     * @param array  $blob
-     * @param string $ref_column
-     *
-     * @return bool
-     */
-    protected function isBlobValid(array $blob, $ref_column)
-    {
-        $columns = array(
-            $ref_column,
-            'file_name',
-            'content_type',
+        $configuration = array(
+            $ref_column    => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'file_name'    => TransformerInterface::TYPE_STRING,
+            'content_type' => TransformerInterface::TYPE_STRING,
+            'blob_url'     => TransformerInterface::TYPE_STRING,
+            'blob_path'    => TransformerInterface::TYPE_STRING,
         );
 
-        $blob_columns = array(
-            'blob_url',
-            'blob_path',
-        );
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = $entity ? : new Entity\Blob();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($num)
+            ->setBlobUrl($formatted['blob_url'])
+            ->setBlobPath($formatted['blob_path'])
+            ->setFileName($formatted['file_name'])
+            ->setContentType($formatted['content_type'])
+        ;
 
-        return ColumnHelper::hasRequiredColumns($blob, $columns)
-            && ColumnHelper::hasAnyRequiredColumn($blob, $blob_columns);
+        return $entity;
     }
 
     /**
@@ -301,14 +274,11 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         foreach ($custom_fields as $num => $custom_field) {
             try {
                 $entity = $this->exportCustomField($num, $destination_prefix, $custom_field, $ref_column);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
-                }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid custom field record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -324,46 +294,35 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      *
      * @param int    $num
      * @param string $destination_prefix
-     * @param array  $custom_field
+     * @param array  $data
      * @param string $ref_column
      *
      * @return Entity\CustomField|null
      */
-    protected function exportCustomField($num, $destination_prefix, array $custom_field, $ref_column)
+    protected function exportCustomField($num, $destination_prefix, array $data, $ref_column)
     {
-        if ($this->isCustomFieldValid($custom_field, $ref_column)) {
-            $entity = new Entity\CustomField();
-            $entity
-                ->setRawData($custom_field)
-                ->setDestination(DestinationFormatter::transform($destination_prefix, $custom_field[$ref_column]))
-                ->setOid($num)
-                ->setKey($custom_field['field_name'])
-                ->setValue($custom_field['value'])
-            ;
-
-            return $entity;
+        if (isset($data[$ref_column])) {
+            $data['destination'] = $destination_prefix . $data[$ref_column];
         }
 
-        return null;
-    }
-
-    /**
-     * Check if a custom field has all required columns
-     *
-     * @param array  $custom_field
-     * @param string $ref_column
-     *
-     * @return bool
-     */
-    protected function isCustomFieldValid(array $custom_field, $ref_column)
-    {
-        $columns = array(
-            $ref_column,
-            'field_name',
-            'value',
+        $configuration = array(
+            $ref_column   => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerInterface::TYPE_DESTINATION,
+            'field_name'  => TransformerInterface::TYPE_STRING,
+            'value'       => TransformerInterface::TYPE_STRING,
         );
 
-        return ColumnHelper::hasRequiredColumns($custom_field, $columns);
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\CustomField();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($num)
+            ->setKey($formatted['field_name'])
+            ->setValue($formatted['value'])
+        ;
+
+        return $entity;
     }
 
     /**
@@ -431,7 +390,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     public function exportContactData(CsvConfig $config, $destination_prefix, $ref_column)
     {
         $data   = $this->getReaderData($config);
-        $parser = new MultipleContactData();
+        $parser = new MultipleContactData($this->formatter);
         $parser->setLogger($this->logger);
 
         return $parser->export($data, $destination_prefix, $ref_column);

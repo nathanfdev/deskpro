@@ -311,7 +311,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     /**
      * {@inheritdoc}
      */
-    public function setDatePublished(DateTime $date_published)
+    public function setDatePublished(DateTime $date_published = null)
     {
         $this->date_published = $date_published;
         return $this;

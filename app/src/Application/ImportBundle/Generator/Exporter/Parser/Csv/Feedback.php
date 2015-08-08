@@ -28,11 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * Feedback csv file parser
@@ -75,33 +72,30 @@ final class Feedback extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportFeedback($feedback);
-                if ($entity) {
-                    foreach ($attachments as $attachment) {
-                        /** @var Entity\Attachment $attachment */
-                        if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $entity->getOid()) {
-                            $entity->addAttachment($attachment);
-                        }
-                    }
-                    foreach ($custom_fields as $custom_field_entity) {
-                        /** @var Entity\CustomField $custom_field_entity */
-                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                            $entity->addCustomField($custom_field_entity);
-                        }
-                    }
+                $entity = $this->exportFeedback($num, $feedback);
 
-                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $feedback);
-                    foreach ($inline_custom_fields as $custom_field_entity) {
+                foreach ($attachments as $attachment) {
+                    /** @var Entity\Attachment $attachment */
+                    if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $entity->getOid()) {
+                        $entity->addAttachment($attachment);
+                    }
+                }
+                foreach ($custom_fields as $custom_field_entity) {
+                    /** @var Entity\CustomField $custom_field_entity */
+                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
                         $entity->addCustomField($custom_field_entity);
                     }
-
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid feedback record `%d` found (Skipping)', $num));
                 }
 
-            } catch (NoColumnException $e) {
+                $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $feedback);
+                foreach ($inline_custom_fields as $custom_field_entity) {
+                    $entity->addCustomField($custom_field_entity);
+                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -115,38 +109,58 @@ final class Feedback extends AbstractParser
     /**
      * Returns a feedback entity
      *
-     * @param array $feedback
+     * @param int   $num
+     * @param array $data
+     *
      * @return Entity\Feedback|null
      */
-    private function exportFeedback(array $feedback)
+    private function exportFeedback($num, array $data)
     {
-        if ($this->isFeedbackValid($feedback)) {
-            $entity = new Entity\Feedback();
-            $entity
-                ->setRawData($feedback)
-                ->setDestination(DestinationFormatter::transform('feedback_', $feedback['id']))
-                ->setOid($feedback['id'])
-                ->setPersonEmail($feedback['person'])
-                ->setLanguage($feedback['language'])
-                ->setTitle($feedback['title'])
-                ->setContent($feedback['content'])
-                ->setSlug($feedback['slug'])
-                ->setPopularity($feedback['popularity'])
-                ->setStatus($feedback['status'])
-                ->setCategory($feedback['category'])
-                ->setDateCreated(DateFormatter::transform($feedback['date_created'], $this->logger));
-
-            if ($feedback['date_published']) {
-                $entity->setDatePublished(new DateTime($feedback['date_published']));
-            }
-            if ($feedback['label']) {
-                $entity->addLabel($feedback['label']);
-            }
-
-            return $entity;
+        if ( ! isset($data['id'])) {
+            $data['id'] = 'num_' . $num;
         }
 
-        return null;
+        $data['destination'] = self::FEEDBACK_PREFIX . $data['id'];
+
+        $configuration = array(
+            'id'             => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerInterface::TYPE_DESTINATION,
+            'person'         => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'slug'           => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'popularity'     => TransformerInterface::TYPE_STRING,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'label'          => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerInterface::TYPE_DATE,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Feedback();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setPersonEmail($formatted['person'])
+            ->setLanguage($formatted['language'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setPopularity($formatted['popularity'])
+            ->setStatus($formatted['status'])
+            ->setCategory($formatted['category'])
+            ->setDateCreated($formatted['date_created'])
+            ->setDatePublished($formatted['date_published'])
+        ;
+
+        if ($formatted['label']) {
+            $entity->addLabel($formatted['label']);
+        }
+
+        return $entity;
     }
 
     /**
@@ -167,32 +181,6 @@ final class Feedback extends AbstractParser
     private function exportFeedbackCustomFields()
     {
         return $this->exportCustomFields($this->getFeedbackCustomFieldReaderConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
-    }
-
-    /**
-     * Check if feedback has all required columns
-     *
-     * @param array $feedback
-     * @return bool
-     */
-    private function isFeedbackValid(array $feedback)
-    {
-        $columns = array(
-            'id',
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'popularity',
-            'status',
-            'category',
-            'label',
-            'date_created',
-            'date_published',
-        );
-
-        return ColumnHelper::hasRequiredColumns($feedback, $columns);
     }
 
     /**

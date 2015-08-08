@@ -28,11 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * News csv file parser
@@ -71,14 +68,11 @@ final class News extends AbstractParser
 
             try {
                 $entity = $this->exportNews($num, $news);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid news record `%d` found (Skipping)', $num));
-                }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid news record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -93,63 +87,53 @@ final class News extends AbstractParser
      * Returns a news entity
      *
      * @param int   $num
-     * @param array $news
+     * @param array $data
      *
      * @return Entity\News|null
      */
-    private function exportNews($num, array $news)
+    private function exportNews($num, array $data)
     {
-        if ($this->isNewsValid($news)) {
-            $entity = new Entity\News();
-            $entity
-                ->setRawData($news)
-                ->setDestination(DestinationFormatter::transform('news_', $num))
-                ->setOid($num)
-                ->setPersonEmail($news['person'])
-                ->setLanguage($news['language'])
-                ->setSlug($news['slug'])
-                ->setTitle($news['title'])
-                ->setContent($news['content'])
-                ->setSlug($news['slug'])
-                ->setStatus($news['status'])
-                ->setDateCreated(DateFormatter::transform($news['date_created'], $this->logger))
-                ->setCategory($news['category']);
+        $data['id'] = 'num_' . $num;
+        $data['destination'] = 'news_' . $data['id'];
 
-            if ($news['date_published']) {
-                $entity->setDatePublished(new DateTime($news['date_published']));
-            }
-            if ($news['label']) {
-                $entity->addLabel($news['label']);
-            }
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if news has all required columns
-     *
-     * @param array $news
-     * @return bool
-     */
-    private function isNewsValid(array $news)
-    {
-        $columns = array(
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'status',
-            'date_created',
-            'date_published',
-            'category',
-            'label',
+        $configuration = array(
+            'id'             => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerInterface::TYPE_DESTINATION,
+            'person'         => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'slug'           => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerInterface::TYPE_DATE,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'label'          => TransformerInterface::TYPE_STRING,
         );
 
-        return ColumnHelper::hasRequiredColumns($news, $columns);
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\News();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setPersonEmail($formatted['person'])
+            ->setLanguage($formatted['language'])
+            ->setSlug($formatted['slug'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setStatus($formatted['status'])
+            ->setDateCreated($formatted['date_created'])
+            ->setCategory($formatted['category'])
+            ->setDatePublished($formatted['date_published'])
+        ;
+
+        if ($formatted['label']) {
+            $entity->addLabel($formatted['label']);
+        }
+
+        return $entity;
     }
 
     /**

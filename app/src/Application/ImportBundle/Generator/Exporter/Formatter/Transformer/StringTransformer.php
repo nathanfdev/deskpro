@@ -25,42 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
-
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Csv data exporter factory
- *
- * Class CsvFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class StringTransformer
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class CsvFactory extends AbstractFactory
+final class StringTransformer implements TransformerInterface
 {
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function getType()
     {
-        $formatter = FormatterFactory::create();
+        return self::TYPE_STRING;
+    }
 
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
-        ;
+    /**
+     * {@inheritdoc}
+     */
+    public function transform(array $entity, $property)
+    {
+        if (array_key_exists($property, $entity)) {
+            return (string)$entity[$property];
+        }
 
-        return new Csv($parsers, $reader);
+        return null;
     }
 }

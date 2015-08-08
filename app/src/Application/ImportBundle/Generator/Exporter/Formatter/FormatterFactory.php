@@ -25,42 +25,37 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Formatter;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\ArrayTransformer;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\BooleanTransformer;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\DateTransformer;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\DestinationTransformer;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\IntTransformer;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\StringTransformer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Csv data exporter factory
- *
- * Class CsvFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class FormatterFactory
+ * @package Application\ImportBundle\Generator\Exporter\Formatter
  */
-class CsvFactory extends AbstractFactory
+class FormatterFactory
 {
     /**
-     * {@inheritdoc}
+     * @return FormatterInterface
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public static function create()
     {
-        $formatter = FormatterFactory::create();
-
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
+        $transformers = new Transformer\Collection();
+        $transformers
+            ->attach(new ArrayTransformer())
+            ->attach(new BooleanTransformer())
+            ->attach(new DateTransformer())
+            ->attach(new DestinationTransformer())
+            ->attach(new IntTransformer())
+            ->attach(new StringTransformer())
         ;
 
-        return new Csv($parsers, $reader);
+        return new Formatter($transformers);
     }
 }

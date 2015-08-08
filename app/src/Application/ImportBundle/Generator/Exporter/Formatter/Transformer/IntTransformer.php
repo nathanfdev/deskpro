@@ -25,13 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Formatter;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Class Collection
- * @package Application\ImportBundle\Generator\Exporter\Formatter
+ * Class IntTransformer
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class Collection
+final class IntTransformer implements TransformerInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_INT;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function transform(array $entity, $property)
+    {
+        if (array_key_exists($property, $entity)) {
+            return (int)$entity[$property];
+        }
+
+        return null;
+    }
 }

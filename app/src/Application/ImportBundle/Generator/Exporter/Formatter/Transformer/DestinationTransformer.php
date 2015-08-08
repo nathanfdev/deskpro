@@ -25,28 +25,45 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Formatter;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Class DestinationFormatter
- * @package Application\ImportBundle\Generator\Exporter\Formatter
+ * Formats destination path
+ *
+ * Class DestinationTransformer
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class DestinationFormatter
+final class DestinationTransformer implements TransformerInterface
 {
     /**
-     * Formats destination path
-     *
-     * @param $prefix
-     * @param $id
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public static function transform($prefix, $id)
+    public function getType()
     {
-        $filename = strtolower($id);
+        return self::TYPE_DESTINATION;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function transform(array $entity, $property)
+    {
+        $value = null;
+        if (array_key_exists($property, $entity)) {
+            $value = $entity[$property];
+        }
+        if ( ! $value) {
+            throw new TransformerException('Empty destination property', $this->getType(), $entity, $property);
+        }
+
+        $filename = strtolower($value);
         $filename = str_replace(' ', '_', $filename);
         $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
 
-        return rtrim($prefix, '_') . '_' . $filename;
+        if ( ! $filename) {
+            throw new TransformerException('Empty destination filename', $this->getType(), $entity, $property);
+        }
+
+        return $filename;
     }
 }

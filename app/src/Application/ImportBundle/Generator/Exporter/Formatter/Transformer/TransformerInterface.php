@@ -25,42 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
-
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Csv data exporter factory
- *
- * Class CsvFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Interface TransformerInterface
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class CsvFactory extends AbstractFactory
+interface TransformerInterface
 {
+    const TYPE_STRING      = 'string';
+    const TYPE_INT         = 'int';
+    const TYPE_ARRAY       = 'array';
+    const TYPE_BOOLEAN     = 'boolean';
+    const TYPE_DATE        = 'date';
+    const TYPE_DESTINATION = 'destination';
+
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
-    {
-        $formatter = FormatterFactory::create();
+    public function getType();
 
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
-        ;
-
-        return new Csv($parsers, $reader);
-    }
+    /**
+     * @param array  $entity
+     * @param string $property
+     *
+     * @return mixed
+     */
+    public function transform(array $entity, $property);
 }

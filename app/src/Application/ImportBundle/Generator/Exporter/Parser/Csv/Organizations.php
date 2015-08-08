@@ -28,10 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * Organizations csv file parser
@@ -74,38 +72,35 @@ class Organizations extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportOrganization($organization);
-                if ($entity) {
-                    foreach ($contact_data as $contact) {
-                        /** @var Entity\ContactData $contact */
-                        if ($entity->getDestination() === $contact->getDestination()) {
-                            $entity->addContact($contact);
-                        }
-                    }
-                    foreach ($custom_fields as $custom_field_entity) {
-                        /** @var Entity\CustomField $custom_field_entity */
-                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                            $entity->addCustomField($custom_field_entity);
-                        }
-                    }
+                $entity = $this->exportOrganization($num, $organization);
 
-                    $inline_contact_data = $this->exportInlineContactData($organization);
-                    foreach ($inline_contact_data as $contact) {
+                foreach ($contact_data as $contact) {
+                    /** @var Entity\ContactData $contact */
+                    if ($entity->getDestination() === $contact->getDestination()) {
                         $entity->addContact($contact);
                     }
-
-                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $organization);
-                    foreach ($inline_custom_fields as $custom_field_entity) {
+                }
+                foreach ($custom_fields as $custom_field_entity) {
+                    /** @var Entity\CustomField $custom_field_entity */
+                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
                         $entity->addCustomField($custom_field_entity);
                     }
-
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid organization record `%d` found (Skipping)', $num));
                 }
 
-            } catch (NoColumnException $e) {
+                $inline_contact_data = $this->exportInlineContactData($organization);
+                foreach ($inline_contact_data as $contact) {
+                    $entity->addContact($contact);
+                }
+
+                $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $organization);
+                foreach ($inline_custom_fields as $custom_field_entity) {
+                    $entity->addCustomField($custom_field_entity);
+                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid organization record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -119,29 +114,43 @@ class Organizations extends AbstractParser
     /**
      * Returns a organization entity
      *
-     * @param array $organization
+     * @param int   $num
+     * @param array $data
+     *
      * @return Entity\Organization|null
      */
-    private function exportOrganization(array $organization)
+    private function exportOrganization($num, array $data)
     {
-        if ($this->isOrganizationValid($organization)) {
-            $organization_id = isset($organization['id']) ? $organization['id'] : $organization['name'];
-
-            $entity = new Entity\Organization();
-            $entity
-                ->setRawData($organization)
-                ->setOid($organization_id)
-                ->setDestination(DestinationFormatter::transform(self::ORGANIZATION_PREFIX, $organization_id))
-                ->setName($organization['name'])
-                ->setImportance($organization['importance'])
-                ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'name'))
-                ->setDateCreated(DateFormatter::transform(@$organization['date_created'], $this->logger))
-            ;
-
-            return $entity;
+        if ( ! isset($data['id']) && isset($data['name'])) {
+            $data['id'] =  $data['name'];
+        }
+        if ( ! isset($data['id'])) {
+            $data['id'] = 'num_' . $num;
         }
 
-        return null;
+        $data['destination'] = self::ORGANIZATION_PREFIX . $data['id'];
+
+        $configuration = array(
+            'id'           => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'name'         => TransformerInterface::TYPE_STRING,
+            'importance'   => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Organization();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setName($formatted['name'])
+            ->setImportance($formatted['importance'])
+            ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $data, 'name'))
+            ->setDateCreated($formatted['date_created'])
+        ;
+
+        return $entity;
     }
 
     /**
@@ -164,22 +173,6 @@ class Organizations extends AbstractParser
     {
         $config = $this->getReaderConfig(self::FILE_ORGANIZATION_CONTACT_DATA);
         return $this->exportContactData($config, self::ORGANIZATION_PREFIX, 'organization_id');
-    }
-
-    /**
-     * Check if organization has all required columns
-     *
-     * @param array $organization
-     * @return bool
-     */
-    private function isOrganizationValid(array $organization)
-    {
-        $columns = array(
-            'name',
-            'importance',
-        );
-
-        return ColumnHelper::hasRequiredColumns($organization, $columns);
     }
 
     /**

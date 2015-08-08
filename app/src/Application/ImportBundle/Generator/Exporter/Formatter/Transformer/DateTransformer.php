@@ -25,42 +25,61 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use DateTime;
+use Psr\Log\LoggerInterface;
 
 /**
- * Csv data exporter factory
+ * Returns date time object from string or current date time if the format is empty
  *
- * Class CsvFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class DateTransformer
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class CsvFactory extends AbstractFactory
+final class DateTransformer implements TransformerInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * Constructor
+     *
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function getType()
     {
-        $formatter = FormatterFactory::create();
+        return self::TYPE_DATE;
+    }
 
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
-        ;
+    /**
+     * {@inheritdoc}
+     */
+    public function transform(array $entity, $property)
+    {
+        if (array_key_exists($property, $entity)) {
+            $value = $entity[$property];
 
-        return new Csv($parsers, $reader);
+            try {
+                return new DateTime($value);
+
+            } catch (\Exception $e) {
+                if ($this->logger) {
+                    $this->logger->warning(sprintf('Unable to create datetime object, format = `%s`', (string)$value));
+                    $this->logger->warning($e->getMessage());
+                }
+            }
+        }
+
+        return new DateTime();
     }
 }

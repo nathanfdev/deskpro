@@ -25,39 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Formatter;
-
-use DateTime;
-use Psr\Log\LoggerInterface;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Class DateFormatter
- * @package Application\ImportBundle\Generator\Exporter\Formatter
+ * Class ArrayTransformer
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class DateFormatter
+final class ArrayTransformer implements TransformerInterface
 {
     /**
-     * Returns date time object from string or current date time if the format is empty
-     *
-     * @param string               $format
-     * @param LoggerInterface|null $logger
-     *
-     * @return DateTime
+     * {@inheritdoc}
      */
-    public static function transform($format, LoggerInterface $logger = null)
+    public function getType()
     {
-        if ($format) {
-            try {
-                return new DateTime($format);
+        return self::TYPE_ARRAY;
+    }
 
-            } catch (\Exception $e) {
-                if ($logger) {
-                    $logger->warning(sprintf('Unable to create datetime object, format = `%s`', (string)$format));
-                    $logger->warning($e->getMessage());
-                }
-            }
+    /**
+     * {@inheritdoc}
+     */
+    public function transform(array $entity, $property)
+    {
+        if (array_key_exists($property, $entity)) {
+            return (array)$entity[$property];
         }
 
-        return new DateTime();
+        return null;
     }
 }

@@ -28,10 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * Downloads csv file parser
@@ -72,14 +70,11 @@ final class Downloads extends AbstractParser
 
             try {
                 $entity = $this->exportDownload($num, $download);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid download record `%d` found (Skipping)', $num));
-                }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid download record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -95,59 +90,50 @@ final class Downloads extends AbstractParser
      * Download data contains attachment params
      *
      * @param int   $num
-     * @param array $download
+     * @param array $data
      *
      * @return Entity\Download|null
      */
-    private function exportDownload($num, array $download)
+    private function exportDownload($num, array $data)
     {
-        if ($this->isDownloadValid($download) && $this->isAttachmentValid($download, 'person')) {
-            $entity = new Entity\Download();
-            $entity
-                ->setRawData($download)
-                ->setDestination(DestinationFormatter::transform(self::DOWNLOAD_PREFIX, $num))
-                ->setOid($num)
-                ->setPersonEmail($download['person'])
-                ->setTitle($download['title'])
-                ->setContent($download['content'])
-                ->setSlug($download['slug'])
-                ->setLanguage($download['language'])
-                ->setCategory($download['category'])
-                ->setStatus($download['status'])
-                ->setDateCreated(DateFormatter::transform($download['date_created'], $this->logger))
-                ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $download, 'person'));
+        $data['id'] = 'num_' . $num;
+        $data['destination'] = self::DOWNLOAD_PREFIX . $data['id'];
 
-            if ($download['label']) {
-                $entity->addLabel($download['label']);
-            }
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if download has all required columns
-     *
-     * @param array $download
-     * @return bool
-     */
-    private function isDownloadValid(array $download)
-    {
-        $columns = array(
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'category',
-            'status',
-            'date_created',
-            'label',
+        $configuration  = array(
+            'id'           => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'person'       => TransformerInterface::TYPE_STRING,
+            'title'        => TransformerInterface::TYPE_STRING,
+            'content'      => TransformerInterface::TYPE_STRING,
+            'slug'         => TransformerInterface::TYPE_STRING,
+            'language'     => TransformerInterface::TYPE_STRING,
+            'category'     => TransformerInterface::TYPE_STRING,
+            'status'       => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+            'label'        => TransformerInterface::TYPE_STRING,
         );
 
-        return ColumnHelper::hasRequiredColumns($download, $columns);
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Download();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setPersonEmail($formatted['person'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setLanguage($formatted['language'])
+            ->setCategory($formatted['category'])
+            ->setStatus($formatted['status'])
+            ->setDateCreated($formatted['date_created'])
+            ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $data, 'person'));
+
+        if ($formatted['label']) {
+            $entity->addLabel($formatted['label']);
+        }
+
+        return $entity;
     }
 
     /**

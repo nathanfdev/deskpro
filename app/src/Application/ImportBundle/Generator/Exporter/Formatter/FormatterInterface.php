@@ -34,8 +34,10 @@ namespace Application\ImportBundle\Generator\Exporter\Formatter;
 interface FormatterInterface
 {
     /**
-     * @param mixed $value
-     * @return mixed
+     * @param array $entity
+     * @param array $configuration
+     *
+     * @return array
      */
-    public function transform($value);
+    public function format(array $entity, array $configuration);
 }

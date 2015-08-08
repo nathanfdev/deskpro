@@ -25,42 +25,35 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
-
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * Csv data exporter factory
+ * Returns true if value is "true" or intval of value = 1
  *
- * Class CsvFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class BooleanTransformer
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-class CsvFactory extends AbstractFactory
+final class BooleanTransformer implements TransformerInterface
 {
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function getType()
     {
-        $formatter = FormatterFactory::create();
+        return self::TYPE_BOOLEAN;
+    }
 
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
-        ;
+    /**
+     * {@inheritdoc}
+     */
+    public function transform(array $entity, $property)
+    {
+        if (array_key_exists($property, $entity)) {
+            $value = $entity[$property];
 
-        return new Csv($parsers, $reader);
+            return $value === 'true' || (int)$value === 1;
+        }
+
+        return false;
     }
 }
