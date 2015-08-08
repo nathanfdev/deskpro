@@ -46,10 +46,10 @@ final class BooleanTransformer implements TransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform(array $entity, $property, array $options = array())
+    public function transform(array $transformed, array $original, $property, array $options = array())
     {
-        if (array_key_exists($property, $entity)) {
-            $value = $entity[$property];
+        if (array_key_exists($property, $transformed)) {
+            $value = $transformed[$property];
 
             return $value === 'true' || (int)$value === 1;
         }

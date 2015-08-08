@@ -46,11 +46,12 @@ interface TransformerInterface
     public function getType();
 
     /**
-     * @param array  $entity
+     * @param array  $transformed
+     * @param array  $original
      * @param string $property
      * @param array  $options
      *
      * @return mixed
      */
-    public function transform(array $entity, $property, array $options = array());
+    public function transform(array $transformed, array $original, $property, array $options = array());
 }

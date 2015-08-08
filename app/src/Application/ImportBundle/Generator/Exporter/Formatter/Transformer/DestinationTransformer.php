@@ -46,19 +46,26 @@ final class DestinationTransformer implements TransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform(array $entity, $property, array $options = array())
+    public function transform(array $transformed, array $original, $property, array $options = array())
     {
         $value = null;
-        if (array_key_exists($property, $entity)) {
-            $value = $entity[$property];
+        if (array_key_exists($property, $transformed)) {
+            $value = $transformed[$property];
         }
         if (isset($options['ref'])) {
             $ref = (array)$options['ref'];
 
             foreach ($ref as $ref_property) {
-                if (array_key_exists($ref_property, $entity)) {
-                    $value = $entity[$ref_property];
-                    break;
+                if (preg_match('/^original\#(.*)$/', $ref_property, $matches)) {
+                    if (array_key_exists($matches[1], $original)) {
+                        $value = $original[$matches[1]];
+                        break;
+                    }
+                } else {
+                    if (array_key_exists($ref_property, $transformed)) {
+                        $value = $transformed[$ref_property];
+                        break;
+                    }
                 }
             }
         }
@@ -66,7 +73,7 @@ final class DestinationTransformer implements TransformerInterface
             $value = (string)$options['default'];
         }
         if ( ! $value) {
-            throw new TransformerException('Empty destination property', $this->getType(), $entity, $property);
+            throw new TransformerException('Empty destination property', $this->getType(), $transformed, $property);
         }
 
         $filename = strtolower($value);
@@ -74,7 +81,7 @@ final class DestinationTransformer implements TransformerInterface
         $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
 
         if ( ! $filename) {
-            throw new TransformerException('Empty destination filename', $this->getType(), $entity, $property);
+            throw new TransformerException('Empty destination filename', $this->getType(), $transformed, $property);
         }
         if (isset($options['prefix'])) {
             $filename = rtrim($options['prefix'], '_') . '_' . $filename;

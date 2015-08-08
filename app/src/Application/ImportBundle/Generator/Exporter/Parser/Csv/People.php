@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
@@ -72,7 +73,7 @@ final class People extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportPerson($person);
+                $entity = $this->exportPerson($num, $person);
 
                 foreach ($contact_data as $contact) {
                     /** @var Entity\ContactData $contact */
@@ -114,21 +115,21 @@ final class People extends AbstractParser
     /**
      * Returns a person entity
      *
+     * @param int   $num
      * @param array $person
+     *
      * @return Entity\Person|null
      */
-    private function exportPerson(array $person)
+    private function exportPerson($num, array $person)
     {
-        if ( ! isset($person['name']) && isset($person['email'])) {
-            $person['id'] =  $person['email'];
-        }
-        if (isset($person['id'])) {
-            $person['destination'] = self::PERSON_PREFIX . $person['id'];
-        }
-
         $configuration = array(
-            'id'           => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::PERSON_PREFIX,
+                'ref'     => array('original#id', 'email'),
+            )),
             'name'         => TransformerInterface::TYPE_STRING,
             'email'        => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,

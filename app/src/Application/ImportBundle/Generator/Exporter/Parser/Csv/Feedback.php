@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
@@ -116,15 +117,14 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedback($num, array $data)
     {
-        if ( ! isset($data['id'])) {
-            $data['id'] = 'num_' . $num;
-        }
-
-        $data['destination'] = self::FEEDBACK_PREFIX . $data['id'];
-
         $configuration = array(
-            'id'             => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerInterface::TYPE_DESTINATION,
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::FEEDBACK_PREFIX,
+                'ref'     => 'id',
+            )),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
             'content'        => TransformerInterface::TYPE_STRING,

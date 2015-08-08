@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Orb\Util\Strings;
@@ -119,15 +120,14 @@ final class Tickets extends AbstractParser
      */
     private function exportTicket($num, array $data)
     {
-        if ( ! isset($data['id'])) {
-            $data['id'] = 'num_' . $num;
-        }
-
-        $data['destination'] = self::TICKET_PREFIX . $data['id'];
-
         $configuration = array(
-            'id'           => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::TICKET_PREFIX,
+                'ref'     => 'id',
+            )),
             'subject'      => TransformerInterface::TYPE_STRING,
             'user'         => TransformerInterface::TYPE_STRING,
             'agent'        => TransformerInterface::TYPE_STRING,
@@ -201,17 +201,15 @@ final class Tickets extends AbstractParser
      */
     private function exportMessage($num, array $data)
     {
-        if ( ! isset($data['message_id'])) {
-            $data['message_id'] = 'num_' . $num;
-        }
-        if (isset($data['ticket_id'])) {
-            $data['destination'] = self::TICKET_PREFIX . $data['ticket_id'];
-        }
-
         $configuration = array(
-            'ticket_id'    => TransformerInterface::TYPE_STRING,
-            'message_id'   => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'ticket_id'  => TransformerInterface::TYPE_STRING,
+            'message_id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::TICKET_PREFIX,
+                'ref'     => 'ticket_id',
+            )),
             'message_text' => TransformerInterface::TYPE_STRING,
             'user'         => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,

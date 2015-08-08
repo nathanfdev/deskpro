@@ -44,10 +44,10 @@ final class ArrayTransformer implements TransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform(array $entity, $property, array $options = array())
+    public function transform(array $transformed, array $original, $property, array $options = array())
     {
-        if (array_key_exists($property, $entity)) {
-            return (array)$entity[$property];
+        if (array_key_exists($property, $transformed)) {
+            return (array)$transformed[$property];
         }
 
         return null;

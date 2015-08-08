@@ -60,11 +60,11 @@ class Formatter implements FormatterInterface
         foreach ($configuration as $property => $transformer_type) {
             if ($transformer_type instanceof TransformerConfiguration) {
                 $transformer = $this->transformers->getByType($transformer_type->getTransformerType());
-                $transformed[$property] = $transformer->transform($transformed, $property, $transformer_type->getOptions());
+                $transformed[$property] = $transformer->transform($transformed, $entity, $property, $transformer_type->getOptions());
 
             } else {
                 $transformer = $this->transformers->getByType($transformer_type);
-                $transformed[$property] = $transformer->transform($transformed, $property);
+                $transformed[$property] = $transformer->transform($transformed, $entity, $property);
             }
         }
 

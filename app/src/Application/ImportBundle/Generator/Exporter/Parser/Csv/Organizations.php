@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
@@ -121,18 +122,14 @@ class Organizations extends AbstractParser
      */
     private function exportOrganization($num, array $data)
     {
-        if ( ! isset($data['id']) && isset($data['name'])) {
-            $data['id'] =  $data['name'];
-        }
-        if ( ! isset($data['id'])) {
-            $data['id'] = 'num_' . $num;
-        }
-
-        $data['destination'] = self::ORGANIZATION_PREFIX . $data['id'];
-
         $configuration = array(
-            'id'           => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::ORGANIZATION_PREFIX,
+                'ref'     => array('original#id', 'name'),
+            )),
             'name'         => TransformerInterface::TYPE_STRING,
             'importance'   => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
