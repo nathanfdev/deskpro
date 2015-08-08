@@ -29,11 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
@@ -83,17 +79,19 @@ final class Tickets extends AbstractParser
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
+     * @param FormatterInterface           $formatter
      * @param TicketPeopleStorageInterface $people_storage
      * @param HttpClient                   $http_client
      * @param TicketsMapper                $tickets_mapper
      */
     public function __construct(
         ZenDeskReaderInterface       $reader,
+        FormatterInterface           $formatter,
         TicketPeopleStorageInterface $people_storage,
         TicketsMapper                $tickets_mapper,
         HttpClient                   $http_client
     ) {
-        parent::__construct($reader);
+        parent::__construct($reader, $formatter);
 
         $this->tickets_people = $people_storage;
         $this->tickets_mapper = $tickets_mapper;
@@ -179,7 +177,7 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
-                ->setDestination(DestinationFormatter::transform('ticket_', $ticket['id']))
+                ->setDestination('ticket_' . $ticket['id'])
                 ->setOid($ticket['id'])
                 ->setRef($ref)
                 ->setPersonEmail($person_email)
@@ -369,7 +367,7 @@ final class Tickets extends AbstractParser
                 $request = $this->http_client->get($attachment['content_url']);
                 $entity  = new Entity\Attachment();
                 $entity
-                    ->setDestination(DestinationFormatter::transform('attachment_', $attachment['id']))
+                    ->setDestination('attachment_' . $attachment['id'])
                     ->setOid($attachment['id'])
                     ->setBlobData(base64_encode($request->send()->getBody(true)))
                     ->setFileName($attachment['file_name'])
