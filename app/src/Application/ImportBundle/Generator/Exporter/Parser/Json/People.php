@@ -27,14 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
-use DateTimeZone;
 
 /**
  * People json file parser
@@ -73,22 +70,19 @@ final class People extends AbstractParser
 
             try {
                 $entity = $this->exportPerson($person);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
-                }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
 
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid person record `%d` found (Skipping): %s',
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
             }
@@ -100,59 +94,81 @@ final class People extends AbstractParser
     /**
      * Returns a person entity
      *
-     * @param array $person
+     * @param array $data
      * @return Entity\Person|null
      */
-    private function exportPerson(array $person)
+    private function exportPerson(array $data)
     {
-        if ($this->isPersonValid($person)) {
-            $entity = new Entity\Person();
-            $entity
-                ->setDestination(DestinationFormatter::transform('person_', $person['oid']))
-                ->setOid($person['oid'])
-                ->setAsAgent($person['is_agent'])
-                ->setAsUser($person['is_user'])
-                ->setAsAdmin($person['is_admin'])
-                ->setFirstName($person['first_name'])
-                ->setLastName($person['last_name'])
-                ->setName($person['name'])
-                ->setOverrideDisplayName($person['override_display_name'])
-                ->setPassword($person['password'])
-                ->setPasswordScheme($person['password_scheme'])
-                ->setLanguage($person['language'])
-                ->setOrganization($person['organization'])
-                ->setOrganizationPosition($person['organization_position'])
-                ->setDateCreated(DateFormatter::transform($person['date_created'], $this->logger));
+        $configuration = array(
+            'oid'                   => TransformerInterface::TYPE_STRING,
+            'destination'           => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'person_',
+                'ref'    => 'oid',
+            )),
+            'is_agent'              => TransformerInterface::TYPE_BOOLEAN,
+            'is_user'               => TransformerInterface::TYPE_BOOLEAN,
+            'is_admin'              => TransformerInterface::TYPE_BOOLEAN,
+            'first_name'            => TransformerInterface::TYPE_STRING,
+            'last_name'             => TransformerInterface::TYPE_STRING,
+            'name'                  => TransformerInterface::TYPE_STRING,
+            'override_display_name' => TransformerInterface::TYPE_STRING,
+            'password'              => TransformerInterface::TYPE_STRING,
+            'password_scheme'       => TransformerInterface::TYPE_STRING,
+            'timezone'              => TransformerInterface::TYPE_TIMEZONE,
+            'language'              => TransformerInterface::TYPE_STRING,
+            'organization'          => TransformerInterface::TYPE_STRING,
+            'organization_position' => TransformerInterface::TYPE_STRING,
+            'date_created'          => TransformerInterface::TYPE_DATE,
+            'emails'                => TransformerInterface::TYPE_ARRAY,
+            'labels'                => TransformerInterface::TYPE_ARRAY,
+            'user_groups'           => TransformerInterface::TYPE_ARRAY,
+            'contact_data'          => TransformerInterface::TYPE_ARRAY,
+            'custom_fields'         => TransformerInterface::TYPE_ARRAY,
+        );
 
-            if ($person['timezone']) {
-                $entity->setTimezone(new DateTimeZone($person['timezone']));
-            }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity = new Entity\Person();
+        $entity
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setAsAgent($formatted['is_agent'])
+            ->setAsUser($formatted['is_user'])
+            ->setAsAdmin($formatted['is_admin'])
+            ->setFirstName($formatted['first_name'])
+            ->setLastName($formatted['last_name'])
+            ->setName($formatted['name'])
+            ->setOverrideDisplayName($formatted['override_display_name'])
+            ->setPassword($formatted['password'])
+            ->setPasswordScheme($formatted['password_scheme'])
+            ->setLanguage($formatted['language'])
+            ->setOrganization($formatted['organization'])
+            ->setOrganizationPosition($formatted['organization_position'])
+            ->setDateCreated($formatted['date_created'])
+            ->setTimezone($formatted['timezone'])
+        ;
 
-            foreach ($person['emails'] as $email) {
-                $entity->addEmail($email);
-            }
-            foreach ($person['labels'] as $label) {
-                $entity->addLabel($label);
-            }
-            foreach ($person['user_groups'] as $user_group) {
-                $entity->addUserGroup($user_group);
-            }
-
-            $contact_data = $this->exportContactData($person['contact_data']);
-            foreach ($contact_data as $contact) {
-                $entity->addContact($contact);
-            }
-
-            $custom_fields = $this->exportCustomFields($person['custom_fields']);
-            foreach ($custom_fields as $custom_field) {
-                /** @var Entity\CustomField $custom_field */
-                $entity->addCustomField($custom_field);
-            }
-
-            return $entity;
+        foreach ($formatted['emails'] as $email) {
+            $entity->addEmail($email);
+        }
+        foreach ($formatted['labels'] as $label) {
+            $entity->addLabel($label);
+        }
+        foreach ($formatted['user_groups'] as $user_group) {
+            $entity->addUserGroup($user_group);
         }
 
-        return null;
+        $contact_data = $this->exportContactData($formatted['contact_data']);
+        foreach ($contact_data as $contact) {
+            $entity->addContact($contact);
+        }
+
+        $custom_fields = $this->exportCustomFields($formatted['custom_fields']);
+        foreach ($custom_fields as $custom_field) {
+            /** @var Entity\CustomField $custom_field */
+            $entity->addCustomField($custom_field);
+        }
+
+        return $entity;
     }
 
     /**
@@ -163,43 +179,5 @@ final class People extends AbstractParser
     private function getPersonReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_PERSON_PATH);
-    }
-
-    /**
-     * Check if person has all required columns
-     *
-     * @param array $person
-     * @return bool
-     */
-    private function isPersonValid(array $person)
-    {
-        $columns = array(
-            'oid',
-            'is_agent',
-            'is_user',
-            'is_admin',
-            'first_name',
-            'last_name',
-            'name',
-            'override_display_name',
-            'password',
-            'password_scheme',
-            'timezone',
-            'date_created',
-            'language',
-            'organization',
-            'organization_position',
-            'emails',
-            'labels',
-            'user_groups',
-            'contact_data',
-            'custom_fields',
-        );
-
-        return ColumnHelper::hasRequiredColumns($person, $columns)
-            && ColumnHelper::isArrayColumn($person, 'emails')
-            && ColumnHelper::isArrayColumn($person, 'labels')
-            && ColumnHelper::isArrayColumn($person, 'contact_data')
-            && ColumnHelper::isArrayColumn($person, 'custom_fields');
     }
 }

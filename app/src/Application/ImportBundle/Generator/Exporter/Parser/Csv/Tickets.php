@@ -104,6 +104,12 @@ final class Tickets extends AbstractParser
                     'Invalid ticket record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -121,12 +127,12 @@ final class Tickets extends AbstractParser
     private function exportTicket($num, array $data)
     {
         $configuration = array(
-            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::TICKET_PREFIX,
-                'ref'     => 'id',
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => self::TICKET_PREFIX,
+                'ref'    => 'id',
             )),
             'subject'      => TransformerInterface::TYPE_STRING,
             'user'         => TransformerInterface::TYPE_STRING,
@@ -183,6 +189,12 @@ final class Tickets extends AbstractParser
             } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
             }

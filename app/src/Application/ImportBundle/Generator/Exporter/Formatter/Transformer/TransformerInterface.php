@@ -38,6 +38,7 @@ interface TransformerInterface
     const TYPE_ARRAY       = 'array';
     const TYPE_BOOLEAN     = 'boolean';
     const TYPE_DATE        = 'date';
+    const TYPE_TIMEZONE    = 'timezone';
     const TYPE_DESTINATION = 'destination';
 
     /**

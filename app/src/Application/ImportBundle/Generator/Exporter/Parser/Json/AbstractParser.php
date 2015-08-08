@@ -29,9 +29,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Application\ImportBundle\Entity;
@@ -100,13 +100,16 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                     $this->logWarning(sprintf('Invalid contact data record found (Skipping): %d', $num));
                 }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logError(sprintf(
                     'Invalid contact data record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
 
-            } catch (NotArrayException $e) {
+            } catch (\Exception $e) {
                 $this->logError(sprintf(
                     'Invalid contact data record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -120,41 +123,31 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns a contact data entity
      *
-     * @param array $contact
+     * @param array $data
      * @return Entity\ContactData|null
      *
      */
-    protected function exportContact(array $contact)
+    protected function exportContact(array $data)
     {
-        if ($this->isContactValid($contact)) {
-            $handler = ContactDataFactory::getHandler($contact['contact_type']);
-            $entity  = $handler->toEntity($contact);
-            $entity
-                ->setOid($contact['oid'])
-                ->setDestination(DestinationFormatter::transform('contact_data_', $contact['oid']))
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if contact data has all required columns
-     *
-     * @param array $contact
-     * @return bool
-     */
-    protected function isContactValid(array $contact)
-    {
-        $columns = array(
-            'oid',
-            'contact_type',
-            'comment',
+        $configuration = array(
+            'oid'          => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'contact_data_',
+                'ref'    => 'oid',
+            )),
+            'contact_type' => TransformerInterface::TYPE_STRING,
+            'comment'      => TransformerInterface::TYPE_STRING,
         );
 
-        return ColumnHelper::hasRequiredColumns($contact, $columns);
+        $formatted = $this->formatter->format($data, $configuration);
+        $handler   = ContactDataFactory::getHandler($formatted['contact_type']);
+        $entity    = $handler->toEntity($data);
+        $entity
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+        ;
+
+        return $entity;
     }
 
     /**
@@ -169,13 +162,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         foreach ($custom_fields as $num => $custom_field) {
             try {
                 $entity = $this->exportCustomField($custom_field);
-                if ($entity) {
-                    $collection->attach($entity);
-                } else {
-                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
-                }
+                $collection->attach($entity);
 
-            } catch (NoColumnException $e) {
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid custom field record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -189,127 +178,93 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns a custom field entity
      *
-     * @param array $custom_field
+     * @param array $data
      * @return Entity\CustomField|null
      */
-    protected function exportCustomField(array $custom_field)
+    protected function exportCustomField(array $data)
     {
-        if ($this->isCustomFieldValid($custom_field)) {
-            $entity = new Entity\CustomField();
-            $entity
-                ->setDestination(DestinationFormatter::transform('custom_field_', $custom_field['oid']))
-                ->setOid($custom_field['oid'])
-                ->setKey($custom_field['key'])
-                ->setValue($custom_field['value']);
+        $configuration = array(
+            'oid'         => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'custom_field_',
+                'ref'    => 'oid',
+            )),
+            'key'         => TransformerInterface::TYPE_STRING,
+            'value'       => TransformerInterface::TYPE_STRING,
+        );
 
-            return $entity;
-        }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\CustomField();
+        $entity
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setKey($formatted['key'])
+            ->setValue($formatted['value']);
 
-        return null;
+        return $entity;
     }
 
     /**
      * Returns an attachment entity
      *
-     * @param array $attachment
+     * @param array $data
      * @return Entity\Attachment|null
      */
-    protected function exportAttachment(array $attachment)
+    protected function exportAttachment(array $data)
     {
-        if ($this->isAttachmentValid($attachment)) {
-            /** @var Entity\Attachment $entity */
-            $entity = $this->exportBlob($attachment, new Entity\Attachment());
-            $entity
-                ->setPersonEmail($attachment['person'])
-                ->setAsInline($attachment['is_inline'])
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if an attachment has all required columns
-     *
-     * @param array $attachment
-     * @return bool
-     */
-    protected function isAttachmentValid(array $attachment)
-    {
-        $columns = array(
-            'person',
-            'is_inline',
+        $configuration = array(
+            'person'    => TransformerInterface::TYPE_STRING,
+            'is_inline' => TransformerInterface::TYPE_BOOLEAN,
         );
 
-        return $this->isBlobValid($attachment)
-            && ColumnHelper::hasRequiredColumns($attachment, $columns);
+        $formatted = $this->formatter->format($data, $configuration);
+
+        /** @var Entity\Attachment $entity */
+        $entity = $this->exportBlob($data, new Entity\Attachment());
+        $entity
+            ->setPersonEmail($formatted['person'])
+            ->setAsInline($formatted['is_inline'])
+        ;
+
+        return $entity;
     }
 
     /**
      * Returns a blob entity
      *
-     * @param array|null       $blob
+     * @param array|null       $data
      * @param Entity\Blob|null $entity
      *
      * @return Entity\Blob|null
      */
-    protected function exportBlob(array $blob = null, Entity\Blob $entity = null)
+    protected function exportBlob(array $data = null, Entity\Blob $entity = null)
     {
-        if ($this->isBlobValid($blob)) {
-            $entity = $entity ? : new Entity\Blob();
-            $entity
-                ->setDestination(DestinationFormatter::transform('attachment_', $blob['oid']))
-                ->setOid($blob['oid'])
-                ->setBlobData($blob['blob_data'])
-                ->setBlobUrl($blob['blob_url'])
-                ->setBlobPath($blob['blob_path'])
-                ->setFileName($blob['file_name'])
-                ->setContentType($blob['content_type'])
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if a blob has all required columns
-     *
-     * @param array|null $blob
-     * @return bool
-     */
-    protected function isBlobValid(array $blob = null)
-    {
-        $columns = array(
-            'oid',
-            'blob_data',
-            'blob_url',
-            'blob_path',
-            'file_name',
-            'content_type',
+        $configuration = array(
+            'oid'          => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'attachment_',
+                'ref'    => 'oid',
+            )),
+            'blob_data'    => TransformerInterface::TYPE_STRING,
+            'blob_url'     => TransformerInterface::TYPE_STRING,
+            'blob_path'    => TransformerInterface::TYPE_STRING,
+            'file_name'    => TransformerInterface::TYPE_STRING,
+            'content_type' => TransformerInterface::TYPE_STRING,
         );
 
-        return ColumnHelper::hasRequiredColumns($blob, $columns);
-    }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = $entity ? : new Entity\Blob();
+        $entity
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setBlobData($formatted['blob_data'])
+            ->setBlobUrl($formatted['blob_url'])
+            ->setBlobPath($formatted['blob_path'])
+            ->setFileName($formatted['file_name'])
+            ->setContentType($formatted['content_type'])
+        ;
 
-    /**
-     * Check if custom field has all required columns
-     *
-     * @param array $custom_field
-     * @return bool
-     */
-    protected function isCustomFieldValid(array $custom_field)
-    {
-        $columns = array(
-            'oid',
-            'key',
-            'value',
-        );
-
-        return ColumnHelper::hasRequiredColumns($custom_field, $columns);
+        return $entity;
     }
 
     /**

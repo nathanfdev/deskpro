@@ -78,6 +78,12 @@ final class News extends AbstractParser
                     'Invalid news record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -95,12 +101,12 @@ final class News extends AbstractParser
     private function exportNews($num, array $data)
     {
         $configuration = array(
-            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+            'id'             => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'news_',
-                'ref'     => 'id',
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'news_',
+                'ref'    => 'id',
             )),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,

@@ -25,15 +25,58 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
+
+use Psr\Log\LoggerInterface;
 
 /**
- * If raw data column does not exist
- *
- * Class NoColumnException
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class TimeZoneTransformer
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-final class NoColumnException extends \Exception
+final class TimeZoneTransformer implements TransformerInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
+    /**
+     * Constructor
+     *
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_TIMEZONE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function transform(array $transformed, array $original, $property, array $options = array())
+    {
+        if (array_key_exists($property, $transformed)) {
+            $value = $transformed[$property];
+
+            try {
+                return new \DateTimeZone($value);
+
+            } catch (\Exception $e) {
+                if ($this->logger) {
+                    $this->logger->warning(sprintf('Unable to create date timezone object, format = `%s`', (string)$value));
+                    $this->logger->warning($e->getMessage());
+                }
+            }
+        }
+
+        return null;
+    }
 }

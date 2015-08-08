@@ -27,15 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
 use Orb\Util\Strings;
-use DateTime;
 
 /**
  * Feedback json file parser
@@ -74,22 +71,19 @@ final class Feedback extends AbstractParser
 
             try {
                 $entity = $this->exportFeedback($feedback);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
-                }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
 
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid feedback record `%d` found (Skipping): %s',
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
             }
@@ -101,53 +95,74 @@ final class Feedback extends AbstractParser
     /**
      * Returns a feedback entity
      *
-     * @param array $feedback
+     * @param array $data
      * @return Entity\Feedback
      */
-    private function exportFeedback(array $feedback)
+    private function exportFeedback(array $data)
     {
-        if ($this->isFeedbackValid($feedback)) {
-            $entity = new Entity\Feedback();
-            $entity
-                ->setDestination(DestinationFormatter::transform('feedback_', $feedback['oid']))
-                ->setOid($feedback['oid'])
-                ->setPersonEmail($feedback['person'])
-                ->setLanguage($feedback['language'])
-                ->setTitle($feedback['title'])
-                ->setContent($feedback['content'])
-                ->setSlug($feedback['slug'])
-                ->setPopularity($feedback['popularity'])
-                ->setStatus($feedback['status'])
-                ->setTotalRating($feedback['total_rating'])
-                ->setNumComments($feedback['num_comments'])
-                ->setNumRatings($feedback['num_ratings'])
-                ->setViewCount($feedback['view_count'])
-                ->setCategory($feedback['category'])
-                ->setDateCreated(DateFormatter::transform($feedback['date_created'], $this->logger));
+        $configuration = array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'feedback_',
+                'ref'    => 'oid',
+            )),
+            'person'         => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'slug'           => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'popularity'     => TransformerInterface::TYPE_STRING,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'total_rating'   => TransformerInterface::TYPE_INT,
+            'num_comments'   => TransformerInterface::TYPE_INT,
+            'num_ratings'    => TransformerInterface::TYPE_INT,
+            'view_count'     => TransformerInterface::TYPE_INT,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerInterface::TYPE_DATE,
+            'labels'         => TransformerInterface::TYPE_ARRAY,
+            'attachments'    => TransformerInterface::TYPE_ARRAY,
+            'custom_fields'  => TransformerInterface::TYPE_ARRAY,
+        );
 
-            if ($feedback['date_published']) {
-                $entity->setDatePublished(new DateTime($feedback['date_published']));
-            }
-            foreach ($feedback['labels'] as $label) {
-                $entity->addLabel($label);
-            }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Feedback();
+        $entity
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setPersonEmail($formatted['person'])
+            ->setLanguage($formatted['language'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setPopularity($formatted['popularity'])
+            ->setStatus($formatted['status'])
+            ->setTotalRating($formatted['total_rating'])
+            ->setNumComments($formatted['num_comments'])
+            ->setNumRatings($formatted['num_ratings'])
+            ->setViewCount($formatted['view_count'])
+            ->setCategory($formatted['category'])
+            ->setDateCreated($formatted['date_created'])
+            ->setDatePublished($formatted['date_published'])
+        ;
 
-            $attachments = $this->exportAttachments($feedback['attachments']);
-            foreach ($attachments as $attachment) {
-                /** @var Entity\Attachment $attachment */
-                $entity->addAttachment($attachment);
-            }
-
-            $custom_fields = $this->exportCustomFields($feedback['custom_fields']);
-            foreach ($custom_fields as $custom_field) {
-                /** @var Entity\CustomField $custom_field */
-                $entity->addCustomField($custom_field);
-            }
-
-            return $entity;
+        foreach ($formatted['labels'] as $label) {
+            $entity->addLabel($label);
         }
 
-        return null;
+        $attachments = $this->exportAttachments($formatted['attachments']);
+        foreach ($attachments as $attachment) {
+            /** @var Entity\Attachment $attachment */
+            $entity->addAttachment($attachment);
+        }
+
+        $custom_fields = $this->exportCustomFields($formatted['custom_fields']);
+        foreach ($custom_fields as $custom_field) {
+            /** @var Entity\CustomField $custom_field */
+            $entity->addCustomField($custom_field);
+        }
+
+        return $entity;
     }
 
     /**
@@ -162,14 +177,11 @@ final class Feedback extends AbstractParser
         foreach ($attachments as $num => $attachment) {
             try {
                 $entity = $this->exportAttachment($attachment);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid feedback attachment record found (Skipping): %d', $num));
-                }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logError(sprintf(
                     'Invalid feedback attachment record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -188,38 +200,5 @@ final class Feedback extends AbstractParser
     private function getFeedbackReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_FEEDBACK_PATH);
-    }
-
-    /**
-     * Check if feedback has all required columns
-     *
-     * @param array $feedback
-     * @return bool
-     */
-    private function isFeedbackValid(array $feedback)
-    {
-        $columns = array(
-            'oid',
-            'person',
-            'language',
-            'title',
-            'content',
-            'popularity',
-            'status',
-            'total_rating',
-            'num_comments',
-            'num_ratings',
-            'view_count',
-            'category',
-            'labels',
-            'date_created',
-            'date_published',
-            'attachments',
-        );
-
-        return ColumnHelper::hasRequiredColumns($feedback, $columns)
-            && ColumnHelper::isArrayColumn($feedback, 'labels')
-            && ColumnHelper::isArrayColumn($feedback, 'attachments')
-            && ColumnHelper::isArrayColumn($feedback, 'custom_fields');
     }
 }

@@ -33,6 +33,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\DateTransf
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\DestinationTransformer;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\IntTransformer;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\StringTransformer;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TimeZoneTransformer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -51,6 +52,7 @@ class FormatterFactory
             ->attach(new ArrayTransformer())
             ->attach(new BooleanTransformer())
             ->attach(new DateTransformer())
+            ->attach(new TimeZoneTransformer())
             ->attach(new DestinationTransformer())
             ->attach(new IntTransformer())
             ->attach(new StringTransformer())

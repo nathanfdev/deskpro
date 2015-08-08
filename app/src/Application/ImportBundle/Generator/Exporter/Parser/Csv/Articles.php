@@ -94,6 +94,11 @@ final class Articles extends AbstractParser
                     'Invalid article record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -111,12 +116,12 @@ final class Articles extends AbstractParser
     private function exportArticle($num, array $data)
     {
         $configuration = array(
-            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::ARTICLE_PREFIX,
-                'ref'     => 'id',
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => self::ARTICLE_PREFIX,
+                'ref'    => 'id',
             )),
             'person'       => TransformerInterface::TYPE_STRING,
             'title'        => TransformerInterface::TYPE_STRING,

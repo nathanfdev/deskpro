@@ -30,11 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use DateTime;
 
 /**
  * Articles json file parser
@@ -82,6 +79,12 @@ final class Articles extends AbstractParser
                     'Invalid article record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -96,13 +99,12 @@ final class Articles extends AbstractParser
      */
     private function exportArticle(array $data)
     {
-        if (isset($data['oid'])) {
-            $data['destination'] = 'article_' . $data['oid'];
-        }
-
         $configuration = array(
             'oid'            => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerInterface::TYPE_DESTINATION,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_',
+                'ref'    => 'oid',
+            )),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
             'content'        => TransformerInterface::TYPE_STRING,

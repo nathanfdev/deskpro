@@ -27,14 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
-use DateTime;
 
 /**
  * News json file parser
@@ -73,22 +70,19 @@ final class News extends AbstractParser
 
             try {
                 $entity = $this->exportNews($news);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
-                }
 
-            } catch (NoColumnException $e) {
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid news record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
 
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid news record `%d` found (Skipping): %s',
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
             }
@@ -100,41 +94,58 @@ final class News extends AbstractParser
     /**
      * Returns a news entity
      *
-     * @param array $news
+     * @param array $data
      * @return Entity\News
      */
-    private function exportNews(array $news)
+    private function exportNews(array $data)
     {
-        if ($this->isNewsValid($news)) {
-            $entity = new Entity\News();
-            $entity
-                ->setDestination(DestinationFormatter::transform('news_', $news['oid']))
-                ->setOid($news['oid'])
-                ->setPersonEmail($news['person'])
-                ->setLanguage($news['language'])
-                ->setSlug($news['slug'])
-                ->setTitle($news['title'])
-                ->setContent($news['content'])
-                ->setSlug($news['slug'])
-                ->setViewCount($news['view_count'])
-                ->setTotalRating($news['total_rating'])
-                ->setNumComments($news['num_comments'])
-                ->setNumRatings($news['num_ratings'])
-                ->setStatus($news['status'])
-                ->setDateCreated(DateFormatter::transform($news['date_created'], $this->logger))
-                ->setCategory($news['category']);
+        $configuration = array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'news_',
+                'ref'    => 'oid',
+            )),
+            'person'         => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'view_count'     => TransformerInterface::TYPE_INT,
+            'total_rating'   => TransformerInterface::TYPE_INT,
+            'num_comments'   => TransformerInterface::TYPE_INT,
+            'num_ratings'    => TransformerInterface::TYPE_INT,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerInterface::TYPE_DATE,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'labels'         => TransformerInterface::TYPE_ARRAY,
+        );
 
-            if ($news['date_published']) {
-                $entity->setDatePublished(new DateTime($news['date_published']));
-            }
-            foreach ($news['labels'] as $label) {
-                $entity->addLabel($label);
-            }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\News();
+        $entity
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setPersonEmail($formatted['person'])
+            ->setLanguage($formatted['language'])
+            ->setSlug($formatted['slug'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setViewCount($formatted['view_count'])
+            ->setTotalRating($formatted['total_rating'])
+            ->setNumComments($formatted['num_comments'])
+            ->setNumRatings($formatted['num_ratings'])
+            ->setStatus($formatted['status'])
+            ->setDateCreated($formatted['date_created'])
+            ->setCategory($formatted['category'])
+            ->setDatePublished($formatted['date_published'])
+        ;
 
-            return $entity;
+        foreach ($formatted['labels'] as $label) {
+            $entity->addLabel($label);
         }
 
-        return null;
+        return $entity;
     }
 
     /**
@@ -145,34 +156,5 @@ final class News extends AbstractParser
     private function getNewsReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_NEWS_PATH);
-    }
-
-    /**
-     * Check if news has all required columns
-     *
-     * @param array $news
-     * @return bool
-     */
-    private function isNewsValid(array $news)
-    {
-        $columns = array(
-            'oid',
-            'person',
-            'language',
-            'title',
-            'content',
-            'view_count',
-            'total_rating',
-            'num_comments',
-            'num_ratings',
-            'status',
-            'date_created',
-            'date_published',
-            'category',
-            'labels',
-        );
-
-        return ColumnHelper::hasRequiredColumns($news, $columns)
-            && ColumnHelper::isArrayColumn($news, 'labels');
     }
 }

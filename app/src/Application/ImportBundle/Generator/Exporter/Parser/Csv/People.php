@@ -106,6 +106,12 @@ final class People extends AbstractParser
                     'Invalid person record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -123,12 +129,12 @@ final class People extends AbstractParser
     private function exportPerson($num, array $person)
     {
         $configuration = array(
-            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::PERSON_PREFIX,
-                'ref'     => array('original#id', 'email'),
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => self::PERSON_PREFIX,
+                'ref'    => array('original#id', 'email'),
             )),
             'name'         => TransformerInterface::TYPE_STRING,
             'email'        => TransformerInterface::TYPE_STRING,

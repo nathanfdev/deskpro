@@ -106,6 +106,12 @@ class Organizations extends AbstractParser
                     'Invalid organization record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
+            } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -123,12 +129,12 @@ class Organizations extends AbstractParser
     private function exportOrganization($num, array $data)
     {
         $configuration = array(
-            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::ORGANIZATION_PREFIX,
-                'ref'     => array('original#id', 'name'),
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => self::ORGANIZATION_PREFIX,
+                'ref'    => array('original#id', 'name'),
             )),
             'name'         => TransformerInterface::TYPE_STRING,
             'importance'   => TransformerInterface::TYPE_STRING,
