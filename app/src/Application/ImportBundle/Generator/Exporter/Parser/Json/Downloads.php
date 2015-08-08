@@ -118,7 +118,9 @@ final class Downloads extends AbstractParser
             'category'       => TransformerInterface::TYPE_STRING,
             'status'         => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
-            'date_published' => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
             'attachment'     => TransformerInterface::TYPE_ARRAY,
             'labels'         => TransformerInterface::TYPE_ARRAY,
         );

@@ -47,6 +47,10 @@ final class StringTransformer implements TransformerInterface
     public function transform(array $transformed, array $original, $property, array $options = array())
     {
         if (array_key_exists($property, $transformed)) {
+            if (null === $transformed[$property]) {
+                return null;
+            }
+
             return (string)$transformed[$property];
         }
         if (isset($options['default'])) {

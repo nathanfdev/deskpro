@@ -66,22 +66,22 @@ final class DateTransformer implements TransformerInterface
      */
     public function transform(array $transformed, array $original, $property, array $options = array())
     {
+        $value = null;
         if (array_key_exists($property, $transformed)) {
             $value = $transformed[$property];
-
-            try {
-                return new DateTime($value);
-
-            } catch (\Exception $e) {
-                if ($this->logger) {
-                    $this->logger->warning(sprintf('Unable to create datetime object, format = `%s`', (string)$value));
-                    $this->logger->warning($e->getMessage());
-                }
-            }
         }
-
         if (isset($options['null']) && $options['null'] === true) {
             return null;
+        }
+
+        try {
+            return new DateTime($value);
+
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->warning(sprintf('Unable to create datetime object, format = `%s`', (string)$value));
+                $this->logger->warning($e->getMessage());
+            }
         }
 
         return new DateTime();

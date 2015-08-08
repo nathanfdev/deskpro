@@ -115,7 +115,9 @@ final class News extends AbstractParser
             'num_ratings'    => TransformerInterface::TYPE_INT,
             'status'         => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
-            'date_published' => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
             'category'       => TransformerInterface::TYPE_STRING,
             'labels'         => TransformerInterface::TYPE_ARRAY,
         );

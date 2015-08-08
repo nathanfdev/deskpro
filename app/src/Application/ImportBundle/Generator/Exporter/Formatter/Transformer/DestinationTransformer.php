@@ -72,7 +72,7 @@ final class DestinationTransformer implements TransformerInterface
         if ( ! $value && isset($options['default'])) {
             $value = (string)$options['default'];
         }
-        if ( ! $value) {
+        if ( ! $this->isValidValue($value)) {
             throw new TransformerException('Empty destination property', $this->getType(), $transformed, $property);
         }
 
@@ -80,7 +80,7 @@ final class DestinationTransformer implements TransformerInterface
         $filename = str_replace(' ', '_', $filename);
         $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
 
-        if ( ! $filename) {
+        if ( ! $this->isValidValue($filename)) {
             throw new TransformerException('Empty destination filename', $this->getType(), $transformed, $property);
         }
         if (isset($options['prefix'])) {
@@ -88,5 +88,14 @@ final class DestinationTransformer implements TransformerInterface
         }
 
         return $filename;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    private function isValidValue($value)
+    {
+        return $value || 0 === $value || "0" === $value;
     }
 }

@@ -172,7 +172,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      * @param DateTime $date_end
      * @return $this
      */
-    public function setDateEnd(DateTime $date_end)
+    public function setDateEnd(DateTime $date_end = null)
     {
         $this->date_end = $date_end;
         return $this;

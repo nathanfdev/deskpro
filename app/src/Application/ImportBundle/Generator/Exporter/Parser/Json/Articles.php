@@ -145,14 +145,10 @@ final class Articles extends AbstractParser
             ->setNumRatings($formatted['num_ratings'])
             ->setStatus($formatted['status'])
             ->setDateCreated($formatted['date_created'])
+            ->setDatePublished($formatted['date_published'])
+            ->setDateEnd($formatted['date_end'])
         ;
 
-        if ($formatted['date_published']) {
-            $entity->setDatePublished($formatted['date_published']);
-        }
-        if ($formatted['date_end']) {
-            $entity->setDateEnd($formatted['date_end']);
-        }
         foreach ($formatted['categories'] as $category) {
             $entity->addCategory($category);
         }

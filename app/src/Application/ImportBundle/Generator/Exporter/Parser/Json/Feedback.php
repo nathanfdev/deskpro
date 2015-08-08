@@ -119,7 +119,9 @@ final class Feedback extends AbstractParser
             'view_count'     => TransformerInterface::TYPE_INT,
             'category'       => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
-            'date_published' => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
             'labels'         => TransformerInterface::TYPE_ARRAY,
             'attachments'    => TransformerInterface::TYPE_ARRAY,
             'custom_fields'  => TransformerInterface::TYPE_ARRAY,

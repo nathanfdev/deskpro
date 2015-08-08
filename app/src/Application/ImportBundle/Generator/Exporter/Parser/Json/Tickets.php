@@ -126,7 +126,7 @@ final class Tickets extends AbstractParser
             'product'       => TransformerInterface::TYPE_STRING,
             'organization'  => TransformerInterface::TYPE_STRING,
             'is_hold'       => TransformerInterface::TYPE_BOOLEAN,
-            'urgency'       => TransformerInterface::TYPE_STRING,
+            'urgency'       => TransformerInterface::TYPE_INT,
             'messages'      => TransformerInterface::TYPE_ARRAY,
             'participants'  => TransformerInterface::TYPE_ARRAY,
             'labels'        => TransformerInterface::TYPE_ARRAY,
@@ -189,7 +189,7 @@ final class Tickets extends AbstractParser
      */
     private function exportPriority(array $data = null)
     {
-        if ( ! empty($data)) {
+        if (empty($data)) {
             return null;
         }
 

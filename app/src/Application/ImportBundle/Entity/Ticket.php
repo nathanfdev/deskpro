@@ -332,7 +332,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      * @param DateTime $date_archived
      * @return $this
      */
-    public function setDateArchived(DateTime $date_archived)
+    public function setDateArchived(DateTime $date_archived = null)
     {
         $this->date_archived = $date_archived;
         return $this;
@@ -350,7 +350,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      * @param DateTime $date_resolved
      * @return $this
      */
-    public function setDateResolved(DateTime $date_resolved)
+    public function setDateResolved(DateTime $date_resolved = null)
     {
         $this->date_resolved = $date_resolved;
         return $this;

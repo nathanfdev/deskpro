@@ -210,7 +210,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * @param array $data
      * @return Entity\Attachment|null
      */
-    protected function exportAttachment(array $data)
+    protected function exportAttachment(array $data = null)
     {
         $configuration = array(
             'person'    => TransformerInterface::TYPE_STRING,
@@ -221,12 +221,15 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         /** @var Entity\Attachment $entity */
         $entity = $this->exportBlob($data, new Entity\Attachment());
-        $entity
-            ->setPersonEmail($formatted['person'])
-            ->setAsInline($formatted['is_inline'])
-        ;
+        if ($entity) {
+            $entity
+                ->setPersonEmail($formatted['person'])
+                ->setAsInline($formatted['is_inline']);
 
-        return $entity;
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -239,6 +242,10 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function exportBlob(array $data = null, Entity\Blob $entity = null)
     {
+        if (empty($data)) {
+            return null;
+        }
+
         $configuration = array(
             'oid'          => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
