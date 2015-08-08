@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -107,7 +108,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('article_', $article['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('article_', $article['oid']))
                 ->setOid($article['oid'])
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -120,7 +121,7 @@ final class Articles extends AbstractParser
                 ->setNumComments($article['num_comments'])
                 ->setNumRatings($article['num_ratings'])
                 ->setStatus($article['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']));
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($article['date_created'], $this->logger));
 
             if ($article['date_published']) {
                 $entity->setDatePublished(new DateTime($article['date_published']));

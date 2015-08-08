@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
 use Orb\Util\Strings;
 use DateTime;
@@ -108,7 +109,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('feedback_', $feedback['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('feedback_', $feedback['oid']))
                 ->setOid($feedback['oid'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -122,7 +123,7 @@ final class Feedback extends AbstractParser
                 ->setNumRatings($feedback['num_ratings'])
                 ->setViewCount($feedback['view_count'])
                 ->setCategory($feedback['category'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']));
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($feedback['date_created'], $this->logger));
 
             if ($feedback['date_published']) {
                 $entity->setDatePublished(new DateTime($feedback['date_published']));

@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
 use DateTimeZone;
 
@@ -107,7 +108,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('person_', $person['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('person_', $person['oid']))
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])
@@ -121,7 +122,7 @@ final class People extends AbstractParser
                 ->setLanguage($person['language'])
                 ->setOrganization($person['organization'])
                 ->setOrganizationPosition($person['organization_position'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($person['date_created']));
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($person['date_created'], $this->logger));
 
             if ($person['timezone']) {
                 $entity->setTimezone(new DateTimeZone($person['timezone']));

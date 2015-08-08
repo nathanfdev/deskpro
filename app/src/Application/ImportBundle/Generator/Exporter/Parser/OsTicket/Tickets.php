@@ -29,8 +29,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Orb\Util\Strings;
 
@@ -124,7 +125,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('ticket_', $ticket['ticket_id']))
+                ->setDestination(DestinationFormatter::formatDestination('ticket_', $ticket['ticket_id']))
                 ->setOid($ticket['ticket_id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
@@ -132,7 +133,7 @@ final class Tickets extends AbstractParser
                 ->setAgentEmail($this->reader->findUserEmailById($ticket['staff_id']))
                 ->setAgentTeam($this->reader->findUserEmailById($ticket['team_id']))
                 ->setStatus($this->getTicketStatus($ticket))
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($ticket['created'], $this->logger))
                 ->setSubject($ticket['subject'])
                 ->setPriority($this->exportPriority($ticket['priority_id']));
 
@@ -216,10 +217,10 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('message_', $num))
+                ->setDestination(DestinationFormatter::formatDestination('message_', $num))
                 ->setOid($num)
                 ->setPersonEmail($this->getMessagePersonEmail($message))
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($message['created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($message['created'], $this->logger))
                 ->setMessageHtml($message['body']);
 
             $attachments = $this->exportAttachments($message['id']);
@@ -279,7 +280,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('attachment_', $num))
+                ->setDestination(DestinationFormatter::formatDestination('attachment_', $num))
                 ->setOid($num)
                 ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                 ->setFileName($attachment['name'])

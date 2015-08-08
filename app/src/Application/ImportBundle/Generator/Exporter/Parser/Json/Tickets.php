@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -107,7 +108,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('ticket_', $ticket['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('ticket_', $ticket['oid']))
                 ->setOid($ticket['oid'])
                 ->setRef($ticket['ref'])
                 ->setDepartment($ticket['department'])
@@ -124,7 +125,7 @@ final class Tickets extends AbstractParser
                 ->setOrganization($ticket['organization'])
                 ->setAsHold($ticket['is_hold'])
                 ->setUrgency($ticket['urgency'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($ticket['date_created'], $this->logger))
                 ->setLogMessage($ticket['log_message'])
             ;
 
@@ -170,7 +171,7 @@ final class Tickets extends AbstractParser
         if ($this->isPriorityValid($priority)) {
             $entity = new Entity\TicketPriority();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('priority_', $priority['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('priority_', $priority['oid']))
                 ->setOid($priority['oid'])
                 ->setTitle($priority['title'])
                 ->setValue($priority['value']);
@@ -228,7 +229,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('message_', $message['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('message_', $message['oid']))
                 ->setOid($message['oid'])
                 ->setPersonEmail($message['person'])
                 ->setMessageText($message['message_text'])

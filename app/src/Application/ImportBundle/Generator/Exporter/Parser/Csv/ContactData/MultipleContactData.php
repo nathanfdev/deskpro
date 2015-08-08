@@ -31,7 +31,7 @@ use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
@@ -99,7 +99,7 @@ class MultipleContactData extends AbstractGenerator
         foreach ($data as $num => $field) {
             try {
                 if ($this->isContactFieldValid($field, $ref_column)) {
-                    $destination = DestinationHelper::formatDestination($destination_prefix, $field[$ref_column]);
+                    $destination = DestinationFormatter::formatDestination($destination_prefix, $field[$ref_column]);
                     $contact_info[$destination][$field['contact_id']][$field['field_name']] = $field['value'];
 
                     $this->logInfo(sprintf('Contact field `%s` parsed successfully!', $destination));

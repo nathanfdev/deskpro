@@ -25,13 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Helper;
+namespace Application\ImportBundle\Generator\Exporter\Formatter;
 
 /**
- * Class DestinationHelper
- * @package Application\ImportBundle\Generator\Exporter\Helper
+ * Class DestinationFormatter
+ * @package Application\ImportBundle\Generator\Exporter\Formatter
  */
-class DestinationHelper
+class DestinationFormatter
 {
     /**
      * Formats destination path

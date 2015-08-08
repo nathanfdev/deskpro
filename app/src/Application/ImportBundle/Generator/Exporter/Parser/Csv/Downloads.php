@@ -29,7 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
@@ -104,7 +105,7 @@ final class Downloads extends AbstractParser
             $entity = new Entity\Download();
             $entity
                 ->setRawData($download)
-                ->setDestination(DestinationHelper::formatDestination(self::DOWNLOAD_PREFIX, $num))
+                ->setDestination(DestinationFormatter::formatDestination(self::DOWNLOAD_PREFIX, $num))
                 ->setOid($num)
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -113,7 +114,7 @@ final class Downloads extends AbstractParser
                 ->setLanguage($download['language'])
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($download['date_created'], $this->logger))
                 ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $download, 'person'));
 
             if ($download['label']) {

@@ -28,11 +28,12 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 
 /**
  * Organizations json file parser
@@ -107,11 +108,11 @@ final class Organizations extends AbstractParser
             $entity = new Entity\Organization();
             $entity
                 ->setRawData($organization)
-                ->setDestination(DestinationHelper::formatDestination('organization_', $organization['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('organization_', $organization['oid']))
                 ->setOid($organization['oid'])
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($organization['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($organization['date_created'], $this->logger))
             ;
 
             if ($organization['picture']) {

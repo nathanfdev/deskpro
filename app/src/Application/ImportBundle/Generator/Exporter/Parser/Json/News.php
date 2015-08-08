@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -107,7 +108,7 @@ final class News extends AbstractParser
         if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('news_', $news['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('news_', $news['oid']))
                 ->setOid($news['oid'])
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -120,7 +121,7 @@ final class News extends AbstractParser
                 ->setNumComments($news['num_comments'])
                 ->setNumRatings($news['num_ratings'])
                 ->setStatus($news['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($news['date_created'], $this->logger))
                 ->setCategory($news['category']);
 
             if ($news['date_published']) {

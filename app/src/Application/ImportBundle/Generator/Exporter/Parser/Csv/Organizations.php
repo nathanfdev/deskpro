@@ -28,8 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
@@ -130,11 +131,11 @@ class Organizations extends AbstractParser
             $entity
                 ->setRawData($organization)
                 ->setOid($organization_id)
-                ->setDestination(DestinationHelper::formatDestination(self::ORGANIZATION_PREFIX, $organization_id))
+                ->setDestination(DestinationFormatter::formatDestination(self::ORGANIZATION_PREFIX, $organization_id))
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
                 ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'name'))
-                ->setDateCreated($this->getFromStringOrCurrentDateTime(@$organization['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime(@$organization['date_created'], $this->logger))
             ;
 
             return $entity;

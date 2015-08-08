@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -107,7 +108,7 @@ final class Downloads extends AbstractParser
         if ($this->isValidDownload($download)) {
             $entity = new Entity\Download();
             $entity
-                ->setDestination(DestinationHelper::formatDestination('download_', $download['oid']))
+                ->setDestination(DestinationFormatter::formatDestination('download_', $download['oid']))
                 ->setOid($download['oid'])
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -121,7 +122,7 @@ final class Downloads extends AbstractParser
                 ->setViewCount($download['view_count'])
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($download['date_created'], $this->logger));
 
             if ($download['date_published']) {
                 $entity->setDatePublished(new DateTime($download['date_published']));

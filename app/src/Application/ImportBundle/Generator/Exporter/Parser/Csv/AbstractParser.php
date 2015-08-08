@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\MultipleContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\InlineContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
@@ -244,7 +244,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity = $entity ? : new Entity\Blob();
             $entity
                 ->setRawData($blob)
-                ->setDestination(DestinationHelper::formatDestination($destination_prefix, $blob[$ref_column]))
+                ->setDestination(DestinationFormatter::formatDestination($destination_prefix, $blob[$ref_column]))
                 ->setOid($num)
                 ->setBlobUrl(@$blob['blob_url'])
                 ->setBlobPath(@$blob['blob_path'])
@@ -334,7 +334,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity = new Entity\CustomField();
             $entity
                 ->setRawData($custom_field)
-                ->setDestination(DestinationHelper::formatDestination($destination_prefix, $custom_field[$ref_column]))
+                ->setDestination(DestinationFormatter::formatDestination($destination_prefix, $custom_field[$ref_column]))
                 ->setOid($num)
                 ->setKey($custom_field['field_name'])
                 ->setValue($custom_field['value'])

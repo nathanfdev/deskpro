@@ -29,7 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
@@ -129,7 +129,7 @@ final class People extends AbstractParser
             $entity    = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination(DestinationHelper::formatDestination(self::PERSON_PREFIX, $person_id))
+                ->setDestination(DestinationFormatter::formatDestination(self::PERSON_PREFIX, $person_id))
                 ->setOid($person_id)
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])

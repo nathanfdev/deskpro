@@ -28,8 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
@@ -102,7 +103,7 @@ final class News extends AbstractParser
             $entity = new Entity\News();
             $entity
                 ->setRawData($news)
-                ->setDestination(DestinationHelper::formatDestination('news_', $num))
+                ->setDestination(DestinationFormatter::formatDestination('news_', $num))
                 ->setOid($num)
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -111,7 +112,7 @@ final class News extends AbstractParser
                 ->setContent($news['content'])
                 ->setSlug($news['slug'])
                 ->setStatus($news['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($news['date_created'], $this->logger))
                 ->setCategory($news['category']);
 
             if ($news['date_published']) {

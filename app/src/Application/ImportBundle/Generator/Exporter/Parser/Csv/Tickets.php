@@ -29,8 +29,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Orb\Util\Strings;
 
@@ -125,14 +126,14 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
-                ->setDestination(DestinationHelper::formatDestination(self::TICKET_PREFIX, $ticket['id']))
+                ->setDestination(DestinationFormatter::formatDestination(self::TICKET_PREFIX, $ticket['id']))
                 ->setOid($ticket['id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setSubject($ticket['subject'])
                 ->setPersonEmail($ticket['user'])
                 ->setAgentEmail($ticket['agent'])
                 ->setStatus($ticket['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
-                ->setDateCreated($this->getFromStringOrCurrentDateTime(@$ticket['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime(@$ticket['date_created'], $this->logger))
             ;
 
             return $entity;
@@ -195,11 +196,11 @@ final class Tickets extends AbstractParser
             $entity = new Entity\TicketMessage();
             $entity
                 ->setRawData($message)
-                ->setDestination(DestinationHelper::formatDestination(self::TICKET_PREFIX, $message['ticket_id']))
+                ->setDestination(DestinationFormatter::formatDestination(self::TICKET_PREFIX, $message['ticket_id']))
                 ->setOid($message['message_id'])
                 ->setPersonEmail($message['user'])
                 ->setMessageText($message['message_text'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime(@$message['date_created']))
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime(@$message['date_created'], $this->logger))
             ;
 
             return $entity;

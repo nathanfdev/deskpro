@@ -29,7 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
@@ -123,7 +124,7 @@ final class Feedback extends AbstractParser
             $entity = new Entity\Feedback();
             $entity
                 ->setRawData($feedback)
-                ->setDestination(DestinationHelper::formatDestination('feedback_', $feedback['id']))
+                ->setDestination(DestinationFormatter::formatDestination('feedback_', $feedback['id']))
                 ->setOid($feedback['id'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -133,7 +134,7 @@ final class Feedback extends AbstractParser
                 ->setPopularity($feedback['popularity'])
                 ->setStatus($feedback['status'])
                 ->setCategory($feedback['category'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']));
+                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($feedback['date_created'], $this->logger));
 
             if ($feedback['date_published']) {
                 $entity->setDatePublished(new DateTime($feedback['date_published']));

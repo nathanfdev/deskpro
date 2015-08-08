@@ -25,26 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\Generator\Exporter\Formatter;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
+use DateTime;
+use Psr\Log\LoggerInterface;
 
 /**
- * Abstract generator exporter parser
- *
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class DateFormatter
+ * @package Application\ImportBundle\Generator\Exporter\Formatter
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+class DateFormatter
 {
     /**
-     * Returns true if value is "true" or intval of value = 1
+     * Returns date time object from string or current date time if the format is empty
      *
-     * @param int|string $value
-     * @return bool
+     * @param string               $format
+     * @param LoggerInterface|null $logger
+     *
+     * @return DateTime
      */
-    protected function isBooleanTrue($value)
+    public static function getFromStringOrCurrentDateTime($format, LoggerInterface $logger = null)
     {
-        return $value === 'true' || (int)$value === 1;
+        if ($format) {
+            try {
+                return new DateTime($format);
+
+            } catch (\Exception $e) {
+                if ($logger) {
+                    $logger->warning(sprintf('Unable to create datetime object, format = `%s`', (string)$format));
+                    $logger->warning($e->getMessage());
+                }
+            }
+        }
+
+        return new DateTime();
     }
 }

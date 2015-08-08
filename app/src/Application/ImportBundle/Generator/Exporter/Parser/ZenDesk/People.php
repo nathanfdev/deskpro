@@ -29,7 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
@@ -134,7 +134,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             $entity = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination(DestinationHelper::formatDestination('person_', $person['id']))
+                ->setDestination(DestinationFormatter::formatDestination('person_', $person['id']))
                 ->setOid($person['id'])
                 ->addEmail($person['email'])
                 ->setName($person['name'])
