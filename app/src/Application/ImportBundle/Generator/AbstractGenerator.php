@@ -82,7 +82,7 @@ abstract class AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
         return $this;

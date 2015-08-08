@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
@@ -116,7 +118,7 @@ final class Articles extends AbstractParser
             $entity     = new Entity\Article();
             $entity
                 ->setRawData($article)
-                ->setDestination($this->formatDestination(self::ARTICLE_PREFIX, $article_id))
+                ->setDestination(DestinationHelper::formatDestination(self::ARTICLE_PREFIX, $article_id))
                 ->setOid($article_id)
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -170,7 +172,7 @@ final class Articles extends AbstractParser
             'date_created',
         );
 
-        return $this->hasRequiredColumns($article, $columns);
+        return ColumnHelper::hasRequiredColumns($article, $columns);
     }
 
     /**

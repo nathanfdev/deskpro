@@ -25,40 +25,28 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData;
-
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\AbstractParser;
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Exporter\Helper;
 
 /**
- * Class ExternalContactData
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData
+ * Class DestinationHelper
+ * @package Application\ImportBundle\Generator\Exporter\Helper
  */
-final class ExternalContactData extends AbstractParser
+class DestinationHelper
 {
     /**
-     * {@inheritdoc}
+     * Formats destination path
+     *
+     * @param $prefix
+     * @param $id
+     *
+     * @return string
      */
-    public function getEntityType()
+    public static function formatDestination($prefix, $id)
     {
-        return Entity\EntityInterface::TYPE_CONTACT_DATA;
-    }
+        $filename = strtolower($id);
+        $filename = str_replace(' ', '_', $filename);
+        $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        $collection = new Entity\Collection();
-
-        return $collection;
+        return rtrim($prefix, '_') . '_' . $filename;
     }
 }

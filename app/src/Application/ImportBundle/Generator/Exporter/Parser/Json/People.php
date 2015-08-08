@@ -27,9 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Entity;
 use DateTimeZone;
 
@@ -105,7 +107,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination($this->formatDestination('person_', $person['oid']))
+                ->setDestination(DestinationHelper::formatDestination('person_', $person['oid']))
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])
@@ -193,10 +195,10 @@ final class People extends AbstractParser
             'custom_fields',
         );
 
-        return $this->hasRequiredColumns($person, $columns)
-            && $this->isArrayColumn($person, 'emails')
-            && $this->isArrayColumn($person, 'labels')
-            && $this->isArrayColumn($person, 'contact_data')
-            && $this->isArrayColumn($person, 'custom_fields');
+        return ColumnHelper::hasRequiredColumns($person, $columns)
+            && ColumnHelper::isArrayColumn($person, 'emails')
+            && ColumnHelper::isArrayColumn($person, 'labels')
+            && ColumnHelper::isArrayColumn($person, 'contact_data')
+            && ColumnHelper::isArrayColumn($person, 'custom_fields');
     }
 }

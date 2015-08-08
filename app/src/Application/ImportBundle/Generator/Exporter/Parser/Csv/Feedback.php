@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
@@ -121,7 +123,7 @@ final class Feedback extends AbstractParser
             $entity = new Entity\Feedback();
             $entity
                 ->setRawData($feedback)
-                ->setDestination($this->formatDestination('feedback_', $feedback['id']))
+                ->setDestination(DestinationHelper::formatDestination('feedback_', $feedback['id']))
                 ->setOid($feedback['id'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -189,7 +191,7 @@ final class Feedback extends AbstractParser
             'date_published',
         );
 
-        return $this->hasRequiredColumns($feedback, $columns);
+        return ColumnHelper::hasRequiredColumns($feedback, $columns);
     }
 
     /**

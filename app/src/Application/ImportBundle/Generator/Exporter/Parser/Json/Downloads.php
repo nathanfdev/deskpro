@@ -27,9 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -105,7 +107,7 @@ final class Downloads extends AbstractParser
         if ($this->isValidDownload($download)) {
             $entity = new Entity\Download();
             $entity
-                ->setDestination($this->formatDestination('download_', $download['oid']))
+                ->setDestination(DestinationHelper::formatDestination('download_', $download['oid']))
                 ->setOid($download['oid'])
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -203,8 +205,8 @@ final class Downloads extends AbstractParser
             'labels',
         );
 
-        return $this->hasRequiredColumns($download, $columns)
-            && $this->isArrayColumn($download, 'labels')
-            && (empty($download['attachment']) === false ? $this->isArrayColumn($download, 'attachment')  : true);
+        return ColumnHelper::hasRequiredColumns($download, $columns)
+            && ColumnHelper::isArrayColumn($download, 'labels')
+            && (empty($download['attachment']) === false ? ColumnHelper::isArrayColumn($download, 'attachment')  : true);
     }
 }

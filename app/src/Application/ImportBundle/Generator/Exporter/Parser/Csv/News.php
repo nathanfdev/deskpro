@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
@@ -100,7 +102,7 @@ final class News extends AbstractParser
             $entity = new Entity\News();
             $entity
                 ->setRawData($news)
-                ->setDestination($this->formatDestination('news_', $num))
+                ->setDestination(DestinationHelper::formatDestination('news_', $num))
                 ->setOid($num)
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -146,7 +148,7 @@ final class News extends AbstractParser
             'label',
         );
 
-        return $this->hasRequiredColumns($news, $columns);
+        return ColumnHelper::hasRequiredColumns($news, $columns);
     }
 
     /**

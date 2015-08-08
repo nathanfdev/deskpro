@@ -27,9 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -105,7 +107,7 @@ final class News extends AbstractParser
         if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
-                ->setDestination($this->formatDestination('news_', $news['oid']))
+                ->setDestination(DestinationHelper::formatDestination('news_', $news['oid']))
                 ->setOid($news['oid'])
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -169,7 +171,7 @@ final class News extends AbstractParser
             'labels',
         );
 
-        return $this->hasRequiredColumns($news, $columns)
-            && $this->isArrayColumn($news, 'labels');
+        return ColumnHelper::hasRequiredColumns($news, $columns)
+            && ColumnHelper::isArrayColumn($news, 'labels');
     }
 }

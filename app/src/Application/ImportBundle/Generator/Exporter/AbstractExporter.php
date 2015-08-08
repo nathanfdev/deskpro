@@ -47,6 +47,9 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     private $parsers;
 
+    /**
+     * @var BaseReader
+     */
     protected $reader;
 
     /**
@@ -122,12 +125,18 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         return $parser;
     }
 
+    /**
+     * @return bool
+     */
     public function isReady()
     {
         return $this->reader->isReady();
     }
 
-    static public function getOrderedTypes()
+    /**
+     * @return array
+     */
+    public static function getOrderedTypes()
     {
         return array(
             Entity\EntityInterface::TYPE_ORGANIZATION,

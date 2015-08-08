@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\Json\JsonConfig;
@@ -122,7 +124,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity  = $handler->toEntity($contact);
             $entity
                 ->setOid($contact['oid'])
-                ->setDestination($this->formatDestination('contact_data_', $contact['oid']))
+                ->setDestination(DestinationHelper::formatDestination('contact_data_', $contact['oid']))
             ;
 
             return $entity;
@@ -145,7 +147,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             'comment',
         );
 
-        return $this->hasRequiredColumns($contact, $columns);
+        return ColumnHelper::hasRequiredColumns($contact, $columns);
     }
 
     /**
@@ -188,7 +190,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isCustomFieldValid($custom_field)) {
             $entity = new Entity\CustomField();
             $entity
-                ->setDestination($this->formatDestination('custom_field_', $custom_field['oid']))
+                ->setDestination(DestinationHelper::formatDestination('custom_field_', $custom_field['oid']))
                 ->setOid($custom_field['oid'])
                 ->setKey($custom_field['key'])
                 ->setValue($custom_field['value']);
@@ -235,7 +237,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         );
 
         return $this->isBlobValid($attachment)
-            && $this->hasRequiredColumns($attachment, $columns);
+            && ColumnHelper::hasRequiredColumns($attachment, $columns);
     }
 
     /**
@@ -251,7 +253,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isBlobValid($blob)) {
             $entity = $entity ? : new Entity\Blob();
             $entity
-                ->setDestination($this->formatDestination('attachment_', $blob['oid']))
+                ->setDestination(DestinationHelper::formatDestination('attachment_', $blob['oid']))
                 ->setOid($blob['oid'])
                 ->setBlobData($blob['blob_data'])
                 ->setBlobUrl($blob['blob_url'])
@@ -283,7 +285,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             'content_type',
         );
 
-        return $this->hasRequiredColumns($blob, $columns);
+        return ColumnHelper::hasRequiredColumns($blob, $columns);
     }
 
     /**
@@ -300,7 +302,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             'value',
         );
 
-        return $this->hasRequiredColumns($custom_field, $columns);
+        return ColumnHelper::hasRequiredColumns($custom_field, $columns);
     }
 
     /**

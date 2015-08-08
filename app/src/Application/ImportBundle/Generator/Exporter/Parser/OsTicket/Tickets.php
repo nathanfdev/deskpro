@@ -29,6 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Orb\Util\Strings;
 
@@ -122,7 +124,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination($this->formatDestination('ticket_', $ticket['ticket_id']))
+                ->setDestination(DestinationHelper::formatDestination('ticket_', $ticket['ticket_id']))
                 ->setOid($ticket['ticket_id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
@@ -214,7 +216,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination($this->formatDestination('message_', $num))
+                ->setDestination(DestinationHelper::formatDestination('message_', $num))
                 ->setOid($num)
                 ->setPersonEmail($this->getMessagePersonEmail($message))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($message['created']))
@@ -277,7 +279,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
-                ->setDestination($this->formatDestination('attachment_', $num))
+                ->setDestination(DestinationHelper::formatDestination('attachment_', $num))
                 ->setOid($num)
                 ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                 ->setFileName($attachment['name'])
@@ -349,7 +351,7 @@ final class Tickets extends AbstractParser
             'closed',
         );
 
-        return $this->hasRequiredColumns($ticket, $columns);
+        return ColumnHelper::hasRequiredColumns($ticket, $columns);
     }
 
     /**
@@ -369,7 +371,7 @@ final class Tickets extends AbstractParser
             'body',
         );
 
-        return $this->hasRequiredColumns($message, $columns);
+        return ColumnHelper::hasRequiredColumns($message, $columns);
     }
 
     /**
@@ -386,6 +388,6 @@ final class Tickets extends AbstractParser
             'type',
         );
 
-        return $this->hasRequiredColumns($attachment, $columns);
+        return ColumnHelper::hasRequiredColumns($attachment, $columns);
     }
 }

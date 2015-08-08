@@ -27,9 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -105,7 +107,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination($this->formatDestination('article_', $article['oid']))
+                ->setDestination(DestinationHelper::formatDestination('article_', $article['oid']))
                 ->setOid($article['oid'])
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -185,9 +187,9 @@ final class Articles extends AbstractParser
             'custom_fields',
         );
 
-        return $this->hasRequiredColumns($article, $columns)
-            && $this->isArrayColumn($article, 'categories')
-            && $this->isArrayColumn($article, 'labels')
-            && $this->isArrayColumn($article, 'custom_fields');
+        return ColumnHelper::hasRequiredColumns($article, $columns)
+            && ColumnHelper::isArrayColumn($article, 'categories')
+            && ColumnHelper::isArrayColumn($article, 'labels')
+            && ColumnHelper::isArrayColumn($article, 'custom_fields');
     }
 }

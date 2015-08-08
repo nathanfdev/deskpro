@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTimeZone;
 
@@ -153,7 +155,7 @@ final class People extends AbstractParser
         if ($this->isStaffValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination($this->formatDestination('staff_', $person['staff_id']))
+                ->setDestination(DestinationHelper::formatDestination('staff_', $person['staff_id']))
                 ->setOid($person['staff_id'])
                 ->setAsAgent(true)
                 ->setName($person['firstname'] . $person['lastname'])
@@ -223,7 +225,7 @@ final class People extends AbstractParser
         if ($this->isUserValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination($this->formatDestination('user_', $person['user_id']))
+                ->setDestination(DestinationHelper::formatDestination('user_', $person['user_id']))
                 ->setOid($person['user_id'])
                 ->setAsUser(true)
                 ->setName($person['name'])
@@ -256,7 +258,7 @@ final class People extends AbstractParser
             'group_id',
         );
 
-        return $this->hasRequiredColumns($person, $columns);
+        return ColumnHelper::hasRequiredColumns($person, $columns);
     }
 
     /**
@@ -275,6 +277,6 @@ final class People extends AbstractParser
             'address',
         );
 
-        return $this->hasRequiredColumns($person, $columns);
+        return ColumnHelper::hasRequiredColumns($person, $columns);
     }
 }

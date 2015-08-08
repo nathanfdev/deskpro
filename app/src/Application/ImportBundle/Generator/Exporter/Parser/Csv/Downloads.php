@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
@@ -102,7 +104,7 @@ final class Downloads extends AbstractParser
             $entity = new Entity\Download();
             $entity
                 ->setRawData($download)
-                ->setDestination($this->formatDestination(self::DOWNLOAD_PREFIX, $num))
+                ->setDestination(DestinationHelper::formatDestination(self::DOWNLOAD_PREFIX, $num))
                 ->setOid($num)
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -144,7 +146,7 @@ final class Downloads extends AbstractParser
             'label',
         );
 
-        return $this->hasRequiredColumns($download, $columns);
+        return ColumnHelper::hasRequiredColumns($download, $columns);
     }
 
     /**

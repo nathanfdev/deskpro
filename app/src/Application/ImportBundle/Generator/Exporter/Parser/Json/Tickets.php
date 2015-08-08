@@ -27,9 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Entity;
 use DateTime;
 
@@ -105,7 +107,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination($this->formatDestination('ticket_', $ticket['oid']))
+                ->setDestination(DestinationHelper::formatDestination('ticket_', $ticket['oid']))
                 ->setOid($ticket['oid'])
                 ->setRef($ticket['ref'])
                 ->setDepartment($ticket['department'])
@@ -168,7 +170,7 @@ final class Tickets extends AbstractParser
         if ($this->isPriorityValid($priority)) {
             $entity = new Entity\TicketPriority();
             $entity
-                ->setDestination($this->formatDestination('priority_', $priority['oid']))
+                ->setDestination(DestinationHelper::formatDestination('priority_', $priority['oid']))
                 ->setOid($priority['oid'])
                 ->setTitle($priority['title'])
                 ->setValue($priority['value']);
@@ -226,7 +228,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination($this->formatDestination('message_', $message['oid']))
+                ->setDestination(DestinationHelper::formatDestination('message_', $message['oid']))
                 ->setOid($message['oid'])
                 ->setPersonEmail($message['person'])
                 ->setMessageText($message['message_text'])
@@ -321,12 +323,12 @@ final class Tickets extends AbstractParser
             'log_message',
         );
 
-        return $this->hasRequiredColumns($ticket, $columns)
-            && ($ticket['priority'] && $this->isArrayColumn($ticket, 'priority') || $ticket['priority'] === null)
-            && $this->isArrayColumn($ticket, 'messages')
-            && $this->isArrayColumn($ticket, 'participants')
-            && $this->isArrayColumn($ticket, 'labels')
-            && $this->isArrayColumn($ticket, 'custom_fields');
+        return ColumnHelper::hasRequiredColumns($ticket, $columns)
+            && ($ticket['priority'] && ColumnHelper::isArrayColumn($ticket, 'priority') || $ticket['priority'] === null)
+            && ColumnHelper::isArrayColumn($ticket, 'messages')
+            && ColumnHelper::isArrayColumn($ticket, 'participants')
+            && ColumnHelper::isArrayColumn($ticket, 'labels')
+            && ColumnHelper::isArrayColumn($ticket, 'custom_fields');
     }
 
     /**
@@ -344,7 +346,7 @@ final class Tickets extends AbstractParser
             'value',
         );
 
-        return $priority && $this->hasRequiredColumns($priority, $columns);
+        return $priority && ColumnHelper::hasRequiredColumns($priority, $columns);
     }
 
     /**
@@ -365,7 +367,7 @@ final class Tickets extends AbstractParser
             'attachments',
         );
 
-        return $this->hasRequiredColumns($message, $columns)
-            && $this->isArrayColumn($message, 'attachments');
+        return ColumnHelper::hasRequiredColumns($message, $columns)
+            && ColumnHelper::isArrayColumn($message, 'attachments');
     }
 }

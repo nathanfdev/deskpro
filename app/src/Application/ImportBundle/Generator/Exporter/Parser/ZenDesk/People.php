@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
@@ -132,7 +134,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             $entity = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination($this->formatDestination('person_', $person['id']))
+                ->setDestination(DestinationHelper::formatDestination('person_', $person['id']))
                 ->setOid($person['id'])
                 ->addEmail($person['email'])
                 ->setName($person['name'])
@@ -225,7 +227,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             'organization_id',
         );
 
-        return $this->hasRequiredColumns($person, $columns)
-            && $this->isArrayColumn($person, 'user_fields');
+        return ColumnHelper::hasRequiredColumns($person, $columns)
+            && ColumnHelper::isArrayColumn($person, 'user_fields');
     }
 }

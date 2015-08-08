@@ -29,6 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
@@ -176,7 +178,7 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
-                ->setDestination($this->formatDestination('ticket_', $ticket['id']))
+                ->setDestination(DestinationHelper::formatDestination('ticket_', $ticket['id']))
                 ->setOid($ticket['id'])
                 ->setRef($ref)
                 ->setPersonEmail($person_email)
@@ -223,10 +225,10 @@ final class Tickets extends AbstractParser
     private function exportPriority($priority)
     {
         $mapping = array(
-            self::PRIORITY_URGENT => 100,
-            self::PRIORITY_HIGH   => 50,
-            self::PRIORITY_NORMAL => 20,
-            self::PRIORITY_LOW    => 10,
+            self::PRIORITY_URGENT => 10,
+            self::PRIORITY_HIGH   => 5,
+            self::PRIORITY_NORMAL => 2,
+            self::PRIORITY_LOW    => 1,
         );
 
         if ($priority) {
@@ -302,7 +304,7 @@ final class Tickets extends AbstractParser
 
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination($this->formatDestination('message_', $comment['id']))
+                ->setDestination(DestinationHelper::formatDestination('message_', $comment['id']))
                 ->setOid($comment['id'])
                 ->setPersonEmail($author_email)
                 ->setMessageText($comment['body'])
@@ -366,7 +368,7 @@ final class Tickets extends AbstractParser
                 $request = $this->http_client->get($attachment['content_url']);
                 $entity  = new Entity\Attachment();
                 $entity
-                    ->setDestination($this->formatDestination('attachment_', $attachment['id']))
+                    ->setDestination(DestinationHelper::formatDestination('attachment_', $attachment['id']))
                     ->setOid($attachment['id'])
                     ->setBlobData(base64_encode($request->send()->getBody(true)))
                     ->setFileName($attachment['file_name'])
@@ -483,10 +485,10 @@ final class Tickets extends AbstractParser
             'comments',
         );
 
-        return $this->hasRequiredColumns($ticket, $columns)
-            && $this->isArrayColumn($ticket, 'custom_fields')
-            && $this->isArrayColumn($ticket, 'tags')
-            && $this->isArrayColumn($ticket, 'comments');
+        return ColumnHelper::hasRequiredColumns($ticket, $columns)
+            && ColumnHelper::isArrayColumn($ticket, 'custom_fields')
+            && ColumnHelper::isArrayColumn($ticket, 'tags')
+            && ColumnHelper::isArrayColumn($ticket, 'comments');
     }
 
     /**
@@ -509,7 +511,8 @@ final class Tickets extends AbstractParser
             'attachments',
         );
 
-        return $this->hasRequiredColumns($comment, $columns) && $this->isArrayColumn($comment, 'attachments');
+        return ColumnHelper::hasRequiredColumns($comment, $columns)
+            && ColumnHelper::isArrayColumn($comment, 'attachments');
     }
 
     /**
@@ -530,7 +533,7 @@ final class Tickets extends AbstractParser
             'inline',
         );
 
-        return $this->hasRequiredColumns($attachment, $columns) && $attachment['inline'] === false;
+        return ColumnHelper::hasRequiredColumns($attachment, $columns) && $attachment['inline'] === false;
     }
 
     /**

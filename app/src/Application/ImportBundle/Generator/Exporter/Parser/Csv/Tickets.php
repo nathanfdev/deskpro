@@ -29,6 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Orb\Util\Strings;
 
@@ -123,7 +125,7 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
-                ->setDestination($this->formatDestination(self::TICKET_PREFIX, $ticket['id']))
+                ->setDestination(DestinationHelper::formatDestination(self::TICKET_PREFIX, $ticket['id']))
                 ->setOid($ticket['id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setSubject($ticket['subject'])
@@ -193,7 +195,7 @@ final class Tickets extends AbstractParser
             $entity = new Entity\TicketMessage();
             $entity
                 ->setRawData($message)
-                ->setDestination($this->formatDestination(self::TICKET_PREFIX, $message['ticket_id']))
+                ->setDestination(DestinationHelper::formatDestination(self::TICKET_PREFIX, $message['ticket_id']))
                 ->setOid($message['message_id'])
                 ->setPersonEmail($message['user'])
                 ->setMessageText($message['message_text'])
@@ -242,7 +244,7 @@ final class Tickets extends AbstractParser
             'status',
         );
 
-        return $this->hasRequiredColumns($ticket, $columns);
+        return ColumnHelper::hasRequiredColumns($ticket, $columns);
     }
 
     /**
@@ -260,7 +262,7 @@ final class Tickets extends AbstractParser
             'user',
         );
 
-        return $this->hasRequiredColumns($message, $columns);
+        return ColumnHelper::hasRequiredColumns($message, $columns);
     }
 
     /**

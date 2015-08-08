@@ -27,9 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Entity;
 use Orb\Util\Strings;
 use DateTime;
@@ -106,7 +108,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination($this->formatDestination('feedback_', $feedback['oid']))
+                ->setDestination(DestinationHelper::formatDestination('feedback_', $feedback['oid']))
                 ->setOid($feedback['oid'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -214,9 +216,9 @@ final class Feedback extends AbstractParser
             'attachments',
         );
 
-        return $this->hasRequiredColumns($feedback, $columns)
-            && $this->isArrayColumn($feedback, 'labels')
-            && $this->isArrayColumn($feedback, 'attachments')
-            && $this->isArrayColumn($feedback, 'custom_fields');
+        return ColumnHelper::hasRequiredColumns($feedback, $columns)
+            && ColumnHelper::isArrayColumn($feedback, 'labels')
+            && ColumnHelper::isArrayColumn($feedback, 'attachments')
+            && ColumnHelper::isArrayColumn($feedback, 'custom_fields');
     }
 }

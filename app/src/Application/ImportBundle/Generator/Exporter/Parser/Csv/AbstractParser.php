@@ -27,7 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use Application\ImportBundle\ContactData\ContactDataFactory;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
+use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\MultipleContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\InlineContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
@@ -222,7 +224,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         );
 
         return $this->isBlobValid($attachment, $ref_column)
-            && $this->hasRequiredColumns($attachment, $columns);
+            && ColumnHelper::hasRequiredColumns($attachment, $columns);
     }
 
     /**
@@ -242,7 +244,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity = $entity ? : new Entity\Blob();
             $entity
                 ->setRawData($blob)
-                ->setDestination($this->formatDestination($destination_prefix, $blob[$ref_column]))
+                ->setDestination(DestinationHelper::formatDestination($destination_prefix, $blob[$ref_column]))
                 ->setOid($num)
                 ->setBlobUrl(@$blob['blob_url'])
                 ->setBlobPath(@$blob['blob_path'])
@@ -277,8 +279,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             'blob_path',
         );
 
-        return $this->hasRequiredColumns($blob, $columns)
-            && $this->hasAnyRequiredColumn($blob, $blob_columns);
+        return ColumnHelper::hasRequiredColumns($blob, $columns)
+            && ColumnHelper::hasAnyRequiredColumn($blob, $blob_columns);
     }
 
     /**
@@ -332,7 +334,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity = new Entity\CustomField();
             $entity
                 ->setRawData($custom_field)
-                ->setDestination($this->formatDestination($destination_prefix, $custom_field[$ref_column]))
+                ->setDestination(DestinationHelper::formatDestination($destination_prefix, $custom_field[$ref_column]))
                 ->setOid($num)
                 ->setKey($custom_field['field_name'])
                 ->setValue($custom_field['value'])
@@ -360,7 +362,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             'value',
         );
 
-        return $this->hasRequiredColumns($custom_field, $columns);
+        return ColumnHelper::hasRequiredColumns($custom_field, $columns);
     }
 
     /**
@@ -393,121 +395,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns a collection of organization contact data entities
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return Entity\Collection
-     */
-    protected function exportContactData(CsvConfig $config, $destination_prefix, $ref_column)
-    {
-        $collection   = new Entity\Collection();
-        $contact_info = $this->exportContactDataFields($config, $destination_prefix, $ref_column);
-
-        foreach ($contact_info as $destination => $contacts) {
-            foreach ($contacts as $oid => $contact) {
-                try {
-                    if ($this->isContactValid($contact)) {
-                        $handler = ContactDataFactory::getHandler($contact['contact_type']);
-                        $entity  = $handler->toEntity($contact);
-                        $entity
-                            ->setOid($oid)
-                            ->setDestination($destination)
-                        ;
-
-                        $collection->attach($entity);
-                        $this->logInfo(sprintf('Entity `%s%s` parsed successfully!', $entity->getDestination()));
-                    } else {
-                        $this->logWarning(sprintf('Invalid contact record `%d` found (Skipping)', $destination));
-                    }
-
-                } catch (NoColumnException $e) {
-                    $this->logWarning(sprintf(
-                        'Invalid contact record `%d` found (Skipping): %s',
-                        $destination, $e->getMessage()
-                    ));
-                }
-
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Merges contact data fields to array
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return array
-     */
-    protected function exportContactDataFields(CsvConfig $config, $destination_prefix, $ref_column)
-    {
-        $contact_fields = $this->getReaderData($config);
-        $contact_info  = array();
-
-        foreach ($contact_fields as $num => $field) {
-            try {
-                if ($this->isContactFieldValid($field, $ref_column)) {
-                    $destination = $this->formatDestination($destination_prefix, $field[$ref_column]);
-                    $contact_info[$destination][$field['contact_id']][$field['field_name']] = $field['value'];
-
-                    $this->logInfo(sprintf('Contact field `%s` parsed successfully!', $destination));
-                } else {
-                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping)', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid contact field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $contact_info;
-    }
-
-    /**
-     * Check if contact data field has all required columns
-     *
-     * @param array  $contact
-     * @param string $ref_column
-     *
-     * @return bool
-     */
-    protected function isContactFieldValid(array $contact, $ref_column)
-    {
-        $columns = array(
-            $ref_column,
-            'contact_id',
-            'field_name',
-            'value',
-        );
-
-        return $this->hasRequiredColumns($contact, $columns);
-    }
-
-    /**
-     * Check if contact data has all required columns
-     *
-     * @param array $contact
-     * @return bool
-     */
-    protected function isContactValid(array $contact)
-    {
-        $columns = array(
-            'contact_type',
-        );
-
-        return $this->hasRequiredColumns($contact, $columns);
-    }
-
-    /**
      * Parses inline custom fields from entity
      *
      * @param array $entity
@@ -529,6 +416,24 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         return $custom_fields;
+    }
+
+    /**
+     * Returns a collection of contact data
+     *
+     * @param CsvConfig $config
+     * @param string    $destination_prefix
+     * @param string    $ref_column
+     *
+     * @return Entity\Collection
+     */
+    public function exportContactData(CsvConfig $config, $destination_prefix, $ref_column)
+    {
+        $data   = $this->getReaderData($config);
+        $parser = new MultipleContactData();
+        $parser->setLogger($this->logger);
+
+        return $parser->export($data, $destination_prefix, $ref_column);
     }
 
     /**

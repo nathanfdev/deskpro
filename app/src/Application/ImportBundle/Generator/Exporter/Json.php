@@ -83,7 +83,8 @@ final class Json extends AbstractExporter implements ExporterBatchInterface
         $updated_config = clone $this->config->getExporterBatchConfig();
         $updated_config
             ->setId($updated_config->getId() + 1)
-            ->setDateModified(new DateTime());
+            ->setDateModified(new DateTime())
+        ;
 
         return $updated_config;
     }

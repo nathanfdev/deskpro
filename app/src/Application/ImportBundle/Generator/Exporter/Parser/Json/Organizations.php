@@ -28,9 +28,11 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 
 /**
  * Organizations json file parser
@@ -105,7 +107,7 @@ final class Organizations extends AbstractParser
             $entity = new Entity\Organization();
             $entity
                 ->setRawData($organization)
-                ->setDestination($this->formatDestination('organization_', $organization['oid']))
+                ->setDestination(DestinationHelper::formatDestination('organization_', $organization['oid']))
                 ->setOid($organization['oid'])
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
@@ -165,9 +167,9 @@ final class Organizations extends AbstractParser
             'labels',
         );
 
-        return $this->hasRequiredColumns($organization, $columns)
-            && $this->isArrayColumn($organization, 'contact_data')
-            && $this->isArrayColumn($organization, 'custom_fields')
-            && $this->isArrayColumn($organization, 'labels');
+        return ColumnHelper::hasRequiredColumns($organization, $columns)
+            && ColumnHelper::isArrayColumn($organization, 'contact_data')
+            && ColumnHelper::isArrayColumn($organization, 'custom_fields')
+            && ColumnHelper::isArrayColumn($organization, 'labels');
     }
 }

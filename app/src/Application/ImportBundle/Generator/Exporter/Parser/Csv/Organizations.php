@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
+use Application\ImportBundle\Generator\Exporter\Helper\DestinationHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
@@ -128,7 +130,7 @@ class Organizations extends AbstractParser
             $entity
                 ->setRawData($organization)
                 ->setOid($organization_id)
-                ->setDestination($this->formatDestination(self::ORGANIZATION_PREFIX, $organization_id))
+                ->setDestination(DestinationHelper::formatDestination(self::ORGANIZATION_PREFIX, $organization_id))
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
                 ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'name'))
@@ -176,7 +178,7 @@ class Organizations extends AbstractParser
             'importance',
         );
 
-        return $this->hasRequiredColumns($organization, $columns);
+        return ColumnHelper::hasRequiredColumns($organization, $columns);
     }
 
     /**
