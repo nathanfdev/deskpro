@@ -108,7 +108,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('person_', $person['oid']))
+                ->setDestination(DestinationFormatter::transform('person_', $person['oid']))
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])
@@ -122,7 +122,7 @@ final class People extends AbstractParser
                 ->setLanguage($person['language'])
                 ->setOrganization($person['organization'])
                 ->setOrganizationPosition($person['organization_position'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($person['date_created'], $this->logger));
+                ->setDateCreated(DateFormatter::transform($person['date_created'], $this->logger));
 
             if ($person['timezone']) {
                 $entity->setTimezone(new DateTimeZone($person['timezone']));

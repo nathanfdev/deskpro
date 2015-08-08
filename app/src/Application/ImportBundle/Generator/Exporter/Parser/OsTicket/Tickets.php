@@ -125,7 +125,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('ticket_', $ticket['ticket_id']))
+                ->setDestination(DestinationFormatter::transform('ticket_', $ticket['ticket_id']))
                 ->setOid($ticket['ticket_id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
@@ -133,7 +133,7 @@ final class Tickets extends AbstractParser
                 ->setAgentEmail($this->reader->findUserEmailById($ticket['staff_id']))
                 ->setAgentTeam($this->reader->findUserEmailById($ticket['team_id']))
                 ->setStatus($this->getTicketStatus($ticket))
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($ticket['created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($ticket['created'], $this->logger))
                 ->setSubject($ticket['subject'])
                 ->setPriority($this->exportPriority($ticket['priority_id']));
 
@@ -217,10 +217,10 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('message_', $num))
+                ->setDestination(DestinationFormatter::transform('message_', $num))
                 ->setOid($num)
                 ->setPersonEmail($this->getMessagePersonEmail($message))
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($message['created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($message['created'], $this->logger))
                 ->setMessageHtml($message['body']);
 
             $attachments = $this->exportAttachments($message['id']);
@@ -280,7 +280,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('attachment_', $num))
+                ->setDestination(DestinationFormatter::transform('attachment_', $num))
                 ->setOid($num)
                 ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                 ->setFileName($attachment['name'])

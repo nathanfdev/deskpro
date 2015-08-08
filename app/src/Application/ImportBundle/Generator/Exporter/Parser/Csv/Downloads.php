@@ -105,7 +105,7 @@ final class Downloads extends AbstractParser
             $entity = new Entity\Download();
             $entity
                 ->setRawData($download)
-                ->setDestination(DestinationFormatter::formatDestination(self::DOWNLOAD_PREFIX, $num))
+                ->setDestination(DestinationFormatter::transform(self::DOWNLOAD_PREFIX, $num))
                 ->setOid($num)
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -114,7 +114,7 @@ final class Downloads extends AbstractParser
                 ->setLanguage($download['language'])
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($download['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($download['date_created'], $this->logger))
                 ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $download, 'person'));
 
             if ($download['label']) {

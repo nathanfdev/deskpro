@@ -108,11 +108,11 @@ final class Organizations extends AbstractParser
             $entity = new Entity\Organization();
             $entity
                 ->setRawData($organization)
-                ->setDestination(DestinationFormatter::formatDestination('organization_', $organization['oid']))
+                ->setDestination(DestinationFormatter::transform('organization_', $organization['oid']))
                 ->setOid($organization['oid'])
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($organization['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($organization['date_created'], $this->logger))
             ;
 
             if ($organization['picture']) {

@@ -134,7 +134,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             $entity = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination(DestinationFormatter::formatDestination('person_', $person['id']))
+                ->setDestination(DestinationFormatter::transform('person_', $person['id']))
                 ->setOid($person['id'])
                 ->addEmail($person['email'])
                 ->setName($person['name'])

@@ -44,7 +44,7 @@ class DateFormatter
      *
      * @return DateTime
      */
-    public static function getFromStringOrCurrentDateTime($format, LoggerInterface $logger = null)
+    public static function transform($format, LoggerInterface $logger = null)
     {
         if ($format) {
             try {

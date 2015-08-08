@@ -41,7 +41,7 @@ class DestinationFormatter
      *
      * @return string
      */
-    public static function formatDestination($prefix, $id)
+    public static function transform($prefix, $id)
     {
         $filename = strtolower($id);
         $filename = str_replace(' ', '_', $filename);

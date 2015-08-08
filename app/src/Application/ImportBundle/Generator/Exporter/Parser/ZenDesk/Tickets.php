@@ -179,7 +179,7 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
-                ->setDestination(DestinationFormatter::formatDestination('ticket_', $ticket['id']))
+                ->setDestination(DestinationFormatter::transform('ticket_', $ticket['id']))
                 ->setOid($ticket['id'])
                 ->setRef($ref)
                 ->setPersonEmail($person_email)
@@ -188,7 +188,7 @@ final class Tickets extends AbstractParser
                 ->setStatus($this->getStatus($ticket['status']))
                 ->setOrganization($this->getOrganizationName($ticket['organization_id']))
                 ->setPriority($this->exportPriority($ticket['priority']))
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($ticket['created_at'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($ticket['created_at'], $this->logger))
                 ->setLogMessage(sprintf('Imported from ZenDesk (old ticket ID #%s)', $ticket['id']))
             ;
 
@@ -305,12 +305,12 @@ final class Tickets extends AbstractParser
 
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('message_', $comment['id']))
+                ->setDestination(DestinationFormatter::transform('message_', $comment['id']))
                 ->setOid($comment['id'])
                 ->setPersonEmail($author_email)
                 ->setMessageText($comment['body'])
                 ->setAsNote($comment['public'] === false)
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($comment['created_at'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($comment['created_at'], $this->logger))
             ;
 
             $attachments = $this->exportAttachments($comment['attachments']);
@@ -369,7 +369,7 @@ final class Tickets extends AbstractParser
                 $request = $this->http_client->get($attachment['content_url']);
                 $entity  = new Entity\Attachment();
                 $entity
-                    ->setDestination(DestinationFormatter::formatDestination('attachment_', $attachment['id']))
+                    ->setDestination(DestinationFormatter::transform('attachment_', $attachment['id']))
                     ->setOid($attachment['id'])
                     ->setBlobData(base64_encode($request->send()->getBody(true)))
                     ->setFileName($attachment['file_name'])

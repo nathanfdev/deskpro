@@ -108,7 +108,7 @@ final class News extends AbstractParser
         if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('news_', $news['oid']))
+                ->setDestination(DestinationFormatter::transform('news_', $news['oid']))
                 ->setOid($news['oid'])
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -121,7 +121,7 @@ final class News extends AbstractParser
                 ->setNumComments($news['num_comments'])
                 ->setNumRatings($news['num_ratings'])
                 ->setStatus($news['status'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($news['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($news['date_created'], $this->logger))
                 ->setCategory($news['category']);
 
             if ($news['date_published']) {

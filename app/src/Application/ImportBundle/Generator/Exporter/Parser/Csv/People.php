@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\BooleanFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
@@ -129,7 +130,7 @@ final class People extends AbstractParser
             $entity    = new Entity\Person();
             $entity
                 ->setRawData($person)
-                ->setDestination(DestinationFormatter::formatDestination(self::PERSON_PREFIX, $person_id))
+                ->setDestination(DestinationFormatter::transform(self::PERSON_PREFIX, $person_id))
                 ->setOid($person_id)
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])
@@ -199,7 +200,7 @@ final class People extends AbstractParser
      */
     private function isAgent(array $person)
     {
-        return isset($person['is_agent']) && $this->isBooleanTrue($person['is_agent']);
+        return isset($person['is_agent']) && BooleanFormatter::transform($person['is_agent']);
     }
 
     /**

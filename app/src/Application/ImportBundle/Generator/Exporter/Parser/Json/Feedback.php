@@ -109,7 +109,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('feedback_', $feedback['oid']))
+                ->setDestination(DestinationFormatter::transform('feedback_', $feedback['oid']))
                 ->setOid($feedback['oid'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -123,7 +123,7 @@ final class Feedback extends AbstractParser
                 ->setNumRatings($feedback['num_ratings'])
                 ->setViewCount($feedback['view_count'])
                 ->setCategory($feedback['category'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($feedback['date_created'], $this->logger));
+                ->setDateCreated(DateFormatter::transform($feedback['date_created'], $this->logger));
 
             if ($feedback['date_published']) {
                 $entity->setDatePublished(new DateTime($feedback['date_published']));

@@ -108,7 +108,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('ticket_', $ticket['oid']))
+                ->setDestination(DestinationFormatter::transform('ticket_', $ticket['oid']))
                 ->setOid($ticket['oid'])
                 ->setRef($ticket['ref'])
                 ->setDepartment($ticket['department'])
@@ -125,7 +125,7 @@ final class Tickets extends AbstractParser
                 ->setOrganization($ticket['organization'])
                 ->setAsHold($ticket['is_hold'])
                 ->setUrgency($ticket['urgency'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($ticket['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($ticket['date_created'], $this->logger))
                 ->setLogMessage($ticket['log_message'])
             ;
 
@@ -171,7 +171,7 @@ final class Tickets extends AbstractParser
         if ($this->isPriorityValid($priority)) {
             $entity = new Entity\TicketPriority();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('priority_', $priority['oid']))
+                ->setDestination(DestinationFormatter::transform('priority_', $priority['oid']))
                 ->setOid($priority['oid'])
                 ->setTitle($priority['title'])
                 ->setValue($priority['value']);
@@ -229,7 +229,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('message_', $message['oid']))
+                ->setDestination(DestinationFormatter::transform('message_', $message['oid']))
                 ->setOid($message['oid'])
                 ->setPersonEmail($message['person'])
                 ->setMessageText($message['message_text'])

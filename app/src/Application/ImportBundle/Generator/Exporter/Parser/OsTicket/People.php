@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\BooleanFormatter;
 use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
 use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
 use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
@@ -156,17 +157,18 @@ final class People extends AbstractParser
         if ($this->isStaffValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('staff_', $person['staff_id']))
+                ->setDestination(DestinationFormatter::transform('staff_', $person['staff_id']))
                 ->setOid($person['staff_id'])
                 ->setAsAgent(true)
                 ->setName($person['firstname'] . $person['lastname'])
                 ->setFirstName($person['firstname'])
                 ->setLastName($person['lastname'])
                 ->setTimezone(new DateTimeZone($this->reader->findTimezoneById($person['timezone_id'])))
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($person['created'], $this->logger))
-                ->setAsAdmin($this->isBooleanTrue($person['isadmin']))
+                ->setDateCreated(DateFormatter::transform($person['created'], $this->logger))
+                ->setAsAdmin(BooleanFormatter::transform($person['isadmin']))
                 ->addEmail($person['email'])
-                ->addUserGroup($this->reader->findUserGroupNameById($person['group_id']));
+                ->addUserGroup($this->reader->findUserGroupNameById($person['group_id']))
+            ;
 
             return $entity;
         }
@@ -226,12 +228,12 @@ final class People extends AbstractParser
         if ($this->isUserValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('user_', $person['user_id']))
+                ->setDestination(DestinationFormatter::transform('user_', $person['user_id']))
                 ->setOid($person['user_id'])
                 ->setAsUser(true)
                 ->setName($person['name'])
                 ->setOrganization($this->reader->findOrganizationNameById($person['org_id']))
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($person['created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($person['created'], $this->logger))
                 ->addEmail($person['address']);
 
             return $entity;

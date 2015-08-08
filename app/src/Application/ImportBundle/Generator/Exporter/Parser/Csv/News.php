@@ -103,7 +103,7 @@ final class News extends AbstractParser
             $entity = new Entity\News();
             $entity
                 ->setRawData($news)
-                ->setDestination(DestinationFormatter::formatDestination('news_', $num))
+                ->setDestination(DestinationFormatter::transform('news_', $num))
                 ->setOid($num)
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -112,7 +112,7 @@ final class News extends AbstractParser
                 ->setContent($news['content'])
                 ->setSlug($news['slug'])
                 ->setStatus($news['status'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($news['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($news['date_created'], $this->logger))
                 ->setCategory($news['category']);
 
             if ($news['date_published']) {

@@ -126,14 +126,14 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
-                ->setDestination(DestinationFormatter::formatDestination(self::TICKET_PREFIX, $ticket['id']))
+                ->setDestination(DestinationFormatter::transform(self::TICKET_PREFIX, $ticket['id']))
                 ->setOid($ticket['id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setSubject($ticket['subject'])
                 ->setPersonEmail($ticket['user'])
                 ->setAgentEmail($ticket['agent'])
                 ->setStatus($ticket['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime(@$ticket['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform(@$ticket['date_created'], $this->logger))
             ;
 
             return $entity;
@@ -196,11 +196,11 @@ final class Tickets extends AbstractParser
             $entity = new Entity\TicketMessage();
             $entity
                 ->setRawData($message)
-                ->setDestination(DestinationFormatter::formatDestination(self::TICKET_PREFIX, $message['ticket_id']))
+                ->setDestination(DestinationFormatter::transform(self::TICKET_PREFIX, $message['ticket_id']))
                 ->setOid($message['message_id'])
                 ->setPersonEmail($message['user'])
                 ->setMessageText($message['message_text'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime(@$message['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform(@$message['date_created'], $this->logger))
             ;
 
             return $entity;

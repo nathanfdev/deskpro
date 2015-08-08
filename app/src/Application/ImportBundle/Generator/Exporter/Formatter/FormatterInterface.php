@@ -25,17 +25,17 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
-
-use Application\ImportBundle\Generator\AbstractGenerator;
+namespace Application\ImportBundle\Generator\Exporter\Formatter;
 
 /**
- * Abstract generator exporter parser
- *
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Interface FormatterInterface
+ * @package Application\ImportBundle\Generator\Exporter\Formatter
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+interface FormatterInterface
 {
-
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    public function transform($value);
 }

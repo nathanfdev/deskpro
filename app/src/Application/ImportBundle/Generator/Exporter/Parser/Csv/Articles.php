@@ -119,14 +119,14 @@ final class Articles extends AbstractParser
             $entity     = new Entity\Article();
             $entity
                 ->setRawData($article)
-                ->setDestination(DestinationFormatter::formatDestination(self::ARTICLE_PREFIX, $article_id))
+                ->setDestination(DestinationFormatter::transform(self::ARTICLE_PREFIX, $article_id))
                 ->setOid($article_id)
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
                 ->setContent($article['content'])
                 ->setSlug($article['slug'])
                 ->setLanguage($article['language'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($article['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform($article['date_created'], $this->logger))
                 ->setStatus($article['status'])
             ;
 

@@ -99,7 +99,7 @@ class MultipleContactData extends AbstractGenerator
         foreach ($data as $num => $field) {
             try {
                 if ($this->isContactFieldValid($field, $ref_column)) {
-                    $destination = DestinationFormatter::formatDestination($destination_prefix, $field[$ref_column]);
+                    $destination = DestinationFormatter::transform($destination_prefix, $field[$ref_column]);
                     $contact_info[$destination][$field['contact_id']][$field['field_name']] = $field['value'];
 
                     $this->logInfo(sprintf('Contact field `%s` parsed successfully!', $destination));

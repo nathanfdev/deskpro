@@ -124,7 +124,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity  = $handler->toEntity($contact);
             $entity
                 ->setOid($contact['oid'])
-                ->setDestination(DestinationFormatter::formatDestination('contact_data_', $contact['oid']))
+                ->setDestination(DestinationFormatter::transform('contact_data_', $contact['oid']))
             ;
 
             return $entity;
@@ -190,7 +190,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isCustomFieldValid($custom_field)) {
             $entity = new Entity\CustomField();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('custom_field_', $custom_field['oid']))
+                ->setDestination(DestinationFormatter::transform('custom_field_', $custom_field['oid']))
                 ->setOid($custom_field['oid'])
                 ->setKey($custom_field['key'])
                 ->setValue($custom_field['value']);
@@ -253,7 +253,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isBlobValid($blob)) {
             $entity = $entity ? : new Entity\Blob();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('attachment_', $blob['oid']))
+                ->setDestination(DestinationFormatter::transform('attachment_', $blob['oid']))
                 ->setOid($blob['oid'])
                 ->setBlobData($blob['blob_data'])
                 ->setBlobUrl($blob['blob_url'])

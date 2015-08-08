@@ -108,7 +108,7 @@ final class Downloads extends AbstractParser
         if ($this->isValidDownload($download)) {
             $entity = new Entity\Download();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('download_', $download['oid']))
+                ->setDestination(DestinationFormatter::transform('download_', $download['oid']))
                 ->setOid($download['oid'])
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -122,7 +122,7 @@ final class Downloads extends AbstractParser
                 ->setViewCount($download['view_count'])
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($download['date_created'], $this->logger));
+                ->setDateCreated(DateFormatter::transform($download['date_created'], $this->logger));
 
             if ($download['date_published']) {
                 $entity->setDatePublished(new DateTime($download['date_published']));

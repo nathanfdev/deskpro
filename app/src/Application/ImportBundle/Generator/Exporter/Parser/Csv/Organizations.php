@@ -131,11 +131,11 @@ class Organizations extends AbstractParser
             $entity
                 ->setRawData($organization)
                 ->setOid($organization_id)
-                ->setDestination(DestinationFormatter::formatDestination(self::ORGANIZATION_PREFIX, $organization_id))
+                ->setDestination(DestinationFormatter::transform(self::ORGANIZATION_PREFIX, $organization_id))
                 ->setName($organization['name'])
                 ->setImportance($organization['importance'])
                 ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $organization, 'name'))
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime(@$organization['date_created'], $this->logger))
+                ->setDateCreated(DateFormatter::transform(@$organization['date_created'], $this->logger))
             ;
 
             return $entity;

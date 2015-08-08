@@ -25,17 +25,22 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
-
-use Application\ImportBundle\Generator\AbstractGenerator;
+namespace Application\ImportBundle\Generator\Exporter\Formatter;
 
 /**
- * Abstract generator exporter parser
- *
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class BooleanFormatter
+ * @package Application\ImportBundle\Generator\Exporter\Formatter
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+class BooleanFormatter
 {
-
+    /**
+     * Returns true if value is "true" or intval of value = 1
+     *
+     * @param int|string $value
+     * @return bool
+     */
+    public static function transform($value)
+    {
+        return $value === 'true' || (int)$value === 1;
+    }
 }

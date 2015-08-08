@@ -108,7 +108,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination(DestinationFormatter::formatDestination('article_', $article['oid']))
+                ->setDestination(DestinationFormatter::transform('article_', $article['oid']))
                 ->setOid($article['oid'])
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -121,7 +121,7 @@ final class Articles extends AbstractParser
                 ->setNumComments($article['num_comments'])
                 ->setNumRatings($article['num_ratings'])
                 ->setStatus($article['status'])
-                ->setDateCreated(DateFormatter::getFromStringOrCurrentDateTime($article['date_created'], $this->logger));
+                ->setDateCreated(DateFormatter::transform($article['date_created'], $this->logger));
 
             if ($article['date_published']) {
                 $entity->setDatePublished(new DateTime($article['date_published']));
