@@ -99,6 +99,7 @@ class FeedbackController extends AbstractController
             'action' => $this->generateUrl('portal_feedback'),
             'allow_extra_fields' => $is_saved_form
         ));
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             if (
@@ -285,7 +286,7 @@ class FeedbackController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new FeedbackComment();
             $new_comment_form = $form_handler->createForm($comment);

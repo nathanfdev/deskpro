@@ -144,7 +144,7 @@ class DownloadsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
@@ -190,7 +190,7 @@ class DownloadsController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOADS)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOAD, $file)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new DownloadComment();
             $new_comment_form = $form_handler->createForm($comment);
@@ -219,7 +219,7 @@ class DownloadsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
         }
@@ -272,7 +272,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}/vote-up", name="portal_downloads_vote_up", defaults={"up_or_down":"up"})
      * @Route("/downloads/files/{slug}/vote-down", name="portal_downloads_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="file", converter="deskpro_slug")
-     * @Security("is_granted('USE_DOWNLOADS') and is_granted('RATE_DOWNLOADS', file)")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('RATE_DOWNLOAD', file)")
      */
     public function downloadRateAction(Download $file, $visitor_id, $up_or_down)
     {
@@ -292,7 +292,7 @@ class DownloadsController extends AbstractController
     /**
      * @Route("/downloads/files/{slug}/toggle-subscription", name="portal_downloads_files_toggle_subscription")
      * @ParamConverter(name="file", converter="deskpro_slug")
-     * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOADS', file)")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD', file)")
      */
     public function downloadsSubscriptionAction(Download $file)
     {
@@ -313,7 +313,7 @@ class DownloadsController extends AbstractController
     /**
      * @Route("/downloads/category/toggle-subscription/{slug}", name="portal_downloads_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOADS_CATEGORIES', category)")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD_CATEGORY', category)")
      */
     public function downloadsCategorySubscriptionAction(DownloadCategory $category)
     {
@@ -333,6 +333,9 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/files/subscriptions/unsubscribe", name="portal_downloads_unsubscribe_all")
+     * NOTE: we don't check if they have access to this content, because we might
+     *       let someone UN-subscribe from all even if they don't have access to some
+     *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_DOWNLOADS')")
      */
     public function downloadsUnsubscribeAllAction()

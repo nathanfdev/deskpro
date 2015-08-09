@@ -83,7 +83,7 @@ class ProfileVoterSpec extends ObjectBehavior
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
 
-        $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLES, $token, $person);
+        $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLE, $token, $person);
     }
 
     public function verifyGrantedVote($attribute, $token, $object)

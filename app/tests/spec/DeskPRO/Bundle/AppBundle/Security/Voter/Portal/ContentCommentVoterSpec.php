@@ -46,7 +46,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
         BrandContainer $brand_container,
         TokenInterface $token
     ) {
-        $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLES, $token);
+        $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLE, $token);
     }
 
     public function it_will_deny_user_if_user_publish_settings_is_false(
@@ -55,7 +55,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
     ) {
         $brand_container->getSetting('user.publish_comments', false)->willReturn(false);
 
-        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $token);
+        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLE, $token);
     }
 
     public function it_will_deny_guest_if_user_publish_settings_is_false(
@@ -65,7 +65,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $brand_container->getSetting('user.publish_comments', false)->willReturn(false);
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
-        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $guest_token);
+        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLE, $guest_token);
     }
 
     public function it_will_deny_if_guest_and_interact_require_login_setting(
@@ -74,7 +74,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
     ) {
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(true);
 
-        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $guest_token);
+        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLE, $guest_token);
     }
 
     public function it_will_deny_guest_comments_if_permissions_fail(
@@ -86,13 +86,13 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
         $guest_permission_bag->get('articles.comment')->willReturn(false);
-        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $guest_token);
+        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLE, $guest_token);
 
         $guest_permission_bag->get('feedback.comment')->willReturn(false);
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_FEEDBACK, $guest_token);
 
         $guest_permission_bag->get('downloads.comment')->willReturn(false);
-        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_DOWNLOADS, $guest_token);
+        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_DOWNLOAD, $guest_token);
 
         $guest_permission_bag->get('news.comment')->willReturn(false);
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_NEWS, $guest_token);
@@ -107,13 +107,13 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
         $guest_permission_bag->get('articles.comment')->willReturn(true);
-        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_ARTICLES, $guest_token);
+        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_ARTICLE, $guest_token);
 
         $guest_permission_bag->get('feedback.comment')->willReturn(true);
         $this->verifyGrantedVote(ContentCommentVoter::COMMENT_FEEDBACK, $guest_token);
 
         $guest_permission_bag->get('downloads.comment')->willReturn(true);
-        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_DOWNLOADS, $guest_token);
+        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_DOWNLOAD, $guest_token);
 
         $guest_permission_bag->get('news.comment')->willReturn(true);
         $this->verifyGrantedVote(ContentCommentVoter::COMMENT_NEWS, $guest_token);
@@ -127,13 +127,13 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $brand_container->getSetting('user.publish_comments', false)->willReturn(true);
 
         $person_permission_bag->get('articles.comment')->willReturn(false);
-        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $token);
+        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLE, $token);
 
         $person_permission_bag->get('feedback.comment')->willReturn(false);
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_FEEDBACK, $token);
 
         $person_permission_bag->get('downloads.comment')->willReturn(false);
-        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_DOWNLOADS, $token);
+        $this->verifyDeniedVote(ContentCommentVoter::COMMENT_DOWNLOAD, $token);
 
         $person_permission_bag->get('news.comment')->willReturn(false);
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_NEWS, $token);
@@ -147,13 +147,13 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $brand_container->getSetting('user.publish_comments', false)->willReturn(true);
 
         $person_permission_bag->get('articles.comment')->willReturn(true);
-        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_ARTICLES, $token);
+        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_ARTICLE, $token);
 
         $person_permission_bag->get('feedback.comment')->willReturn(true);
         $this->verifyGrantedVote(ContentCommentVoter::COMMENT_FEEDBACK, $token);
 
         $person_permission_bag->get('downloads.comment')->willReturn(true);
-        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_DOWNLOADS, $token);
+        $this->verifyGrantedVote(ContentCommentVoter::COMMENT_DOWNLOAD, $token);
 
         $person_permission_bag->get('news.comment')->willReturn(true);
         $attribute = ContentCommentVoter::COMMENT_NEWS;

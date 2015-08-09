@@ -145,7 +145,7 @@ class NewsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
@@ -186,7 +186,7 @@ class NewsController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new NewsComment();
             $new_comment_form = $form_handler->createForm($comment);
@@ -309,7 +309,7 @@ class NewsController extends AbstractController
     /**
      * @Route("/news/category/toggle-subscription/{slug}", name="portal_news_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS_CATEGORIES', category)")
+     * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS_CATEGORY', category)")
      */
     public function newsCategorySubscriptionAction(NewsCategory $category)
     {
@@ -329,6 +329,9 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/posts/subscriptions/unsubscribe", name="portal_news_unsubscribe_all")
+     * NOTE: we don't check if they have access to this content, because we might
+     *       let someone UN-subscribe from all even if they don't have access to some
+     *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_NEWS')")
      */
     public function newsUnsubscribeAllAction()

@@ -38,14 +38,14 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
  */
 class ContentRatingsVoter extends AbstractVoter
 {
-    const RATE_ARTICLES  = 'RATE_ARTICLES';
+    const RATE_ARTICLE  = 'RATE_ARTICLE';
     const RATE_FEEDBACK  = 'RATE_FEEDBACK';
-    const RATE_DOWNLOADS = 'RATE_DOWNLOADS';
+    const RATE_DOWNLOAD = 'RATE_DOWNLOAD';
     const RATE_NEWS      = 'RATE_NEWS';
 
     protected function getSupportedAttributes()
     {
-        return array(self::RATE_ARTICLES, self::RATE_FEEDBACK, self::RATE_DOWNLOADS, self::RATE_NEWS);
+        return array(self::RATE_ARTICLE, self::RATE_FEEDBACK, self::RATE_DOWNLOAD, self::RATE_NEWS);
     }
 
     protected function isGranted($attribute, $object, $user = null)
@@ -59,15 +59,17 @@ class ContentRatingsVoter extends AbstractVoter
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
 
+        $permitted = $permission_bag->hasContentCategoryAccess($object);
+
         switch ($attribute) {
-            case static::RATE_ARTICLES:
-                return $permission_bag->get('articles.rate');
+            case static::RATE_ARTICLE:
+                return $permission_bag->get('articles.rate') && $permitted;
             case static::RATE_FEEDBACK:
-                return $permission_bag->get('feedback.rate');
-            case static::RATE_DOWNLOADS:
-                return $permission_bag->get('downloads.rate');
+                return $permission_bag->get('feedback.rate') && $permitted;
+            case static::RATE_DOWNLOAD:
+                return $permission_bag->get('downloads.rate') && $permitted;
             case static::RATE_NEWS:
-                return $permission_bag->get('news.rate');
+                return $permission_bag->get('news.rate') && $permitted;
         }
 
         return false;

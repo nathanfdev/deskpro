@@ -92,7 +92,7 @@ class DownloadsDataService extends AbstractDataService
             ),
             function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
                 $qb = $em->createQueryBuilder();
-xdebug_break();
+
                 $qb->select('d')
                     ->from('DeskPRO:Download', 'd')
                     ->where('d.status = :status')->setParameter('status', Download::STATUS_PUBLISHED)

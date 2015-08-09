@@ -143,7 +143,7 @@ class ArticlesController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY)
         ) {
             // waiting info regarding article category subscriptions
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
@@ -185,7 +185,7 @@ class ArticlesController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLES)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $article)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new ArticleComment();
             $new_comment_form = $form_handler->createForm($comment);
@@ -214,7 +214,7 @@ class ArticlesController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE)
         ) {
             // waiting on info on the kb subs
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
@@ -243,7 +243,7 @@ class ArticlesController extends AbstractController
      * @Route("/kb/articles/{slug}/vote-up", name="portal_kb_article_vote_up", defaults={"up_or_down":"up"})
      * @Route("/kb/articles/{slug}/vote-down", name="portal_kb_article_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('RATE_ARTICLES', article)")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('RATE_ARTICLE', article)")
      */
     public function articleRateAction(Article $article, $visitor_id, $up_or_down)
     {
@@ -263,7 +263,7 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/kb/articles/{slug}/toggle-subscription", name="portal_kb_article_toggle_subscription")
      * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLES', article)")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE', article)")
      */
     public function articleSubscriptionAction(Article $article)
     {
@@ -284,7 +284,7 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/kb/category/toggle-subscription/{slug}", name="portal_kb_article_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORIES', category)")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORY', category)")
      */
     public function articleCategorySubscriptionAction(ArticleCategory $category)
     {
@@ -304,6 +304,9 @@ class ArticlesController extends AbstractController
 
     /**
      * @Route("/kb/articles/subscriptions/unsubscribe", name="portal_kb_unsubscribe_all")
+     * NOTE: we don't check if they have access to this content, because we might
+     *       let someone UN-subscribe from all even if they don't have access to some
+     *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_ARTICLES')")
      */
     public function articleUnsubscribeAllAction()
