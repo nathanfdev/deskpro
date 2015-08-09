@@ -153,6 +153,22 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $contact = $contact_data1[0];
         $this->assertEquals('', $contact->getComment());
         $this->assertEquals('http://facebook.com/facebook_id', $contact->getField1());
+
+        $contact_data2 = $person->getContactData('instant_message');
+        $this->assertCount(1, $contact_data2);
+
+        $contact = $contact_data2[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('im_id', $contact->getField1());
+
+        $contact_data3 = $person->getContactData('phone');
+        $this->assertCount(1, $contact_data2);
+
+        $contact = $contact_data3[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('JE', $contact->getField1());
+        $this->assertEquals('+447700900315', $contact->getField2());
+        $this->assertEquals('mobile', $contact->getField3());
     }
 
     /**

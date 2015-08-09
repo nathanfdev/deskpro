@@ -93,12 +93,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         foreach ($contact_data as $num => $contact) {
             try {
                 $entity = $this->exportContact($contact);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid contact data record found (Skipping): %d', $num));
-                }
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
