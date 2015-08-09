@@ -77,7 +77,8 @@ class InlineContactDataFactory
                 )))
                 ->attach(new ContactType\Mapping(ContactData::TYPE_WEBSITE, array(
                     'url' => 'website',
-                )));
+                )))
+            ;
 
             $parser = new InlineContactData($contact_types);
         }
