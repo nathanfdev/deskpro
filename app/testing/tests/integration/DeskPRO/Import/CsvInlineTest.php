@@ -66,8 +66,11 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
         $this->helper->seeFileFound('1/people/person_some@email.tld.json');
         $this->helper->seeInThisFile('Some Customer');
+        $this->helper->seeInThisFile('"is_agent":false');
+        $this->helper->seeInThisFile('"is_admin":false');
 
         $this->helper->seeFileFound('1/people/person_joe.smith@example.com.json');
+        $this->helper->seeInThisFile('Joe Smith');
         $this->helper->seeInThisFile('Joe Smith');
 
         $person = $this->getContent('1/people/person_joe.smith@example.com.json');

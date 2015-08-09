@@ -271,6 +271,9 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbData()
     {
+        // Checking for articles
+        $this->assertCount(2, $this->article_repository->findAll());
+
         // Checking for people
         $this->assertCount(2, $this->person_repository->findAll());
 

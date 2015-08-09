@@ -12,9 +12,9 @@
   "view_count": 0,
   "status": "published",
   "date_created": "2015-03-05 19:40:10",
-  "date_published": null,
-  "date_end": null,
-  "categories": ["Category 1"],
+  "date_published": "2015-03-05 20:40:10",
+  "date_end": "2015-04-05 20:40:10",
+  "categories": [],
   "labels": ["Label 1"],
   "custom_fields": []
 }

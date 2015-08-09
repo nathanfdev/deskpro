@@ -70,7 +70,7 @@ final class DateTransformer implements TransformerInterface
         if (array_key_exists($property, $transformed)) {
             $value = $transformed[$property];
         }
-        if (isset($options['null']) && $options['null'] === true) {
+        if ( ! $value && isset($options['null']) && $options['null'] === true) {
             return null;
         }
 

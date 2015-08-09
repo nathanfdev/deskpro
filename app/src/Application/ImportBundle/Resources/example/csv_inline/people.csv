@@ -1,8 +1,8 @@
-name,email,is_agent,custom "Text field",custom "Radio button field",facebook,im
-Joe Smith,joe.smith@example.com,true,some text 1,Choice 1,facebook_id,im_id
-Angry Customer,angry.customer@example.com,false,some text 2,Choice 2,facebook_id,im_id
-Some Customer,some@email.tld,false,some text 3,Choice 1,facebook_id,im_id
-Another Customer,another@email.tld,false,some text 4,Choice 1,facebook_id,im_id
-Some Agent,agent@email.tld,true,some text 5,Choice 2,facebook_id,im_id
-Some Agent 2,agent2@email.tld,true,some text 6,Choice 2,facebook_id,im_id
-Some Agent 3,agent3@email.tld,true,some text 7,Choice 1,facebook_id,im_id
+name,email,custom "Text field",custom "Radio button field",facebook,im
+Joe Smith,joe.smith@example.com,some text 1,Choice 1,facebook_id,im_id
+Angry Customer,angry.customer@example.com,some text 2,Choice 2,facebook_id,im_id
+Some Customer,some@email.tld,some text 3,Choice 1,facebook_id,im_id
+Another Customer,another@email.tld,some text 4,Choice 1,facebook_id,im_id
+Some Agent,agent@email.tld,some text 5,Choice 2,facebook_id,im_id
+Some Agent 2,agent2@email.tld,some text 6,Choice 2,facebook_id,im_id
+Some Agent 3,agent3@email.tld,some text 7,Choice 1,facebook_id,im_id

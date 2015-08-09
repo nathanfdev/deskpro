@@ -330,6 +330,9 @@ class CsvTest extends \DpIntegrationTestCase
         $person = $this->person_repository->findOneByEmail('joe.smith@example.com');
         $this->assertNotNull($person);
 
+        $this->assertEquals('Joe Smith', $person->getDisplayName());
+        $this->assertTrue($person->isAgent());
+
         $contact_data1 = $person->getContactData('mobile');
         $this->assertNotEmpty($contact_data1);
 
@@ -339,6 +342,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals('+7', $contact->getField1());
         $this->assertEquals('1234567', $contact->getField2());
         $this->assertEquals('phone', $contact->getField3());
+
+        $person = $this->person_repository->findOneByEmail('angry.customer@example.com');
+        $this->assertEquals('Angry Customer', $person->getDisplayName());
+        $this->assertFalse($person->isAgent());
 
         // Checking for tickets
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
