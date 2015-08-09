@@ -367,6 +367,15 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals(3, $this->article_repository->countAll());
         $this->assertEquals(2, $this->custom_data_article_repository->countAll());
 
+        /** @var Entity\Article $article */
+        $article = $this->article_repository->findOneBy(array('title' => 'Article 1'));
+        $this->assertNotNull($article);
+
+        $this->assertEquals('some@email.tld', $article->getPerson()->getPrimaryEmail()->getEmail());
+        $this->assertEquals('Content 1', $article->getContentPlain());
+        $this->assertEquals('published', $article->getStatusCode());
+        $this->assertEquals('Category 1', $article->getPrimaryCategory());
+
         // Checking for organizations
         $this->assertEquals(1, $this->organization_repository->countAll());
 
