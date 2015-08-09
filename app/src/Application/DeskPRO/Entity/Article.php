@@ -296,6 +296,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @return ArrayCollection|ArticleCategory[]
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
     public function addAttachment(ArticleAttachment $attach)
     {
         $this->attachments->add($attach);

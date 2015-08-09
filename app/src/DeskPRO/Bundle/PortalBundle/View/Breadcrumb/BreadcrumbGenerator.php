@@ -39,9 +39,27 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class BreadcrumbGenerator
 {
+    /**
+     * @var PortalPermissionsManager
+     */
+    private $permissions_manager;
+
+    /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    public function __construct(PortalPermissionsManager $permissions_manager, TokenStorage $token_storage)
+    {
+        $this->permissions_manager = $permissions_manager;
+        $this->token_storage = $token_storage;
+    }
+
     /**
      * @return BreadcrumbBuilder
      */
@@ -68,18 +86,44 @@ class BreadcrumbGenerator
     {
         $b = $this->createBuilder()->addKb();
 
+        // we have to check permissions, because a user can be viewing an article
+        // he has access to, but does not have access to the primary category
+        $permission_bag = $this->getCurrentUserPermissionBag();
+
         foreach ($cat->getTreeParents() as $c) {
-            $b->addKbCat($c);
+            if ($permission_bag->hasContentCategoryAccess($c)) {
+                $b->addKbCat($c);
+            }
         }
 
-        $b->addKbCat($cat);
+        // check here, too
+        if ($permission_bag->hasContentCategoryAccess($cat)) {
+            $b->addKbCat($cat);
+        }
 
         return $b;
     }
 
     public function buildKbArticle(Article $a)
     {
-        return $this->createKbCategoryBuilder($a->getPrimaryCategory())
+        // we have to check permissions, because a user can be viewing an article
+        // he has access to, but does not have access to the primary category
+        $permission_bag = $this->getCurrentUserPermissionBag();
+
+        $cat = $a->getPrimaryCategory();
+
+        // if no access to this cat, try our best to loop to one he can see
+        if (!$permission_bag->hasContentCategoryAccess($cat)) {
+            foreach ($a->getCategories() as $cat_to_check) {
+                if ($permission_bag->hasContentCategoryAccess($cat_to_check)) {
+                    $cat = $cat_to_check;
+                    break;
+                }
+            }
+        }
+
+
+        return $this->createKbCategoryBuilder($cat)
             ->addKbView($a)
             ->done();
     }
@@ -225,5 +269,26 @@ class BreadcrumbGenerator
         }
 
         return $this->createBuilder()->addPasswordReset()->done();
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
+     */
+    protected function getCurrentUserPermissionBag()
+    {
+        if (null === $token = $this->token_storage->getToken()) {
+            $person = null;
+        }
+
+        if (!is_object($person = $token->getUser())) {
+            // e.g. anonymous authentication
+            $person = null;
+        }
+
+        if ($person) {
+            return $this->permissions_manager->getPermissionsBagForPerson($person);
+        }
+
+        return $this->permissions_manager->getPermissionsBagForGuest();
     }
 }
