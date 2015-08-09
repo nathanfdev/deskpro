@@ -91,7 +91,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
-            $pid = @$person['id'] ?: '?';
+            $pid = @$person['id'] ? : '?';
 
             try {
                 $entity = $this->exportPerson($person);
@@ -130,7 +130,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             )),
             'name'            => TransformerInterface::TYPE_STRING,
             'email'           => TransformerInterface::TYPE_STRING,
-            'time_zone',
+            'time_zone'       => TransformerInterface::TYPE_STRING,
             'role'            => TransformerInterface::TYPE_STRING,
             'created_at'      => TransformerInterface::TYPE_DATE,
             'user_fields'     => TransformerInterface::TYPE_ARRAY,
@@ -147,7 +147,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
         $entity = new Entity\Person();
         $entity
             ->setRawData($data)
-            ->setDestination('person_' . $formatted['id'])
+            ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
             ->addEmail($formatted['email'])
             ->setName($formatted['name'])
