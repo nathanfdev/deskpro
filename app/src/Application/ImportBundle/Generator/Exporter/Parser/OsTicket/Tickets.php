@@ -29,10 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Orb\Util\Strings;
 
 /**
@@ -96,7 +94,7 @@ final class Tickets extends AbstractParser
                         $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $offsetNum));
                     }
 
-                } catch (NoColumnException $e) {
+                } catch (\Exception $e) {
                     $this->logWarning(sprintf(
                         'Invalid ticket record `%d` found (Skipping): %s',
                         $num, $e->getMessage()
@@ -117,36 +115,53 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket entity
      *
-     * @param array $ticket
+     * @param array $data
      * @return Entity\Ticket|null
      */
-    private function exportTicket(array $ticket)
+    private function exportTicket(array $data)
     {
-        if ($this->isTicketValid($ticket)) {
-            $entity = new Entity\Ticket();
-            $entity
-                ->setDestination(DestinationFormatter::transform('ticket_', $ticket['ticket_id']))
-                ->setOid($ticket['ticket_id'])
-                ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
-                ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
-                ->setPersonEmail($this->reader->findUserEmailById($ticket['user_id']))
-                ->setAgentEmail($this->reader->findUserEmailById($ticket['staff_id']))
-                ->setAgentTeam($this->reader->findUserEmailById($ticket['team_id']))
-                ->setStatus($this->getTicketStatus($ticket))
-                ->setDateCreated(DateFormatter::transform($ticket['created'], $this->logger))
-                ->setSubject($ticket['subject'])
-                ->setPriority($this->exportPriority($ticket['priority_id']));
+        $configuration = array(
+            'ticket_id'   => TransformerInterface::TYPE_INT,
+            'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'ticket_',
+                'ref'    => 'ticket_id',
+            )),
+            'number'      => TransformerInterface::TYPE_STRING,
+            'dept_id'     => TransformerInterface::TYPE_INT,
+            'user_id'     => TransformerInterface::TYPE_INT,
+            'staff_id'    => TransformerInterface::TYPE_INT,
+            'team_id'     => TransformerInterface::TYPE_INT,
+            'created'     => TransformerInterface::TYPE_DATE,
+            'subject'     => TransformerInterface::TYPE_STRING,
+            'priority_id' => TransformerInterface::TYPE_INT,
+            'isanswered'  => TransformerInterface::TYPE_BOOLEAN,
+            'closed'      => TransformerInterface::TYPE_BOOLEAN,
+        );
 
-            $messages = $this->exportMessages($ticket['ticket_id']);
-            foreach ($messages as $message) {
-                /** @var Entity\TicketMessage $message */
-                $entity->addMessage($message);
-            }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Ticket();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['ticket_id'])
+            ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
+            ->setDepartment($this->reader->findDepartmentById($formatted['dept_id']))
+            ->setPersonEmail($this->reader->findUserEmailById($formatted['user_id']))
+            ->setAgentEmail($this->reader->findUserEmailById($formatted['staff_id']))
+            ->setAgentTeam($this->reader->findUserEmailById($formatted['team_id']))
+            ->setStatus($this->getTicketStatus($formatted))
+            ->setDateCreated($formatted['created'])
+            ->setSubject($formatted['subject'])
+            ->setPriority($this->exportPriority($formatted['priority_id']))
+        ;
 
-            return $entity;
+        $messages = $this->exportMessages($formatted['ticket_id']);
+        foreach ($messages as $message) {
+            /** @var Entity\TicketMessage $message */
+            $entity->addMessage($message);
         }
 
-        return null;
+        return $entity;
     }
 
     /**
@@ -158,13 +173,15 @@ final class Tickets extends AbstractParser
     private function exportPriority($id)
     {
         if ($id) {
-            $priority = $this->reader->findTicketPriority($id);
-            $entity   = new Entity\TicketPriority();
+            $data   = $this->reader->findTicketPriority($id);
+            $entity = new Entity\TicketPriority();
             $entity
+                ->setRawData($data)
                 ->setDestination('priority')
-                ->setOid($priority['priority_id'])
-                ->setTitle($priority['priority_desc'])
-                ->setValue($priority['priority_urgency']);
+                ->setOid($data['priority_id'])
+                ->setTitle($data['priority_desc'])
+                ->setValue($data['priority_urgency'])
+            ;
 
             return $entity;
         }
@@ -185,7 +202,7 @@ final class Tickets extends AbstractParser
 
         foreach ($messages as $num => $message) {
             try {
-                $entity = $this->exportMessage($num, $message);
+                $entity = $this->exportMessage($message);
                 if ($entity) {
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
@@ -193,7 +210,7 @@ final class Tickets extends AbstractParser
                     $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
                 }
 
-            } catch (NoColumnException $e) {
+            } catch (\Exception $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -207,32 +224,42 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket message entity
      *
-     * @param int   $num
-     * @param array $message
-     *
+     * @param array $data
      * @return Entity\TicketMessage|null
      */
-    private function exportMessage($num, array $message)
+    private function exportMessage(array $data)
     {
-        if ($this->isMessageValid($message)) {
-            $entity = new Entity\TicketMessage();
-            $entity
-                ->setDestination(DestinationFormatter::transform('message_', $num))
-                ->setOid($num)
-                ->setPersonEmail($this->getMessagePersonEmail($message))
-                ->setDateCreated(DateFormatter::transform($message['created'], $this->logger))
-                ->setMessageHtml($message['body']);
+        $configuration = array(
+            'id'          => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'message_',
+                'ref'    => 'id',
+            )),
+            'thread_type' => TransformerInterface::TYPE_STRING,
+            'staff_id'    => TransformerInterface::TYPE_INT,
+            'user_id'     => TransformerInterface::TYPE_INT,
+            'created'     => TransformerInterface::TYPE_DATE,
+            'body'        => TransformerInterface::TYPE_STRING,
+        );
 
-            $attachments = $this->exportAttachments($message['id']);
-            foreach ($attachments as $attachment) {
-                /** @var Entity\Attachment $attachment */
-                $entity->addAttachment($attachment);
-            }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\TicketMessage();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setPersonEmail($this->getMessagePersonEmail($formatted))
+            ->setDateCreated($formatted['created'])
+            ->setMessageHtml($formatted['body'])
+        ;
 
-            return $entity;
+        $attachments = $this->exportAttachments($formatted['id']);
+        foreach ($attachments as $attachment) {
+            /** @var Entity\Attachment $attachment */
+            $entity->addAttachment($attachment);
         }
 
-        return null;
+        return $entity;
     }
 
     /**
@@ -248,7 +275,7 @@ final class Tickets extends AbstractParser
 
         foreach ($attachments as $num => $attachment) {
             try {
-                $entity = $this->exportAttachment($num, $attachment);
+                $entity = $this->exportAttachment($attachment);
                 if ($entity) {
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
@@ -256,7 +283,7 @@ final class Tickets extends AbstractParser
                     $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
                 }
 
-            } catch (NoColumnException $e) {
+            } catch (\Exception $e) {
                 $this->logError(sprintf(
                     'Invalid ticket message attachment record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -270,26 +297,33 @@ final class Tickets extends AbstractParser
     /**
      * Returns an attachment entity
      *
-     * @param int   $num
-     * @param array $attachment
-     *
+     * @param array $data
      * @return Entity\Attachment|null
      */
-    private function exportAttachment($num, array $attachment)
+    private function exportAttachment(array $data)
     {
-        if ($this->isAttachmentValid($attachment)) {
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination(DestinationFormatter::transform('attachment_', $num))
-                ->setOid($num)
-                ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
-                ->setFileName($attachment['name'])
-                ->setContentType($attachment['type']);
+        $configuration = array(
+            'file_id'     => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'attachment_',
+                'ref'    => 'file_id',
+            )),
+            'name'        => TransformerInterface::TYPE_STRING,
+            'type'        => TransformerInterface::TYPE_STRING,
+        );
 
-            return $entity;
-        }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Attachment();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['file_id'])
+            ->setBlobData(base64_encode($this->reader->findAttachmentData($formatted['file_id'])))
+            ->setFileName($formatted['name'])
+            ->setContentType($formatted['type'])
+        ;
 
-        return null;
+        return $entity;
     }
 
     /**
@@ -328,67 +362,5 @@ final class Tickets extends AbstractParser
         }
 
         return $email;
-    }
-
-    /**
-     * Check if ticket has all required columns
-     *
-     * @param array $ticket
-     * @return bool
-     */
-    private function isTicketValid(array $ticket)
-    {
-        $columns = array(
-            'ticket_id',
-            'number',
-            'dept_id',
-            'user_id',
-            'staff_id',
-            'team_id',
-            'created',
-            'subject',
-            'priority_id',
-            'isanswered',
-            'closed',
-        );
-
-        return ColumnHelper::hasRequiredColumns($ticket, $columns);
-    }
-
-    /**
-     * Check if ticket message has all required columns
-     *
-     * @param array $message
-     * @return bool
-     */
-    private function isMessageValid(array $message)
-    {
-        $columns = array(
-            'id',
-            'thread_type',
-            'staff_id',
-            'user_id',
-            'created',
-            'body',
-        );
-
-        return ColumnHelper::hasRequiredColumns($message, $columns);
-    }
-
-    /**
-     * Check if ticket message attachment has all required columns
-     *
-     * @param array $attachment
-     * @return bool
-     */
-    private function isAttachmentValid(array $attachment)
-    {
-        $columns = array(
-            'file_id',
-            'name',
-            'type',
-        );
-
-        return ColumnHelper::hasRequiredColumns($attachment, $columns);
     }
 }

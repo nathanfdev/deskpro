@@ -32,7 +32,6 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\MultipleContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\InlineContactDataFactory;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
@@ -176,7 +175,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                     $destination_prefix, $entity->getOid())
                 );
 
-            } catch (NoColumnException $e) {
+            } catch (\Exception $e) {
                 $this->logWarning(sprintf(
                     'Invalid attachment record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
@@ -341,6 +340,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         foreach ($custom_fields as $num => $custom_field) {
             $entity = new Entity\CustomField();
             $entity
+                ->setRawData($custom_field)
                 ->setOid($custom_field['property'])
                 ->setDestination($destination)
                 ->setKey($custom_field['field_name'])

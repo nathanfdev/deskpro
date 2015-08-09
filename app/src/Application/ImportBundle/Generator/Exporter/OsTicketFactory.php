@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,16 +45,18 @@ class OsTicketFactory extends AbstractFactory
      */
     static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
-        $reader = OsTicketReaderFactory::createReader($config);
+        $reader    = OsTicketReaderFactory::createReader($config);
+        $formatter = FormatterFactory::create();
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader))
-            ->attach(new Parser\OsTicket\Feedback($reader))
-            ->attach(new Parser\OsTicket\Articles($reader))
-            ->attach(new Parser\OsTicket\News($reader))
-            ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader))
-            ->attach(new Parser\OsTicket\Organizations($reader))
+            ->attach(new Parser\OsTicket\Downloads($reader, $formatter))
+            ->attach(new Parser\OsTicket\Feedback($reader, $formatter))
+            ->attach(new Parser\OsTicket\Articles($reader, $formatter))
+            ->attach(new Parser\OsTicket\News($reader, $formatter))
+            ->attach(new Parser\OsTicket\People($reader, $formatter))
+            ->attach(new Parser\OsTicket\Tickets($reader, $formatter))
+            ->attach(new Parser\OsTicket\Organizations($reader, $formatter))
         ;
 
         return new Osticket($parsers, $reader);

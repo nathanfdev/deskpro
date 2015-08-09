@@ -414,6 +414,7 @@ final class Tickets extends AbstractParser
             $request = $this->http_client->get($formatted['content_url']);
             $entity  = new Entity\Attachment();
             $entity
+                ->setRawData($data)
                 ->setDestination($formatted['destination'])
                 ->setOid($formatted['id'])
                 ->setBlobData(base64_encode($request->send()->getBody(true)))

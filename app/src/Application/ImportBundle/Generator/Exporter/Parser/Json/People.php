@@ -129,6 +129,7 @@ final class People extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity = new Entity\Person();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setAsAgent($formatted['is_agent'])

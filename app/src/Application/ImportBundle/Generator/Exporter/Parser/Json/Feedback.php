@@ -130,6 +130,7 @@ final class Feedback extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\Feedback();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setPersonEmail($formatted['person'])

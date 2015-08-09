@@ -125,6 +125,7 @@ final class News extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\News();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setPersonEmail($formatted['person'])

@@ -137,6 +137,7 @@ final class Tickets extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\Ticket();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setRef($formatted['ref'])
@@ -206,6 +207,7 @@ final class Tickets extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\TicketPriority();
         $entity
+            ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['oid'])
             ->setTitle($formatted['title'])
@@ -273,6 +275,7 @@ final class Tickets extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\TicketMessage();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setOid($formatted['oid'])

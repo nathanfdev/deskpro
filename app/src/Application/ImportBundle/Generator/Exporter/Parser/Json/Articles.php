@@ -131,6 +131,7 @@ final class Articles extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\Article();
         $entity
+            ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['oid'])
             ->setPersonEmail($formatted['person'])

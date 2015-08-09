@@ -76,7 +76,8 @@ class MultipleContactData extends AbstractGenerator
                     $entity = $handler->toEntity($contact);
                     $entity
                         ->setOid($oid)
-                        ->setDestination($destination);
+                        ->setDestination($destination)
+                    ;
 
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));

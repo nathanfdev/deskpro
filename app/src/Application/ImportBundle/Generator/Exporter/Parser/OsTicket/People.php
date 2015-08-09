@@ -28,11 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\BooleanFormatter;
-use Application\ImportBundle\Generator\Exporter\Formatter\DateFormatter;
-use Application\ImportBundle\Generator\Exporter\Helper\ColumnHelper;
-use Application\ImportBundle\Generator\Exporter\Formatter\DestinationFormatter;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use DateTimeZone;
 
 /**
@@ -100,7 +97,8 @@ final class People extends AbstractParser
         $collection = new Entity\Collection();
         $collection
             ->merge($this->exportStaffCollection())
-            ->merge($this->exportUsersCollection());
+            ->merge($this->exportUsersCollection())
+        ;
 
         return $collection;
     }
@@ -128,7 +126,7 @@ final class People extends AbstractParser
                         $this->logWarning(sprintf('Invalid staff record found (Skipping): %d', $offsetNum));
                     }
 
-                } catch (NoColumnException $e) {
+                } catch (\Exception $e) {
                     $this->logWarning(sprintf(
                         'Invalid staff record `%d` found (Skipping): %s',
                         $offsetNum, $e->getMessage()
@@ -149,31 +147,43 @@ final class People extends AbstractParser
     /**
      * Returns a staff person entity
      *
-     * @param array $person
+     * @param array $data
      * @return Entity\Person|null
      */
-    private function exportStaff(array $person)
+    private function exportStaff(array $data)
     {
-        if ($this->isStaffValid($person)) {
-            $entity = new Entity\Person();
-            $entity
-                ->setDestination(DestinationFormatter::transform('staff_', $person['staff_id']))
-                ->setOid($person['staff_id'])
-                ->setAsAgent(true)
-                ->setName($person['firstname'] . $person['lastname'])
-                ->setFirstName($person['firstname'])
-                ->setLastName($person['lastname'])
-                ->setTimezone(new DateTimeZone($this->reader->findTimezoneById($person['timezone_id'])))
-                ->setDateCreated(DateFormatter::transform($person['created'], $this->logger))
-                ->setAsAdmin(BooleanFormatter::transform($person['isadmin']))
-                ->addEmail($person['email'])
-                ->addUserGroup($this->reader->findUserGroupNameById($person['group_id']))
-            ;
+        $configuration = array(
+            'staff_id'    => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'staff_',
+                'ref'    => 'staff_id',
+            )),
+            'firstname'   => TransformerInterface::TYPE_STRING,
+            'lastname'    => TransformerInterface::TYPE_STRING,
+            'timezone_id' => TransformerInterface::TYPE_INT,
+            'created'     => TransformerInterface::TYPE_DATE,
+            'email'       => TransformerInterface::TYPE_STRING,
+            'isadmin'     => TransformerInterface::TYPE_BOOLEAN,
+            'group_id'    => TransformerInterface::TYPE_INT,
+        );
 
-            return $entity;
-        }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Person();
+        $entity
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['staff_id'])
+            ->setAsAgent(true)
+            ->setName($formatted['firstname'] . ' ' . $formatted['lastname'])
+            ->setFirstName($formatted['firstname'])
+            ->setLastName($formatted['lastname'])
+            ->setTimezone(new DateTimeZone($this->reader->findTimezoneById($formatted['timezone_id'])))
+            ->setDateCreated($formatted['created'])
+            ->setAsAdmin($formatted['isadmin'])
+            ->addEmail($formatted['email'])
+            ->addUserGroup($this->reader->findUserGroupNameById($formatted['group_id']))
+        ;
 
-        return null;
+        return $entity;
     }
 
     /**
@@ -199,7 +209,7 @@ final class People extends AbstractParser
                         $this->logWarning(sprintf('Invalid user record found (Skipping): %d', $offsetNum));
                     }
 
-                } catch (NoColumnException $e) {
+                } catch (\Exception $e) {
                     $this->logWarning(sprintf(
                         'Invalid user record `%d` found (Skipping): %s',
                         $offsetNum, $e->getMessage()
@@ -220,66 +230,36 @@ final class People extends AbstractParser
     /**
      * Returns an user person entity
      *
-     * @param array $person
+     * @param array $data
      * @return Entity\Person|null
      */
-    private function exportUser(array $person)
+    private function exportUser(array $data)
     {
-        if ($this->isUserValid($person)) {
-            $entity = new Entity\Person();
-            $entity
-                ->setDestination(DestinationFormatter::transform('user_', $person['user_id']))
-                ->setOid($person['user_id'])
-                ->setAsUser(true)
-                ->setName($person['name'])
-                ->setOrganization($this->reader->findOrganizationNameById($person['org_id']))
-                ->setDateCreated(DateFormatter::transform($person['created'], $this->logger))
-                ->addEmail($person['address']);
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if staff person has all required columns
-     *
-     * @param array $person
-     * @return bool
-     */
-    private function isStaffValid(array $person)
-    {
-        $columns = array(
-            'staff_id',
-            'firstname',
-            'lastname',
-            'timezone_id',
-            'created',
-            'email',
-            'isadmin',
-            'group_id',
+        $configuration = array(
+            'user_id'     => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'user_',
+                'ref'    => 'user_id',
+            )),
+            'name'        => TransformerInterface::TYPE_STRING,
+            'org_id'      => TransformerInterface::TYPE_INT,
+            'created'     => TransformerInterface::TYPE_DATE,
+            'address'     => TransformerInterface::TYPE_STRING,
         );
 
-        return ColumnHelper::hasRequiredColumns($person, $columns);
-    }
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Person();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['user_id'])
+            ->setAsUser(true)
+            ->setName($formatted['name'])
+            ->setOrganization($this->reader->findOrganizationNameById($formatted['org_id']))
+            ->setDateCreated($formatted['created'])
+            ->addEmail($formatted['address'])
+        ;
 
-    /**
-     * Check if user has all required columns
-     *
-     * @param array $person
-     * @return bool
-     */
-    private function isUserValid(array $person)
-    {
-        $columns = array(
-            'user_id',
-            'name',
-            'org_id',
-            'created',
-            'address',
-        );
-
-        return ColumnHelper::hasRequiredColumns($person, $columns);
+        return $entity;
     }
 }

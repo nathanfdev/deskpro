@@ -196,10 +196,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\CustomField();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setKey($formatted['key'])
-            ->setValue($formatted['value']);
+            ->setValue($formatted['value'])
+        ;
 
         return $entity;
     }
@@ -262,6 +264,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = $entity ? : new Entity\Blob();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setBlobData($formatted['blob_data'])

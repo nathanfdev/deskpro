@@ -128,6 +128,7 @@ final class Downloads extends AbstractParser
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\Download();
         $entity
+            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setPersonEmail($formatted['person'])

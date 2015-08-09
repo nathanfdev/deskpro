@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
 use Exception;
 
@@ -51,13 +52,21 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $entities_loaded = 0;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor
      *
      * @param OsTicketReaderInterface $reader
+     * @param FormatterInterface      $formatter
      */
-    public function __construct(OsTicketReaderInterface $reader)
+    public function __construct(OsTicketReaderInterface $reader, FormatterInterface $formatter)
     {
-        $this->reader = $reader;
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
+
     }
 
     /**
