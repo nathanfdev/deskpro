@@ -373,8 +373,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | email                      |                                                                                         |
 | is_agent                   | boolean                                                                                 |
 | custom "Custom field name" | could be multiple, see `example/csv_inline/people.csv`                                  |
-| -------------------------- |-----------------------------------------------------------------------------------------|
-| Contact info               |                                                                                         |
+
+
+| Contact info               | Description                                                                             |
 | -------------------------- |-----------------------------------------------------------------------------------------|
 | address                    |                                                                                         |
 | city                       |                                                                                         |
@@ -471,8 +472,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | file_name                  |                                                                                         |
 | content_type               |                                                                                         |
 | custom "Custom field name" | could be multiple, see `example/csv_inline/organizations.csv`                           |
-| -------------------------- |-----------------------------------------------------------------------------------------|
-| Contact info               |                                                                                         |
+
+
+| Contact info               | Description                                                                             |
 | -------------------------- |-----------------------------------------------------------------------------------------|
 | address                    |                                                                                         |
 | city                       |                                                                                         |
