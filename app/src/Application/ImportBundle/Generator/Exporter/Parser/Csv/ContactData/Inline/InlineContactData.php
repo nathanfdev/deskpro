@@ -57,14 +57,16 @@ class InlineContactData
     /**
      * Parses inline contact data from entity
      *
-     * @param array $entity
+     * @param array  $data
+     * @param string $destination
+     *
      * @return ContactData[]
      */
-    public function parse(array $entity)
+    public function parse(array $data, $destination)
     {
         $contact_data = array();
-        foreach ($this->contact_types as $contact_type) {
-            $value = $contact_type->getValue($entity);
+        foreach ($this->contact_types as $num => $contact_type) {
+            $value = $contact_type->getValue($data);
             if ( ! $value) {
                 continue;
             }
@@ -79,6 +81,11 @@ class InlineContactData
 
             $contact = $handler->{$contact_type->getMethod()}($value);
             if ($contact instanceof ContactData) {
+                $contact
+                    ->setOid($num)
+                    ->setDestination($destination)
+                ;
+
                 $contact_data[] = $contact;
             }
         }

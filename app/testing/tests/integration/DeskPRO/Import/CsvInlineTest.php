@@ -2,7 +2,9 @@
 
 namespace DpIntegrationTests\DeskPRO\Import;
 
-use Application\ImportBundle\Command\ExportCommand;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
+use Application\ImportBundle\Command\ImportBatchCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -25,10 +27,28 @@ class CsvInlineTest extends \DpIntegrationTestCase
     private $output_path;
 
     /**
+     * @var EntityRepository\Person
+     */
+    private $person_repository;
+
+    /**
      * {@inheritdoc}
      */
     public function runBefore()
     {
+        $this->helper->enableFreshDatabaseSet('FreshDb');
+
+        $this->helper->loadFixtures('Import/CustomDefTicket');
+        $this->helper->loadFixtures('Import/CustomDefPerson');
+        $this->helper->loadFixtures('Import/CustomDefFeedback');
+        $this->helper->loadFixtures('Import/CustomDefArticle');
+        $this->helper->loadFixtures('Import/CustomDefOrganization');
+
+        $entity_manager = $this->helper->getSymfonyContainer()->getEm();
+        $entity_manager->clear();
+
+        $this->person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv_inline';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
 
@@ -40,12 +60,12 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->helper->cleanDir($this->output_path);
     }
 
-    public function testExport()
+    public function testImportBatch()
     {
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
-        $application->add(new ExportCommand());
+        $application->add(new ImportBatchCommand());
 
-        $command = $application->find('dp:export:run');
+        $command = $application->find('dp:import:batch');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'       => $command->getName(),
@@ -56,6 +76,12 @@ class CsvInlineTest extends \DpIntegrationTestCase
             '--verbose'     => true,
         ));
 
+        $this->checkJsonData($command_tester);
+        $this->checkDbData();
+    }
+
+    private function checkJsonData(CommandTester $command_tester)
+    {
         $output = $command_tester->getDisplay();
 
         // Checking for people
@@ -75,11 +101,11 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
         $person = $this->getContent('1/people/person_joe.smith@example.com.json');
         $this->assertCount(5, $person['custom_fields']);
-        $this->assertCount(2, $person['contact_data']);
+        $this->assertCount(3, $person['contact_data']);
 
         $person = $this->getContent('1/people/person_angry.customer@example.com.json');
         $this->assertCount(2, $person['custom_fields']);
-        $this->assertCount(2, $person['contact_data']);
+        $this->assertCount(3, $person['contact_data']);
 
         // Checking for tickets
         $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
@@ -113,6 +139,20 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $organization = $this->getContent('1/organizations/organization_some_organization.json');
         $this->assertCount(2, $organization['custom_fields']);
         $this->assertCount(3, $organization['contact_data']);
+    }
+
+    private function checkDbData()
+    {
+        // Checking for people
+        $person = $this->person_repository->findOneByEmail('joe.smith@example.com');
+        $this->assertNotNull($person);
+
+        $contact_data1 = $person->getContactData('facebook');
+        $this->assertCount(1, $contact_data1);
+
+        $contact = $contact_data1[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('http://facebook.com/facebook_id', $contact->getField1());
     }
 
     /**

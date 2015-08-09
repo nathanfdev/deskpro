@@ -88,7 +88,7 @@ final class People extends AbstractParser
                     }
                 }
 
-                $inline_contact_data = $this->exportInlineContactData($person);
+                $inline_contact_data = $this->exportInlineContactData($person, $entity->getDestination());
                 foreach ($inline_contact_data as $contact) {
                     $entity->addContact($contact);
                 }

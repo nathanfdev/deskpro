@@ -397,12 +397,14 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * @param array $entity
+     * @param array  $data
+     * @param string $destination
+     *
      * @return Entity\ContactData[]
      */
-    protected function exportInlineContactData(array $entity)
+    protected function exportInlineContactData(array $data, $destination)
     {
         $parser = InlineContactDataFactory::getParser();
-        return $parser->parse($entity);
+        return $parser->parse($data, $destination);
     }
 }
