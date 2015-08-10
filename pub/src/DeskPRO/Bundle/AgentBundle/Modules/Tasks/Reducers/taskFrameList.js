@@ -11,11 +11,23 @@ export default class TaskFrameList extends Reducer {
   }
   
   tasksLoaded(state, action) {
+    let projects = {};
+    let links = {};
+
+    if (typeof action.payload.projects !== 'undefined' && typeof action.payload.projects.data !== 'undefined') {
+      projects = action.payload.projects.data;
+    }
+
+    if (typeof action.payload.linked_items !== 'undefined') {
+      links = action.payload.linked_items;
+    }
+
     return {
       ...state,
       taskFrameList: action.payload.data,
       taskFrameSource: action.payload.source,
-      taskFrameProjects: action.payload.projects.data
+      taskFrameProjects: projects,
+      taskFrameLinks: links
     };
   }
   

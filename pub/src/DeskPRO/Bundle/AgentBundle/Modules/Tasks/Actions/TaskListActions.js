@@ -147,11 +147,13 @@ export const loadTaskList = createAction(
             projects.push(task.project);
           }
 
-          if (task.linked_items !== null && projects.indexOf(task.linked_items.id) === -1) {
+          if (task.linked_items !== null && linked_items.indexOf(task.linked_items.id) === -1) {
             linked_items.push(task.linked_items.id);
           }
         });
 
+        // @TODO: Refactor all of this
+        // This should comprise of several promises, which when all complete fire trigger(result)
         Tasks.loadProjects({
           ids: projects.join(',')
         }).then(
@@ -160,14 +162,18 @@ export const loadTaskList = createAction(
           }
         ).then(
           () => {
-            //Tasks.loadLinks({
-            //  ids:
-            //})
+            Tasks.loadLinks({
+              ids: linked_items
+            }).then((value) => {
+              let links = value.getData();
+              links = links.data;
+
+              result['linked_items'] = links;
+              result['source'] = data;
+              trigger(result);
+            });
           }
         );
-
-        result['source'] = data;
-        trigger(result);
       }
     );
   }

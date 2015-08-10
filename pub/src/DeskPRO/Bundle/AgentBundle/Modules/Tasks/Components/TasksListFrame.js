@@ -43,11 +43,19 @@ export default class TasksListFrame extends React.Component {
     const {taskFrameList} = this.props;
     const _this = this;
     let projects = {};
+    let linked_items = {};
 
     // Attach IDs to the projects
-    if (taskFrameList.taskFrameProjects) {
+    if (taskFrameList.taskFrameProjects && typeof taskFrameList.taskFrameProjects.forEach === 'function') {
       taskFrameList.taskFrameProjects.forEach(function(project) {
         projects[project.id.toString()] = project;
+      });
+    }
+
+    // Attach IDs to the linked item
+    if (taskFrameList.taskFrameLinks && typeof taskFrameList.taskFrameLinks.forEach === 'function') {
+      taskFrameList.taskFrameLinks.forEach(function(link) {
+        linked_items[link.id.toString()] = link;
       });
     }
 
@@ -134,9 +142,19 @@ export default class TasksListFrame extends React.Component {
           <button type="submit" value="Save" className="button">Add</button>
         </Formsy.Form>
 
-        {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map(function(object) {
+        {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
           let cardClass = object.is_done ? "card task-card task-card-completed" : "card task-card";
           let doneButton = object.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
+
+          let ticket_link = undefined;
+
+          if (object.linked_items.length > 0) {
+            object.linked_items.forEach((item) => {
+              if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
+                ticket_link = '#' + linked_items[item].ticket;
+              }
+            });
+          }
 
           return <div className={cardClass} key={object.id}>
             <div className="card-status-bar status-bar-left"></div>
@@ -148,7 +166,7 @@ export default class TasksListFrame extends React.Component {
 
             <div className="top-right-box">
               <span className="text">Carlton Bush</span> <span className="chat-avatar"
-                                                               style={{backgroundImage: "url(./img/avatar6.png)"}}></span>
+                                                               style={{backgroundImage: "url(./img/avatar6.png)"}} />
             </div>
 
             <div className="card-line">
@@ -176,15 +194,14 @@ export default class TasksListFrame extends React.Component {
                   year="numeric" /> : 'N/A' }
                 </div>
 
-                {object.project ? <span>
+                {object.project && projects[object.project] ? <span>
                   <span className="disc"></span><i className="fa fa-book"/> {projects[object.project].title}
                 </span> : ''}
 
+                {ticket_link ? <span>
                 <span className="disc"></span>
-
-                <div>
-                  <i className="fa fa-link"/> <a href="#">Linked ticket</a>
-                </div>
+                  <i className="fa fa-link"/><a href={ticket_link}>Linked ticket</a>
+                </span> : ''}
               </div>
             </div>
           </div>

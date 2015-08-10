@@ -123,6 +123,15 @@ export function editTask(taskId, data) {
 }
 
 /**
+ * Load links for related items for a task
+ * @param params
+ * @return Promise
+ */
+export function loadLinks(params = {}) {
+  return DpApi.sendGet('DP_API/task_links?' + compileParams(params));
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}

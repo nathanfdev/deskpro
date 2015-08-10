@@ -70,7 +70,16 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      */
     public function cgetAction(Request $request)
     {
-        $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->findAll();
+        $query = $request->query->all();
+
+        if (!empty($query['ids'])) {
+            $taskLinks = $this->selectLinks(explode(',', $query['ids']));
+
+            $taskLinks = $taskLinks->getResult();
+        } else {
+            $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->findAll();
+        }
+
 
         return View::create(
             $this->dataSerialize($taskLinks),
@@ -276,5 +285,26 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
         }
 
         return $submitted;
+    }
+
+    /**
+     * Get a Doctrine Query for getting certain links
+     * @param $linkIds
+     * @return \Doctrine\ORM\Query
+     */
+    protected function selectLinks($linkIds)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Clean the IDs
+        $linkIds = array_map(function($value) {
+            return (int) $value;
+        }, $linkIds);
+
+        $query = $entityManager->createQueryBuilder()->select('l')->from('App:TaskLinkedItem', 'l')
+            ->where('l.id IN (:linkIds)')
+            ->setParameter('linkIds', $linkIds);
+
+        return $query->getQuery();
     }
 }
