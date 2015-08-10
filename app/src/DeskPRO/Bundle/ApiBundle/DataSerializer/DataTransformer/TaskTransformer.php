@@ -35,9 +35,27 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
+use Doctrine\DBAL\Connection;
 
 class TaskTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var int[]
+     */
+    private $count_ids;
+
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+        $this->count_ids = [];
+    }
+
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -73,6 +91,23 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             }
         }
 
-        return ['labels' => $labels];
+        $id = $data->getId();
+        $this->count_ids[] = $id;
+
+        return [
+            'labels' => $labels,
+            'some_count' => new CallbackDeferredProperty(
+                [$this, 'getCount'],
+                [$id]
+            )
+        ];
+    }
+
+    public function getCount($id)
+    {
+        // the callbacks won't be called until after all of thee "CallbackDeferredProperty" are set
+        // which means we now have an array of all of the IDs we will want in $ths->count_ids
+
+        return 5;
     }
 }

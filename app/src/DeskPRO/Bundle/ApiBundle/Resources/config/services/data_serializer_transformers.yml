@@ -9,3 +9,8 @@ services:
     #
     # note: you don't need a tag for these to work. just make the prefix the same.
     #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
+
+    data_serializer.transformer.task:
+      class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskTransformer
+      arguments:
+        - @doctrine.dbal.default_connection
