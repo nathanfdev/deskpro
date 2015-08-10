@@ -5,15 +5,16 @@ export default class ChatConversationsNavFrame extends Reducer {
   getInitialState() {
     return {
       myChats:  {count: 0, nested: [/* {count, group} */]},
-      allChats: {count: 0, nested: [/* {count, group, label} */]},
+      allChats: {count: 0, nested: [/* {count, group} */]},
+      agentNames: {/* id: name */}
     };
   }
 
   registerHandlers() {
     this
       .r(types.CHAT_LOAD_MY_CONVERSATIONS_COUNTS, this.myConversationsCountsLoaded)
-      .r(types.CHAT_LOAD_ALL_CONVERSATIONS_TOTAL, this.allConversationsTotalLoaded)
-      .r(types.CHAT_LOAD_ALL_CONVERSATIONS_COUNT, this.allConversationsCountLoaded)
+      .r(types.CHAT_LOAD_ALL_CONVERSATIONS_COUNTS, this.allConversationsCountsLoaded)
+      .r(types.CHAT_LOAD_AGENT_NAME, this.agentNameLoaded)
     ;
   }
 
@@ -24,18 +25,17 @@ export default class ChatConversationsNavFrame extends Reducer {
     return newState;
   }
 
-  allConversationsTotalLoaded(state, {payload}) {
+  allConversationsCountsLoaded(state, {payload}) {
     let newState = {...state};
-    newState.allChats.count = payload;
-    newState.allChats.nested.length = 0;
+    newState.allChats = {count: payload.count, nested: payload.nested.counts};
 
     return newState;
   }
 
-  allConversationsCountLoaded(state, {payload}) {
-    let newState = {...state};
-    newState.allChats.nested.push(payload);
+  agentNameLoaded(state, {payload}) {
+    let agentNames = state.agentNames;
+    agentNames = {...agentNames, [payload.id]: payload.name};
 
-    return newState;
+    return {...state, agentNames};
   }
 }

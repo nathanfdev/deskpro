@@ -1,10 +1,14 @@
 import React from 'react';
+import { connect } from 'redux/react';
 import * as actions from '../Actions/chatConversationsNavFrameActions'
 
+@connect(state => ({
+  agentNames: state.ChatConversationsNavFrame.agentNames,
+}))
 export default class AgentConversationsCount extends React.Component {
-
   render() {
-    const {count, agent, label} = this.props;
+    const {count, agent} = this.props;
+    const label = this.props.agentNames[agent];
 
     return (
       <li>

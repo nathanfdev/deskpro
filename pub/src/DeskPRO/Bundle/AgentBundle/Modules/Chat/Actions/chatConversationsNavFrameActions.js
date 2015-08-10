@@ -11,27 +11,23 @@ export const loadMyChatConversationsCounts = createAction(
 );
 
 export function loadAllChatConversationsCounts() {
-  return dispatch => {
+  return (dispatch, getState) => {
     Chat.loadAllChatConversationsCounts().then(promise => {
       dispatch({
-        type: types.CHAT_LOAD_ALL_CONVERSATIONS_TOTAL,
-        payload: promise.getData().data.count
+        type: types.CHAT_LOAD_ALL_CONVERSATIONS_COUNTS,
+        payload: promise.getData().data
       });
 
       const nested = promise.getData().data.nested.counts;
       for (let i = 0; i < nested.length; i++) {
-        //People.loadPerson(nested[i].group).then(promise => {
-        //  nested[i].label = promise.getData().data.name;
-        //  dispatch({
-        //    type: types.CHAT_LOAD_ALL_CONVERSATIONS_COUNT,
-        //    payload: nested[i]
-        //  });
-        //});
-
-        nested[i].label = 'Agent-' + Math.random();
-        dispatch({
-          type: types.CHAT_LOAD_ALL_CONVERSATIONS_COUNT,
-          payload: nested[i]
+        Chat.loadAllChatConversationsCounts().then(promise => {
+          dispatch({
+            type: types.CHAT_LOAD_AGENT_NAME,
+            payload: {
+              id: nested[i].group,
+              name: 'Agent-' + Math.random()
+            }
+          });
         });
       }
     });
