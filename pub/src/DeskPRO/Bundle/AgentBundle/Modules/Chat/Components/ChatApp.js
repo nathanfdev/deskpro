@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'redux/react';
 import AppContainer from 'DeskPRO/Component/AppContainer';
 import ChatConversationsNavFrame from './ChatConversationsNavFrame';
 

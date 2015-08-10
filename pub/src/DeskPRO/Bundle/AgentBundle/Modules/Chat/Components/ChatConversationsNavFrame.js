@@ -19,9 +19,6 @@ export default class ChatConversationsNavFrame extends React.Component {
   render() {
     const {myChats, allChats} = this.props;
 
-    console.log("myChats: ", myChats.nested);
-    console.log("allChats: ", allChats.nested);
-
     return (
       <section className="task-nav-frame dp-nav-frame">
         <div className="sidebar-wrapper" id="sidebar-wrapper">
@@ -56,8 +53,9 @@ export default class ChatConversationsNavFrame extends React.Component {
                 </div>
                 
                 <ul>
-                  {myChats.nested.counts.map(count => (
-                      <DatePeriodConversationsCount key={'period-' + count.group} count={count.count} period={count.group} />
+                  {myChats.nested.map(count => (
+                      <DatePeriodConversationsCount
+                          key={'period-' + count.group} count={count.count} period={count.group} />
                   ))}
                 </ul>
               
@@ -72,8 +70,9 @@ export default class ChatConversationsNavFrame extends React.Component {
                 </div>
                 
                 <ul>
-                  {allChats.nested.counts.map(count => (
-                      <AgentConversationsCount key={'agent-' + count.group} count={count.count} agent={count.group} />
+                  {allChats.nested.map(count => (
+                      <AgentConversationsCount
+                          key={'agent-' + count.group} count={count.count} agent={count.group} label={count.label} />
                   ))}
                 </ul>
               

@@ -13,8 +13,6 @@ export default class DatePeriodConversationsCount extends React.Component {
   };
 
   render() {
-    console.log("rendering DatePeriodConversationsCount");
-
     const {count, period} = this.props;
 
     return (
