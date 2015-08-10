@@ -56,7 +56,6 @@ class JsonFactory extends AbstractFactory
         /** @var FormatterInterface $formatter */
         $formatter = $container->get('deskpro.import.formatter');
 
-
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\Json\Downloads($reader, $formatter))

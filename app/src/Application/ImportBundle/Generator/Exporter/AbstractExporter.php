@@ -31,7 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\ReaderInterface;
 use Exception;
 
 /**
@@ -48,7 +48,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
     private $parsers;
 
     /**
-     * @var BaseReader
+     * @var ReaderInterface
      */
     protected $reader;
 
@@ -56,9 +56,9 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      * Constructor
      *
      * @param Parser\Collection $parsers
-     * @param BaseReader        $reader
+     * @param ReaderInterface   $reader
      */
-    public function __construct(Parser\Collection $parsers, BaseReader $reader)
+    public function __construct(Parser\Collection $parsers, ReaderInterface $reader)
     {
         $this->parsers = $parsers;
         $this->reader  = $reader;
