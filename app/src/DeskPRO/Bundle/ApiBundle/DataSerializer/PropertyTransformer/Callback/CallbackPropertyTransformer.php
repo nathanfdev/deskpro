@@ -31,35 +31,39 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
 
-class SandboxWidgetTransformer extends AbstractDataSerializerTransformer
+use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformationContext;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformerInterface;
+
+class CallbackPropertyTransformer implements PropertyTransformerInterface
 {
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    /**
+     * @param PropertyTransformationContext $property_context
+     */
+    public function transform(PropertyTransformationContext $property_context)
     {
-        if ($transformation_request->isDefaultView()) {
-            return ['id', 'name', 'inventory', 'parent', 'children'];
-        }
+        // do nothing during the property transformation phase
     }
 
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    /**
+     * @param DeferredPropertyInterface $deferred_property
+     * @return bool true if supports this deferred property, false otherwise
+     */
+    public function supportsDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        if ($transformation_request->isDefaultView()) {
-            return [
-                'inventory_warning' => $data->getInventory() <= 5,
-                'some_callback_prop' => new CallbackDeferredProperty([$this, 'getFoo'], ['bar'])
-            ];
-        }
+        return $deferred_property instanceof CallbackDeferredProperty;
     }
 
-    public function getFoo($first_arg)
+    /**
+     * @param DeferredPropertyInterface $deferred_property
+     * @return mixed
+     */
+    public function resolveDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
-        return $first_arg . ' processed';
+        /** @var CallbackDeferredProperty $deferred_property */
+        return $deferred_property->call();
     }
 }

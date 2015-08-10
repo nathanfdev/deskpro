@@ -31,35 +31,30 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
 
-class SandboxWidgetTransformer extends AbstractDataSerializerTransformer
+use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
+
+class CallbackDeferredProperty implements DeferredPropertyInterface
 {
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    /**
+     * @var callable
+     */
+    private $callable;
+    /**
+     * @var array
+     */
+    private $arguments;
+
+    public function __construct(callable $callable, array $arguments)
     {
-        if ($transformation_request->isDefaultView()) {
-            return ['id', 'name', 'inventory', 'parent', 'children'];
-        }
+        $this->callable = $callable;
+        $this->arguments = $arguments;
     }
 
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    public function call()
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        if ($transformation_request->isDefaultView()) {
-            return [
-                'inventory_warning' => $data->getInventory() <= 5,
-                'some_callback_prop' => new CallbackDeferredProperty([$this, 'getFoo'], ['bar'])
-            ];
-        }
-    }
-
-    public function getFoo($first_arg)
-    {
-        return $first_arg . ' processed';
+        return call_user_func_array($this->callable, $this->arguments);
     }
 }
