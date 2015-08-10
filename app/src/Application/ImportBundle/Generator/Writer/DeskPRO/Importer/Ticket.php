@@ -105,7 +105,15 @@ final class Ticket extends AbstractImporter
         }
 
         if ($entity->getAgentEmail()) {
-            $ticket['agent'] = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
+            $agent = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
+            if ($agent && $agent->isAgent()) {
+                $ticket['agent'] = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
+            } else {
+                $this->logWarning(sprintf(
+                    'Unable to set ticket agent, user `%s` is not agent',
+                    $entity->getAgentEmail()
+                ));
+            }
         }
         foreach ($entity->getMessages() as $message) {
             $ticket->addMessage($this->createTicketMessage($message, $ticket));

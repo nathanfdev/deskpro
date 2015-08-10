@@ -1469,6 +1469,8 @@ class TicketSearchController extends AbstractController
         } else {
             $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
         }
+        $vars['ticket_display'] = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+        $vars['ticket_display']->setPersonContext($this->person);
 
         while(!empty($tickets)) {
             $ticket = array_shift($tickets);
@@ -1891,7 +1893,7 @@ class TicketSearchController extends AbstractController
 						$new_message = Strings::prepareWysiwygHtml($new_message);
 						$opt['reply_text'] = $new_message;
 					}
-					
+
                     $action = $factory->createFromForm($name, $opt);
                     $collection->add($action);
                 }

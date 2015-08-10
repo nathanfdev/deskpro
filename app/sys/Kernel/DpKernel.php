@@ -414,7 +414,7 @@ class DpKernel extends AbstractKernel
         $deskpro_url       = App::getSetting('core.deskpro_url');
         $enable_correction = App::getSetting('core.deskpro_url_autocorrect');
 
-        if ($deskpro_url) {
+        if ($deskpro_url && '/news.rss' !== $path) {
             if (false === $correct_scheme = $request->isCorrectScheme($deskpro_url)) {
                 $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
                 $request->attributes->set($interface . '.wrong_scheme', true);
