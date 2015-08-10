@@ -72,7 +72,7 @@ export function loadLabels(params = {}) {
  * @return Promise
  */
 export function loadTeams(params = {}) {
-  return DpApi.sendGet('DP_API/teams?' + compileParams(params));
+  return DpApi.sendGet('DP_API/agent_teams?' + compileParams(params));
 }
 
 /**

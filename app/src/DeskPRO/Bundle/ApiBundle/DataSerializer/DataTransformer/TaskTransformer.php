@@ -73,7 +73,6 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'project',
             'list',
             'urgency',
-            'assigned',
             'linked_items',
         ];
     }
@@ -91,10 +90,33 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             }
         }
 
+        $assignees = $data->getAssigned();
+
+        $grouped = [
+            'departments' => [],
+            'teams' => [],
+            'agents' => [],
+        ];
+
+        if (!empty($assignees)) {
+            foreach ($assignees as $assigned) {
+                if (!empty($assigned->getDepartment())) {
+                    $grouped['departments'][] = $assigned->getDepartment()->getId();
+                } else if (!empty($assigned->getTeam())) {
+                    $grouped['teams'][] = $assigned->getTeam()->getId();
+                } else {
+                    $grouped['agents'][] = $assigned->getPerson()->getId();
+                }
+            }
+        }
+
         $id = $data->getId();
         $this->count_ids[] = $id;
 
         return [
+            'departments' => $grouped['departments'],
+            'teams' => $grouped['teams'],
+            'agents' => $grouped['agents'],
             'labels' => $labels,
             'some_count' => new CallbackDeferredProperty(
                 [$this, 'getCount'],

@@ -44,6 +44,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,12 +85,19 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      */
     public function cgetAction(Request $request)
     {
-        $departments = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Department')->findAll();
+        $query = $request->query->all();
+
+        if (!empty($query['ids'])) {
+            $departments = $this->selectDepartments(explode(',', $query['ids']));
+        } else {
+            $departments = $this->getDoctrine()->getManager()->createQueryBuilder()
+                ->select('d')->from('DeskPRO:Department', 'd')->getQuery();
+        }
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($departments));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($departments));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -269,5 +277,26 @@ class DepartmentsController extends BaseController implements ClassResourceInter
         }
 
         throw new InvalidFormException($form);
+    }
+
+    /**
+     * Get specific departments
+     * @param $departmentIds
+     * @return mixed
+     */
+    protected function selectDepartments($departmentIds)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Clean the IDs
+        $departmentIds = array_map(function($value) {
+            return (int) $value;
+        }, $departmentIds);
+
+        $query = $entityManager->createQueryBuilder()->select('d')->from('DeskPRO:Department', 'd')
+            ->where('d.id IN (:departmentIds)')
+            ->setParameter('departmentIds', $departmentIds);
+
+        return $query->getQuery();
     }
 }

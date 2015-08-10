@@ -33,34 +33,29 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
-
-use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
-class AgentTeamsController extends BaseController
+class AgentTeamsController extends BaseController implements ClassResourceInterface
 {
     /**
      * @ApiDoc(
-     *      description="get a list of departments",
+     *      description="get a list of teams",
      *      parameters={
      *          {
      *              "name"="page",
@@ -81,26 +76,42 @@ class AgentTeamsController extends BaseController
      *          200="Success"
      *      }
      * )
-     *
      * @Get("/agent_teams", name="api_agent_teams")
+     * @param Request $request
+     * @return View
      */
     public function cgetAction(Request $request)
     {
-        $repo = $this->getEm()->getRepository('DeskPRO:AgentTeam');
+        $query = $request->query->all();
+
+        if (!empty($query['ids'])) {
+            $teams = $this->selectTeams(explode(',', $query['ids']));
+        } else {
+            $teams = $this->getDoctrine()->getManager()->createQueryBuilder()
+                            ->select('t')->from('DeskPRO:AgentTeam', 't')->getQuery();
+        }
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($teams));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
         return View::create(
-            $this->DataSerialize($repo->findAll()),
+            $this->DataSerialize($pager),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
-     *      description="get a filter",
+     *      description="get a team",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the filter",
+     *              "description"="the id of the team",
      *              "dataType"="integer"
      *          }
      *      },
@@ -108,31 +119,181 @@ class AgentTeamsController extends BaseController
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     *      output="Application\DeskPRO\Entity\AgentTeam"
      * )
-     *
      * @Get("/agent_teams/{id}", name="api_agent_teams_get")
+     * @param int $id
+     * @return View
      */
     public function getAction($id)
     {
-        $repo = $this->getEm()->getRepository('DeskPRO:AgentTeam');
-        $findings = $repo->findBy(['id' => $id]);
+        $team = $this->getAgentTeam($id);
 
-        if (!$findings || count($findings) < 1) {
+        if (empty($team)) {
             throw $this->createNotFoundException();
         }
-        $item = $findings[0];
 
         return View::create(
-            $this->DataSerialize($item),
+            $this->DataSerialize($team),
             Response::HTTP_OK
         );
     }
 
-
-    // A bit of comfort.
-    protected function getEm()
+    /**
+     * @ApiDoc(
+     *      description="create a new team",
+     *      input={"class"="team", "name"=""},
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *      output="Application\DeskPRO\Entity\AgentTeam"
+     * )
+     * @Post("/agent_teams", name="api_agent_teams_post")
+     * @param Request $request
+     * @throws WrappedApiErrorException
+     * @throws InvalidFormException
+     * @return View
+     */
+    public function postAction(Request $request)
     {
-        return $this->getDoctrine()->getManager();
+        $team = new AgentTeam($this->getUser());
+        return $this->handleFormSubmission($request, $team);
+    }
+
+    /**
+     * @APIDoc(
+     *      description="update a team",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the team",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      input={"class"="team", "name"=""},
+     *      statusCodes={
+     *          204="Updated",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Put("/agent_teams/{id}", name="api_agent_teams_put")
+     * @param Request $request
+     * @param $id
+     * @throws WrappedApiErrorException
+     * @return View
+     */
+    public function putAction(Request $request, $id)
+    {
+        $team = $this->getAgentTeam($id);
+
+        return $this->handleFormSubmission($request, $team);
+    }
+
+    /**
+     * @APIDoc(
+     *      description="delete a team",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the team",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Delete("/agent_teams/{id}", name="api_agent_teams_delete")
+     * @param $id
+     * @return View
+     */
+    public function deleteAction($id)
+    {
+        $team = $this->getAgentTeam($id);
+        $this->getDoctrine()->getManager()->remove($team);
+        $this->getDoctrine()->getManager()->flush();
+
+        return View::create(
+            array(),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @param int $id
+     * @return AgentTeam
+     */
+    protected function getAgentTeam($id)
+    {
+        $id = (int) $id;
+        $team = $this->getDoctrine()->getManager()->getRepository('DeskPRO:AgentTeam')->find($id);
+
+        if (!$team) {
+            throw $this->createNotFoundException();
+        }
+
+        return $team;
+    }
+
+    /**
+     * Will be abstracted for use by other controllers
+     * @param Request $request
+     * @param AgentTeam $team
+     * @return View
+     * @throws WrappedApiErrorException
+     */
+    protected function handleFormSubmission(Request $request, AgentTeam $team)
+    {
+        $status = $team->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+
+        /** @var Form $form */
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'team', $team)->getForm();
+
+        $submitted = $request->request->all();
+
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
+
+        if ($form->isValid()) {
+            $this->getDoctrine()->getManager()->persist($team);
+            $this->getDoctrine()->getManager()->flush();
+
+            $location = $this->generateUrl('api_agent_teams_get', array('id' => $team->getId()));
+
+            return View::create(
+                $this->DataSerialize($team),
+                $status,
+                array(
+                    'Location' => $location,
+                )
+            );
+        }
+
+        throw new InvalidFormException($form);
+    }
+
+    /**
+     * Get specific teams
+     * @param $teamIds
+     * @return mixed
+     */
+    protected function selectTeams($teamIds)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Clean the IDs
+        $teamIds = array_map(function($value) {
+            return (int) $value;
+        }, $teamIds);
+
+        $query = $entityManager->createQueryBuilder()->select('t')->from('DeskPRO:AgentTeam', 't')
+            ->where('t.id IN (:teamIds)')
+            ->setParameter('teamIds', $teamIds);
+
+        return $query->getQuery();
     }
 }

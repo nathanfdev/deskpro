@@ -88,11 +88,11 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $entityManager = $this->getDoctrine()->getManager();
 
         $datatype = $this->getDatatype($request);
 
-        $tasks = $this->filterTasks($request, $em);
+        $tasks = $this->filterTasks($request, $entityManager);
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
@@ -529,11 +529,11 @@ class TasksController extends BaseController implements ClassResourceInterface
      * @param $em
      * @return Query
      */
-    protected function filterTasks(Request $request, $em)
+    protected function filterTasks(Request $request, $entityManager)
     {
         $user = $this->getUser();
 
-        $filter = new TaskFilterBuilder($em, $user);
+        $filter = new TaskFilterBuilder($entityManager, $user);
 
         return $filter->filterRequest($request->query);
     }
