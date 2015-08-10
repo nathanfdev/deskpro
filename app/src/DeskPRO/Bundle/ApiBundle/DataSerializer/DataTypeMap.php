@@ -85,7 +85,9 @@ class DataTypeMap
 
         $object_class = is_object($data) ? get_class($data) : null;
 
-        if ($object_class && ($type = $this->findTypeForClass($object_class))) {
+        if (!$object_class) {
+            return null;
+        } elseif ($type = $this->findTypeForClass($object_class)) {
             return $type;
         } else {
             throw new \Exception("Type for $object_class not found.");

@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 
+use DeskPRO\Bundle\ApiBundle\DataSerializer\Exception\DataSerializerException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
@@ -73,6 +74,11 @@ class DataTransformer
     public function transform(DataTransformerRequest $transformation_request)
     {
         $data = $transformation_request->getDataToBeTransformed();
+
+        if ($data === null || empty($data)) {
+            return new DataTransformerResponse($transformation_request, $transformation_request->getView(), null, null, []);
+        }
+
         $type = $this->type_map->findType($data);
         $id = $this->id_finder->findDataId($data);
 
@@ -86,7 +92,7 @@ class DataTransformer
         } elseif ($type) {
             $transformed = $this->doTransform($transformation_request, $type);
         } else {
-            return null; // couldn't find type
+            throw new DataSerializerException('could not find data type');
         }
 
         return new DataTransformerResponse(
