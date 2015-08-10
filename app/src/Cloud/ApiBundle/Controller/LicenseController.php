@@ -116,10 +116,6 @@ class LicenseController extends BaseLicenseController
 
         $code = $tmpdata->getCode();
 
-        if ($custom_code = $this->settings->get('custom_cloud_billing_authcode')) {
-            $code = "XX-" . $custom_code;
-        }
-
         $url = DP_MA_SERVER_SECURE . '/cloud/start/'.DPC_SITE_ID.'/'. $code;
         if (defined('DP_CLOUD_LIC_URL')) {
             $url = str_replace(
