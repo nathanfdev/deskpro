@@ -15,6 +15,12 @@
   "date_published": null,
   "date_end": null,
   "categories": ["Category 1"],
-  "labels": ["Label 1"],
-  "custom_fields": []
+  "labels": ["Label 1", "Label 2", "Label 3"],
+  "custom_fields": [
+    {
+      "oid": "1",
+      "key": "Multiple-select box field",
+      "value": "Choice 1 > Choice 2"
+    }
+  ]
 }

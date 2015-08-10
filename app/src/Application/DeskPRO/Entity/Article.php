@@ -142,6 +142,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->date_end;
+    }
+
+    /**
      * @param DateTime $date_end
      * @return $this
      */
@@ -178,6 +186,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
      * Reset labels
      *
      * @return $this
@@ -203,6 +219,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         $this->labels->add($label);
         $label['article'] = $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
     }
 
     public function addCustomData(CustomDataArticle $data)
