@@ -78,7 +78,7 @@ class DbalExecutableQuery
     private $and_where;
     private $and_group_where;
     private $group_by;
-    
+
     /**
      * @var additional custom select fields; defined as:
      * ['alias' => 'SQL bit']
@@ -207,7 +207,7 @@ class DbalExecutableQuery
     {
         $query = clone $this->query;
 
-        $query->setSelectPart('COUNT(tiket.id) AS count');
+        $query->setSelectPart('COUNT(ticket.id) AS count');
         $query->setPage(null);
         $query->setLimit(null);
 
@@ -239,11 +239,11 @@ class DbalExecutableQuery
                 if (!array_key_exists($alias, $this->additional_selects)) {
                     $query->addSelectPart(sprintf('%s AS %s', $group, $alias));
                 }
-                
+
                 $query->addGroupBy($alias);
             }
         }
-        
+
         if (count($this->additional_selects) > 0) {
             foreach ($this->additional_selects as $alias => $sql) {
                 if(is_numeric($alias) || !trim($alias)) {
@@ -252,7 +252,7 @@ class DbalExecutableQuery
                 $query->addSelectPart(sprintf('(%s) as %s', $sql, $alias));
             }
         }
-        
+
         // ordering
         foreach ($this->order_by as $order_by => $direction) {
             $this->log(Logger::DEBUG, 'add order by', array('by' => $order_by, 'dir' => $direction));
@@ -306,7 +306,7 @@ class DbalExecutableQuery
 
         $this->group_by[$optional_select_alias] = $group;
     }
-    
+
     /**
      * Adds a custom select item.
      * @param string $alias is the new select item's alias

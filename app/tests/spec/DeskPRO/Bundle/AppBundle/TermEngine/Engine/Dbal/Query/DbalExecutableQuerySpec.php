@@ -84,12 +84,12 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         Statement $stmt
     )
     {
-        $query->setSelectPart('COUNT(*) AS count')->shouldBeCalled();
+        $query->setSelectPart('COUNT(ticket.id) AS count')->shouldBeCalled();
         $query->setPage(null)->shouldBeCalled();
         $query->setLimit(null)->shouldBeCalled();
 
         $query->__toString()->willReturn(
-            'SELECT COUNT(*) as count FROM tickets ticket WHERE ticket.param = :param1'
+            'SELECT COUNT(ticket.id) as count FROM tickets ticket WHERE ticket.param = :param1'
         );
         $query->getParameters()->willReturn(
             array('param1' => 4)
@@ -99,7 +99,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         $stmt->rowCount()->willReturn(5);
 
         $connection->executeQuery(
-            'SELECT COUNT(*) as count FROM tickets ticket WHERE ticket.param = :param1',
+            'SELECT COUNT(ticket.id) as count FROM tickets ticket WHERE ticket.param = :param1',
             array('param1' => 4),
             Argument::type('array')
         )->willReturn($stmt);
