@@ -251,6 +251,9 @@ window.DPC_SITE_DOMAIN   = '{{ constant('DPC_SITE_DOMAIN') }}';
 {% endif %}
 window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
 window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
+{% if app.getSetting('custom_cloud_billing_authcode') %}
+window.DP_USES_CUSTOM_BILLING = true;
+{% endif %}
 
 {% if inhelp_states %}
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
