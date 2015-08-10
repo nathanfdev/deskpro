@@ -25,48 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Csv data exporter factory
- *
- * Class CsvFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class HelperSet
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper
  */
-class CsvFactory extends AbstractFactory
+class HelperSet extends AbstractCollection
 {
     /**
-     * {@inheritdoc}
+     * @param $helper
+     * @return $this
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function attach($helper)
     {
-        if ( ! $config instanceof CsvConfig) {
-            throw new \RuntimeException('Config expected to be instance of CsvConfig');
-        }
-
-        /** @var CsvReaderInterface $reader */
-        $reader = new CsvReader($config);
-        /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
-
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
-        ;
-
-        return new Csv($parsers, $reader);
+        $this->collection[] = $helper;
+        return $this;
     }
 }

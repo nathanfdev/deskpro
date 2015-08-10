@@ -27,9 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\TicketsMapper;
 use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\EntityRepository;
@@ -49,12 +50,18 @@ class ZenDeskFactory extends AbstractFactory
      */
     public static function createExporter(ContainerInterface $container, BaseConfig $config)
     {
+        if ( ! $config instanceof ZenDeskConfig) {
+            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        }
+
         /** @var ZenDeskReaderFactoryInterface $reader_factory */
         $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
 
-        $reader    = $reader_factory->createReader($config);
-        $storage   = new Parser\ZenDesk\PeopleStorage();
-        $formatter = FormatterFactory::create();
+        $reader  = $reader_factory->createReader($config);
+        $storage = new Parser\ZenDesk\PeopleStorage();
+
+        /** @var FormatterInterface $formatter */
+        $formatter = $container->get('deskpro.import.formatter');
 
         // People parser
         $people = new Parser\ZenDesk\People($reader, $formatter);

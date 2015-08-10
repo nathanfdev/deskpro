@@ -63,8 +63,8 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        $collection  = new Entity\Collection();
-        $downloads   = $this->getReaderData($this->getDownloadReaderConfig());
+        $collection = new Entity\Collection();
+        $downloads  = $this->getReaderData($this->getDownloadReaderConfig());
 
         foreach ($downloads as $num => $download) {
             $this->advanceProgressBar();
@@ -136,7 +136,8 @@ final class Downloads extends AbstractParser
             ->setCategory($formatted['category'])
             ->setStatus($formatted['status'])
             ->setDateCreated($formatted['date_created'])
-            ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $data, 'person'));
+            ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $data, 'person'))
+        ;
 
         if ($formatted['label']) {
             $entity->addLabel($formatted['label']);
