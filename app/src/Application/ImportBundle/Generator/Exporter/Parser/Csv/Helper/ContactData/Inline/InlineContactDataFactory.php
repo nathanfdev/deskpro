@@ -26,7 +26,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline;
 
 use Application\ImportBundle\Entity\ContactData;
 
@@ -34,7 +34,7 @@ use Application\ImportBundle\Entity\ContactData;
  * Inline contact data parser factory
  *
  * Class InlineContactDataFactory
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline
  */
 class InlineContactDataFactory
 {

@@ -25,35 +25,48 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType;
 
 /**
- * Contact type configuration
+ * Mapping contact data configuration
+ * If we need more that one field to set contact data property (e.g. address) or if we can use "toEntity" method
  *
- * Interface ContactTypeInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
+ * Class Mapping
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType
  */
-interface ContactTypeInterface
+class Mapping extends AbstractContactType
 {
     /**
-     * Returns supported contact type
-     *
-     * @return string
+     * @var array
      */
-    public function getContactType();
+    private $mapping;
 
     /**
-     * Returns method of contact data helper to parse data into ContactData entity
+     * Constructor
      *
-     * @return string
+     * @param string $contact_type
+     * @param array  $mapping
+     * @param string $method
      */
-    public function getMethod();
+    public function __construct($contact_type, array $mapping, $method = 'toEntity')
+    {
+        parent::__construct($contact_type, $method);
+        $this->mapping = $mapping;
+    }
 
     /**
-     * Returns contact data raw value
-     *
-     * @param array $entity
-     * @return mixed|array
+     * {@inheritdoc}
      */
-    public function getValue(array $entity);
+    public function getValue(array $entity)
+    {
+        $value = array();
+
+        foreach ($this->mapping as $property => $original_property) {
+            if (array_key_exists($original_property, $entity)) {
+                $value[$property] = $entity[$original_property];
+            }
+        }
+
+        return ! empty($value) ? $value : null;
+    }
 }

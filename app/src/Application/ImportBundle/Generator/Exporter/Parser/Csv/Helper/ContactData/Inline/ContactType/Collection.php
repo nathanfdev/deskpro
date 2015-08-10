@@ -25,40 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Value contact data configuration
- * Returns a single raw value, uses for phone contact types
+ * Contact type configuration collection
  *
- * Class Value
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
+ * Class Collection
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType
  */
-class Value extends AbstractContactType
+class Collection extends AbstractCollection
 {
     /**
-     * @var string
-     */
-    private $property;
-
-    /**
-     * Constructor
+     * Add configuration
      *
-     * @param string $contact_type
-     * @param string $property
-     * @param string $method
+     * @param ContactTypeInterface $contact_type
+     * @return $this
      */
-    public function __construct($contact_type, $property, $method)
+    public function attach(ContactTypeInterface $contact_type)
     {
-        parent::__construct($contact_type, $method);
-        $this->property = $property;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValue(array $entity)
-    {
-        return array_key_exists($this->property, $entity) ? $entity[$this->property] : null;
+        $this->collection[$contact_type->getContactType()] = $contact_type;
+        return $this;
     }
 }

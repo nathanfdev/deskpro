@@ -1,4 +1,5 @@
 <?php
+
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -25,51 +26,70 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline;
+
+use Application\ImportBundle\ContactData\ContactDataFactory;
+use Application\ImportBundle\Entity\ContactData;
 
 /**
- * Base contact type configuration
+ * Inline contact data parser
  *
- * Class AbstractProperty
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
+ * Class InlineContactData
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline
  */
-abstract class AbstractContactType implements ContactTypeInterface
+class InlineContactData
 {
     /**
-     * @var string
+     * @var ContactType\ContactTypeInterface[]
      */
-    protected $contact_type;
-
-    /**
-     * @var string
-     */
-    protected $method;
+    private $contact_types;
 
     /**
      * Constructor
      *
-     * @param string $contact_type
-     * @param string $method
+     * @param ContactType\Collection $contact_types
      */
-    public function __construct($contact_type, $method)
+    public function __construct(ContactType\Collection $contact_types)
     {
-        $this->contact_type = $contact_type;
-        $this->method       = $method;
+        $this->contact_types = $contact_types;
     }
 
     /**
-     * {@inheritdoc}
+     * Parses inline contact data from entity
+     *
+     * @param array  $data
+     * @param string $destination
+     *
+     * @return ContactData[]
      */
-    public function getContactType()
+    public function parse(array $data, $destination)
     {
-        return $this->contact_type;
-    }
+        $contact_data = array();
+        foreach ($this->contact_types as $num => $contact_type) {
+            $value = $contact_type->getValue($data);
+            if ( ! $value) {
+                continue;
+            }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMethod()
-    {
-        return $this->method;
+            $handler = ContactDataFactory::getHandler($contact_type->getContactType());
+            if ( ! method_exists($handler, $contact_type->getMethod())) {
+                throw new \RuntimeException(sprintf(
+                    'Contact type `%s` has no method `%s`',
+                    $contact_type->getContactType(), $contact_type->getMethod()
+                ));
+            }
+
+            $contact = $handler->{$contact_type->getMethod()}($value);
+            if ($contact instanceof ContactData) {
+                $contact
+                    ->setOid($num)
+                    ->setDestination($destination)
+                ;
+
+                $contact_data[] = $contact;
+            }
+        }
+
+        return $contact_data;
     }
 }

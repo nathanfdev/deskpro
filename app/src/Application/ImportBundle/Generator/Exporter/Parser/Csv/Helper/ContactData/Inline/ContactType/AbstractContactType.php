@@ -25,26 +25,51 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
-use Application\ImportBundle\AbstractCollection;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType;
 
 /**
- * Contact type configuration collection
+ * Base contact type configuration
  *
- * Class Collection
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
+ * Class AbstractProperty
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType
  */
-class Collection extends AbstractCollection
+abstract class AbstractContactType implements ContactTypeInterface
 {
     /**
-     * Add configuration
-     *
-     * @param ContactTypeInterface $contact_type
-     * @return $this
+     * @var string
      */
-    public function attach(ContactTypeInterface $contact_type)
+    protected $contact_type;
+
+    /**
+     * @var string
+     */
+    protected $method;
+
+    /**
+     * Constructor
+     *
+     * @param string $contact_type
+     * @param string $method
+     */
+    public function __construct($contact_type, $method)
     {
-        $this->collection[$contact_type->getContactType()] = $contact_type;
-        return $this;
+        $this->contact_type = $contact_type;
+        $this->method       = $method;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return $this->contact_type;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMethod()
+    {
+        return $this->method;
     }
 }

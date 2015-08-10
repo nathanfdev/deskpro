@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -26,70 +25,35 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline;
-
-use Application\ImportBundle\ContactData\ContactDataFactory;
-use Application\ImportBundle\Entity\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType;
 
 /**
- * Inline contact data parser
+ * Contact type configuration
  *
- * Class InlineContactData
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline
+ * Interface ContactTypeInterface
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType
  */
-class InlineContactData
+interface ContactTypeInterface
 {
     /**
-     * @var ContactType\ContactTypeInterface[]
+     * Returns supported contact type
+     *
+     * @return string
      */
-    private $contact_types;
+    public function getContactType();
 
     /**
-     * Constructor
+     * Returns method of contact data helper to parse data into ContactData entity
      *
-     * @param ContactType\Collection $contact_types
+     * @return string
      */
-    public function __construct(ContactType\Collection $contact_types)
-    {
-        $this->contact_types = $contact_types;
-    }
+    public function getMethod();
 
     /**
-     * Parses inline contact data from entity
+     * Returns contact data raw value
      *
-     * @param array  $data
-     * @param string $destination
-     *
-     * @return ContactData[]
+     * @param array $entity
+     * @return mixed|array
      */
-    public function parse(array $data, $destination)
-    {
-        $contact_data = array();
-        foreach ($this->contact_types as $num => $contact_type) {
-            $value = $contact_type->getValue($data);
-            if ( ! $value) {
-                continue;
-            }
-
-            $handler = ContactDataFactory::getHandler($contact_type->getContactType());
-            if ( ! method_exists($handler, $contact_type->getMethod())) {
-                throw new \RuntimeException(sprintf(
-                    'Contact type `%s` has no method `%s`',
-                    $contact_type->getContactType(), $contact_type->getMethod()
-                ));
-            }
-
-            $contact = $handler->{$contact_type->getMethod()}($value);
-            if ($contact instanceof ContactData) {
-                $contact
-                    ->setOid($num)
-                    ->setDestination($destination)
-                ;
-
-                $contact_data[] = $contact;
-            }
-        }
-
-        return $contact_data;
-    }
+    public function getValue(array $entity);
 }

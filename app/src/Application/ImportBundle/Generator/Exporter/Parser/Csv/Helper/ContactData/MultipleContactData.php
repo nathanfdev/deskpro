@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData;
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity;
@@ -36,7 +36,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 
 /**
  * Class MultipleContactData
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData
  */
 class MultipleContactData extends AbstractGenerator
 {
@@ -72,8 +72,12 @@ class MultipleContactData extends AbstractGenerator
         foreach ($contact_info as $destination => $contacts) {
             foreach ($contacts as $oid => $contact) {
                 try {
-                    $handler = ContactDataFactory::getHandler(@$contact['contact_type']);
-                    $entity = $handler->toEntity($contact);
+                    if ( ! isset($contact['contact_type'])) {
+                        continue;
+                    }
+
+                    $handler = ContactDataFactory::getHandler($contact['contact_type']);
+                    $entity  = $handler->toEntity($contact);
                     $entity
                         ->setOid($oid)
                         ->setDestination($destination)

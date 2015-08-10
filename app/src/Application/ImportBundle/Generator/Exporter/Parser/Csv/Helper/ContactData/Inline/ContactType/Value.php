@@ -25,33 +25,33 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType;
 
 /**
- * Mapping contact data configuration
- * If we need more that one field to set contact data property (e.g. address) or if we can use "toEntity" method
+ * Value contact data configuration
+ * Returns a single raw value, uses for phone contact types
  *
- * Class Mapping
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\ContactData\Inline\ContactType
+ * Class Value
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType
  */
-class Mapping extends AbstractContactType
+class Value extends AbstractContactType
 {
     /**
-     * @var array
+     * @var string
      */
-    private $mapping;
+    private $property;
 
     /**
      * Constructor
      *
      * @param string $contact_type
-     * @param array  $mapping
+     * @param string $property
      * @param string $method
      */
-    public function __construct($contact_type, array $mapping, $method = 'toEntity')
+    public function __construct($contact_type, $property, $method)
     {
         parent::__construct($contact_type, $method);
-        $this->mapping = $mapping;
+        $this->property = $property;
     }
 
     /**
@@ -59,14 +59,6 @@ class Mapping extends AbstractContactType
      */
     public function getValue(array $entity)
     {
-        $value = array();
-
-        foreach ($this->mapping as $property => $original_property) {
-            if (array_key_exists($original_property, $entity)) {
-                $value[$property] = $entity[$original_property];
-            }
-        }
-
-        return ! empty($value) ? $value : null;
+        return array_key_exists($this->property, $entity) ? $entity[$this->property] : null;
     }
 }

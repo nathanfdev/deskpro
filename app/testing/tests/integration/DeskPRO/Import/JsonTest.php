@@ -308,6 +308,11 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->assertEquals(array('Label 1', 'Label 2', 'Label 3',), $labels);
         $this->assertCount(1, $article->getCustomData());
+
+        /** @var Entity\CustomDataArticle $custom_data */
+        $custom_data = $article->getCustomData()->first();
+        $this->assertEquals(2, $custom_data->getArticleId());
+        $this->assertEquals(1, $custom_data->getData());
     }
 
     private function checkDbPeopleData()
