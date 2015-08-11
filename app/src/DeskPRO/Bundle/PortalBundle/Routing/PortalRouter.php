@@ -171,15 +171,26 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      * used in the DpKernel Router, and the difference seems to be that:
      *
      * generateUrl is absolute
-     * genereare   is the abs path "/tickets"
      *
      * @param $name
      * @param array $parameters
      * @return string
+     * @deprecated use generate()
      */
     public function generateUrl($name, $parameters = array())
     {
         return $this->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * Is used by DpKernel
+     *
+     * @return $this
+     * @deprecated $this is a generator already
+     */
+    public function getGenerator()
+    {
+        return $this;
     }
 
     protected function getActiveLanguage()
