@@ -39,9 +39,10 @@ class FeedbackLabelsDataService extends AbstractDataService
 {
     /**
      * Get the list of available ticket labels.
+     * @param string|null $term suggest for search labels
      * @return array the list of all feedback labels names
      */
-    public function getLabels()
+    public function getLabels($term = null)
     {
         /* So we're duplicating the labels per ticket. Hence we must do a group by operation
          * on the (hopefully) unique label names. That means using a querybuilder. */
@@ -51,7 +52,11 @@ class FeedbackLabelsDataService extends AbstractDataService
             ->from('DeskPRO:LabelFeedback', 'l')
             ->groupBy('l.label')
             ->orderBy('l.label', 'ASC');
-
+        if ($term) {
+            $qb
+                ->where('l.label LIKE :term')
+                ->setParameter('term', $term . '%');
+        }
         $iterator = $qb->getQuery()->iterate();
         $labels = array();
         foreach ($iterator as $data) {

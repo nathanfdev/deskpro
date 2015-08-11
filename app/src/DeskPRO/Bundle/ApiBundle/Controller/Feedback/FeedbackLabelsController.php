@@ -38,6 +38,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 
 /**
@@ -48,17 +49,29 @@ class FeedbackLabelsController extends BaseController
     /**
      * @ApiDoc(
      *      description="get all available labels for feedback, sorted alphabetically",
+     *      parameters={
+     *          {
+     *              "name"="term",
+     *              "requirement"="\w+",
+     *              "description"="suggest for label search",
+     *              "dataType"="string",
+     *              "required"=false
+     *          }
+     *      },
      *      statusCodes={
      *          200="Success"
      *      }
      * )
      *
      * @Get("/feedback_labels", name="api_feedback_labels")
+     * @param Request $request
+     * @return View
+     * @throws \InvalidArgumentException
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $labels = $this->get('data.feedback_labels')->getLabels();
-        var_dump($this->dataSerialize(new PrimitiveArray($labels)));
+        $term = $request->query->get('term');
+        $labels = $this->get('data.feedback_labels')->getLabels($term);
         return View::create(
             $this->dataSerialize(new PrimitiveArray($labels)),
             Response::HTTP_OK
