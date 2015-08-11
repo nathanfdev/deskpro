@@ -37,25 +37,24 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 
 /**
- * API access to feedback labels.
+ * API access to feedback.
  */
-class FeedbackLabelsController extends BaseController
+class FeedbackController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get all available labels for feedback, sorted alphabetically",
+     *      description="get count of feedback awaiting validation",
      *      parameters={
      *          {
-     *              "name"="term",
-     *              "requirement"="\w+",
-     *              "description"="suggest for label search",
-     *              "dataType"="string",
-     *              "required"=false
+     *              "name"="awaiting_validation",
+     *              "requirement"="\d+",
+     *              "description"="count of feedback awaiting validation",
+     *              "dataType"="integer",
+     *              "required"=true
      *          }
      *      },
      *      statusCodes={
@@ -63,17 +62,16 @@ class FeedbackLabelsController extends BaseController
      *      }
      * )
      *
-     * @Get("/feedback_labels", name="api_feedback_labels")
-     * @param Request $request
+     * @Get("/feedback/counts", name="api_feedback_count")
      * @return View
-     * @throws \InvalidArgumentException
+     * @throws \LogicException
      */
-    public function cgetAction(Request $request)
+    public function getCountAwaitingValidationAction()
     {
-        $term = $request->query->get('term');
-        $labels = $this->get('data.feedback_labels')->getLabels($term);
+        $count = $this->get('data.feedback')->countAwaitingValidation();
+
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($labels)),
+            $this->dataSerialize(new PrimitiveArray([$count])),
             Response::HTTP_OK
         );
     }

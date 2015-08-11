@@ -572,6 +572,16 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $history;
     }
 
+    /**
+     * @param string $value
+     * @return Feedback $this
+     */
+    public function setHiddenStatus($value)
+    {
+        $this->hidden_status = $value;
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

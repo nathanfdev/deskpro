@@ -237,4 +237,11 @@ class FeedbackDataService extends AbstractDataService
     {
         return $this->em->getRepository('DeskPRO:FeedbackComment');
     }
+
+    /**
+     * @return integer
+     */
+    public function countAwaitingValidation(){
+        return $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
+    }
 }

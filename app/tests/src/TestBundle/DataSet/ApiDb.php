@@ -294,6 +294,8 @@ class ApiDb extends AbstractDbSet
         $feedback1 = new Feedback();
         $feedback1->setTitle('First feedback');
         $feedback1->setContent('First feedback content');
+        $feedback1->setHiddenStatus(Feedback::HIDDEN_STATUS_VALIDATING);
+
         $em->persist($feedback1);
         $feedback2 = new Feedback();
         $feedback2->setTitle('Second feedback');
