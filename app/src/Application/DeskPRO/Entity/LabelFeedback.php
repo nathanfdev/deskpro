@@ -37,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Labels on tickets.
+ * Labels on feedbacks.
  */
 class LabelFeedback extends LabelAssocAbstract
 {
