@@ -31,7 +31,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\Query\QueryException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;

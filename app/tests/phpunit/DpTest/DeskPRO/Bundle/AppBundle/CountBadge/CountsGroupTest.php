@@ -26,60 +26,51 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DpTest\Bundle\AppBundle\CountBadge;
+
+use DpTest\DeskProTestCase;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
- * Represents a collection of counts. Typically used when returning counts
- * grouped by some sort of variable.
+ * Class CountsGroupTest
  */
-class CountsGroup
+class CountsGroupTest extends DeskProTestCase
 {
     /**
-     * @var string
+     * @test
      */
-    private $grouped_by;
-
-    /**
-     * @var GroupedCount[]
-     */
-    private $counts;
-
-    /**
-     * CountsGroup constructor.
-     *
-     * @param string $grouped_by
-     * @param GroupedCount[] $counts
-     */
-    public function __construct($grouped_by, array $counts = [])
+    function it_should_be_instantiable_with_grouped_by_value()
     {
-        $this->grouped_by = $grouped_by;
-        $this->counts = $counts;
+        $group = new CountsGroup($grouped_by = 'grouped_by_property_name');
+        $this->assertEquals($grouped_by, $group->getGroupedBy());
     }
 
     /**
-     * @param GroupedCount $count
+     * @test
      */
-    public function add(GroupedCount $count)
+    function it_should_be_instantiable_with_grouped_by_value_and_array_of_nested_counts()
     {
-        $this->counts[] = $count;
+        $counts = [new GroupedCount('group_name', $value = 42)];
+        $group = new CountsGroup('grouped_by_property_name', $counts);
+        $this->assertEquals($counts, $group->getCounts());
     }
 
     /**
-     * @return string
+     * @test
      */
-    public function getGroupedBy()
+    function it_should_add_nested_counts()
     {
-        return $this->grouped_by;
-    }
+        $group = new CountsGroup('grouped_by_property_name', []);
 
-    /**
-     * @return GroupedCount[]
-     */
-    public function getCounts()
-    {
-        return $this->counts;
+        $group->add(new GroupedCount('group_name', 1));
+        $group->add(new GroupedCount('group_name', 2));
+
+        $this->assertCount(2, $group->getCounts());
     }
 }

@@ -57,4 +57,20 @@ class Count
         $this->count = $count;
         $this->nested = $nested;
     }
+
+    /**
+     * @return int
+     */
+    public function getCount()
+    {
+        return $this->count;
+    }
+
+    /**
+     * @return CountsGroup
+     */
+    public function getNested()
+    {
+        return $this->nested;
+    }
 }

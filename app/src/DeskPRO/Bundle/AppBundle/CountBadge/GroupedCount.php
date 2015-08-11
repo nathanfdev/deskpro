@@ -53,4 +53,12 @@ class GroupedCount extends Count
         parent::__construct($count, $nested);
         $this->group = $group;
     }
+
+    /**
+     * @return string
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
 }

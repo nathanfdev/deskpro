@@ -26,60 +26,36 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DpTest\Bundle\AppBundle\CountBadge;
+
+use DpTest\DeskProTestCase;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
- * Represents a collection of counts. Typically used when returning counts
- * grouped by some sort of variable.
+ * Class GroupedCountTest
  */
-class CountsGroup
+class GroupedCountTest extends DeskProTestCase
 {
     /**
-     * @var string
+     * @test
      */
-    private $grouped_by;
-
-    /**
-     * @var GroupedCount[]
-     */
-    private $counts;
-
-    /**
-     * CountsGroup constructor.
-     *
-     * @param string $grouped_by
-     * @param GroupedCount[] $counts
-     */
-    public function __construct($grouped_by, array $counts = [])
+    function it_should_be_instantiable_with_group_name_and_value()
     {
-        $this->grouped_by = $grouped_by;
-        $this->counts = $counts;
+        $count = new GroupedCount('group_name', 42);
+        $this->assertEquals('group_name', $count->getGroup());
     }
 
     /**
-     * @param GroupedCount $count
+     * @test
      */
-    public function add(GroupedCount $count)
+    function it_should_extend_Count()
     {
-        $this->counts[] = $count;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroupedBy()
-    {
-        return $this->grouped_by;
-    }
-
-    /**
-     * @return GroupedCount[]
-     */
-    public function getCounts()
-    {
-        return $this->counts;
+        $this->assertInstanceOf(Count::class, new GroupedCount('group_name', 42));
     }
 }

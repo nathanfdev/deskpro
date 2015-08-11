@@ -83,7 +83,8 @@ class ChatSelectCriteria
                     list($from, $to) = explode(':', $value);
                     $qb->andWhere($qb->expr()->gte("DATE($alias.date_created)", ':from'));
                     $qb->andWhere($qb->expr()->lte("DATE($alias.date_created)", ':to'));
-                    $qb->setParameters(compact('from', 'to'));
+                    $qb->setParameter('from', $from);
+                    $qb->setParameter('to', $to);
                     break;
 
                 case 'date_period':
@@ -153,10 +154,10 @@ class ChatSelectCriteria
             return $value === 'me' ? $me->getId() : $value;
         });
         $resolver->setAllowedValues('agent', function($value) {
-            return ctype_digit($value) || ($value === 'me');
+            return is_int($value) || ctype_digit($value) || ($value === 'me');
         });
         $resolver->setAllowedValues('department', function($value) {
-            return ctype_digit($value);
+            return is_int($value) || ctype_digit($value);
         });
         $resolver->setAllowedValues('date_created', function($value) {
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
