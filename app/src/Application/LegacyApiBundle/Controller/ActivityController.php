@@ -37,7 +37,7 @@ use \Symfony\Component\HttpFoundation\Response;
 /**
  * Operations about activity
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/activity",
  * 	description="Operations about activity",
  * 	basePath="/api"
@@ -49,15 +49,15 @@ class ActivityController extends AbstractController
      * @param int $since
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/activity/{since}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get activity since given time",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="since",
      *				description="Since what time",
      *				paramType="path",
@@ -108,15 +108,15 @@ class ActivityController extends AbstractController
      * @return Response
      * @throws \Exception
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/activity/dismiss",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Dismiss activities by their IDs",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="dismiss_ids",
      *				description="Escalation ID",
      *				paramType="path",

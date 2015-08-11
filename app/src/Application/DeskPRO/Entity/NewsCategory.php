@@ -39,17 +39,17 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Feedback categories.
  *
- * @SWG\Model (id="NewsCategory")
+ * SWG\Model (id="NewsCategory")
  */
 class NewsCategory extends CategoryAbstract
 {
     /**
-     * @SWG\Property(name="parent",type="NewsCategory")
+     * SWG\Property(name="parent",type="NewsCategory")
      */
     protected $parent;
 
     /**
-     * @SWG\Property(name="children",type="array",@SWG\Items("NewsCategory"))
+     * SWG\Property(name="children",type="array",SWG\Items("NewsCategory"))
      */
     protected $children;
 
@@ -60,7 +60,7 @@ class NewsCategory extends CategoryAbstract
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="tags",type="array",@SWG\Items("Usergroup"))
+     * SWG\Property(name="tags",type="array",SWG\Items("Usergroup"))
      */
     protected $usergroups;
 

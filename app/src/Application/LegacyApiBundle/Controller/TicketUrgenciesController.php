@@ -36,7 +36,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 /**
  * Operations about Ticket urgencies
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_urgencies",
  * 	description="Operations about Ticket urgencies",
  * 	basePath="/api"
@@ -59,9 +59,9 @@ class TicketUrgenciesController extends AbstractController implements ProtectedC
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_urgencies",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of ticket counted urgency",
      * 		notes="",

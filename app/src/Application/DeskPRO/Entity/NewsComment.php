@@ -39,14 +39,14 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Comments on articles.
  *
- * @SWG\Model(id="NewsComment")
+ * SWG\Model(id="NewsComment")
  */
 class NewsComment extends CommentAbstract
 {
     const OBJ_PROP = 'news';
 
     /**
-     * @SWG\Property(name="news",type="News")
+     * SWG\Property(name="news",type="News")
      */
     protected $news;
 

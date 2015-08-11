@@ -43,7 +43,7 @@ use Orb\Util\Strings;
 /**
  * News.
  *
- * @SWG\Model (id="News")
+ * SWG\Model (id="News")
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {
@@ -52,19 +52,19 @@ class News extends ContentAbstract implements HighlightableModelInterface
     /**
      * @var \Application\DeskPRO\Entity\NewsCategory
      *
-     * @SWG\Property(name="category", type="NewsCategory")
+     * SWG\Property(name="category", type="NewsCategory")
      */
     protected $category;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @SWG\Property(name="revisions", type="array", @SWG\Items("NewsRevision"))
+     * SWG\Property(name="revisions", type="array", SWG\Items("NewsRevision"))
      */
     protected $revisions;
 
     /**
-     * @SWG\Property(name="labels", type="array", @SWG\Items("string"))
+     * SWG\Property(name="labels", type="array", SWG\Items("string"))
      */
     protected $labels;
 
