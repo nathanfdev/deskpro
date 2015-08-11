@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
@@ -41,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use Symfony\Component\Form\DataTransformerInterface;
 
-class DepartmentProjectMemberTransformer implements DataTransformerInterface
+class AgentTeamProjectMemberTransformer implements DataTransformerInterface
 {
     /**
      * @var EntityManager
@@ -66,39 +66,39 @@ class DepartmentProjectMemberTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transform a Project Member into a department
+     * Transform a Project Member into a team
      * @param mixed $memberObject
      * @return null
      */
     public function transform($memberObject)
     {
         if (!is_null($memberObject) && ($memberObject instanceof ProjectMember)) {
-            return $memberObject->getDepartment()->getId();
+            return $memberObject->getTeam()->getId();
         }
 
         return null;
     }
 
     /**
-     * Transform a department entity into a Project Member
-     * @param string $department
+     * Transform a team entity into a Project Member
+     * @param string $dept
      * @return LabelTask|null|object
      */
-    public function reverseTransform($department)
+    public function reverseTransform($team)
     {
-        if (!$department instanceof Department) {
-            $department = $this->entityManager->getRepository('DeskPRO:Department')
-                ->find($department);
+        if (!$team instanceof AgentTeam) {
+            $team = $this->entityManager->getRepository('DeskPRO:AgentTeam')
+                ->find($team);
         }
         $member = $this->entityManager->getRepository('App:ProjectMember')
-            ->findOneBy(array('department' => $department, 'project' => $this->project));
+            ->findOneBy(array('team' => $team, 'project' => $this->project));
 
         if (!$member) {
             $member = new ProjectMember();
-            $member->setDepartment($department);
+            $member->setTeam($team);
             $member->setProject($this->project);
         }
 
-        return $department;
+        return $team;
     }
 }
