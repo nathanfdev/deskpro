@@ -54,7 +54,7 @@ class CountTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_be_instantiable_with_value_nested_counts()
+    function it_should_be_instantiable_with_value_and_nested_counts()
     {
         $group = new CountsGroup('grouped_by', []);
         $count = new Count(42, $group);
