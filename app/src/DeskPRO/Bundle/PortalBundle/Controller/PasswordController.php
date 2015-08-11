@@ -45,8 +45,9 @@ use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 class PasswordController extends AbstractController
 {
     /**
-     * @Route("/reset-password", name="portal_reset_password")
-     * @Route("/set-password", name="portal_set_password")
+     * @Route("/login/reset-password", name="portal_reset_password")
+     * @Route("/login/reset-password", name="user_login_resetpass")
+     * @Route("/login/set-password", name="portal_set_password")
      * @PageHttpCache()
      */
     public function passwordResetRequestAction(Request $request, $_route)
@@ -126,16 +127,16 @@ class PasswordController extends AbstractController
     }
 
     /**
-     * @Route("/reset-password/{password_reset_code}", name="portal_reset_password_process")
-     * @Route("/set-password/{password_reset_code}", name="portal_set_password_process")
+     * @Route("/login/reset-password/{code}", name="portal_reset_password_process")
+     * @Route("/login/set-password/{code}", name="portal_set_password_process")
      */
-    public function passwordResetAction(Request $request, $password_reset_code, $_route)
+    public function passwordResetAction(Request $request, $code, $_route)
     {
         // resetting or setting? we use diff templates/routes.
         $isResetting = $_route === 'portal_reset_password_process';
 
         /** @var \Application\DeskPRO\Entity\Person $person */
-        $person = $this->getPersonDataService()->getPersonForPasswordResetCode($password_reset_code);
+        $person = $this->getPersonDataService()->getPersonForPasswordResetCode($code);
 
         $valid = false;
         if ($person && $reset_requested_date = $person->getDatePasswordResetRequested()) {

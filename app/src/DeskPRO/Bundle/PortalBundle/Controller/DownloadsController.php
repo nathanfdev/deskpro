@@ -48,6 +48,7 @@ class DownloadsController extends AbstractController
 {
     /**
      * @Route("/downloads.{_format}", name="portal_downloads", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/downloads", name="user_downloads_home")
      * @Security("is_granted('USE_DOWNLOADS')")
      * @PageHttpCache()
      */
@@ -101,6 +102,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/{slug}.{_format}", name="portal_downloads_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/downloads/{slug}", name="user_downloads")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD_CATEGORY', category)")
      * @PageHttpCache()
@@ -175,6 +177,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/files/{slug}", name="portal_downloads_view")
+     * @Route("/downloads/files/{slug}", name="user_downloads_file")
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
      * @PageHttpCache(content="file")

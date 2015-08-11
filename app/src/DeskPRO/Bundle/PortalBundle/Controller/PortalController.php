@@ -41,8 +41,6 @@ use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 class PortalController extends AbstractController
 {
     /**
-     * "user" is the "old" route name for homepage, and it's important we back port that.
-     *
      * @Route("/", name="portal_home")
      * @Route("/", name="user")
      * @PageHttpCache()
@@ -58,6 +56,7 @@ class PortalController extends AbstractController
 
     /**
      * @Route("/login", name="portal_login")
+     * @Route("/login", name="user_login")
      * @PageHttpCache()
      */
     public function loginAction(Request $request)

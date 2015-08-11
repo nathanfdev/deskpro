@@ -47,6 +47,7 @@ class NewsController extends AbstractController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
      */
@@ -99,6 +100,7 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/{slug}.{_format}", name="portal_news_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/news/{slug}", name="user_news")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS_CATEGORY', category)")
      * @PageHttpCache()
@@ -176,6 +178,7 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/posts/{slug}", name="portal_news_view")
+     * @Route("/news/posts/{slug}", name="user_news_view")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")

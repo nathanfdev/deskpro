@@ -50,6 +50,7 @@ class SearchController extends AbstractController
 {
     /**
      * @Route("/search", name="portal_search")
+     * @Route("/search", name="user_search")
      */
     public function indexAction(Request $request)
     {
@@ -124,6 +125,7 @@ class SearchController extends AbstractController
 
     /**
      * @Route("/search/similar/{content_type}", name="portal_search_similar")
+     * @Route("/search/similar/{content_type}", name="user_search_similarto")
      */
     public function similarToAction(Request $request, $content_type)
     {

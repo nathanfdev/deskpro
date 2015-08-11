@@ -43,6 +43,8 @@ class TicketsController extends AbstractController
 {
     /**
      * @Route("/tickets/{type}", name="portal_tickets", defaults={"type":"own"}, requirements={"type":"organization"})
+     * @Route("/tickets", name="user_tickets")
+     * @Route("/tickets/organization", name="user_tickets_organization", defaults={"type":"organization"})
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
     public function indexAction(Request $request, $type)

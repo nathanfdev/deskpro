@@ -52,6 +52,7 @@ class FeedbackController extends AbstractController
 {
     /**
      * @Route("/feedback.{_format}", name="portal_feedback", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/feedback", name="user_feedback_home")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
      */
@@ -178,7 +179,6 @@ class FeedbackController extends AbstractController
 
     /**
      * @Route("/feedback/browse/{filter_uri}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"filter_uri":".*"})
-     *
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
@@ -276,6 +276,7 @@ class FeedbackController extends AbstractController
 
     /**
      * @Route("/feedback/view/{slug}", name="portal_feedback_view")
+     * @Route("/feedback/view/{slug}", name="user_feedback_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")

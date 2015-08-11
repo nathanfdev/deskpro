@@ -47,6 +47,7 @@ class NewTicketController extends AbstractController
 {
     /**
      * @Route("/new-ticket", name="portal_new_ticket")
+     * @Route("/new-ticket", name="user_tickets_new")
      * @Security("is_granted('USE_TICKETS')")
      * @PageHttpCache()
      */

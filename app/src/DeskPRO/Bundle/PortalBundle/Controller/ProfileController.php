@@ -45,6 +45,7 @@ class ProfileController extends AbstractController
 {
     /**
      * @Route("/register", name="portal_user_registration")
+     * @Route("/register", name="user_register")
      * @PageHttpCache()
      */
     public function registerAction(Request $request)
@@ -73,22 +74,22 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted()) {
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
-                if ($person = $this->get('data.person')->getPersonForEmail($email)) {
-                    if ($person->isUser()) {
+                if ($person_check = $this->get('data.person')->getPersonForEmail($email)) {
+                    if ($person_check->isUser()) {
                         // this is an error, a registered user cannot register again
                        $form->get('primary_email')->addError(new FormError($this->phrase('portal.account.registration-email-already-exists')));
                     } else {
                         // contact, they should now get a "set password" email and a redirection
                         // set the reset code
                         $random = new UriSafeTokenGenerator();
-                        $person->setPasswordResetCode($random->generateToken());
-                        $person->setDatePasswordResetRequested(new \DateTime());
-                        $this->persistAndFlushEntity($person);
+                        $person_check->setPasswordResetCode($random->generateToken());
+                        $person_check->setDatePasswordResetRequested(new \DateTime());
+                        $this->persistAndFlushEntity($person_check);
 
-                        $this->get('portal_email_sender')->sendPasswordSetLink($person);
+                        $this->get('portal_email_sender')->sendPasswordSetLink($person_check);
 
                         return $this->redirectToRoute('portal_user_register_set_password', array(
-                            'email' => $person->getPrimaryEmailAddress()
+                            'email' => $person_check->getPrimaryEmailAddress()
                         ));
                     }
                 }
@@ -139,6 +140,7 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/profile", name="portal_user_profile")
+     * @Route("/profile", name="user_profile")
      * @Security("is_granted('EDIT_PROFILE', user)")
      */
     public function editAction(Request $request)
