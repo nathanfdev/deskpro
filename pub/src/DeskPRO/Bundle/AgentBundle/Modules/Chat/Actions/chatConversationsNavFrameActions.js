@@ -20,12 +20,12 @@ export function loadAllChatConversationsCounts() {
 
       const nested = promise.getData().data.nested.counts;
       for (let i = 0; i < nested.length; i++) {
-        Chat.loadAllChatConversationsCounts().then(promise => {
+        People.loadPerson(nested[i].group).then(promise => {
           dispatch({
             type: types.CHAT_LOAD_AGENT_NAME,
             payload: {
               id: nested[i].group,
-              name: 'Agent-' + Math.random()
+              name: promise.getData().data.name
             }
           });
         });
