@@ -14,6 +14,7 @@ define(function () {
 	    };
 
 	    this.push = function() {
+        console.info(arguments);
           for (var i = 0; i < arguments.length; i++) {
             var issue = arguments[i];
             if (!issue) continue;
@@ -26,11 +27,11 @@ define(function () {
             issue.url = issue.self.replace('rest/api/2/issue/' + issue.id, 'browse/' + issue.key);
 
             // replace fields with rendered format
-            if (issue.renderedFields) {
-              for (var i in issue.renderedFields) {
-                issue.fields[i] = issue.renderedFields[i];
-                issue.renderedFields[i] = true;
-              }
+            if (!issue.renderedFields) return;
+            for (var i in issue.renderedFields) {
+              if (!issue.renderedField[i]) continue;
+              issue.fields[i] = issue.renderedFields[i];
+              issue.renderedFields[i] = true;
             }
           }
 	    };
@@ -48,7 +49,7 @@ define(function () {
           .success(function (data, status, headers, config) {
             self.loading = false;
             data && self.push(data.issues);
-            d.resolve(self);
+            //d.resolve(self);
           })
           .error(function (data, status, headers, config) {
             self.loading = false;
