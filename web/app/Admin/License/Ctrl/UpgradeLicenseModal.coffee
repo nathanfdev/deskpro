@@ -11,6 +11,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       @$scope.phase           = 1
       @$scope.paymentForm = { new_card: {}, address: {} }
 
+      @$scope.dismiss      = => @$modalInstance.dismiss()
+      @$scope.closeSuccess = => @$modalInstance.close()
+
+      if window.DP_USES_CUSTOM_BILLING
+        @$scope.initial_loading = false
+        @$scope.uses_custom_billing = true;
+        return
+
       # DEBUG
       @$scope.paymentForm.mode = 'new'
       @$scope.paymentForm.new_card = {
@@ -45,9 +53,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
         if @$scope.formErrors and @$scope.formErrors.length
           @$scope.formErrors = []
       )
-
-      @$scope.dismiss      = => @$modalInstance.dismiss()
-      @$scope.closeSuccess = => @$modalInstance.close()
 
       if @upgradeType == 'extend'
         @$scope.toPlan = 1
