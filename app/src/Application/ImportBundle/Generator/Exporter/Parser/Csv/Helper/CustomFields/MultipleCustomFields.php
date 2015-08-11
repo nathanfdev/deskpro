@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -26,33 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields;
 
-use Application\ImportBundle\ContactData\ContactDataFactory;
-use Application\ImportBundle\Entity\ContactData;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
 
 /**
- * Inline contact data parser
- *
- * Class InlineContactData
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline
+ * Class MultipleCustomFields
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields
  */
-class InlineContactData extends AbstractParserHelper
+class MultipleCustomFields extends AbstractParserHelper
 {
-    /**
-     * @var ContactType\ContactTypeInterface[]
-     */
-    private $contact_types;
-
     /**
      * Constructor
      *
-     * @param ContactType\Collection $contact_types
+     * @param FormatterInterface $formatter
      */
-    public function __construct(ContactType\Collection $contact_types)
+    public function __construct(FormatterInterface $formatter)
     {
-        $this->contact_types = $contact_types;
+        $this->formatter = $formatter;
     }
 
     /**
@@ -60,45 +51,6 @@ class InlineContactData extends AbstractParserHelper
      */
     public function getName()
     {
-        return 'inline_contact_data';
-    }
-
-    /**
-     * Parses inline contact data from entity
-     *
-     * @param array  $data
-     * @param string $destination
-     *
-     * @return ContactData[]
-     */
-    public function parse(array $data, $destination)
-    {
-        $contact_data = array();
-        foreach ($this->contact_types as $num => $contact_type) {
-            $value = $contact_type->getValue($data);
-            if ( ! $value) {
-                continue;
-            }
-
-            $handler = ContactDataFactory::getHandler($contact_type->getContactType());
-            if ( ! method_exists($handler, $contact_type->getMethod())) {
-                throw new \RuntimeException(sprintf(
-                    'Contact type `%s` has no method `%s`',
-                    $contact_type->getContactType(), $contact_type->getMethod()
-                ));
-            }
-
-            $contact = $handler->{$contact_type->getMethod()}($value);
-            if ($contact instanceof ContactData) {
-                $contact
-                    ->setOid($num)
-                    ->setDestination($destination)
-                ;
-
-                $contact_data[] = $contact;
-            }
-        }
-
-        return $contact_data;
+        return 'multiple_custom_fields';
     }
 }

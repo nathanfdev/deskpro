@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\InlineContactDataFactory;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\MultipleContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
@@ -61,8 +59,12 @@ class CsvFactory extends AbstractFactory
 
         $helpers = new ParserHelperSet();
         $helpers
-            ->attach(new MultipleContactData($formatter))
-            ->attach(InlineContactDataFactory::create())
+            ->attach(new Parser\Csv\Helper\ContactData\MultipleContactData($formatter))
+            ->attach(Parser\Csv\Helper\ContactData\Inline\InlineContactDataFactory::create())
+            ->attach(new Parser\Csv\Helper\CustomFields\MultipleCustomFields($formatter))
+            ->attach(new Parser\Csv\Helper\CustomFields\InlineCustomFields())
+            ->attach(new Parser\Csv\Helper\Blob\Blob())
+            ->attach(new Parser\Csv\Helper\Blob\Attachment())
         ;
 
         $parsers = new Parser\Collection();

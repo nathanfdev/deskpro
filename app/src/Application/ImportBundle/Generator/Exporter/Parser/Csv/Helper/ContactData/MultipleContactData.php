@@ -29,23 +29,17 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactD
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
 
 /**
  * Class MultipleContactData
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData
  */
-class MultipleContactData extends AbstractGenerator implements ParserHelperInterface
+class MultipleContactData extends AbstractParserHelper
 {
-    /**
-     * @var FormatterInterface
-     */
-    private $formatter;
-
     /**
      * Constructor
      *

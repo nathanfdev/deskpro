@@ -45,44 +45,38 @@ class InlineContactDataFactory
      */
     public static function create()
     {
-        static $parser;
+        $contact_types = new ContactType\Collection();
+        $contact_types
+            ->attach(new ContactType\Mapping(ContactData::TYPE_ADDRESS, array(
+                'address'   => 'address',
+                'city'      => 'city',
+                'state'     => 'state',
+                'post_code' => 'post_code',
+                'country'   => 'country',
+            )))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_FACEBOOK, array(
+                'profile_url' => 'facebook',
+            )))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_INSTANT_MESSAGE, array(
+                'username' => 'im',
+            )))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_LINKED_IN, array(
+                'profile_url' => 'linkedin',
+            )))
+            ->attach(new ContactType\Value(ContactData::TYPE_MOBILE, 'mobile', 'parseNumberToEntity'))
+            ->attach(new ContactType\Value(ContactData::TYPE_FAX, 'fax', 'parseNumberToEntity'))
+            ->attach(new ContactType\Value(ContactData::TYPE_PHONE, 'phone', 'parseNumberToEntity'))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_SKYPE, array(
+                'username' => 'skype',
+            )))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_TWITTER, array(
+                'username' => 'twitter',
+            )))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_WEBSITE, array(
+                'url' => 'website',
+            )))
+        ;
 
-        if (null === $parser) {
-            $contact_types = new ContactType\Collection();
-            $contact_types
-                ->attach(new ContactType\Mapping(ContactData::TYPE_ADDRESS, array(
-                    'address'   => 'address',
-                    'city'      => 'city',
-                    'state'     => 'state',
-                    'post_code' => 'post_code',
-                    'country'   => 'country',
-                )))
-                ->attach(new ContactType\Mapping(ContactData::TYPE_FACEBOOK, array(
-                    'profile_url' => 'facebook',
-                )))
-                ->attach(new ContactType\Mapping(ContactData::TYPE_INSTANT_MESSAGE, array(
-                    'username' => 'im',
-                )))
-                ->attach(new ContactType\Mapping(ContactData::TYPE_LINKED_IN, array(
-                    'profile_url' => 'linkedin',
-                )))
-                ->attach(new ContactType\Value(ContactData::TYPE_MOBILE, 'mobile', 'parseNumberToEntity'))
-                ->attach(new ContactType\Value(ContactData::TYPE_FAX, 'fax', 'parseNumberToEntity'))
-                ->attach(new ContactType\Value(ContactData::TYPE_PHONE, 'phone', 'parseNumberToEntity'))
-                ->attach(new ContactType\Mapping(ContactData::TYPE_SKYPE, array(
-                    'username' => 'skype',
-                )))
-                ->attach(new ContactType\Mapping(ContactData::TYPE_TWITTER, array(
-                    'username' => 'twitter',
-                )))
-                ->attach(new ContactType\Mapping(ContactData::TYPE_WEBSITE, array(
-                    'url' => 'website',
-                )))
-            ;
-
-            $parser = new InlineContactData($contact_types);
-        }
-
-        return $parser;
+        return new InlineContactData($contact_types);
     }
 }
