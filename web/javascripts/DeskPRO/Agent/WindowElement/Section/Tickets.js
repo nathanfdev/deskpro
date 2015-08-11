@@ -190,12 +190,16 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
           $list.children('no-data').hide();
         }
 
-        var $items = $list.children('.is-nav-item').get();
+        var $items = $list.children('.is-nav-item').get()
+          , $close = $('.closed-problems-list', $list)
+          ;
         $items.sort(function (a, b) {
           return $(a).find('h3:first').text().toUpperCase().localeCompare($(b).find('h3:first').text().toUpperCase());
-        })
+        });
         $.each($items, function (idx, itm) {
-          $list.append(itm);
+          $close.length
+            ? $(itm).insertBefore($close)
+            : $list.append(itm);
         });
 
       });

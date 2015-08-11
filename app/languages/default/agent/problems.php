@@ -5,4 +5,5 @@
     'agent.problems.closed_problems' => 'Closed Problems',
     'agent.problems.create_problem' => 'Create Problem',
     'agent.problems.no_problems_boss' => 'There are no problems',
+    'agent.problems.incidents' => 'Incidents',
 );
