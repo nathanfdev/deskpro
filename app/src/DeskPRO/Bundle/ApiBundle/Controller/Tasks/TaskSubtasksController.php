@@ -62,7 +62,10 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
      */
     public function cgetAction()
     {
-        $subtasks = $this->getDoctrine()->getManager()->getRepository('App:TaskSubtask')->findAll();
+        $query = $this->getDoctrine()->getManager()->createQueryBuilder()->select('s')->from('App:TaskSubtask', 's')
+                                                                        ->orderBy('s.display_order', 'ASC');
+
+        $subtasks = $query->getQuery()->getResult();
 
         return View::create(
             $this->dataSerialize($subtasks),

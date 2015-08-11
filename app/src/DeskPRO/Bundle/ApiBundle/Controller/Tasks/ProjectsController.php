@@ -72,13 +72,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     {
         $query = $request->query->all();
 
-        if (!empty($query['ids'])) {
-            $projects = $this->selectProjects(explode(',', $query['ids']));
+        $projectIds = !empty($query['ids']) ? explode(',', $query['ids']) : [];
+        $projects = $this->selectProjects($projectIds);
 
-            $projects = $projects->getResult();
-        } else {
-            $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
-        }
+        $projects = $projects->getResult();
 
         return View::create(
             $this->dataSerialize($projects),
@@ -780,18 +777,18 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
     /**
      * Get the Doctrine Query for a project member
-     * @param $id
+     * @param $projectId
      * @param $object
      * @return \Doctrine\ORM\Query
      */
-    protected function getProjectMemberQuery($id, $object)
+    protected function getProjectMemberQuery($projectId, $object)
     {
         /** @var QueryBuilder $queryBuilder */
-        $em = $this->getDoctrine()->getManager();
-        $queryBuilder = $em->createQueryBuilder()->select('d')->from($object, 'd')
+        $entityManager = $this->getDoctrine()->getManager();
+        $queryBuilder = $entityManager->createQueryBuilder()->select('d')->from($object, 'd')
             ->leftJoin('d.project_members', 'p')
             ->where('p.project = :project')
-            ->setParameter('project', $id);
+            ->setParameter('project', $projectId);
 
         return $queryBuilder->getQuery();
     }
@@ -801,7 +798,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      * @param $projectIds
      * @return \Doctrine\ORM\Query
      */
-    protected function selectProjects($projectIds)
+    protected function selectProjects($projectIds = [])
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -810,9 +807,14 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             return (int) $value;
         }, $projectIds);
 
-        $query = $entityManager->createQueryBuilder()->select('p')->from('App:TaskProject', 'p')
-            ->where('p.id IN (:projectIds)')
-            ->setParameter('projectIds', $projectIds);
+        $query = $entityManager->createQueryBuilder()->select('p')->from('App:TaskProject', 'p');
+
+        if (!empty($projectIds)) {
+            $query = $query->where('p.id IN (:projectIds)')
+                ->setParameter('projectIds', $projectIds);
+        }
+
+        $query = $query->orderBy('p.title', 'ASC');
 
         return $query->getQuery();
     }

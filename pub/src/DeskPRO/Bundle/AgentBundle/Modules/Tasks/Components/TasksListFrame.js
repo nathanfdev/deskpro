@@ -218,10 +218,12 @@ export default class TasksListFrame extends React.Component {
 
             <div className="card-line">
               <div className="task-extras">
-                <div>5 <i className="fa fa-comment"/></div>
-                <span className="disc"></span>
+                <div>{object.comment_count} <i className="fa fa-comment"/></div>
 
-                <div>1/3 <i className="fa fa-folder-open"/></div>
+                {object.subtasks_total > 0 ?
+                <span><span className="disc"></span>
+
+                <div className="subtask-count">{object.subtasks_done}/{object.subtasks_total} <i className="fa fa-folder-open"/></div></span> : ''}
               </div>
 
               <div className="task-properties">
