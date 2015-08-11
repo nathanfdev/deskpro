@@ -30,8 +30,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\InlineContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\MultipleContactData;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\InlineContactDataFactory;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
@@ -76,15 +77,22 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $formatter;
 
     /**
+     * @var ParserHelperSet
+     */
+    protected $helpers;
+
+    /**
      * Constructor
      *
      * @param CsvReaderInterface $reader
      * @param FormatterInterface $formatter
+     * @param ParserHelperSet    $helpers
      */
-    public function __construct(CsvReaderInterface $reader, FormatterInterface $formatter)
+    public function __construct(CsvReaderInterface $reader, FormatterInterface $formatter, ParserHelperSet $helpers)
     {
         $this->reader    = $reader;
         $this->formatter = $formatter;
+        $this->helpers   = $helpers;
     }
 
     /**
@@ -390,7 +398,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     public function exportContactData(CsvConfig $config, $destination_prefix, $ref_column)
     {
         $data   = $this->getReaderData($config);
-        $parser = new MultipleContactData($this->formatter);
+
+        /** @var MultipleContactData $parser */
+        $parser = $this->helpers->get('multiple_contact_data');
         $parser->setLogger($this->logger);
 
         return $parser->export($data, $destination_prefix, $ref_column);
@@ -404,7 +414,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function exportInlineContactData(array $data, $destination)
     {
-        $parser = InlineContactDataFactory::getParser();
+        /** @var InlineContactData $parser */
+        $parser = $this->helpers->get('inline_contact_data');
         return $parser->parse($data, $destination);
     }
 }

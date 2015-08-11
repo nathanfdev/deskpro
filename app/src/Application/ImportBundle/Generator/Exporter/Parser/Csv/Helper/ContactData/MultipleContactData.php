@@ -33,12 +33,13 @@ use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperInterface;
 
 /**
  * Class MultipleContactData
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData
  */
-class MultipleContactData extends AbstractGenerator
+class MultipleContactData extends AbstractGenerator implements ParserHelperInterface
 {
     /**
      * @var FormatterInterface
@@ -53,6 +54,14 @@ class MultipleContactData extends AbstractGenerator
     public function __construct(FormatterInterface $formatter)
     {
         $this->formatter = $formatter;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'multiple_contact_data';
     }
 
     /**

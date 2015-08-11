@@ -43,7 +43,7 @@ class InlineContactDataFactory
      *
      * @return InlineContactData
      */
-    public static function getParser()
+    public static function create()
     {
         static $parser;
 

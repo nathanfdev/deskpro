@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactD
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity\ContactData;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperInterface;
 
 /**
  * Inline contact data parser
@@ -37,7 +38,7 @@ use Application\ImportBundle\Entity\ContactData;
  * Class InlineContactData
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline
  */
-class InlineContactData
+class InlineContactData implements ParserHelperInterface
 {
     /**
      * @var ContactType\ContactTypeInterface[]
@@ -52,6 +53,14 @@ class InlineContactData
     public function __construct(ContactType\Collection $contact_types)
     {
         $this->contact_types = $contact_types;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'inline_contact_data';
     }
 
     /**

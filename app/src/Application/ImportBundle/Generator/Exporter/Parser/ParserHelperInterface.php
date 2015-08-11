@@ -25,24 +25,16 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
- * Class HelperSetFactory
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper
+ * Interface ParserHelperInterface
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-class HelperSetFactory
+interface ParserHelperInterface
 {
     /**
-     * @param ContainerInterface $container
-     * @return HelperSet
+     * @return string
      */
-    public static function create(ContainerInterface $container)
-    {
-        $helper_set = new HelperSet();
-
-        return $helper_set;
-    }
+    public function getName();
 }

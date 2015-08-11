@@ -28,6 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\InlineContactDataFactory;
+use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\MultipleContactData;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReader;
@@ -56,15 +59,21 @@ class CsvFactory extends AbstractFactory
         /** @var FormatterInterface $formatter */
         $formatter = $container->get('deskpro.import.formatter');
 
+        $helpers = new ParserHelperSet();
+        $helpers
+            ->attach(new MultipleContactData($formatter))
+            ->attach(InlineContactDataFactory::create())
+        ;
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\Csv\Downloads($reader, $formatter))
-            ->attach(new Parser\Csv\Feedback($reader, $formatter))
-            ->attach(new Parser\Csv\Articles($reader, $formatter))
-            ->attach(new Parser\Csv\News($reader, $formatter))
-            ->attach(new Parser\Csv\People($reader, $formatter))
-            ->attach(new Parser\Csv\Tickets($reader, $formatter))
-            ->attach(new Parser\Csv\Organizations($reader, $formatter))
+            ->attach(new Parser\Csv\Downloads($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Articles($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\News($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\People($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Tickets($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Organizations($reader, $formatter, $helpers))
         ;
 
         return new Csv($parsers, $reader);

@@ -25,23 +25,36 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Class HelperSet
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper
+ * Class ParserHelperSet
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-class HelperSet extends AbstractCollection
+class ParserHelperSet extends AbstractCollection
 {
     /**
-     * @param $helper
+     * @param ParserHelperInterface $helper
      * @return $this
      */
-    public function attach($helper)
+    public function attach(ParserHelperInterface $helper)
     {
-        $this->collection[] = $helper;
+        $this->collection[$helper->getName()] = $helper;
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return ParserHelperInterface
+     */
+    public function get($name)
+    {
+        if ( ! isset($this->collection[$name])) {
+            throw new \RuntimeException(sprintf('Parser helper `%s` is not supported', $name));
+        }
+
+        return $this->collection[$name];
     }
 }
