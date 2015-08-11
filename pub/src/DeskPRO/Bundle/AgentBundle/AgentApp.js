@@ -11,9 +11,7 @@ import { combineReducers } from "Ampliflux/reducers";
 
 import BrowserHistory from 'react-router/lib/BrowserHistory';
 
-import * as app_stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Reducers/index";
-import * as ticket_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/index";
-import * as task_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Reducers/index";
+import AppReducers from "./AgentApp_Reducers.js";
 
 import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
 
@@ -24,7 +22,7 @@ export default class AgentApp {
 
   start() {
 
-    const reducer    = combineReducers(Object.assign({}, app_stores, ticket_stores, task_stores));
+    const reducer    = combineReducers(AppReducers);
     const middleware = applyMiddleware(thunkMiddleware, promiseMiddleware);
     const makeStore  = middleware(createStore);
     const store      = makeStore(reducer);

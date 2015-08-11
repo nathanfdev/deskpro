@@ -29,7 +29,6 @@
 /pub/node_modules
 /pub/src-build
 /pub/build
-**/Reducers/index.js
 /pub/npm-debug.log
 
 /app/tests/tools/node_modules

@@ -5,8 +5,7 @@ var gulp                  = require('gulp'),
     del                   = require('del'),
     runSeq                = require('run-sequence'),
     path                  = require("path"),
-    ExtractTextPlugin     = require("extract-text-webpack-plugin"),
-    fs                    = require("fs");
+    ExtractTextPlugin     = require("extract-text-webpack-plugin");
 
 //######################################################################################################################
 //# Util
@@ -56,51 +55,7 @@ gulp.task('priv:start-prod', function () {
 //# Bundler
 //######################################################################################################################
 
-function createReducers(reducers_path) {
-  console.log("Parsing reducers in " + reducers_path);
-  if(!fs.existsSync(reducers_path)) {
-    return false;
-  }
-  var files = fs.readdirSync(reducers_path);
-  var imports = '';
-  var exports = '';
-  var processed_files = [];
-  for(var k in files) {
-    var file = files[k];
-    if(file == 'index.js' || !file.match(/\.js$/)) {
-      continue;
-    }
-
-    processed_files.push(file);
-    var store_name = file.substr(0, file.length - 3);
-    imports+= "import " + store_name + " from './" + store_name + "';\n";
-    exports+= store_name + ",";
-  }
-
-  console.log("[" + processed_files.join(", ") + "]");
-
-  var index = imports + "export default {"+ exports +"};";
-  fs.writeFileSync(path.join(reducers_path, "index.js"), index);
-}
-
-gulp.task('create-reducers', function(callback) {
-  var bundles_path = path.join(__dirname, "src/DeskPRO/Bundle");
-  var bundles = fs.readdirSync(bundles_path);
-  for(var k in bundles) {
-    var bundle = bundles[k];
-    var modules_path = path.join(bundles_path, bundle, "Modules");
-    if(fs.existsSync(modules_path)) {
-      var modules = fs.readdirSync(modules_path);
-      for(var l in modules) {
-        createReducers(path.join(modules_path, modules[l], 'Reducers'));
-      }
-    }
-  }
-
-  return callback();
-});
-
-gulp.task('bundle', ['create-reducers'], function (callback) {
+gulp.task('bundle', function (callback) {
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
@@ -112,11 +67,11 @@ gulp.task('bundle:portal', function (callback) {
   runWebpackBundle(getWebpackConfig('portal', deskpro.isProd), callback);
 });
 
-gulp.task('bundle:dev-server', ['create-reducers'], function(callback) {
+gulp.task('bundle:dev-server', function(callback) {
   startWebpackServer(getWebpackConfig('all', true, false));
 });
 
-gulp.task('bundle:dev-server:agent', ['create-reducers'], function(callback) {
+gulp.task('bundle:dev-server:agent', function(callback) {
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 
@@ -147,11 +102,31 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     resolve: {
       root: [
         path.join(__dirname, "src"),
-        path.join(__dirname, "src/DeskPRO/Component")
+        path.join(__dirname, "src/DeskPRO/Component"),
+        path.join(__dirname, "built-tools"),
       ]
+    },
+    resolveLoader: {
+      modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules", "build-tools"]
     },
     //devtool: "source-map",
     module: {
+      preLoaders: [
+        {
+          test: /\/Reducers\/.*\.js$/,
+          include: [
+            path.resolve(__dirname, "src/DeskPRO")
+          ],
+          loader: "reducer-index-loader"
+        },
+        {
+          test: /\/.*?Bundle\/\w+App.js$/,
+          include: [
+            path.resolve(__dirname, "src/DeskPRO")
+          ],
+          loader: "reducer-app-loader"
+        }
+      ],
       loaders: [
         {
           test: /\.js$/,
