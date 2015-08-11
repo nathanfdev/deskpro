@@ -78,7 +78,8 @@ class CommonController extends AbstractController
             if (!$user->isEmailValidated()) {
                 $validation_alerts[] = array(
                     'type' => PersonValidator::TYPE_EMAIL_PRIMARY,
-                    'message' => $this->phrase('portal.account.validation_alert'),
+                    'message' => $this->phrase('portal.account.validation_alert',
+                        array('email' => $user->getPrimaryEmail()->getEmail())),
                     'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email)
                 );
             } elseif (!$user->isAgentValidated()) {
@@ -86,6 +87,25 @@ class CommonController extends AbstractController
                     'type' => null,
                     'message' => $this->phrase('portal.account.validation_agent_alert'),
                     'resend_url' => null
+                );
+            }
+        }
+
+        //
+        // Extra Email Validation (when adding more emails)
+        //
+        if ($validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
+            foreach ($validating_emails as $validating_email) {
+                $validation_alerts[] = array(
+                    'type'       => PersonValidator::TYPE_EMAIL,
+                    'message'    => $this->phrase('portal.account.validation_alert_extra_email',
+                        array('email' => $validating_email->getEmail())),
+                    'resend_url' => $person_validator->getResendLink(
+                        PersonValidator::TYPE_EMAIL,
+                        $validating_email,
+                        null,
+                        true
+                    )
                 );
             }
         }

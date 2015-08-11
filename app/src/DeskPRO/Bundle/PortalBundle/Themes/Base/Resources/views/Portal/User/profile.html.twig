@@ -8,6 +8,7 @@
     {# PROFILE #}
     <h1>{{ phrase('portal.account.section-title-register') }}</h1>
     {{ form_start(profile_form) }}
+    {{ form_errors(profile_form) }}
     {{ form_row(profile_form.first_name) }}
     {{ form_row(profile_form.last_name) }}
     {% if profile_form.language_id is defined %}
@@ -29,10 +30,27 @@
     <br><br><br>
     {# EMAILS #}
     <h1>{{ phrase('portal.account.email-managment') }}</h1>
+
+    {% if validating_emails %}
+    <div style="background-color: orange;">
+        <p>{{ phrase('portal.account.emails_are_awaiting_validation') }}</p>
+        <ul>
+            {% for email,resend_link in validating_emails %}
+            <li>
+                <strong>{{ email }}</strong>
+                [<a href="{{ resend_link }}">{{ phrase('portal.account.resend_email') }}</a>]
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     {%  if person.isEmailValidated() %}
         {{ form_start(emails_form) }}
+        {{ form_errors(emails_form) }}
         {% for email_form in emails_form.emails %}
         <div style="display: block; padding-top: 5px; padding-bottom: 5px;">
+            {{ form_errors(email_form.email) }}
             {{ form_widget(email_form.email) }}
             {% if email_form.vars.data.isPrimary %}
                 <strong>{{ phrase('portal.account.email-primary-indicator') }}</strong>
@@ -53,6 +71,7 @@
     {# PASSWORD #}
     <h1>{{ phrase('portal.account.change-password') }}</h1>
     {{ form_start(password_form) }}
+    {{ form_errors(password_form) }}
     {{ form_widget(password_form) }}
     <button type="submit">{{ phrase('portal.account.change-password-btn') }}</button>
     {{ form_rest(password_form) }}

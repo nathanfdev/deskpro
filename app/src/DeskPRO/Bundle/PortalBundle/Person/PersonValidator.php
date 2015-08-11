@@ -34,6 +34,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
 
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\DataService\EmailDataService;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
@@ -80,36 +82,61 @@ class PersonValidator
         $this->em = $em;
     }
 
-    public function validateEmail($email, $flush = true)
+    /**
+     * @param int|PersonEmail|PersonEmailValidating $email
+     * @param bool $is_validating
+     * @param bool $flush
+     * @return null
+     */
+    public function validateEmail($email, $is_validating = false, $flush = true)
     {
-        $email = $this->email_data->getEmail($email);
+        if (!$validating_email = $this->findEmail($email, $is_validating)) {
+            return null;
+        }
 
-        $email->is_own_validated = true;
-        $email->is_validated = true;
+        if ($validating_email instanceof PersonEmailValidating) {
+            $person = $validating_email->getPerson();
+            $validated_email = new PersonEmail();
+            $validated_email->setPerson($person);
+            $validated_email->setEmail($validating_email->getEmail());
+            $this->em->persist($validated_email);
+            $person->addEmail($validated_email);
+            $this->em->remove($validating_email);
+        } else {
+            $validated_email = $validating_email;
+        }
 
-        $this->em->persist($email);
+        $validated_email->is_own_validated = true;
+        $validated_email->is_validated = true;
+        $validated_email->date_validated = new \DateTime();
+
+        $this->em->persist($validated_email);
 
         if ($flush) {
-            $this->em->flush($email);
+            $this->em->flush($validated_email);
         }
     }
 
     /**
      * If appropriate, this method will give you a link for the user to click to validate the object
      *
-     * @param $type
-     * @param $email_or_id
+     * @param string $type
+     * @param int|PersonEmail|PersonEmailValidating $email_or_id
      * @param null $type_id
+     * @param bool $is_email_validating only true if its a SECONDARY email that was added (not primary)
      * @return string|null the url if it can be made
      */
-    public function getEmailLink($type, $email_or_id, $type_id = null)
+    public function getEmailLink($type, $email_or_id, $type_id = null, $is_email_validating = false)
     {
-        if (!$person_email = $this->email_data->getEmail($email_or_id)) {
+        if (!$person_email = $this->findEmail($email_or_id, $is_email_validating)) {
             return null;
         }
 
         switch ($type) {
             case PersonValidator::TYPE_EMAIL:
+                if (!$person_email instanceof PersonEmailValidating) {
+                    throw new \InvalidArgumentException('TYPE_EMAIL expects a PersonEmailValidating');
+                }
                 return $this->router->generate(
                     'portal_validation',
                     array(
@@ -119,6 +146,9 @@ class PersonValidator
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             case PersonValidator::TYPE_EMAIL_PRIMARY:
+                if (!$person_email instanceof PersonEmail) {
+                    throw new \InvalidArgumentException('TYPE_EMAIL_PRIMARY expects a PersonEmail');
+                }
                 return $this->router->generate(
                     'portal_validation',
                     array(
@@ -136,21 +166,23 @@ class PersonValidator
      * Sends a link to the user with the verify link. Note that this might fail (if for example the
      * email id you send in doesnt exist), so check the bool return.
      *
-     * @param $type
-     * @param $email_or_id
-     * @param $type_id
+     * @param string $type
+     * @param int $email_or_id
+     * @param int|null $type_id
+     * @param bool $is_email_validating only true if its a SECONDARY email that was added (not primary)
      * @return bool true if sent, false if not
      */
-    public function doResendLink($type, $email_or_id, $type_id = null)
+    public function doResendLink($type, $email_or_id, $type_id = null, $is_email_validating = false)
     {
-        if (!$person_email = $this->email_data->getEmail($email_or_id)) {
-            return false;
+        if (!$person_email = $this->findEmail($email_or_id, $is_email_validating)) {
+            return null;
         }
 
         switch ($type) {
             case PersonValidator::TYPE_EMAIL:
                 $this->portal_email_sender->sendEmailConfirmationEmail($person_email);
                 return true;
+
             case PersonValidator::TYPE_EMAIL_PRIMARY:
                 $this->portal_email_sender->sendEmailConfirmationEmail($person_email, true);
                 return true;
@@ -160,22 +192,49 @@ class PersonValidator
     }
 
     /**
-     * Sends a link to the user with the verify link. Note that this might fail (if for example the
-     * email id you send in doesnt exist), so check the bool return.
-     *
-     * @param $type
-     * @param $email_or_id
-     * @param $type_id
-     * @return bool true if sent, false if not
+     * @param int|PersonEmail|PersonEmailValidating $email_or_id
+     * @param bool $is_email_validating
+     * @return PersonEmail|PersonEmailValidating|null
      */
-    public function getResendLink($type, $email_or_id, $type_id = null)
+    protected function findEmail($email_or_id, $is_email_validating)
     {
-        if (!$person_email = $this->email_data->getEmail($email_or_id)) {
-            return false;
+        if (!$is_email_validating) {
+            // a normal PersonEmail
+            if (!$person_email = $this->email_data->getEmail($email_or_id)) {
+                return null;
+            }
+
+            return $person_email;
+        }
+
+        // in some instances (when a person adds a secondary email) we get a PersonEmailValidating
+        if (!$person_email = $this->email_data->getValidatingEmail($email_or_id)) {
+            return null;
+        }
+
+        return $person_email;
+    }
+
+    /**
+     * Generates a URL that when clicked will re-send the validation link to the user
+     *
+     * @param string $type
+     * @param int|PersonEmail|PersonEmailValidating $email_or_id
+     * @param int|null $type_id
+     * @param bool $is_email_validating only true if its a SECONDARY email that was added (not primary)
+     * @return string|null the absolute URL that when clicked will re-send the email to the user
+     */
+    public function getResendLink($type, $email_or_id, $type_id = null, $is_email_validating = false)
+    {
+        if (!$person_email = $this->findEmail($email_or_id, $is_email_validating)) {
+            return null;
         }
 
         switch ($type) {
             case PersonValidator::TYPE_EMAIL:
+                if (!$person_email instanceof PersonEmailValidating) {
+                    throw new \InvalidArgumentException('TYPE_EMAIL expects a PersonEmailValidating');
+                }
                 return $this->router->generate(
                     'portal_send_validation',
                     array(
@@ -184,7 +243,11 @@ class PersonValidator
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
+
             case PersonValidator::TYPE_EMAIL_PRIMARY:
+                if (!$person_email instanceof PersonEmail) {
+                    throw new \InvalidArgumentException('TYPE_EMAIL_PRIMARY expects a PersonEmail');
+                }
                 return $this->router->generate(
                     'portal_send_validation',
                     array(
@@ -195,6 +258,6 @@ class PersonValidator
                 );
         }
 
-        return false;
+        return null;
     }
 }

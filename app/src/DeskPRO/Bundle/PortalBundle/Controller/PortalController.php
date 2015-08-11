@@ -94,7 +94,7 @@ class PortalController extends AbstractController
     {
         switch($object_type) {
             case PersonValidator::TYPE_EMAIL:
-                $this->getPersonValidator()->validateEmail($email_id);
+                $this->getPersonValidator()->validateEmail($email_id, true);
                 $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
                 break;
             case PersonValidator::TYPE_EMAIL_PRIMARY:
@@ -123,12 +123,12 @@ class PortalController extends AbstractController
     {
         switch($object_type) {
             case PersonValidator::TYPE_EMAIL:
-                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL, $email_id);
-                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email'));
+                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL, $email_id, null, true);
+                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email_secondary'));
                 break;
             case PersonValidator::TYPE_EMAIL_PRIMARY:
                 $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email_id);
-                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email'));
+                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email_primary'));
                 break;
         }
 

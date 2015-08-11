@@ -24,7 +24,8 @@
     'portal.flashes.user_updated_emails' => 'Your emails have been updated.',
     'portal.flashes.user_changed_password' => 'Your password was updated.',
     'portal.flashes.validated_email' => 'Your email has been verified. Thank you.',
-    'portal.flashes.sent_verification_email' => 'We have sent you an email with a verification link. Please check your email and follow the link to verify your account.',
+    'portal.flashes.sent_verification_email_primary' => 'We have sent you an email with a verification link. Please check your email and follow the link to verify your account.',
+    'portal.flashes.sent_verification_email_secondary' => 'We have sent you an email with a verification link. Please check your email and follow the link to verify your email address.',
     'portal.flashes.user_registered' => 'Thank you for registering.',
     'portal.flashes.user_registered_must_verify' => 'Thank you for registering. Please check your email, we have sent you a verification link.'
 );

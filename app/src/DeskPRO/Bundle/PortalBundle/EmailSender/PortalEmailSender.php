@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonEmailValidating;
 use Application\DeskPRO\Entity\Ticket;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use Application\EmailBundle\Templating\Templates\EmailTemplateFile;
@@ -91,7 +92,7 @@ class PortalEmailSender
     {
         $email = $person->getPrimaryEmail();
 
-        if (!$verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email)) {
+        if (!$verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email)) {
             $verify_url = null;
         }
 
@@ -109,16 +110,24 @@ class PortalEmailSender
         );
     }
 
-    public function sendEmailConfirmationEmail(PersonEmail $email, $primary = false)
+    public function sendEmailConfirmationEmail($email, $primary = false)
     {
+        if ($primary && !$email instanceof PersonEmail) {
+            throw new \InvalidArgumentException('primary email should be a PersonEmail');
+        } elseif (!$email instanceof PersonEmailValidating) {
+            throw new \InvalidArgumentException('non primary email should be a PersonEmailValidating');
+        }
+
         $person = $email->getPerson();
 
         if ($primary) {
+            // this only tirggers if the user requests a re-send of email confirmation
+            // (sendWelcomeEmail above would contain it first)
             $tpl = 'DeskPRO:emails_user:new-email-validate-primary.html.twig';
             $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email);
         } else {
             $tpl = 'DeskPRO:emails_user:new-email-validate.html.twig';
-            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email);
+            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email, null, true);
         }
 
         $this->sendToPerson(

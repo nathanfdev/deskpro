@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
@@ -170,6 +171,10 @@ class ProfileController extends AbstractController
         //
         // EMAILS (person must be considered "email validated" to even attempt email manipulation)
         //
+
+        // find emails awaiting validation
+        $validating = $this->getEmailDataService()->getValidatingEmails($person);
+
         $emails_form = null;
         $verify_url = null;
         if ($person->isEmailValidated()) {
@@ -212,7 +217,39 @@ class ProfileController extends AbstractController
                 )
             );
             $emails_form->handleRequest($request);
+
+            // quick and dirty custom validation to make sure a new email is not already validating
+            // on another account
+            foreach ($person->getEmails() as $email) {
+                if (!$email->getId()) {
+                    if ($this->getRepo('DeskPRO:PersonEmailValidating')->getEmail($email->getEmail())) {
+                        // this email validating already exists!
+                        $emails_form->addError(
+                            new FormError(
+                                'The email "' . $email->getEmail() . ' is already awaiting validation.'
+                            )
+                        );
+                    }
+                }
+            }
+
             if ($emails_form->isValid()) {
+
+                // filter out any NEW emails and change them to PersonEmailValidating
+                foreach ($person->getEmails() as $email) {
+                    // if new
+                    if (!$email->getId()) {
+                        $person->removeEmail($email);
+                        $this->getEm()->remove($email);
+                        $validating_email = new PersonEmailValidating();
+                        $validating_email->setEmail($email->getEmail());
+                        $validating_email->setPerson($email->getPerson());
+                        $validating[] = $validating_email; // add to the UI
+                        $this->getEm()->persist($validating_email);
+                    }
+                }
+
+
                 $this->getEm()->flush();
                 $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
 
@@ -237,11 +274,25 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_user_profile');
         }
 
-
         //
         // BREADCRUMBS
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
+
+        // make links for validating emails
+        $validating_ui = array();
+        if ($validating) {
+            $person_validator = $this->get('person.portal_validator');
+            foreach ($validating as $validating_email) {
+                $validating_ui[$validating_email->getEmail()] = $person_validator->getResendLink(
+                    PersonValidator::TYPE_EMAIL,
+                    $validating_email,
+                    null,
+                    true
+                );
+            }
+        }
+
 
         return $this->renderThemeView(
             'Theme:Portal:User/profile.html.twig', array(
@@ -251,7 +302,8 @@ class ProfileController extends AbstractController
                 'password_form' => $password_form->createView(),
                 'emails_form' => $emails_form ? $emails_form->createView() : null,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->profile()
+                'page_title' => $this->createPageTitle()->profile(),
+                'validating_emails' => $validating_ui
             )
         );
     }

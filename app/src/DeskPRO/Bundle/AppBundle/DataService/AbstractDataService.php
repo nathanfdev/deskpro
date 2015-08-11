@@ -54,6 +54,8 @@ class AbstractDataService
     protected $cache;
 
     /**
+     * Stores the result of $callable in an array in case this is fetched frequently in this request
+     *
      * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
      * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
      *
