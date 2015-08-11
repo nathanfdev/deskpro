@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactD
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity\ContactData;
+use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperInterface;
 
 /**
@@ -38,7 +39,7 @@ use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperInterface;
  * Class InlineContactData
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline
  */
-class InlineContactData implements ParserHelperInterface
+class InlineContactData extends AbstractGenerator implements ParserHelperInterface
 {
     /**
      * @var ContactType\ContactTypeInterface[]

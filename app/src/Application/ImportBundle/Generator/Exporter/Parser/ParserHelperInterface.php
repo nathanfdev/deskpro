@@ -27,11 +27,13 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+
 /**
  * Interface ParserHelperInterface
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-interface ParserHelperInterface
+interface ParserHelperInterface extends GeneratorConfigAwareInterface
 {
     /**
      * @return string
