@@ -62,10 +62,13 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
      */
     public function cgetAction()
     {
-        $subtasks = $this->getDoctrine()->getManager()->getRepository('App:TaskSubtask')->findAll();
+        $query = $this->getDoctrine()->getManager()->createQueryBuilder()->select('s')->from('App:TaskSubtask', 's')
+                                                                        ->orderBy('s.display_order', 'ASC');
+
+        $subtasks = $query->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($subtasks),
+            $this->dataSerialize($subtasks),
             Response::HTTP_OK
         );
     }
@@ -100,7 +103,7 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
         }
 
         return View::create(
-            $this->createRepresentation($subtask),
+            $this->dataSerialize($subtask),
             Response::HTTP_OK
         );
     }
@@ -231,7 +234,7 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
             $location = $this->generateUrl('api_subtasks_get', array('id' => $subtask->getId()));
 
             return View::create(
-                $this->createRepresentation($subtask),
+                $this->dataSerialize($subtask),
                 $status,
                 array(
                     'Location' => $location,

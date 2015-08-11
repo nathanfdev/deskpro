@@ -40,13 +40,10 @@ use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
 use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_comments_new")
- *
- * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
@@ -60,7 +57,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -70,7 +66,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @Assert\NotNull
      * @Assert\Valid()
-     * @Serializer\Exclude()
      */
     protected $person;
 
@@ -78,7 +73,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @var \DateTime
      * @ORM\Column(type="datetime")
      * @Assert\NotNull()
-     * @Serializer\Expose()
      */
     protected $date_created;
 
@@ -86,7 +80,6 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @var string
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @Serializer\Expose()
      */
     protected $comment;
 
@@ -96,14 +89,12 @@ class TaskComment extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      * @Assert\NotNull
      * @Assert\Valid()
-     * @Serializer\Exclude()
      */
     protected $task;
 
     /**
      * @var TaskAttachment[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskAttachment", mappedBy="task")
-     * @Serializer\Expose()
      */
     protected $attachments;
 

@@ -38,12 +38,10 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_labels")
- * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
@@ -57,7 +55,6 @@ class LabelTask extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -65,7 +62,6 @@ class LabelTask extends NotifyPropertyChangeEntity
      * @var string
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @Serializer\Expose()
      */
     protected $label;
 
@@ -75,7 +71,6 @@ class LabelTask extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Exclude()
      */
     protected $task;
 
@@ -127,5 +122,6 @@ class LabelTask extends NotifyPropertyChangeEntity
     public function setTask(Task $task)
     {
         $this->setModelField('task', $task);
+        $task->addLabel($this);
     }
 }

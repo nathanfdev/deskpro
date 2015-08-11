@@ -34,19 +34,13 @@
 namespace DpTest\DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 
+use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use DpTest\DeskProTestCase;
 
 class DataTypeMapTest extends DeskProTestCase
 {
-    public function testMapAlwaysReturnsNullForArrays()
-    {
-        $map = $this->makeMap();
-
-        $this->assertSame(null, $map->findType([]), 'arrays are always null in the current map');
-    }
-
     public function testMapKnowsTypeBasedOnObjectClass()
     {
         $map = $this->makeMap();
@@ -56,13 +50,17 @@ class DataTypeMapTest extends DeskProTestCase
         $this->assertSame('sandbox_widget', $map->findType($widget), 'works for class type');
     }
 
-    public function testMapGivesNullIfClassNotFoundInMap()
+    public function testMapDefaultsToUnderscoreClassNameTypeByDefault()
     {
         $map = $this->makeMap();
 
-        $some_non_supported_object_type = new \stdClass();
+        $implicit_type_because_not_in_map = new \stdClass();
 
-        $this->assertSame(null, $map->findType($some_non_supported_object_type));
+        $this->assertSame('std_class', $map->findType($implicit_type_because_not_in_map));
+
+        $implicit_type_because_not_in_map = new TicketAttachment();
+
+        $this->assertSame('ticket_attachment', $map->findType($implicit_type_because_not_in_map));
     }
 
     protected function makeMap()

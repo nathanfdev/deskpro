@@ -16,14 +16,19 @@ export default class AppSwitcher extends React.Component {
     return (
       <li>
         <Link to={`/index.php/agent/${appId}`}>
-          <i className={className}></i>
+          <i className={className}></i> <span className="title">{title}</span>
         </Link>
       </li>
     );
   }
 
   render() {
-    return (<nav className="dp-app-switcher">
+      const { dp_window, dispatch } = this.props;
+
+      const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
+
+    return (
+    <nav className={my_classes}>
       <div className="app-bar">
         <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
@@ -34,6 +39,8 @@ export default class AppSwitcher extends React.Component {
           {this.renderAppIcon('tasks', 'Tasks', 'fa-check-square-o')}
         </ul>
       </div>
+      <a href="#" onClick={() => dispatch(AppActions.expandSwitcher())} className="app-switcher-size-toggle app-switcher-expand">&gt;&nbsp;&gt;&nbsp;&gt;</a>
+      <a href="#" onClick={() => dispatch(AppActions.collapseSwitcher())} className="app-switcher-size-toggle app-switcher-collapse">&lt;&nbsp;&lt;&nbsp;&lt;</a>
     </nav>);
   }
 }

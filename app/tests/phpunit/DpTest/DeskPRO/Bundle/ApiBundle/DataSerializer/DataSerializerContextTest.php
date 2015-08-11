@@ -35,7 +35,9 @@ namespace DpTest\DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeIdFinder;
 use DpTest\DeskProTestCase;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DataSerializerContextTest extends DeskProTestCase
 {
@@ -43,7 +45,9 @@ class DataSerializerContextTest extends DeskProTestCase
     {
         $ticket = new \stdClass();
 
-        $c = new DataSerializerContext($ticket, ['person'], 'names_only', 'ticket');
+        $type_id_finder = $this->createTypeIdFinder();
+
+        $c = new DataSerializerContext($ticket, ['person'], 'names_only', 'ticket', $type_id_finder);
 
         $this->assertSame($ticket, $c->getSourceData());
         $this->assertSame($ticket, $c->getMainData());
@@ -56,7 +60,9 @@ class DataSerializerContextTest extends DeskProTestCase
     {
         $ticket = new \stdClass();
 
-        $c = DataSerializerContext::create($ticket, 'person,attachment,email', 'names_only', 'ticket');
+        $type_id_finder = $this->createTypeIdFinder();
+
+        $c = DataSerializerContext::create($ticket, 'person,attachment,email', 'names_only', 'ticket', $type_id_finder);
 
         $this->assertSame($ticket, $c->getSourceData());
         $this->assertSame($ticket, $c->getMainData());
@@ -82,5 +88,10 @@ class DataSerializerContextTest extends DeskProTestCase
     public function testParseIncludes($input, $output)
     {
         $this->assertEquals($output, DataSerializerContext::parseIncludes($input));
+    }
+
+    public function createTypeIdFinder()
+    {
+        return new DataTypeIdFinder(PropertyAccess::createPropertyAccessor());
     }
 }

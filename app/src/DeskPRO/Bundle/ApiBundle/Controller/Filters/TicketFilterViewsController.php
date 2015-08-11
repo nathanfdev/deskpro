@@ -75,7 +75,7 @@ class TicketFilterViewsController extends BaseController
         $views = $service->getUnassignedFilterViews();
 
         return View::create(
-            $this->createRepresentation($views),
+            $this->DataSerialize($views),
             Response::HTTP_OK
         );
     }
@@ -111,7 +111,7 @@ class TicketFilterViewsController extends BaseController
         }
 
         return View::create(
-            $this->createRepresentation($filter),
+            $this->DataSerialize($filter),
             Response::HTTP_OK
         );
     }
@@ -144,12 +144,12 @@ class TicketFilterViewsController extends BaseController
         if ($groupby) {
             $view_factory = $this->get('api_view_representation_factory');
             return View::create(
-                $view_factory->createRepresentation($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
+                $view_factory->DataSerialize($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
                 Response::HTTP_OK
             );
         } else {
             return View::create(
-                $this->createRepresentation(array(
+                $this->DataSerialize(array(
                     'count' => $tickets_query->fetchCount()
                 )),
                 Response::HTTP_OK
@@ -193,28 +193,28 @@ class TicketFilterViewsController extends BaseController
     public function postReorderAction(Request $request)
     {
         $data = $request->request->all();
-        
+
         if (!is_array($data) || !isset($data['display_order'])) {
             throw new NotFoundHttpException();
         }
-        
+
         $results = array();
         foreach ($data['display_order'] as $order => $filter_id) {
             $filter = $this->getEm()->find('App:TicketFilter', $filter_id);
-            
+
             if (!$filter) {
                 continue;
             }
-            
+
             $filter->setDisplayOrder($order);
             $this->getEm()->persist($filter);
             $results[$order] = $filter_id;
         }
-        
+
         $this->getEm()->flush();
-        
+
         return View::create(
-            $this->createRepresentation($results),
+            $this->DataSerialize($results),
             Response::HTTP_OK
         );
     }
@@ -319,7 +319,7 @@ class TicketFilterViewsController extends BaseController
             $this->getDoctrine()->getManager()->flush($filter);
 
             return View::create(
-                $this->createRepresentation($filter),
+                $this->DataSerialize($filter),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_ticket_filter_views_get', array('id' => $filter->getId()))
@@ -329,7 +329,7 @@ class TicketFilterViewsController extends BaseController
 
         throw new InvalidFormException($form); // let our listeners generate the form error response
     }
-    
+
 
     // A bit of comfort.
     protected function getEm()

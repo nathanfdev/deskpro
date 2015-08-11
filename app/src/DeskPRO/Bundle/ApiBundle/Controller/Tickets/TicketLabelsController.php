@@ -53,6 +53,8 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+
 /**
  * API access to ticket labels.
  */
@@ -73,11 +75,11 @@ class TicketLabelsController extends BaseController
         $labels = $this->get('data.ticketlabels');
 
         return View::create(
-            $this->createRepresentation($labels->getLabels()),
+            $this->DataSerialize(new PrimitiveArray($labels->getLabels())),
             Response::HTTP_OK
         );
     }
-    
+
     /**
      * Retrieve the tickets with the given label.
      * @Get("/ticket_labels/{name}/tickets", name="api_ticket_labels_tickets")
@@ -86,20 +88,20 @@ class TicketLabelsController extends BaseController
     {
         $repo = $this->getEm()->getRepository('DeskPRO:LabelTicket');
         $labels = $repo->findBy(['label' => $name]);
-        
+
         $tickets = [];
         foreach($labels as $label) {
             $tickets[$label->ticket->getId()] = $label->ticket;
         }
-        
-        
-        
+
+
+
         return View::create(
-            $this->createRepresentation(array_values($tickets)),
+            $this->DataSerialize(array_values($tickets)),
             Response::HTTP_OK
         );
     }
-    
+
     // A bit of comfort.
     protected function getEm()
     {

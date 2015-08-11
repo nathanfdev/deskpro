@@ -38,7 +38,6 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
@@ -46,7 +45,6 @@ use JMS\Serializer\Annotation as Serializer;
  *      @ORM\UniqueConstraint(name="starred_unique", columns={"task_id", "person_id"})
  *  }
  * )
- * @Serializer\ExclusionPolicy("ALL")
  *
  */
 class TaskStarred extends NotifyPropertyChangeEntity
@@ -56,7 +54,6 @@ class TaskStarred extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -66,7 +63,6 @@ class TaskStarred extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
      */
     protected $task;
 
@@ -76,7 +72,6 @@ class TaskStarred extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
      */
     protected $person;
 

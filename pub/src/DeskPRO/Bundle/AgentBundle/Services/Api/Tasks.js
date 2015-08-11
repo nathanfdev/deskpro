@@ -58,7 +58,12 @@ export function loadProjects(params = {}) {
  * @return Promise
  */
 export function loadLabels(params = {}) {
-  return DpApi.sendGet('DP_API/task_labels?' + compileParams(params));
+  let query = {
+    group: true,
+    ...params
+  };
+
+  return DpApi.sendGet('DP_API/task_labels?' + compileParams(query));
 }
 
 /**
@@ -67,7 +72,7 @@ export function loadLabels(params = {}) {
  * @return Promise
  */
 export function loadTeams(params = {}) {
-  return DpApi.sendGet('DP_API/teams?' + compileParams(params));
+  return DpApi.sendGet('DP_API/agent_teams?' + compileParams(params));
 }
 
 /**
@@ -115,6 +120,15 @@ export function createTask(data) {
  */
 export function editTask(taskId, data) {
   return DpApi.sendPut('DP_API/tasks/' + taskId, data);
+}
+
+/**
+ * Load links for related items for a task
+ * @param params
+ * @return Promise
+ */
+export function loadLinks(params = {}) {
+  return DpApi.sendGet('DP_API/task_links?' + compileParams(params));
 }
 
 /**

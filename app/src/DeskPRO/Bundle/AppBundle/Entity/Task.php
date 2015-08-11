@@ -40,12 +40,10 @@ use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
 use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
- * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
@@ -63,7 +61,6 @@ class Task extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -71,7 +68,6 @@ class Task extends NotifyPropertyChangeEntity
      * @var string
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @Serializer\Expose()
      */
     protected $title;
 
@@ -79,14 +75,12 @@ class Task extends NotifyPropertyChangeEntity
      * Complete or incomplete
      * @var bool
      * @ORM\Column(type="boolean", nullable=true)
-     * @Serializer\Expose()
      */
     protected $is_done = false;
 
     /**
      * @var int
      * @ORM\Column(type="integer", nullable=true)
-     * @Serializer\Expose()
      */
     protected $percent_complete = 0;
 
@@ -94,7 +88,6 @@ class Task extends NotifyPropertyChangeEntity
      * @var \DateTime
      * @ORM\Column(type="datetime")
      * @Assert\NotNull()
-     * @Serializer\Expose()
      */
     protected $date_created;
 
@@ -102,28 +95,24 @@ class Task extends NotifyPropertyChangeEntity
      * Either task or event
      * @var string
      * @ORM\Column(type="string")
-     * @Serializer\Expose()
      */
     protected $task_type = self::TYPE_TASK;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
-     * @Serializer\Expose()
      */
     protected $date_due;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
-     * @Serializer\Expose()
      */
     protected $date_event_start;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
-     * @Serializer\Expose()
      */
     protected $date_event_end;
 
@@ -133,15 +122,13 @@ class Task extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Exclude()
-     */ 
+     */
     protected $creator;
 
     /**
      * Project, public or private
      * @var string
      * @ORM\Column(type="string")
-     * @Serializer\Expose()
      */
     protected $visibility = self::VISIBILITY_PRIVATE;
 
@@ -149,7 +136,6 @@ class Task extends NotifyPropertyChangeEntity
      * @var TaskProject
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     * @Serializer\Exclude()
      */
     protected $project;
 
@@ -157,7 +143,6 @@ class Task extends NotifyPropertyChangeEntity
      * @var TaskList
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList")
      * @ORM\JoinColumn(name="list_id", referencedColumnName="id", onDelete="CASCADE")
-     * @Serializer\Exclude()
      */
     protected $list;
 
@@ -165,49 +150,42 @@ class Task extends NotifyPropertyChangeEntity
      * Between 1 and 10
      * @var int
      * @ORM\Column(type="integer")
-     * @Serializer\Expose()
      */
     protected $urgency = 5;
 
     /**
      * @var TaskSubtask[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskSubtask", mappedBy="task")
-     * @Serializer\Exclude()
      */
     protected $subtasks;
 
     /**
      * @var LabelTask[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task")
-     * @Serializer\Expose()
+     * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"persist"})
      */
     protected $labels;
 
     /**
      * @var TaskComment[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskComment", mappedBy="task")
-     * @Serializer\Exclude()
      */
     protected $comments;
 
     /**
      * @var TaskAttachment[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskAttachment", mappedBy="task")
-     * @Serializer\Exclude()
      */
     protected $attachments;
 
     /**
      * @var TaskLinkedItem[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskLinkedItem", mappedBy="task")
-     * @Serializer\Expose()
      */
     protected $linked_items;
 
     /**
      * @var TaskAssignment[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskAssignment", mappedBy="task")
-     * @Serializer\Expose()
      */
     protected $assigned;
 
@@ -217,6 +195,7 @@ class Task extends NotifyPropertyChangeEntity
     public function __construct(Person $creator)
     {
         $this->subtasks = new ArrayCollection();
+        $this->labels = new ArrayCollection();
         $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }
@@ -493,6 +472,11 @@ class Task extends NotifyPropertyChangeEntity
     {
         $this->labels->add($label);
         $this->setModelField('label', $label);
+    }
+
+    public function removeLabel(LabelTask $label)
+    {
+        $this->labels->remove($label);
     }
 
     /**

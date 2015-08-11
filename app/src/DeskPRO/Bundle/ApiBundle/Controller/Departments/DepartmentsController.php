@@ -88,7 +88,7 @@ class DepartmentsController extends BaseController
     {
         $repo = $this->getEm()->getRepository('DeskPRO:Department');
         return View::create(
-            $this->createRepresentation($repo->findAll()),
+            $this->DataSerialize($repo->findAll()),
             Response::HTTP_OK
         );
     }
@@ -119,14 +119,14 @@ class DepartmentsController extends BaseController
     {
         $repo = $this->getEm()->getRepository('DeskPRO:Department');
         $findings = $repo->findBy(['id' => $id]);
-        
+
         if (!$findings || count($findings) < 1) {
             throw $this->createNotFoundException();
         }
         $department = $findings[0];
-        
+
         return View::create(
-            $this->createRepresentation($department),
+            $this->DataSerialize($department),
             Response::HTTP_OK
         );
     }

@@ -39,12 +39,10 @@ use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
 use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_subtask")
- * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
@@ -58,14 +56,12 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @Serializer\Expose()
      * @Assert\NotBlank()
      */
     protected $title;
@@ -73,7 +69,6 @@ class TaskSubtask extends NotifyPropertyChangeEntity
     /**
      * @var bool
      * @ORM\Column(type="boolean", nullable=true)
-     * @Serializer\Expose()
      */
     protected $is_done = false;
 
@@ -83,7 +78,6 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Exclude()
      */
     protected $task;
 
@@ -91,7 +85,6 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @var \DateTime
      * @Orm\Column(type="datetime", nullable=true)
      * @Assert\NotNull()
-     * @Serializer\Expose()
      */
     protected $date_created;
 
@@ -101,21 +94,18 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=true)
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
      */
     protected $creator;
 
     /**
      * @var int
      * @Orm\Column(type="integer", nullable=true)
-     * @Serializer\Expose()
      */
     protected $display_order = 0;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
-     * @Serializer\Expose()
      */
     protected $date_completed = null;
 

@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
 
 class SandboxWidgetTransformer extends AbstractDataSerializerTransformer
 {
@@ -51,8 +52,14 @@ class SandboxWidgetTransformer extends AbstractDataSerializerTransformer
 
         if ($transformation_request->isDefaultView()) {
             return [
-                'inventory_warning' => $data->getInventory() <= 5
+                'inventory_warning' => $data->getInventory() <= 5,
+                'some_callback_prop' => new CallbackDeferredProperty([$this, 'getFoo'], ['bar'])
             ];
         }
+    }
+
+    public function getFoo($first_arg)
+    {
+        return $first_arg . ' processed';
     }
 }

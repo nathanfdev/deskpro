@@ -70,7 +70,12 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function cgetAction(Request $request)
     {
-        $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
+        $query = $request->query->all();
+
+        $projectIds = !empty($query['ids']) ? explode(',', $query['ids']) : [];
+        $projects = $this->selectProjects($projectIds);
+
+        $projects = $projects->getResult();
 
         return View::create(
             $this->dataSerialize($projects),
@@ -96,19 +101,19 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
      * )
      * @Get("/projects/{id}", name="api_projects_get")
-     * @param int $projectId
+     * @param int $id
      * @return View
      */
-    public function getAction($projectId)
+    public function getAction($id)
     {
-        $project = $this->getProject($projectId);
+        $project = $this->getProject($id);
 
         if (empty($project)) {
             throw $this->createNotFoundException();
         }
 
         return View::create(
-            $this->createRepresentation($project),
+            $this->dataSerialize($project),
             Response::HTTP_OK
         );
     }
@@ -251,7 +256,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -282,7 +287,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $query = $this->getProjectMemberQuery($id, 'DeskPRO:Department');
 
         return View::create(
-            $this->createRepresentation($query->getArrayResult()),
+            $this->dataSerialize($query->getArrayResult()),
             Response::HTTP_OK
         );
     }
@@ -313,7 +318,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $query = $this->getProjectMemberQuery($id, 'DeskPRO:AgentTeam');
 
         return View::create(
-            $this->createRepresentation($query->getArrayResult()),
+            $this->dataSerialize($query->getArrayResult()),
             Response::HTTP_OK
         );
     }
@@ -344,7 +349,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $query = $this->getProjectMemberQuery($id, 'DeskPRO:Person');
 
         return View::create(
-            $this->createRepresentation($query->getArrayResult()),
+            $this->dataSerialize($query->getArrayResult()),
             Response::HTTP_OK
         );
     }
@@ -632,16 +637,25 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
         $submitted = $request->request->all();
         $this->storedMembers = $this->convertMembers($submitted);
-        $submitted = array('title' => $submitted['title']);
+
+        $data = [];
+        if (!empty($submitted['title'])) {
+            $data = ['title' => $submitted['title']];
+        }
 
         if ($request->getMethod() === 'PUT') {
             $this->oldMembers = $this->convertExistingMembers($project);
         }
 
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(
+            null,
+            'project',
+            $project
+//            ['project' => $project, 'entity_manager' => $this->getDoctrine()->getManager()]
+        )->getForm();
 
-        $form->submit($submitted, $request->getMethod() !== 'PUT');
+        $form->submit($data, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->persist($project);
@@ -652,7 +666,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             $this->addMembers($project);
 
             return View::create(
-                $this->createRepresentation($project),
+                $this->dataSerialize($project),
                 $status,
                 array(
                     'Location' => $location,
@@ -698,15 +712,17 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         );
 
         foreach ($project->getMembers() as $member) {
-            if (!empty($member->getDepartment())) {
-                $id = $member->getId();
-                $members['departments'][$id] = $member->getDepartment()->getId();
-            } else if (!empty($member->getTeam())) {
-                $id = $member->getId();
-                $members['teams'][$id] = $member->getTeam()->getId();
-            } else if (!empty($member->getPerson())) {
-                $id = $member->getId();
-                $members['people'][$id] = $member->getPerson()->getId();
+            $department = $member->getDepartment();
+            $team = $member->getTeams();
+            $agent = $member->getPerson();
+            $memberId = $member->getId();
+
+            if (!empty($department)) {
+                $members['departments'][$memberId] = $department->getId();
+            } else if (!empty($team)) {
+                $members['teams'][$memberId] = $team->getId();
+            } else if (!empty($agent)) {
+                $members['people'][$memberId] = $agent->getId();
             }
         }
 
@@ -761,19 +777,45 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
     /**
      * Get the Doctrine Query for a project member
-     * @param $id
+     * @param $projectId
      * @param $object
      * @return \Doctrine\ORM\Query
      */
-    protected function getProjectMemberQuery($id, $object)
+    protected function getProjectMemberQuery($projectId, $object)
     {
         /** @var QueryBuilder $queryBuilder */
-        $em = $this->getDoctrine()->getManager();
-        $queryBuilder = $em->createQueryBuilder()->select('d')->from($object, 'd')
+        $entityManager = $this->getDoctrine()->getManager();
+        $queryBuilder = $entityManager->createQueryBuilder()->select('d')->from($object, 'd')
             ->leftJoin('d.project_members', 'p')
             ->where('p.project = :project')
-            ->setParameter('project', $id);
+            ->setParameter('project', $projectId);
 
         return $queryBuilder->getQuery();
+    }
+
+    /**
+     * Get a Doctrine Query for getting certain projects
+     * @param $projectIds
+     * @return \Doctrine\ORM\Query
+     */
+    protected function selectProjects($projectIds = [])
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Clean the IDs
+        $projectIds = array_map(function($value) {
+            return (int) $value;
+        }, $projectIds);
+
+        $query = $entityManager->createQueryBuilder()->select('p')->from('App:TaskProject', 'p');
+
+        if (!empty($projectIds)) {
+            $query = $query->where('p.id IN (:projectIds)')
+                ->setParameter('projectIds', $projectIds);
+        }
+
+        $query = $query->orderBy('p.title', 'ASC');
+
+        return $query->getQuery();
     }
 }

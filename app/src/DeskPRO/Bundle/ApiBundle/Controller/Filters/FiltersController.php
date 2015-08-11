@@ -59,6 +59,8 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+
 class FiltersController extends BaseController
 {
     /**
@@ -99,7 +101,7 @@ class FiltersController extends BaseController
         }
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->DataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -135,7 +137,7 @@ class FiltersController extends BaseController
         }
 
         return View::create(
-            $this->createRepresentation($filter),
+            $this->DataSerialize($filter),
             Response::HTTP_OK
         );
     }
@@ -191,14 +193,14 @@ class FiltersController extends BaseController
         if ($groupby) {
             $view_factory = $this->get('api_view_representation_factory');
             return View::create(
-                $view_factory->createRepresentation($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
+                $this->DataSerialize(new PrimitiveArray($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT)),
                 Response::HTTP_OK
             );
         } else {
             return View::create(
-                $this->createRepresentation(array(
+                $this->DataSerialize(new PrimitiveArray(array(
                     'count' => $tickets_query->fetchCount()
-                )),
+                ))),
                 Response::HTTP_OK
             );
         }
@@ -261,7 +263,7 @@ class FiltersController extends BaseController
         $this->getEm()->flush();
 
         return View::create(
-            $this->createRepresentation($results),
+            $this->DataSerialize($results),
             Response::HTTP_OK
         );
     }
@@ -345,7 +347,7 @@ class FiltersController extends BaseController
         $tickets_query->setPage($request->query->get('page', 1));
 
         return View::create(
-            $this->createRepresentation($tickets_query->fetchAll()),
+            $this->DataSerialize($tickets_query->fetchAll()),
             Response::HTTP_OK
         );
     }
@@ -415,7 +417,7 @@ class FiltersController extends BaseController
             $this->getDoctrine()->getManager()->flush($filter);
 
             return View::create(
-                $this->createRepresentation($filter),
+                $this->DataSerialize($filter),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_ticket_filters_get', array('id' => $filter->getId()))

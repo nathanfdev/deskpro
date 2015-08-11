@@ -31,35 +31,23 @@
  * @package DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\ApiBundle\Fractal;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
-use DpTest\ApiTestCase;
-use League\Fractal\Resource\Item;
-
-class FractalManagerTest extends ApiTestCase
+class AgentTeamTransformer extends AbstractDataSerializerTransformer
 {
-    public function testTransformation()
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $widget = new SandboxWidget();
-        $widget->setInventory(5);
-        $widget->setName('My Widget');
+        return [
+            'id',
+            'name',
+        ];
+    }
 
-        $resource = new Item($widget, "sandbox_widget");
-
-        $result = $this->get('api_fractal_manager')->createData($resource)->toArray();
-
-        $this->assertEquals(
-            [
-                'data' => [
-                    'id' => null,
-                    'name' => 'My Widget',
-                    'inventory' => 5
-                ]
-            ],
-            $result,
-            'fractal transformer worked as expected'
-        );
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    {
+        return [];
     }
 }

@@ -88,11 +88,11 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $entityManager = $this->getDoctrine()->getManager();
 
         $datatype = $this->getDatatype($request);
 
-        $tasks = $this->filterTasks($request, $em);
+        $tasks = $this->filterTasks($request, $entityManager);
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
@@ -454,11 +454,38 @@ class TasksController extends BaseController implements ClassResourceInterface
     {
         $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
+        $submitted = $request->request->all();
+
+        if ($request->getMethod() === 'PUT' && isset($submitted['labels'])) {
+            $oldLabels = $task->getLabels();
+
+            // Put together an array of old labels for comparison
+            $oldLabelsClean = [];
+            foreach ($oldLabels as $oldLabel) {
+                $oldLabelsClean[] = $oldLabel->getLabel();
+
+                // Remove any labels not present in the PUT array
+                if (!in_array($oldLabel->getLabel(), $submitted['labels'])) {
+                    $this->getDoctrine()->getManager()->remove($oldLabel);
+                }
+            }
+
+            // If the label already exists, we don't need to sent it to the model
+            foreach ($submitted['labels'] as $key => $newLabel) {
+                if (in_array($newLabel, $oldLabelsClean)) {
+                    unset($submitted['labels'][$key]);
+                }
+            }
+        }
 
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
-
-        $submitted = $request->request->all();
+        $form = $this->get('form.factory')->createNamedBuilder(
+            null,
+            'task',
+            $task,
+            ['task' => $task, 'entity_manager' => $this->getDoctrine()->getManager()]
+        )
+        ->getForm();
 
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
@@ -502,11 +529,11 @@ class TasksController extends BaseController implements ClassResourceInterface
      * @param $em
      * @return Query
      */
-    protected function filterTasks(Request $request, $em)
+    protected function filterTasks(Request $request, $entityManager)
     {
         $user = $this->getUser();
 
-        $filter = new TaskFilterBuilder($em, $user);
+        $filter = new TaskFilterBuilder($entityManager, $user);
 
         return $filter->filterRequest($request->query);
     }

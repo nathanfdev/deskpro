@@ -39,12 +39,10 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_projects")
- * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
@@ -58,7 +56,6 @@ class TaskProject extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -66,21 +63,18 @@ class TaskProject extends NotifyPropertyChangeEntity
      * @var string
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @Serializer\Expose()
      */
     protected $title;
 
     /**
      * @var Task[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="Task", mappedBy="project")
-     * @Serializer\Expose()
      */
     protected $tasks;
 
     /**
      * @var ProjectMember[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="project")
-     * @Serializer\Expose()
      */
     protected $members;
 

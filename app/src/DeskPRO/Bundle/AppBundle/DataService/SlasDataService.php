@@ -26,44 +26,32 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
 
-class TicketFiltersTransformer extends AbstractDataSerializerTransformer
+class SlasDataService extends AbstractDataService
 {
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public function loadAll()
     {
-        return [
-            'id',
-            'title',
-            'term',
-            'display_order',
-            'filter_set',
-            'filter_views',
-            'filter_preferences',
-            'date_created',
-            'date_updated',
-        ];
+        return $this->getRepo()->findAll();
     }
 
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    public function loadSingle($sla_id)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
-        // $data = $transformation_request->getDataToBeTransformed();
-        //
-        // $labels = [];
-        //
-        // foreach ($data->getLabels() as $label) {
-        //     $labels[] = $label->getLabel();
-        // }
-        //
-        // return ['labels' => $labels];
+        return $this->getRepo()->findOneBy(['id' => $sla_id]);
+    }
+
+    /**
+     * @return PersonRepo
+     */
+    public function getRepo()
+    {
+        return $this->em->getRepository('DeskPRO:Sla');
     }
 }

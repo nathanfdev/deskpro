@@ -15,7 +15,7 @@ export default class TasksApp extends React.Component {
     return (
       <AppContainer thisAppId="tasks" {...this.props}>
         <TasksNavFrame {...this.props} />
-        <TasksListFrame />
+        <TasksListFrame {...this.props} />
       </AppContainer>
     );
   }

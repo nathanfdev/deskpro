@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -55,13 +56,25 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
             'agents' => [],
         ];
 
-        foreach ($members as $member) {
-            if (!empty($member->getDepartment())) {
-                $groupedMembers['departments'][] = $member->getDepartment()->getId();
-            } else if (!empty($member->getTeam())) {
-                $groupedMembers['teams'][] = $member->getTeam()->getId();
-            } else {
-                $groupedMembers['agents'][] = $member->getPerson()->getId();
+        if (!empty($members)) {
+            foreach ($members as $member) {
+                if (!empty($member->getDepartment())) {
+                    $groupedMembers['departments'][] = $member->getDepartment()->getId();
+                } else if (!empty($member->getTeam())) {
+                    $groupedMembers['teams'][] = $member->getTeam()->getId();
+                } else {
+                    $groupedMembers['agents'][] = $member->getPerson()->getId();
+                }
+            }
+        }
+
+        /** @var Task[]|ArrayCollection $tasks */
+        $tasks = $transformation_request->getDataToBeTransformed()->getTasks();
+
+        $remaining = 0;
+        foreach ($tasks as $task) {
+            if ($task->isDone()) {
+                $remaining++;
             }
         }
 
@@ -69,6 +82,7 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
             'departments' => $groupedMembers['departments'],
             'teams' => $groupedMembers['teams'],
             'agents' => $groupedMembers['agents'],
+            'remaining' => $remaining,
         ];
     }
 }

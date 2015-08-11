@@ -1,7 +1,7 @@
 import React from "react";
 import { IntlMixin, FormattedMessage, FormattedNumber } from "react-intl";
 
-import TicketsTabFilters from "./FiltersTab/TicketsTabFilters";
+import TicketsTabFilterSets from "./FiltersTab/TicketsTabFilterSets";
 import TicketsTabLabels from "./LabelsTab/TicketsTabLabels";
 import TicketsTabStars from "./StarsTab/TicketsTabStars";
 
@@ -9,6 +9,7 @@ import { connect } from 'redux/react';
 import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";
+import * as AppActions from "../../Application/Actions/AppActions";
 
 import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
 
@@ -18,6 +19,7 @@ import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
   LabelsList: state.LabelsList,
   StarsCounts: state.StarsCounts,
   Translations: state.Translations,
+  dp_window: state.dp_window,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
@@ -25,15 +27,15 @@ export default class TicketsNavContent extends React.Component {
     this.state = {
       showTab: "filters"
     };
-    
+
     this.intl = IntlMixin;
-    
+
     const { dispatch } = this.props;
     dispatch(TicketActions.loadFilterSets());
     dispatch(TicketActions.loadFilterSetsCounts());
     dispatch(LabelActions.loadLabels());
   }
-  
+
   changeTab(newTab) {
     let newState = {
       ...this.state,
@@ -41,7 +43,7 @@ export default class TicketsNavContent extends React.Component {
     }
     this.setState(newState);
   }
-  
+
   renderTab(key, title) {
     let link_class = 'show-' + key;
     let tab_class = '';
@@ -55,7 +57,20 @@ export default class TicketsNavContent extends React.Component {
       </li>
     );
   }
-  
+
+  getClasses(dp_window) {
+      let classes = ['ticket-nav-frame', 'dp-nav-frame'];
+
+      if(dp_window.collapseNav) {
+          classes.push('collapsed');
+      }
+      if(dp_window.expandedSwitcher) {
+          classes.push('shifted');
+      }
+
+      return classes.join(' ');
+  }
+
   render() {
     const {
       FilterSetsList,
@@ -63,9 +78,10 @@ export default class TicketsNavContent extends React.Component {
       LabelsList,
       StarsCounts,
       Translations,
-      dispatch
+      dispatch,
+      dp_window
     } = this.props;
-    
+
     let tab = null;
     switch(this.state.showTab) {
     case "labels":
@@ -76,16 +92,16 @@ export default class TicketsNavContent extends React.Component {
       break;
     case "filters":
     default:
-      tab = <TicketsTabFilters
+      tab = <TicketsTabFilterSets
               filterSetsList={FilterSetsList}
               filterSetsCounts={FilterSetsCounts}
               {...bindActionCreators(TicketActions, dispatch)}
               {...this.props} />
       break;
     }
-    
+
     return (
-      <section className="ticket-nav-frame dp-nav-frame">
+      <section className={this.getClasses(dp_window)}>
         <aside className="sidebar has-tabs">
           <div className="sidebar-title">
             <span className="sidebar-type-icon">
@@ -94,7 +110,7 @@ export default class TicketsNavContent extends React.Component {
             </span>
             <h1><FormattedMessage message={getIntlMessage(Translations, "foobar")} /></h1>
             <hr />
-            <a href="#" className="slider-control"></a>
+            <a href="#" onClick={() => dispatch(AppActions.collapseNav())} className="slider-control"></a>
           </div>
 
           <ul className="tabs sidebar-tabs">
@@ -102,10 +118,11 @@ export default class TicketsNavContent extends React.Component {
             {this.renderTab('labels', 'Labels')}
             {this.renderTab('stars', 'Stars')}
           </ul>
-    
+
           {tab}
-    
+
         </aside>
+        <a className="nav-expand-button" onClick={() => dispatch(AppActions.expandNav())} href="#">&nbsp;</a>
       </section>
     );
   }

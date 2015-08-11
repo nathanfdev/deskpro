@@ -7,4 +7,8 @@ export default keyMirror({
 	SET_ACTIVE_APP:  null,
   ROUTING_STARTED: null,
   TRANSITION_TO: null,
+  COLLAPSE_NAV: null,
+  EXPAND_NAV: null,
+  COLLAPSE_SWITCHER: null,
+  EXPAND_SWITCHER: null
 });

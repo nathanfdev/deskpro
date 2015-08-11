@@ -53,6 +53,8 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+
 /**
  * Provides API access to the ticket flags.
  */
@@ -72,7 +74,7 @@ class TicketFlagsController extends BaseController
     {
         $flags = $this->get('data.ticketflags');
         return View::create(
-            $this->createRepresentation($flags->getFlags()),
+            $this->DataSerialize(new PrimitiveArray($flags->getFlags())),
             Response::HTTP_OK
         );
     }
@@ -90,7 +92,7 @@ class TicketFlagsController extends BaseController
     public function getTicketFlagsCounts()
     {
         $flags_service = $this->get('data.ticketflags');
-        
+
         $counts = [];
         foreach($flags_service->getFlags() as $flag) {
             $counts[] = [
@@ -100,7 +102,7 @@ class TicketFlagsController extends BaseController
         }
 
         return View::create(
-            $this->createRepresentation($counts),
+            $this->DataSerialize(new PrimitiveArray($counts)),
             Response::HTTP_OK
         );
     }
@@ -120,13 +122,13 @@ class TicketFlagsController extends BaseController
         $tickets = $this->get('data.ticketflags')->getAllRecordsForFlag($this->getUser()->getId(), $star);
 
         return View::create(
-            $this->createRepresentation(array(
+            $this->DataSerialize(new PrimitiveArray([
                 'count' => count($tickets),
-            )),
+            ])),
             Response::HTTP_OK
         );
     }
-    
+
     /**
      * @ApiDoc(
      *      description="get the tickets for a star",
@@ -142,7 +144,7 @@ class TicketFlagsController extends BaseController
         $tickets = $this->get('data.ticketflags')->getAllTicketsForFlag($this->getUser()->getId(), $star);
 
         return View::create(
-            $this->createRepresentation($tickets),
+            $this->DataSerialize($tickets),
             Response::HTTP_OK
         );
     }

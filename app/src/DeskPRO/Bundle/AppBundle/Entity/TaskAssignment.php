@@ -40,12 +40,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\AgentTeam as Team;
 use Application\DeskPRO\Entity\Department;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_assignments")
- * @Serializer\ExclusionPolicy("ALL")
  */
 class TaskAssignment extends NotifyPropertyChangeEntity
 {
@@ -54,17 +52,15 @@ class TaskAssignment extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
      */
     protected $task;
 
@@ -72,7 +68,6 @@ class TaskAssignment extends NotifyPropertyChangeEntity
      * @var Person
 	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     * @Serializer\Expose()
      */
     protected $person;
 
@@ -80,7 +75,6 @@ class TaskAssignment extends NotifyPropertyChangeEntity
      * @var Team
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
-     * @Serializer\Expose()
      */
     protected $team;
 
@@ -88,7 +82,6 @@ class TaskAssignment extends NotifyPropertyChangeEntity
      * @var Department
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
      * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
-     * @Serializer\Expose()
      */
     protected $department;
 

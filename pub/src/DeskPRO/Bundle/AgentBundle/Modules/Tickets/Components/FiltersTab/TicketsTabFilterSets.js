@@ -2,10 +2,10 @@ import React from "react";
 
 import TicketsTabFilterSetItem from "./TicketsTabFilterSetItem";
 
-export default class TicketsTabFilters extends React.Component {
+export default class TicketsTabFilterSets extends React.Component {
   render() {
     const { filterSetsList, filterSetsCounts, loadFilterTickets, dispatch } = this.props;
-    
+
     const filtersets = filterSetsList.FilterSetsList.map(filter_set => {
       let total = 0;
       let my_filter_counts = null;
@@ -29,12 +29,12 @@ export default class TicketsTabFilters extends React.Component {
           {...this.props} />
       );
     });
-    
+
     return (
       <div className="sidebar-list sidebar-list-filters">
-      
+
         {filtersets}
-      
+
         <ul>
           <li className="counter-display">
             <div className="list-counter-bucket">

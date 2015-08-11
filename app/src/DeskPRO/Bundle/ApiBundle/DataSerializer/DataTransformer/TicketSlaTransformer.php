@@ -36,15 +36,28 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
-class TaskLabelTransformer extends AbstractDataSerializerTransformer
+class TicketSlaTransformer extends AbstractDataSerializerTransformer
 {
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'label', 'task'];
+        return [
+            'id',
+            'sla',
+            'ticket',
+            'sla_status',
+            'warn_date',
+            'fail_date',
+            'is_completed',
+            'is_completed_set',
+            'completed_time_taken',
+        ];
     }
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
+        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
+        $data = $transformation_request->getDataToBeTransformed();
+
         return [];
     }
 }

@@ -56,6 +56,12 @@ services:
       tags:
           - { name: form.type, alias: task_link }
 
+  forms.label_task:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\LabelTaskType
+      tags:
+          - { name: form.type, alias: label_task }
+      arguments: [@doctrine.orm.default_entity_manager]
+
   form.subtask:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TaskSubtaskType
       tags:
@@ -70,6 +76,12 @@ services:
       class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType
       tags:
           - { name: form.type, alias: projectmember }
+
+  form.department:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
+      arguments: [@doctrine.orm.default_entity_manager]
+      tags:
+          - { name: form.type, alias: department }
 
   form.term_engine.term:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType

@@ -39,12 +39,10 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_lists")
- * @Serializer\ExclusionPolicy("ALL")
  */
 class TaskList extends NotifyPropertyChangeEntity
 {
@@ -53,7 +51,6 @@ class TaskList extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -69,14 +66,12 @@ class TaskList extends NotifyPropertyChangeEntity
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      * @Assert\NotNull()
      * @Assert\Valid()
-     * @Serializer\Expose()
      */
     protected $project;
 
     /**
      * @var Task[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="Task", mappedBy="list")
-     * @Serializer\Expose()
      */
     protected $tasks;
 

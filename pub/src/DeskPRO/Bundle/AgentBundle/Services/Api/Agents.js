@@ -1,7 +1,7 @@
 import * as People from "./People";
 
 /** Load all departments. */
-export function loadAgents() {
+export function loadAgents(options = {}) {
     return People.loadPeople({is_agent: 1});
 }
 

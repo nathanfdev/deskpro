@@ -19,7 +19,7 @@ $collection->create('react_agent_tickets', array(
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
 ));
 $collection->create('react_agent_tasks', array(
-    'path'        => '/tickets',
+    'path'        => '/tasks',
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
 ));
 $collection->create('react_agent_users', array(

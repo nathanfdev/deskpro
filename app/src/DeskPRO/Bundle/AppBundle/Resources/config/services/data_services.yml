@@ -64,6 +64,30 @@ services:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketCustomFieldsDataService
       arguments: [@doctrine.orm.default_entity_manager]
 
+  data.user_groups:
+      class: DeskPRO\Bundle\AppBundle\DataService\UserGroupsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticket_slas:
+      class: DeskPRO\Bundle\AppBundle\DataService\TicketSlasDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.slas:
+      class: DeskPRO\Bundle\AppBundle\DataService\SlasDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticket_layouts:
+      class: DeskPRO\Bundle\AppBundle\DataService\TicketLayoutsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticket_macros:
+      class: DeskPRO\Bundle\AppBundle\DataService\TicketMacrosDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticketstatuses:
+    class: DeskPRO\Bundle\AppBundle\Model\TicketStatuses
+    arguments: [@doctrine.orm.default_entity_manager]
+
   data.chat:
       class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
       arguments: [@doctrine.orm.default_entity_manager]

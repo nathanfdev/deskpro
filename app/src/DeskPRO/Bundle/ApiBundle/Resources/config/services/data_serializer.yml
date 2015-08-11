@@ -81,6 +81,7 @@ services:
             "property_transformers":
                 - @data_serializer.property_transformer.doctrine
                 - @data_serializer.property_transformer.date
+                - @data_serializer.property_transformer.callback
 
     data_serializer.property_transformer.date:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DatePropertyTransformer
@@ -88,3 +89,6 @@ services:
     data_serializer.property_transformer.doctrine:
         class: DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Doctrine\DoctrinePropertyTransformer
         arguments: [@doctrine_association_manager, @data_serializer.type_map]
+
+    data_serializer.property_transformer.callback:
+        class: DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback\CallbackPropertyTransformer

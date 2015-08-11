@@ -45,6 +45,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -85,25 +86,28 @@ class PeopleController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $entityManager = $this->getDoctrine()->getManager();
+        $query = $request->query->all();
 
         $filter = $this->getFilter($request);
-
-        if (!empty($filter)) {
-            $people = $this->getByFilter($em, $filter);
+        if (!empty($query['ids'])) {
+            $people = $this->selectPeople(explode(',', $query['ids']));
+        } else if (!empty($filter)) {
+            $people = $this->getByFilter($entityManager, $filter);
         } else {
-            $people = $em->getRepository('DeskPRO:Person')->findAll();
+            $people = $entityManager->createQueryBuilder()
+                ->select('p')->from('DeskPRO:Person', 'p')->getQuery();
         }
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($people));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($people));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->createRepresentation($pager),
+            $this->DataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -138,7 +142,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
         }
 
         return View::create(
-            $this->createRepresentation($person),
+            $this->DataSerialize($person),
             Response::HTTP_OK
         );
     }
@@ -269,7 +273,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
             $location = $this->generateUrl('api_people_get', array('id' => $person->getId()));
 
             return View::create(
-                $this->createRepresentation($person),
+                $this->DataSerialize($person),
                 $status,
                 array(
                     'Location' => $location,
@@ -321,8 +325,28 @@ class PeopleController extends BaseController implements ClassResourceInterface
             $query = $query->setParameter('id', $user->getId());
         }
 
-        $query = $query->getQuery();
-
-        return $query->getResult();
+        return $query->getQuery();
     }
+
+    /**
+     * Get specific teams
+     * @param $peopleIds
+     * @return mixed
+     */
+    protected function selectPeople($peopleIds)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Clean the IDs
+        $peopleIds = array_map(function($value) {
+            return (int) $value;
+        }, $peopleIds);
+
+        $query = $entityManager->createQueryBuilder()->select('p')->from('DeskPRO:Person', 'p')
+            ->where('p.id IN (:peopleIds)')
+            ->setParameter('peopleIds', $peopleIds);
+
+        return $query->getQuery();
+    }
+
 }

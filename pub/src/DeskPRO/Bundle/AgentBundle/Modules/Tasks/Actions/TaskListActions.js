@@ -1,6 +1,9 @@
 import { createAction } from "Ampliflux/actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import * as Tasks from "DeskPRO/Bundle/AgentBundle/Services/Api/Tasks";
+import * as People from "DeskPRO/Bundle/AgentBundle/Services/Api/People";
+import * as Departments from "DeskPRO/Bundle/AgentBundle/Services/Api/Departments";
+import * as AgentTeams from "DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams";
 
 export const loadTasks = createAction(
   "TASKS_LOAD_TASKS",
@@ -138,8 +141,68 @@ export const loadTaskList = createAction(
     Tasks.loadAddress(data).then(
       (value) => {
         let result = value.getData();
-        result['source'] = data;
-        trigger(result);
+
+        let projects = [];
+        let linked_items = [];
+        let people = [];
+        let departments = [];
+        let teams = [];
+
+        result.data.forEach(function(task) {
+          if (task.project !== null && projects.indexOf(task.project) === -1) {
+            projects.push(task.project);
+          }
+
+          if (task.linked_items !== null && linked_items.indexOf(task.linked_items.id) === -1) {
+            linked_items.push(task.linked_items.id);
+          }
+
+          if (task.agents !== null && typeof task.agents.forEach === 'function') {
+            task.agents.forEach((agent) => {
+              if (people.indexOf(agent) === -1) {
+                people.push(agent);
+              }
+            });
+          }
+
+          if (task.departments !== null && typeof task.departments.forEach === 'function') {
+            task.departments.forEach((department) => {
+              if (departments.indexOf(department) === -1) {
+                departments.push(department);
+              }
+            });
+          }
+
+          if (task.teams !== null && typeof task.teams.forEach === 'function') {
+            task.teams.forEach((team) => {
+              if (teams.indexOf(team) === -1) {
+                teams.push(team);
+              }
+            });
+          }
+        });
+
+        // @TODO: Refactor all of this
+        // This should comprise of several promises, which when all complete fire trigger(result)
+
+        // Load all the relevant data, and when it's done fire the trigger
+        Promise.all([
+          Tasks.loadProjects({ids: projects.join(',')}),
+          Tasks.loadLinks({ids: linked_items.join(',')}),
+          People.loadPeople({ids: people.join(',')}),
+          Tasks.loadDepartments({ids: departments.join(',')}),
+          AgentTeams.loadAgentTeams({ids: teams.join(',')})
+        ]).then((ps) => {
+          result['projects'] = ps[0].getData().data;
+          result['linked_items'] = ps[1].getData().data;
+          result['people'] = ps[2].getData().data;
+          result['departments'] = ps[3].getData().data;
+          result['teams'] = ps[4].getData().data;
+
+          result['source'] = data;
+
+          trigger(result);
+        })
       }
     );
   }
@@ -148,11 +211,11 @@ export const loadTaskList = createAction(
 export const failedTask = createAction("TASKS_POST_TASK_FAIL");
 export const createTask = createAction(
   "TASKS_POST_TASK",
-  (trigger, data) => {
+  (trigger, data, source = 'tasks') => {
     Tasks.createTask(data).then(
       (value) => {
         trigger(value.getData());
-        trigger(null, loadTaskList());
+        trigger(null, loadTaskList(source));
       },
       (value) => trigger(value.xhr.responseJSON, failedTask)
     );

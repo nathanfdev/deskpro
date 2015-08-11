@@ -1,13 +1,13 @@
 import { createAction } from "Ampliflux/actions";
-import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
+import * as AgentTeams from "DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams";
 
 export const loadAgentTeam = createAction(
   "TICKETS_AGENT_TEAM_LOADED",
   (trigger, agent_team_id) => {
-    DpApi.sendGet('DP_API/agent_teams/' + agent_team_id).then(
-      (values) => {
-        trigger(values.getData());
-      }
-    );
+      AgentTeams.loadAgentTeam(agent_team_id).then(
+          (values) => {
+            trigger(values.getData());
+          }
+      );
   }
 );
