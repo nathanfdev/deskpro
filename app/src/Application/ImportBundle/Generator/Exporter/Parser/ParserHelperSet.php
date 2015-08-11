@@ -28,6 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\AbstractCollection;
+use Application\ImportBundle\Generator\AbstractGenerator;
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Generator\LoggerAwareInterface;
+use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 
 /**
  * Class ParserHelperSet
@@ -46,15 +50,32 @@ class ParserHelperSet extends AbstractCollection
     }
 
     /**
-     * @param string $name
+     * @param AbstractGenerator $parser
+     * @param string            $name
+     *
      * @return ParserHelperInterface
      */
-    public function get($name)
+    public function get(AbstractGenerator $parser, $name)
     {
         if ( ! isset($this->collection[$name])) {
             throw new \RuntimeException(sprintf('Parser helper `%s` is not supported', $name));
         }
 
-        return $this->collection[$name];
+        $helper = $this->collection[$name];
+
+        if ($parser->getConfig() && $helper instanceof GeneratorConfigAwareInterface) {
+            /** @var GeneratorConfigAwareInterface $helper */
+            $helper->setConfig($parser->getConfig());
+        }
+        if ($parser->getLogger() && $helper instanceof LoggerAwareInterface) {
+            /** @var LoggerAwareInterface $helper */
+            $helper->setLogger($parser->getLogger());
+        }
+        if ($parser->getProgressBarHelper() && $helper instanceof ProgressBarAwareInterface) {
+            /** @var ProgressBarAwareInterface $helper */
+            $helper->setProgressBarHelper($parser->getProgressBarHelper());
+        }
+
+        return $helper;
     }
 }

@@ -28,9 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\Generator\AbstractGenerator;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
-use Application\ImportBundle\Generator\LoggerAwareInterface;
-use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 
 /**
  * Abstract generator exporter parser
@@ -44,32 +41,4 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
      * @var ParserHelperSet
      */
     protected $helpers;
-
-    /**
-     * @param string $name
-     * @return ParserHelperInterface
-     */
-    protected function getHelper($name)
-    {
-        if ( ! $this->helpers instanceof ParserHelperSet) {
-            throw new \RuntimeException('Parser helper set is not defined.');
-        }
-
-        $helper = $this->helpers->get($name);
-
-        if ($this->config && $helper instanceof GeneratorConfigAwareInterface) {
-            /** @var GeneratorConfigAwareInterface $helper */
-            $helper->setConfig($this->config);
-        }
-        if ($this->logger && $helper instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $helper */
-            $helper->setLogger($this->logger);
-        }
-        if ($this->progress_bar && $helper instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $helper */
-            $helper->setProgressBarHelper($this->progress_bar);
-        }
-
-        return $helper;
-    }
 }

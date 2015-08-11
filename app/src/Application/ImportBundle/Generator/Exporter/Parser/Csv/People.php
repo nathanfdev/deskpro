@@ -88,7 +88,7 @@ final class People extends AbstractParser
                     }
                 }
 
-                $inline_contact_data = $this->exportInlineContactData($person, $entity->getDestination());
+                $inline_contact_data = $this->getInlineContactDataParser()->parse($person, $entity->getDestination());
                 foreach ($inline_contact_data as $contact) {
                     $entity->addContact($contact);
                 }
@@ -177,7 +177,9 @@ final class People extends AbstractParser
     private function exportPersonContactData()
     {
         $config = $this->getReaderConfig(self::FILE_PEOPLE_CONTACT_DATA);
-        return $this->exportContactData($config, self::PERSON_PREFIX, 'person_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getMultipleContactDataParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
 
     /**

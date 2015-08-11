@@ -382,33 +382,18 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns a collection of contact data
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return Entity\Collection
+     * @return MultipleContactData
      */
-    public function exportContactData(CsvConfig $config, $destination_prefix, $ref_column)
+    protected function getMultipleContactDataParser()
     {
-        /** @var MultipleContactData $parser */
-        $parser = $this->getHelper('multiple_contact_data');
-
-        return $parser->export($this->getReaderData($config), $destination_prefix, $ref_column);
+        return $this->helpers->get($this, 'multiple_contact_data');
     }
 
     /**
-     * @param array  $data
-     * @param string $destination
-     *
-     * @return Entity\ContactData[]
+     * @return InlineContactData
      */
-    protected function exportInlineContactData(array $data, $destination)
+    protected function getInlineContactDataParser()
     {
-        /** @var InlineContactData $parser */
-        $parser = $this->getHelper('inline_contact_data');
-
-        return $parser->parse($data, $destination);
+        return $this->helpers->get($this, 'inline_contact_data');
     }
 }
