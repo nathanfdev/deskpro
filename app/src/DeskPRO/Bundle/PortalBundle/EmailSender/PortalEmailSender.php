@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
@@ -110,33 +111,21 @@ class PortalEmailSender
         );
     }
 
-    public function sendEmailConfirmationEmail($email, $primary = false)
+    public function sendFeedbackValidationLink(Feedback $feedback)
     {
-        if ($primary && !$email instanceof PersonEmail) {
-            throw new \InvalidArgumentException('primary email should be a PersonEmail');
-        } elseif (!$email instanceof PersonEmailValidating) {
-            throw new \InvalidArgumentException('non primary email should be a PersonEmailValidating');
-        }
+        $person = $feedback->getPerson();
 
-        $person = $email->getPerson();
-
-        if ($primary) {
-            // this only tirggers if the user requests a re-send of email confirmation
-            // (sendWelcomeEmail above would contain it first)
-            $tpl = 'DeskPRO:emails_user:new-email-validate-primary.html.twig';
-            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email);
-        } else {
-            $tpl = 'DeskPRO:emails_user:new-email-validate.html.twig';
-            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email, null, true);
-        }
+        $tpl = 'DeskPRO:emails_user:feedback-new.html.twig';
+        $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_FEEDBACK, $person->getPrimaryEmail(), $feedback->getId());
 
         $this->sendToPerson(
             $person,
             $tpl,
             array(
                 'person' => $person,
-                'email' => $email,
-                'verify_url' => $verify_url
+                'verify_url' => $verify_url,
+                'feedback' => $feedback,
+                'validating' => $person->isUserValid() ? null : 'new'
             )
         );
     }

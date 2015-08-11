@@ -101,7 +101,7 @@ class ProfileController extends AbstractController
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
             $this->getEmailSender()->sendWelcomeEmail($person);
-            if ($this->getBrandSetting('core.email_validation')) {
+            if (!$this->getBrandSetting('core.email_validation')) {
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
             } else {
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));

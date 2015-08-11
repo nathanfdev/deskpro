@@ -34,9 +34,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
 
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\DataService\EmailDataService;
+use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -48,6 +50,7 @@ class PersonValidator
 {
     const TYPE_EMAIL = 'email';
     const TYPE_EMAIL_PRIMARY = 'email-primary';
+    const TYPE_FEEDBACK = 'feedback';
 
     /**
      * @var BrandStack
@@ -74,12 +77,18 @@ class PersonValidator
      */
     private $em;
 
-    public function __construct(EntityManager $em, PortalRouter $router, EmailDataService $email_data, PortalEmailSender $portal_email_sender)
+    /**
+     * @var FeedbackDataService
+     */
+    private $feedback_data;
+
+    public function __construct(EntityManager $em, PortalRouter $router, EmailDataService $email_data, PortalEmailSender $portal_email_sender, FeedbackDataService $feedback_data)
     {
         $this->router = $router;
         $this->email_data = $email_data;
         $this->portal_email_sender = $portal_email_sender;
         $this->em = $em;
+        $this->feedback_data = $feedback_data;
     }
 
     /**
@@ -115,6 +124,42 @@ class PersonValidator
         if ($flush) {
             $this->em->flush($validated_email);
         }
+    }
+
+    /**
+     * Given an email ID and a feedback ID, mark them as validated
+     *
+     * @param $email_id
+     * @param $feedback_id
+     * @return bool
+     */
+    public function validateFeedback($email_id, $feedback_id)
+    {
+        if (!$feedback = $this->feedback_data->getItem($feedback_id)) {
+            return false;
+        }
+
+        $secondary = false;
+        if (!$email = $this->email_data->getEmail($email_id)) {
+            $secondary = true;
+        } else {
+            if ($email->getPerson() !== $feedback->getPerson()) {
+                $secondary = true;
+            }
+        }
+
+        if ($secondary && !$email = $this->email_data->getValidatingEmail($email_id)) {
+            // it should be a secondard email, but none were found, giving up
+            return false;
+        }
+
+        // found an email, and we know if its still validating or already a PersonEmail
+        // validate it
+        $this->validateEmail($email, $secondary);
+
+        $feedback->setStatusCode(Feedback::STATUS_ACTIVE);
+        $this->em->persist($feedback);
+        $this->em->flush($feedback);
     }
 
     /**
@@ -157,6 +202,17 @@ class PersonValidator
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
+            case PersonValidator::TYPE_FEEDBACK:
+
+                return $this->router->generate(
+                    'portal_validation',
+                    array(
+                        'object_type' => self::TYPE_FEEDBACK,
+                        'email_id' => $person_email->getId(),
+                        'object_id' => $type_id
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
         }
 
         return null;
@@ -186,33 +242,14 @@ class PersonValidator
             case PersonValidator::TYPE_EMAIL_PRIMARY:
                 $this->portal_email_sender->sendEmailConfirmationEmail($person_email, true);
                 return true;
+
+            case PersonValidator::TYPE_FEEDBACK:
+                $feedback = $this->feedback_data->getItem($type_id);
+                $this->portal_email_sender->sendFeedbackValidationLink($feedback);
+                return true;
         }
 
         return false;
-    }
-
-    /**
-     * @param int|PersonEmail|PersonEmailValidating $email_or_id
-     * @param bool $is_email_validating
-     * @return PersonEmail|PersonEmailValidating|null
-     */
-    protected function findEmail($email_or_id, $is_email_validating)
-    {
-        if (!$is_email_validating) {
-            // a normal PersonEmail
-            if (!$person_email = $this->email_data->getEmail($email_or_id)) {
-                return null;
-            }
-
-            return $person_email;
-        }
-
-        // in some instances (when a person adds a secondary email) we get a PersonEmailValidating
-        if (!$person_email = $this->email_data->getValidatingEmail($email_or_id)) {
-            return null;
-        }
-
-        return $person_email;
     }
 
     /**
@@ -256,8 +293,43 @@ class PersonValidator
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
+
+            case PersonValidator::TYPE_FEEDBACK:
+                return $this->router->generate(
+                    'portal_send_validation',
+                    array(
+                        'email_id' => $person_email->getId(),
+                        'object_type' => self::TYPE_FEEDBACK,
+                        'object_id' => $type_id
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
         }
 
         return null;
+    }
+
+    /**
+     * @param int|PersonEmail|PersonEmailValidating $email_or_id
+     * @param bool $is_email_validating
+     * @return PersonEmail|PersonEmailValidating|null
+     */
+    protected function findEmail($email_or_id, $is_email_validating)
+    {
+        if (!$is_email_validating) {
+            // a normal PersonEmail
+            if (!$person_email = $this->email_data->getEmail($email_or_id)) {
+                return null;
+            }
+
+            return $person_email;
+        }
+
+        // in some instances (when a person adds a secondary email) we get a PersonEmailValidating
+        if (!$person_email = $this->email_data->getValidatingEmail($email_or_id)) {
+            return null;
+        }
+
+        return $person_email;
     }
 }
