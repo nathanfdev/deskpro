@@ -1,37 +1,37 @@
 import { handleActions } from "redux-actions";
-import { composeStores } from 'redux';
+import { combineReducers as reduxCombineReducers } from 'redux';
 
 export class Reducer {
   constructor() {
     this.actionsMap = {};
     this.registerHandlers();
   }
-  
+
   // Compiles the reducer class into a bunch of handlers.
   compile() {
     return handleActions(this.actionsMap, this.getInitialState());
   }
-  
+
   // Defines the initial value of the reducer's state.
   getInitialState() {
     return {};
   }
-  
+
   registerHandlers() {
     return {};
   }
-  
+
   r(action, handler) {
     let action_type = action;
     if(typeof action == 'function' || typeof action == 'object') {
       action_type = action.actionType;
     }
-    
+
     this.actionsMap[action_type] = handler;
-    
+
     return this;
   }
-  
+
   setPayload(property, payload_prop = null) {
     return (state, action) => {
       let data = action.payload;
@@ -44,13 +44,13 @@ export class Reducer {
       }
     };
   }
-  
+
   static isAmplifluxReducer() {
     return true;
   }
 }
 
-export function composeReducers(reducers) {
+export function combineReducers(reducers) {
   let processed_reducers = {};
   for(let k in reducers) {
     try {
@@ -66,5 +66,5 @@ export function composeReducers(reducers) {
     }
   }
 
-  return composeStores(processed_reducers);
+  return reduxCombineReducers(processed_reducers);
 }

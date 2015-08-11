@@ -1,6 +1,6 @@
 import React from "react";
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";

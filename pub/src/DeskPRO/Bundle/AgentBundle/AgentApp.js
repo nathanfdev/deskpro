@@ -1,11 +1,14 @@
 import "babel/polyfill";
 import $ from "jquery";
 import React from 'react';
-import { createRedux, createDispatcher, composeStores } from 'redux';
-import thunkMiddleware from 'redux/lib/middleware/thunk';
+
+import { createStore, applyMiddleware } from 'redux';
 import promiseMiddleware from 'redux-promise';
-import { Provider } from 'redux/react';
-import { composeReducers } from "Ampliflux/reducers";
+import thunkMiddleware from "redux-thunk";
+import { Provider } from 'react-redux';
+
+import { combineReducers } from "Ampliflux/reducers";
+
 import BrowserHistory from 'react-router/lib/BrowserHistory';
 
 import * as app_stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Reducers/index";
@@ -20,14 +23,11 @@ export default class AgentApp {
   }
 
   start() {
-    const store = composeReducers(Object.assign({}, app_stores, ticket_stores, task_stores));
 
-    const dispatcher = createDispatcher(
-      store,
-      getState => [thunkMiddleware(getState), promiseMiddleware]
-    );
-
-    const redux = createRedux(dispatcher);
+    const reducer    = combineReducers(Object.assign({}, app_stores, ticket_stores, task_stores));
+    const middleware = applyMiddleware(thunkMiddleware, promiseMiddleware);
+    const makeStore  = middleware(createStore);
+    const store      = makeStore(reducer);
 
     var intlData = {
       "locales": "en-US",
@@ -35,11 +35,11 @@ export default class AgentApp {
         "foobar": "Tickets"
       }
     };
-    
+
     const hist = new BrowserHistory();
 
     React.render(
-      <Provider redux={redux}>
+      <Provider store={store}>
         {() => <DpAppContainer {...intlData} history={hist} />}
       </Provider>,
       document.getElementById('deskpro_app_window')

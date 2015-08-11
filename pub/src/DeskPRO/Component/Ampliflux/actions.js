@@ -17,7 +17,7 @@ export function createAction(action_type, action = null) {
       return (dispatch) => {
         const trigger = (payload = null, type = null) => {
           let to_dispatch = { type: type, payload: payload };
-          
+
           if(!type) {
             to_dispatch.type = action_type;
           } else if(typeof type == 'function' && type.actionType !== undefined) {
@@ -25,17 +25,17 @@ export function createAction(action_type, action = null) {
           } else {
             to_dispatch = type;
           }
-          
+
           //console.log(type); // This is very handy for debugging.
           return dispatch(to_dispatch);
         };
-      
+
         const args = [trigger, ...stuff];
         return action.apply(this, args);
       };
     };
   }
-  
-  handler.actionType = action_type;  
+
+  handler.actionType = action_type;
   return handler;
 }

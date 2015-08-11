@@ -5,7 +5,7 @@ import TicketsTabFilterSets from "./FiltersTab/TicketsTabFilterSets";
 import TicketsTabLabels from "./LabelsTab/TicketsTabLabels";
 import TicketsTabStars from "./StarsTab/TicketsTabStars";
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";

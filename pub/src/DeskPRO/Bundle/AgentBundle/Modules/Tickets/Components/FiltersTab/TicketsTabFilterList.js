@@ -1,6 +1,6 @@
 import React from "react";
 
-import { connect } from "redux/react";
+import { connect } from "react-redux";
 import * as SidebarHoverActions from "../../Actions/SidebarHoverActions";
 import * as FiltersActions from "../../Actions/FiltersActions";
 

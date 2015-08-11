@@ -124,30 +124,6 @@ gulp.task('bundle:dev-server:portal', function(callback) {
   startWebpackServer(getWebpackConfig('portal', true, false));
 });
 
-gulp.task('build-test', function(callback) {
-  var config = getWebpackConfig('agent', true, false);
-  config.entry = path.join(__dirname, "src/DeskPRO/tests/runner");
-  config.module.loader = [{
-    test: /\.js$/,
-    include: [
-      path.resolve(__dirname, "src/DeskPRO")
-    ],
-    loader: "babel-loader?stage=0"
-  }];
-
-  webpack(config).run(function(err, stats) {
-    if(err) throw new gutil.PluginError("webpack", err);
-    gutil.log("[webpack]", stats.toString({
-        // output options
-    }));
-    callback();
-  });
-});
-
-gulp.task('test', ['build-test'], function(callback) {
-  require('./build/main.js');
-});
-
 //######################################################################################################################
 //# Helpers
 //######################################################################################################################
@@ -174,7 +150,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         path.join(__dirname, "src/DeskPRO/Component")
       ]
     },
-    devtool: "source-map",
+    //devtool: "source-map",
     module: {
       loaders: [
         {
