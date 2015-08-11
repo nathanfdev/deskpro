@@ -85,7 +85,8 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
      */
     public function cgetAction(Request $request)
     {
-        $comments = $this->getDoctrine()->getManager()->createQueryBuilder()->select('c')->from('App:TaskComment', 'c');
+        $comments = $this->getDoctrine()->getManager()->createQueryBuilder()->select('c')
+            ->from('App:TaskComment', 'c')->orderBy('c.date_created', 'ASC');
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
