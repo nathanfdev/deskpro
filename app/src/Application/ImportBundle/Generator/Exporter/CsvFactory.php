@@ -64,7 +64,7 @@ class CsvFactory extends AbstractFactory
             ->attach(new Parser\Csv\Helper\CustomFields\MultipleCustomFields($formatter))
             ->attach(new Parser\Csv\Helper\CustomFields\InlineCustomFields())
             ->attach(new Parser\Csv\Helper\Blob\Blob($formatter))
-            ->attach(new Parser\Csv\Helper\Blob\Attachment())
+            ->attach(new Parser\Csv\Helper\Blob\Attachment($formatter))
         ;
 
         $parsers = new Parser\Collection();

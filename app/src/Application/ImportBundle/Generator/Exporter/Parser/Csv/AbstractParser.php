@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
@@ -150,112 +148,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         return array();
-    }
-
-    /**
-     * Returns a collection of attachments
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return Entity\Collection
-     */
-    protected function exportAttachments(CsvConfig $config, $destination_prefix, $ref_column)
-    {
-        $collection  = new Entity\Collection();
-        $attachments = $this->getReaderData($config);
-
-        foreach ($attachments as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf(
-                    'Attachment of entity `%s%s` parsed successfully!',
-                    $destination_prefix, $entity->getOid())
-                );
-
-            } catch (\Exception $e) {
-                $this->logWarning(sprintf(
-                    'Invalid attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns an attachment entity
-     *
-     * @param int    $num
-     * @param string $destination_prefix
-     * @param array  $data
-     * @param string $ref_column
-     *
-     * @return Entity\Attachment|null
-     */
-    protected function exportAttachment($num, $destination_prefix, array $data, $ref_column)
-    {
-        $configuration = array(
-            'person'    => TransformerInterface::TYPE_STRING,
-            'is_inline' => TransformerInterface::TYPE_BOOLEAN,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
-
-        /** @var Entity\Attachment $entity */
-        $entity = $this->exportBlob($num, $destination_prefix, $data, $ref_column, new Entity\Attachment());
-        $entity
-            ->setPersonEmail($formatted['person'])
-            ->setAsInline($formatted['is_inline'])
-        ;
-
-        return $entity;
-    }
-
-    /**
-     * Returns a blob entity
-     *
-     * @param int              $num
-     * @param string           $destination_prefix
-     * @param array            $data
-     * @param string           $ref_column
-     * @param Entity\Blob|null $entity
-     *
-     * @return Entity\Blob|null
-     *
-     * @deprecated Use blob helper
-     */
-    protected function exportBlob($num, $destination_prefix, array $data, $ref_column, Entity\Blob $entity = null)
-    {
-        $configuration = array(
-            $ref_column    => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => $destination_prefix,
-                'ref'    => $ref_column,
-            )),
-            'file_name'    => TransformerInterface::TYPE_STRING,
-            'content_type' => TransformerInterface::TYPE_STRING,
-            'blob_url'     => TransformerInterface::TYPE_STRING,
-            'blob_path'    => TransformerInterface::TYPE_STRING,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = $entity ? : new Entity\Blob();
-        $entity
-            ->setRawData($data)
-            ->setDestination($formatted['destination'])
-            ->setOid($num)
-            ->setBlobUrl($formatted['blob_url'])
-            ->setBlobPath($formatted['blob_path'])
-            ->setFileName($formatted['file_name'])
-            ->setContentType($formatted['content_type'])
-        ;
-
-        return $entity;
     }
 
     /**

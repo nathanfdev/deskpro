@@ -249,7 +249,9 @@ final class Tickets extends AbstractParser
     private function exportTicketAttachments()
     {
         $config = $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
-        return $this->exportAttachments($config, self::MESSAGE_PREFIX, 'message_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getAttachmentParser()->exportAttachments($data, self::MESSAGE_PREFIX, 'message_id');
     }
 
     /**

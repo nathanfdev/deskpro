@@ -177,7 +177,9 @@ final class Feedback extends AbstractParser
     private function exportFeedbackAttachments()
     {
         $config = $this->getFeedbackAttachmentsReaderConfig();
-        return $this->exportAttachments($config, self::FEEDBACK_PREFIX, 'feedback_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getAttachmentParser()->exportAttachments($data, self::FEEDBACK_PREFIX, 'feedback_id');
     }
 
     /**
