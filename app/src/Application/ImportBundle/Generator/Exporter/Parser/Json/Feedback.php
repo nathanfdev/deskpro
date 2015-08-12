@@ -159,7 +159,7 @@ final class Feedback extends AbstractParser
             $entity->addAttachment($attachment);
         }
 
-        $custom_fields = $this->exportCustomFields($formatted['custom_fields']);
+        $custom_fields = $this->getCustomFieldsParser()->exportCustomFields($formatted['custom_fields']);
         foreach ($custom_fields as $custom_field) {
             /** @var Entity\CustomField $custom_field */
             $entity->addCustomField($custom_field);

@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Json\JsonConfig;
@@ -81,62 +80,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             '%s/%d/%s',
             $this->config->getInputPath(), $this->getBatchConfig()->getId() + 1, $record_type
         ));
-    }
-
-    /**
-     * Exports custom fields
-     *
-     * @param array $custom_fields
-     * @return Entity\Collection
-     */
-    protected function exportCustomFields(array $custom_fields)
-    {
-        $collection = new Entity\Collection();
-        foreach ($custom_fields as $num => $custom_field) {
-            try {
-                $entity = $this->exportCustomField($custom_field);
-                $collection->attach($entity);
-
-            } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid custom field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a custom field entity
-     *
-     * @param array $data
-     * @return Entity\CustomField|null
-     */
-    protected function exportCustomField(array $data)
-    {
-        $configuration = array(
-            'oid'         => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'custom_field_',
-                'ref'    => 'oid',
-            )),
-            'key'         => TransformerInterface::TYPE_STRING,
-            'value'       => TransformerInterface::TYPE_STRING,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\CustomField();
-        $entity
-            ->setRawData($data)
-            ->setOid($formatted['oid'])
-            ->setDestination($formatted['destination'])
-            ->setKey($formatted['key'])
-            ->setValue($formatted['value'])
-        ;
-
-        return $entity;
     }
 
     /**
@@ -223,6 +166,14 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         throw new Exception('Batch config is not defined');
+    }
+
+    /**
+     * @return Helper\CustomFields
+     */
+    protected function getCustomFieldsParser()
+    {
+        return $this->helpers->get($this, 'custom_fields');
     }
 
     /**
