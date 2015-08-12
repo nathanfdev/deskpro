@@ -13,7 +13,7 @@ export default class AgentConversationsCount extends React.Component {
     return (
       <li>
         <div className="list-counter-bucket">
-          <a className="list-counter" href="#">{count}</a>
+          <a className="list-counter active" href="#">{count}</a>
         </div>
         <a href="#" className="item">{label}</a>
       </li>

@@ -48,7 +48,11 @@ export default class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   My Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter" href="#">{myChats.count}</a>
+                    <a className="list-counter-dropdown active" href="#">
+                      <span>&nbsp;</span>
+                      <i className="fa fa-angle-down"></i>
+                    </a>
+                    <a className="list-counter active" href="#">{myChats.count}</a>
                   </div>
                 </div>
                 
@@ -65,7 +69,7 @@ export default class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   All Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter" href="#">{allChats.count}</a>
+                    <a className="list-counter active" href="#">{allChats.count}</a>
                   </div>
                 </div>
                 
