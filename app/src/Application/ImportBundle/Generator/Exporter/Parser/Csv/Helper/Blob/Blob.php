@@ -27,7 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\Blob;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
+use Application\ImportBundle\Entity;
 
 /**
  * Class Blob
@@ -36,10 +40,59 @@ use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
 class Blob extends AbstractParserHelper
 {
     /**
+     * Constructor
+     *
+     * @param FormatterInterface $formatter
+     */
+    public function __construct(FormatterInterface $formatter)
+    {
+        $this->formatter = $formatter;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
     {
         return 'blob';
+    }
+
+    /**
+     * Returns a blob entity
+     *
+     * @param int              $oid
+     * @param string           $destination_prefix
+     * @param array            $data
+     * @param string           $ref_column
+     *
+     * @return Entity\Blob|null
+     */
+    public function export($oid, $destination_prefix, array $data, $ref_column)
+    {
+        $configuration = array(
+            $ref_column    => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => $destination_prefix,
+                'ref'    => $ref_column,
+            )),
+            'file_name'    => TransformerInterface::TYPE_STRING,
+            'content_type' => TransformerInterface::TYPE_STRING,
+            'blob_url'     => TransformerInterface::TYPE_STRING,
+            'blob_path'    => TransformerInterface::TYPE_STRING,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Blob();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($oid)
+            ->setBlobUrl($formatted['blob_url'])
+            ->setBlobPath($formatted['blob_path'])
+            ->setFileName($formatted['file_name'])
+            ->setContentType($formatted['content_type'])
+        ;
+
+        return $entity;
     }
 }

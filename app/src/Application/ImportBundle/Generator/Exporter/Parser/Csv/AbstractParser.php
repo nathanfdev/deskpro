@@ -28,11 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\InlineContactData;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\MultipleContactData;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields\InlineCustomFields;
-use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields\MultipleCustomFields;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
@@ -229,16 +226,17 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * @param Entity\Blob|null $entity
      *
      * @return Entity\Blob|null
+     *
+     * @deprecated Use blob helper
      */
     protected function exportBlob($num, $destination_prefix, array $data, $ref_column, Entity\Blob $entity = null)
     {
-        if (isset($data[$ref_column])) {
-            $data['destination'] = $destination_prefix . $data[$ref_column];
-        }
-
         $configuration = array(
             $ref_column    => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerInterface::TYPE_DESTINATION,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => $destination_prefix,
+                'ref'    => $ref_column,
+            )),
             'file_name'    => TransformerInterface::TYPE_STRING,
             'content_type' => TransformerInterface::TYPE_STRING,
             'blob_url'     => TransformerInterface::TYPE_STRING,
@@ -261,7 +259,23 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * @return MultipleContactData
+     * @return Helper\Blob\Blob
+     */
+    protected function getBlobParser()
+    {
+        return $this->helpers->get($this, 'blob');
+    }
+
+    /**
+     * @return Helper\Blob\Attachment
+     */
+    protected function getAttachmentParser()
+    {
+        return $this->helpers->get($this, 'attachment');
+    }
+
+    /**
+     * @return Helper\ContactData\MultipleContactData
      */
     protected function getMultipleContactDataParser()
     {
@@ -269,7 +283,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * @return InlineContactData
+     * @return Helper\ContactData\Inline\InlineContactData
      */
     protected function getInlineContactDataParser()
     {
@@ -277,7 +291,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * @return MultipleCustomFields
+     * @return Helper\CustomFields\MultipleCustomFields
      */
     protected function getMultipleCustomFieldsParser()
     {
@@ -285,7 +299,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * @return InlineCustomFields
+     * @return Helper\CustomFields\InlineCustomFields
      */
     protected function getInlineCustomFieldsParser()
     {

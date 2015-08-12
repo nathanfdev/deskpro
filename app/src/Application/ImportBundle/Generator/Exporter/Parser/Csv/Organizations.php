@@ -149,7 +149,7 @@ class Organizations extends AbstractParser
             ->setOid($formatted['id'])
             ->setName($formatted['name'])
             ->setImportance($formatted['importance'])
-            ->setPicture($this->exportBlob(1, self::ORGANIZATION_PREFIX, $data, 'name'))
+            ->setPicture($this->getBlobParser()->export(1, self::ORGANIZATION_PREFIX, $data, 'name'))
             ->setDateCreated($formatted['date_created'])
         ;
 

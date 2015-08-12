@@ -63,7 +63,7 @@ class CsvFactory extends AbstractFactory
             ->attach(Parser\Csv\Helper\ContactData\Inline\InlineContactDataFactory::create())
             ->attach(new Parser\Csv\Helper\CustomFields\MultipleCustomFields($formatter))
             ->attach(new Parser\Csv\Helper\CustomFields\InlineCustomFields())
-            ->attach(new Parser\Csv\Helper\Blob\Blob())
+            ->attach(new Parser\Csv\Helper\Blob\Blob($formatter))
             ->attach(new Parser\Csv\Helper\Blob\Attachment())
         ;
 
