@@ -29,11 +29,11 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
+use Application\DeskPRO\Entity\Feedback;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Application\DeskPRO\Entity\Person;
 
 class FeedbackSelectCriteria
 {
@@ -55,14 +55,13 @@ class FeedbackSelectCriteria
     /**
      * @param array $params
      * @param OptionsResolver $resolver
-     * @param Person $me
      * @return FeedbackSelectCriteria
      * @throws AccessException
      * @throws UndefinedOptionsException
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver, Person $me)
+    public static function fromParameters(array $params, OptionsResolver $resolver)
     {
-        self::configureResolver($resolver, $me);
+        self::configureResolver($resolver);
         $filters = $resolver->resolve($params);
         return new self($filters);
     }
@@ -75,78 +74,29 @@ class FeedbackSelectCriteria
         $alias = $qb->getRootAliases()[0];
         foreach ($this->filters as $field => $value) {
             switch ($field) {
-                case 'date_created':
-                    list($from, $to) = explode(':', $value);
-                    $qb->andWhere($qb->expr()->gte("DATE($alias.date_created)", ':from'));
-                    $qb->andWhere($qb->expr()->lte("DATE($alias.date_created)", ':to'));
-                    $qb->setParameter('from', $from);
-                    $qb->setParameter('to', $to);
+                case 'awaiting_validation':
+                    $qb->andWhere($qb->expr()->eq("$alias.hidden_status", 'validating'));
                     break;
-                case 'date_period':
-                    $datePeriodCaseWhen = $this->getDatePeriodCaseWhenDql($alias);
-                    $qb->andWhere("$datePeriodCaseWhen = :date_period");
-                    $qb->setParameter('date_period', $value);
-                    break;
-                case 'agent':
-                case 'department':
-                    $qb->andWhere($qb->expr()->eq("$alias.$field", ":$field"));
-                    $qb->setParameter($field, $value);
+                case 'status':
+                    $qb->andWhere("$alias.status = :status");
+                    $qb->setParameter('status', $value);
                     break;
             }
         }
     }
 
     /**
-     * Get date_period CASE-WHEN DQL clause
-     *
-     * Handles the following groups:
-     *
-     * today
-     * yesterday
-     * this_week
-     * this_month
-     * last_month
-     * this_year
-     * ever
-     *
-     * @param string $alias
-     * @return string
-     */
-    protected function getDatePeriodCaseWhenDql($alias)
-    {
-        $today = date('Y-m-d', strtotime('today'));
-        $yesterday = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear = date('Y-01-01');
-        $target = "DATE($alias.date_created)";
-        $groupSelectDql = "(CASE
-            WHEN $target  = '$today' THEN 'today'
-            WHEN $target  = '$yesterday' THEN 'yesterday'
-            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
-            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
-            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
-            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
-            ELSE 'ever'
-        END)";
-        return $groupSelectDql;
-    }
-
-    /**
      * @param OptionsResolver $resolver
-     * @param Person $me
      * @throws AccessException
      * @throws UndefinedOptionsException
      */
-    protected static function configureResolver(OptionsResolver $resolver, Person $me)
+    protected static function configureResolver(OptionsResolver $resolver)
     {
         $resolver->setDefined(['awaiting_validation', 'status']);
-        $resolver->setAllowedValues('awaiting_validation', function ($value) {
-            return is_int($value) || ctype_digit($value) || ($value === 'me');
-        });
-        $resolver->setAllowedValues('status', function ($value) {
-            return is_int($value) || ctype_digit($value);
-        });
+        $resolver->setAllowedValues('awaiting_validation', 1);
+        $resolver->setAllowedValues(
+            'status',
+            ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
+        );
     }
 }

@@ -65,6 +65,7 @@ class FeedbackController extends BaseController
      * @Get("/feedback/counts", name="api_feedback_count")
      * @param Request $request
      * @return View
+     * @throws \LogicException
      * @throws AccessException
      * @throws UndefinedOptionsException
      * @throws BadRequestHttpException

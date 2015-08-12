@@ -109,7 +109,7 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
         $alias = $qb->getRootAliases()[0];
         switch ($this->group_by) {
             case 'status_category':
-//                $qb->addSelect("DATE($alias.date_created) as group_name");
+                $qb->addSelect("DATE($alias.date_created) as group_name");
                 break;
             case 'hidden_status':
                 $qb->addSelect($this->getDatePeriodCaseWhenDql($alias) . ' as group_name');

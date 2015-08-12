@@ -36,6 +36,8 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Doctrine\ORM\EntityManager;
@@ -277,8 +279,8 @@ class FeedbackDataService extends AbstractDataService
     private function countGrouped(FeedbackCountCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
-        $qb->select('count(c) as value')
-            ->from('DeskPRO:ChatConversation', 'c');
+        $qb->select('count(f) as value')
+            ->from('DeskPRO:Feedback', 'f');
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
