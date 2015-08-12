@@ -1,4 +1,5 @@
 import React from "react";
+import { DragSource } from "react-dnd";
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
@@ -166,7 +167,7 @@ export default class TasksListFrame extends React.Component {
         {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
           return <TaskCard task={object} projects={projects} linked_items={linked_items} departments={departments}
                            teams={teams} agents={agents} toggleDone={this.toggleDone.bind(this)}
-                           source={taskFrameList.taskFrameSource} />
+                           source={taskFrameList.taskFrameSource} key={object.id} />
         }) : '' }
       </div>
     </section>

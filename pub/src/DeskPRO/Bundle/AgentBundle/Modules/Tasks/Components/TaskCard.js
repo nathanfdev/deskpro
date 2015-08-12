@@ -1,14 +1,38 @@
 import React from "react";
+import { DragSource } from "react-dnd"
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
+import DragTypes from "../../../Services/DragTypes.js";
 
+const cardSource = {
+  beginDrag(props) {
+    const item = { id: props.id };
+    return item;
+  },
+
+  endDrag(props, monitor, component) {
+    if (!monitor.didDrop()) {
+      return;
+    }
+
+    const item = monitor.getItem();
+    const dropResult = monitor.getDropResult();
+    // When dropped on a target, do something!
+    //CardActions.moveCardToList(item.id, dropResult.listId);
+  }
+};
+
+@DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging()
+}))
 export default class TaskCard extends React.Component {
   render() {
-    const { task, projects, linked_items, departments, teams, agents, source } = this.props;
+    const { task, projects, linked_items, departments, teams, agents, source, connectDragSource, isDragging } = this.props;
 
     let cardClass = task.is_done ? "card task-card task-card-completed" : "card task-card";
 
@@ -43,7 +67,7 @@ export default class TaskCard extends React.Component {
       assignee = <span><span className="text">{department.title}</span></span>
     }
 
-    return <div className={cardClass} key={task.id}>
+    return connectDragSource(<div className={cardClass} key={task.id}>
       <div className="card-status-bar status-bar-left"></div>
       <div className="card-status-bar status-bar-right"></div>
 
@@ -92,6 +116,6 @@ export default class TaskCard extends React.Component {
                 </span> : ''}
         </div>
       </div>
-    </div>
+    </div>);
   }
 }
