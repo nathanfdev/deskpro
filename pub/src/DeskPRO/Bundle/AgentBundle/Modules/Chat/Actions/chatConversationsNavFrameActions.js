@@ -27,3 +27,5 @@ export const loadAllChatConversationsCounts = createAction(
     }
   })
 );
+
+export const toggleMyChatsGroupingControls = createAction('CHAT_TOGGLE_MY_CHATS_GROUPING_CONTROLS');

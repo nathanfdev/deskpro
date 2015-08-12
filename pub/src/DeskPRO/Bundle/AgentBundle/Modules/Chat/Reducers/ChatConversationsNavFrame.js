@@ -5,6 +5,7 @@ export default class ChatConversationsNavFrame extends Reducer {
   getInitialState() {
     return {
       myChats:  {count: 0, nested: [/* {count, group} */]},
+      isMyChatsGroupingControlVisible: false,
       allChats: {count: 0, nested: [/* {count, group} */]},
       agentNames: {/* id: name */}
     };
@@ -15,6 +16,7 @@ export default class ChatConversationsNavFrame extends Reducer {
       .r(actions.loadMyChatConversationsCounts, this.myConversationsCountsLoaded)
       .r(actions.loadAllChatConversationsCounts, this.allConversationsCountsLoaded)
       .r(actions.loadAgentName, this.agentNameLoaded)
+      .r(actions.toggleMyChatsGroupingControls, this.myChatsGroupingControlVisibilityChanged)
     ;
   }
 
@@ -37,5 +39,9 @@ export default class ChatConversationsNavFrame extends Reducer {
     agentNames = {...agentNames, [payload.id]: payload.name};
 
     return {...state, agentNames};
+  }
+
+  myChatsGroupingControlVisibilityChanged(state) {
+    return {...state, isMyChatsGroupingControlVisible: !state.isMyChatsGroupingControlVisible}
   }
 }

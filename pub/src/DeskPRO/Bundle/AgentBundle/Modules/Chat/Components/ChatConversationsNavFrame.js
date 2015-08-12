@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'redux/react';
 import * as actions from '../Actions/chatConversationsNavFrameActions'
-import DatePeriodConversationsCount from './DatePeriodConversationsCount';
-import AgentConversationsCount from './AgentConversationsCount';
+import { DatePeriodConversationsCount } from './DatePeriodConversationsCount';
+import { AgentConversationsCount } from './AgentConversationsCount';
 
 @connect(state => ({
   myChats: state.ChatConversationsNavFrame.myChats,
   allChats: state.ChatConversationsNavFrame.allChats,
 }))
-export default class ChatConversationsNavFrame extends React.Component {
+export class ChatConversationsNavFrame extends React.Component {
 
   constructor(props) {
     super(props);
@@ -18,6 +18,11 @@ export default class ChatConversationsNavFrame extends React.Component {
 
   render() {
     const {myChats, allChats} = this.props;
+
+    const toggleMyChatsGroupingControls = (e) => {
+      e.preventDefault();
+      this.props.dispatch(actions.toggleMyChatsGroupingControls());
+    };
 
     return (
       <section className="task-nav-frame dp-nav-frame">
@@ -48,7 +53,7 @@ export default class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   My Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter-dropdown active" href="#">
+                    <a className="list-counter-dropdown active" href="javascript.void()" onClick={toggleMyChatsGroupingControls}>
                       <span>&nbsp;</span>
                       <i className="fa fa-angle-down"></i>
                     </a>

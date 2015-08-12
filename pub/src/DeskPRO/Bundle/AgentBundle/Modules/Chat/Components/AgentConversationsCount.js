@@ -5,7 +5,7 @@ import * as actions from '../Actions/chatConversationsNavFrameActions'
 @connect(state => ({
   agentNames: state.ChatConversationsNavFrame.agentNames,
 }))
-export default class AgentConversationsCount extends React.Component {
+export class AgentConversationsCount extends React.Component {
   render() {
     const {count, agent} = this.props;
     const label = this.props.agentNames[agent];

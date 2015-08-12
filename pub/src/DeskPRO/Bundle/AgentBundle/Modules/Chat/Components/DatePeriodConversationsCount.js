@@ -1,7 +1,7 @@
 import React from 'react';
 import * as actions from '../Actions/chatConversationsNavFrameActions'
 
-export default class DatePeriodConversationsCount extends React.Component {
+export class DatePeriodConversationsCount extends React.Component {
   static labels = {
     today: 'Today',
     yesterday: 'Yesterday',
