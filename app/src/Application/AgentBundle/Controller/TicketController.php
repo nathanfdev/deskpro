@@ -75,6 +75,8 @@ use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
@@ -2040,12 +2042,6 @@ class TicketController extends AbstractController
                     }
                 });
                 $ticket->addPropertyChangedListener($event_listener);
-                $problemListener = new TicketProblemsChangedListener(
-                    $this->em->getConnection(),
-                    $this->container->getAgentData()
-                );
-                $problemListener->setPersonContext($this->person);
-                $ticket->addPropertyChangedListener($problemListener);
 
                 if ($this->in->getBool('with_set_agent_parts')) {
                     $set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
@@ -2084,32 +2080,41 @@ class TicketController extends AbstractController
                         $org_field_manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
                         $this->em->persist($ticket->person->organization);
                     }
-                }
 
-                if (isset($actions['problem_id'])) {
-                    $id = (int)$actions['problem_id'];
-                    $title = @$actions['create_problem'];
-                    /** @var TicketChecker $checker */
-                    $checker = $this->person->PermissionsManager->TicketChecker;
+                    if ($this->settings->get('core.problems.enabled')) {
+                        $problemListener = new TicketProblemsChangedListener(
+                            $this->em->getConnection(),
+                            $this->container->getAgentData()
+                        );
+                        $problemListener->setPersonContext($this->person);
+                        $ticket->addPropertyChangedListener($problemListener);
 
-                    switch (true) {
-                        case $id > 0 && $checker->canAssociateProblem($ticket):
-                            $problem = $this->em->find('DeskPRO:Problem', $actions['problem_id']);
-                            $ticket->associateProblem($problem);
-                            break;
+                        if (isset($actions['problem_id'])) {
+                            $id = (int)$actions['problem_id'];
+                            $title = @$actions['create_problem'];
+                            /** @var TicketChecker $checker */
+                            $checker = $this->person->PermissionsManager->TicketChecker;
 
-                        case 0 === $id && $checker->canDisassociateProblem($ticket):
-                            $ticket->disassociateProblem();
-                            break;
+                            switch (true) {
+                                case $id > 0 && $checker->canAssociateProblem($ticket):
+                                    $problem = $this->em->find('DeskPRO:Problem', $actions['problem_id']);
+                                    $ticket->associateProblem($problem);
+                                    break;
 
-                        case -1 === $id && $this->person->hasPerm('agent_problems.create') && $title:
-                            $problem = new Problem();
-                            $problem->creator = $this->person;
-                            $problem->title = $title;
-                            $this->em->persist($problem);
-                            $this->em->flush($problem);
-                            $ticket->associateProblem($problem);
-                            break;
+                                case 0 === $id && $checker->canDisassociateProblem($ticket):
+                                    $ticket->disassociateProblem();
+                                    break;
+
+                                case -1 === $id && $this->person->hasPerm('agent_problems.create') && $title:
+                                    $problem = new Problem();
+                                    $problem->creator = $this->person;
+                                    $problem->title = $title;
+                                    $this->em->persist($problem);
+                                    $this->em->flush($problem);
+                                    $ticket->associateProblem($problem);
+                                    break;
+                            }
+                        }
                     }
                 }
 
@@ -4727,5 +4732,35 @@ class TicketController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array('success' => true));
+    }
+
+    public function closeProblemAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        if (!$problem = $ticket->problems->first()) {
+            throw new NotFoundHttpException;
+        }
+
+        if (!$this->person->hasPerm('agent_problems.close')) {
+            throw new AccessDeniedHttpException;
+        }
+
+        $problem['is_open'] = false;
+        $this->em->flush($problem);
+
+        $data = array();
+        if ($this->in->getUint('client_messages_since')) {
+            if ($client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+                $this->person,
+                $this->session,
+                $this->in->getUint('client_messages_since')
+            )
+            ) {
+                $data['client_messages'] = $client_messages;
+            }
+        }
+
+        return $this->createJsonResponse($data);
     }
 }

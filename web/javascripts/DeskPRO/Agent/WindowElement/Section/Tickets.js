@@ -171,7 +171,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		if ($('#problems-section')) {
 
       DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-created', function (info) {
-        var $list    = $('#tickets_outline_problems')
+        var $list = $('.tickets_outline_problems', self.wrapper)
           , tpl      = $.trim($list.prev('script').text())
           , $item    = parseHTML(tpl)
           , $counter = $item.find('.counter')
@@ -202,6 +202,25 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
             : $list.append(itm);
         });
 
+      });
+
+      DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-updated', function (info) {
+        if (!info.changeset) return;
+
+        var $list   = $('.tickets_outline_problems', self.wrapper)
+          , $closed = $('.closed_problems_select', self.wrapper)
+          ;
+
+        if (!info.changeset.is_open || !info.changeset.is_open[0] || info.changeset.is_open[1]) return;
+        $list.children('[data-problem-id="' + info.id + '"]').remove();
+        $closed.closest('li').show();
+        $closed.append('<option value="' + info.id + '">' + info.title + ' (' + info.incidents + ')</option>');
+
+        var $items = $closed.children().get()
+          ;
+        $items.sort(function (a, b) {
+          return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
+        });
       });
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-problems-updated', function (info) {
@@ -390,7 +409,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
-		this.sectionEl.find('#closed_problems_select').each(function () {
+    this.sectionEl.find('.closed_problems_select').each(function () {
       var sel = $(this);
       if (sel.hasClass('with-select2')) return;
       DP.select(sel);

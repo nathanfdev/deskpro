@@ -73,35 +73,47 @@
 			&nbsp;
 			{% if problem %}
 				[<a class="agent_link"
-					data-route="listpane:{{ path('agent_ticketsearch_runproblem', {'problem_id': problem.id}) }}">{{ phrase('agent.problems.incidents') }}
-				: {{ problem.tickets.count }}</a>]
-												 [<a class="agent_link">close</a>]
+                    data-route="listpane:{{ path('agent_ticketsearch_runproblem', {'problem_id': problem.id}) }}">
+                {{ phrase('agent.problems.incidents') }}: {{ problem.tickets.count }}</a>]
+
+                {% if problem.is_open and app.user.hasPerm('agent_problems.close') %}
+                    [<a class="agent_link close-problem-link">close</a>]
+                {% endif %}
 			{% endif %}
         </td>
     </tr>
 
-    {% if app.user.PermissionsManager.get('TicketChecker').canAssociateProblem(ticket) %}
+    {% set _as = app.user.PermissionsManager.get('TicketChecker').canAssociateProblem(ticket) %}
+    {% set _ds = app.user.PermissionsManager.get('TicketChecker').canDisassociateProblem(ticket) %}
+
+    {% if (_as and ticket.problems.isEmpty()) or (_ds and not ticket.problems.isEmpty()) %}
+
         <tr class="mode-edit">
             <th width="80">{{ phrase('agent.problems.problem') }}:</th>
             <td>
 
 				{% set problems = [] %}
-				{% if open_problems|length %}
-					{% set problems = [{title: phrase('agent.problems.open_problems'), children: open_problems}]|merge(problems) %}
-				{% endif %}
-				{% if closed_problems|length %}
-					{% set problems = [{title: phrase('agent.problems.closed_problems'), children: closed_problems}]|merge(problems) %}
-				{% endif %}
-				{% if app.user.hasPerm('agent_problems.create') %}
-					{% set problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(problems) %}
-				{% endif %}
+
+                {% if _as %}
+                    {% if open_problems|length %}
+                        {% set problems = [{title: phrase('agent.problems.open_problems'), children: open_problems}]|merge(problems) %}
+                    {% endif %}
+                    {% if closed_problems|length %}
+                        {% set problems = [{title: phrase('agent.problems.closed_problems'), children: closed_problems}]|merge(problems) %}
+                    {% endif %}
+                    {% if app.user.hasPerm('agent_problems.create') %}
+                        {% set problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(problems) %}
+                    {% endif %}
+                {% else %}
+                    {% set problems = [ticket.problems.first] %}
+                {% endif %}
 
                 <div>
                     {% include 'AgentBundle:Common:select-standard.html.twig' with {
                     'name': 'ticket[problem_id]',
                     'add_classname': 'prop-input-problem_id',
                     'add_attr': 'data-prop-id="problem" ',
-                    'with_blank': app.user.PermissionsManager.get('TicketChecker').canDisassociateProblem(ticket),
+                    'with_blank': _ds,
 					'blank_title': 'None',
                     'categories': problems,
                     'id': baseId ~ '_ticket_problem_id',

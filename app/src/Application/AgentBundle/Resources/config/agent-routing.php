@@ -1145,6 +1145,17 @@ $collection->create('agent_ticket_spam', array(
     'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
+
+$collection->create(
+    'agent_ticket_spam',
+    array(
+        'path' => '/tickets/{ticket_id}/close_problem',
+        'controller' => 'AgentBundle:Ticket:closeProblem',
+        'requirements' => array('ticket_id' => '\\d+'),
+        'methods' => array('POST'),
+    )
+);
+
 $collection->create('agent_ticket_link_existing_overlay', array(
     'path' => '/tickets/{ticket_id}/link-overlay',
     'controller' => 'AgentBundle:Ticket:linkExistingOverlay',

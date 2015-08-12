@@ -24,7 +24,7 @@
                     </div>
                 </li>
             </script>
-            <ul id="tickets_outline_problems" class="nav-list">
+            <ul class="nav-list tickets_outline_problems">
 
                 {% if 0 == open_problems|length and 0 == closed_problems|length %}
                     <li class="no-data">
@@ -50,33 +50,30 @@
                     </li>
                 {% endfor %}
 
-                {% if closed_problems|length %}
-                    <li class="closed-problems-list">
-                        <div class="item-form">
-                            <div class="select-value-wrap">
-                                <div class="select-value">
-                                    <label id="nav_closed_problem_label"></label>
-                                    <i class="icon-caret-down"></i>
-                                </div>
-                                <select id="closed_problems_select"
-                                        class="dpe_select invisible-trigger problems_select"
-                                        data-label-bound="#nav_closed_problem_label"
-                                        data-dropdown-css-class="invisible-trigger small filter-list"
-                                        data-select-width="165"
-                                        data-path="listpane:{{ path('agent_ticketsearch_runproblem', {'problem_id': 0}) }}"
-                                        >
-                                    <option value="">{{ phrase('agent.problems.closed_problems') }}</option>
-                                    {% for p in closed_problems %}
-                                        <option value="{{ p.id }}" data-problem-id="{{ p.id }}">{{ p.title }}
-                                            ({{ problem_counts[p.id]|default(0) }})
-                                        </option>
-                                    {% endfor %}
-                                </select>
+                <li class="closed-problems-list" {% if 0 == closed_problems|length %}style="display: none;"{% endif %}>
+                    <div class="item-form">
+                        <div class="select-value-wrap">
+                            <div class="select-value">
+                                <label id="nav_closed_problem_label"></label>
+                                <i class="icon-caret-down"></i>
                             </div>
+                            <select
+                                    class="closed_problems_select dpe_select invisible-trigger problems_select"
+                                    data-label-bound="#nav_closed_problem_label"
+                                    data-dropdown-css-class="invisible-trigger small filter-list"
+                                    data-select-width="165"
+                                    data-path="listpane:{{ path('agent_ticketsearch_runproblem', {'problem_id': 0}) }}"
+                                    >
+                                <option value="">{{ phrase('agent.problems.closed_problems') }}</option>
+                                {% for p in closed_problems %}
+                                    <option value="{{ p.id }}" data-problem-id="{{ p.id }}">{{ p.title }}
+                                        ({{ problem_counts[p.id]|default(0) }})
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
-                    </li>
-                {% endif %}
-
+                    </div>
+                </li>
 
             </ul>
         </article>

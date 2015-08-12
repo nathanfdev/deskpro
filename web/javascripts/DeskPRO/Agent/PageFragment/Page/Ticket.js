@@ -144,6 +144,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initTasks();
 		this._initEditName();
 		this._initSlas();
+    this._initProblems();
 
 		// Change email menu
 		var emailText = this.getEl('user_email_text');
@@ -1991,6 +1992,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}).bind(this));
 	},
 
+  _initCloseProblemOverlay: function () {
+    if (this.problemOverlay) return;
+    this.problemOverlayEl = $('.close-problem-overlay:first', this.wrapper);
+    if (!this.problemOverlayEl) return;
+
+    this.problemOverlay = new DeskPRO.UI.Overlay({
+      contentElement: this.problemOverlayEl
+    });
+    this.ownObject(this.problemOverlay);
+
+    $('.save-trigger', this.problemOverlayEl).on('click', (function () {
+      this.doCloseProblem();
+    }).bind(this));
+  },
+
+  _initProblems: function () {
+    self = this;
+    this.getEl('field_holders').on('click', '.close-problem-link', function () {
+      self.showCloseProblemOverlay();
+    });
+  },
+
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
 		this.deleteOverlay.doBan = doBan;
@@ -2003,6 +2026,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.deleteOverlay.openOverlay();
 	},
+
+  showCloseProblemOverlay: function () {
+    this._initCloseProblemOverlay();
+    this.problemOverlay.openOverlay();
+  },
 
 	doTicketDelete: function() {
 
@@ -2042,6 +2070,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 	},
+
+  doCloseProblem: function () {
+    $('.loading-off', this.problemOverlayEl).hide();
+    $('.loading-on', this.problemOverlayEl).show();
+
+    var self = this;
+
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/close_problem',
+      type:     'POST',
+      context:  this,
+      complete: function () {
+        self.problemOverlay.closeOverlay();
+        DeskPRO_Window.removePage(self);
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist: true});
+      }
+    });
+  },
 
 	doTicketSpam: function(doBan) {
 		var self = this;

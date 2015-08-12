@@ -29,6 +29,7 @@ namespace Application\DeskPRO\Entity\EventListener;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Problem;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -42,6 +43,11 @@ class ProblemListener
      * @var \Doctrine\DBAL\Connection
      */
     protected $conn;
+
+    /**
+     * @var DeskproContainer
+     */
+    protected $cont;
 
     /**
      * @var \SplQueue
@@ -62,6 +68,7 @@ class ProblemListener
     {
         $this->updates = new \SplQueue();
         $this->conn = $container->getEm()->getConnection();
+        $this->cont = $container;
     }
 
     /**
@@ -69,11 +76,12 @@ class ProblemListener
      */
     public function onPreUpdate(Problem $problem, PreUpdateEventArgs $event)
     {
-//        $this->queued_updates[spl_object_hash($problem)] = $problem;
-
-//        foreach ($event->getEntityChangeSet() as $field => $change) {
-//            $old[$field] = $change[0];
-//        }
+        $this->updates->enqueue(
+            array(
+                'entity' => $problem,
+                'changeset' => $event->getEntityChangeSet(),
+            )
+        );
     }
 
     /**
@@ -81,36 +89,53 @@ class ProblemListener
      */
     public function onPrePersist(Problem $problem)
     {
-        $a = 1;
         if (!$problem->id) {
             $this->inserts++;
         }
     }
 
     /**
-     * @param Problem $problem
+     *
      */
-    public function onPostUpdate(Problem $problem)
+    public function onPostUpdate()
     {
         while (!$this->updates->isEmpty()) {
-            $p = $this->updates->dequeue();
-            $this->queue[] = array(
-                'channel' => self::CHANNEL_UPDATE,
-                'auth' => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(
-                    array(
-                        'problem_id' => $p->id,
-                        'problem_title' => $p->title,
-                        'incidents' => $p->tickets->count(),
-                        'is_open' => $p->is_open,
+            $data = $this->updates->dequeue();
+            /** @var Problem $p */
+            $p = $data['entity'];
+
+            foreach ($this->cont->getAgentData()->getOnlineAgents() as $agent) {
+
+                $incidents = 0;
+                /** @var TicketChecker $checker */
+                $checker = $agent->PermissionsManager->TicketChecker;
+
+                foreach ($p->tickets as $ticket) {
+                    if (!$checker->canView($ticket)) {
+                        continue;
+                    }
+                    $incidents++;
+                }
+
+                $this->queue[] = array(
+                    'channel' => self::CHANNEL_UPDATE,
+                    'auth' => DpStrings::random(15, Strings::CHARS_KEY),
+                    'for_person_id' => $agent->id,
+                    'date_created' => date('Y-m-d H:i:s'),
+                    'data' => serialize(
+                        array(
+                            'id' => $p->id,
+                            'title' => $p->title,
+                            'incidents' => $incidents,
+                            'changeset' => $data['changeset'],
+                        )
                     )
-                )
-            );
+                );
+            }
         }
 
         if ($this->updates->isEmpty() && $this->queue) {
-            // todo?
+            $this->sendQueue();
         }
     }
 
@@ -119,18 +144,34 @@ class ProblemListener
      */
     public function onPostPersist(Problem $problem)
     {
-        $this->queue[] = array(
-            'channel' => self::CHANNEL_NEW,
-            'auth' => DpStrings::random(15, Strings::CHARS_KEY),
-            'date_created' => date('Y-m-d H:i:s'),
-            'data' => serialize(
-                array(
-                    'id' => $problem->id,
-                    'title' => $problem->title,
-                    'incidents' => $problem->tickets->count(),
+        foreach ($this->cont->getAgentData()->getOnlineAgents() as $agent) {
+
+            $incidents = 0;
+            /** @var TicketChecker $checker */
+            $checker = $agent->PermissionsManager->TicketChecker;
+
+            foreach ($problem->tickets as $ticket) {
+                if (!$checker->canView($ticket)) {
+                    continue;
+                }
+                $incidents++;
+            }
+
+            $this->queue[] = array(
+                'channel' => self::CHANNEL_NEW,
+                'auth' => DpStrings::random(15, Strings::CHARS_KEY),
+                'for_person_id' => $agent->id,
+                'date_created' => date('Y-m-d H:i:s'),
+                'data' => serialize(
+                    array(
+                        'id' => $problem->id,
+                        'title' => $problem->title,
+                        'incidents' => $incidents,
+                    )
                 )
-            )
-        );
+            );
+        }
+
         $this->inserts--;
 
         if (0 === $this->inserts) {

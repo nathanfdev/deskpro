@@ -448,7 +448,7 @@ class TicketChecker extends AbstractChecker
      */
     public function canDisassociateProblem(Ticket $ticket)
     {
-        return $this->doCheck($ticket, 'associate_problem');
+        return $this->doCheck($ticket, 'disassociate_problem');
     }
 
     /**

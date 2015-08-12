@@ -131,7 +131,7 @@ class TicketProblemsChangedListener implements PropertyChangedListener
 
 
         $this->queue[] = array(
-            'for_person_id' => $agent->id,
+            'for_person_id' => $forAgent->id,
             'channel' => self::CHANNEL,
             'auth' => DpStrings::random(15, Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
