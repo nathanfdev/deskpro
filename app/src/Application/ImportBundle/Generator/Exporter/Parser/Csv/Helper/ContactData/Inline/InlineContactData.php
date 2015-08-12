@@ -71,7 +71,7 @@ class InlineContactData extends AbstractParserHelper
      *
      * @return ContactData[]
      */
-    public function parse(array $data, $destination)
+    public function export(array $data, $destination)
     {
         $contact_data = array();
         foreach ($this->contact_types as $num => $contact_type) {

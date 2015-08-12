@@ -32,6 +32,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\InlineContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\MultipleContactData;
+use Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields\InlineCustomFields;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
@@ -328,60 +329,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns a collection of inline custom fields
-     *
-     * @param string $destination
-     * @param array  $entity
-     *
-     * @return Entity\Collection
-     */
-    protected function exportInlineCustomFields($destination, array $entity)
-    {
-        $collection    = new Entity\Collection();
-        $custom_fields = $this->parseInlineCustomFields($entity);
-
-        foreach ($custom_fields as $num => $custom_field) {
-            $entity = new Entity\CustomField();
-            $entity
-                ->setRawData($custom_field)
-                ->setOid($custom_field['property'])
-                ->setDestination($destination)
-                ->setKey($custom_field['field_name'])
-                ->setValue($custom_field['value'])
-            ;
-
-            $collection->attach($entity);
-
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Parses inline custom fields from entity
-     *
-     * @param array $entity
-     * @return array
-     */
-    protected function parseInlineCustomFields(array $entity)
-    {
-        $properties    = array_keys($entity);
-        $custom_fields = array();
-
-        foreach ($properties as $property) {
-            if (preg_match('/^custom "([^"]+)"$/', $property, $matches)) {
-                $custom_fields[] = array(
-                    'property'   => $property,
-                    'field_name' => $matches[1],
-                    'value'      => $entity[$property],
-                );
-            }
-        }
-
-        return $custom_fields;
-    }
-
-    /**
      * @return MultipleContactData
      */
     protected function getMultipleContactDataParser()
@@ -395,5 +342,13 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function getInlineContactDataParser()
     {
         return $this->helpers->get($this, 'inline_contact_data');
+    }
+
+    /**
+     * @return InlineCustomFields
+     */
+    protected function getInlineCustomFieldsParser()
+    {
+        return $this->helpers->get($this, 'inline_custom_fields');
     }
 }

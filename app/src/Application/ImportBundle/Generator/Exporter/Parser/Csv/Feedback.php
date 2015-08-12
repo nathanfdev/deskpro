@@ -88,7 +88,7 @@ final class Feedback extends AbstractParser
                     }
                 }
 
-                $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $feedback);
+                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $feedback);
                 foreach ($inline_custom_fields as $custom_field_entity) {
                     $entity->addCustomField($custom_field_entity);
                 }

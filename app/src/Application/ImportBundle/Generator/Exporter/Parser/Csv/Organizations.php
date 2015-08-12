@@ -88,12 +88,12 @@ class Organizations extends AbstractParser
                     }
                 }
 
-                $inline_contact_data = $this->getInlineContactDataParser()->parse($organization, $entity->getDestination());
+                $inline_contact_data = $this->getInlineContactDataParser()->export($organization, $entity->getDestination());
                 foreach ($inline_contact_data as $contact) {
                     $entity->addContact($contact);
                 }
 
-                $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $organization);
+                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $organization);
                 foreach ($inline_custom_fields as $custom_field_entity) {
                     $entity->addCustomField($custom_field_entity);
                 }

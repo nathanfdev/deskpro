@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields;
 
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
+use Application\ImportBundle\Entity;
 
 /**
  * Class InlineCustomFields
@@ -41,5 +42,59 @@ class InlineCustomFields extends AbstractParserHelper
     public function getName()
     {
         return 'inline_custom_fields';
+    }
+
+    /**
+     * Returns a collection of inline custom fields
+     *
+     * @param string $destination
+     * @param array  $data
+     *
+     * @return Entity\Collection
+     */
+    public function export($destination, array $data)
+    {
+        $collection    = new Entity\Collection();
+        $custom_fields = $this->parse($data);
+
+        foreach ($custom_fields as $num => $custom_field) {
+            $data = new Entity\CustomField();
+            $data
+                ->setRawData($custom_field)
+                ->setOid($custom_field['property'])
+                ->setDestination($destination)
+                ->setKey($custom_field['field_name'])
+                ->setValue($custom_field['value'])
+            ;
+
+            $collection->attach($data);
+
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Parses inline custom fields from entity
+     *
+     * @param array $data
+     * @return array
+     */
+    private function parse(array $data)
+    {
+        $properties    = array_keys($data);
+        $custom_fields = array();
+
+        foreach ($properties as $property) {
+            if (preg_match('/^custom "([^"]+)"$/', $property, $matches)) {
+                $custom_fields[] = array(
+                    'property'   => $property,
+                    'field_name' => $matches[1],
+                    'value'      => $data[$property],
+                );
+            }
+        }
+
+        return $custom_fields;
     }
 }
