@@ -1,5 +1,5 @@
 Feature: /feedback/counts endpoint
-  To retrieve count of feedback to validate
+  To obtain counters for different types of feedback
   As a developer
   I want an endpoint for feedback counts
 
@@ -10,6 +10,13 @@ Feature: /feedback/counts endpoint
   @reinstall
   Scenario: I GET count of feedback with hidden_status set to validating
     When I send a GET request to "/api/v2/feedback/counts?awaiting_validation=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data[0]" should be equal to 1
+
+  Scenario: I GET count of feedback grouped by category
+    When I send a GET request to "/api/v2/feedback/counts?group_by=category"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist

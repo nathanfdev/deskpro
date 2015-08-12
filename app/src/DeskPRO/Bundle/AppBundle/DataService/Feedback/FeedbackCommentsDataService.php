@@ -28,8 +28,10 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataService;
+namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
+
+use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 
 class FeedbackCommentsDataService extends AbstractDataService
 {

@@ -33,10 +33,17 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\Exception\AccessException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 
@@ -47,6 +54,40 @@ class FeedbackController extends BaseController
 {
     /**
      * @ApiDoc(
+     *      description="Get feedback counts",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     * )
+     * @Get("/feedback/counts", name="api_feedback_count")
+     * @param Request $request
+     * @return View
+     * @throws AccessException
+     * @throws UndefinedOptionsException
+     * @throws BadRequestHttpException
+     */
+    public function getCountsAction(Request $request)
+    {
+        $dataService = $this->get('data.feedback');
+        $params = $request->query->all();
+        try {
+            $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver(), $this->getUser());
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+        $count = $dataService->countFeedback($criteria);
+
+        return View::create(
+            $this->createRepresentation($count),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
      *      description="get count of feedback awaiting validation",
      *      parameters={
      *          {
@@ -54,6 +95,13 @@ class FeedbackController extends BaseController
      *              "requirement"="\d+",
      *              "description"="count of feedback awaiting validation",
      *              "dataType"="integer",
+     *              "required"=true
+     *          },
+     *         {
+     *              "name"="group_by",
+     *              "requirement"="\w+",
+     *              "description"="counts of feedback grouped by feedback category",
+     *              "dataType"="string",
      *              "required"=true
      *          }
      *      },
@@ -63,13 +111,50 @@ class FeedbackController extends BaseController
      * )
      *
      * @Get("/feedback/counts", name="api_feedback_count")
+     * @param Request $request
+     * @return View
+     * @throws \InvalidArgumentException
+     */
+    public function getCountAwaitingValidationAction(Request $request)
+    {
+        $count = [];
+        $service = $this->get('data.feedback');
+        if ($request->query->get('awaiting_validation')) {
+            $count = $service->countAwaitingValidation();
+        } elseif ($request->query->get('group_by') === 'category') {
+            $count = $service->countsByType();
+            var_dump($count);
+        }
+        return View::create(
+            $this->dataSerialize(new PrimitiveArray([$count])),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get counts of feedback grouped by feedback category",
+     *      parameters={
+     *          {
+     *              "name"="group_by",
+     *              "requirement"="\w+",
+     *              "description"="counts of feedback grouped by feedback category",
+     *              "dataType"="string",
+     *              "required"=true
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/feedback/counts", name="api_feedback_counts_by_type")
      * @return View
      * @throws \LogicException
      */
-    public function getCountAwaitingValidationAction()
+    public function getTypeCountsAction()
     {
-        $count = $this->get('data.feedback')->countAwaitingValidation();
-
+        $count = $this->get('data.feedback')->countsByType();
         return View::create(
             $this->dataSerialize(new PrimitiveArray([$count])),
             Response::HTTP_OK

@@ -43,7 +43,7 @@ use Orb\Util\Util;
 /**
  * Basic hierarchicial category entity.
  */
-class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class   CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
     /**
      * @var int

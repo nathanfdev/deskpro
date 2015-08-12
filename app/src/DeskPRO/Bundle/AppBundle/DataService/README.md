@@ -4,7 +4,7 @@ This namespace is meant to hold app-wide services that can be used for general p
 
 This is very generic/abstract and there aren't many rules. This is mostly just a place to put similar "data-y" services.
 
-Many methods in these services return a PagerFanta object, which is used becasue it has lots of useful info:
+Many methods in these services return a PagerFanta object, which is used because it has lots of useful info:
 
 1. total count
 2. number of pages

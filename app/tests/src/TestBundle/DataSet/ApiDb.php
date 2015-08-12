@@ -34,6 +34,7 @@ namespace DpTestSrc\TestBundle\DataSet;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
@@ -292,16 +293,48 @@ class ApiDb extends AbstractDbSet
         $em->flush();
 
 // Feedback
+
+        $category1 = new FeedbackCategory();
+        $category1->setTitle('First feedback category');
+        $em->persist($category1);
+
+        $category2 = new FeedbackCategory();
+        $category2->setTitle('Second feedback category');
+        $em->persist($category2);
+
+        $category3 = new FeedbackCategory();
+        $category3->setTitle('Third feedback category');
+        $em->persist($category3);
+
+        $em->flush();
+
         $feedback1 = new Feedback();
         $feedback1->setTitle('First feedback');
         $feedback1->setContent('First feedback content');
         $feedback1->setHiddenStatus(Feedback::HIDDEN_STATUS_VALIDATING);
+        $feedback1->setCategory($category1);
         $em->persist($feedback1);
 
         $feedback2 = new Feedback();
         $feedback2->setTitle('Second feedback');
         $feedback2->setContent('Second feedback content');
+        $feedback2->setCategory($category2);
         $em->persist($feedback2);
+
+        $feedback3 = new Feedback();
+        $feedback3->setTitle('Third feedback');
+        $feedback3->setContent('Third feedback content');
+        $feedback3->setStatus(Feedback::STATUS_ACTIVE);
+        $feedback3->setCategory($category1);
+        $em->persist($feedback3);
+        $em->flush();
+
+        $feedback4 = new Feedback();
+        $feedback4->setTitle('Fourth feedback');
+        $feedback4->setContent('Fourth feedback content');
+        $feedback4->setStatus(Feedback::STATUS_ACTIVE);
+        $feedback4->setCategory($category2);
+        $em->persist($feedback4);
         $em->flush();
 
         $feedback1->addLabelByString('foo');

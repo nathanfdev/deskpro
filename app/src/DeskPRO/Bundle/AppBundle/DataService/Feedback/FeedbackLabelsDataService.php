@@ -30,7 +30,8 @@
  * @package DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService;
+namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
+use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 
 /**
  * Provides controller data access to the feedback labels.
@@ -44,26 +45,22 @@ class FeedbackLabelsDataService extends AbstractDataService
      */
     public function getLabels($term = null)
     {
-        /* So we're duplicating the labels per ticket. Hence we must do a group by operation
-         * on the (hopefully) unique label names. That means using a querybuilder. */
         $qb = $this->getEm()->createQueryBuilder();
         $qb
             ->select('l.label')
+            ->distinct()
             ->from('DeskPRO:LabelFeedback', 'l')
-            ->groupBy('l.label')
             ->orderBy('l.label', 'ASC');
         if ($term) {
             $qb
                 ->where('l.label LIKE :term')
                 ->setParameter('term', $term . '%');
         }
-        $iterator = $qb->getQuery()->iterate();
-        $labels = array();
-        foreach ($iterator as $data) {
-            foreach ($data as $row) {
-                $labels[] = $row['label'];
-            }
-        }
+        $labels = $qb->getQuery()->getScalarResult();
+
+        $labels = array_map(function ($item) {
+            return $item['label'];
+        }, $labels);
 
         return $labels;
     }
