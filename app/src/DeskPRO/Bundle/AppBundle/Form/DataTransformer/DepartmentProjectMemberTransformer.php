@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
@@ -48,9 +49,9 @@ class DepartmentProjectMemberTransformer implements DataTransformerInterface
     private $entityManager;
 
     /**
-     * @var Task
+     * @var TaskProject
      */
-    private $task;
+    private $project;
 
     /**
      * Constructor
@@ -61,12 +62,13 @@ class DepartmentProjectMemberTransformer implements DataTransformerInterface
     {
         $this->entityManager = $entityManager;
         $this->project = $project;
+
     }
 
     /**
-     * Transform a Project Member into a department ID
+     * Transform a Project Member into a department
      * @param mixed $memberObject
-     * @return string
+     * @return null
      */
     public function transform($memberObject)
     {
@@ -79,15 +81,17 @@ class DepartmentProjectMemberTransformer implements DataTransformerInterface
 
     /**
      * Transform a department entity into a Project Member
-     * @param string $deptId
+     * @param string $department
      * @return LabelTask|null|object
      */
-    public function reverseTransform($deptId)
+    public function reverseTransform($department)
     {
+        if (!$department instanceof Department) {
+            $department = $this->entityManager->getRepository('DeskPRO:Department')
+                ->find($department);
+        }
         $member = $this->entityManager->getRepository('App:ProjectMember')
-            ->findOneBy(array('department' => $deptId, 'project' => $this->project->getId()));
-        $department = $this->entityManager->getRepository('DeskPRO:Department')
-            ->find($deptId);
+            ->findOneBy(array('department' => $department, 'project' => $this->project));
 
         if (!$member) {
             $member = new ProjectMember();
@@ -95,6 +99,6 @@ class DepartmentProjectMemberTransformer implements DataTransformerInterface
             $member->setProject($this->project);
         }
 
-        return $member;
+        return $department;
     }
 }

@@ -34,6 +34,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\Helpers\Agent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
@@ -74,7 +78,7 @@ class TaskProject extends NotifyPropertyChangeEntity
 
     /**
      * @var ProjectMember[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="project")
+     * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="project", cascade={"persist"}, orphanRemoval=true)
      */
     protected $members;
 
@@ -84,6 +88,7 @@ class TaskProject extends NotifyPropertyChangeEntity
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->members = new ArrayCollection();
     }
 
     /**
@@ -118,6 +123,123 @@ class TaskProject extends NotifyPropertyChangeEntity
         return $this->members;
     }
 
+    public function getDepartments()
+    {
+        $departments = [];
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if (!empty($member->getDepartment())) {
+                    $departments[] = $member->getDepartment();
+                }
+            }
+        }
+
+        return new ArrayCollection($departments);
+    }
+
+    public function getTeams()
+    {
+        $departments = [];
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if (!empty($member->getTeam())) {
+                    $departments[] = $member->getTeam();
+                }
+            }
+        }
+
+        return new ArrayCollection($departments);
+    }
+
+    public function getAgents()
+    {
+        $departments = [];
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if (!empty($member->getPerson())) {
+                    $departments[] = $member->getPerson();
+                }
+            }
+        }
+
+        return new ArrayCollection($departments);
+    }
+
+    /**
+     * @param Department $department
+     */
+    public function addDepartment(Department $department)
+    {
+        $member = new ProjectMember();
+        $member->setDepartment($department);
+        $member->setProject($this);
+        $this->addMember($member);
+    }
+
+    /**
+     * @param Department $department
+     */
+    public function removeDepartment(Department $department)
+    {
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if ($member->getDepartment() === $department) {
+                    $this->members->removeElement($member);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param AgentTeam $agentTeam
+     */
+    public function addTeam(AgentTeam $agentTeam)
+    {
+        $member = new ProjectMember();
+        $member->setTeam($agentTeam);
+        $member->setProject($this);
+        $this->addMember($member);
+    }
+
+    /**
+     * @param AgentTeam $agentTeam
+     */
+    public function removeTeam(AgentTeam $agentTeam)
+    {
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if ($member->getTean() === $agentTeam) {
+                    $this->members->removeElement($member);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function addAgent(Person $person)
+    {
+        $member = new ProjectMember();
+        $member->setPerson($person);
+        $member->setProject($this);
+        $this->addMember($member);
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function removeAgent(Person $person)
+    {
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if ($member->getPerson() === $person) {
+                    $this->members->removeElement($member);
+                }
+            }
+        }
+    }
+
     /**
      * @param string $title
      */
@@ -142,5 +264,13 @@ class TaskProject extends NotifyPropertyChangeEntity
     {
         $this->members->add($member);
         $this->setModelField('member', $member);
+    }
+
+    /**
+     * @param ProjectMember $member
+     */
+    public function removeMember(ProjectMember $member)
+    {
+        $this->members->removeElement($member);
     }
 }

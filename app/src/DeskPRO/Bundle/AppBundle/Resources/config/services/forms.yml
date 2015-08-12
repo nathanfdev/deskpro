@@ -79,9 +79,21 @@ services:
 
   form.department:
       class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
-      arguments: [@doctrine.orm.default_entity_manager]
       tags:
           - { name: form.type, alias: department }
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  form.agent_team:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\AgentTeamType
+      tags:
+          - { name: form.type, alias: agent_team }
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  form.person:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\PersonType
+      tags:
+          - { name: form.type, alias: person }
+      arguments: [@doctrine.orm.default_entity_manager]
 
   form.term_engine.term:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType

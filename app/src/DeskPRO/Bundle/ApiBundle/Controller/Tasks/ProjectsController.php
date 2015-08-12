@@ -636,34 +636,22 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $status = $project->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         $submitted = $request->request->all();
-        $this->storedMembers = $this->convertMembers($submitted);
-
-        $data = [];
-        if (!empty($submitted['title'])) {
-            $data = ['title' => $submitted['title']];
-        }
-
-        if ($request->getMethod() === 'PUT') {
-            $this->oldMembers = $this->convertExistingMembers($project);
-        }
 
         /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(
             null,
             'project',
-            $project
-//            ['project' => $project, 'entity_manager' => $this->getDoctrine()->getManager()]
+            $project,
+            ['project' => $project, 'entity_manager' => $this->getDoctrine()->getManager()]
         )->getForm();
 
-        $form->submit($data, $request->getMethod() !== 'PUT');
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->persist($project);
             $this->getDoctrine()->getManager()->flush();
 
             $location = $this->generateUrl('api_projects_get', array('id' => $project->getId()));
-
-            $this->addMembers($project);
 
             return View::create(
                 $this->dataSerialize($project),
@@ -675,104 +663,6 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         }
 
         throw new InvalidFormException($form);
-    }
-
-    /**
-     * Take members out for the purposes of form validation
-     * @param $request
-     * @return array
-     */
-    private function convertMembers($request)
-    {
-        $members = array(
-            'departments' => array(),
-            'teams' => array(),
-            'people' => array()
-        );
-
-        if (!empty($request['departments'])) {
-            $members['departments'] = $request['departments'];
-        }
-        if (!empty($request['teams'])) {
-            $members['teams'] = $request['teams'];
-        }
-        if (!empty($request['people'])) {
-            $members['people'] = $request['people'];
-        }
-
-        return $members;
-    }
-
-    private function convertExistingMembers(Project $project)
-    {
-        $members = array(
-            'departments' => array(),
-            'teams' => array(),
-            'people' => array()
-        );
-
-        foreach ($project->getMembers() as $member) {
-            $department = $member->getDepartment();
-            $team = $member->getTeams();
-            $agent = $member->getPerson();
-            $memberId = $member->getId();
-
-            if (!empty($department)) {
-                $members['departments'][$memberId] = $department->getId();
-            } else if (!empty($team)) {
-                $members['teams'][$memberId] = $team->getId();
-            } else if (!empty($agent)) {
-                $members['people'][$memberId] = $agent->getId();
-            }
-        }
-
-        return $members;
-    }
-
-    /**
-     * Get the appropriate member models and attach them to the new project
-     * @param Project $project
-     */
-    private function addMembers(Project $project)
-    {
-        if (!empty($this->oldMembers)) {
-            $em = $this->getDoctrine()->getManager();
-
-            foreach ($this->oldMembers as $type => $members) {
-                $removed = array_diff($members, $this->storedMembers[$type]);
-                $newMembers = array_diff($this->storedMembers[$type], $members);
-
-                // Remove the old entities
-                foreach ($removed as $id => $member) {
-                    $entity = $em->getRepository('App:ProjectMember')->find($id);
-                    $em->remove($entity);
-                }
-
-                // Commit the new entities
-                foreach ($newMembers as $member_id) {
-                    $member = new ProjectMember();
-                    $member->setProject($project);
-                    switch ($type) {
-                        case 'departments':
-                            $dept = $em->getRepository('DeskPRO:Department')->find($member_id);
-                            $member->setDepartment($dept);
-                            break;
-                        case 'teams':
-                            $team = $em->getRepository('DeskPRO:AgentTeam')->find($member_id);
-                            $member->setTeam($team);
-                            break;
-                        case 'people':
-                            $person = $em->getRepository('DeskPRO:Person')->find($member_id);
-                            $member->setPerson($person);
-                            break;
-                    }
-
-                    $em->persist($member);
-                }
-            }
-
-            $em->flush();
-        }
     }
 
     /**
