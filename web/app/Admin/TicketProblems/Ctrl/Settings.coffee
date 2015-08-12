@@ -22,6 +22,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @service.load().then (settings) =>
         @$scope.settings = settings
         settings.groups.map (group) => @map[group.id] = group
+        settings.groups.sort (a, b) =>
+          return 1 if b.sys_name == 'agent_all_perms'
+          return -1 if a.sys_name == 'agent_all_perms'
+          return 1 if b.sys_name == 'agent_all_safe_perms'
+          return -1 if a.sys_name == 'agent_all_safe_perms'
+          a = (a.sys_name || a.title).toLowerCase()
+          b = (b.sys_name || b.title).toLowerCase()
+          return a.localeCompare(b)
 
 
 
