@@ -34,7 +34,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Application\DeskPRO\Entity\Person;
 
 /**
  * Class FeedbackCountCriteria
@@ -63,14 +62,13 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
     /**
      * @param array $params
      * @param OptionsResolver $resolver
-     * @param Person $me
      * @return FeedbackCountCriteria
      * @throws AccessException
      * @throws UndefinedOptionsException
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver, Person $me)
+    public static function fromParameters(array $params, OptionsResolver $resolver)
     {
-        self::configureResolver($resolver, $me);
+        self::configureResolver($resolver);
         $params = $resolver->resolve($params);
         $group_by = null;
         if (array_key_exists('group_by', $params)) {
@@ -107,36 +105,23 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
             throw new \LogicException('Cannot group without group_by');
         }
         $alias = $qb->getRootAliases()[0];
-        switch ($this->group_by) {
-            case 'status_category':
-                $qb->addSelect("DATE($alias.date_created) as group_name");
-                break;
-            case 'hidden_status':
-                $qb->addSelect($this->getDatePeriodCaseWhenDql($alias) . ' as group_name');
-                // select hidden group_order to use in ORDER BY
-                $qb->addSelect(
-                    "FIELD(" . $this->getDatePeriodCaseWhenDql($alias) . ",
-                        'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever'
-                    ) as HIDDEN group_order");
-                $qb->orderBy('group_order');
-                break;
-            case 'category':
-                $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
-                break;
+        if ($this->group_by === 'hidden_status') {
+            $qb->addSelect('hidden_status as group_name');
+        } else {
+            $qb->addSelect('g.id as group_name');
+            $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
         }
         $qb->groupBy('group_name');
     }
 
     /**
      * @param OptionsResolver $resolver
-     * @param Person $me
      * @throws AccessException
      * @throws UndefinedOptionsException
      */
-    protected static function configureResolver(OptionsResolver $resolver, Person $me)
+    protected static function configureResolver(OptionsResolver $resolver)
     {
-        parent::configureResolver($resolver, $me);
+        parent::configureResolver($resolver);
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
         $resolver->setAllowedValues('group_by', ['status_category', 'hidden_status', 'category']);
     }
