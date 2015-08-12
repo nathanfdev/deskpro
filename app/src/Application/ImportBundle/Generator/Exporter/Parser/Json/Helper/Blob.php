@@ -61,7 +61,7 @@ class Blob extends AbstractParserFormatterHelper
         $configuration = array(
             'oid'          => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'attachment_',
+                'prefix' => 'blob_',
                 'ref'    => 'oid',
             )),
             'blob_data'    => TransformerInterface::TYPE_STRING,

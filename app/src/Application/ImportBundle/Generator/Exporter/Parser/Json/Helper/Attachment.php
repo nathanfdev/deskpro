@@ -27,7 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
+use Application\ImportBundle\Entity;
 
 /**
  * Class Attachment
@@ -41,5 +45,78 @@ class Attachment extends AbstractParserFormatterHelper
     public function getName()
     {
         return 'attachment';
+    }
+
+    /**
+     * Returns a collection of attachments entities
+     *
+     * @param array $attachments
+     * @return Entity\Collection
+     */
+    public function exportAttachments(array $attachments)
+    {
+        $collection = new Entity\Collection();
+        foreach ($attachments as $num => $attachment) {
+            try {
+                $entity = $this->exportAttachment($attachment);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logError(sprintf(
+                    'Invalid attachment record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an attachment entity
+     *
+     * @param array $data
+     * @return Entity\Attachment|null
+     */
+    public function exportAttachment(array $data = null)
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        $configuration = array(
+            'oid'          => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'attachment_',
+                'ref'    => 'oid',
+            )),
+            'blob_data'    => TransformerInterface::TYPE_STRING,
+            'blob_url'     => TransformerInterface::TYPE_STRING,
+            'blob_path'    => TransformerInterface::TYPE_STRING,
+            'file_name'    => TransformerInterface::TYPE_STRING,
+            'content_type' => TransformerInterface::TYPE_STRING,
+            'person'    => TransformerInterface::TYPE_STRING,
+            'is_inline' => TransformerInterface::TYPE_BOOLEAN,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+
+        /** @var Entity\Attachment $entity */
+        $entity = new Entity\Attachment();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setBlobData($formatted['blob_data'])
+            ->setBlobUrl($formatted['blob_url'])
+            ->setBlobPath($formatted['blob_path'])
+            ->setFileName($formatted['file_name'])
+            ->setContentType($formatted['content_type'])
+            ->setPersonEmail($formatted['person'])
+            ->setAsInline($formatted['is_inline']);
+
+        return $entity;
     }
 }

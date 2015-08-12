@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
@@ -83,77 +81,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns an attachment entity
-     *
-     * @param array $data
-     * @return Entity\Attachment|null
-     */
-    protected function exportAttachment(array $data = null)
-    {
-        $configuration = array(
-            'person'    => TransformerInterface::TYPE_STRING,
-            'is_inline' => TransformerInterface::TYPE_BOOLEAN,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
-
-        /** @var Entity\Attachment $entity */
-        $entity = $this->exportBlob($data, new Entity\Attachment());
-        if ($entity) {
-            $entity
-                ->setPersonEmail($formatted['person'])
-                ->setAsInline($formatted['is_inline']);
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns a blob entity
-     *
-     * @param array|null       $data
-     * @param Entity\Blob|null $entity
-     *
-     * @return Entity\Blob|null
-     */
-    protected function exportBlob(array $data = null, Entity\Blob $entity = null)
-    {
-        if (empty($data)) {
-            return null;
-        }
-
-        $configuration = array(
-            'oid'          => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'attachment_',
-                'ref'    => 'oid',
-            )),
-            'blob_data'    => TransformerInterface::TYPE_STRING,
-            'blob_url'     => TransformerInterface::TYPE_STRING,
-            'blob_path'    => TransformerInterface::TYPE_STRING,
-            'file_name'    => TransformerInterface::TYPE_STRING,
-            'content_type' => TransformerInterface::TYPE_STRING,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = $entity ? : new Entity\Blob();
-        $entity
-            ->setRawData($data)
-            ->setOid($formatted['oid'])
-            ->setDestination($formatted['destination'])
-            ->setBlobData($formatted['blob_data'])
-            ->setBlobUrl($formatted['blob_url'])
-            ->setBlobPath($formatted['blob_path'])
-            ->setFileName($formatted['file_name'])
-            ->setContentType($formatted['content_type'])
-        ;
-
-        return $entity;
-    }
-
-    /**
      * Returns batch config
      *
      * @return BatchConfig
@@ -174,6 +101,14 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function getBlobParser()
     {
         return $this->helpers->get($this, 'blob');
+    }
+
+    /**
+     * @return Helper\Attachment
+     */
+    protected function getAttachmentParser()
+    {
+        return $this->helpers->get($this, 'attachment');
     }
 
     /**

@@ -286,40 +286,13 @@ final class Tickets extends AbstractParser
             ->setDateCreated($formatted['date_created'])
         ;
 
-        $attachments = $this->exportAttachments($formatted['attachments']);
+        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
         foreach ($attachments as $attachment) {
             /** @var Entity\Attachment $attachment */
             $entity->addAttachment($attachment);
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns a collection of the ticket message attachments
-     *
-     * @param array $attachments
-     * @return Entity\Collection
-     */
-    private function exportAttachments(array $attachments)
-    {
-        $collection = new Entity\Collection();
-        foreach ($attachments as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($attachment);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logError(sprintf(
-                    'Invalid ticket message attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
     }
 
     /**

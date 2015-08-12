@@ -145,7 +145,7 @@ final class Downloads extends AbstractParser
             ->setStatus($formatted['status'])
             ->setDateCreated($formatted['date_created'])
             ->setDatePublished($formatted['date_published'])
-            ->setAttachment($this->exportAttachment($formatted['attachment']))
+            ->setAttachment($this->getAttachmentParser()->exportAttachment($formatted['attachment']))
         ;
 
         foreach ($formatted['labels'] as $label) {
