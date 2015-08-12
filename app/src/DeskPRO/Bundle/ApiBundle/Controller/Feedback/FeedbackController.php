@@ -75,7 +75,7 @@ class FeedbackController extends BaseController
         $dataService = $this->get('data.feedback');
         $params = $request->query->all();
         try {
-            $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver(), $this->getUser());
+            $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
@@ -87,78 +87,4 @@ class FeedbackController extends BaseController
         );
     }
 
-    /**
-     * @ApiDoc(
-     *      description="get count of feedback awaiting validation",
-     *      parameters={
-     *          {
-     *              "name"="awaiting_validation",
-     *              "requirement"="\d+",
-     *              "description"="count of feedback awaiting validation",
-     *              "dataType"="integer",
-     *              "required"=true
-     *          },
-     *         {
-     *              "name"="group_by",
-     *              "requirement"="\w+",
-     *              "description"="counts of feedback grouped by feedback category",
-     *              "dataType"="string",
-     *              "required"=true
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/feedback/counts", name="api_feedback_count")
-     * @param Request $request
-     * @return View
-     * @throws \InvalidArgumentException
-     */
-    public function getCountAwaitingValidationAction(Request $request)
-    {
-        $count = [];
-        $service = $this->get('data.feedback');
-        if ($request->query->get('awaiting_validation')) {
-            $count = $service->countAwaitingValidation();
-        } elseif ($request->query->get('group_by') === 'category') {
-            $count = $service->countsByType();
-            var_dump($count);
-        }
-        return View::create(
-            $this->dataSerialize(new PrimitiveArray([$count])),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="get counts of feedback grouped by feedback category",
-     *      parameters={
-     *          {
-     *              "name"="group_by",
-     *              "requirement"="\w+",
-     *              "description"="counts of feedback grouped by feedback category",
-     *              "dataType"="string",
-     *              "required"=true
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/feedback/counts", name="api_feedback_counts_by_type")
-     * @return View
-     * @throws \LogicException
-     */
-    public function getTypeCountsAction()
-    {
-        $count = $this->get('data.feedback')->countsByType();
-        return View::create(
-            $this->dataSerialize(new PrimitiveArray([$count])),
-            Response::HTTP_OK
-        );
-    }
 }
