@@ -123,7 +123,7 @@ final class Organizations extends AbstractParser
             ->setName($formatted['name'])
             ->setImportance($formatted['importance'])
             ->setDateCreated($formatted['date_created'])
-            ->setPicture($this->exportBlob($formatted['picture']))
+            ->setPicture($this->getBlobParser()->export($formatted['picture']))
         ;
 
         $contact_data = $this->getContactDataParser()->export($formatted['contact_data']);
@@ -134,7 +134,7 @@ final class Organizations extends AbstractParser
             $entity->addLabel($label);
         }
 
-        $custom_fields = $this->getCustomFieldsParser()->exportCustomFields($formatted['custom_fields']);
+        $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
         foreach ($custom_fields as $custom_field) {
             /** @var Entity\CustomField $custom_field */
             $entity->addCustomField($custom_field);

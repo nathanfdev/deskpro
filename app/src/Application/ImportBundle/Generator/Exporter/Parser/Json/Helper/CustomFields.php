@@ -53,7 +53,7 @@ class CustomFields extends AbstractParserFormatterHelper
      * @param array $custom_fields
      * @return Entity\Collection
      */
-    public function exportCustomFields(array $custom_fields)
+    public function export(array $custom_fields)
     {
         $collection = new Entity\Collection();
         foreach ($custom_fields as $num => $custom_field) {

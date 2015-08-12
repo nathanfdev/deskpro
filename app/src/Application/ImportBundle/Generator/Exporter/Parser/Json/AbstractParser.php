@@ -169,6 +169,14 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
+     * @return Helper\Blob
+     */
+    protected function getBlobParser()
+    {
+        return $this->helpers->get($this, 'blob');
+    }
+
+    /**
      * @return Helper\CustomFields
      */
     protected function getCustomFieldsParser()

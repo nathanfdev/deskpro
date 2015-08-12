@@ -27,7 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
+use Application\ImportBundle\Entity;
 
 /**
  * Class Blob
@@ -41,5 +44,46 @@ class Blob extends AbstractParserFormatterHelper
     public function getName()
     {
         return 'blob';
+    }
+
+    /**
+     * Returns a blob entity
+     *
+     * @param array|null $data
+     * @return Entity\Blob|null
+     */
+    public function export(array $data = null)
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        $configuration = array(
+            'oid'          => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'attachment_',
+                'ref'    => 'oid',
+            )),
+            'blob_data'    => TransformerInterface::TYPE_STRING,
+            'blob_url'     => TransformerInterface::TYPE_STRING,
+            'blob_path'    => TransformerInterface::TYPE_STRING,
+            'file_name'    => TransformerInterface::TYPE_STRING,
+            'content_type' => TransformerInterface::TYPE_STRING,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\Blob();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setBlobData($formatted['blob_data'])
+            ->setBlobUrl($formatted['blob_url'])
+            ->setBlobPath($formatted['blob_path'])
+            ->setFileName($formatted['file_name'])
+            ->setContentType($formatted['content_type'])
+        ;
+
+        return $entity;
     }
 }

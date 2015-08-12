@@ -173,7 +173,7 @@ final class Tickets extends AbstractParser
             /** @var Entity\TicketMessage $message */
             $entity->addMessage($message);
         }
-        $custom_fields = $this->getCustomFieldsParser()->exportCustomFields($formatted['custom_fields']);
+        $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
         foreach ($custom_fields as $custom_field) {
             /** @var Entity\CustomField $custom_field */
             $entity->addCustomField($custom_field);
