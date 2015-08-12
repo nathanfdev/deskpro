@@ -164,7 +164,9 @@ class Organizations extends AbstractParser
     private function exportOrganizationCustomFields()
     {
         $config = $this->getReaderConfig(self::FILE_ORGANIZATION_CUSTOM_FIELDS);
-        return $this->exportCustomFields($config, self::ORGANIZATION_PREFIX, 'organization_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getMultipleCustomFieldsParser()->export($data, self::ORGANIZATION_PREFIX, 'organization_id');
     }
 
     /**

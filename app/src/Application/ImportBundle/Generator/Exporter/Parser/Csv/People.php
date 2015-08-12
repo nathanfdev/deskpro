@@ -166,7 +166,9 @@ final class People extends AbstractParser
     private function exportPersonCustomFields()
     {
         $config = $this->getReaderConfig(self::FILE_PEOPLE_CUSTOM_FIELDS);
-        return $this->exportCustomFields($config, self::PERSON_PREFIX, 'person_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getMultipleCustomFieldsParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
 
     /**

@@ -167,7 +167,9 @@ final class Articles extends AbstractParser
     private function exportArticleCustomFields()
     {
         $config = $this->getReaderConfig(self::FILE_ARTICLE_CUSTOM_FIELDS);
-        return $this->exportCustomFields($config, self::ARTICLE_PREFIX, 'article_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getMultipleCustomFieldsParser()->export($data, self::ARTICLE_PREFIX, 'article_id');
     }
 
     /**

@@ -260,7 +260,9 @@ final class Tickets extends AbstractParser
     private function exportTicketCustomFields()
     {
         $config = $this->getReaderConfig(self::FILE_TICKET_CUSTOM_FIELDS);
-        return $this->exportCustomFields($config, self::TICKET_PREFIX, 'ticket_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getMultipleCustomFieldsParser()->export($data, self::TICKET_PREFIX, 'ticket_id');
     }
 
     /**

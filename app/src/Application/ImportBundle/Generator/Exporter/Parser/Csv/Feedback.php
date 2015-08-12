@@ -188,7 +188,9 @@ final class Feedback extends AbstractParser
     private function exportFeedbackCustomFields()
     {
         $config = $this->getFeedbackCustomFieldReaderConfig();
-        return $this->exportCustomFields($config, self::FEEDBACK_PREFIX, 'feedback_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getMultipleCustomFieldsParser()->export($data, self::FEEDBACK_PREFIX, 'feedback_id');
     }
 
     /**

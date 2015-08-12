@@ -28,7 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
+use Application\ImportBundle\Entity;
 
 /**
  * Class MultipleCustomFields
@@ -52,5 +55,72 @@ class MultipleCustomFields extends AbstractParserHelper
     public function getName()
     {
         return 'multiple_custom_fields';
+    }
+
+    /**
+     * Returns a collection of custom fields
+     *
+     * @param array     $data
+     * @param string    $destination_prefix
+     * @param string    $ref_column
+     *
+     * @return Entity\Collection
+     */
+    public function export(array $data, $destination_prefix, $ref_column)
+    {
+        $collection = new Entity\Collection();
+
+        foreach ($data as $num => $custom_field) {
+            try {
+                $entity = $this->exportCustomField($num, $destination_prefix, $custom_field, $ref_column);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid custom field record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an attachment entity
+     *
+     * @param int    $num
+     * @param string $destination_prefix
+     * @param array  $data
+     * @param string $ref_column
+     *
+     * @return Entity\CustomField|null
+     */
+    protected function exportCustomField($num, $destination_prefix, array $data, $ref_column)
+    {
+        if (isset($data[$ref_column])) {
+            $data['destination'] = $destination_prefix . $data[$ref_column];
+        }
+
+        $configuration = array(
+            $ref_column   => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerInterface::TYPE_DESTINATION,
+            'field_name'  => TransformerInterface::TYPE_STRING,
+            'value'       => TransformerInterface::TYPE_STRING,
+        );
+
+        $formatted = $this->formatter->format($data, $configuration);
+        $entity    = new Entity\CustomField();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($num)
+            ->setKey($formatted['field_name'])
+            ->setValue($formatted['value'])
+        ;
+
+        return $entity;
     }
 }
