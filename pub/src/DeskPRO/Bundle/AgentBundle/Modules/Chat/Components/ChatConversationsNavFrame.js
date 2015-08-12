@@ -1,28 +1,36 @@
 import React from 'react';
 import { connect } from 'redux/react';
 import * as actions from '../Actions/chatConversationsNavFrameActions'
-import { DatePeriodConversationsCount } from './DatePeriodConversationsCount';
-import { AgentConversationsCount } from './AgentConversationsCount';
+import { DatePeriodCountItem } from './CountItems/DatePeriodCountItem';
+import { AgentCountItem } from './CountItems/AgentCountItem';
+import { DepartmentCountItem } from './CountItems/DepartmentCountItem';
 
 @connect(state => ({
   myChats: state.ChatConversationsNavFrame.myChats,
+  myChatsGroupBy: state.ChatConversationsNavFrame.myChatsGroupBy,
   allChats: state.ChatConversationsNavFrame.allChats,
+  allChatsGroupBy: state.ChatConversationsNavFrame.allChatsGroupBy,
 }))
 export class ChatConversationsNavFrame extends React.Component {
 
   constructor(props) {
     super(props);
-    this.props.dispatch(actions.loadMyChatConversationsCounts());
-    this.props.dispatch(actions.loadAllChatConversationsCounts());
+    this.props.dispatch(actions.loadMyChatConversationsCounts(this.props.myChatsGroupBy));
+    this.props.dispatch(actions.loadAllChatConversationsCounts(this.props.allChatsGroupBy));
   }
 
   render() {
-    const {myChats, allChats} = this.props;
+    const {myChats, allChats, myChatsGroupBy, allChatsGroupBy} = this.props;
 
     const toggleMyChatsGroupingControls = (e) => {
       e.preventDefault();
       this.props.dispatch(actions.toggleMyChatsGroupingControls());
     };
+    const toggleAllChatsGroupingControls = (e) => {
+      e.preventDefault();
+      this.props.dispatch(actions.toggleAllChatsGroupingControls());
+    };
+    const renderNestedCounts = (nested, groupBy) => { return this.renderNestedCounts(nested, groupBy) };
 
     return (
       <section className="task-nav-frame dp-nav-frame">
@@ -53,7 +61,7 @@ export class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   My Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter-dropdown active" href="javascript.void()" onClick={toggleMyChatsGroupingControls}>
+                    <a className="list-counter-dropdown active" href="#" onClick={toggleMyChatsGroupingControls}>
                       <span>&nbsp;</span>
                       <i className="fa fa-angle-down"></i>
                     </a>
@@ -62,10 +70,7 @@ export class ChatConversationsNavFrame extends React.Component {
                 </div>
                 
                 <ul>
-                  {myChats.nested.map(count => (
-                      <DatePeriodConversationsCount
-                          key={'period-' + count.group} count={count.count} period={count.group} />
-                  ))}
+                  {renderNestedCounts(myChats.nested, myChatsGroupBy)}
                 </ul>
               
               </section>
@@ -74,15 +79,16 @@ export class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   All Chats
                   <div className="list-counter-bucket">
+                    <a className="list-counter-dropdown active" href="#" onClick={toggleAllChatsGroupingControls}>
+                      <span>&nbsp;</span>
+                      <i className="fa fa-angle-down"></i>
+                    </a>
                     <a className="list-counter active" href="#">{allChats.count}</a>
                   </div>
                 </div>
                 
                 <ul>
-                  {allChats.nested.map(count => (
-                      <AgentConversationsCount
-                          key={'agent-' + count.group} count={count.count} agent={count.group} label={count.label} />
-                  ))}
+                  {renderNestedCounts(allChats.nested, allChatsGroupBy)}
                 </ul>
               
               </section>
@@ -92,5 +98,33 @@ export class ChatConversationsNavFrame extends React.Component {
         </div>
       </section>
     );
+  }
+
+  renderNestedCounts(nested, groupBy) {
+    let result = [];
+
+    nested.map(count => {
+      switch (groupBy) {
+        case 'agent':
+          result.push((
+              <AgentCountItem key={count.group} count={count.count} group={count.group} />
+          ));
+          break;
+
+        case 'department':
+          result.push((
+              <DepartmentCountItem key={count.group} count={count.count} group={count.group} />
+          ));
+          break;
+
+        case 'date_period':
+          result.push((
+              <DatePeriodCountItem key={count.group} count={count.count} group={count.group} />
+          ));
+          break;
+      }
+    });
+
+    return result;
   }
 }

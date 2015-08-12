@@ -1,7 +1,7 @@
 import React from 'react';
-import * as actions from '../Actions/chatConversationsNavFrameActions'
+import * as actions from '../../Actions/chatConversationsNavFrameActions'
 
-export class DatePeriodConversationsCount extends React.Component {
+export class DatePeriodCountItem extends React.Component {
   static labels = {
     today: 'Today',
     yesterday: 'Yesterday',
@@ -13,19 +13,19 @@ export class DatePeriodConversationsCount extends React.Component {
   };
 
   render() {
-    const {count, period} = this.props;
+    const {count, group} = this.props;
 
     return (
       <li>
         <div className="list-counter-bucket">
           <a className="list-counter active" href="#">{count}</a>
         </div>
-        <a href="#" className="item">{this.getLabel(period)}</a>
+        <a href="#" className="item">{this.getLabel(group)}</a>
       </li>
     );
   }
 
-  getLabel(period) {
-    return DatePeriodConversationsCount.labels[period];
+  getLabel(group) {
+    return DatePeriodCountItem.labels[group];
   }
 }

@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'redux/react';
-import * as actions from '../Actions/chatConversationsNavFrameActions'
+import * as actions from '../../Actions/chatConversationsNavFrameActions'
 
 @connect(state => ({
-  agentNames: state.ChatConversationsNavFrame.agentNames,
+  departmentNames: state.ChatConversationsNavFrame.departmentNames,
 }))
-export class AgentConversationsCount extends React.Component {
+export class DepartmentCountItem extends React.Component {
   render() {
-    const {count, agent} = this.props;
-    const label = this.props.agentNames[agent];
+    const {count, group} = this.props;
+    const label = this.props.departmentNames[group];
 
     return (
       <li>
