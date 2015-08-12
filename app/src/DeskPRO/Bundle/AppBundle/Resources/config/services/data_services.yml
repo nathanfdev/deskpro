@@ -44,6 +44,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\FeedbackLabelsDataService
     arguments: [@doctrine.orm.default_entity_manager]
 
+  data.feedback_comments:
+    class: DeskPRO\Bundle\AppBundle\DataService\FeedbackCommentsDataService
+    arguments: [@doctrine.orm.default_entity_manager]
+
   data.rating:
     class: DeskPRO\Bundle\AppBundle\DataService\RatingsDataService
     arguments: [@doctrine.orm.default_entity_manager]

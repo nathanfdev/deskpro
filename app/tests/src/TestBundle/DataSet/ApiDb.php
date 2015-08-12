@@ -34,6 +34,7 @@ namespace DpTestSrc\TestBundle\DataSet;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Application\DeskPRO\Entity\Brand;
@@ -290,13 +291,13 @@ class ApiDb extends AbstractDbSet
         $em->persist($ticket3);
         $em->flush();
 
-// Feedbacks
+// Feedback
         $feedback1 = new Feedback();
         $feedback1->setTitle('First feedback');
         $feedback1->setContent('First feedback content');
         $feedback1->setHiddenStatus(Feedback::HIDDEN_STATUS_VALIDATING);
-
         $em->persist($feedback1);
+
         $feedback2 = new Feedback();
         $feedback2->setTitle('Second feedback');
         $feedback2->setContent('Second feedback content');
@@ -306,6 +307,18 @@ class ApiDb extends AbstractDbSet
         $feedback1->addLabelByString('foo');
         $feedback1->addLabelByString('bar');
         $feedback2->addLabelByString('bar');
+
+        $comment1 = new FeedbackComment();
+        $comment1->setContentReal('First test comment');
+        $comment1->setStatus(FeedbackComment::STATUS_VALIDATING);
+        $comment1->setObject($feedback1);
+        $em->persist($comment1);
+
+        $comment2 = new FeedbackComment();
+        $comment2->setContentReal('Second test comment');
+        $comment2->setStatus(FeedbackComment::STATUS_VISIBLE);
+        $comment2->setObject($feedback2);
+        $em->persist($comment2);
 
         $count++;
 
