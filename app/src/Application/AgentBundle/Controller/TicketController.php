@@ -2040,7 +2040,10 @@ class TicketController extends AbstractController
                     }
                 });
                 $ticket->addPropertyChangedListener($event_listener);
-                $problemListener = new TicketProblemsChangedListener($this->em->getConnection());
+                $problemListener = new TicketProblemsChangedListener(
+                    $this->em->getConnection(),
+                    $this->container->getAgentData()
+                );
                 $problemListener->setPersonContext($this->person);
                 $ticket->addPropertyChangedListener($problemListener);
 
@@ -4203,7 +4206,10 @@ class TicketController extends AbstractController
 
             if ($this->settings->get('core.problems.enabled')) {
 
-                $problemListener = new TicketProblemsChangedListener($this->em->getConnection());
+                $problemListener = new TicketProblemsChangedListener(
+                    $this->em->getConnection(),
+                    $this->container->getAgentData()
+                );
                 $problemListener->setPersonContext($this->person);
                 $ticket->addPropertyChangedListener($problemListener);
 

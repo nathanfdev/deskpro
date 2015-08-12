@@ -96,13 +96,14 @@ class TicketSearchController extends AbstractController
         $problem_counts = array();
         if ($this->settings->get('core.problems.enabled') && $this->person->hasPerm('agent_problems.view')) {
             $rep = $this->em->getRepository('DeskPRO:Problem');
-            foreach ($rep->findBy(array('is_open' => true), array('title' => 'asc')) as $problem) {
-                $open_problems[] = $problem->toApiData();
+            $problems = $rep->findBy(array(), array('title' => 'asc'));
+            $problem_counts = $rep->getCountsForAgentInterface($problems, $this->person);
+
+            foreach ($problems as $problem) {
+                $problem->is_open
+                    ? $open_problems[] = $problem->toApiData()
+                    : $closed_problems[] = $problem->toApiData();
             }
-            foreach ($rep->findBy(array('is_open' => false), array('title' => 'asc')) as $problem) {
-                $closed_problems[] = $problem->toApiData();
-            }
-            $problem_counts = $rep->getCounts();
         }
 
 

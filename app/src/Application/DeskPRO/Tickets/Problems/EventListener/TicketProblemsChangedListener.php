@@ -28,11 +28,12 @@
 
 namespace Application\DeskPRO\Tickets\Problems\EventListener;
 
-
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\PersistentCollection;
 use Orb\Util\DpStrings;
@@ -48,6 +49,11 @@ class TicketProblemsChangedListener implements PropertyChangedListener
     protected $conn;
 
     /**
+     * @var \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+     */
+    protected $agent_data;
+
+    /**
      * @var Person
      */
     private $person;
@@ -57,9 +63,10 @@ class TicketProblemsChangedListener implements PropertyChangedListener
      */
     private $queue = array();
 
-    public function __construct(Connection $conn)
+    public function __construct(Connection $conn, AgentDataService $ad)
     {
         $this->conn = $conn;
+        $this->agent_data = $ad;
     }
 
     /**
@@ -86,7 +93,11 @@ class TicketProblemsChangedListener implements PropertyChangedListener
         $snapshot = $newValue->getSnapshot();
         $old = reset($snapshot) ?: null;
         $new = $newValue->first() ?: null;
-        $this->sendMessage($sender, $old, $new);
+
+        foreach ($this->agent_data->getOnlineAgents() as $agent) {
+            $this->sendMessage($sender, $agent, $old, $new);
+        }
+
         $this->sendQueue();
     }
 
@@ -95,19 +106,32 @@ class TicketProblemsChangedListener implements PropertyChangedListener
      * @param Problem|null $old
      * @param Problem|null $new
      */
-    public function sendMessage(Ticket $ticket, Problem $old = null, Problem $new = null)
+    public function sendMessage(Ticket $ticket, Person $forAgent, Problem $old = null, Problem $new = null)
     {
+        /** @var TicketChecker $checker */
+        $checker = $forAgent->PermissionsManager->TicketChecker;
+        if (!$checker->canView($ticket)) {
+            return;
+        }
+
+        /** @var Person $agent */
         $dis = array();
         $ass = array();
+
+
+        if ($checker->canView($ticket))
 
         if ($old) {
             $dis[] = $old['id'];
         }
+
         if ($new) {
             $ass[] = $new['id'];
         }
 
+
         $this->queue[] = array(
+            'for_person_id' => $agent->id,
             'channel' => self::CHANNEL,
             'auth' => DpStrings::random(15, Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
@@ -120,7 +144,7 @@ class TicketProblemsChangedListener implements PropertyChangedListener
                     'associated' => $ass,
                     'via_person' => $this->person ? $this->person->id : null
                 )
-            )
+            ),
         );
     }
 
