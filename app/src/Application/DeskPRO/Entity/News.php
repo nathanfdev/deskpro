@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation\PortalLink;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -41,9 +42,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * News.
- *
- * SWG\Model (id="News")
+ * @PortalLink("portal_news_view", {"slug": "slug"})
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {

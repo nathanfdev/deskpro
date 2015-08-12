@@ -115,11 +115,14 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * @Route("/tickets/{id}", name="portal_tickets_view")
+     * @Route("/tickets/{ticket_ref}", name="portal_tickets_view")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_VIEW', ticket)")
      */
-    public function viewAction(Ticket $ticket, Request $request)
+    public function viewAction(Request $request, $ticket_ref)
     {
+        // get ticket based on settings (ref or id)
+        // change @security
+
         $form_data = array(
             'ticket_message' => $message = new TicketMessage(),
             'attachments'    => new ArrayCollection(),

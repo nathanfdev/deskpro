@@ -1,5 +1,24 @@
 services:
 
+  object_router:
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
+    arguments:
+      - @router
+      - @settings_resolver
+      - @object_router.annotation_config
+
+  object_router.annotation_config:
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouterAnnotationConfig
+    arguments:
+      - @annotation_reader
+      - @object_router.config_cache
+
+  object_router.config_cache:
+    class: Symfony\Component\Config\ConfigCache
+    arguments:
+      - %kernel.cache_dir%/objectRouter.php
+      - %kernel.debug%
+
   blob.storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
     factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService

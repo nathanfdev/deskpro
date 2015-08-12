@@ -38,6 +38,8 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation\PortalLink;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation\PortalLinkCustom;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -114,6 +116,8 @@ use Orb\Util\WorkHoursSetAll;
  * @property TicketParticipant[] $participants
  * @property TicketCharge[] $charges
  * @property TicketSla[] $ticket_slas
+ *
+ * @PortalLinkCustom()
  */
 class Ticket extends DomainObject implements HighlightableModelInterface
 {
