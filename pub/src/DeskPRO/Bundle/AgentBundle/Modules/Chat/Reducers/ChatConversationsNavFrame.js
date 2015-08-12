@@ -1,5 +1,5 @@
 import { Reducer } from 'Ampliflux/reducers';
-import * as types from '../Actions/actionTypes';
+import * as actions from '../Actions/chatConversationsNavFrameActions';
 
 export default class ChatConversationsNavFrame extends Reducer {
   getInitialState() {
@@ -12,9 +12,9 @@ export default class ChatConversationsNavFrame extends Reducer {
 
   registerHandlers() {
     this
-      .r(types.CHAT_LOAD_MY_CONVERSATIONS_COUNTS, this.myConversationsCountsLoaded)
-      .r(types.CHAT_LOAD_ALL_CONVERSATIONS_COUNTS, this.allConversationsCountsLoaded)
-      .r(types.CHAT_LOAD_AGENT_NAME, this.agentNameLoaded)
+      .r(actions.loadMyChatConversationsCounts, this.myConversationsCountsLoaded)
+      .r(actions.loadAllChatConversationsCounts, this.allConversationsCountsLoaded)
+      .r(actions.loadAgentName, this.agentNameLoaded)
     ;
   }
 
