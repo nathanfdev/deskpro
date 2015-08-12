@@ -153,3 +153,12 @@ white_october_pagerfanta:
     exceptions_strategy:
         out_of_range_page:        to_http_not_found
         not_valid_current_page:   to_http_not_found
+
+doctrine:
+     orm:
+         dql:
+             datetime_functions:
+                 date: DoctrineExtensions\Query\Mysql\Date
+
+             string_functions:
+                 field: DoctrineExtensions\Query\Mysql\Field

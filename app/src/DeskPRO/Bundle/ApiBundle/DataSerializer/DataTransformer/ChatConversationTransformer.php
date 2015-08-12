@@ -26,51 +26,27 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
+
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Represents a count, typically used to show counters/badges in a UI.
+ * Class ChatConversationTransformer
  */
-class Count
+class ChatConversationTransformer extends AbstractDataSerializerTransformer
 {
-    /**
-     * @var int
-     */
-    private $count;
-
-    /**
-     * @var CountsGroup
-     */
-    private $nested;
-
-    /**
-     * Count constructor.
-     *
-     * @param int $count
-     * @param CountsGroup $nested
-     */
-    public function __construct($count, CountsGroup $nested = null)
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $this->count = $count;
-        $this->nested = $nested;
+        return ['id', 'agent', 'department', 'date_created', 'subject'];
     }
 
-    /**
-     * @return int
-     */
-    public function getCount()
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return $this->count;
-    }
-
-    /**
-     * @return CountsGroup
-     */
-    public function getNested()
-    {
-        return $this->nested;
+        return [];
     }
 }

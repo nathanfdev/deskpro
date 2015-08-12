@@ -26,51 +26,51 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DpTest\Bundle\AppBundle\CountBadge;
+
+use DpTest\DeskProTestCase;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
- * Represents a count, typically used to show counters/badges in a UI.
+ * Class CountsGroupTest
  */
-class Count
+class CountsGroupTest extends DeskProTestCase
 {
     /**
-     * @var int
+     * @test
      */
-    private $count;
-
-    /**
-     * @var CountsGroup
-     */
-    private $nested;
-
-    /**
-     * Count constructor.
-     *
-     * @param int $count
-     * @param CountsGroup $nested
-     */
-    public function __construct($count, CountsGroup $nested = null)
+    function it_should_be_instantiable_with_grouped_by_value()
     {
-        $this->count = $count;
-        $this->nested = $nested;
+        $group = new CountsGroup($grouped_by = 'grouped_by_property_name');
+        $this->assertEquals($grouped_by, $group->getGroupedBy());
     }
 
     /**
-     * @return int
+     * @test
      */
-    public function getCount()
+    function it_should_be_instantiable_with_grouped_by_value_and_array_of_nested_counts()
     {
-        return $this->count;
+        $counts = [new GroupedCount('group_name', $value = 42)];
+        $group = new CountsGroup('grouped_by_property_name', $counts);
+        $this->assertEquals($counts, $group->getCounts());
     }
 
     /**
-     * @return CountsGroup
+     * @test
      */
-    public function getNested()
+    function it_should_add_nested_counts()
     {
-        return $this->nested;
+        $group = new CountsGroup('grouped_by_property_name', []);
+
+        $group->add(new GroupedCount('group_name', 1));
+        $group->add(new GroupedCount('group_name', 2));
+
+        $this->assertCount(2, $group->getCounts());
     }
 }

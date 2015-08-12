@@ -32,45 +32,54 @@
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
 /**
- * Represents a count, typically used to show counters/badges in a UI.
+ * Represents a collection of counts. Typically used when returning counts
+ * grouped by some sort of variable.
  */
-class Count
+class CountsGroup
 {
     /**
-     * @var int
+     * @var string
      */
-    private $count;
+    private $grouped_by;
 
     /**
-     * @var CountsGroup
+     * @var GroupedCount[]
      */
-    private $nested;
+    private $counts;
 
     /**
-     * Count constructor.
+     * CountsGroup constructor.
      *
-     * @param int $count
-     * @param CountsGroup $nested
+     * @param string $grouped_by
+     * @param GroupedCount[] $counts
      */
-    public function __construct($count, CountsGroup $nested = null)
+    public function __construct($grouped_by, array $counts = [])
     {
-        $this->count = $count;
-        $this->nested = $nested;
+        $this->grouped_by = $grouped_by;
+        $this->counts = $counts;
     }
 
     /**
-     * @return int
+     * @param GroupedCount $count
      */
-    public function getCount()
+    public function add(GroupedCount $count)
     {
-        return $this->count;
+        $this->counts[] = $count;
     }
 
     /**
-     * @return CountsGroup
+     * @return string
      */
-    public function getNested()
+    public function getGroupedBy()
     {
-        return $this->nested;
+        return $this->grouped_by;
+    }
+
+    /**
+     * @return GroupedCount[]
+     */
+    public function getCounts()
+    {
+        return $this->counts;
     }
 }

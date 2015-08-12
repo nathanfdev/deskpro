@@ -26,51 +26,38 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DpTest\Bundle\AppBundle\CountBadge;
+
+use DpTest\DeskProTestCase;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 
 /**
- * Represents a count, typically used to show counters/badges in a UI.
+ * Class CountTest
  */
-class Count
+class CountTest extends DeskProTestCase
 {
     /**
-     * @var int
+     * @test
      */
-    private $count;
-
-    /**
-     * @var CountsGroup
-     */
-    private $nested;
-
-    /**
-     * Count constructor.
-     *
-     * @param int $count
-     * @param CountsGroup $nested
-     */
-    public function __construct($count, CountsGroup $nested = null)
+    function it_should_be_instantiable_with_value()
     {
-        $this->count = $count;
-        $this->nested = $nested;
+        $count = new Count(42);
+        $this->assertEquals(42, $count->getCount());
     }
 
     /**
-     * @return int
+     * @test
      */
-    public function getCount()
+    function it_should_be_instantiable_with_value_and_nested_counts()
     {
-        return $this->count;
-    }
-
-    /**
-     * @return CountsGroup
-     */
-    public function getNested()
-    {
-        return $this->nested;
+        $group = new CountsGroup('grouped_by', []);
+        $count = new Count(42, $group);
+        $this->assertSame($count->getNested(), $group);
     }
 }

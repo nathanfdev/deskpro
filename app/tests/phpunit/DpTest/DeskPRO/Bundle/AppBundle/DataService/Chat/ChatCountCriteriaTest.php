@@ -1,0 +1,120 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DpTest\Bundle\AppBundle\DataService\Chat;
+
+use Prophecy\Argument;
+use DpTest\DeskProTestCase;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
+
+/**
+ * Class ChatCountCriteriaTest
+ */
+class ChatCountCriteriaTest extends DeskProTestCase
+{
+    static $dummyProperParams = [
+        'agent'        => 1,
+        'department'   => 1,
+        'date_created' => '2013-01-01:2015-01-01',
+        'date_period'  => 'this_month',
+        'group_by'     => 'agent'
+    ];
+
+    /**
+     * @test
+     */
+    function it_should_be_instantiable_with_factory_method_from_empty_parameter()
+    {
+        $this->assertInstanceOf(ChatCountCriteria::class, $this->instance([]));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_be_instantiable_with_proper_parameters()
+    {
+        $this->assertInstanceOf(ChatCountCriteria::class, $this->instance(self::$dummyProperParams));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_extend_ChatSelectCriteria_with_group_by_functionality()
+    {
+        $this->assertInstanceOf(ChatSelectCriteria::class, $this->instance(['group_by' => 'date_period']));
+    }
+
+    /**
+     * @test
+     * @expectedException        \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     * @expectedExceptionMessage The option "group_by" with value "color" is invalid. Accepted values are: "agent",
+     *                           "department", "date_created", "date_period".
+     */
+    function it_should_throw_an_exception_with_list_of_allowed_group_by_values_when_passing_a_wrong_value()
+    {
+        $this->instance(['group_by' => 'color']);
+    }
+
+    /**
+     * @test
+     */
+    function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
+    {
+        $qb_prophecy = $this->prophesize(QueryBuilder::class);
+        $qb_prophecy->getRootAliases()->willReturn(['alias']);
+        $qb_prophecy->addSelect(Argument::any())->willReturn();
+        $qb_prophecy->leftJoin(Argument::any(), Argument::any())->willReturn();
+
+        // expectations when applying self::$dummyProperParams
+        $qb_prophecy->groupBy(Argument::any())->shouldBeCalled();
+
+        /** @var QueryBuilder $qb */
+        $qb = $qb_prophecy->reveal();
+        $this->instance(self::$dummyProperParams)->applyGroupBy($qb);
+    }
+
+    /**
+     * @param array $parameters
+     * @return ChatCountCriteria
+     */
+    private function instance($parameters = [])
+    {
+        $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
+        $me = new \Application\DeskPRO\Entity\Person();
+
+        return ChatCountCriteria::fromParameters($parameters, $resolver, $me);
+    }
+}

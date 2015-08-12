@@ -26,90 +26,36 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DpTest\Bundle\AppBundle\CountBadge;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DpTest\DeskProTestCase;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
- * Represents a collection of counts. Typically used when returning counts
- * grouped by some sort of variable.
+ * Class GroupedCountTest
  */
-class CountCollection implements \IteratorAggregate, \Countable
+class GroupedCountTest extends DeskProTestCase
 {
     /**
-     * @var array
+     * @test
      */
-    private $group_meta;
-
-    /**
-     * @var Count[]
-     */
-    private $counts;
-
-    /**
-     * @param Count[] $counts       The actual counts
-     * @param array   $group_meta   Any information about this group of counts (e.g., how they are grouped).
-     */
-    public function __construct(array $counts, array $group_meta = array())
+    function it_should_be_instantiable_with_group_name_and_value()
     {
-        $this->counts = $counts;
-
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->group_meta = $resolver->resolve($group_meta);
+        $count = new GroupedCount('group_name', 42);
+        $this->assertEquals('group_name', $count->getGroup());
     }
 
     /**
-     * Sub-classes may implement this to define a custom resolver
-     * @param OptionsResolver $resolver
+     * @test
      */
-    protected function configureOptions(OptionsResolver $resolver)
+    function it_should_extend_Count()
     {
-    }
-
-    /**
-     * @param string $k
-     * @param mixed $default
-     * @return array
-     */
-    public function getGroupMeta($k, $default = null)
-    {
-        return array_key_exists($k, $this->group_meta) ? $this->group_meta[$k] : $default;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllGroupMeta()
-    {
-        return $this->group_meta;
-    }
-
-    /**
-     * @return Count[]
-     */
-    public function getCounts()
-    {
-        return $this->counts;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->counts);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function count()
-    {
-        return count($this->counts);
+        $this->assertInstanceOf(Count::class, new GroupedCount('group_name', 42));
     }
 }
