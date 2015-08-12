@@ -158,7 +158,7 @@ final class People extends AbstractParser
             $entity->addUserGroup($user_group);
         }
 
-        $contact_data = $this->exportContactData($formatted['contact_data']);
+        $contact_data = $this->getContactDataParser()->export($formatted['contact_data']);
         foreach ($contact_data as $contact) {
             $entity->addContact($contact);
         }

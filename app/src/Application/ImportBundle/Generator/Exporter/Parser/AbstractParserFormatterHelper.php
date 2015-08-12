@@ -27,13 +27,26 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 
 /**
- * Class AbstractParserHelper
+ * Class AbstractParserFormatterHelper
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-abstract class AbstractParserHelper extends AbstractGenerator implements ParserHelperInterface
+abstract class AbstractParserFormatterHelper extends AbstractParserHelper
 {
+    /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
 
+    /**
+     * Constructor
+     *
+     * @param FormatterInterface $formatter
+     */
+    public function __construct(FormatterInterface $formatter)
+    {
+        $this->formatter = $formatter;
+    }
 }

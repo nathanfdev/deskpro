@@ -27,28 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\Blob;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
 
 /**
  * Class Blob
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\Blob
  */
-class Blob extends AbstractParserHelper
+class Blob extends AbstractParserFormatterHelper
 {
-    /**
-     * Constructor
-     *
-     * @param FormatterInterface $formatter
-     */
-    public function __construct(FormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
-    }
-
     /**
      * {@inheritdoc}
      */

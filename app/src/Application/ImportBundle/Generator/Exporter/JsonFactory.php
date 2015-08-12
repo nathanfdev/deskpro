@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReader;
@@ -56,15 +57,23 @@ class JsonFactory extends AbstractFactory
         /** @var FormatterInterface $formatter */
         $formatter = $container->get('deskpro.import.formatter');
 
+        $helpers = new ParserHelperSet();
+        $helpers
+            ->attach(new Parser\Json\Helper\Attachment($formatter))
+            ->attach(new Parser\Json\Helper\Blob($formatter))
+            ->attach(new Parser\Json\Helper\ContactData($formatter))
+            ->attach(new Parser\Json\Helper\CustomFields($formatter))
+        ;
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\Json\Downloads($reader, $formatter))
-            ->attach(new Parser\Json\Feedback($reader, $formatter))
-            ->attach(new Parser\Json\Articles($reader, $formatter))
-            ->attach(new Parser\Json\News($reader, $formatter))
-            ->attach(new Parser\Json\People($reader, $formatter))
-            ->attach(new Parser\Json\Tickets($reader, $formatter))
-            ->attach(new Parser\Json\Organizations($reader, $formatter))
+            ->attach(new Parser\Json\Downloads($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Articles($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\News($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\People($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Tickets($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Organizations($reader, $formatter, $helpers))
         ;
 
         return new Json($parsers, $reader);

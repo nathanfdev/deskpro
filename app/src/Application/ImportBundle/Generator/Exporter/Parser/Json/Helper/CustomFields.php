@@ -25,15 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 
 /**
- * Class AbstractParserHelper
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class CustomFields
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json\Helper
  */
-abstract class AbstractParserHelper extends AbstractGenerator implements ParserHelperInterface
+class CustomFields extends AbstractParserFormatterHelper
 {
-
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'custom_fields';
+    }
 }

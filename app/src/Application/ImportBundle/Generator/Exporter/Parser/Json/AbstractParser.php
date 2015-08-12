@@ -27,11 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Application\ImportBundle\Entity;
@@ -60,11 +60,13 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      *
      * @param JsonReaderInterface $reader
      * @param FormatterInterface  $formatter
+     * @param ParserHelperSet     $helpers
      */
-    public function __construct(JsonReaderInterface $reader, FormatterInterface $formatter)
+    public function __construct(JsonReaderInterface $reader, FormatterInterface $formatter, ParserHelperSet $helpers)
     {
         $this->reader    = $reader;
         $this->formatter = $formatter;
+        $this->helpers   = $helpers;
     }
 
     /**
@@ -79,69 +81,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             '%s/%d/%s',
             $this->config->getInputPath(), $this->getBatchConfig()->getId() + 1, $record_type
         ));
-    }
-
-    /**
-     * Returns a collection of contact data entities
-     *
-     * @param array $contact_data
-     * @return Entity\Collection
-     */
-    protected function exportContactData(array $contact_data)
-    {
-        $collection = new Entity\Collection();
-        foreach ($contact_data as $num => $contact) {
-            try {
-                $entity = $this->exportContact($contact);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
-            } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a contact data entity
-     *
-     * @param array $data
-     * @return Entity\ContactData|null
-     *
-     */
-    protected function exportContact(array $data)
-    {
-        $configuration = array(
-            'oid'          => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'contact_data_',
-                'ref'    => 'oid',
-            )),
-            'contact_type' => TransformerInterface::TYPE_STRING,
-            'comment'      => TransformerInterface::TYPE_STRING,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
-        $handler   = ContactDataFactory::getHandler($formatted['contact_type']);
-        $entity    = $handler->toEntity($data);
-        $entity
-            ->setOid($formatted['oid'])
-            ->setDestination($formatted['destination'])
-        ;
-
-        return $entity;
     }
 
     /**
@@ -284,5 +223,13 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         throw new Exception('Batch config is not defined');
+    }
+
+    /**
+     * @return Helper\ContactData
+     */
+    protected function getContactDataParser()
+    {
+        return $this->helpers->get($this, 'contact_data');
     }
 }

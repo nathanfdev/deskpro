@@ -27,28 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
 
 /**
  * Class MultipleCustomFields
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields
  */
-class MultipleCustomFields extends AbstractParserHelper
+class MultipleCustomFields extends AbstractParserFormatterHelper
 {
-    /**
-     * Constructor
-     *
-     * @param FormatterInterface $formatter
-     */
-    public function __construct(FormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
-    }
-
     /**
      * {@inheritdoc}
      */

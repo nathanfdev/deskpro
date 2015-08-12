@@ -25,58 +25,48 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
-use Application\ImportBundle\Entity;
+use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
+use Application\ImportBundle\Entity;
 
 /**
- * Organizations json file parser
- *
- * Class Organizations
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
+ * Class ContactData
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json\Helper
  */
-final class Organizations extends AbstractParser
+class ContactData extends AbstractParserFormatterHelper
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function getName()
     {
-        return Entity\EntityInterface::TYPE_ORGANIZATION;
+        return 'contact_data';
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a collection of contact data entities
+     *
+     * @param array $contact_data
+     * @return Entity\Collection
      */
-    public function getCount()
+    public function export(array $contact_data)
     {
-        return $this->reader->getDirectoryFilesCount($this->getOrganizationsReaderConfig());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        $collection    = new Entity\Collection();
-        $organizations = $this->reader->getData($this->getOrganizationsReaderConfig());
-
-        foreach ($organizations as $num => $organization) {
-            $this->advanceProgressBar();
-
+        $collection = new Entity\Collection();
+        foreach ($contact_data as $num => $contact) {
             try {
-                $entity = $this->exportOrganization($organization);
+                $entity = $this->exportContact($contact);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid organization record `%d` found (Skipping): %s',
+                $this->logError(sprintf(
+                    'Invalid contact data record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
 
@@ -92,64 +82,32 @@ final class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a organization entity
+     * Returns a contact data entity
      *
      * @param array $data
-     * @return Entity\News
+     * @return Entity\ContactData|null
+     *
      */
-    private function exportOrganization(array $data)
+    protected function exportContact(array $data)
     {
         $configuration = array(
-            'oid'           => TransformerInterface::TYPE_STRING,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'organization_',
+            'oid'          => TransformerInterface::TYPE_STRING,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'contact_data_',
                 'ref'    => 'oid',
             )),
-            'name'          => TransformerInterface::TYPE_STRING,
-            'picture'       => TransformerInterface::TYPE_ARRAY,
-            'importance'    => TransformerInterface::TYPE_STRING,
-            'date_created'  => TransformerInterface::TYPE_DATE,
-            'contact_data'  => TransformerInterface::TYPE_ARRAY,
-            'custom_fields' => TransformerInterface::TYPE_ARRAY,
-            'labels'        => TransformerInterface::TYPE_ARRAY,
+            'contact_type' => TransformerInterface::TYPE_STRING,
+            'comment'      => TransformerInterface::TYPE_STRING,
         );
 
         $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Organization();
+        $handler   = ContactDataFactory::getHandler($formatted['contact_type']);
+        $entity    = $handler->toEntity($data);
         $entity
-            ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
-            ->setName($formatted['name'])
-            ->setImportance($formatted['importance'])
-            ->setDateCreated($formatted['date_created'])
-            ->setPicture($this->exportBlob($formatted['picture']))
         ;
 
-        $contact_data = $this->getContactDataParser()->export($formatted['contact_data']);
-        foreach ($contact_data as $contact) {
-            $entity->addContact($contact);
-        }
-        foreach ($data['labels'] as $label) {
-            $entity->addLabel($label);
-        }
-
-        $custom_fields = $this->exportCustomFields($formatted['custom_fields']);
-        foreach ($custom_fields as $custom_field) {
-            /** @var Entity\CustomField $custom_field */
-            $entity->addCustomField($custom_field);
-        }
-
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getOrganizationsReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ORGANIZATION_PATH);
     }
 }
