@@ -78,7 +78,7 @@ class TaskProject extends NotifyPropertyChangeEntity
 
     /**
      * @var ProjectMember[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="project", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="project", cascade={"persist"}, orphanRemoval=true)
      */
     protected $members;
 
@@ -176,9 +176,18 @@ class TaskProject extends NotifyPropertyChangeEntity
         $this->addMember($member);
     }
 
+    /**
+     * @param Department $department
+     */
     public function removeDepartment(Department $department)
     {
-        // TODO
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if ($member->getDepartment() === $department) {
+                    $this->members->removeElement($member);
+                }
+            }
+        }
     }
 
     /**
@@ -192,9 +201,18 @@ class TaskProject extends NotifyPropertyChangeEntity
         $this->addMember($member);
     }
 
+    /**
+     * @param AgentTeam $agentTeam
+     */
     public function removeTeam(AgentTeam $agentTeam)
     {
-        // TODO
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if ($member->getTean() === $agentTeam) {
+                    $this->members->removeElement($member);
+                }
+            }
+        }
     }
 
     /**
@@ -208,9 +226,18 @@ class TaskProject extends NotifyPropertyChangeEntity
         $this->addMember($member);
     }
 
+    /**
+     * @param Person $person
+     */
     public function removeAgent(Person $person)
     {
-        // TODO
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                if ($member->getPerson() === $person) {
+                    $this->members->removeElement($member);
+                }
+            }
+        }
     }
 
     /**
@@ -237,5 +264,13 @@ class TaskProject extends NotifyPropertyChangeEntity
     {
         $this->members->add($member);
         $this->setModelField('member', $member);
+    }
+
+    /**
+     * @param ProjectMember $member
+     */
+    public function removeMember(ProjectMember $member)
+    {
+        $this->members->removeElement($member);
     }
 }
