@@ -147,6 +147,7 @@ final class People extends AbstractParser
             ->setRawData($person)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
+            ->setAsUser(true)
             ->setAsAgent($formatted['is_agent'])
             ->setName($formatted['name'])
             ->setDateCreated($formatted['date_created'])
