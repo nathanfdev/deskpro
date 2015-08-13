@@ -370,6 +370,18 @@ class ApiDb extends AbstractDbSet
         ");
         // end of "/organizations"
 
+        // Labels endpoints test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `label_defs`
+                (`label_type`, `label`, `color`, `total`)
+            VALUES
+                ('organization', 'organization label #1', 'red', 42),
+                ('person', 'person label #1', 'white', 1),
+                ('person', 'person label #2', 'red', 3)
+            ;
+        ");
+        // end of labels endpoints
+
         $count++;
 
         return $count;
