@@ -32,71 +32,38 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations\Get;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 
 /**
- * Class UserGroupsController
+ * Class OrganizationsController
  */
-class UserGroupsController extends BaseController
+class OrganizationsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get collection of User Groups",
+     *      description="Count Organizations",
      *      statusCodes={
      *          200="Success"
      *      }
      * )
-     * @Get("/user_groups", name="api_user_groups")
+     * @Get("/organizations/counts", name="api_organizations_counts")
      */
-    public function cgetAction()
+    public function getCountAction()
     {
-        $service = $this->get('data.user_groups');
-        return View::create(
-            $this->DataSerialize($service->loadUserGroupsEnabled()),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Get a User Group",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/user_groups/{id}", name="api_single_user_group", requirements={"id" = "\d+"})
-     */
-    public function getUserGroup($id)
-    {
-        $service = $this->get('data.user_groups');
-        return View::create(
-            $this->DataSerialize($service->loadSingleUserGroupEnabled($id)),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Count Users in User Groups",
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request"
-     *      }
-     * )
-     * @Get("/user_groups/counts", name="api_user_group_count_users")
-     */
-    public function getUsersCountsAction()
-    {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService $service */
-        $service = $this->get('data.user_groups');
+        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb->select('count(o)')
+           ->from('DeskPRO:Organization', 'o');
+        $count = $qb->getQuery()->getSingleScalarResult();
 
         return View::create(
-            $this->createRepresentation($service->countPeopleInUserGroups()),
+            $this->createRepresentation(new Count($count)),
             Response::HTTP_OK
         );
     }
