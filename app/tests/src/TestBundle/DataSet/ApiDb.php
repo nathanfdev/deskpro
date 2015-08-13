@@ -92,6 +92,16 @@ class ApiDb extends AbstractDbSet
             false
         );
 
+        $deletedAgent = $this->addUser(
+            UserDetailsRepo::DELETED_AGENT_FIRST_NAME,
+            UserDetailsRepo::DELETED_AGENT_LAST_NAME,
+            UserDetailsRepo::DELETED_AGENT_EMAIL,
+            UserDetailsRepo::DELETED_AGENT_PASS,
+            true,
+            false,
+            true
+        );
+
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need a brand and some deps, and some other entities
