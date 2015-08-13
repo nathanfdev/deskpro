@@ -1,6 +1,13 @@
 import isPlainObject from 'lodash/lang/isPlainObject';
 import { getActionType } from "./actionUtils";
 
+/**
+ * Create a default action that just passes through
+ * its first param.
+ *
+ * @param {String} actionType
+ * @return {Function}
+ */
 function createDefaultAction(actionType) {
   return function(payload) {
     return {
@@ -10,6 +17,15 @@ function createDefaultAction(actionType) {
   };
 }
 
+/**
+ * Given a param meant to be an action function,
+ * return a real usable function. This helps
+ * create default actions if a real function wasn't supplied.
+ *
+ * @param {String} ActionType
+ * @param {Function/mixed} actionFn
+ * @return {Function}
+ */
 function createActionFn(actionType, actionFn) {
   // Default -> whatever is passed to the action, dispatch that
   if (typeof actionFn === 'undefined') {

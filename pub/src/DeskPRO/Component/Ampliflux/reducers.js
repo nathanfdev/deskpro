@@ -5,6 +5,17 @@ export class Reducer {
   constructor() {
     this.actionsMap = {};
     this.registerHandlers();
+    let hint = [];
+    for (let k in this.actionsMap) {
+      hint.push(k);
+    }
+
+    hint = hint.join(', ');
+    if (hint.length > 100) {
+      hint = hint.substring(0, 100) + "...";
+    }
+
+    console.debug("Ampliflux/reducers.js Reducer is deprecated (" + hint + ")");
   }
 
   // Compiles the reducer class into a bunch of handlers.

@@ -20,14 +20,14 @@ export function transitionTo(pathname, query = null, state = null) {
   }
 }
 
-export const loadWindow = createAction("APP_LOAD_WINDOW", () => dispatch => {
+export const loadWindow = createAction("APP_LOAD_WINDOW", () => {
   let promises = [];
 
   // can wait on multiple loads here by adding new
   // promises to the array
   promises.push(DpApi.sendGet('DP_API/me')); //0
 
-  return Promise.all(promises).then(values => {
+  return Promise.all(promises).then(values => dispatch => {
     dispatch(setAppUser(values[0].getData().data.person));
     dispatch(setIsLoaded());
   });

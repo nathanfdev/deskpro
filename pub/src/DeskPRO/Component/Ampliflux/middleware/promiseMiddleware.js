@@ -10,7 +10,7 @@ function getPromise(action) {
   }
 
   // Already been dispatched through the system
-  if (typeof action.sequence !== 'undefined') {
+  if (typeof action.sequence !== 'undefined' && typeof action.sequence.type !== 'undefined') {
     return null;
   }
 
@@ -56,16 +56,6 @@ export default function promiseMiddleware({ dispatch }) {
     const baseType = getSeqBaseType(action);
 
     const sequenceId = uniqueId();
-    dispatch({
-      ...action,
-      type: baseType + ".START",
-      parentType: null,
-      payload: action.payload || {},
-      sequence: {
-        type: "start",
-        id: sequenceId,
-      }
-    });
 
     const nextAction = {
       ...action,
@@ -75,6 +65,17 @@ export default function promiseMiddleware({ dispatch }) {
         id: sequenceId,
       }
     }
+    delete nextAction.parentType;
+
+    dispatch({
+      ...nextAction,
+      type: baseType + ".START",
+      payload: action.payload || {},
+      sequence: {
+        type: "start",
+        id: sequenceId,
+      }
+    });
 
     return promise
       .then(result => {

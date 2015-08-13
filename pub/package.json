@@ -33,6 +33,7 @@
     "node-libs-browser": "~0.5.2",
     "node-neat": "1.7.2",
     "node-sass": "~3.2.0",
+    "node-uuid": "^1.4.3",
     "react": "~0.13.3",
     "react-hot-api": "0.4.5",
     "react-hot-loader": "1.2.8",

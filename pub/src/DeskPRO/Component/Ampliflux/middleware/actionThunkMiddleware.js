@@ -1,11 +1,11 @@
 import { isDSA } from '../actions/actionUtils';
 
 /**
- * Similar to reduxt-thunk except it also works if a function is returned as part of a payload.
+ * Similar to redux-thunk except it also works if a function is returned as part of a payload.
  */
 export default function actionThunkMiddleware({ dispatch, getState }) {
   return next => action => {
-    // simple function
+    // simple function -- similar to redux-thunk
     if (typeof action === 'function') {
       return action(dispatch, getState);
 
