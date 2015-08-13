@@ -265,6 +265,7 @@ class TicketListRenderer
         }
 
         $data['labels'] = $this->ticket_display->getTicketLabels($ticket);
+        $data['problems'] = $this->ticket_display->getTicketProblems($ticket);
 
         $custom_data = $this->ticket_display->getTicketFieldData($ticket);
         if ($custom_data) {

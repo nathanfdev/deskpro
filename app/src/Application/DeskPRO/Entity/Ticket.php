@@ -3012,6 +3012,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             foreach ($this->labels AS $label) {
                 $data['labels'][] = $label['label'];
             }
+
+            $data['problems'] = array();
+            foreach ($this->problems as $problem) {
+                $data['problems'][] = array(
+                    'id' => $problem->id,
+                    'title' => $problem->title,
+                );
+            }
         }
 
         $data['total_user_waiting_real'] = $this->getRealTotalUserWaiting();
@@ -4006,6 +4014,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             array(
                 'fieldName' => 'problems',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Problem',
+                'inversedBy' => 'tickets',
                 'cascade' => array('persist', 'merge'),
                 'joinTable' => array(
                     'name' => 'problem2tickets',
