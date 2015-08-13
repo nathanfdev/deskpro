@@ -1,3 +1,4 @@
+@counts
 Feature: /people/counts endpoint
   To retrieve counts of DeskPRO people
   As a developer
