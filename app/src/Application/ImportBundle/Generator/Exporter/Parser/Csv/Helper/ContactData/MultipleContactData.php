@@ -78,7 +78,7 @@ class MultipleContactData extends AbstractParserFormatterHelper
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
-                } catch (\RuntimeException $e) {
+                } catch (\Exception $e) {
                     $this->logWarning(sprintf(
                         'Invalid contact field record `%d` found (Skipping): %s',
                         $oid, $e->getMessage()
@@ -118,12 +118,15 @@ class MultipleContactData extends AbstractParserFormatterHelper
 
                 if ( ! $formatted['destination']) {
                     $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty destination', $num));
+                    continue;
                 }
                 if ( ! $formatted['contact_id']) {
                     $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty contact_id', $num));
+                    continue;
                 }
                 if ( ! $formatted['field_name']) {
                     $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty field_name', $num));
+                    continue;
                 }
 
                 $contact_info[$formatted['destination']][$formatted['contact_id']][$formatted['field_name']] = $formatted['value'];
