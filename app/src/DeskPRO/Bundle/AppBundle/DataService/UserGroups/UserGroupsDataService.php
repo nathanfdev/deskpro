@@ -29,8 +29,9 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService;
+namespace DeskPRO\Bundle\AppBundle\DataService\UserGroups;
 
+use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
