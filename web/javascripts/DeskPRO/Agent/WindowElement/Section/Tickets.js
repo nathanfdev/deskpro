@@ -241,7 +241,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 						// handle select options
 					} else {
-						var m = /(^.+)\((\d+)\)$/.exec($(this).text());
+						var m = /^(.+)\s*\((\d+)\)\s*$/.exec($(this).text());
 						if (!m || m.length !== 3) return;
 						var val = parseInt(m[2]);
 						val === val && ass && val++;
