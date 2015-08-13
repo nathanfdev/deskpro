@@ -39,6 +39,8 @@ use Prophecy\PhpUnit\ProphecyTestCase;
 
 abstract class DeskProTestCase extends ProphecyTestCase
 {
+    use \DpTestSrc\TestBundle\MockHelpers\DbalMocksHelper;
+
     /**
      * Stub creation helper
      *

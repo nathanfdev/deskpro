@@ -35,9 +35,6 @@ namespace DpTest\Bundle\AppBundle\DataService\People;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery as Query;
 use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountsDataService;
 use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -71,20 +68,8 @@ class PeopleCountsDataServiceTest extends DeskProTestCase
      */
     private function instance()
     {
-        $qb_prophecy = $this->prophesize(QueryBuilder::class);
-        $em_prophecy = $this->prophesize(EntityManager::class);
-
-        // describe QueryBuilder double
-        $qb_prophecy->getQuery()->willReturn($this->prophesize(Query::class)->reveal());
-        $qb_prophecy->from(Argument::any(), Argument::any())->willReturn($qb_prophecy->reveal());
-        $qb_prophecy->select(Argument::any())->willReturn($qb_prophecy->reveal());
-        $qb_prophecy->getRootAliases()->willReturn(['alias']);
-
-        // describe EntityManager double
-        $em_prophecy->createQueryBuilder()->willReturn($qb_prophecy->reveal());
-
-        /** @var EntityManager $em */
-        $em = $em_prophecy->reveal();
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em = $this->mockQueryBuildingEntityManager()->reveal();
 
         return new PeopleCountsDataService($em);
     }

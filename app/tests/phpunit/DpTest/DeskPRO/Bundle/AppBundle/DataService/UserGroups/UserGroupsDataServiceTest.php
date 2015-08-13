@@ -33,11 +33,8 @@
 
 namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
 
-use Prophecy\Argument;
 use DpTest\DeskProTestCase;
 use Application\DeskPRO\ORM\EntityManager;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery as Query;
 use DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
@@ -70,28 +67,8 @@ class UserGroupsDataServiceTest extends DeskProTestCase
      */
     private function instance()
     {
-        $query = $this->prophesize(Query::class);
-        $qb = $this->prophesize(QueryBuilder::class);
-        $em = $this->prophesize(EntityManager::class);
-
-        // describe Query double
-        $query->getArrayResult()->willReturn([]);
-
-        // describe QueryBuilder double
-        $qb->getQuery()->willReturn($query);
-        $qb->getRootAliases()->willReturn(['alias']);
-        $qb->select(Argument::any())->willReturn($qb);
-        $qb->addSelect(Argument::any())->willReturn($qb);
-        $qb->from(Argument::any(), Argument::any())->willReturn($qb);
-        $qb->join(Argument::any(), Argument::any())->willReturn($qb);
-        $qb->where(Argument::any())->willReturn($qb);
-        $qb->groupBy(Argument::any())->willReturn($qb);
-
-        // describe EntityManager double
-        $em->createQueryBuilder()->willReturn($qb);
-
         /** @var EntityManager $em */
-        $em = $em->reveal();
+        $em = $this->mockQueryBuildingEntityManager(EntityManager::class)->reveal();
 
         return new UserGroupsDataService($em);
     }
