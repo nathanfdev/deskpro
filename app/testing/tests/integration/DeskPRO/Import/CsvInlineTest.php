@@ -101,11 +101,11 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
         $person = $this->getContent('1/people/person_joe.smith@example.com.json');
         $this->assertCount(5, $person['custom_fields']);
-        $this->assertCount(3, $person['contact_data']);
+        $this->assertCount(4, $person['contact_data']);
 
         $person = $this->getContent('1/people/person_angry.customer@example.com.json');
         $this->assertCount(2, $person['custom_fields']);
-        $this->assertCount(3, $person['contact_data']);
+        $this->assertCount(4, $person['contact_data']);
 
         // Checking for tickets
         $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
@@ -138,7 +138,7 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
         $organization = $this->getContent('1/organizations/organization_some_organization.json');
         $this->assertCount(2, $organization['custom_fields']);
-        $this->assertCount(3, $organization['contact_data']);
+        $this->assertCount(5, $organization['contact_data']);
     }
 
     private function checkDbData()
@@ -162,13 +162,20 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->assertEquals('im_id', $contact->getField1());
 
         $contact_data3 = $person->getContactData('phone');
-        $this->assertCount(1, $contact_data2);
+        $this->assertCount(1, $contact_data3);
 
         $contact = $contact_data3[0];
         $this->assertEquals('', $contact->getComment());
         $this->assertEquals('JE', $contact->getField1());
         $this->assertEquals('+447700900315', $contact->getField2());
         $this->assertEquals('mobile', $contact->getField3());
+
+        $contact_data4 = $person->getContactData('linked_in');
+        $this->assertCount(1, $contact_data4);
+
+        $contact = $contact_data4[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('linkedin_url', $contact->getField1());
     }
 
     /**

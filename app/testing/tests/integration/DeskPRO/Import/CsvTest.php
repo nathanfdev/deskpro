@@ -320,10 +320,22 @@ class CsvTest extends \DpIntegrationTestCase
 
     private function checkDbData()
     {
-        // Checking for news
-        $this->assertCount(3, $this->news_repository->findAll());
+        $this->checkDbArticleData();
+        $this->checkDbPeopleData();
+        $this->checkDbTicketsData();
+        $this->checkDbFeedbackData();
+        $this->checkDbOrganizationData();
+        $this->checkDbBlobData();
+        $this->checkDbNewsData();
+    }
 
-        // Checking for people
+    private function checkDbNewsData()
+    {
+        $this->assertCount(3, $this->news_repository->findAll());
+    }
+
+    private function checkDbPeopleData()
+    {
         $this->assertCount(8, $this->person_repository->findAll());
         $this->assertCount(2, $this->custom_data_person_repository->findAll());
 
@@ -346,8 +358,10 @@ class CsvTest extends \DpIntegrationTestCase
         $person = $this->person_repository->findOneByEmail('angry.customer@example.com');
         $this->assertEquals('Angry Customer', $person->getDisplayName());
         $this->assertFalse($person->isAgent());
+    }
 
-        // Checking for tickets
+    private function checkDbTicketsData()
+    {
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
             'subject' => 'How to submit a ticket',
         )));
@@ -357,13 +371,17 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(1, $this->ticket_attachment_repository->findAll());
         $this->assertCount(4, $this->custom_data_ticket_repository->findAll());
+    }
 
-        // Checking for feedback
+    private function checkDbFeedbackData()
+    {
         $this->assertEquals(2, $this->feedback_repository->countAll());
         $this->assertEquals(1, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(2, $this->custom_data_feedback_repository->countAll());
+    }
 
-        // Checking for articles
+    private function checkDbArticleData()
+    {
         $this->assertEquals(3, $this->article_repository->countAll());
         $this->assertEquals(2, $this->custom_data_article_repository->countAll());
 
@@ -375,8 +393,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals('Content 1', $article->getContentPlain());
         $this->assertEquals('published', $article->getStatusCode());
         $this->assertEquals('Category 1', $article->getPrimaryCategory());
+    }
 
-        // Checking for organizations
+    private function checkDbOrganizationData()
+    {
         $this->assertEquals(1, $this->organization_repository->countAll());
 
         /** @var Entity\Organization $organization */
@@ -391,8 +411,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals('phone', $contact->getField3());
 
         $this->assertEquals(4, $this->custom_data_organization_repository->countAll());
+    }
 
-        // Checking for blob
+    private function checkDbBlobData()
+    {
         $this->assertCount(4, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'tickets.csv')));
