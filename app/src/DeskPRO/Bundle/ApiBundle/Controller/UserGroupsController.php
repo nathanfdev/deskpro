@@ -34,7 +34,9 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations\Get;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -76,6 +78,32 @@ class UserGroupsController extends BaseController
         $service = $this->get('data.user_groups');
         return View::create(
             $this->DataSerialize($service->loadSingleUserGroupEnabled($id)),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Count Users in User Groups",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request"
+     *      }
+     * )
+     * @Get("/user_groups/counts", name="api_user_group_count_users")
+     */
+    public function countUsersInGroups(Request $request)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService $service */
+        $service = $this->get('data.user_groups');
+
+        if ($request->get('group_by') !== 'user_groups') {
+            throw new BadRequestHttpException(
+                'You must provide group_by query parameter. Allowed values: user_groups.');
+        }
+
+        return View::create(
+            $this->createRepresentation($service->countPeopleInUserGroups()),
             Response::HTTP_OK
         );
     }
