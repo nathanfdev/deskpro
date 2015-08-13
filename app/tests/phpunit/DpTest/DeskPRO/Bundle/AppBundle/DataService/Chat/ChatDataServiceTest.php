@@ -35,9 +35,6 @@ namespace DpTest\Bundle\AppBundle\DataService\Chat;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery as Query;
 use Pagerfanta\Pagerfanta;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
@@ -113,27 +110,8 @@ class ChatDataServiceTest extends DeskProTestCase
      */
     private function instance()
     {
-        $query = $this->prophesize(Query::class);
-        $qb = $this->prophesize(QueryBuilder::class);
-        $em = $this->prophesize(EntityManager::class);
-
-        // describe Query double
-        $query->getArrayResult()->willReturn([]);
-        $query->getSingleScalarResult()->willReturn(1);
-
-        // describe QueryBuilder double
-        $qb->getQuery()->willReturn($query);
-        $qb->from(Argument::any(), Argument::any())->willReturn($qb);
-        $qb->select(Argument::any())->willReturn($qb);
-        $qb->getRootAliases()->willReturn(['alias']);
-        $qb->addSelect(Argument::any())->willReturn($qb);
-        $qb->groupBy(Argument::any())->willReturn($qb);
-
-        // describe EntityManager double
-        $em->createQueryBuilder()->willReturn($qb);
-
-        /** @var EntityManager $em */
-        $em = $em->reveal();
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em = $this->mockQueryBuildingEntityManager()->reveal();
 
         return new ChatDataService($em);
     }

@@ -31,46 +31,55 @@
  * @package DeskPRO
  */
 
-namespace DpTest\Bundle\AppBundle\DataService\AgentTeams;
+namespace DpTestSrc\TestBundle\MockHelpers;
 
 use Prophecy\Argument;
-use DpTest\DeskProTestCase;
-use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\AbstractQuery as Query;
 
 /**
- * Class AgentTeamsDataServiceTest
+ * Trait DbalMocksHelper
+ *
+ * Trait containing DBAL/ORM mock helpers
  */
-class AgentTeamsDataServiceTest extends DeskProTestCase
+trait DbalMocksHelper
 {
     /**
-     * @test
+     * @param string $class
+     * @return \Prophecy\Prophecy\ObjectProphecy
      */
-    function it_should_be_instantiable()
+    protected function mockQueryBuildingEntityManager($class = EntityManager::class)
     {
-        $this->assertInstanceOf(AgentTeamsDataService::class, $this->instance());
+        $em = $this->prophesize($class);
+        $em->createQueryBuilder()->willReturn($this->mockQueryBuilder());
+
+        return $em;
     }
 
     /**
-     * @test
+     * @return \Prophecy\Prophecy\ObjectProphecy
      */
-    function it_should_return_Count_instance_with_nested_CountsGroup_when_counting_agents_in_teams()
+    protected function mockQueryBuilder()
     {
-        $result = $this->instance()->countAgentsInTeams();
-        $this->assertInstanceOf(Count::class, $result);
-        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
-    }
+        $query = $this->prophesize(Query::class);
+        $qb = $this->prophesize(QueryBuilder::class);
 
-    /**
-     * @return AgentTeamsDataService
-     */
-    private function instance()
-    {
-        /** @var EntityManager $em */
-        $em = $this->mockQueryBuildingEntityManager(EntityManager::class)->reveal();
+        // describe Query double
+        $query->getArrayResult()->willReturn([]);
+        $query->getSingleScalarResult()->willReturn(42);
 
-        return new AgentTeamsDataService($em);
+        // describe QueryBuilder double
+        $qb->getQuery()->willReturn($query);
+        $qb->getRootAliases()->willReturn(['alias']);
+        $qb->select(Argument::any())->willReturn($qb);
+        $qb->addSelect(Argument::any())->willReturn($qb);
+        $qb->from(Argument::any(), Argument::any())->willReturn($qb);
+        $qb->join(Argument::any(), Argument::any())->willReturn($qb);
+        $qb->where(Argument::any())->willReturn($qb);
+        $qb->andWhere(Argument::any())->willReturn($qb);
+        $qb->groupBy(Argument::any())->willReturn($qb);
+
+        return $qb;
     }
 }
