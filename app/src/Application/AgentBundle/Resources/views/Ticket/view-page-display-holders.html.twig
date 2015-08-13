@@ -74,7 +74,7 @@
 			{% if problem %}
                 [&nbsp;<a class="agent_link"
                           data-route="listpane:{{ path('agent_ticketsearch_runproblem', {'problem_id': problem.id}) }}">{{ phrase('agent.problems.incidents') }}
-                : {{ problem.tickets.count }}</a>&nbsp;]
+                :&nbsp;{{ problem.tickets.count }}</a>&nbsp;]
 
                 {% if problem.is_open and app.user.hasPerm('agent_problems.close') %}
                     [&nbsp;<a class="agent_link close-problem-link">close</a>&nbsp;]
