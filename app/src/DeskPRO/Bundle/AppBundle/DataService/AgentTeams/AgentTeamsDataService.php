@@ -26,73 +26,44 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
+namespace DeskPRO\Bundle\AppBundle\DataService\AgentTeams;
 
-use Prophecy\Argument;
-use DpTest\DeskProTestCase;
-use Application\DeskPRO\ORM\EntityManager;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery as Query;
-use DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService;
+use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
- * Class UserGroupsDataServiceTest
+ * Class AgentTeamsDataService
  */
-class UserGroupsDataServiceTest extends DeskProTestCase
+class AgentTeamsDataService extends AbstractDataService
 {
     /**
-     * @test
+     * @return Count
      */
-    function it_should_be_instantiable()
+    public function countAgentsInTeams()
     {
-        $this->assertInstanceOf(UserGroupsDataService::class, $this->instance());
-    }
+        $qb = $this->em->createQueryBuilder();
 
-    /**
-     * @test
-     */
-    function it_should_return_Count_instance_with_nested_CountsGroup_when_counting_people_in_user_groups()
-    {
-        $result = $this->instance()->countPeopleInUserGroups();
-        $this->assertInstanceOf(Count::class, $result);
-        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
-    }
+        $qb->select('count(m) as value, at.id as group_name')
+            ->from('DeskPRO:AgentTeam', 'at')
+            ->join('at.members', 'm')
+            ->andWhere('m.is_deleted = false')
+            ->groupBy('group_name')
+        ;
 
-    /**
-     * @return UserGroupsDataService
-     */
-    private function instance()
-    {
-        $query = $this->prophesize(Query::class);
-        $qb = $this->prophesize(QueryBuilder::class);
-        $em = $this->prophesize(EntityManager::class);
+        $result = $qb->getQuery()->getArrayResult();
 
-        // describe Query double
-        $query->getArrayResult()->willReturn([]);
+        $count = 0;
+        $nested = new CountsGroup('agent_teams');
+        foreach ($result as $group) {
+            $count += $group['value'];
+            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+        }
 
-        // describe QueryBuilder double
-        $qb->getQuery()->willReturn($query);
-        $qb->getRootAliases()->willReturn(['alias']);
-        $qb->select(Argument::any())->willReturn($qb);
-        $qb->addSelect(Argument::any())->willReturn($qb);
-        $qb->from(Argument::any(), Argument::any())->willReturn($qb);
-        $qb->join(Argument::any(), Argument::any())->willReturn($qb);
-        $qb->where(Argument::any())->willReturn($qb);
-        $qb->groupBy(Argument::any())->willReturn($qb);
-
-        // describe EntityManager double
-        $em->createQueryBuilder()->willReturn($qb);
-
-        /** @var EntityManager $em */
-        $em = $em->reveal();
-
-        return new UserGroupsDataService($em);
+        return new Count($count, $nested);
     }
 }
