@@ -15,7 +15,9 @@ Feature: /feedback_labels endpoint
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
     And the JSON node "data[0]" should be equal to "bar"
-    And the JSON node "data[1]" should be equal to "foo"
+    And the JSON node "data[1]" should be equal to "barfoo"
+    And the JSON node "data[2]" should be equal to "foo"
+    And the JSON node "data[3]" should be equal to "foobar"
 
   Scenario: I GET feedback labels with suggest
     When I send a GET request to "/api/v2/feedback_labels?term=fo"
@@ -24,3 +26,4 @@ Feature: /feedback_labels endpoint
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
     And the JSON node "data[0]" should be equal to "foo"
+    And the JSON node "data[1]" should be equal to "foobar"

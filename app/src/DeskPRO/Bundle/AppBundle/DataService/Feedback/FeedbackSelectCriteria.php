@@ -31,9 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Doctrine\ORM\QueryBuilder;
 
 class FeedbackSelectCriteria
 {
@@ -75,7 +75,8 @@ class FeedbackSelectCriteria
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'awaiting_validation':
-                    $qb->andWhere($qb->expr()->eq("$alias.hidden_status", 'validating'));
+                    $qb->andWhere("$alias.hidden_status = :validating");
+                    $qb->setParameter('validating', 'validating');
                     break;
                 case 'status':
                     $qb->andWhere("$alias.status = :status");
@@ -93,7 +94,7 @@ class FeedbackSelectCriteria
     protected static function configureResolver(OptionsResolver $resolver)
     {
         $resolver->setDefined(['awaiting_validation', 'status']);
-        $resolver->setAllowedValues('awaiting_validation', 1);
+        $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues(
             'status',
             ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]

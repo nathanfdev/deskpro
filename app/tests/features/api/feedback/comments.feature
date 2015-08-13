@@ -13,4 +13,4 @@ Feature: /feedback_comments/counts endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data[0]" should be equal to 2
+    And the JSON node "data.count" should be equal to 5

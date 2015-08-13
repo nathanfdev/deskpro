@@ -294,65 +294,74 @@ class ApiDb extends AbstractDbSet
 
 // Feedback
 
-        $category1 = new FeedbackCategory();
-        $category1->setTitle('First feedback category');
-        $em->persist($category1);
+        $this->getDb()->exec("
+            INSERT INTO `feedback_categories`
+                (`title`,`slug`)
 
-        $category2 = new FeedbackCategory();
-        $category2->setTitle('Second feedback category');
-        $em->persist($category2);
+            VALUES
 
-        $category3 = new FeedbackCategory();
-        $category3->setTitle('Third feedback category');
-        $em->persist($category3);
+                ('Test feedback category 1', '1'),
+                ('Test feedback category 2', '2'),
+                ('Test feedback category 3', '3'),
+                ('Test feedback category 4', '4'),
+                ('Test feedback category 5', '5'),
+                ('Test feedback category 6', '6')
+            ;
+        ");
 
-        $em->flush();
+        $this->getDb()->exec("
+            INSERT INTO `feedback_status_categories` (`status_type`, `title`, `display_order`)
+            VALUES
+              ('active', 'Gathering Feedback', 0),
+              ('active', 'Planning', 0),
+              ('active', 'Started', 0),
+              ('active', 'Under Review', 0),
+              ('closed', 'Completed', 0),
+              ('closed', 'Duplicate', 0),
+              ('closed', 'Declined', 0);
+        ");
 
-        $feedback1 = new Feedback();
-        $feedback1->setTitle('First feedback');
-        $feedback1->setContent('First feedback content');
-        $feedback1->setHiddenStatus(Feedback::HIDDEN_STATUS_VALIDATING);
-        $feedback1->setCategory($category1);
-        $em->persist($feedback1);
+        $this->getDb()->exec("
+            INSERT INTO `feedback`
+                (`status_category_id`,`category_id`,`slug`,`title`, `content`,`status`, `hidden_status`)
 
-        $feedback2 = new Feedback();
-        $feedback2->setTitle('Second feedback');
-        $feedback2->setContent('Second feedback content');
-        $feedback2->setCategory($category2);
-        $em->persist($feedback2);
+            VALUES
+                (1, 1, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 'hidden', 'deleted'),
+                (1, 2, 'Test feedback 2', 'Slug to feedback 2', 'Content of test feedback 2', 'active', 'validating'),
+                (1, 3, 'Test feedback 3', 'Slug to feedback 3', 'Content of test feedback 3', 'active', 'validating'),
+                (1, 1, 'Test feedback 4', 'Slug to feedback 4', 'Content of test feedback 4', 'hidden', 'spam'),
+                (5, 1, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 'closed', 'validating'),
+                (1, 2, 'Test feedback 6', 'Slug to feedback 6', 'Content of test feedback 6', 'new', 'validating')
+            ;
+        ");
 
-        $feedback3 = new Feedback();
-        $feedback3->setTitle('Third feedback');
-        $feedback3->setContent('Third feedback content');
-        $feedback3->setStatus(Feedback::STATUS_ACTIVE);
-        $feedback3->setCategory($category1);
-        $em->persist($feedback3);
-        $em->flush();
+        $this->getDb()->exec("
+            INSERT INTO `labels_feedback`
+                (`feedback_id`,`label`)
 
-        $feedback4 = new Feedback();
-        $feedback4->setTitle('Fourth feedback');
-        $feedback4->setContent('Fourth feedback content');
-        $feedback4->setStatus(Feedback::STATUS_ACTIVE);
-        $feedback4->setCategory($category2);
-        $em->persist($feedback4);
-        $em->flush();
+            VALUES
+                (1, 'foo'),
+                (2, 'foo'),
+                (3, 'foo'),
+                (1, 'bar'),
+                (1, 'foobar'),
+                (2, 'barfoo')
+            ;
+        ");
 
-        $feedback1->addLabelByString('foo');
-        $feedback1->addLabelByString('bar');
-        $feedback2->addLabelByString('bar');
+        $this->getDb()->exec("
+            INSERT INTO `feedback_comments`
+                (`feedback_id`,`content`, `status`, `is_reviewed`)
 
-        $comment1 = new FeedbackComment();
-        $comment1->setContentReal('First test comment');
-        $comment1->setStatus(FeedbackComment::STATUS_VALIDATING);
-        $comment1->setObject($feedback1);
-        $em->persist($comment1);
-
-        $comment2 = new FeedbackComment();
-        $comment2->setContentReal('Second test comment');
-        $comment2->setStatus(FeedbackComment::STATUS_VISIBLE);
-        $comment2->setObject($feedback2);
-        $em->persist($comment2);
-
+            VALUES
+                (1, 'Feedback 1 comment 1', 'validating', 0),
+                (2, 'Feedback 2 comment 2', 'validating', 0),
+                (3, 'Feedback 3 comment 3', 'validating', 0),
+                (1, 'Feedback 1 comment 4', 'visible', 0),
+                (2, 'Feedback 2 comment 5', 'visible', 1),
+                (6, 'Feedback 6 comment 6', 'visible', 0)
+            ;
+        ");
 
         // "/user_chats" endpoint test data ----------------------------------------------------------------------------
         $this->getDb()->exec("

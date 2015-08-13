@@ -43,7 +43,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\Form;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 
 /**
  * API access to feedback comments.
@@ -97,7 +96,7 @@ class FeedbackCommentsController extends BaseController
     {
         $count = $this->get('data.feedback_comments')->countAwaitingValidation();
         return View::create(
-            $this->dataSerialize(new PrimitiveArray([$count])),
+            $this->createRepresentation($count),
             Response::HTTP_OK
         );
     }

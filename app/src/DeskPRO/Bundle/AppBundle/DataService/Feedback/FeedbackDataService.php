@@ -40,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
-use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Doctrine\ORM\Query\QueryException;
@@ -260,8 +259,8 @@ class FeedbackDataService extends AbstractDataService
     private function countFlat(FeedbackCountCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
-        $qb->select('count(c)')
-            ->from('DeskPRO:ChatConversation', 'c');
+        $qb->select('count(f)')
+            ->from('DeskPRO:Feedback', 'f');
         $criteria->applyFilters($qb);
         try {
             $count = $qb->getQuery()->getSingleScalarResult();

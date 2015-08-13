@@ -31,15 +31,30 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 
+use Application\DeskPRO\Entity\FeedbackComment;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
+use Doctrine\ORM\Query\QueryException;
 
 class FeedbackCommentsDataService extends AbstractDataService
 {
     /**
-     * @return integer
+     * @return Count
      */
     public function countAwaitingValidation()
     {
-        return $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('count(c)')
+            ->from('DeskPRO:FeedbackComment', 'c')
+            ->andWhere('c.status = :validating')
+            ->setParameter('validating', FeedbackComment::STATUS_VALIDATING)
+            ->orWhere('c.status = :visible AND c.is_reviewed = 0')
+            ->setParameter('visible', FeedbackComment::STATUS_VISIBLE);
+        try {
+            $count = $qb->getQuery()->getSingleScalarResult();
+        } catch (QueryException $e) {
+            $count = 0;
+        }
+        return new Count($count);
     }
 }
