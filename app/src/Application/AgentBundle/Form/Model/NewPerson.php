@@ -35,6 +35,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 
@@ -65,6 +66,9 @@ class NewPerson
 
     /** @var string */
     public $password;
+
+    /** @var Language */
+    public $language;
 
     /** @var Person */
     protected $_person;
@@ -107,6 +111,10 @@ class NewPerson
 
         if ($this->password) {
             $person->setPassword($this->password);
+        }
+
+        if ($this->language) {
+            $person->language = $this->language;
         }
 
         if ($this->organization_id) {

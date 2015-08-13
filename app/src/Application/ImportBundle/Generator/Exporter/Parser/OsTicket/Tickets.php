@@ -122,7 +122,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination('ticket_' . $ticket['ticket_id'])
+                ->setDestination($this->formatDestination('ticket_', $ticket['ticket_id']))
                 ->setOid($ticket['ticket_id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
@@ -214,7 +214,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination('message_' . $num)
+                ->setDestination($this->formatDestination('message_', $num))
                 ->setOid($num)
                 ->setPersonEmail($this->getMessagePersonEmail($message))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($message['created']))
@@ -277,7 +277,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
-                ->setDestination('attachment_' . $num)
+                ->setDestination($this->formatDestination('attachment_', $num))
                 ->setOid($num)
                 ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                 ->setFileName($attachment['name'])

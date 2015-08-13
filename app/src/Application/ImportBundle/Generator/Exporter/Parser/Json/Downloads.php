@@ -105,7 +105,7 @@ final class Downloads extends AbstractParser
         if ($this->isValidDownload($download)) {
             $entity = new Entity\Download();
             $entity
-                ->setDestination('download_' . $download['oid'])
+                ->setDestination($this->formatDestination('download_', $download['oid']))
                 ->setOid($download['oid'])
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])

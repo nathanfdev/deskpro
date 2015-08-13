@@ -105,7 +105,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('person_' . $person['oid'])
+                ->setDestination($this->formatDestination('person_', $person['oid']))
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])
@@ -133,6 +133,11 @@ final class People extends AbstractParser
             }
             foreach ($person['user_groups'] as $user_group) {
                 $entity->addUserGroup($user_group);
+            }
+
+            $contact_data = $this->exportContactData($person['contact_data']);
+            foreach ($contact_data as $contact) {
+                $entity->addContact($contact);
             }
 
             $custom_fields = $this->exportCustomFields($person['custom_fields']);
@@ -184,12 +189,14 @@ final class People extends AbstractParser
             'emails',
             'labels',
             'user_groups',
+            'contact_data',
             'custom_fields',
         );
 
         return $this->hasRequiredColumns($person, $columns)
             && $this->isArrayColumn($person, 'emails')
             && $this->isArrayColumn($person, 'labels')
+            && $this->isArrayColumn($person, 'contact_data')
             && $this->isArrayColumn($person, 'custom_fields');
     }
 }

@@ -373,6 +373,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $labels;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -1433,8 +1434,25 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Reset contact data
+     *
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        foreach ($this->contact_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->contact_data->clear();
+        $this->_onPropertyChanged('contact_data', null, $this->contact_data);
+
+        return $this;
+    }
+
+    /**
      * @param  null  $type
-     * @return array
+     * @return PersonContactData[]
      */
     public function getContactData($type = null)
     {
@@ -1566,7 +1584,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function addCustomData(CustomDataPerson $data)
     {
         $this->custom_data->add($data);
-        $data['ticket'] = $this;
+        $data->setPerson($this);
 
         $field = $data->field;
         $parent_id = null;
@@ -1582,6 +1600,23 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->custom_data->clear();
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
     }
 
     /**
@@ -2059,12 +2094,15 @@ class Person extends DomainObject implements HighlightableModelInterface
      * Add a label
      *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
+     * @return $this
      */
     public function addLabel(LabelPerson $label)
     {
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+
+        return $this;
     }
 
     public function removeLabelByString($l)
@@ -2085,7 +2123,11 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        foreach ($this->labels as $label) {
+            App::getOrm()->remove($label);
+        }
+
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;

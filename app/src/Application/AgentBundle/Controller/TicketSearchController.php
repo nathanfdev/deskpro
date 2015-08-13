@@ -1575,6 +1575,8 @@ class TicketSearchController extends AbstractController
         } else {
             $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
         }
+        $vars['ticket_display'] = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+        $vars['ticket_display']->setPersonContext($this->person);
 
         while(!empty($tickets)) {
             $ticket = array_shift($tickets);

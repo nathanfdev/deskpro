@@ -133,8 +133,8 @@ define('DP_UPGRADE_STARTTIME', microtime(true));
 
 $errors = array();
 
-if (!deskpro_install_check_version()) {
-    $errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.";
+if (!deskpro_install_check_version() && !defined('DP_IGNORE_VERSION_CHECK')) {
+    $errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.9 or newer. You need to upgrade your version.";
 }
 
 if (!deskpro_install_check_pcre()) {

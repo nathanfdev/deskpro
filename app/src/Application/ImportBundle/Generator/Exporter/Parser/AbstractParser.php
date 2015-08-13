@@ -41,19 +41,26 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     /**
      * Check if a record has all required columns
      *
-     * @param array   $record
-     * @param array   $columns
-     * @param boolean $throw_exception
+     * @param array|null $record
+     * @param array      $columns
+     * @param boolean    $throw_exception
      *
      * @return bool
      * @throws NoColumnException
      */
-    protected function hasRequiredColumns(array $record, array $columns, $throw_exception = true)
+    protected function hasRequiredColumns(array $record = null, array $columns, $throw_exception = true)
     {
+        if ( ! is_array($record)) {
+            throw new NoColumnException('Record is not array');
+        }
+
         foreach ($columns as $column) {
             if (array_key_exists($column, $record) === false) {
                 if ($throw_exception) {
-                    throw new NoColumnException(sprintf('Column `%s` not found', $column));
+                    throw new NoColumnException(sprintf(
+                        'Column `%s` not found, exists [%s]',
+                        $column,  implode(', ', array_keys($record))
+                    ));
                 }
 
                 return false;
@@ -64,26 +71,54 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     }
 
     /**
-     * Check if a record column is array
+     * Check if a record has any of required columns
      *
-     * @param array  $record
-     * @param string $column
-     * @param bool   $throw_exception
+     * @param array|null $record
+     * @param array      $columns
+     * @param boolean    $throw_exception
      *
      * @return bool
-     *
      * @throws NoColumnException
+     */
+    protected function hasAnyRequiredColumn(array $record = null, array $columns, $throw_exception = true)
+    {
+        if ( ! is_array($record)) {
+            throw new NoColumnException('Record is not array');
+        }
+
+        foreach ($columns as $column) {
+            if (array_key_exists($column, $record) === true) {
+                return true;
+            }
+        }
+
+        if ($throw_exception) {
+            throw new NoColumnException(sprintf(
+                'Columns `%s` not found, exists [%s]',
+                implode(', ', $columns), implode(', ', array_keys($record))
+            ));
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a record column is array
+     *
+     * @param array|null $record
+     * @param string     $column
+     * @param bool       $throw_exception
+     *
+     * @return bool
      * @throws NotArrayException
      */
-    protected function isArrayColumn(array $record, $column, $throw_exception = true)
+    protected function isArrayColumn(array $record = null, $column, $throw_exception = true)
     {
-        if (array_key_exists($column, $record) === false) {
-            if ($throw_exception) {
-                throw new NoColumnException(sprintf('Column `%s` not found', $column));
-            }
-
-            return false;
+        if ( ! is_array($record)) {
+            throw new NotArrayException(sprintf('Column `%s` is not array, record is not array', $column));
         }
+
+        $this->hasRequiredColumns($record, array($column), $throw_exception);
 
         if (is_array($record[$column]) === false) {
             if ($throw_exception) {
@@ -126,5 +161,22 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     protected function isBooleanTrue($value)
     {
         return $value === 'true' || (int)$value === 1;
+    }
+
+    /**
+     * Formats destination path
+     *
+     * @param $prefix
+     * @param $id
+     *
+     * @return string
+     */
+    protected function formatDestination($prefix, $id)
+    {
+        $filename = strtolower($id);
+        $filename = str_replace(' ', '_', $filename);
+        $filename = preg_replace('#[^\w\d\_\-\.\@]#i', '', $filename);
+
+        return rtrim($prefix, '_') . '_' . $filename;
     }
 }

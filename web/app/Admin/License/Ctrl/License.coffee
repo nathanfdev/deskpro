@@ -54,6 +54,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         , =>
           @$scope.refreshing_lic = false
         )
+
+        if res.data.lic_info.custom_billing_frame
+          @$scope.custom_billing_frame = res.data.lic_info.custom_billing_frame
+          @$scope.iframe_loading = false
+          @$scope.iframe_code    = '<iframe src="' + @$scope.custom_billing_frame + '" frameborder="0"></iframe>'
       )
 
       return data_promise

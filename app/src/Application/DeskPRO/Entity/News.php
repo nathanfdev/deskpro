@@ -172,6 +172,23 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->labels->clear();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
     public function addLabel(LabelNews $label)
     {
         $label['news'] = $this;

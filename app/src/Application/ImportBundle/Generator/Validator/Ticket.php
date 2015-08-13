@@ -40,7 +40,7 @@ final class Ticket extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_TICKET;
     }
