@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Doctrine\ORM\Query\QueryException;
+use Doctrine\ORM\NoResultException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -103,7 +103,7 @@ class ChatDataService
 
         try {
             $count = $qb->getQuery()->getSingleScalarResult();
-        } catch (QueryException $e) {
+        } catch (NoResultException $e) {
             $count = 0;
         }
 
