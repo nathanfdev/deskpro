@@ -31,15 +31,22 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation;
+namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
-/**
- * A link to the agent interface, but it's implemented in PHP code, not in this annotation.
- *
- * The code is at \DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
- *
- * @Annotation
- */
-class PortalLinkCustom
+
+interface LinkConfigRepoInterface
 {
+    /**
+     * Returns an array like:
+     * [
+     *   'route' => 'route_name',
+     *   'route_param_map' => ['param' => 'value']
+     * ]
+     *
+     * @param object $object the entity/object itself
+     * @param string $context the area: "portal", "agent".
+     * @param string $type a specifier, since multiple routes can be configured
+     * @return array|string an array with the format above or the string "custom"
+     */
+    public function getRouteInfo($object, $context, $type);
 }

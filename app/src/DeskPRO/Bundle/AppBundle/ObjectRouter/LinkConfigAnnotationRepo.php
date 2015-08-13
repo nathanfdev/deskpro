@@ -33,16 +33,20 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkCustom;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
+use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
-class ObjectRouterAnnotationConfig implements ObjectRouterConfigInterface, CacheWarmerInterface
+class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerInterface
 {
     const INTERNAL_DEFAULT = '__default__';
 
     /**
-     * @var AnnotationReader
+     * @var Reader
      */
     private $annotation_reader;
 
@@ -51,23 +55,14 @@ class ObjectRouterAnnotationConfig implements ObjectRouterConfigInterface, Cache
      */
     private $config_cache;
 
-    public function __construct(AnnotationReader $annotation_reader, ConfigCache $config_cache)
+    public function __construct(Reader $annotation_reader, ConfigCache $config_cache)
     {
         $this->annotation_reader = $annotation_reader;
         $this->config_cache = $config_cache;
     }
 
     /**
-     * Returns an array like:
-     * [
-     *   'route' => 'route_name',
-     *   'route_params' => ['param' => 'value']
-     * ]
-     *
-     * @param object $object the entity/object itself
-     * @param string $context the area: "portal", "agent".
-     * @param string|null $type a specifier, since multiple routes can be configured
-     * @return array
+     * {@inheritdoc}
      */
     public function getRouteInfo($object, $context, $type = null)
     {
@@ -79,7 +74,35 @@ class ObjectRouterAnnotationConfig implements ObjectRouterConfigInterface, Cache
 
         $info = $this->getAnnotationInfo($object);
 
-        return $info[$context][$type];
+        $object_info = current($info);
+
+        if (!array_key_exists($context, $object_info)) {
+            throw new ObjectRouterException(
+                sprintf(
+                    'There are no links defined for this entity in the "%s" context! Be sure to include a @%sLinkRoute or @%sLinkCustom annotation on the class "%s"',
+                    $context,
+                    ucfirst($context),
+                    ucfirst($context),
+                    get_class($object)
+                )
+            );
+        }
+
+        if (!array_key_exists($type, $object_info[$context])) {
+            throw new ObjectRouterException(
+                sprintf(
+                    'There are no links defined for this entity for type "%s" in the "%s" context! Make sure you have a @%sLinkRoute or @%sLinkCustom annotation on the class "%s" with "type=%s"',
+                    $type,
+                    $context,
+                    ucfirst($context),
+                    ucfirst($context),
+                    get_class($object),
+                    $type
+                )
+            );
+        }
+
+        return $object_info[$context][$type];
     }
 
     /**
@@ -91,7 +114,7 @@ class ObjectRouterAnnotationConfig implements ObjectRouterConfigInterface, Cache
      *        'context' => [
      *            'type' => [
      *               'route' => 'route_name',
-     *               'route_params' => ['route' => 'property_path', 'another' => 'another_prop_path'],
+     *               'param_map' => ['route' => 'property_path', 'another' => 'another_prop_path'],
      *            ],
      *            //...
      *         ]
@@ -100,6 +123,7 @@ class ObjectRouterAnnotationConfig implements ObjectRouterConfigInterface, Cache
      * ]
      *
      * @param $object_or_filename
+     * @return array
      */
     protected function getAnnotationInfo($object_or_filename)
     {
@@ -108,6 +132,28 @@ class ObjectRouterAnnotationConfig implements ObjectRouterConfigInterface, Cache
         } else {
             $class = $this->findClass($object_or_filename);
         }
+
+        if (!$ref_class = new \ReflectionClass($class)) {
+            throw new ObjectRouterException(sprintf('could not reflect on "%s"', $class));
+        }
+
+        $annotations = $this->annotation_reader->getClassAnnotations($ref_class);
+
+        $result = array();
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof PortalLinkRoute) {
+                $result[$class][ObjectRouter::CONTEXT_PORTAL][$annotation->getType()] = $annotation->toRouteArray();
+            } elseif ($annotation instanceof AgentLinkRoute) {
+                $result[$class][ObjectRouter::CONTEXT_AGENT][$annotation->getType()] = $annotation->toRouteArray();
+            } elseif ($annotation instanceof PortalLinkCustom) {
+                $result[$class][ObjectRouter::CONTEXT_PORTAL][$annotation->getType()] = ObjectRouter::CONFIG_CUSTOM;
+            } elseif ($annotation instanceof AgentLinkCustom) {
+                $result[$class][ObjectRouter::CONTEXT_AGENT][$annotation->getType()] = ObjectRouter::CONFIG_CUSTOM;
+            }
+        }
+
+        return $result;
     }
 
     /**

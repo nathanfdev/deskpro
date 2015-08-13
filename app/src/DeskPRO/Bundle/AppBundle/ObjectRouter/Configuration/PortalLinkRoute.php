@@ -31,22 +31,14 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
+namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration;
 
-
-interface ObjectRouterConfigInterface
+/**
+ * A definition of how to make a PORTAL link for this entity.
+ *
+ * @Annotation
+ * @Target({"CLASS"})
+ */
+class PortalLinkRoute extends ObjectRouteAnnotation
 {
-    /**
-     * Returns an array like:
-     * [
-     *   'route' => 'route_name',
-     *   'route_params' => ['param' => 'value']
-     * ]
-     *
-     * @param object $object the entity/object itself
-     * @param string $context the area: "portal", "agent".
-     * @param string $type a specifier, since multiple routes can be configured
-     * @return array|string an array with the format above or the string "custom"
-     */
-    public function getRouteInfo($object, $context, $type);
 }

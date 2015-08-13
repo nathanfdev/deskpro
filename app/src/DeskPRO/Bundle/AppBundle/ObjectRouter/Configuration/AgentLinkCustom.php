@@ -31,13 +31,16 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation;
+namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration;
 
 /**
- * A definition of how to make a PORTAL link for this entity.
+ * A link to the agent interface, but it's implemented in PHP code, not in this annotation.
+ *
+ * The code is at \DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
  *
  * @Annotation
+ * @Target({"CLASS"})
  */
-class PortalLink
+class AgentLinkCustom extends ObjectLinkAnnotation
 {
 }

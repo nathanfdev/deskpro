@@ -31,15 +31,15 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation;
+namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration;
 
 /**
- * A link to the agent interface, but it's implemented in PHP code, not in this annotation.
- *
- * The code is at \DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
+ * A definition of how to make an AGENT link for this entity.
  *
  * @Annotation
+ * @Target({"CLASS"})
  */
-class AgentLinkCustom
+class AgentLinkRoute extends ObjectRouteAnnotation
 {
+
 }

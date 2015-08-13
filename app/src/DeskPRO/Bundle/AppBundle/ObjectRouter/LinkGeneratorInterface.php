@@ -31,13 +31,11 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation;
+namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
-/**
- * A definition of how to make an AGENT link for this entity.
- *
- * @Annotation
- */
-class AgentLink
+
+interface LinkGeneratorInterface
 {
+    public function supports($object, $type, $context);
+    public function generate($object, $type, $context, $extra_params, $reference_type);
 }

@@ -33,10 +33,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * A service that allows you to make a URL to a given entity with a single method call,
+ * and not needing to know the implementation details behind the routing (route names, route
+ * parameters, etc).
+ *
+ * It exposes these methods (and there is a Twig Extension that makes them avail. in templates)
+ *
+ * - getPortalPath(object, type=null, extra_params=array)
+ * - getPortalUrl(object, type=null, extra_params=array)
+ * - getAgentPath(object, type=null, extra_params=array)
+ * - getAgentUrl(object, type=null, extra_params=array)
+ */
 class ObjectRouter
 {
     /**
@@ -50,185 +65,81 @@ class ObjectRouter
     const CONTEXT_AGENT = 'agent';
 
     /**
-     * The ObjectRouterConfigInterface returns this value if the object's URL algorithm is
-     * special/built-in to the getCustomUrl() method  (mostly used internally)
+     * The LinkConfigRepoInterface returns this value if the object's URL algorithm is
+     * special/built-in to the getCustomUrl() method  (mostly used internally by default generators and config)
      */
-    const SIGNAL_CUSTOM = 'custom';
+    const CONFIG_CUSTOM = 'custom';
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private $url_generator;
-
-    /**
-     * @var SettingsResolver
-     */
-    private $settings_resolver;
-
-    /**
-     * @var ObjectRouterConfigInterface
-     */
-    private $config;
-
-    public function __construct(UrlGeneratorInterface $url_generator, SettingsResolver $settings_resolver, ObjectRouterConfigInterface $config)
-    {
-        $this->url_generator = $url_generator;
-        $this->settings_resolver = $settings_resolver;
-        $this->config = $config;
-    }
-
-    public function getPortalPath($object, $type = null)
-    {
-        $config = $this->getConfig($object, self::CONTEXT_PORTAL, $type);
-
-        if (self::SIGNAL_CUSTOM === $config) {
-            return $this->getCustomUrl(
-                $object,
-                self::CONTEXT_PORTAL,
-                $type,
-                UrlGeneratorInterface::ABSOLUTE_PATH
-            );
-        }
-
-        return $this->generateStandard(
-            $config['route'],
-            $config['route_params'],
-            UrlGeneratorInterface::ABSOLUTE_PATH
-        );
-    }
-
-    /**
-     * @param object $object
-     * @param string|null $type
-     * @return string
-     */
-    public function getPortalUrl($object, $type = null)
-    {
-        $config = $this->getConfig($object, self::CONTEXT_PORTAL, $type);
-
-
-        if (self::SIGNAL_CUSTOM === $config) {
-            return $this->getCustomUrl(
-                $object,
-                self::CONTEXT_PORTAL,
-                $type,
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-        }
-
-        return $this->generateStandard(
-            $config['route'],
-            $config['route_params'],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-    }
-
-    public function getAgentPath($object, $type = null)
-    {
-        $config = $this->getConfig($object, self::CONTEXT_AGENT, $type);
-
-        if (self::SIGNAL_CUSTOM === $config) {
-            return $this->getCustomUrl(
-                $object,
-                self::CONTEXT_AGENT,
-                $type,
-                UrlGeneratorInterface::ABSOLUTE_PATH
-            );
-        }
-
-        return $this->generateStandard(
-            $config['route'],
-            $config['route_params'],
-            UrlGeneratorInterface::ABSOLUTE_PATH
-        );
-    }
-
-    public function getAgentUrl($object, $type = null)
-    {
-        $config = $this->getConfig($object, self::CONTEXT_AGENT, $type);
-
-        if (self::SIGNAL_CUSTOM === $config) {
-            return $this->getCustomUrl(
-                $object,
-                self::CONTEXT_AGENT,
-                $type,
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-        }
-
-        return $this->generateStandard(
-            $config['route'],
-            $config['route_params'],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-    }
-
-    protected function getCustomUrl($object, $context, $type = null, $reference_type)
-    {
-        if ($object instanceof Ticket) {
-            return $this->generateForTicket($object, $context, $type, $reference_type);
-        }
-
-        throw $this->createException('no custom URL generator', $object, $type, $context);
-    }
-
-    protected function generateForTicket(Ticket $ticket, $context, $type, $reference_type)
-    {
-        if ($this->getSetting('core.tickets.use_ref')) {
-            $ref = $ticket->getRef();
-        } else {
-            $ref = $ticket->getId();
-        }
-
-        return $this->generateStandard(
-            'portal_tickets_view',
-            array('ticket_ref' => $ref),
-            $reference_type
-        );
-    }
-
-    protected function getSetting($name, $default = null)
-    {
-        return $this->settings_resolver->getGlobalSettings()->get($name, $default);
-    }
-
-    /**
-     * Standard internal generation of a route
+     * View the AppBundle's service resource "object_router.yml" to see how link generators are made and injected
+     * ORDER MATTERS, first come first server when it comes to ->supports().
      *
-     * @param $route_name
-     * @param array $route_params
-     * @param $reference_type
-     * @return string
+     * @var LinkGeneratorInterface[]
      */
-    protected function generateStandard($route_name, array $route_params, $reference_type)
+    private $link_generators;
+
+    public function __construct(array $link_generators)
     {
-        return $this->url_generator->generate($route_name, $route_params, $reference_type);
+        $this->link_generators = $link_generators;
     }
 
-    /**
-     * @param $object
-     * @param $context
-     * @param $type
-     * @return array|string
-     */
-    protected function getConfig($object, $context, $type)
+    public function getPortalPath($object, $type = null, array $extra_params = array())
     {
-        if (!$config = $this->config->getRouteInfo($object, $context, $type)) {
-            throw $this->createException('cannot find ObjectRouter config', $object, $type, $context);
+        return $this->processLink(
+            $object,
+            $type,
+            self::CONTEXT_PORTAL,
+            UrlGeneratorInterface::ABSOLUTE_PATH,
+            $extra_params
+        );
+    }
+
+    public function getPortalUrl($object, $type = null, array $extra_params = array())
+    {
+        return $this->processLink(
+            $object,
+            $type,
+            self::CONTEXT_PORTAL,
+            UrlGeneratorInterface::ABSOLUTE_URL,
+            $extra_params
+        );
+    }
+
+    public function getAgentPath($object, $type = null, array $extra_params = array())
+    {
+        return $this->processLink(
+            $object,
+            $type,
+            self::CONTEXT_AGENT,
+            UrlGeneratorInterface::ABSOLUTE_PATH,
+            $extra_params
+        );
+    }
+
+    public function getAgentUrl($object, $type = null, array $extra_params = array())
+    {
+        return $this->processLink(
+            $object,
+            $type,
+            self::CONTEXT_AGENT,
+            UrlGeneratorInterface::ABSOLUTE_URL,
+            $extra_params
+        );
+    }
+
+    protected function processLink($object, $type, $context, $reference_type, array $extra_params = array())
+    {
+        foreach ($this->link_generators as $link_generator) {
+            if ($link_generator->supports($object, $type, $context)) {
+                return $link_generator->generate($object, $type, $context, $extra_params, $reference_type);
+            }
         }
 
-        return $config;
-    }
-
-    protected function createException($msg, $object, $type, $context)
-    {
-        return new ObjectRouterException(
-            'ObjectRouter - '
-            . $msg
-            . sprintf(
-                '[for "%s" with type "%s" in context "%s"]',
-                is_object($object) ? get_class($object) : 'scalar',
-                $type ?: 'default',
+        throw new ObjectRouterException(
+            sprintf(
+                'could not generate a link for "%s" (type=%s) in context "%s" - no LinkGeneratorInterface that supports it',
+                is_object($object) ? get_class($object) : 'non object',
+                $type ?: 'no type',
                 $context
             )
         );
