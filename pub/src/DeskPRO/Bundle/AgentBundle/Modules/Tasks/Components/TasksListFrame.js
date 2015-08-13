@@ -35,6 +35,12 @@ export default class TasksListFrame extends React.Component {
     this.props.dispatch(TaskActions.editTask(newValues, reload));
   }
 
+  editTask(source, model) {
+    this.props.dispatch(TaskActions.editTask({
+      title : model.title
+    }, source));
+  }
+
   createTask(source, model) {
     this.props.dispatch(TaskActions.createTask({
       title : model.title
@@ -167,7 +173,8 @@ export default class TasksListFrame extends React.Component {
         {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
           return <TaskCard task={object} projects={projects} linked_items={linked_items} departments={departments}
                            teams={teams} agents={agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
-                           source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)} />
+                           source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
+                           editTask={_this.editTask.bind(_this)} />
         }) : '' }
       </div>
     </section>

@@ -14,26 +14,49 @@ const cardSource = {
   }
 };
 
-@DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
-}))
-export default class TaskCard extends React.Component {
-  constructor(props) {
-    super(props);
+const TaskCard = React.createClass({
+  mixins: [
+    require('react-onclickoutside')
+  ],
 
-    this.state = {
-      expanded: false
+  handleClickOutside: function(evt) {
+    if (this.state.editing === true) {
+      this.setState({
+        editing: false
+      });
+      //this.props.editTask(this.props.source, this.state.task);
+    }
+  },
+
+  getInitialState: function() {
+    return {
+      expanded: false,
+      editing: false,
+      task: {}
     };
-  }
+  },
 
-  toggleDetails() {
+  toggleDetails: function () {
     this.setState({
       expanded: !this.state.expanded
     });
-  }
+  },
 
-  render() {
+  editMode: function () {
+    this.setState({
+      editing: true
+    });
+  },
+
+  handleTitleChange: function (name, value, test) {
+    //let task = this.state.task;
+    //task.title = value;
+    //this.setState({
+    //  task: task
+    //});
+  },
+
+  render: function () {
     const { task, projects, linked_items, departments, teams, agents, source, connectDragSource, isDragging } = this.props;
 
     let cardClass = task.is_done ? "card task-card task-card-completed" : "card task-card";
@@ -70,56 +93,73 @@ export default class TaskCard extends React.Component {
       assignee = <span><span className="text">{department.title}</span></span>
     }
 
-    return connectDragSource(<div className={cardClass} key={task.id}>
-      <div className="card-status-bar status-bar-left"></div>
-      <div className="card-status-bar status-bar-right"></div>
+    return connectDragSource(<div className={cardClass} key={task.id} onDoubleClick={this.editMode}>
+      { !this.state.editing ?
+        <div>
+          <div className="card-status-bar status-bar-left"></div>
+          <div className="card-status-bar status-bar-right"></div>
 
-      <div className="card-checkbox">
-        <span className="checkbox"></span>
-      </div>
+          <div className="card-checkbox">
+            <span className="checkbox"></span>
+          </div>
 
-      {assignee || task.is_done ?
-        <div className="top-right-box">
-          {!task.is_done ? assignee : <button className="task-details-button" onClick={this.toggleDetails.bind(this)}>{detailsButtonText} <i className="fa fa-bars" /></button>}
-        </div> : ''}
+          {assignee || task.is_done ?
+            <div className="top-right-box">
+              {!task.is_done ? assignee :
+                <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
+                  className="fa fa-bars"/></button>}
+            </div> : ''}
 
-      <div className="card-line">
+          <div className="card-line">
               <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
                 {doneButton}
               </span>
 
-        <h1>{task.title}</h1>
-      </div>
-
-      { this.state.expanded || !task.is_done ?
-      <div className="card-line task-details">
-        <div className="task-extras">
-          <div>{task.comment_count} <i className="fa fa-comment"/></div>
-
-          {task.subtasks_total > 0 ?
-            <span><span className="disc"></span>
-            <div className="subtask-count">{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/></div></span> : ''}
-        </div>
-
-        <div className="task-properties">
-          <div>
-            <i className="fa fa-calendar-o"/> Due: {task.date_due ? <FormattedDate
-            value={Date.parse(task.date_due)}
-            day="numeric"
-            month="long"
-            year="numeric" /> : 'N/A' }
+            <h1>{task.title}</h1>
           </div>
 
-          {task.project && projects[task.project] ? <span>
+          { this.state.expanded || !task.is_done ?
+            <div className="card-line task-details">
+              <div className="task-extras">
+                <div>{task.comment_count} <i className="fa fa-comment"/></div>
+
+                {task.subtasks_total > 0 ?
+                  <span><span className="disc"></span>
+            <div className="subtask-count">{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/>
+            </div></span> : ''}
+              </div>
+
+              <div className="task-properties">
+                <div>
+                  <i className="fa fa-calendar-o"/> Due: {task.date_due ? <FormattedDate
+                  value={Date.parse(task.date_due)}
+                  day="numeric"
+                  month="long"
+                  year="numeric"/> : 'N/A' }
+                </div>
+
+                {task.project && projects[task.project] ? <span>
                   <span className="disc"></span><i className="fa fa-book"/> {projects[task.project].title}
                 </span> : ''}
 
-          {ticket_link ? <span>
+                {ticket_link ? <span>
                 <span className="disc"></span>
                   <i className="fa fa-link"/><a href={ticket_link}>Linked ticket</a>
                 </span> : ''}
-        </div>
-      </div> : '' }
+              </div>
+            </div> : '' }
+        </div> :
+        <Formsy.Form>
+          <div className="card-line">
+            <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange('Test string')} /></h1>
+          </div>
+        </Formsy.Form>
+      }
     </div>);
   }
-}
+});
+
+module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging()
+}))(TaskCard);
