@@ -32,6 +32,11 @@ class CsvInlineTest extends \DpIntegrationTestCase
     private $person_repository;
 
     /**
+     * @var EntityRepository\Organization
+     */
+    private $organization_repository;
+
+    /**
      * {@inheritdoc}
      */
     public function runBefore()
@@ -47,7 +52,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->person_repository       = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->organization_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv_inline';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
@@ -143,7 +149,12 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
     private function checkDbData()
     {
-        // Checking for people
+        $this->checkDbPeopleData();
+        $this->checkDbOrganizationData();
+    }
+
+    private function checkDbPeopleData()
+    {
         $person = $this->person_repository->findOneByEmail('joe.smith@example.com');
         $this->assertNotNull($person);
 
@@ -176,6 +187,52 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $contact = $contact_data4[0];
         $this->assertEquals('', $contact->getComment());
         $this->assertEquals('linkedin_url', $contact->getField1());
+    }
+
+    private function checkDbOrganizationData()
+    {
+        /** @var Entity\Organization $organization */
+        $organization = $this->organization_repository->findOneBy(array('name' => 'some organization'));
+        $this->assertNotNull($organization);
+
+        $contact_data1 = $organization->getContactData('twitter');
+        $this->assertCount(1, $contact_data1);
+
+        $contact = $contact_data1[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('twitter_acc_id', $contact->getField1());
+
+        $contact_data2 = $organization->getContactData('phone');
+        $this->assertCount(1, $contact_data2);
+
+        $contact = $contact_data2[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('JE', $contact->getField1());
+        $this->assertEquals('+447700900315', $contact->getField2());
+        $this->assertEquals('mobile', $contact->getField3());
+
+        $contact_data3 = $organization->getContactData('fax');
+        $this->assertCount(1, $contact_data3);
+
+        $contact = $contact_data3[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('US', $contact->getField1());
+        $this->assertEquals('+12025550156', $contact->getField2());
+        $this->assertEquals('landline-or-mobile', $contact->getField3());
+
+        $contact_data4 = $organization->getContactData('skype');
+        $this->assertCount(1, $contact_data4);
+
+        $contact = $contact_data4[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('skype_username', $contact->getField1());
+
+        $contact_data5 = $organization->getContactData('website');
+        $this->assertCount(1, $contact_data5);
+
+        $contact = $contact_data5[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('http://site.com', $contact->getField1());
     }
 
     /**
