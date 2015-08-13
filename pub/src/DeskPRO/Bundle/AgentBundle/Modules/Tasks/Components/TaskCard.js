@@ -19,10 +19,25 @@ const cardSource = {
   isDragging: monitor.isDragging()
 }))
 export default class TaskCard extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      expanded: false
+    };
+  }
+
+  toggleDetails() {
+    this.setState({
+      expanded: !this.state.expanded
+    });
+  }
+
   render() {
     const { task, projects, linked_items, departments, teams, agents, source, connectDragSource, isDragging } = this.props;
 
     let cardClass = task.is_done ? "card task-card task-card-completed" : "card task-card";
+    let detailsButtonText = this.state.expanded ? "Collapse" : "Expand";
 
     let doneButton = task.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
 
@@ -60,12 +75,12 @@ export default class TaskCard extends React.Component {
       <div className="card-status-bar status-bar-right"></div>
 
       <div className="card-checkbox">
-        <span className="checkbox"><i className="fa fa-check"/></span>
+        <span className="checkbox"></span>
       </div>
 
-      {assignee ?
+      {assignee || task.is_done ?
         <div className="top-right-box">
-          {assignee}
+          {!task.is_done ? assignee : <button className="task-details-button" onClick={this.toggleDetails.bind(this)}>{detailsButtonText} <i className="fa fa-bars" /></button>}
         </div> : ''}
 
       <div className="card-line">
@@ -76,7 +91,8 @@ export default class TaskCard extends React.Component {
         <h1>{task.title}</h1>
       </div>
 
-      <div className="card-line">
+      { this.state.expanded || !task.is_done ?
+      <div className="card-line task-details">
         <div className="task-extras">
           <div>{task.comment_count} <i className="fa fa-comment"/></div>
 
@@ -103,7 +119,7 @@ export default class TaskCard extends React.Component {
                   <i className="fa fa-link"/><a href={ticket_link}>Linked ticket</a>
                 </span> : ''}
         </div>
-      </div>
+      </div> : '' }
     </div>);
   }
 }

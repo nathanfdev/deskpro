@@ -216,7 +216,7 @@
     // Top right corner holder for avatars etc
     .top-right-box {
       float: right;
-      margin-top: 2px;
+      margin-top: 1px;
 
       .chat-avatar, .ticket-department {  margin-left: 3px; }
 
@@ -412,6 +412,24 @@
     }
 
     .task-properties { color: #cecece; }
+
+    .task-details-button {
+      color: #c9c9c9;
+      background-color: #fff;
+      border: 1px solid #c9c9c9;
+      font-size: 0.6em;
+      border-radius: 3px;
+      text-transform: uppercase;
+      vertical-align: -1px;
+
+      &:focus {
+        outline: 0;
+      }
+
+      i {
+        font-size: 1.2em;
+      }
+    }
   }
 
 
