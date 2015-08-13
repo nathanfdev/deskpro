@@ -41,6 +41,9 @@ use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 class UserGroupsDataService extends AbstractDataService
 {
+    /**
+     * @return Count
+     */
     public function countPeopleInUserGroups()
     {
         $qb = $this->em->createQueryBuilder();
