@@ -3794,10 +3794,6 @@ class TicketController extends AbstractController
             array('is_open' => true),
             array('title' => 'asc')
         );
-        $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
-            array('is_open' => false),
-            array('title' => 'asc')
-        );
 
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
             'ticket'                 => $ticket,
@@ -3812,7 +3808,6 @@ class TicketController extends AbstractController
             'new_custom_fields'      => $new_custom_fields->createView(),
             'billing_fields' => $billing_fields,
             'open_problems' => $open_problems,
-            'closed_problems' => $closed_problems,
         ));
     }
 
@@ -4252,7 +4247,7 @@ class TicketController extends AbstractController
                         }
                     }
 
-                    if ($problem) {
+                    if ($problem && $problem->is_open) {
                         $ticket->associateProblem($problem);
                         $this->em->flush();
                     }

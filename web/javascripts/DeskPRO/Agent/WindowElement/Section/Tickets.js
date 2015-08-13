@@ -176,6 +176,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
           , $item    = parseHTML(tpl)
           , $counter = $item.find('.counter')
           , $h3      = $item.find('h3')
+          , $nodata  = $list.children('.no-data:first')
+          , $close   = $list.children('.closed-problems-list:first')
           ;
 
         $item.attr('data-problem-id', info.id);
@@ -183,25 +185,19 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
         $h3.parent().data('route', $h3.parent().data('route').replace('0000', info.id));
         $counter.text(info.incidents).data('route', $counter.data('route').replace('0000', info.id));
 
-        if ($list.children('.is-nav-item').length) {
-          $item.insertAfter($list.children('.is-nav-item:last'));
-        } else {
-          $list.append($item);
-          $list.children('no-data').hide();
-        }
+        $item.insertAfter($nodata);
 
-        var $items = $list.children('.is-nav-item').get()
-          , $close = $('.closed-problems-list', $list)
-          ;
+        var $items = $list.children('.is-nav-item').get();
         $items.sort(function (a, b) {
           return $(a).find('h3:first').text().toUpperCase().localeCompare($(b).find('h3:first').text().toUpperCase());
         });
         $.each($items, function (idx, itm) {
-          $close.length
-            ? $(itm).insertBefore($close)
-            : $list.append(itm);
+          $(itm).insertBefore($close);
         });
 
+        $list.children('.is-nav-item').length
+          ? $nodata.hide()
+          : $nodata.show();
       });
 
       DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-updated', function (info) {
@@ -209,6 +205,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
         var $list   = $('.tickets_outline_problems', self.wrapper)
           , $closed = $('.closed_problems_select', self.wrapper)
+          , $nodata  = $list.children('.no-data:first')
           ;
 
         if (!info.changeset.is_open || !info.changeset.is_open[0] || info.changeset.is_open[1]) return;
@@ -216,15 +213,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
         $closed.closest('li').show();
         $closed.append('<option value="' + info.id + '">' + info.title + ' (' + info.incidents + ')</option>');
 
-        var $items = $closed.children().get()
-          ;
+        var $items = $closed.children().get();
         $items.sort(function (a, b) {
           return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
         });
 
         $list.children('.is-nav-item').length
-          ? $list.children('.no-data').hide()
-          : $list.children('.no-data').show();
+          ? $nodata.hide()
+          : $nodata.show();
       });
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-problems-updated', function (info) {
