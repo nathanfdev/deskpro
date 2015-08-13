@@ -103,3 +103,7 @@ services:
   data.chat:
       class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.agent_teams:
+      class: DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService
+      arguments: [@doctrine.orm.default_entity_manager]

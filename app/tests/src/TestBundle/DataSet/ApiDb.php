@@ -388,7 +388,7 @@ class ApiDb extends AbstractDbSet
                 (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
             ;
         ");
-        // end of "/user_chats" endpoint test data ---------------------------------------------------------------------
+        // end of "/user_chats" endpoint test data
 
         // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
         $this->getDb()->exec("
@@ -413,7 +413,7 @@ class ApiDb extends AbstractDbSet
                 (4, 4)
             ;
         ");
-        // end of "/user_groups" ---------------------------------------------------------------------------------------
+        // end of "/user_groups"
 
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec("
@@ -423,7 +423,27 @@ class ApiDb extends AbstractDbSet
                 (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
                 (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
         ");
-        // end of "/organizations" -------------------------------------------------------------------------------------
+        // end of "/organizations"
+
+        // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `agent_teams`
+                (`avatar_blob_id`, `name`)
+            VALUES
+                (NULL, 'Support Managers'),
+                (NULL, '1st Level Support')
+            ;
+
+            INSERT INTO `agent_team_members`
+                (`team_id`, `person_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 3),
+                (2, 4)
+            ;
+        ");
+        // end of "/organizations"
 
         $count++;
 
