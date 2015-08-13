@@ -26,11 +26,9 @@
             </script>
             <ul class="nav-list tickets_outline_problems">
 
-                {% if 0 == open_problems|length and 0 == closed_problems|length %}
-                    <li class="no-data">
-                        {{ phrase('agent.problems.no_problems_boss') }}
-                    </li>
-                {% endif %}
+                <li class="no-data" {% if open_problems|length > 0 %}style="display: none;"{% endif %}>
+                    {{ phrase('agent.problems.no_problems_boss') }}
+                </li>
 
                 {% for p in open_problems %}
                     <li class="is-nav-item" data-problem-id="{{ p.id }}">

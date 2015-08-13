@@ -221,6 +221,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
         $items.sort(function (a, b) {
           return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
         });
+
+        $list.children('.is-nav-item').length
+          ? $list.children('.no-data').hide()
+          : $list.children('.no-data').show();
       });
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-problems-updated', function (info) {
