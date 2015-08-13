@@ -2,7 +2,7 @@ import "babel/polyfill";
 import $ from "jquery";
 import React from 'react';
 
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 
 import * as ampMiddleware from "Ampliflux/middleware";
@@ -12,6 +12,9 @@ import BrowserHistory from 'react-router/lib/BrowserHistory';
 import AppReducers from "./AgentApp_Reducers.js";
 
 import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
+
+import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
+import { devTools } from 'redux-devtools';
 
 function legacyCombineReducers(reducers) {
   let processed_reducers = {};
@@ -50,6 +53,8 @@ export default class AgentApp {
   start() {
 
     window.DP_ENABLE_ACTION_LOGGER = true;
+    window.DP_DEV_MODE = true;
+
     const reducer    = combineAppReducers(AppReducers);
     const middleware = applyMiddleware(
       ampMiddleware.intervalMiddleware,
@@ -59,7 +64,7 @@ export default class AgentApp {
       ampMiddleware.loggerMiddleware,
       ampMiddleware.promiseMiddleware
     );
-    const makeStore  = middleware(createStore);
+    const makeStore  = middleware(compose(devTools(), createStore));
     const store      = makeStore(reducer);
 
     var intlData = {
@@ -71,10 +76,22 @@ export default class AgentApp {
 
     const hist = new BrowserHistory();
 
-    React.render(
+    let els = [
       <Provider store={store}>
         {() => <DpAppContainer {...intlData} history={hist} />}
-      </Provider>,
+      </Provider>
+    ];
+
+    if (window.DP_DEV_MODE) {
+      els.push(
+        <DebugPanel top right bottom key="debugPanel">
+          <DevTools store={store} monitor={LogMonitor}/>
+        </DebugPanel>
+      );
+    }
+
+    React.render(
+      <div>{els}</div>,
       document.getElementById('deskpro_app_window')
     );
   }
