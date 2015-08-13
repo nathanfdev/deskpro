@@ -35,9 +35,37 @@ use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 class UserGroupsDataService extends AbstractDataService
 {
+    public function countPeopleInUserGroups()
+    {
+        $qb = $this->em->createQueryBuilder();
+
+        $qb->select('count(p) as value, ug.id as group_name')
+            ->from('DeskPRO:Person', 'p')
+            ->join('p.usergroups', 'ug')
+            ->andWhere('ug.is_agent_group = false')
+            ->andWhere('ug.is_enabled = true')
+            ->andWhere('p.is_deleted = false')
+            ->groupBy('group_name')
+        ;
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        $count = 0;
+        $nested = new CountsGroup('user_group');
+        foreach ($result as $group) {
+            $count += $group['value'];
+            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+        }
+
+        return new Count($count, $nested);
+    }
+
     protected function criteriaArray(array $args = [], $agents_only = null, $enabled = null)
     {
         if ($agents_only === true) {
