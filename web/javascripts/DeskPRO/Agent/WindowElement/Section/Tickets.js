@@ -419,6 +419,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
         if (!val) return;
         $(this).data('route', $(this).data('path').replace('0', $(this).val()))
         DeskPRO_Window.runPageRouteFromElement($(this), {event: ev});
+        sel.val('');
       });
     });
 
