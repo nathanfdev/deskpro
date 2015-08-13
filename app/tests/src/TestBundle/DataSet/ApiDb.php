@@ -315,6 +315,31 @@ class ApiDb extends AbstractDbSet
         ");
         // end of "/user_chats" endpoint test data ---------------------------------------------------------------------
 
+        // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `usergroups`
+                (`id`, `title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
+            VALUES
+                (1, 'Group 1', 'test', 0, 'g1', 1),
+                (2, 'Group 2 (disabled)', 'test', 0, 'g2', 0),
+                (3, 'Group 3', 'test', 0, 'g3', 1),
+                (4, 'Group 4', 'test', 0, 'g4', 1)
+            ;
+
+            INSERT INTO `person2usergroups`
+                (`person_id`, `usergroup_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 2),
+                (1, 3),
+                (2, 3),
+                (3, 3),
+                (4, 4)
+            ;
+        ");
+        // end of "/user_groups" ---------------------------------------------------------------------------------------
+
         $count++;
 
         return $count;
