@@ -8,8 +8,12 @@ import DragTypes from "../../../Services/DragTypes.js";
 import * as TaskActions from "../Actions/TaskListActions";
 
 const projectTarget = {
-  drop(props) {
-    // What to do when the project drops
+  drop(props, monitor) {
+    const item = monitor.getItem();
+    item.dispatch(TaskActions.editTask({
+      taskId : item.id,
+      project : props.project.id
+    }, item.source));
   }
 };
 
@@ -24,7 +28,7 @@ function collect(connect, monitor) {
   failedProject: state.failedProject
 }))
 @DropTarget(DragTypes.TASK, projectTarget, collect)
-export default class TasksNavItemProject extends React.Component {
+export default class TaskNavItemProject extends React.Component {
   render() {
     const { project, connectDropTarget, isOver, switchTaskList } = this.props;
 

@@ -73,7 +73,7 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
 
         $remaining = 0;
         foreach ($tasks as $task) {
-            if ($task->isDone()) {
+            if (!$task->isDone()) {
                 $remaining++;
             }
         }

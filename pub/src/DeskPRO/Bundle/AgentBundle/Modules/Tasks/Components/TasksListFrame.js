@@ -166,8 +166,8 @@ export default class TasksListFrame extends React.Component {
 
         {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
           return <TaskCard task={object} projects={projects} linked_items={linked_items} departments={departments}
-                           teams={teams} agents={agents} toggleDone={this.toggleDone.bind(this)}
-                           source={taskFrameList.taskFrameSource} key={object.id} />
+                           teams={teams} agents={agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
+                           source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)} />
         }) : '' }
       </div>
     </section>

@@ -10,19 +10,7 @@ import DragTypes from "../../../Services/DragTypes.js";
 
 const cardSource = {
   beginDrag(props) {
-    const item = { id: props.id };
-    return item;
-  },
-
-  endDrag(props, monitor, component) {
-    if (!monitor.didDrop()) {
-      return;
-    }
-
-    const item = monitor.getItem();
-    const dropResult = monitor.getDropResult();
-    // When dropped on a target, do something!
-    //CardActions.moveCardToList(item.id, dropResult.listId);
+    return { id: props.task.id, dispatch: props.dispatch, source: props.source };
   }
 };
 

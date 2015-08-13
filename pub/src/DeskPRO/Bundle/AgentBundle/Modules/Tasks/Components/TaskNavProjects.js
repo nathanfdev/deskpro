@@ -74,7 +74,7 @@ export default class TasksNavProjects extends React.Component {
                 </div>
                 <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow.bind(this)}><i className="fa fa-plus"/></a></div>
                 <ul>{projectList.projectList ? projectList.projectList.map(function(object) {
-                    return <TaskNavItemProject key={object.id} project={object} switchTaskList={_this.props.switchTaskList.bind(this)} toggleWindow={_this.toggleWindow.bind(_this)} />;
+                    return <TaskNavItemProject key={object.id} project={object} switchTaskList={_this.props.switchTaskList.bind(this)} toggleWindow={_this.toggleWindow.bind(_this)} dispatch={_this.props.dispatch.bind(_this)} />;
                 }) : ''}
 
                 </ul>

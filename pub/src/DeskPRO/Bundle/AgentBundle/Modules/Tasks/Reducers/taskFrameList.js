@@ -21,8 +21,8 @@ export default class TaskFrameList extends Reducer {
     let teams = [];
     let departments = [];
     
-    if (typeof action.payload.projects !== 'undefined' && typeof action.payload.projects.data !== 'undefined') {
-      projects = action.payload.projects.data;
+    if (typeof action.payload.projects !== 'undefined' && typeof action.payload.projects !== 'undefined') {
+      projects = action.payload.projects;
     }
 
     if (typeof action.payload.linked_items !== 'undefined') {
