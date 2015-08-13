@@ -35,6 +35,13 @@ export default class TasksNavProjects extends React.Component {
         });
     }
 
+    closeWindow() {
+        this.setState({
+            projectData: {},
+            showWindow: false
+        });
+    }
+
     createProject(model) {
         if (typeof model.projectId !== 'undefined') {
             this.props.dispatch(TaskActions.editProject({
@@ -42,14 +49,14 @@ export default class TasksNavProjects extends React.Component {
                 title : model.title,
                 departments : model.departments,
                 teams: model.teams,
-                people : model.members
+                agents : model.members
             }))
         } else {
             this.props.dispatch(TaskActions.createProject({
                 title : model.title,
                 departments : model.departments,
                 teams : model.teams,
-                people : model.members
+                agents : model.members
             }));
         }
     }
@@ -69,6 +76,7 @@ export default class TasksNavProjects extends React.Component {
                             teamList={teamList}
                             departmentList={departmentList}
                             projectData={this.state.projectData}
+                            closeWindow={this.closeWindow.bind(this)}
                         />
                     </ComponentRootWrapper>
                 </div>
