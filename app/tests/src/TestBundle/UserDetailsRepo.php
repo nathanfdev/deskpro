@@ -46,6 +46,11 @@ class UserDetailsRepo
     const AGENT_FIRST_NAME = 'Zelda';
     const AGENT_LAST_NAME = 'Agent';
 
+    const DELETED_AGENT_EMAIL = 'deleted-agent@deskpro.dev';
+    const DELETED_AGENT_PASS = 'password';
+    const DELETED_AGENT_FIRST_NAME = 'Deleted';
+    const DELETED_AGENT_LAST_NAME = 'Agent';
+
     const AGENT_CHRIS_EMAIL = 'agent_chris@deskpro.dev';
     const AGENT_CHRIS_PASS = 'agent_chris';
     const AGENT_CHRIS_FIRST_NAME = 'Agent';
@@ -85,6 +90,8 @@ class UserDetailsRepo
                 return self::ADMIN_EMAIL;
             case 'agent':
                 return self::AGENT_EMAIL;
+            case 'deleted_agent':
+                return self::DELETED_AGENT_EMAIL;
             case 'agent_chris':
                 return self::AGENT_CHRIS_EMAIL;
             case 'user':
@@ -101,6 +108,8 @@ class UserDetailsRepo
                 return self::ADMIN_PASS;
             case 'agent':
                 return self::AGENT_PASS;
+            case 'deleted_agent':
+                return self::DELETED_AGENT_PASS;
             case 'agent_chris':
                 return self::AGENT_CHRIS_PASS;
             case 'user':
@@ -117,6 +126,8 @@ class UserDetailsRepo
                 return self::ADMIN_FIRST_NAME;
             case 'agent':
                 return self::AGENT_FIRST_NAME;
+            case 'deleted_agent':
+                return self::DELETED_AGENT_FIRST_NAME;
             case 'agent_chris':
                 return self::AGENT_CHRIS_FIRST_NAME;
             case 'user':
@@ -133,6 +144,8 @@ class UserDetailsRepo
                 return self::ADMIN_LAST_NAME;
             case 'agent':
                 return self::AGENT_LAST_NAME;
+            case 'deleted_agent':
+                return self::DELETED_AGENT_LAST_NAME;
             case 'agent_chris':
                 return self::AGENT_CHRIS_LAST_NAME;
             case 'user':

@@ -119,7 +119,7 @@ abstract class AbstractDbSet implements DataSetInterface
         return 1;
     }
 
-    protected function addUser($fname, $lname, $email, $pass, $agent = false, $admin = false)
+    protected function addUser($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
     {
         $new_user = new \Application\DeskPRO\Entity\Person();
         $new_user->first_name = $fname;
@@ -128,6 +128,7 @@ abstract class AbstractDbSet implements DataSetInterface
         $new_user->setPassword($pass);
         $new_user->is_user = true;
         $new_user->is_confirmed = true;
+        $new_user->is_deleted = $is_deleted;
 
         if ($agent || $admin) {
             $new_user->is_agent_confirmed = true;
