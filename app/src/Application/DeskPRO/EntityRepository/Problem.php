@@ -83,7 +83,9 @@ class Problem extends AbstractEntityRepository
             $where_perm[] = '('.implode(' OR ', $part).')';
         }
 
-        $where_perm[] = sprintf('t.hidden_status NOT IN ("%s", "%s")', Entity\Ticket::HIDDEN_STATUS_DELETED, Entity\Ticket::HIDDEN_STATUS_SPAM);
+        if (!$where_perm) {
+            $where_perm[] = '1';
+        }
 
         $where = '(('.implode(' AND ', $where_perm).') OR (';
 
@@ -100,6 +102,7 @@ class Problem extends AbstractEntityRepository
         }
 
         $where .= " AND p.id IN (".implode(',', $ids).')';
+        $where .= sprintf(' AND (t.hidden_status is null or t.hidden_status NOT IN ("%s", "%s"))', Entity\Ticket::HIDDEN_STATUS_DELETED, Entity\Ticket::HIDDEN_STATUS_SPAM);
 
         $results = $this->getEntityManager()->getConnection()->fetchAll(
             "
