@@ -99,7 +99,7 @@ final class Articles extends AbstractParser
      */
     private function exportArticle(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'article_',
@@ -126,10 +126,9 @@ final class Articles extends AbstractParser
             'categories'     => TransformerInterface::TYPE_ARRAY,
             'labels'         => TransformerInterface::TYPE_ARRAY,
             'custom_fields'  => TransformerInterface::TYPE_ARRAY,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Article();
+        $entity = new Entity\Article();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

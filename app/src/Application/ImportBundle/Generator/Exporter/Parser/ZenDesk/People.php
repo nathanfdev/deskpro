@@ -122,7 +122,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     private function exportPerson(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'id'              => TransformerInterface::TYPE_STRING,
             'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'person_',
@@ -135,9 +135,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             'created_at'      => TransformerInterface::TYPE_DATE,
             'user_fields'     => TransformerInterface::TYPE_ARRAY,
             'organization_id' => TransformerInterface::TYPE_STRING,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
+        ));
 
         if ( ! $formatted['email']) {
             $this->logError(sprintf('Person #%s without email, skipping', $formatted['id']));

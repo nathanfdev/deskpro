@@ -99,7 +99,7 @@ final class People extends AbstractParser
      */
     private function exportPerson(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'                   => TransformerInterface::TYPE_STRING,
             'destination'           => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'person_',
@@ -124,10 +124,9 @@ final class People extends AbstractParser
             'user_groups'           => TransformerInterface::TYPE_ARRAY,
             'contact_data'          => TransformerInterface::TYPE_ARRAY,
             'custom_fields'         => TransformerInterface::TYPE_ARRAY,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Person();
+        $entity = new Entity\Person();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])

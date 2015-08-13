@@ -90,7 +90,7 @@ class ContactData extends AbstractParserFormatterHelper
      */
     protected function exportContact(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'          => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'contact_data_',
@@ -98,9 +98,8 @@ class ContactData extends AbstractParserFormatterHelper
             )),
             'contact_type' => TransformerInterface::TYPE_STRING,
             'comment'      => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
         $handler   = ContactDataFactory::getHandler($formatted['contact_type']);
         $entity    = $handler->toEntity($data);
         $entity

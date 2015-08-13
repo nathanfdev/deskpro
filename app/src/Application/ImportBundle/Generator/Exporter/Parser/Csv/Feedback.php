@@ -123,7 +123,7 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedback($num, array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'id'             => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
@@ -142,10 +142,9 @@ final class Feedback extends AbstractParser
             'label'          => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
             'date_published' => TransformerInterface::TYPE_DATE,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Feedback();
+        $entity = new Entity\Feedback();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

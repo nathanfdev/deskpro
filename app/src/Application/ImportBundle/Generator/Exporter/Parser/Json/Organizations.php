@@ -99,7 +99,7 @@ final class Organizations extends AbstractParser
      */
     private function exportOrganization(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'           => TransformerInterface::TYPE_STRING,
             'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'organization_',
@@ -112,10 +112,9 @@ final class Organizations extends AbstractParser
             'contact_data'  => TransformerInterface::TYPE_ARRAY,
             'custom_fields' => TransformerInterface::TYPE_ARRAY,
             'labels'        => TransformerInterface::TYPE_ARRAY,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Organization();
+        $entity = new Entity\Organization();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])

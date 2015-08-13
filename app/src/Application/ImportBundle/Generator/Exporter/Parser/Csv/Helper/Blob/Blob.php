@@ -58,7 +58,7 @@ class Blob extends AbstractParserFormatterHelper
      */
     public function export($oid, $destination_prefix, array $data, $ref_column)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             $ref_column    => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => $destination_prefix,
@@ -68,10 +68,9 @@ class Blob extends AbstractParserFormatterHelper
             'content_type' => TransformerInterface::TYPE_STRING,
             'blob_url'     => TransformerInterface::TYPE_STRING,
             'blob_path'    => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Blob();
+        $entity = new Entity\Blob();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

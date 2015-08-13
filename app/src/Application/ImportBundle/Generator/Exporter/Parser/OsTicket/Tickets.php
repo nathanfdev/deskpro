@@ -120,7 +120,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicket(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'ticket_id'   => TransformerInterface::TYPE_INT,
             'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'ticket_',
@@ -136,10 +136,9 @@ final class Tickets extends AbstractParser
             'priority_id' => TransformerInterface::TYPE_INT,
             'isanswered'  => TransformerInterface::TYPE_BOOLEAN,
             'closed'      => TransformerInterface::TYPE_BOOLEAN,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Ticket();
+        $entity = new Entity\Ticket();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
@@ -229,7 +228,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessage(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_INT,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'message_',
@@ -240,10 +239,9 @@ final class Tickets extends AbstractParser
             'user_id'     => TransformerInterface::TYPE_INT,
             'created'     => TransformerInterface::TYPE_DATE,
             'body'        => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\TicketMessage();
+        $entity = new Entity\TicketMessage();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
@@ -302,7 +300,7 @@ final class Tickets extends AbstractParser
      */
     private function exportAttachment(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, $configuration = array(
             'file_id'     => TransformerInterface::TYPE_INT,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'attachment_',
@@ -310,10 +308,9 @@ final class Tickets extends AbstractParser
             )),
             'name'        => TransformerInterface::TYPE_STRING,
             'type'        => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Attachment();
+        $entity = new Entity\Attachment();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

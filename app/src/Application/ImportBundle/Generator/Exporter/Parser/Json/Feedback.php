@@ -100,7 +100,7 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedback(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'feedback_',
@@ -125,10 +125,9 @@ final class Feedback extends AbstractParser
             'labels'         => TransformerInterface::TYPE_ARRAY,
             'attachments'    => TransformerInterface::TYPE_ARRAY,
             'custom_fields'  => TransformerInterface::TYPE_ARRAY,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Feedback();
+        $entity = new Entity\Feedback();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])

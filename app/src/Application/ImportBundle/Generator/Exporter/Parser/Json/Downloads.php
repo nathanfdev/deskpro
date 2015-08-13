@@ -99,7 +99,7 @@ final class Downloads extends AbstractParser
      */
     private function exportDownload(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'download_',
@@ -123,10 +123,9 @@ final class Downloads extends AbstractParser
             )),
             'attachment'     => TransformerInterface::TYPE_ARRAY,
             'labels'         => TransformerInterface::TYPE_ARRAY,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Download();
+        $entity = new Entity\Download();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])

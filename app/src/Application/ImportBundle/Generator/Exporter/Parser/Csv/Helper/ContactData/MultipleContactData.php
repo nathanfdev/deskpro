@@ -108,15 +108,13 @@ class MultipleContactData extends AbstractParserFormatterHelper
                     $field['destination'] = $destination_prefix . $field[$ref_column];
                 }
 
-                $configuration = array(
+                $formatted = $this->formatter->format($field, array(
                     $ref_column   => TransformerInterface::TYPE_STRING,
                     'contact_id'  => TransformerInterface::TYPE_STRING,
                     'destination' => TransformerInterface::TYPE_DESTINATION,
                     'field_name'  => TransformerInterface::TYPE_STRING,
                     'value'       => TransformerInterface::TYPE_STRING,
-                );
-
-                $formatted = $this->formatter->format($field, $configuration);
+                ));
 
                 if ( ! $formatted['destination']) {
                     $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty destination', $num));

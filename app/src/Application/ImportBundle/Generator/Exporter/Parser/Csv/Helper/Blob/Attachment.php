@@ -91,7 +91,7 @@ class Attachment extends AbstractParserFormatterHelper
      */
     public function exportAttachment($num, $destination_prefix, array $data, $ref_column)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             $ref_column    => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => $destination_prefix,
@@ -103,10 +103,9 @@ class Attachment extends AbstractParserFormatterHelper
             'blob_path'    => TransformerInterface::TYPE_STRING,
             'person'       => TransformerInterface::TYPE_STRING,
             'is_inline'    => TransformerInterface::TYPE_BOOLEAN,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Attachment();
+        $entity = new Entity\Attachment();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

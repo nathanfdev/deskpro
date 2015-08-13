@@ -126,7 +126,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicket($num, array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
@@ -139,9 +139,8 @@ final class Tickets extends AbstractParser
             'agent'        => TransformerInterface::TYPE_STRING,
             'status'       => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
         $entity = new Entity\Ticket();
         $entity
             ->setRawData($data)
@@ -213,7 +212,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessage($num, array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'ticket_id'  => TransformerInterface::TYPE_STRING,
             'message_id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
@@ -225,10 +224,9 @@ final class Tickets extends AbstractParser
             'message_text' => TransformerInterface::TYPE_STRING,
             'user'         => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\TicketMessage();
+        $entity = new Entity\TicketMessage();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

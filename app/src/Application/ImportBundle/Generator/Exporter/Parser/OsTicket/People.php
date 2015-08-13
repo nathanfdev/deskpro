@@ -152,7 +152,7 @@ final class People extends AbstractParser
      */
     private function exportStaff(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'staff_id'    => TransformerInterface::TYPE_INT,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'staff_',
@@ -165,10 +165,9 @@ final class People extends AbstractParser
             'email'       => TransformerInterface::TYPE_STRING,
             'isadmin'     => TransformerInterface::TYPE_BOOLEAN,
             'group_id'    => TransformerInterface::TYPE_INT,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Person();
+        $entity = new Entity\Person();
         $entity
             ->setDestination($formatted['destination'])
             ->setOid($formatted['staff_id'])
@@ -235,7 +234,7 @@ final class People extends AbstractParser
      */
     private function exportUser(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'user_id'     => TransformerInterface::TYPE_INT,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'user_',
@@ -245,10 +244,9 @@ final class People extends AbstractParser
             'org_id'      => TransformerInterface::TYPE_INT,
             'created'     => TransformerInterface::TYPE_DATE,
             'address'     => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Person();
+        $entity = new Entity\Person();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

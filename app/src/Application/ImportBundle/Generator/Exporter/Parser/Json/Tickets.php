@@ -99,7 +99,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicket(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'           => TransformerInterface::TYPE_STRING,
             'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'ticket_',
@@ -132,10 +132,9 @@ final class Tickets extends AbstractParser
             'labels'        => TransformerInterface::TYPE_ARRAY,
             'custom_fields' => TransformerInterface::TYPE_ARRAY,
             'log_message'   => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\Ticket();
+        $entity = new Entity\Ticket();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
@@ -258,7 +257,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessage(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'          => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'message_',
@@ -270,10 +269,9 @@ final class Tickets extends AbstractParser
             'message_html' => TransformerInterface::TYPE_STRING,
             'is_note'      => TransformerInterface::TYPE_BOOLEAN,
             'attachments'  => TransformerInterface::TYPE_ARRAY,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\TicketMessage();
+        $entity = new Entity\TicketMessage();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])

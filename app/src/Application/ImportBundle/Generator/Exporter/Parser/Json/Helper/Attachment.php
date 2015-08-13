@@ -86,7 +86,7 @@ class Attachment extends AbstractParserFormatterHelper
             return null;
         }
 
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'          => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'attachment_',
@@ -97,13 +97,10 @@ class Attachment extends AbstractParserFormatterHelper
             'blob_path'    => TransformerInterface::TYPE_STRING,
             'file_name'    => TransformerInterface::TYPE_STRING,
             'content_type' => TransformerInterface::TYPE_STRING,
-            'person'    => TransformerInterface::TYPE_STRING,
-            'is_inline' => TransformerInterface::TYPE_BOOLEAN,
-        );
+            'person'       => TransformerInterface::TYPE_STRING,
+            'is_inline'    => TransformerInterface::TYPE_BOOLEAN,
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-
-        /** @var Entity\Attachment $entity */
         $entity = new Entity\Attachment();
         $entity
             ->setRawData($data)

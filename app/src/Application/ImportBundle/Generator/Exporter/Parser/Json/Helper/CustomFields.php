@@ -80,7 +80,7 @@ class CustomFields extends AbstractParserFormatterHelper
      */
     protected function exportCustomField(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'         => TransformerInterface::TYPE_STRING,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'custom_field_',
@@ -88,10 +88,9 @@ class CustomFields extends AbstractParserFormatterHelper
             )),
             'key'         => TransformerInterface::TYPE_STRING,
             'value'       => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\CustomField();
+        $entity = new Entity\CustomField();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])

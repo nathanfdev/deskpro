@@ -161,7 +161,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicket(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'id'              => TransformerInterface::TYPE_STRING,
             'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'ticket_',
@@ -178,9 +178,7 @@ final class Tickets extends AbstractParser
             'custom_fields'   => TransformerInterface::TYPE_ARRAY,
             'tags'            => TransformerInterface::TYPE_ARRAY,
             'comments'        => TransformerInterface::TYPE_ARRAY,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
+        ));
 
         $person_email = $this->tickets_people->getPersonEmail($formatted['submitter_id']);
         $agent_email  = $this->tickets_people->getPersonEmail($formatted['assignee_id']);
@@ -307,7 +305,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessage(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_STRING,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'message_',
@@ -318,9 +316,7 @@ final class Tickets extends AbstractParser
             'public'      => TransformerInterface::TYPE_BOOLEAN,
             'created_at'  => TransformerInterface::TYPE_DATE,
             'attachments' => TransformerInterface::TYPE_ARRAY,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
+        ));
 
         if (empty($formatted['author_id'])) {
             $this->logError(sprintf('Comment #%d without author_id, skipping', $formatted['id']));
@@ -392,7 +388,7 @@ final class Tickets extends AbstractParser
      */
     private function exportAttachment(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'id'           => TransformerInterface::TYPE_STRING,
             'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'attachment_',
@@ -402,9 +398,7 @@ final class Tickets extends AbstractParser
             'content_type' => TransformerInterface::TYPE_STRING,
             'content_url'  => TransformerInterface::TYPE_STRING,
             'inline'       => TransformerInterface::TYPE_BOOLEAN,
-        );
-
-        $formatted = $this->formatter->format($data, $configuration);
+        ));
 
         if ($formatted['inline']) {
             return null;

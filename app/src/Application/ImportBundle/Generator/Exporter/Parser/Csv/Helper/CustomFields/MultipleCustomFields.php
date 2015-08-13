@@ -93,15 +93,14 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
             $data['destination'] = $destination_prefix . $data[$ref_column];
         }
 
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             $ref_column   => TransformerInterface::TYPE_STRING,
             'destination' => TransformerInterface::TYPE_DESTINATION,
             'field_name'  => TransformerInterface::TYPE_STRING,
             'value'       => TransformerInterface::TYPE_STRING,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\CustomField();
+        $entity = new Entity\CustomField();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

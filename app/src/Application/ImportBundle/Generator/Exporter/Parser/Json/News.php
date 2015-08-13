@@ -99,7 +99,7 @@ final class News extends AbstractParser
      */
     private function exportNews(array $data)
     {
-        $configuration = array(
+        $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'news_',
@@ -120,10 +120,9 @@ final class News extends AbstractParser
             )),
             'category'       => TransformerInterface::TYPE_STRING,
             'labels'         => TransformerInterface::TYPE_ARRAY,
-        );
+        ));
 
-        $formatted = $this->formatter->format($data, $configuration);
-        $entity    = new Entity\News();
+        $entity = new Entity\News();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
