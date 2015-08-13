@@ -340,6 +340,16 @@ class ApiDb extends AbstractDbSet
         ");
         // end of "/user_groups" ---------------------------------------------------------------------------------------
 
+        // "/organizations" endpoint and its' children test data -------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `organizations`
+                (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
+            VALUES
+                (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
+                (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
+        ");
+        // end of "/organizations" -------------------------------------------------------------------------------------
+
         $count++;
 
         return $count;
