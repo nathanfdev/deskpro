@@ -83,9 +83,7 @@ class Problem extends AbstractEntityRepository
             $where_perm[] = '('.implode(' OR ', $part).')';
         }
 
-        if (!$where_perm) {
-            $where_perm[] = '1';
-        }
+        $where_perm[] = sprintf('t.hidden_status NOT IN ("%s", "%s")', Entity\Ticket::HIDDEN_STATUS_DELETED, Entity\Ticket::HIDDEN_STATUS_SPAM);
 
         $where = '(('.implode(' AND ', $where_perm).') OR (';
 
