@@ -22,6 +22,10 @@ $collection->create('react_agent_tasks', array(
     'path'        => '/tasks',
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
 ));
+$collection->create('react_agent_test', array(
+    'path'        => '/test',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+));
 $collection->create('react_agent_users', array(
     'path'        => '/users',
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
