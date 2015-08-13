@@ -6,7 +6,7 @@ import * as TicketActions from "../../Actions/FiltersActions";
 import TicketsTabFilterList from "./TicketsTabFilterList";
 
 @connect((state) => ({
-  FilterSetFiltersList: state.FilterSetFiltersList,
+  FilterSetFiltersList: state.Tickets.FilterSetFiltersList,
 }))
 export default class TicketsTabFilterSetItem extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ export default class TicketsTabFilterSetItem extends React.Component {
     this.filterSetId = filterSet.id;
     dispatch(TicketActions.loadFiltersInSet(filterSet.id));
   }
-  
+
   expandClick() {
     if(this.state.open) {
       this.setState({
@@ -34,12 +34,12 @@ export default class TicketsTabFilterSetItem extends React.Component {
       });
     }
   }
-  
+
   shouldComponentUpdate(nextProps, nextState) {
     const { FilterSetFiltersList } = nextProps;
     return (FilterSetFiltersList.FilterSetFiltersList.filter_set_id == this.filterSetId);
   }
-  
+
   render() {
     const {
       FilterSetFiltersList,

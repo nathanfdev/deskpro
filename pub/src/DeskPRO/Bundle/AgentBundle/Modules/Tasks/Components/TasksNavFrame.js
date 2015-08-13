@@ -9,14 +9,14 @@ import TaskNavLabels from "../Components/TaskNavLabels";
 import $ from "jquery";
 
 @connect(state => ({
-  taskList: state.taskList,
-  projectList: state.projectList,
-  agentList:state.agentList,
-  labelList:state.labelList,
-  teamList:state.teamList,
-  departmentList:state.departmentList,
-  user: state.user,
-  createdProject: state.createdProject
+  taskList: state.Tasks.taskList,
+  projectList: state.Tasks.projectList,
+  agentList:state.Tasks.agentList,
+  labelList:state.Tasks.labelList,
+  teamList:state.Tasks.teamList,
+  departmentList:state.Tasks.departmentList,
+  user: state.Tasks.user,
+  createdProject: state.Tasks.createdProject
 }))
 export default class TasksNavFrame extends React.Component {
   constructor(props) {

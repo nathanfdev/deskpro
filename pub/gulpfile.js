@@ -109,7 +109,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     resolveLoader: {
       modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules", "build-tools"]
     },
-    //devtool: "source-map",
+    devtool: "source-map",
     module: {
       preLoaders: [
         {

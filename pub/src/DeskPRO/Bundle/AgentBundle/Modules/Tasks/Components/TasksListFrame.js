@@ -7,7 +7,7 @@ import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 
 @connect(state => ({
-  taskFrameList: state.taskFrameList
+  taskFrameList: state.Tasks.taskFrameList
 }))
 export default class TasksListFrame extends React.Component {
   constructor(props) {

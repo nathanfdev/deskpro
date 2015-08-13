@@ -10,21 +10,25 @@ function writeAutoIndex(bundlePath) {
   var packNames      = [];
   var bundleName     = bundlePath.replace(/.*?\/Bundle\/(.*?)Bundle\/?$/, '$1');
   var outputFile     = bundlePath + "/" + bundleName + "App_Reducers.js";
+  var exportLines    = [];
 
   var files = glob.sync("**/Reducers/index.js", { cwd: bundlePath, root: bundlePath });
   files.forEach(function (f) {
-    var name = f.replace(/^.*?Modules\/(\w+)\/.*?$/, '$1') + 'Stores';
-    importLines.push("import * as " + name + " from './" + f + "';");
-    packNames.push(name);
+    var moduleName = f.replace(/^.*?Modules\/(\w+)\/.*?$/, '$1');
+    var storeName  = moduleName + 'Stores';
+
+    importLines.push("import * as " + storeName + " from './" + f + "';");
+    packNames.push(storeName);
+    exportLines.push("'" + moduleName + "': " + storeName);
   });
 
   var header = "// This file is auto-generated based on the\n// files that are present in this directory.\n\n// Do NOT manually edit this file. Your changes will be overwritten."
 
   var index = header + "\n\n" + importLines.join("\n") +
     "\n\n" +
-    "export default Object.assign({}, \n" +
-    "  " + packNames.join(",\n  ") +
-    "\n);" +
+    "export default {\n" +
+    "  " + exportLines.join(",\n  ") +
+    "\n};" +
     "\n"
   ;
   fs.writeFileSync(outputFile, index);

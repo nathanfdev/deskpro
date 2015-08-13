@@ -1,14 +1,10 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import * as AppActions from "../Actions/AppActions";
+import { createReducer } from "Ampliflux";
 
-const initialState = {
-	id: null
-};
+export default createReducer(r => {
+	r.initialState = {
+		id: null
+	};
 
-const r = handleActions({
-	[ActionTypes.APP_SET_USER]: (state, action) => action.payload
-}, initialState);
-
-export default (state, action = {type: null}) => {
-	return r(state, action);
-}
+	r.simpleAction(AppActions.setAppUser, "user");
+});

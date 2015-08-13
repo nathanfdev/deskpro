@@ -1,11 +1,10 @@
-import { createAction } from "redux-actions";
+import { createAction } from "Ampliflux";
 
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import ActionTypes from "./ActionTypes";
 
 export const setAppUser   = createAction(ActionTypes.APP_SET_USER);
 export const setIsLoaded  = createAction(ActionTypes.APP_IS_LOADED);
-export const setActiveApp = createAction(ActionTypes.SET_ACTIVE_APP);
 export const routingStarted = createAction(ActionTypes.ROUTING_STARTED);
 export const doTransitionTo = createAction(ActionTypes.TRANSITION_TO);
 
@@ -21,17 +20,15 @@ export function transitionTo(pathname, query = null, state = null) {
   }
 }
 
-export const loadWindow = () => {
-	return dispatch => {
-		let promises = [];
+export const loadWindow = createAction("APP_LOAD_WINDOW", () => dispatch => {
+  let promises = [];
 
-		// can wait on multiple loads here by adding new
-		// promises to the array
-		promises.push(DpApi.sendGet('DP_API/me')); //0
+  // can wait on multiple loads here by adding new
+  // promises to the array
+  promises.push(DpApi.sendGet('DP_API/me')); //0
 
-		Promise.all(promises).then((values) => {
-			dispatch(setAppUser(values[0].getData().data.person));
-			dispatch(setIsLoaded());
-		});
-	};
-};
+  return Promise.all(promises).then(values => {
+    dispatch(setAppUser(values[0].getData().data.person));
+    dispatch(setIsLoaded());
+  });
+});

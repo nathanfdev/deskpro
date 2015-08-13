@@ -1,0 +1,70 @@
+import isPlainObject from 'lodash/lang/isPlainObject';
+import { getActionType } from "./actionUtils";
+
+function createDefaultAction(actionType) {
+  return function(payload) {
+    return {
+      type: actionType,
+      payload: payload
+    };
+  };
+}
+
+function createActionFn(actionType, actionFn) {
+  // Default -> whatever is passed to the action, dispatch that
+  if (typeof actionFn === 'undefined') {
+    return createDefaultAction(actionType);
+
+  // Constant -> the action has a hard-coded value
+  } else if (typeof actionFn !== 'function') {
+    return () => createDefaultAction(actionType)(actionFn);
+
+  // Typical -> The action is a function
+  } else {
+    return actionFn;
+  }
+}
+
+/**
+ * Create a DeskPRO action.
+ *
+ * @param {String}     actionType   The action type
+ * @param {Function}   actionFn     The action method, undefined for a pass-thru, or a constant.
+ *                                  The function will be passed the same arguments as the action.
+ * @param {Function}   metaFn       The meta function, used to generate values for the 'meta' property of the action.
+ *                                  The function will be passed the action (with action.payload being whatever the result of action is),
+ *                                  followed by all other args passed to the action.
+ */
+export default function createAction(actionType, actionFn, metaFn) {
+  const type = getActionType(actionType);
+  const userActionFn = createActionFn(type, actionFn);
+  const userMetaFn = typeof metaFn === 'function' ? metaFn : null;
+
+  const finalActionFn = (...args) => {
+    const action = {
+      type: type,
+      error: false,
+      meta: {},
+      sequence: {}
+    };
+
+    try {
+      const payload = userActionFn(...args);
+
+      action.payload = payload;
+    } catch (e) {
+      action.error = true;
+      action.payload = e;
+    }
+
+    if (userMetaFn) {
+      action.meta = userMetaFn(action, ...args);
+    }
+
+    return action;
+  }
+
+  finalActionFn.actionType = actionType;
+
+  return finalActionFn;
+};

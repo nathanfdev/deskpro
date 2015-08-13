@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as TaskActions from "../Actions/TaskListActions";
 
 @connect(state => ({
-    failedProject: state.failedProject
+    failedProject: state.Tasks.failedProject
 }))
 export default class TasksNavProjects extends React.Component {
     constructor(props) {

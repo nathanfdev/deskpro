@@ -14,12 +14,12 @@ import * as AppActions from "../../Application/Actions/AppActions";
 import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
 
 @connect(state => ({
-  FilterSetsList: state.FilterSetsList,
-  FilterSetsCounts: state.FilterSetsCounts,
-  LabelsList: state.LabelsList,
-  StarsCounts: state.StarsCounts,
+  FilterSetsList: state.Tickets.FilterSetsList,
+  FilterSetsCounts: state.Tickets.FilterSetsCounts,
+  LabelsList: state.Tickets.LabelsList,
+  StarsCounts: state.Tickets.StarsCounts,
   Translations: state.Translations,
-  dp_window: state.dp_window,
+  dp_window: state.Application.dp_window,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {

@@ -7,8 +7,8 @@ import * as ApplicationStores from './Modules/Application/Reducers/index.js';
 import * as TasksStores from './Modules/Tasks/Reducers/index.js';
 import * as TicketsStores from './Modules/Tickets/Reducers/index.js';
 
-export default Object.assign({}, 
-  ApplicationStores,
-  TasksStores,
-  TicketsStores
-);
+export default {
+  'Application': ApplicationStores,
+  'Tasks': TasksStores,
+  'Tickets': TicketsStores
+};

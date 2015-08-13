@@ -2,12 +2,8 @@ import React from "react";
 
 export default class TabFrame extends React.Component {
   render() {
-      const { dp_window } = this.props;
-
-      const my_classes = "dp-tab-frame" + (dp_window.collapseNav ? ' expanded' : '');
-
     return (
-      <section className={my_classes}>
+      <section className="dp-tab-frame">
         <div className="blank-text">
           <p className="hero-icon">
             <i className="fa fa-file-o"></i>

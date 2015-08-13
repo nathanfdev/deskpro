@@ -13,7 +13,7 @@ export default class TaskList extends Reducer {
       unassignedTaskCount: 0
     };
   }
-  
+
   registerHandlers() {this
     .r(TaskListActions.loadTasks, this.tasksLoaded)
     .r(TaskListActions.loadMyTasks, this.myTasksLoaded)
@@ -22,7 +22,7 @@ export default class TaskList extends Reducer {
     .r(TaskListActions.loadDelegatedTasks, this.delegatedTasksLoaded)
     .r(TaskListActions.loadUnassignedTasks, this.unassignedTasksLoaded)
   }
-  
+
   tasksLoaded(state, action) {
     return {
         ...state,
@@ -30,35 +30,35 @@ export default class TaskList extends Reducer {
         taskCount: action.payload.meta.total_count
     };
   }
-  
+
   myTasksLoaded(state, action) {
     return {
       ...state,
       myTaskCount: action.payload.meta.total_count
     };
   }
-  
+
   teamTasksLoaded(state, action) {
     return {
       ...state,
       teamTaskCount: action.payload.meta.total_count
     };
   }
-  
+
   departmentTasksLoaded(state, action) {
     return {
       ...state,
       deptTaskCount: action.payload.meta.total_count
     };
   }
-  
+
   delegatedTasksLoaded(state, action) {
     return {
       ...state,
       delegatedTaskCount: action.payload.meta.total_count
     };
   }
-  
+
   unassignedTasksLoaded(state, action) {
     return {
       ...state,

@@ -4,18 +4,17 @@ import * as AppActions from "../Actions/AppActions";
 import { Link } from 'react-router';
 
 @connect(state => ({
-  user: state.user,
-  dp_window: state.dp_window
+  user: state.Application.user,
+  dp_window: state.Application.dp_window
 }))
 export default class AppSwitcher extends React.Component {
   renderAppIcon(appId, title, iconClass) {
     const { dp_window, dispatch } = this.props;
-    const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const className = 'fa ' + iconClass;
 
     return (
       <li>
-        <Link to={`/index.php/agent/${appId}`}>
+        <Link to={appId}>
           <i className={className}></i> <span className="title">{title}</span>
         </Link>
       </li>

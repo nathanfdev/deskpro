@@ -12,9 +12,9 @@ import AgentTeamGroup from "./Groups/AgentTeamGroup";
 import WaitingTimeGroup from "./Groups/WaitingTimeGroup";
 
 @connect(state => ({
-  FilterSetFilterGroups: state.FilterSetFilterGroups,
+  FilterSetFilterGroups: state.Tickets.FilterSetFilterGroups,
 }))
-export default class TicketsTabFilterList extends React.Component {  
+export default class TicketsTabFilterList extends React.Component {
   render() {
     const {
       filtersList,
@@ -36,7 +36,7 @@ export default class TicketsTabFilterList extends React.Component {
           break;
         }
       }
-      
+
       if(filtersList.length > -1) {
         const classes = 'fa fa-angle-down';
         expandButton = (
@@ -48,7 +48,7 @@ export default class TicketsTabFilterList extends React.Component {
           </div>
         );
       }
-      
+
       const FilterGroups = FilterSetFilterGroups.FilterSetFilterGroups;
       let groups = [];
       if(FilterGroups.filter_id == filter.id && FilterGroups.data.length > 0) {
@@ -90,14 +90,14 @@ export default class TicketsTabFilterList extends React.Component {
             );
           }
         });
-        
+
         groups = (
           <ul className="with-connectors">
             {groups}
           </ul>
         );
       }
-      
+
       return (
         <li className="sidebar-item" key={filter.id}>
           {expandButton}
@@ -106,7 +106,7 @@ export default class TicketsTabFilterList extends React.Component {
         </li>
       );
     });
-    
+
     return (
       <ul>
         {filterItems}

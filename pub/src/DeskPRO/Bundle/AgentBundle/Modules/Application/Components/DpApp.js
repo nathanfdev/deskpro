@@ -29,7 +29,7 @@ export default class DpApp extends React.Component {
 
         {this.props.children}
 
-        <TabFrame {...this.props} />
+        <TabFrame />
       </div>
     );
   }
