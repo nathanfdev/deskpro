@@ -34,32 +34,23 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use Aws\CloudWatch\Exception\InvalidFormatException;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
-use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketFlagException;
-
-use FOS\RestBundle\Controller\Annotations\RouteResource;
+use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Delete;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
- * API access to languages.
+ * Class UserGroupsController
  */
 class UserGroupsController extends BaseController
 {
     /**
-     * Retrieve the list of custom fields available for tickets.
+     * @ApiDoc(
+     *      description="Get collection of User Groups",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
      * @Get("/user_groups", name="api_user_groups")
      */
     public function cgetAction()
@@ -72,7 +63,13 @@ class UserGroupsController extends BaseController
     }
 
     /**
-     * @Get("/user_groups/{id}", name="api_single_user_group")
+     * @ApiDoc(
+     *      description="Get a User Group",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/user_groups/{id}", name="api_single_user_group", requirements={"id" = "\d+"})
      */
     public function getUserGroup($id)
     {
