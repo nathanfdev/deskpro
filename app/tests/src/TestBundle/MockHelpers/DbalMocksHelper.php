@@ -34,7 +34,7 @@
 namespace DpTestSrc\TestBundle\MockHelpers;
 
 use Prophecy\Argument;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery as Query;
 
@@ -49,7 +49,7 @@ trait DbalMocksHelper
      * @param string $class
      * @return \Prophecy\Prophecy\ObjectProphecy
      */
-    protected function mockQueryBuildingEntityManager($class = EntityManager::class)
+    protected function mockQueryBuildingEntityManager($class = EntityManagerInterface::class)
     {
         $em = $this->prophesize($class);
         $em->createQueryBuilder()->willReturn($this->mockQueryBuilder());
