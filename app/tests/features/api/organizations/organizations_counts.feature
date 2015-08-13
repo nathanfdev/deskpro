@@ -1,3 +1,4 @@
+@counts
 Feature: /organizations/counts endpoint
   To retrieve number of DeskPRO organizations
   As a developer
