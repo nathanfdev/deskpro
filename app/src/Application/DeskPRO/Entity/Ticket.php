@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\PersistentCollection;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
@@ -3488,6 +3489,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         $this->problems->add($problem);
+        $problem->tickets->count(); // explicit init
         $problem->tickets->add($this);
 
         $this->_onPropertyChanged('problems', null, $this->problems);
