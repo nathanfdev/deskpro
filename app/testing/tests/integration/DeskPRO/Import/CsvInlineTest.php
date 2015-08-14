@@ -64,6 +64,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
         $this->helper->amInPath($this->output_path);
         $this->helper->cleanDir($this->output_path);
+
+        $this->overrideDpRootPath('/organizations.csv');
     }
 
     public function testImportBatch()
@@ -251,5 +253,15 @@ class CsvInlineTest extends \DpIntegrationTestCase
     private function getContent($filename)
     {
         return json_decode(file_get_contents($filename), true);
+    }
+
+    private function overrideDpRootPath($file)
+    {
+        $dp_root = str_replace('/app', '/', DP_ROOT);
+
+        $content = file_get_contents($this->input_path . $file);
+        $content = str_replace('/deskpro/www/', $dp_root, $content);
+
+        file_put_contents($this->input_path . $file, $content);
     }
 }
