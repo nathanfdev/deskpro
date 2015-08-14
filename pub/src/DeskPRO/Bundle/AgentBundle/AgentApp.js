@@ -12,6 +12,7 @@ import * as app_stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Redu
 import * as ticket_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/index";
 import * as task_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Reducers/index";
 import * as chat_stores from "DeskPRO/Bundle/AgentBundle/Modules/Chat/Reducers/index";
+import * as feedback_stores from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Reducers/index";
 
 import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
 
@@ -21,7 +22,7 @@ export default class AgentApp {
   }
 
   start() {
-    const store = composeReducers(Object.assign({}, app_stores, ticket_stores, task_stores, chat_stores));
+    const store = composeReducers(Object.assign({}, app_stores, ticket_stores, task_stores, chat_stores, feedback_stores));
 
     const dispatcher = createDispatcher(
       store,

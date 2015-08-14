@@ -53,6 +53,57 @@ class FeedbackController extends BaseController
 {
     /**
      * @ApiDoc(
+     *      description="get a list of feedback",
+     *      parameters={
+     *          {
+     *              "name"="page",
+     *              "requirement"="\d+",
+     *              "description"="the page you are requesting",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="count",
+     *              "requirement"="\d+",
+     *              "description"="results per page",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/feedback", name="api_feedback")
+     * @param Request $request
+     * @return View
+     * @throws \LogicException
+     */
+    public function cgetAction(Request $request)
+    {
+        /*$entityManager = $this->getDoctrine()->getManager();
+
+        $datatype = $this->getDatatype($request);
+
+        $tasks = $this->filterTasks($request, $entityManager);
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return View::create(
+            $this->dataSerialize($pager, null, $datatype),
+            Response::HTTP_OK
+        );*/
+    }
+
+
+
+    /**
+     * @ApiDoc(
      *      description="Get feedback counts",
      *      statusCodes={
      *          200="Success",
