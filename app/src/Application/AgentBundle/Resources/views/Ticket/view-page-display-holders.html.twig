@@ -60,7 +60,7 @@
 {% endif %}
 
 {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
-    <tbody class="problem problem_id item" data-item-type="ticket_problem">
+    <tbody class="problem problem_id standard-field item" data-item-type="ticket_problem">
     <tr class="mode-display">
         <th width="80">
             <span class="problem_id label">{{ phrase('agent.problems.problem') }}:</span>
@@ -112,7 +112,7 @@
                     {% include 'AgentBundle:Common:select-standard.html.twig' with {
                     'name': 'ticket[problem_id]',
                     'add_classname': 'prop-input-problem_id',
-                    'add_attr': 'data-prop-id="problem" ',
+                    'add_attr': 'data-prop-id="problem_id" ',
                     'with_blank': _ds,
 					'blank_title': 'None',
                     'categories': problems,
