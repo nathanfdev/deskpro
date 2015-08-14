@@ -144,7 +144,7 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
         $organization = $this->getContent('1/organizations/organization_some_organization.json');
         $this->assertCount(2, $organization['custom_fields']);
-        $this->assertCount(5, $organization['contact_data']);
+        $this->assertCount(6, $organization['contact_data']);
     }
 
     private function checkDbData()
@@ -233,6 +233,15 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $contact = $contact_data5[0];
         $this->assertEquals('', $contact->getComment());
         $this->assertEquals('http://site.com', $contact->getField1());
+
+        $contact_data6 = $organization->getContactData('address');
+        $this->assertCount(1, $contact_data6);
+
+        $contact = $contact_data6[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('1st street', $contact->getField1());
+        $this->assertEquals('London', $contact->getField2());
+        $this->assertEquals('UK', $contact->getField5());
     }
 
     /**
