@@ -65,26 +65,19 @@ final class Downloads extends AbstractParser
         $collection = new Entity\Collection();
         $downloads  = $this->reader->getData($this->getDownloadReaderConfig());
 
-        foreach ($downloads as $num => $download) {
+        foreach ($downloads as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportDownload($download);
+                $entity = $this->exportDownload($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid download record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONDownload', $this->getEntityType(), 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONDownload', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 

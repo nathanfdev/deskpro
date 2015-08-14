@@ -57,24 +57,17 @@ class ContactData extends AbstractParserFormatterHelper
     public function export(array $contact_data)
     {
         $collection = new Entity\Collection();
-        foreach ($contact_data as $num => $contact) {
+        foreach ($contact_data as $num => $data) {
             try {
-                $entity = $this->exportContact($contact);
+                $entity = $this->exportContact($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONContactData', $this->getEntityType(), 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONContactData', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 

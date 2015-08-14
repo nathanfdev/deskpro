@@ -64,10 +64,7 @@ class Attachment extends AbstractParserFormatterHelper
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logError(sprintf(
-                    'Invalid attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logTransformerException('JSONAttachment', $this->getEntityType(), 'oid', $e);
             }
         }
 

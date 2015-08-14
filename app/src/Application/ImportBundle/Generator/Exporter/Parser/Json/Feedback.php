@@ -63,29 +63,22 @@ final class Feedback extends AbstractParser
      */
     public function export()
     {
-        $collection     = new Entity\Collection();
-        $feedback_items = $this->reader->getData($this->getFeedbackReaderConfig());
+        $collection = new Entity\Collection();
+        $feedback   = $this->reader->getData($this->getFeedbackReaderConfig());
 
-        foreach ($feedback_items as $num => $feedback) {
+        foreach ($feedback as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportFeedback($feedback);
+                $entity = $this->exportFeedback($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid feedback record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONFeedback', $this->getEntityType(), 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONFeedback', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 

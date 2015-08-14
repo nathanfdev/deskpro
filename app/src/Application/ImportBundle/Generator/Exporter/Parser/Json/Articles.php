@@ -63,28 +63,21 @@ final class Articles extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $articles = $this->reader->getData($this->getArticleReaderConfig());
+        $articles   = $this->reader->getData($this->getArticleReaderConfig());
 
-        foreach ($articles as $num => $article) {
+        foreach ($articles as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportArticle($article);
+                $entity = $this->exportArticle($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid article record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONArticle', $this->getEntityType(), 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONArticle', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 

@@ -65,26 +65,19 @@ final class People extends AbstractParser
         $collection = new Entity\Collection();
         $people     = $this->reader->getData($this->getPersonReaderConfig());
 
-        foreach ($people as $num => $person) {
+        foreach ($people as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportPerson($person);
+                $entity = $this->exportPerson($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid person record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONPerson', $this->getEntityType(), 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONPerson', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 

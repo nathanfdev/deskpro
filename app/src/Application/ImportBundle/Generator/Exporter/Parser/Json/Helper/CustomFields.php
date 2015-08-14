@@ -62,10 +62,7 @@ class CustomFields extends AbstractParserFormatterHelper
                 $collection->attach($entity);
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid custom field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logTransformerException('JSONCustomField', $this->getEntityType(), 'oid', $e);
             }
         }
 

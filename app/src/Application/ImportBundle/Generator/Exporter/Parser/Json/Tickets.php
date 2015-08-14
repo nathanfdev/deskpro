@@ -65,26 +65,19 @@ final class Tickets extends AbstractParser
         $collection = new Entity\Collection();
         $tickets    = $this->reader->getData($this->getTicketReaderConfig());
 
-        foreach ($tickets as $num => $ticket) {
+        foreach ($tickets as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportTicket($ticket);
+                $entity = $this->exportTicket($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONTicket', $this->getEntityType(), 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONTicket', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 
@@ -225,24 +218,17 @@ final class Tickets extends AbstractParser
     private function exportMessages(array $messages)
     {
         $collection = new Entity\Collection();
-        foreach ($messages as $num => $message) {
+        foreach ($messages as $num => $data) {
             try {
-                $entity = $this->exportMessage($message);
+                $entity = $this->exportMessage($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logError(sprintf(
-                    'Invalid ticket message record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONTicket', 'ticket message', 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONTicket', 'ticket message', 'oid', $e, $data);
             }
         }
 

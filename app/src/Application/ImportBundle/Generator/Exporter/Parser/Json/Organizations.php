@@ -65,26 +65,19 @@ final class Organizations extends AbstractParser
         $collection    = new Entity\Collection();
         $organizations = $this->reader->getData($this->getOrganizationsReaderConfig());
 
-        foreach ($organizations as $num => $organization) {
+        foreach ($organizations as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportOrganization($organization);
+                $entity = $this->exportOrganization($data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid organization record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('JSONOrganization', $this->getEntityType(), 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('JSONOrganization', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 
