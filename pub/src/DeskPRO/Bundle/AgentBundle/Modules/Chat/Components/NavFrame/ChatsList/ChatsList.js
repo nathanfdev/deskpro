@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatsListItemContainer } from './ChatsListItemContainer';
+import { ListItemContainer } from './ListItemContainer';
 
 export class ChatsList extends React.Component {
 
@@ -21,7 +21,7 @@ export class ChatsList extends React.Component {
 
         <ul>
           {data.items.map(item =>
-              <ChatsListItemContainer groupBy={data.groupBy} group={item.group} count={item.count} key={item.group} />)}
+              <ListItemContainer groupBy={data.groupBy} group={item.group} count={item.count} key={item.group} />)}
         </ul>
       </section>
     );

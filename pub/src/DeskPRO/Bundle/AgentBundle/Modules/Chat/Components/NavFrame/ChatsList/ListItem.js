@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class ChatsListItem extends React.Component {
+export class ListItem extends React.Component {
   render() {
     return (
       <li>

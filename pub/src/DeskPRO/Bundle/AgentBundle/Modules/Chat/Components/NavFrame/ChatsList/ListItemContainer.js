@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'redux/react';
-import { ChatsListItem } from './ChatsListItem';
+import { ListItem } from './ListItem';
 
 @connect(state => ({
   labels: {
@@ -17,13 +17,13 @@ import { ChatsListItem } from './ChatsListItem';
     }
   }
 }))
-export class ChatsListItemContainer extends React.Component {
+export class ListItemContainer extends React.Component {
   render() {
     const {count, group, groupBy} = this.props;
     const label = this.props.labels[groupBy][group];
 
     return (
-      <ChatsListItem count={count} label={label} />
+      <ListItem count={count} label={label} />
     );
   }
 }
