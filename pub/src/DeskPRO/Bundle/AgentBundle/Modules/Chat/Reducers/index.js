@@ -1,2 +1,2 @@
-import ChatConversationsNavFrame from './ChatConversationsNavFrame';
-export default {ChatConversationsNavFrame,};
+import ChatNav from './ChatNav';
+export default {ChatNav,};
