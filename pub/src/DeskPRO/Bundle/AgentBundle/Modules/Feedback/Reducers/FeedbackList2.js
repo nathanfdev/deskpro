@@ -4,12 +4,10 @@ export default class FeedbackList extends Reducer {
     getInitialState() {
         return {
             FeedbackList: [],
-            bogus: null
         };
     }
 
     registerHandlers() {this
         .r("FEEDBACK_LOAD_FEEDBACK", this.setPayload('FeedbackList', 'data'))
-        .r("FEEDBACK_BOGUS", this.setPayload('bogus'))
     }
 }

@@ -9,13 +9,12 @@ import FeedbackListFrame from "./FeedbackListFrame";
     dp_window: state.dp_window
 }))
 export default class FeedbackApp extends React.Component {
-    render() {
-        console.log(this.props);
-        return (
-            <AppContainer thisAppId="feedback" {...this.props}>
-                <FeedbackNavFrame {...this.props} />
-                <FeedbackListFrame {...this.props} />
-            </AppContainer>
-        );
-    }
+  render() {
+    return (
+      <AppContainer thisAppId="feedback" {...this.props}>
+        <FeedbackNavFrame {...this.props} />
+        <FeedbackListFrame {...this.props} />
+      </AppContainer>
+    );
+  }
 }
