@@ -77,22 +77,22 @@ services:
       tags:
           - { name: form.type, alias: projectmember }
 
-  form.department:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
+  form.project_department:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectDepartmentType
       tags:
-          - { name: form.type, alias: department }
+          - { name: form.type, alias: project_department }
       arguments: [@doctrine.orm.default_entity_manager]
 
-  form.agent_team:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\AgentTeamType
+  form.project_agent_team:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectAgentTeamType
       tags:
-          - { name: form.type, alias: agent_team }
+          - { name: form.type, alias: project_agent_team }
       arguments: [@doctrine.orm.default_entity_manager]
 
-  form.person:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\PersonType
+  form.project_person:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectPersonType
       tags:
-          - { name: form.type, alias: person }
+          - { name: form.type, alias: project_person }
       arguments: [@doctrine.orm.default_entity_manager]
 
   form.term_engine.term:
