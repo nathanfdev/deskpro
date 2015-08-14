@@ -94,7 +94,7 @@ class CommonController extends AbstractController
         //
         // Extra Email Validation (when adding more emails)
         //
-        if ($validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
+        if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
             foreach ($validating_emails as $validating_email) {
                 $validation_alerts[] = array(
                     'type'       => PersonValidator::TYPE_EMAIL,

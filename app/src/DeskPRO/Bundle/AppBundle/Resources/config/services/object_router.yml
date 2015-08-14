@@ -23,6 +23,8 @@ services:
     arguments:
       - @annotation_reader
       - @object_router.config_cache
+    tags:
+      - { name: kernel.cache_warmer }
 
   object_router.config_cache:
     class: Symfony\Component\Config\ConfigCache

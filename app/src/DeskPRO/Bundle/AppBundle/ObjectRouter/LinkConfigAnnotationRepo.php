@@ -39,6 +39,8 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerInterface
@@ -55,10 +57,16 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      */
     private $config_cache;
 
+    /**
+     * @var array|null
+     */
+    private $cached_config_map;
+
     public function __construct(Reader $annotation_reader, ConfigCache $config_cache)
     {
         $this->annotation_reader = $annotation_reader;
         $this->config_cache = $config_cache;
+        $this->cached_config_map = null;
     }
 
     /**
@@ -72,7 +80,9 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
         // find the right context and type and return it
         // if it doesn't exist, try to find it on the entity itself
 
-        $info = $this->getAnnotationInfo($object);
+        if (!$info = $this->getAnnotationConfigFromCache($object)) {
+            $info = $this->readAnnotationConfig($object);
+        }
 
         if (!is_array($info) || empty($info)) {
             throw new ObjectRouterException(
@@ -137,13 +147,9 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      * @param $object_or_filename
      * @return array
      */
-    protected function getAnnotationInfo($object_or_filename)
+    protected function readAnnotationConfig($object_or_filename)
     {
-        if (is_object($object_or_filename)) {
-            $class = get_class($object_or_filename);
-        } else {
-            $class = $this->findClass($object_or_filename);
-        }
+        $class = $this->parseClassName($object_or_filename);
 
         // trim off the doctrine entity proxy prefix if it's there, it may interfere with annotation reading
         $proxy_prefix = 'Proxies\\__CG__\\';
@@ -183,16 +189,89 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
     }
 
     /**
+     * Return the full $config array (already parsed) from the cache file (done during warmup)
+     *
+     * @param $object_classname_or_filename
+     * @return null
+     */
+    protected function getAnnotationConfigFromCache($object_classname_or_filename)
+    {
+        $class = $this->parseClassName($object_classname_or_filename);
+
+        // $this->config_cache->__toString() is the filename to the cached array
+        // load it into memory if it is not already
+        if (!isset($this->cached_config_map)) {
+            // this file should always exist in production mode (cache/portal/objectRouter.php), so we'd only fail here
+            // in dev mode (or if somehow it got to production without a proper warmup, which would be
+            // a really big problem!)
+            if (!file_exists($this->config_cache)) {
+                $this->warmUp(null);
+            }
+
+            $this->cached_config_map = require $this->config_cache;
+        }
+
+        if (array_key_exists($class, $this->cached_config_map)) {
+            return $this->cached_config_map[$class];
+        }
+
+        return null;
+    }
+
+    /**
+     * Will give you the FQCN of an object instance, a class file name, or the FQCN itself.
+     *
+     * @param $object_classname_or_filename
+     * @return false|string
+     */
+    protected function parseClassName($object_classname_or_filename)
+    {
+        if (is_object($object_classname_or_filename)) {
+            $class = get_class($object_classname_or_filename);
+        } elseif (class_exists($object_classname_or_filename)) {
+            $class = $object_classname_or_filename;
+        } elseif (file_exists($object_classname_or_filename)) {
+            $class = $this->findClass($object_classname_or_filename);
+        } else {
+            $class = null;
+        }
+
+        return $class;
+    }
+
+    /**
      * Warms up the cache.
      *
-     * @param string $cacheDir The cache directory
+     * @param string $cacheDir The cache directory - NOT USED, we already have the file cache path in the service
      */
     public function warmUp($cacheDir)
     {
-        // iterate thru all entity dirs for .php files
-        // read info via getAnnotationInfo for each entity
-        // once done collecting all cache data, store it in cache so getRouteInfo uses that
-        //   instead of getAnnotationInfo
+        $link_config_dirs = array(
+            DP_ROOT . '/src/DeskPRO/Bundle/AppBundle/Entity',
+            DP_ROOT . '/src/Application/EmailBundle/Entity',
+            DP_ROOT . '/src/Application/DeskPRO/Entity',
+        );
+
+        if (is_dir($portalbundle = DP_ROOT . '/src/DeskPRO/Bundle/PortalBundle/Entity')) {
+            $link_config_dirs[] = $portalbundle;
+        }
+
+        if (is_dir($apibundle = DP_ROOT . '/src/DeskPRO/Bundle/ApiBundle/Entity')) {
+            $link_config_dirs[] = $apibundle;
+        }
+
+        $finder = new Finder();
+        $finder->files()->in($link_config_dirs)->name('*.php');
+
+        $warmup_cache = array();
+        /** @var SplFileInfo $php_file */
+        foreach ($finder as $php_file) {
+            if ($class = $this->parseClassName($php_file->getRealPath())) {
+                $warmup_cache[$class] = $this->readAnnotationConfig($class);
+            }
+        }
+
+        $this->config_cache->write('<?php return ' . var_export($warmup_cache, true) . ';');
     }
 
     /**
