@@ -41,9 +41,9 @@ class Attachment extends AbstractParserFormatterHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'attachment';
+        return Entity\EntityInterface::TYPE_ATTACHMENT;
     }
 
     /**

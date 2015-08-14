@@ -41,9 +41,9 @@ class Blob extends AbstractParserFormatterHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'blob';
+        return Entity\EntityInterface::TYPE_BLOB;
     }
 
     /**

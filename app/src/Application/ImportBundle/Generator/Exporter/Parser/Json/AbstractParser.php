@@ -100,7 +100,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getBlobParser()
     {
-        return $this->helpers->get($this, 'blob');
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_BLOB);
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getAttachmentParser()
     {
-        return $this->helpers->get($this, 'attachment');
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
     }
 
     /**
@@ -116,7 +116,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getCustomFieldsParser()
     {
-        return $this->helpers->get($this, 'custom_fields');
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 
     /**
@@ -124,6 +124,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getContactDataParser()
     {
-        return $this->helpers->get($this, 'contact_data');
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CONTACT_DATA);
     }
 }

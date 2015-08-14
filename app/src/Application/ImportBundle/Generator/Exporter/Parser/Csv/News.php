@@ -64,26 +64,19 @@ final class News extends AbstractParser
         $collection = new Entity\Collection();
         $news_list  = $this->getReaderData($this->getNewsReaderConfig());
 
-        foreach ($news_list as $num => $news) {
+        foreach ($news_list as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportNews($num, $news);
+                $entity = $this->exportNews($num, $data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid news record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('CSVNews', $this->getEntityType(), 'title', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('CSVNews', $this->getEntityType(), 'title', $e, $data);
             }
         }
 

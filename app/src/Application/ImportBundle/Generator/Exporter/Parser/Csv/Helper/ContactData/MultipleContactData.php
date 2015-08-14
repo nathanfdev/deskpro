@@ -42,9 +42,9 @@ class MultipleContactData extends AbstractParserFormatterHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'multiple_contact_data';
+        return 'multiple_' . Entity\EntityInterface::TYPE_CONTACT_DATA;
     }
 
     /**

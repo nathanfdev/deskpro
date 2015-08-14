@@ -39,9 +39,9 @@ class InlineCustomFields extends AbstractParserHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'inline_custom_fields';
+        return 'inline_' . Entity\EntityInterface::TYPE_CUSTOM_FIELD;
     }
 
     /**

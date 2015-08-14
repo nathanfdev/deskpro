@@ -36,7 +36,9 @@ use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 interface ParserHelperInterface extends GeneratorConfigAwareInterface
 {
     /**
+     * Referred entity type
+     *
      * @return string
      */
-    public function getName();
+    public function getEntityType();
 }

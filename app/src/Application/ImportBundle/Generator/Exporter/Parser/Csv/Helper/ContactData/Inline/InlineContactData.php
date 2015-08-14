@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactD
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity\ContactData;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
+use Application\ImportBundle\Entity;
 
 /**
  * Inline contact data parser
@@ -58,9 +59,9 @@ class InlineContactData extends AbstractParserHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'inline_contact_data';
+        return 'inline_' . Entity\EntityInterface::TYPE_CONTACT_DATA;
     }
 
     /**

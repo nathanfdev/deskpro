@@ -72,11 +72,11 @@ final class Tickets extends AbstractParser
         $messages      = $this->exportMessages();
         $custom_fields = $this->exportTicketCustomFields();
 
-        foreach ($tickets as $num => $ticket) {
+        foreach ($tickets as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportTicket($num, $ticket);
+                $entity = $this->exportTicket($num, $data);
 
                 foreach ($messages as $message_entity) {
                     /** @var Entity\TicketMessage $message_entity */
@@ -91,7 +91,7 @@ final class Tickets extends AbstractParser
                     }
                 }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $ticket);
+                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
                 foreach ($inline_custom_fields as $custom_field_entity) {
                     $entity->addCustomField($custom_field_entity);
                 }
@@ -100,16 +100,9 @@ final class Tickets extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('CSVTicket', $this->getEntityType(), 'name', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('CSVTicket', $this->getEntityType(), 'title', $e, $data);
             }
         }
 
@@ -168,9 +161,9 @@ final class Tickets extends AbstractParser
         $messages    = $this->getReaderData($this->getTicketMessageReaderConfig());
         $attachments = $this->exportTicketAttachments();
 
-        foreach ($messages as $num => $message) {
+        foreach ($messages as $num => $data) {
             try {
-                $entity = $this->exportMessage($num, $message);
+                $entity = $this->exportMessage($num, $data);
 
                 foreach ($attachments as $attachment) {
                     /** @var Entity\Attachment $attachment */
@@ -186,16 +179,9 @@ final class Tickets extends AbstractParser
                 ));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket message record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('CSVTicketMessage', 'ticket message', 'message_id', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('CSVTicketMessage', 'ticket message', 'message_id', $e, $data);
             }
         }
 

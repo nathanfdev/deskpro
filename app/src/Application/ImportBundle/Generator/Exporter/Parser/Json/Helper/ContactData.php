@@ -43,9 +43,9 @@ class ContactData extends AbstractParserFormatterHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'contact_data';
+        return Entity\EntityInterface::TYPE_CONTACT_DATA;
     }
 
     /**

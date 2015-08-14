@@ -45,7 +45,7 @@ class ParserHelperSet extends AbstractCollection
      */
     public function attach(ParserHelperInterface $helper)
     {
-        $this->collection[$helper->getName()] = $helper;
+        $this->collection[$helper->getEntityType()] = $helper;
         return $this;
     }
 

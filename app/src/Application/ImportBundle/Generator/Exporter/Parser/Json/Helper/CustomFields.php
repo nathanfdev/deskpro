@@ -42,9 +42,9 @@ class CustomFields extends AbstractParserFormatterHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'custom_fields';
+        return Entity\EntityInterface::TYPE_CUSTOM_FIELD;
     }
 
     /**

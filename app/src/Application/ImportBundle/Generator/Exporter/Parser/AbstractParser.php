@@ -27,15 +27,13 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
-
 /**
  * Abstract generator exporter parser
  *
  * Class AbstractParser
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+abstract class AbstractParser extends AbstractParserHelper implements ParserInterface
 {
     /**
      * @var ParserHelperSet

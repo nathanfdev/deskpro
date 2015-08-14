@@ -69,11 +69,11 @@ class Organizations extends AbstractParser
         $contact_data  = $this->exportOrganizationContactData();
         $custom_fields = $this->exportOrganizationCustomFields();
 
-        foreach ($organizations as $num => $organization) {
+        foreach ($organizations as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportOrganization($num, $organization);
+                $entity = $this->exportOrganization($num, $data);
 
                 foreach ($contact_data as $contact) {
                     /** @var Entity\ContactData $contact */
@@ -88,12 +88,12 @@ class Organizations extends AbstractParser
                     }
                 }
 
-                $inline_contact_data = $this->getInlineContactDataParser()->export($organization, $entity->getDestination());
+                $inline_contact_data = $this->getInlineContactDataParser()->export($data, $entity->getDestination());
                 foreach ($inline_contact_data as $contact) {
                     $entity->addContact($contact);
                 }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $organization);
+                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
                 foreach ($inline_custom_fields as $custom_field_entity) {
                     $entity->addCustomField($custom_field_entity);
                 }
@@ -102,16 +102,9 @@ class Organizations extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid organization record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('CSVOrganization', $this->getEntityType(), 'name', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('CSVOrganization', $this->getEntityType(), 'title', $e, $data);
             }
         }
 

@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\Generator\AbstractGenerator;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 
 /**
  * Class AbstractParserHelper
@@ -35,5 +36,43 @@ use Application\ImportBundle\Generator\AbstractGenerator;
  */
 abstract class AbstractParserHelper extends AbstractGenerator implements ParserHelperInterface
 {
+    /**
+     * Log transformer exception
+     *
+     * @param string               $prefix
+     * @param string               $entity_type
+     * @param string               $ref_column
+     * @param TransformerException $e
+     */
+    protected function logTransformerException($prefix, $entity_type, $ref_column, TransformerException $e)
+    {
+        $data = $e->getEntity();
+        $oid  = @$data[$ref_column] ? : '?';
 
+        $this->logDebugException(sprintf('Exception with %s %d', $entity_type, $oid), $e, $data);
+        $this->logWarning(sprintf(
+            '[%s #%s] Unable to transform `%s`.`%s` property to %s (Skipping): %s',
+            $prefix, $oid, $entity_type, $e->getMessage()
+        ));
+    }
+
+    /**
+     * Log unknown exception
+     *
+     * @param string     $prefix
+     * @param string     $entity_type
+     * @param string     $ref_column
+     * @param \Exception $e
+     * @param array      $data
+     */
+    protected function logUnknownException($prefix, $entity_type, $ref_column, \Exception $e, array $data)
+    {
+        $oid = @$data[$ref_column] ? : '?';
+
+        $this->logDebugException(sprintf('Exception with %s %d', $entity_type, $oid), $e, $data);
+        $this->logError(sprintf(
+            '[%s #%s] Invalid %s record found (Skipping): Unknown error: %s',
+            $prefix, $oid, $entity_type, $e->getMessage()
+        ));
+    }
 }

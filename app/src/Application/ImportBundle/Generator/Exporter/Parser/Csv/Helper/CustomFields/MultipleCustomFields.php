@@ -41,9 +41,9 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getEntityType()
     {
-        return 'multiple_custom_fields';
+        return 'multiple_' . Entity\EntityInterface::TYPE_CUSTOM_FIELD;
     }
 
     /**

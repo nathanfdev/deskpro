@@ -155,7 +155,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getBlobParser()
     {
-        return $this->helpers->get($this, 'blob');
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_BLOB);
     }
 
     /**
@@ -163,7 +163,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getAttachmentParser()
     {
-        return $this->helpers->get($this, 'attachment');
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
     }
 
     /**
@@ -171,7 +171,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getMultipleContactDataParser()
     {
-        return $this->helpers->get($this, 'multiple_contact_data');
+        return $this->helpers->get($this, 'multiple_' . Entity\EntityInterface::TYPE_CONTACT_DATA);
     }
 
     /**
@@ -179,7 +179,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getInlineContactDataParser()
     {
-        return $this->helpers->get($this, 'inline_contact_data');
+        return $this->helpers->get($this, 'inline_' . Entity\EntityInterface::TYPE_CONTACT_DATA);
     }
 
     /**
@@ -187,7 +187,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getMultipleCustomFieldsParser()
     {
-        return $this->helpers->get($this, 'multiple_custom_fields');
+        return $this->helpers->get($this, 'multiple_' . Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 
     /**
@@ -195,6 +195,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getInlineCustomFieldsParser()
     {
-        return $this->helpers->get($this, 'inline_custom_fields');
+        return $this->helpers->get($this, 'inline_' . Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 }
