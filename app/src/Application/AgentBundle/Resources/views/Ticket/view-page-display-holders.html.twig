@@ -73,7 +73,7 @@
 			&nbsp;
 			{% if problem %}
                 [&nbsp;<a class="agent_link incident-link" data-problem-id="{{ problem.id }}"
-                            >{{ phrase('agent.problems.incidents') }}: {{ problem.tickets.count }}</a>&nbsp;]
+                            >{{ phrase('agent.problems.incidents') }}: {{ incidents }}</a>&nbsp;]
 
                 {% if problem.is_open and app.user.hasPerm('agent_problems.close') %}
                     [&nbsp;<a class="agent_link close-problem-link">close</a>&nbsp;]

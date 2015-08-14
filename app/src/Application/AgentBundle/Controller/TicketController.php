@@ -368,6 +368,7 @@ class TicketController extends AbstractController
 
         $open_problems = array();
         $closed_problems = array();
+        $incidents = 0;
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
@@ -377,6 +378,12 @@ class TicketController extends AbstractController
                 array('is_open' => false),
                 array('title' => 'asc')
             );
+
+            if ($problem = $ticket->problems->first()) {
+                $rep = $this->em->getRepository('DeskPRO:Problem');
+                $problem_counts = $rep->getCountsForAgentInterface(array($problem), $this->person);
+                $incidents = (int) @$problem_counts[$problem->id];
+            }
         }
 
 
@@ -435,6 +442,7 @@ class TicketController extends AbstractController
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
             'open_problems'              => $open_problems,
             'closed_problems'            => $closed_problems,
+            'incidents'                  => $incidents,
         );
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
@@ -2155,6 +2163,7 @@ class TicketController extends AbstractController
 
         $open_problems = array();
         $closed_problems = array();
+        $incidents = 0;
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
@@ -2164,6 +2173,12 @@ class TicketController extends AbstractController
                 array('is_open' => false),
                 array('title' => 'asc')
             );
+
+            if ($problem = $ticket->problems->first()) {
+                $rep = $this->em->getRepository('DeskPRO:Problem');
+                $problem_counts = $rep->getCountsForAgentInterface(array($problem), $this->person);
+                $incidents = (int) @$problem_counts[$problem->id];
+            }
         }
 
         $data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
@@ -2174,7 +2189,8 @@ class TicketController extends AbstractController
             'custom_org_fields'   => $custom_org_fields,
             'new_custom_fields'   => $new_custom_fields->createView(),
             'open_problems'       => $open_problems,
-            'closed_problems'       => $closed_problems,
+            'closed_problems'     => $closed_problems,
+            'incidents'           => $incidents,
         ));
 
         $client_messages = false;
