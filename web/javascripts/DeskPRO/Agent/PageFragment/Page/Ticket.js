@@ -2012,6 +2012,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     this.getEl('field_holders').on('click', '.close-problem-link', function () {
       self.showCloseProblemOverlay();
     });
+
+		this.getEl('field_holders').on('click', '.incident-link', function () {
+			var $item = $('#problems-section li.is-nav-item[data-problem-id="' + $(this).data('problem-id') + '"] [data-route]');
+      $item.trigger('click');
+
+      if (!$item.length) {
+        var $sel = $('#problems-section select.closed_problems_select').val($(this).data('problem-id')).trigger('change');
+      }
+		});
   },
 
 	showDeleteOverlay: function(doBan) {
