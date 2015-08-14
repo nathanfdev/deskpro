@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavFrameTitle } from './NavFrameTitle';
-import { ChatsList } from './ChatsList';
+import { ChatsList } from './ChatsList/ChatsList';
 import { ChatsListGroupingControl } from './ChatsListGroupingControl';
 
 export class NavFrame extends React.Component {
