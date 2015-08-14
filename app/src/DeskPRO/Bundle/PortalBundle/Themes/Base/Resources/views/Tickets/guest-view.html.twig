@@ -81,7 +81,7 @@
         <span class="badge"
               style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
 
-        <a href="{{ path('portal_tickets_edit', { id: ticket.id }) }}" class="button">{{ phrase('portal.tickets.please_login_to_reply') }}</a>
+        <a href="{{ portal_path(ticket, 'edit') }}" class="button">{{ phrase('portal.tickets.please_login_to_reply') }}</a>
       </div>
     </div>
     <br>

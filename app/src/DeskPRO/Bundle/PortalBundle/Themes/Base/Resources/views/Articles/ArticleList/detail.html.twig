@@ -2,7 +2,7 @@
   <ul class="categories-article-list">
     {% for article in pager %}
       <li>
-        <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
+        <a href="{{ portal_path(article) }}">
           <h1>{{ article.realTitle }}</h1>
         </a>
 
@@ -14,7 +14,7 @@
             <span class="updated"><i class="fa fa-calendar-o"></i> {{ article.date_created|date('day') }}</span>
             {% if article.num_comments > 0 %}
               <span class="comments focus"><i class="fa fa-comments"></i> <a
-                        href="{{ path('portal_kb_view', { slug: article.slug }) }}#comments">
+                        href="{{ portal_path(article) }}#comments">
                   {{ phrase('portal.general.comments-count', {count: article.num_comments}) }}
                 </a></span>
             {% endif %}

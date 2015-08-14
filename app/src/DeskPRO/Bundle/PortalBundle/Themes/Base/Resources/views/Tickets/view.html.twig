@@ -15,7 +15,7 @@
         </span>
       {% if can_edit %}
         <span class="ticket-reference">
-              <a href="{{ path('portal_tickets_edit', { id: ticket.id }) }}">
+              <a href="{{ portal_path(ticket, 'edit') }}">
                 {{ phrase('portal.tickets.edit-ticket') }}
               </a>
           </span>

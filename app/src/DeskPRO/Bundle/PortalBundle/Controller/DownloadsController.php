@@ -246,26 +246,23 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Route("/downloads/files/{slug}/download/{authcode}", name="portal_downloads_download")
+     * @Route("/downloads/files/{slug}/download", name="portal_downloads_download")
      * @ParamConverter("file", options={"slug" = "slug"})
-     * @ParamConverter("blob", options={"authcode" = "authcode"})
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('DOWNLOAD_DOWNLOAD', file)")
      */
-    public function downloadAction(Request $request, Download $file, Blob $blob)
+    public function downloadAction(Request $request, Download $file)
     {
-        if ($file->blob->getId() !== $blob->getId()) {
-            throw $this->createNotFoundException('invalid authcode for this file');
-        }
+        $blob = $file->getBlob();
 
         $file->incrementDownloadCount();
         $this->getEm()->flush($file);
 
-        if ($file->fileurl) {
-            return $this->redirect($file->fileurl);
+        if ($file->getFileurl()) {
+            return $this->redirect($file->getFileurl());
         }
 
         return $this->redirectToRoute('serve_blob', array(
-            'blob_auth_id' => $file->blob->auth_id,
+            'blob_auth_id' => $file->getBlob()->getAuthId(),
             'filename' => $file->getFilenameSafe(),
             'dl' => 1,
         ));

@@ -34,7 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation\PortalLink;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -42,7 +42,10 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * @PortalLink("portal_news_view", {"slug": "slug"})
+ * @PortalLinkRoute("portal_news_view", route_param_map={"slug": "slug"})
+ * @PortalLinkRoute("portal_news_post_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_news_post_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_news_post_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {

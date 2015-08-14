@@ -54,7 +54,7 @@ services:
       - @settings_resolver
 
   object_router.link_generator.news:
-    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\NewsLinkGenerator
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DownloadsLinkGenerator
     arguments:
       - @router
 

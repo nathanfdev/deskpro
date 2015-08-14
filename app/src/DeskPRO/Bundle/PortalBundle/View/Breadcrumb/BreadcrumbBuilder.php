@@ -298,7 +298,7 @@ class BreadcrumbBuilder
     {
         $this->b->add(
             'portal_tickets_view',
-            array('id' => $t->getId()),
+            array('ticket_ref' => $t->getId()),
             Breadcrumbs::TICKETS_VIEW,
             $t
         );

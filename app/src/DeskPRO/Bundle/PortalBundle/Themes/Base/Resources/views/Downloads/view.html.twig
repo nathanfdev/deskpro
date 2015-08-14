@@ -18,10 +18,10 @@
         </header>
 
         <div class="article-extras">
-            <a href="{{ path('portal_downloads_download', { slug: file.slug, authcode: file.blob.authcode }) }}">
+            <a href="{{ portal_path(file, 'save') }}">
                 {% if file.blob and file.blob.is_image %}
                     <img style="max-width: 100%;"
-                         src="{{ path('serve_blob', { blob_auth_id: file.blob.authcode, filename: file.blob.filenameSafe }) }}"
+                         src="{{ portal_path(file, 'serve') }}"
                          alt="{{ file.title }}"/><br>
                 {% else %}
                     {{ icons.dl_detailed(file) }}

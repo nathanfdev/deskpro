@@ -33,13 +33,13 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Feedback categories.
- *
- * SWG\Model (id="NewsCategory")
+ * @PortalLinkRoute("portal_news_browse", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_news_category_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  */
 class NewsCategory extends CategoryAbstract
 {

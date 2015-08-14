@@ -116,12 +116,13 @@ class TicketsController extends AbstractController
 
     /**
      * @Route("/tickets/{ticket_ref}", name="portal_tickets_view")
-     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_VIEW', ticket)")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
     public function viewAction(Request $request, $ticket_ref)
     {
-        // get ticket based on settings (ref or id)
-        // change @security
+        $ticket = $this->getTicketByRefOrId($ticket_ref);
+
+        // TODO: security TICKET_VIEW
 
         $form_data = array(
             'ticket_message' => $message = new TicketMessage(),
@@ -146,7 +147,7 @@ class TicketsController extends AbstractController
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
 
-                return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+                return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
             }
         }
 
@@ -185,7 +186,7 @@ class TicketsController extends AbstractController
             && $this->isGranted('ROLE_USER')
         ) {
             // the user passes all security requirements to view the normal ticket view page. Redirect them to there.
-            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
@@ -210,11 +211,15 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * @Route("/tickets/{id}/edit", name="portal_tickets_edit")
-     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_EDIT', ticket)")
+     * @Route("/tickets/{ticket_ref}/edit", name="portal_tickets_edit")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
-    public function editAction(Ticket $ticket, Request $request)
+    public function editAction(Request $request, $ticket_ref)
     {
+        $ticket = $this->getTicketByRefOrId($ticket_ref);
+
+        // TODO: security TICKET_EDIT
+
         $form = $this->createForm('ticket', $ticket, array(
             'person'            => $this->getUser(),
             'ticket_visibility' => 'edit',
@@ -237,7 +242,7 @@ class TicketsController extends AbstractController
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_updated'));
 
-                return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+                return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
             }
         }
 
@@ -254,5 +259,22 @@ class TicketsController extends AbstractController
                 'page_title' => $this->createPageTitle()->tickets($ticket)
             )
         );
+    }
+
+    /**
+     * ticket_ref can either be an ID or a ref depending on settings
+     *
+     * @param $ticket_ref
+     * @return Ticket|null
+     */
+    protected function getTicketByRefOrId($ticket_ref)
+    {
+        $repo = $this->getRepo('DeskPRO:Ticket');
+
+        if ($this->getBrandSetting('core.tickets.use_ref')) {
+            return $repo->findOneBy(array('ref' => $ticket_ref));
+        }
+
+        return $repo->findOneBy(array('id' => $ticket_ref));
     }
 }

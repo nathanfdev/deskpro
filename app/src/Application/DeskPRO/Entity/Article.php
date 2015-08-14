@@ -37,13 +37,17 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
- * Article.
+ * @PortalLinkRoute("portal_kb_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_kb_article_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_kb_article_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_kb_article_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
 class Article extends ContentAbstract implements HighlightableModelInterface
 {

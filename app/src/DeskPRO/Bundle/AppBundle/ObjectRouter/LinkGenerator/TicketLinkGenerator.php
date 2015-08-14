@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouterException;
@@ -74,11 +75,15 @@ class TicketLinkGenerator implements LinkGeneratorInterface
      */
     public function supports($object, $type, $context)
     {
-        return $object instanceof Ticket;
+        return $object instanceof Ticket || $object instanceof TicketView;
     }
 
     public function generate($ticket, $type, $context, $extra_params, $reference_type)
     {
+        if ($ticket instanceof TicketView) {
+            $ticket = $ticket->ticket;
+        }
+
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
         if ($this->settings_resolver->getGlobalSettings()->get('core.tickets.use_ref')) {
             $ref = $ticket->getRef();
@@ -92,6 +97,15 @@ class TicketLinkGenerator implements LinkGeneratorInterface
                  context in DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator
             ');
         }
+
+        if ($type === 'edit') {
+            return $this->url_generator->generate(
+                'portal_tickets_edit',
+                array_merge(array('ticket_ref' => $ref), $extra_params),
+                $reference_type
+            );
+        }
+
 
         return $this->url_generator->generate(
             'portal_tickets_view',

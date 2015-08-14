@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
+use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -41,28 +42,39 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouterException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class NewsLinkGenerator implements LinkGeneratorInterface
+/**
+ * Creates the proper link for a download "serve" (a direct url to put in an img tag for ex.)
+ * This is because the normal "save" type will first hit a controller
+ * for security and to increment count + redirect
+ * this avoids both security and the download increment, so be careful with the "serve" type on Downloads!
+ */
+class DownloadsLinkGenerator implements LinkGeneratorInterface
 {
     /**
      * @var UrlGeneratorInterface
      */
     private $url_generator;
 
-    public function __construct(
-        UrlGeneratorInterface $url_generator
-    )
+    public function __construct(UrlGeneratorInterface $url_generator)
     {
         $this->url_generator = $url_generator;
     }
 
-
     public function supports($object, $type, $context)
     {
-        return $object instanceof News;
+        return $object instanceof Download && $type === 'serve';
     }
 
-    public function generate($news, $type, $context, $extra_params, $reference_type)
+    public function generate($download, $type, $context, $extra_params, $reference_type)
     {
-        return 'http://custom.com/' . implode('.', $news->getCategoryPath());
+        /** @var \Application\DeskPRO\Entity\Download $download */
+        return $this->url_generator->generate(
+            'serve_blob',
+            array_merge(array(
+                'blob_auth_id' => $download->getBlob()->getAuthcode(),
+                'filename' => $download->getBlob()->getFilenameSafe()
+            ), $extra_params),
+            $reference_type
+        );
     }
 }

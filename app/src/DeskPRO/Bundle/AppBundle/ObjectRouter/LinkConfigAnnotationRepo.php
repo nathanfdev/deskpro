@@ -74,6 +74,18 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
 
         $info = $this->getAnnotationInfo($object);
 
+        if (!is_array($info) || empty($info)) {
+            throw new ObjectRouterException(
+                sprintf(
+                    'There are no links defined for this entity in the "%s" context! Be sure to include a @%sLinkRoute or @%sLinkCustom annotation on the class "%s"',
+                    $context,
+                    ucfirst($context),
+                    ucfirst($context),
+                    get_class($object)
+                )
+            );
+        }
+
         $object_info = current($info);
 
         if (!array_key_exists($context, $object_info)) {
@@ -131,6 +143,12 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
             $class = get_class($object_or_filename);
         } else {
             $class = $this->findClass($object_or_filename);
+        }
+
+        // trim off the doctrine entity proxy prefix if it's there, it may interfere with annotation reading
+        $proxy_prefix = 'Proxies\\__CG__\\';
+        if (0 === strpos($class, $proxy_prefix)) {
+            $class = substr($class, strlen($proxy_prefix));
         }
 
         if (!$ref_class = new \ReflectionClass($class)) {
