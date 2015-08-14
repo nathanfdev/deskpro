@@ -112,7 +112,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        // We could read data from ZD reader twice because of ZD reader cache support
+        // We can read data from ZD reader twice because of ZD reader cache support
         return count($this->getTickets());
     }
 

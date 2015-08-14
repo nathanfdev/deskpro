@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use DateTimeZone;
 
@@ -113,28 +114,23 @@ final class People extends AbstractParser
         $collection = new Entity\Collection();
 
         while ($batch = $this->reader->findStaff($this->getReaderBatchSize(), $this->getCurrentStaffMinId())) {
-            foreach ($batch as $num => $person) {
+            foreach ($batch as $num => $data) {
                 $this->advanceProgressBar();
-                $offsetNum = $num + $this->entities_loaded;
 
                 try {
-                    $entity = $this->exportStaff($person);
-                    if ($entity) {
-                        $collection->attach($entity);
-                        $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                    } else {
-                        $this->logWarning(sprintf('Invalid staff record found (Skipping): %d', $offsetNum));
-                    }
+                    $entity = $this->exportStaff($data);
 
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+                } catch (TransformerException $e) {
+                    $this->logTransformerException('OSStaff', $this->getEntityType(), 'oid', $e);
                 } catch (\Exception $e) {
-                    $this->logWarning(sprintf(
-                        'Invalid staff record `%d` found (Skipping): %s',
-                        $offsetNum, $e->getMessage()
-                    ));
+                    $this->logUnknownException('OSStaff', $this->getEntityType(), 'oid', $e, $data);
                 }
 
-                if (isset($person['staff_id'])) {
-                    $this->staff_min_id = $person['staff_id'];
+                if (isset($data['staff_id'])) {
+                    $this->staff_min_id = $data['staff_id'];
                 }
             }
 
@@ -195,28 +191,23 @@ final class People extends AbstractParser
         $collection = new Entity\Collection();
 
         while ($batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId())) {
-            foreach ($batch as $num => $person) {
+            foreach ($batch as $num => $data) {
                 $this->advanceProgressBar();
-                $offsetNum = $num + $this->entities_loaded;
 
                 try {
-                    $entity = $this->exportUser($person);
-                    if ($entity) {
-                        $collection->attach($entity);
-                        $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                    } else {
-                        $this->logWarning(sprintf('Invalid user record found (Skipping): %d', $offsetNum));
-                    }
+                    $entity = $this->exportUser($data);
 
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+                } catch (TransformerException $e) {
+                    $this->logTransformerException('OSUser', $this->getEntityType(), 'oid', $e);
                 } catch (\Exception $e) {
-                    $this->logWarning(sprintf(
-                        'Invalid user record `%d` found (Skipping): %s',
-                        $offsetNum, $e->getMessage()
-                    ));
+                    $this->logUnknownException('OSUser', $this->getEntityType(), 'oid', $e, $data);
                 }
 
-                if (isset($person['user_id'])) {
-                    $this->users_min_id = $person['user_id'];
+                if (isset($data['user_id'])) {
+                    $this->users_min_id = $data['user_id'];
                 }
             }
 

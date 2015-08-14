@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Orb\Util\Strings;
 
@@ -81,28 +82,23 @@ final class Tickets extends AbstractParser
         $collection = new Entity\Collection();
 
         while ($batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId())) {
-            foreach ($batch as $num => $ticket) {
+            foreach ($batch as $num => $data) {
                 $this->advanceProgressBar();
-                $offsetNum = $num + $this->entities_loaded;
 
                 try {
-                    $entity = $this->exportTicket($ticket);
-                    if ($entity) {
-                        $collection->attach($entity);
-                        $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                    } else {
-                        $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $offsetNum));
-                    }
+                    $entity = $this->exportTicket($data);
 
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+                } catch (TransformerException $e) {
+                    $this->logTransformerException('OSTicket', $this->getEntityType(), 'oid', $e);
                 } catch (\Exception $e) {
-                    $this->logWarning(sprintf(
-                        'Invalid ticket record `%d` found (Skipping): %s',
-                        $num, $e->getMessage()
-                    ));
+                    $this->logUnknownException('OSTicket', $this->getEntityType(), 'oid', $e, $data);
                 }
 
-                if (isset($ticket['ticket_id'])) {
-                    $this->tickets_min_id = $ticket['ticket_id'];
+                if (isset($data['ticket_id'])) {
+                    $this->tickets_min_id = $data['ticket_id'];
                 }
             }
 
@@ -199,21 +195,17 @@ final class Tickets extends AbstractParser
         $messages   = $this->reader->findMessages($ticket_id);
         $collection = new Entity\Collection();
 
-        foreach ($messages as $num => $message) {
+        foreach ($messages as $num => $data) {
             try {
-                $entity = $this->exportMessage($message);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
-                }
+                $entity = $this->exportMessage($data);
 
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logTransformerException('OSTicketMessage', 'ticket message', 'oid', $e);
             } catch (\Exception $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket message record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('OSTicketMessage', 'ticket message', 'oid', $e, $data);
             }
         }
 
@@ -271,21 +263,17 @@ final class Tickets extends AbstractParser
         $collection  = new Entity\Collection();
         $attachments = $this->reader->findMessageAttachments($message_id);
 
-        foreach ($attachments as $num => $attachment) {
+        foreach ($attachments as $num => $data) {
             try {
-                $entity = $this->exportAttachment($attachment);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
-                }
+                $entity = $this->exportAttachment($data);
 
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logTransformerException('OSTicketAttachment', 'ticket message attachment', 'oid', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid ticket message attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('OSTicketAttachment', 'ticket message attachment', 'oid', $e, $data);
             }
         }
 
