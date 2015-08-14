@@ -24,7 +24,11 @@ const TaskCard = React.createClass({
       this.setState({
         editing: false
       });
-      //this.props.editTask(this.props.source, this.state.task);
+
+      let task = this.state.task;
+      task.taskId = this.props.task.id;
+
+      this.props.editTask(this.props.source, task);
     }
   },
 
@@ -48,12 +52,12 @@ const TaskCard = React.createClass({
     });
   },
 
-  handleTitleChange: function (name, value, test) {
-    //let task = this.state.task;
-    //task.title = value;
-    //this.setState({
-    //  task: task
-    //});
+  handleTitleChange: function (name, value) {
+    let task = this.state.task;
+    task.title = value;
+    this.setState({
+      task: task
+    });
   },
 
   render: function () {
@@ -150,8 +154,8 @@ const TaskCard = React.createClass({
             </div> : '' }
         </div> :
         <Formsy.Form>
-          <div className="card-line">
-            <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange('Test string')} /></h1>
+          <div className="card-line editing">
+            <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange} /></h1>
           </div>
         </Formsy.Form>
       }
