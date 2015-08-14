@@ -83,6 +83,7 @@ export default class AgentApp {
     ];
 
     if (window.DP_DEV_MODE) {
+      $('body').addClass('with-debug-panel');
       els.push(
         <DebugPanel top right bottom key="debugPanel">
           <DevTools store={store} monitor={LogMonitor}/>

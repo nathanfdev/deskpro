@@ -4,7 +4,7 @@ export default class TasksListFrame extends React.Component {
   render() {
     return (
       <section className="test-nav-frame dp-nav-frame">
-        XXXRR
+        X
       </section>
     );
   }

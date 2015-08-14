@@ -57,6 +57,6 @@
     "test-all": "bin/mocha --compilers js:babel/register --recursive \"src/**/test/*.js\""
   },
   "devDependencies": {
-    "redux-devtools": "^1.0.2"
+    "redux-devtools": "1.0.2"
   }
 }

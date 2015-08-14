@@ -109,7 +109,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     resolveLoader: {
       modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules", "build-tools"]
     },
-    devtool: "source-map",
+    devtool: "eval",
     module: {
       preLoaders: [
         {
@@ -132,15 +132,23 @@ function getWebpackConfig(mode, isDevServer, isProd) {
           test: /\.js$/,
           include: [
             path.resolve(__dirname, "src/DeskPRO")
-          ],
-          loader: "babel-loader?stage=0"
+          ]
         },
         {
           test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
-          loader: "file-loader?context=src&name=[path][name].[ext]"
+          loader: "file-loader?context=src&name=[path][name].[ext]",
+          include: [
+            path.resolve(__dirname, "src/DeskPRO"),
+            path.resolve(__dirname, "node_modules/node-bourbon"),
+            path.resolve(__dirname, "node_modules/node-neat"),
+            path.resolve(__dirname, "node_modules/font-awesome"),
+          ],
         },
         {
           test: /\.scss$/,
+          include: [
+            path.resolve(__dirname, "src/DeskPRO")
+          ],
           loader: ExtractTextPlugin.extract("style-loader",
             "css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&" +
             "includePaths[]=" + (path.resolve(__dirname, "./bower_components")) + "&" +
@@ -193,7 +201,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
 
     if (config.entry['DeskPRO_AgentBundle']) {
-      config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/dev-server');
+      config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/only-dev-server');
       config.entry['DeskPRO_AgentBundle'].unshift('webpack-dev-server/client?http://localhost:9666');
     }
   }
@@ -228,7 +236,15 @@ function startWebpackServer(config)
     hot: true,
     historyApiFallback: true,
     stats: {
-      colors: true
+      colors: true,
+      chunks: true,
+      source: false,
+      chunkOrigins: false,
+      reasons: false,
+      cached: false,
+      hash: false,
+      assets: false,
+      version: false
     }
   }).listen(9666, "localhost", function(err) {
     if(err) throw new gutil.PluginError("webpack-dev-server", err);
