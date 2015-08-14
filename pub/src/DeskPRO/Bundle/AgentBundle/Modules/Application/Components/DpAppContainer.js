@@ -5,7 +5,7 @@ import DpApp from "./DpApp";
 import DpAppLoading from "./DpAppLoading";
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
-import ChatApp from '../../Chat/Components/ChatApp';
+import { ChatApp } from '../../Chat/Components/ChatApp';
 import * as AppActions from "../Actions/AppActions";
 import { Router, Route, Redirect } from 'react-router';
 
