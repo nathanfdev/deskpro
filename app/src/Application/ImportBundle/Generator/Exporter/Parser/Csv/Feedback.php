@@ -69,11 +69,11 @@ final class Feedback extends AbstractParser
         $attachments    = $this->exportFeedbackAttachments();
         $custom_fields  = $this->exportFeedbackCustomFields();
 
-        foreach ($feedback_items as $num => $feedback) {
+        foreach ($feedback_items as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportFeedback($num, $feedback);
+                $entity = $this->exportFeedback($num, $data);
 
                 foreach ($attachments as $attachment) {
                     /** @var Entity\Attachment $attachment */
@@ -88,7 +88,7 @@ final class Feedback extends AbstractParser
                     }
                 }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $feedback);
+                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
                 foreach ($inline_custom_fields as $custom_field_entity) {
                     $entity->addCustomField($custom_field_entity);
                 }
@@ -97,16 +97,9 @@ final class Feedback extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid feedback record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('CSVFeedback', $this->getEntityType(), 'title', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('CSVFeedback', $this->getEntityType(), 'title', $e, $data);
             }
         }
 

@@ -67,10 +67,7 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
                 $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid custom field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logTransformerException('CSVCustomField', $this->getEntityType(), 'field_name', $e);
             }
         }
 

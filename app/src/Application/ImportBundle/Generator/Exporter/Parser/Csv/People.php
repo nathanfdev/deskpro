@@ -102,9 +102,9 @@ final class People extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logTransformerException('CSVPerson', $this->getEntityType(), 'name', $e);
+                $this->logTransformerException('CSVPerson', $this->getEntityType(), 'email', $e);
             } catch (\Exception $e) {
-                $this->logUnknownException('CSVPerson', $this->getEntityType(), 'title', $e, $data);
+                $this->logUnknownException('CSVPerson', $this->getEntityType(), 'email', $e, $data);
             }
         }
 

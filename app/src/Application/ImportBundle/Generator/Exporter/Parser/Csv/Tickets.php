@@ -100,9 +100,9 @@ final class Tickets extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logTransformerException('CSVTicket', $this->getEntityType(), 'name', $e);
+                $this->logTransformerException('CSVTicket', $this->getEntityType(), 'subject', $e);
             } catch (\Exception $e) {
-                $this->logUnknownException('CSVTicket', $this->getEntityType(), 'title', $e, $data);
+                $this->logUnknownException('CSVTicket', $this->getEntityType(), 'subject', $e, $data);
             }
         }
 

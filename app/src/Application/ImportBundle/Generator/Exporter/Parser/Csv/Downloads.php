@@ -66,26 +66,19 @@ final class Downloads extends AbstractParser
         $collection = new Entity\Collection();
         $downloads  = $this->getReaderData($this->getDownloadReaderConfig());
 
-        foreach ($downloads as $num => $download) {
+        foreach ($downloads as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportDownload($num, $download);
+                $entity = $this->exportDownload($num, $data);
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid download record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
+                $this->logTransformerException('CSVDownload', $this->getEntityType(), 'title', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('CSVDownload', $this->getEntityType(), 'title', $e, $data);
             }
         }
 

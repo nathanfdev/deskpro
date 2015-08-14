@@ -68,11 +68,11 @@ final class Articles extends AbstractParser
         $articles      = $this->getReaderData($this->getArticleReaderConfig());
         $custom_fields = $this->exportArticleCustomFields();
 
-        foreach ($articles as $num => $article) {
+        foreach ($articles as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportArticle($num, $article);
+                $entity = $this->exportArticle($num, $data);
 
                 foreach ($custom_fields as $custom_field_entity) {
                     /** @var Entity\CustomField $custom_field_entity */
@@ -81,7 +81,7 @@ final class Articles extends AbstractParser
                     }
                 }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $article);
+                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
                 foreach ($inline_custom_fields as $custom_field_entity) {
                     $entity->addCustomField($custom_field_entity);
                 }
@@ -90,15 +90,9 @@ final class Articles extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid article record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logTransformerException('CSVDownload', $this->getEntityType(), 'title', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('CSVDownload', $this->getEntityType(), 'title', $e, $data);
             }
         }
 

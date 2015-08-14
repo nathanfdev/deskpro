@@ -104,7 +104,7 @@ class Organizations extends AbstractParser
             } catch (TransformerException $e) {
                 $this->logTransformerException('CSVOrganization', $this->getEntityType(), 'name', $e);
             } catch (\Exception $e) {
-                $this->logUnknownException('CSVOrganization', $this->getEntityType(), 'title', $e, $data);
+                $this->logUnknownException('CSVOrganization', $this->getEntityType(), 'name', $e, $data);
             }
         }
 
