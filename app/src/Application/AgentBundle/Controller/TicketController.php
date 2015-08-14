@@ -4760,6 +4760,10 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(array('success' => true));
     }
 
+    /**
+     * @param $ticket_id
+     * @return Response
+     */
     public function closeProblemAction($ticket_id)
     {
         $ticket = $this->getTicketOr404($ticket_id);
@@ -4773,6 +4777,40 @@ class TicketController extends AbstractController
         }
 
         $problem['is_open'] = false;
+        $this->em->flush($problem);
+
+        $data = array();
+        if ($this->in->getUint('client_messages_since')) {
+            if ($client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+                $this->person,
+                $this->session,
+                $this->in->getUint('client_messages_since')
+            )
+            ) {
+                $data['client_messages'] = $client_messages;
+            }
+        }
+
+        return $this->createJsonResponse($data);
+    }
+
+    /**
+     * @param $ticket_id
+     * @return Response
+     */
+    public function reopenProblemAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        if (!$problem = $ticket->problems->first()) {
+            throw new NotFoundHttpException;
+        }
+
+        if (!$this->person->hasPerm('agent_problems.reopen')) {
+            throw new AccessDeniedHttpException;
+        }
+
+        $problem['is_open'] = true;
         $this->em->flush($problem);
 
         $data = array();

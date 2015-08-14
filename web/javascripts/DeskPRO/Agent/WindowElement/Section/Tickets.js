@@ -204,23 +204,54 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
         if (!info.changeset) return;
 
         var $list   = $('.tickets_outline_problems', self.wrapper)
-          , $closed = $('.closed_problems_select', self.wrapper)
+          , $closed = $('select.closed_problems_select', self.wrapper)
           , $nodata  = $list.children('.no-data:first')
+          , $close   = $list.children('.closed-problems-list:first')
           ;
 
-        if (!info.changeset.is_open || !info.changeset.is_open[0] || info.changeset.is_open[1]) return;
-        $list.children('[data-problem-id="' + info.id + '"]').remove();
-        $closed.closest('li').show();
-        $closed.append('<option value="' + info.id + '">' + info.title + ' (' + info.incidents + ')</option>');
+        if (!info.changeset.is_open) return;
 
-        var $items = $closed.children().get();
-        $items.sort(function (a, b) {
-          return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
-        });
+        if (info.changeset.is_open[0] && !info.changeset.is_open[1]) {
+          $list.children('[data-problem-id="' + info.id + '"]').remove();
+          $closed.closest('li').show();
+          $closed.append('<option value="' + info.id + '">' + info.title + ' (' + info.incidents + ')</option>');
+
+          var $items = $closed.children().get();
+          $items.sort(function (a, b) {
+            return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
+          });
+        }
+
+        if (!info.changeset.is_open[0] && info.changeset.is_open[1]) {
+          $closed.children('option[value="' + info.id + '"]').remove();
+
+          var tpl      = $.trim($list.prev('script').text())
+            , $item    = parseHTML(tpl)
+            , $counter = $item.find('.counter')
+            , $h3      = $item.find('h3')
+            ;
+
+          $item.attr('data-problem-id', info.id);
+          $h3.text(info.title);
+          $h3.parent().data('route', $h3.parent().data('route').replace('0000', info.id));
+          $counter.text(info.incidents).data('route', $counter.data('route').replace('0000', info.id));
+          $item.insertAfter($nodata);
+
+          var $items = $list.children('.is-nav-item').get();
+          $items.sort(function (a, b) {
+            return $(a).find('h3:first').text().toUpperCase().localeCompare($(b).find('h3:first').text().toUpperCase());
+          });
+          $.each($items, function (idx, itm) {
+            $(itm).insertBefore($close);
+          });
+        }
 
         $list.children('.is-nav-item').length
           ? $nodata.hide()
           : $nodata.show();
+        $closed.children('option').length < 2
+          ? $closed.closest('li').hide()
+          : $closed.closest('li').show();
       });
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-problems-updated', function (info) {

@@ -1993,17 +1993,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
   _initCloseProblemOverlay: function () {
-    if (this.problemOverlay) return;
-    this.problemOverlayEl = $('.close-problem-overlay:first', this.wrapper);
-    if (!this.problemOverlayEl) return;
+    if (this.closeProblemOverlay) return;
+    this.closeProblemOverlayEl = $('.close-problem-overlay:first', this.wrapper);
+    if (!this.closeProblemOverlayEl) return;
 
-    this.problemOverlay = new DeskPRO.UI.Overlay({
-      contentElement: this.problemOverlayEl
+    this.closeProblemOverlay = new DeskPRO.UI.Overlay({
+      contentElement: this.closeProblemOverlayEl
     });
-    this.ownObject(this.problemOverlay);
+    this.ownObject(this.closeProblemOverlay);
 
-    $('.save-trigger', this.problemOverlayEl).on('click', (function () {
+    $('.save-trigger', this.closeProblemOverlayEl).on('click', (function () {
       this.doCloseProblem();
+    }).bind(this));
+  },
+
+  _initReopenProblemOverlay: function () {
+    if (this.reopenProblemOverlay) return;
+    this.reopenProblemOverlayEl = $('.reopen-problem-overlay:first', this.wrapper);
+    if (!this.reopenProblemOverlayEl) return;
+
+    this.reopenProblemOverlay = new DeskPRO.UI.Overlay({
+      contentElement: this.reopenProblemOverlayEl
+    });
+    this.ownObject(this.reopenProblemOverlay);
+
+    $('.save-trigger', this.reopenProblemOverlayEl).on('click', (function () {
+      this.doReopenProblem();
     }).bind(this));
   },
 
@@ -2021,6 +2036,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         var $sel = $('#problems-section select.closed_problems_select').val($(this).data('problem-id')).trigger('change');
       }
 		});
+
+    this.getEl('field_holders').on('click', '.reopen-problem-link', function () {
+      self.showReopenProblemOverlay();
+    });
   },
 
 	showDeleteOverlay: function(doBan) {
@@ -2038,7 +2057,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
   showCloseProblemOverlay: function () {
     this._initCloseProblemOverlay();
-    this.problemOverlay.openOverlay();
+    this.closeProblemOverlay.openOverlay();
+  },
+
+  showReopenProblemOverlay: function () {
+    this._initReopenProblemOverlay();
+    this.reopenProblemOverlay.openOverlay();
   },
 
 	doTicketDelete: function() {
@@ -2081,8 +2105,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
   doCloseProblem: function () {
-    $('.loading-off', this.problemOverlayEl).hide();
-    $('.loading-on', this.problemOverlayEl).show();
+    $('.loading-off', this.closeProblemOverlayEl).hide();
+    $('.loading-on', this.closeProblemOverlayEl).show();
 
     var self = this;
 
@@ -2091,7 +2115,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       type:     'POST',
       context:  this,
       complete: function () {
-        self.problemOverlay.closeOverlay();
+        self.closeProblemOverlay.closeOverlay();
+        DeskPRO_Window.removePage(self);
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist: true});
+      }
+    });
+  },
+
+  doReopenProblem: function () {
+    $('.loading-off', this.reopenProblemOverlayEl).hide();
+    $('.loading-on', this.reopenProblemOverlayEl).show();
+
+    var self = this;
+
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/reopen_problem',
+      type:     'POST',
+      context:  this,
+      complete: function () {
+        self.reopenProblemOverlay.closeOverlay();
         DeskPRO_Window.removePage(self);
         DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist: true});
       }

@@ -114,6 +114,10 @@ class TicketProblemsChangedListener implements PropertyChangedListener
             return;
         }
 
+        if (Ticket::HIDDEN_STATUS_DELETED === $ticket->hidden_status || Ticket::HIDDEN_STATUS_SPAM === $ticket->hidden_status) {
+            return;
+        }
+
         /** @var Person $agent */
         $dis = array();
         $ass = array();

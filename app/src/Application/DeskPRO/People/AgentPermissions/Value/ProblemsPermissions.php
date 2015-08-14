@@ -39,11 +39,12 @@ class ProblemsPermissions implements PermissionValueInterface
     public $view = false;
     public $create = false;
     public $close = false;
+    public $reopen = false;
     public $delete = false;
 
     public function getNames()
     {
-        return array('view', 'create', 'close', 'delete');
+        return array('view', 'create', 'close', 'reopen', 'delete');
     }
 
     public function getDestructiveNames()

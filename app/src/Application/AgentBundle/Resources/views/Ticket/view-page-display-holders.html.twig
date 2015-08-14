@@ -76,7 +76,11 @@
                             >{{ phrase('agent.problems.incidents') }}: {{ incidents }}</a>&nbsp;]
 
                 {% if problem.is_open and app.user.hasPerm('agent_problems.close') %}
-                    [&nbsp;<a class="agent_link close-problem-link">close</a>&nbsp;]
+                    [&nbsp;<a class="agent_link close-problem-link">{{ phrase('agent.general.close_lc') }}</a>&nbsp;]
+                {% endif %}
+
+                {% if not problem.is_open %}
+                    [&nbsp;<a class="agent_link reopen-problem-link">{{ phrase('agent.general.reopen') }}</a>&nbsp;]
                 {% endif %}
 			{% endif %}
         </td>

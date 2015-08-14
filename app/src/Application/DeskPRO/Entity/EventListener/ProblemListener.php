@@ -29,6 +29,7 @@ namespace Application\DeskPRO\Entity\EventListener;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Problem;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Orb\Util\DpStrings;
@@ -114,6 +115,11 @@ class ProblemListener
                     if (!$checker->canView($ticket)) {
                         continue;
                     }
+
+                    if (Ticket::HIDDEN_STATUS_DELETED === $ticket->hidden_status || Ticket::HIDDEN_STATUS_SPAM === $ticket->hidden_status) {
+                        continue;
+                    }
+
                     $incidents++;
                 }
 
@@ -154,6 +160,11 @@ class ProblemListener
                 if (!$checker->canView($ticket)) {
                     continue;
                 }
+
+                if (Ticket::HIDDEN_STATUS_DELETED === $ticket->hidden_status || Ticket::HIDDEN_STATUS_SPAM === $ticket->hidden_status) {
+                    continue;
+                }
+
                 $incidents++;
             }
 

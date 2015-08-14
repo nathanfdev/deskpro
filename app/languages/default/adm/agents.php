@@ -73,6 +73,7 @@
     'adm.agents.perm_problems_view'                               => 'Can view problems',
     'adm.agents.perm_problems_create'                             => 'Can create problems',
     'adm.agents.perm_problems_close'                              => 'Can close problems',
+    'adm.agents.perm_problems_reopen'                             => 'Can reopen problems',
     'adm.agents.perm_problems_delete'                             => 'Can delete problems',
 
     'adm.agents.perm_ticket_modify_department'                    => 'Modify department',
