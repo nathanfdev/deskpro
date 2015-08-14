@@ -3,6 +3,11 @@ import { connect } from 'redux/react';
 import * as FeedbackActions from "../Actions/FeedbackListActions";
 
 export default class TasksListFrame extends React.Component {
+    constructor(props) {
+        super(props);
+
+        const { dispatch } = this.props;
+    }
 
     render() {
         console.log(this.props);

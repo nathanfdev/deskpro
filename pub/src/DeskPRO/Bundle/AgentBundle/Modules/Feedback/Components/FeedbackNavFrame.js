@@ -2,6 +2,12 @@ import React from "react";
 import { connect } from 'redux/react';
 
 export default class FeedbackNavFrame extends React.Component {
+    constructor(props) {
+        super(props);
+
+        const { dispatch } = this.props;
+    }
+
     render() {
         console.log(this.props);
         //const { taskList, projectList, agentList, labelList, departmentList, teamList, createdProject } = this.props;
