@@ -44,6 +44,7 @@ use Orb\Util\Strings;
 
 /**
  * @PortalLinkRoute("portal_downloads_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_downloads_view", route_param_map={"slug": "id"}, type="permalink")
  * @PortalLinkRoute("portal_downloads_files_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_downloads_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_downloads_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
@@ -254,30 +255,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         }
 
         return $this->blob->getReadableFilesize();
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getLink()
-    {
-        $url = App::getRouter()->generate('portal_downloads_view', array('slug' => $this->getUrlSlug()), true);
-
-        return $url;
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getPermalink()
-    {
-        $url = App::getRouter()->generate('portal_downloads_view', array('slug' => $this->id), true);
-
-        return $url;
     }
 
     /**

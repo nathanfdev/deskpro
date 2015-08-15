@@ -41,6 +41,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -3237,14 +3238,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $string;
     }
 
+    /**
+     * @deprecated use $this->get('object_router')->getPortalPath($ticket) instead
+     */
     public function getPath()
     {
-        return App::getRouter()->generate('portal_tickets_view', array('id' => $this->getId()));
+        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getPath()')
+        )
+        ;
+
+        return App::getObjectRouter()->getPortalPath($this);
     }
 
+    /**
+     * @deprecated use $this->get('object_router')->getPortalUrl($ticket) instead
+     */
     public function getLink()
     {
-        return App::getRouter()->generateUrl('portal_tickets_view', array('id' => $this->getId()));
+        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getLink()')
+        )
+        ;
+
+        return App::getObjectRouter()->getPortalUrl($this);
     }
 
     public function isAgentCreated()

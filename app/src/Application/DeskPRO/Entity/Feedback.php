@@ -43,6 +43,7 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug": "id"}, type="permalink")
  * @PortalLinkRoute("portal_feedback_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
@@ -249,34 +250,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
 
         return $this;
-    }
-
-    /**
-     * @param bool $absolute
-     *
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getLink($absolute = true)
-    {
-        $url = App::getRouter()->generate('portal_feedback_view', array('slug' => $this->getUrlSlug()), $absolute);
-
-        return $url;
-    }
-
-    /**
-     * @param bool $absolute
-     *
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getPermalink($absolute = true)
-    {
-        $url = App::getRouter()->generate('portal_feedback_view', array('slug' => $this->id), $absolute);
-
-        return $url;
     }
 
     public function getCategoryName()

@@ -1382,4 +1382,24 @@ class KernelErrorHandler
 
         return true;
     }
+
+    public static function logExceptionIfUniqueBacktrace(\Exception $e, $send = false)
+    {
+        $hashable_trace = '';
+        $formatted_backtrace = debug_backtrace();
+        foreach ($formatted_backtrace as $trace) {
+            $hashable_trace .= (isset($trace['class']) ? $trace['class'] : 'NOCLASS');
+            $hashable_trace .= '::' . (isset($trace['function']) ? $trace['function'] : 'NOFUNC');
+            $hashable_trace .= ' (line ' . (isset($trace['line']) ? $trace['line'] : 'NOLINE') . ')';
+            $hashable_trace .= PHP_EOL;
+        }
+
+        $hash = md5($hashable_trace);
+
+        KernelErrorHandler::logException(
+            $e,
+            $send,
+            $hash
+        );
+    }
 }

@@ -12,6 +12,7 @@ services:
 
   object_router.twig_extension:
     class: DeskPRO\Bundle\AppBundle\Twig\ObjectRouterExtension
+    public: false
     arguments:
       - @object_router
     tags:
@@ -37,6 +38,7 @@ services:
   # make sure you inject these into object_router definition above, ORDER MATTERS (For supports())
   object_router.link_generator.portal:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DefaultPortalLinkGenerator
+    public: false
     arguments:
       - @object_router.annotation_config
       - @router
@@ -44,18 +46,21 @@ services:
 
   object_router.link_generator.agent:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DefaultAgentLinkGenerator
+    public: false
     arguments:
       - @object_router.annotation_config
       - @router
       - @property_accessor
 
   object_router.link_generator.ticket:
+    public: false
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\TicketLinkGenerator
     arguments:
       - @router
       - @settings_resolver
 
   object_router.link_generator.news:
+    public: false
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DownloadsLinkGenerator
     arguments:
       - @router
