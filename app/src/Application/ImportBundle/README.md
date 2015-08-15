@@ -366,6 +366,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### people.csv
 
+Base info:
+
 | Column name                | Description                                                                             |
 | -------------------------- |-----------------------------------------------------------------------------------------|
 | id                         | is optional, use as reference for `people_custom_fields.csv`                            |
@@ -375,7 +377,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | custom "Custom field name" | could be multiple, see `example/csv_inline/people.csv`                                  |
 
 
-| Contact info               | Description                                                                             |
+Contact info:
+
+| Column name                | Description                                                                             |
 | -------------------------- |-----------------------------------------------------------------------------------------|
 | address                    |                                                                                         |
 | city                       |                                                                                         |
@@ -461,6 +465,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### organizations.csv
 
+Base info:
+
 | Column name                | Description                                                                             |
 | -------------------------- |-----------------------------------------------------------------------------------------|
 | id                         | is optional                                                                             |
@@ -474,7 +480,9 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | custom "Custom field name" | could be multiple, see `example/csv_inline/organizations.csv`                           |
 
 
-| Contact info               | Description                                                                             |
+Contact info:
+
+| Column name                | Description                                                                             |
 | -------------------------- |-----------------------------------------------------------------------------------------|
 | address                    |                                                                                         |
 | city                       |                                                                                         |
