@@ -91,14 +91,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     /**
      * {@inheritdoc}
      */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getTotalRecordsCount()
     {
         $count    = 0;
@@ -109,6 +101,14 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         }
 
         return $count;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isReady()
+    {
+        return $this->getTotalRecordsCount() > 0;
     }
 
     /**
@@ -338,13 +338,5 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         }
 
         return $_types;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isReady()
-    {
-        return $this->getExporter()->isReady();
     }
 }

@@ -29,9 +29,11 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactD
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 
 /**
  * Class MultipleContactData
@@ -65,7 +67,7 @@ class MultipleContactData extends AbstractParserFormatterHelper
             foreach ($contacts as $oid => $contact) {
                 try {
                     if ( ! isset($contact['contact_type'])) {
-                        continue;
+                        throw new SkippingException('No contact type', $contact);
                     }
 
                     $handler = ContactDataFactory::getHandler($contact['contact_type']);
@@ -78,11 +80,12 @@ class MultipleContactData extends AbstractParserFormatterHelper
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
+                } catch (SkippingException $e) {
+                    $this->logSkippingException('CSVContactData', $this->getEntityType(), 'contact_id', $e);
+                } catch (TransformerException $e) {
+                    $this->logTransformerException('CSVContactData', $this->getEntityType(), 'contact_id', $e);
                 } catch (\Exception $e) {
-                    $this->logWarning(sprintf(
-                        'Invalid contact field record `%d` found (Skipping): %s',
-                        $oid, $e->getMessage()
-                    ));
+                    $this->logUnknownException('CSVContactData', $this->getEntityType(), 'contact_id', $e, $data);
                 }
             }
         }
@@ -104,34 +107,32 @@ class MultipleContactData extends AbstractParserFormatterHelper
         $contact_info = array();
         foreach ($data as $num => $field) {
             try {
-                if (isset($field[$ref_column])) {
-                    $field['destination'] = $destination_prefix . $field[$ref_column];
-                }
-
                 $formatted = $this->formatter->format($field, array(
                     $ref_column   => TransformerInterface::TYPE_STRING,
+                    'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                        'prefix' => $destination_prefix,
+                        'ref'    => $ref_column,
+                    )),
                     'contact_id'  => TransformerInterface::TYPE_STRING,
-                    'destination' => TransformerInterface::TYPE_DESTINATION,
                     'field_name'  => TransformerInterface::TYPE_STRING,
                     'value'       => TransformerInterface::TYPE_STRING,
                 ));
 
                 if ( ! $formatted['destination']) {
-                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty destination', $num));
-                    continue;
+                    throw new SkippingException('Empty destination', $formatted);
                 }
                 if ( ! $formatted['contact_id']) {
-                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty contact_id', $num));
-                    continue;
+                    throw new SkippingException('Empty contact_id', $formatted);
                 }
                 if ( ! $formatted['field_name']) {
-                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping): Empty field_name', $num));
-                    continue;
+                    throw new SkippingException('Empty field_name', $formatted);
                 }
 
                 $contact_info[$formatted['destination']][$formatted['contact_id']][$formatted['field_name']] = $formatted['value'];
                 $this->logInfo(sprintf('Contact field `%s` parsed successfully!', $formatted['destination']));
 
+            } catch (SkippingException $e) {
+                $this->logSkippingException('CSVContactData', $this->getEntityType(), 'contact_id', $e);
             } catch (TransformerException $e) {
                 $this->logWarning(sprintf(
                     'Invalid contact field record `%d` found (Skipping): %s',

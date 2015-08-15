@@ -27,6 +27,10 @@
 
 namespace Application\ImportBundle\Generator;
 
+/**
+ * Interface ExporterAwareInterface
+ * @package Application\ImportBundle\Generator
+ */
 interface ExporterAwareInterface
 {
     /**

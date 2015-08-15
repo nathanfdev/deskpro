@@ -65,11 +65,4 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
      * @return Entity\Collection
      */
     public function exportByType($type);
-
-    /**
-     * test connection, file availability, etc
-     *
-     * @return bool
-     */
-    public function isReady();
 }

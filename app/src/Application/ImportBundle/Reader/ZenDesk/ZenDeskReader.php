@@ -248,12 +248,4 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
 
         return 0;
     }
-
-    /**
-     * @return bool
-     */
-    public function isReady()
-    {
-        return null !== $this->getPeopleCount();
-    }
 }

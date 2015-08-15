@@ -126,14 +126,6 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
     }
 
     /**
-     * @return bool
-     */
-    public function isReady()
-    {
-        return $this->reader->isReady();
-    }
-
-    /**
      * @return array
      */
     public static function getOrderedTypes()
