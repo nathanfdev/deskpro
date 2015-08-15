@@ -33,11 +33,14 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TicketsController extends AbstractController
 {
@@ -120,9 +123,13 @@ class TicketsController extends AbstractController
      */
     public function viewAction(Request $request, $ticket_ref)
     {
-        $ticket = $this->getTicketByRefOrId($ticket_ref);
+        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+        }
 
-        // TODO: security TICKET_VIEW
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
+            throw new AccessDeniedException;
+        }
 
         $form_data = array(
             'ticket_message' => $message = new TicketMessage(),
@@ -181,11 +188,12 @@ class TicketsController extends AbstractController
     public function viewGuestAction(Ticket $ticket, Request $request)
     {
         if (
-            $this->isGranted('TICKET_VIEW', $ticket)
+            $this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)
             && $this->isGranted('USE_TICKETS')
             && $this->isGranted('ROLE_USER')
         ) {
-            // the user passes all security requirements to view the normal ticket view page. Redirect them to there.
+            // the user passes all security requirements to view the normal ticket view page.
+            // Redirect them to there.
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
@@ -216,9 +224,13 @@ class TicketsController extends AbstractController
      */
     public function editAction(Request $request, $ticket_ref)
     {
-        $ticket = $this->getTicketByRefOrId($ticket_ref);
+        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+        }
 
-        // TODO: security TICKET_EDIT
+        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
+            throw new AccessDeniedException;
+        }
 
         $form = $this->createForm('ticket', $ticket, array(
             'person'            => $this->getUser(),
