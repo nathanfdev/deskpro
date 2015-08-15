@@ -31,7 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
-use Symfony\Component\Validator\Validator as SymfonyValidator;
+use Symfony\Component\Validator\ValidatorInterface as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
@@ -63,15 +63,15 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Constructor
      *
      * @param Exporter\ExporterInterface $exporter
-     * @param Writer\WriterInterface     $writer
      * @param SymfonyValidator           $validator
      * @param GeneratorConfig            $config
+     * @param Writer\WriterInterface     $writer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
-        Writer\WriterInterface     $writer = null,
         SymfonyValidator           $validator,
-        GeneratorConfig            $config
+        GeneratorConfig            $config,
+        Writer\WriterInterface     $writer = null
     ) {
         $this->config     = $config;
         $this->exporter   = $exporter;
