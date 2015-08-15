@@ -403,12 +403,26 @@ class CsvTest extends \DpIntegrationTestCase
         $organization = $this->organization_repository->findOneBy(array('name' => 'Some Organization'));
         $this->assertNotNull($organization);
 
-        $contact_data1 = $organization->getContactData('fax');
+        $contact_data1 = $organization->getContactData('phone');
+        $this->assertCount(1, $contact_data1);
+
         $contact = $contact_data1[0];
         $this->assertEquals('some comment', $contact->getComment());
         $this->assertEquals('+7', $contact->getField1());
         $this->assertEquals('1234567', $contact->getField2());
         $this->assertEquals('phone', $contact->getField3());
+
+        $contact_data2 = $organization->getContactData('fax');
+        $this->assertCount(1, $contact_data2);
+
+        $contact = $contact_data2[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('US', $contact->getField1());
+        $this->assertEquals('+12025550156', $contact->getField2());
+        $this->assertEquals('landline-or-mobile', $contact->getField3());
+
+        $contact_data3 = $organization->getContactData('mobile');
+        $this->assertCount(0, $contact_data3);
 
         $this->assertEquals(4, $this->custom_data_organization_repository->countAll());
     }
@@ -420,7 +434,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'tickets.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'organizations.csv')));
     }
-    
+
+    /**
+     * @param CommandTester $command_tester
+     */
     private function checkDbWriterOutput(CommandTester $command_tester)
     {
         $output = $command_tester->getDisplay();
@@ -441,6 +458,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Persisted News #2', $output);
     }
 
+    /**
+     * @param string $file
+     */
     private function overrideDpRootPath($file)
     {
         $dp_root = str_replace('/app', '/', DP_ROOT);

@@ -63,6 +63,10 @@ abstract class AbstractPhone extends AbstractContactData
      */
     public function toEntity(array $data)
     {
+        if (isset($data['number']) && ! isset($data['country_calling_code']) && ! isset($data['type'])) {
+            return $this->parseNumberToEntity($data['number']);
+        }
+
         $contact = parent::toEntity($data);
 
         $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');
