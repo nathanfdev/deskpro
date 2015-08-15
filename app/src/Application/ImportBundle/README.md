@@ -34,7 +34,7 @@ IMPORT BUNDLE
     - [Exporter #4. ZenDesk](#exporter-4-zendesk)
         * [ZenDesk Configuration](#zendesk-configuration)
         * [ZenDesk Fixtures](#zendesk-fixtures)
-        * [ZenDesk Batch.json](#zendesk-batch.json)
+        * [ZenDesk Batch.json](#zendesk-batchjson)
 
 ## Commands
 
@@ -994,20 +994,3 @@ php cmd.php dpdev:import:fixtures ticket --offset=1000
   "has_remaining": true
 }
 ```
-
-#### Support for batching
-
-Common properties:
-
- - id
- - type
- - date_created
- - date_modified
-
-**1) output.batch.json**
-
-Generates by exporters which has support for batching (osticket and zendesk). Specific for each exporter.
-
-**2) input.batch.json**
-
-Generates by json exporter.
