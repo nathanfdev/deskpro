@@ -132,7 +132,9 @@ final class Tickets extends AbstractParser
 
             try {
                 $entity = $this->exportTicket($data);
+
                 $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (SkippingException $e) {
                 $this->logSkippingException('ZDTicket', $this->getEntityType(), 'id', $e);
@@ -271,21 +273,19 @@ final class Tickets extends AbstractParser
     {
         $collection = new Entity\Collection();
 
-        foreach ($ticket['comments'] as $num => $comment) {
+        foreach ($ticket['comments'] as $num => $data) {
             try {
-                $entity = $this->exportMessage($comment);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
-                }
+                $entity = $this->exportMessage($data);
 
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDTicketComment', 'ticket message', 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDTicketComment', 'ticket message', 'id', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid ticket message record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('ZDTicketComment', 'ticket message', 'id', $e, $data);
             }
         }
 
@@ -314,14 +314,12 @@ final class Tickets extends AbstractParser
         ));
 
         if (empty($formatted['author_id'])) {
-            $this->logError(sprintf('Comment #%d without author_id, skipping', $formatted['id']));
-            return null;
+            throw new SkippingException('Comment without author_id, skipping', $formatted);
         }
 
         $author_email = $this->tickets_people->getPersonEmail($formatted['author_id']);
         if ( ! $author_email) {
-            $this->logError(sprintf('Unable to get comment author #%d, skipping', $formatted['author_id']));
-            return null;
+            throw new SkippingException('Unable to get comment author, skipping', $formatted);
         }
 
         $entity = new Entity\TicketMessage();

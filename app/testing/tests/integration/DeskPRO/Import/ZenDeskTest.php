@@ -104,11 +104,15 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Read 3 tickets', $output);
-        $this->assertContains('Unable to get submitter email by id #3', $output);
+        $this->assertContains('[ZDTicket #3] Skipping exception with ticket: Unable to get submitter email by id #3', $output);
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
+        $this->assertContains('[ZDTicketComment #3] Skipping exception with ticket message: Comment without author_id, skipping', $output);
+        $this->assertContains('[ZDTicketComment #4] Skipping exception with ticket message: Unable to get comment author, skipping', $output);
+
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
+        $this->assertContains('[ZDTicket #3] Reading comments', $output);
         $this->assertContains('Read 3 people', $output);
-        $this->assertContains('[ZDPerson #3] Person without email, skipping', $output);
+        $this->assertContains('[ZDPerson #3] Skipping exception with person: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
     }
 
@@ -229,6 +233,22 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'id'          => 2,
                         'author_id'   => 2,
                         'body'        => 'Reply #2',
+                        'public'      => true,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                        'attachments' => array(),
+                    ),
+                    (object)array(
+                        'id'          => 3,
+                        'author_id'   => null,
+                        'body'        => 'Reply #3',
+                        'public'      => true,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                        'attachments' => array(),
+                    ),
+                    (object)array(
+                        'id'          => 4,
+                        'author_id'   => 3,
+                        'body'        => 'Reply #4',
                         'public'      => true,
                         'created_at'  => $date4->format('Y-m-d H:i:s'),
                         'attachments' => array(),

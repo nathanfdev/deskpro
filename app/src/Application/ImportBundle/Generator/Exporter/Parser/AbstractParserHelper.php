@@ -49,11 +49,8 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
         $data = $e->getData();
         $oid  = @$data[$ref_column] ? : '?';
 
-        $this->logDebugException(sprintf('Exception with %s %d', $entity_type, $oid), $e, $data);
-        $this->logWarning(sprintf(
-            '[%s #%s] %s',
-            $prefix, $oid, $e->getMessage()
-        ));
+        $this->logWarning(sprintf('[%s #%s] Skipping exception with %s: %s', $prefix, $oid, $entity_type, $e->getMessage()));
+        $this->logWarning(json_encode($data));
     }
 
     /**
@@ -69,11 +66,11 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
         $data = $e->getEntity();
         $oid  = @$data[$ref_column] ? : '?';
 
-        $this->logDebugException(sprintf('Exception with %s %d', $entity_type, $oid), $e, $data);
         $this->logWarning(sprintf(
             '[%s #%s] Unable to transform `%s`.`%s` property to %s (Skipping): %s',
             $prefix, $oid, $entity_type, $e->getMessage()
         ));
+        $this->logWarning(json_encode($data));
     }
 
     /**
@@ -89,10 +86,10 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
     {
         $oid = @$data[$ref_column] ? : '?';
 
-        $this->logDebugException(sprintf('Exception with %s %d', $entity_type, $oid), $e, $data);
         $this->logError(sprintf(
             '[%s #%s] Invalid %s record found (Skipping): Unknown error: %s',
             $prefix, $oid, $entity_type, $e->getMessage()
         ));
+        $this->logError(json_encode($data));
     }
 }
