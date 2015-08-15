@@ -1175,11 +1175,12 @@ HTML;
 
     public function inlineLoginAction()
     {
-        $result = $this->authLocalInput();
+        if (!$lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
+            $result = $this->authLocalInput();
+            $this->ensureStandardRequestToken();
+        }
 
-        $this->ensureStandardRequestToken();
-
-        if (!$result->isValid()) {
+        if ($lockTime || !$result->isValid()) {
             $html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));
 
             return $this->createJsonResponse(array(
