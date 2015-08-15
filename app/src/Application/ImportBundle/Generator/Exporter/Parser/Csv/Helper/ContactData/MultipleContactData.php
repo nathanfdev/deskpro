@@ -118,9 +118,6 @@ class MultipleContactData extends AbstractParserFormatterHelper
                     'value'       => TransformerInterface::TYPE_STRING,
                 ));
 
-                if ( ! $formatted['destination']) {
-                    throw new SkippingException('Empty destination', $formatted);
-                }
                 if ( ! $formatted['contact_id']) {
                     throw new SkippingException('Empty contact_id', $formatted);
                 }
