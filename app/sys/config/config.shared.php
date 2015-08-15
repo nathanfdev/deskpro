@@ -12,7 +12,7 @@ $container->setParameter('secret', "irrelevant - compiler pass will override thi
 $container->setParameter('locale', 'en');
 
 ####################################################################
-# This config is shared between kernels (DpKernel and PortalKernel)
+# This config is shared between kernels (DpKernel, PortalKernel and ApiKernel)
 ####################################################################
 
 // app secret (NOTE; see intall/config.php, as this is copy/pasted to that file)
@@ -50,6 +50,12 @@ $definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
 $definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
 $definition->addTag('form.type_extension', array('alias' => 'form'));
 $container->setDefinition('form.cleaner_extension', $definition);
+
+############################################################################
+# Object Router
+############################################################################
+
+$loader->import(__DIR__."/../../src/DeskPRO/Bundle/AppBundle/Resources/config/services/object_router.yml");
 
 ############################################################################
 # Input

@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\ExpressionLanguage\Expression;
 
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
-require_once __DIR__."/config.shared.php";
+$loader->import(__DIR__."/config.shared.php");
 
 ############################################################################
 # Parameters
