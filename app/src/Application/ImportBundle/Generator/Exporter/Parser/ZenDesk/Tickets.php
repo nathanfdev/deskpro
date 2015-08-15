@@ -352,21 +352,19 @@ final class Tickets extends AbstractParser
     {
         $collection = new Entity\Collection();
 
-        foreach ($attachments as $num => $attachment) {
+        foreach ($attachments as $num => $data) {
             try {
-                $entity = $this->exportAttachment($attachment);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
-                }
+                $entity = $this->exportAttachment($data);
 
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e);
             } catch (\Exception $e) {
-                $this->logError(sprintf(
-                    'Invalid ticket message attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $this->logUnknownException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e, $data);
             }
         }
 
@@ -394,25 +392,14 @@ final class Tickets extends AbstractParser
         ));
 
         if ($formatted['inline']) {
-            return null;
+            throw new SkippingException('Inline attachment, skipping', $formatted);
         }
 
         try {
-            $request = $this->http_client->get($formatted['content_url']);
-            $entity  = new Entity\Attachment();
-            $entity
-                ->setRawData($data)
-                ->setDestination($formatted['destination'])
-                ->setOid($formatted['id'])
-                ->setBlobData(base64_encode($request->send()->getBody(true)))
-                ->setFileName($formatted['file_name'])
-                ->setContentType($formatted['content_type'])
-            ;
-
-            return $entity;
+            $request   = $this->http_client->get($formatted['content_url']);
+            $blob_data = base64_encode($request->send()->getBody(true));
 
         } catch (BadResponseException $e) {
-            $this->logError(sprintf('Unable to download attachment #%s', $formatted['id']));
             $this->logError($e->getMessage());
 
             $response = $e->getResponse();
@@ -421,9 +408,20 @@ final class Tickets extends AbstractParser
                 $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
             }
 
+            throw new SkippingException('Unable to download attachment', $formatted);
         }
 
-        return null;
+        $entity = new Entity\Attachment();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setBlobData($blob_data)
+            ->setFileName($formatted['file_name'])
+            ->setContentType($formatted['content_type'])
+        ;
+
+        return $entity;
     }
 
     /**
