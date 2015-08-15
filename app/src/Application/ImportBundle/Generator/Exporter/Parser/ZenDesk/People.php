@@ -29,7 +29,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
@@ -75,7 +77,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function getCount()
     {
-        // We could read data from ZD reader twice because of ZD reader cache support
+        // We can read data from ZD reader twice because of ZD reader cache support
         return count($this->getPeople());
     }
 
@@ -89,23 +91,19 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
         $collection = new Entity\Collection();
         $collection->setExpectedCount(count($people));
 
-        foreach ($people as $num => $person) {
+        foreach ($people as $num => $data) {
             $this->advanceProgressBar();
-            $pid = @$person['id'] ? : '?';
 
             try {
-                $entity = $this->exportPerson($person);
-                if ($entity) {
-                    $collection->attach($entity);
+                $entity = $this->exportPerson($data);
+                $collection->attach($entity);
 
-                } else {
-                    $this->logDebugInfo(sprintf("[ZDUser #%s] Invalid user entity", $pid), $person);
-                    $this->logWarning(sprintf('[ZDUser #%s] Invalid user record found (Skipping): Could not create entity', $pid));
-                }
-
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDPerson', $this->getEntityType(), 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDPerson', $this->getEntityType(), 'id', $e);
             } catch (\Exception $e) {
-                $this->logDebugException(sprintf("[ZDUser #%s] Exception with user", $pid), $e, $person);
-                $this->logWarning(sprintf('[ZDUser #%s] Invalid user record found (Skipping): %s', $pid, $e->getMessage()));
+                $this->logUnknownException('ZDPerson', $this->getEntityType(), 'id', $e, $data);
             }
         }
 
@@ -138,8 +136,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
         ));
 
         if ( ! $formatted['email']) {
-            $this->logError(sprintf('Person #%s without email, skipping', $formatted['id']));
-            return null;
+            throw new SkippingException('Person without email, skipping', $formatted);
         }
 
         $entity = new Entity\Person();
@@ -173,7 +170,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
     /**
      * Returns a collection of people to be exported
-     * Gets a collection of people from the storage if it's defined or uses the ZenDesk reader
+     * Gets a collection of people from cache or uses the ZenDesk reader
      *
      * @return array
      */

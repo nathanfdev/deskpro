@@ -37,6 +37,26 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 abstract class AbstractParserHelper extends AbstractGenerator implements ParserHelperInterface
 {
     /**
+     * Log skipping exception
+     *
+     * @param string            $prefix
+     * @param string            $entity_type
+     * @param string            $ref_column
+     * @param SkippingException $e
+     */
+    protected function logSkippingException($prefix, $entity_type, $ref_column, SkippingException $e)
+    {
+        $data = $e->getData();
+        $oid  = @$data[$ref_column] ? : '?';
+
+        $this->logDebugException(sprintf('Exception with %s %d', $entity_type, $oid), $e, $data);
+        $this->logWarning(sprintf(
+            '[%s #%s] %s',
+            $prefix, $oid, $e->getMessage()
+        ));
+    }
+
+    /**
      * Log transformer exception
      *
      * @param string               $prefix

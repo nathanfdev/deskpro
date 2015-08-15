@@ -103,10 +103,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Read 2 tickets', $output);
+        $this->assertContains('Read 3 tickets', $output);
+        $this->assertContains('Unable to get submitter email by id #3', $output);
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
-        $this->assertContains('Read 2 people', $output);
+        $this->assertContains('Read 3 people', $output);
+        $this->assertContains('[ZDPerson #3] Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
     }
 
@@ -197,6 +199,19 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'custom_fields'   => (object)array(),
                         'tags'            => (object)array('label 1', 'label 3'),
                     ),
+                    (object)array(
+                        'id'              => 3,
+                        'submitter_id'    => 3,
+                        'assignee_id'     => 4,
+                        'subject'         => 'Ticket 3',
+                        'description'     => 'Ticket description 3',
+                        'status'          => 'open',
+                        'priority'        => 'low',
+                        'organization_id' => 1,
+                        'created_at'      => $date2->format('Y-m-d H:i:s'),
+                        'custom_fields'   => (object)array(),
+                        'tags'            => (object)array('label 1', 'label 3'),
+                    ),
                 ),
                 'end_time' => $now->getTimestamp(),
             ))
@@ -223,6 +238,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
             ))
+            ->addTicketCommentsFindAllResponse((object)array(
+                'comments' => array(),
+            ))
             ->addPeopleFindResponse((object)array(
                 'users' => array(
                     (object)array(
@@ -241,6 +259,16 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'email'           => 'person2@domain.tld',
                         'time_zone'       => 'Moscow',
                         'role'            => 'agent',
+                        'created_at'      => $date2->format('Y-m-d H:i:s'),
+                        'user_fields'     => array(),
+                        'organization_id' => 1,
+                    ),
+                    (object)array(
+                        'id'              => 3,
+                        'name'            => 'Person 3',
+                        'email'           => null,
+                        'time_zone'       => 'Moscow',
+                        'role'            => 'end-user',
                         'created_at'      => $date2->format('Y-m-d H:i:s'),
                         'user_fields'     => array(),
                         'organization_id' => 1,

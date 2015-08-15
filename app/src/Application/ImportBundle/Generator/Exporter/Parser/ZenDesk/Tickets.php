@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
@@ -126,25 +127,19 @@ final class Tickets extends AbstractParser
         $collection = new Entity\Collection();
         $collection->setExpectedCount(count($tickets));
 
-        foreach ($tickets as $num => $ticket) {
+        foreach ($tickets as $num => $data) {
             $this->advanceProgressBar();
-            $tid = @$ticket['id'] ?: '?';
 
             try {
-                $entity = $this->exportTicket($ticket);
-                if ($entity) {
-                    $collection->attach($entity);
-                } else {
-                    $this->logDebugInfo(sprintf("[ZDTicket #%s] Invalid ticket entity", $tid), $ticket);
-                    $this->logWarning(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Could not create entity', $tid));
-                }
+                $entity = $this->exportTicket($data);
+                $collection->attach($entity);
 
             } catch (SkippingException $e) {
-                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): %s', $tid, $e->getMessage()));
-
+                $this->logSkippingException('ZDTicket', $this->getEntityType(), 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDTicket', $this->getEntityType(), 'id', $e);
             } catch (\Exception $e) {
-                $this->logDebugException(sprintf("Exception with ticket %d", $tid), $e, $ticket);
-                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Unknown error: %s', $tid, $e->getMessage()));
+                $this->logUnknownException('ZDTicket', $this->getEntityType(), 'id', $e, $data);
             }
         }
 
@@ -184,7 +179,7 @@ final class Tickets extends AbstractParser
         $agent_email  = $this->tickets_people->getPersonEmail($formatted['assignee_id']);
 
         if ( ! $person_email) {
-            throw new SkippingException(sprintf('Unable to get submitter email by id %s', $formatted['submitter_id']));
+            throw new SkippingException(sprintf('Unable to get submitter email by id #%s', $formatted['submitter_id']), $formatted);
         }
 
         $ref = $this->tickets_mapper->findRefByOldId($formatted['id']);
