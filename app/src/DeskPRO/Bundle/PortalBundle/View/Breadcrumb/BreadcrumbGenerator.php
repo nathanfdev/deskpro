@@ -39,7 +39,9 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class BreadcrumbGenerator
@@ -54,10 +56,22 @@ class BreadcrumbGenerator
      */
     private $token_storage;
 
-    public function __construct(PortalPermissionsManager $permissions_manager, TokenStorage $token_storage)
+    /**
+     * @var ObjectRouter
+     */
+    private $object_router;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $url_generator;
+
+    public function __construct(PortalPermissionsManager $permissions_manager, TokenStorage $token_storage, ObjectRouter $object_router, UrlGeneratorInterface $url_generator)
     {
         $this->permissions_manager = $permissions_manager;
         $this->token_storage = $token_storage;
+        $this->object_router = $object_router;
+        $this->url_generator = $url_generator;
     }
 
     /**
@@ -65,7 +79,7 @@ class BreadcrumbGenerator
      */
     public function createBuilder()
     {
-        return new BreadcrumbBuilder();
+        return new BreadcrumbBuilder($this->object_router, $this->url_generator);
     }
 
     #####################################################################################################################
