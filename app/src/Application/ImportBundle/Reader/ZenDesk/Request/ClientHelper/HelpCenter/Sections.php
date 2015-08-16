@@ -25,27 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
-
-use Zendesk\API\Client;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
 /**
- * ZenDesk tickets incremental export request client helper
- *
- * Class TicketsIncremental
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
+ * Class Sections
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
  */
-final class TicketsIncrementalExport extends AbstractIncrementalExportHelper
+class Sections
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function request(Client $client)
-    {
-        $result = $this->incrementalExport($client, 'tickets', array(
-            'start_time' => $this->params['start_time'],
-        ));
 
-        return $result;
-    }
 }

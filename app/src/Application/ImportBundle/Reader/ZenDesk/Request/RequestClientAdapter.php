@@ -81,7 +81,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doPeopleIncrementalExportRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\PeopleIncrementalExport($params));
+        return $this->doRequest(new ClientHelper\CoreAPI\PeopleIncrementalExport($params));
     }
 
     /**
@@ -89,7 +89,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doPeopleFindRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\PeopleFind($params));
+        return $this->doRequest(new ClientHelper\CoreAPI\PeopleFind($params));
     }
 
     /**
@@ -97,7 +97,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doOrganizationFindRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\OrganizationFind($params));
+        return $this->doRequest(new ClientHelper\CoreAPI\OrganizationFind($params));
     }
 
     /**
@@ -105,7 +105,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doTicketsIncrementalExportRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\TicketsIncrementalExport($params));
+        return $this->doRequest(new ClientHelper\CoreAPI\TicketsIncrementalExport($params));
     }
 
     /**
@@ -113,7 +113,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doTicketCommentsFindAllRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\TicketCommentsFindAll($params));
+        return $this->doRequest(new ClientHelper\CoreAPI\TicketCommentsFindAll($params));
     }
 
     /**
@@ -121,7 +121,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doArticleIncrementalExportRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\ArticleIncrementalExport($params));
+        return $this->doRequest(new ClientHelper\HelpCenter\ArticleIncrementalExport($params));
     }
 
     /**

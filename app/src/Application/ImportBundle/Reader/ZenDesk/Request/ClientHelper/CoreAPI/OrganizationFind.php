@@ -25,15 +25,16 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
  * ZenDesk organization find request client helper
  *
  * Class OrganizationFind
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
 final class OrganizationFind extends AbstractHelper
 {

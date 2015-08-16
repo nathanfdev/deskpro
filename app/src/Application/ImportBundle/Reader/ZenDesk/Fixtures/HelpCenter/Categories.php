@@ -25,27 +25,30 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
-use Zendesk\API\Client;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use DateTime;
 
 /**
- * ZenDesk article incremental export request client helper
- *
- * Class ArticleIncrementalExport
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
+ * Class Categories
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
  */
-final class ArticleIncrementalExport extends AbstractIncrementalExportHelper
+final class Categories extends AbstractFixture
 {
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function getEntityType()
     {
-        $result = $this->incrementalExport($client, 'articles', array(
-            'start_time' => $this->params['start_time'],
-        ));
+        return 'category';
+    }
 
-        return $result;
+    /**
+     * {@inheritdoc}
+     */
+    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
+    {
+
     }
 }

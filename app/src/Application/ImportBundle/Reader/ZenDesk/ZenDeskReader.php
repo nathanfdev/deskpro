@@ -208,6 +208,22 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getHelpCenterCategories()
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelpCenterSections()
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getArticlesCount(DateTime $start_time = null)
     {
         $result = $this->adapter->doArticleIncrementalExportRequest(array(

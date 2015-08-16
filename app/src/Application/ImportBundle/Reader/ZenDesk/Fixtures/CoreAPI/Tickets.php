@@ -25,10 +25,12 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\PeopleIncrementalExport;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Zendesk\API\ResponseException;
 use DateTime;
@@ -38,7 +40,7 @@ use Exception;
  * ZenDesk tickets fixtures
  *
  * Class Tickets
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
 final class Tickets extends AbstractFixture implements FixturePrepareInterface
 {

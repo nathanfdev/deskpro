@@ -25,14 +25,16 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
+
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
  * ZenDesk ticket comments request client helper
  *
  * Class TicketCommentsFindAll
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
 final class TicketCommentsFindAll extends AbstractHelper
 {

@@ -25,39 +25,28 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
-use Application\ImportBundle\Entity;
-use DateTime;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractIncrementalExportHelper;
+use Zendesk\API\Client;
 
 /**
- * ZenDesk people fixtures
+ * ZenDesk article incremental export request client helper
  *
- * Class People
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
+ * Class ArticleIncrementalExport
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
  */
-final class People extends AbstractFixture
+final class ArticleIncrementalExport extends AbstractIncrementalExportHelper
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function request(Client $client)
     {
-        return Entity\EntityInterface::TYPE_PERSON;
-    }
+        $result = $this->incrementalExport($client, 'articles', array(
+            'start_time' => $this->params['start_time'],
+        ));
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
-    {
-        $params = array(
-            'name'       => 'Fake name ' . $prefix,
-            'email'      => 'fake_email_' . $prefix . '@domain.com',
-            'role'       => 'end-user',
-            'verified'   => true,
-        );
-
-        $this->client->users()->create($params);
+        return $result;
     }
 }
