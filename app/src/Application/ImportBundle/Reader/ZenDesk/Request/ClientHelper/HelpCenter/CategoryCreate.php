@@ -43,6 +43,6 @@ final class CategoryCreate extends AbstractHelper
      */
     public function request(Client $client)
     {
-
+        return $this->doPostRequest($client, 'help_center/categories.json', $this->params);
     }
 }

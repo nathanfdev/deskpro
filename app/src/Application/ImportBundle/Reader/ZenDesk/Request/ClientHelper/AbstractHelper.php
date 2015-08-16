@@ -74,4 +74,26 @@ abstract class AbstractHelper implements ClientHelperInterface
         $client->setSideload(null);
         return $response;
     }
+
+    /**
+     * Sends a post request
+     *
+     * @param Client $client
+     * @param string $end_point
+     * @param array  $params
+     *
+     * @return mixed
+     * @throws ResponseException
+     */
+    protected function doPostRequest(Client $client, $end_point, array $params)
+    {
+        $response = Http::send($client, $end_point, $params, 'POST');
+
+        if (( ! is_object($response)) || ($client->getDebug()->lastResponseCode != 200)) {
+            throw new ResponseException(__METHOD__);
+        }
+
+        $client->setSideload(null);
+        return $response;
+    }
 }

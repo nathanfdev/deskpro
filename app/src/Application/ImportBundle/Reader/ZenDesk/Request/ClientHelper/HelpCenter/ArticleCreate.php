@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCente
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
+use Zendesk\API\MissingParametersException;
 
 /**
  * Class ArticleCreate
@@ -43,6 +44,15 @@ final class ArticleCreate extends AbstractHelper
      */
     public function request(Client $client)
     {
+        if ( ! isset($this->params['section_id'])) {
+            throw new MissingParametersException(__METHOD__, 'section_id');
+        }
 
+        $section_id = $this->params['section_id'];
+        $params     = $this->params;
+
+        unset($params['section_id']);
+
+        return $this->doPostRequest($client, sprintf('help_center/sections/%d/articles.json', $section_id), $params);
     }
 }
