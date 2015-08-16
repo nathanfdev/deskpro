@@ -105,7 +105,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function doPeopleIncrementalExportRequest(array $params = array())
     {
-        return $this->getResponse('people_incremental_export', $params);
+        return $this->getResponse('people_incremental_export');
     }
 
     /**
@@ -113,7 +113,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function doPeopleFindRequest(array $params = array())
     {
-        return $this->getResponse('people_find', $params);
+        return $this->getResponse('people_find');
     }
 
     /**
@@ -121,7 +121,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function doOrganizationFindRequest(array $params = array())
     {
-        return $this->getResponse('organization_find', $params);
+        return $this->getResponse('organization_find');
     }
 
     /**
@@ -129,7 +129,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function doTicketsIncrementalExportRequest(array $params = array())
     {
-        return $this->getResponse('tickets_incremental_export', $params);
+        return $this->getResponse('tickets_incremental_export');
     }
 
     /**
@@ -137,7 +137,15 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function doTicketCommentsFindAllRequest(array $params = array())
     {
-        return $this->getResponse('ticket_comments_find_all', $params);
+        return $this->getResponse('ticket_comments_find_all');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doArticleIncrementalExportRequest(array $params = array())
+    {
+        return $this->getResponse('articles_incremental_export');
     }
 
     /**

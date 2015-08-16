@@ -127,4 +127,20 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @throws RetryAfterException
      */
     public function getTicketsEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a batch count of articles
+     *
+     * @param DateTime|null $start_time
+     * @return int
+     */
+    public function getArticlesCount(DateTime $start_time = null);
+
+    /**
+     * Returns a batch of the articles collection
+     *
+     * @param DateTime|null $start_time
+     * @return array
+     */
+    public function getArticles(DateTime $start_time = null);
 }

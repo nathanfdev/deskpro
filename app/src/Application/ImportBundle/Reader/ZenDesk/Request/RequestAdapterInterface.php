@@ -74,4 +74,12 @@ interface RequestAdapterInterface
      * @return \stdClass
      */
     public function doTicketCommentsFindAllRequest(array $params = array());
+
+    /**
+     * Request a batch collection of articles
+     *
+     * @param array $params
+     * @return \stdClass
+     */
+    public function doArticleIncrementalExportRequest(array $params = array());
 }

@@ -25,53 +25,27 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 
-use Application\ImportBundle\Entity;
+use Zendesk\API\Client;
 
 /**
- * ZenDesk articles parser
+ * ZenDesk article incremental export request client helper
  *
- * Class Articles
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class ArticleIncrementalExport
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
  */
-final class Articles extends AbstractParser
+final class ArticleIncrementalExport extends AbstractIncrementalExportHelper
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function request(Client $client)
     {
-        return Entity\EntityInterface::TYPE_ARTICLE;
-    }
+        $result = $this->incrementalExport($client, 'articles', array(
+            'start_time' => $this->params['start_time'],
+        ));
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        // We can read data from ZD reader twice because of ZD reader cache support
-        return count($this->getArticles());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
-    }
-
-    /**
-     * Returns articles
-     * Loads data from ZenDesk reader
-     *
-     * @return array
-     * @throws \Exception
-     */
-    private function getArticles()
-    {
-        $this->logDebugTimeStart('getArticles', "Reading articles batch");
-        return array();
+        return $result;
     }
 }

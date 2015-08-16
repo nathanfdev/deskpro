@@ -206,6 +206,37 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticlesCount(DateTime $start_time = null)
+    {
+        $result = $this->adapter->doArticleIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $result ? $result->count : 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticles(DateTime $start_time = null)
+    {
+        $articles = array();
+        $result  = $this->adapter->doArticleIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        if ($result) {
+            foreach ($result->articles as $article) {
+                $articles[] = $this->toArray($article);
+            }
+        }
+
+        return $articles;
+    }
+
+    /**
      * Converts stdClass to array
      *
      * @param \stdClass $object

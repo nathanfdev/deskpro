@@ -117,6 +117,14 @@ final class RequestClientAdapter implements RequestAdapterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function doArticleIncrementalExportRequest(array $params = array())
+    {
+        return $this->doRequest(new ClientHelper\ArticleIncrementalExport($params));
+    }
+
+    /**
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request
