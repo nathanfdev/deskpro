@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
 use DateTime;
@@ -43,6 +45,11 @@ use Zendesk\API\ResponseException;
  */
 final class Articles extends AbstractFixture implements FixturePrepareInterface
 {
+    /**
+     * @var array
+     */
+    private $people_ids = array();
+
     /**
      * @var array
      */
@@ -61,10 +68,23 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
      */
     public function prepare(DateTime $initial_time, DateTime $end_time)
     {
-        $helper = new SectionsFindAll();
+        try {
+            $helper = new SectionsFindAll();
+            $this->sections = $helper->request($this->client)->sections;
+
+        } catch (ResponseException $e) {
+            $this->handleResponseException();
+        }
+
+        $people_incremental = new PeopleIncrementalExport(array(
+            'start_time' => $initial_time->getTimestamp(),
+        ));
 
         try {
-            $this->sections = $helper->request($this->client)->sections;
+            $people = $people_incremental->request($this->client);
+            foreach($people->users as $person) {
+                $this->people_ids[] = $person->id;
+            }
 
         } catch (ResponseException $e) {
             $this->handleResponseException();
@@ -82,19 +102,56 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
 
         $section = $this->sections[rand(0, count($this->sections) - 1)];
         $helper  = new ArticleCreate(array(
-            'section_id' => $section->id,
-            'article'    => array(
+            'id'      => $section->id,
+            'article' => array(
                 'title'      => 'Fake article ' . $prefix,
                 'body'       => 'Fake article content',
-                'author_id'  => '',
+                'author_id'  => $this->getRandomPersonId(),
                 'created_at' => '',
                 'updated_at' => '',
             ),
         ));
 
         $response = $helper->request($this->client);
+        $article  = $response->article;
 
         $this->logger->info('Article created successfully');
-        $this->logger->debug(json_encode($response->article));
+        $this->logger->debug(json_encode($article));
+
+        for ($i = 1; $i <= 100; $i++) {
+            try {
+                $helper = new ArticleCommentCreate(array(
+                    'id'      => $article->id,
+                    'comment' => array(
+                        'author_id' => $this->getRandomPersonId(),
+                        'body'      => 'Comment #' . $i,
+                        'locale'    => 'en-us',
+                    ),
+                ));
+
+                $response = $helper->request($this->client);
+
+                $this->logger->info('Article comment created successfully');
+                $this->logger->debug(json_encode($response->comment));
+
+            } catch (ResponseException $e) {
+                $this->handleResponseException();
+            }
+        }
+    }
+
+    /**
+     * Returns a random person id
+     *
+     * @return int
+     * @throws \RuntimeException
+     */
+    private function getRandomPersonId()
+    {
+        if (empty($this->people_ids)) {
+            throw new \RuntimeException('No person found');
+        }
+
+        return $this->people_ids[rand(0, count($this->people_ids) - 1)];
     }
 }

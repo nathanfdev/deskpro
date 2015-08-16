@@ -46,14 +46,14 @@ final class ArticleCreate extends AbstractHelper
      */
     public function request(Client $client)
     {
-        if ( ! isset($this->params['section_id'])) {
-            throw new MissingParametersException(__METHOD__, array('section_id'));
+        if ( ! isset($this->params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        $section_id = $this->params['section_id'];
+        $section_id = $this->params['id'];
         $params     = $this->params;
 
-        unset($params['section_id']);
+        unset($params['id']);
 
         return $this->doPostRequest($client, sprintf('help_center/sections/%d/articles.json', $section_id), $params);
     }

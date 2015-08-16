@@ -61,11 +61,11 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
      */
     public function prepare(DateTime $initial_time, DateTime $end_time)
     {
-        $people_incremental = new PeopleIncrementalExport(array(
-            'start_time' => $initial_time->getTimestamp(),
-        ));
-
         try {
+            $people_incremental = new PeopleIncrementalExport(array(
+                'start_time' => $initial_time->getTimestamp(),
+            ));
+
             $people = $people_incremental->request($this->client);
             foreach($people->users as $person) {
                 $this->people_ids[] = $person->id;

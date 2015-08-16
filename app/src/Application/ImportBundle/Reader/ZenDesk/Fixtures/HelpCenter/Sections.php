@@ -58,9 +58,8 @@ final class Sections extends AbstractFixture implements FixturePrepareInterface
      */
     public function prepare(DateTime $initial_time, DateTime $end_time)
     {
-        $helper = new CategoriesFindAll();
-
         try {
+            $helper = new CategoriesFindAll();
             $this->categories = $helper->request($this->client)->categories;
 
         } catch (ResponseException $e) {
@@ -79,8 +78,8 @@ final class Sections extends AbstractFixture implements FixturePrepareInterface
 
         $category = $this->categories[rand(0, count($this->categories) - 1)];
         $helper   = new SectionCreate(array(
-            'category_id' => $category->id,
-            'section'     => array(
+            'id'      => $category->id,
+            'section' => array(
                 'name' => $category->name . ': Section' . $prefix,
             ),
         ));

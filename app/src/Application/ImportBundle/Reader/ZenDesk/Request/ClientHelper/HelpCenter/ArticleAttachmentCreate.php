@@ -46,14 +46,14 @@ final class ArticleAttachmentCreate extends AbstractHelper
      */
     public function request(Client $client)
     {
-        if ( ! isset($this->params['article_id'])) {
-            throw new MissingParametersException(__METHOD__, array('article_id'));
+        if ( ! isset($this->params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        $article_id = $this->params['article_id'];
+        $article_id = $this->params['id'];
         $params     = $this->params;
 
-        unset($params['article_id']);
+        unset($params['id']);
 
         return $this->doPostRequest($client, sprintf('help_center/articles/%d/attachments.json', $article_id), $params);
     }
