@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCente
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
+use Zendesk\API\MissingParametersException;
 
 /**
  * ZenDesk HelpCenter article attachment create request client helper
@@ -45,6 +46,15 @@ final class ArticleAttachmentCreate extends AbstractHelper
      */
     public function request(Client $client)
     {
+        if ( ! isset($this->params['article_id'])) {
+            throw new MissingParametersException(__METHOD__, array('article_id'));
+        }
 
+        $article_id = $this->params['article_id'];
+        $params     = $this->params;
+
+        unset($params['article_id']);
+
+        return $this->doPostRequest($client, sprintf('help_center/articles/%d/attachments.json', $article_id), $params);
     }
 }

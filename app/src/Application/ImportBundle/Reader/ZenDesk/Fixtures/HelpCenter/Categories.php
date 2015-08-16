@@ -57,6 +57,9 @@ final class Categories extends AbstractFixture
             ),
         ));
 
-        $helper->request($this->client);
+        $response = $helper->request($this->client);
+
+        $this->logger->info('Category created successfully');
+        $this->logger->debug(json_encode($response->category));
     }
 }

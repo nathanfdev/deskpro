@@ -85,6 +85,9 @@ final class Sections extends AbstractFixture implements FixturePrepareInterface
             ),
         ));
 
-        $helper->request($this->client);
+        $response = $helper->request($this->client);
+
+        $this->logger->info('Section created successfully');
+        $this->logger->debug(json_encode($response->section));
     }
 }

@@ -92,6 +92,9 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
             ),
         ));
 
-        $helper->request($this->client);
+        $response = $helper->request($this->client);
+
+        $this->logger->info('Article created successfully');
+        $this->logger->debug(json_encode($response->article));
     }
 }
