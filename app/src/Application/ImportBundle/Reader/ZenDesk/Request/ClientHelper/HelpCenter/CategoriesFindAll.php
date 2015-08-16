@@ -27,28 +27,22 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractIncrementalExportHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
- * ZenDesk article incremental export request client helper
- *
- * Class ArticleIncrementalExport
+ * Class Categories
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
  *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/articles#list-articles
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#list-categories
  */
-final class ArticleIncrementalExport extends AbstractIncrementalExportHelper
+final class CategoriesFindAll extends AbstractHelper
 {
     /**
      * {@inheritdoc}
      */
     public function request(Client $client)
     {
-        $params = array(
-            'start_time' => $this->params['start_time'],
-        );
-
-        return $this->incrementalExport($client, 'articles', $params, 'help_center');
+        return $this->doGetRequest($client, 'help_center/categories.json');
     }
 }
