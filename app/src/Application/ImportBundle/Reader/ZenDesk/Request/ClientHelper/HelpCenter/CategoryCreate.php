@@ -31,6 +31,8 @@ use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
+ * ZenDesk HelpCenter category create request client helper
+ *
  * Class CategoryCreate
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
  *

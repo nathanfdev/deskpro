@@ -82,14 +82,14 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
 
         $section = $this->sections[rand(0, count($this->sections) - 1)];
         $helper  = new ArticleCreate(array(
-            'article' => array(
+            'section_id' => $section->id,
+            'article'    => array(
                 'title'      => 'Fake article ' . $prefix,
                 'body'       => 'Fake article content',
                 'author_id'  => '',
-                'section_id' => $section->id,
                 'created_at' => '',
                 'updated_at' => '',
-            )
+            ),
         ));
 
         $helper->request($this->client);

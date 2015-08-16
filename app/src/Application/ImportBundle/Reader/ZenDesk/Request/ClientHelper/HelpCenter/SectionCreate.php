@@ -32,6 +32,8 @@ use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
+ * ZenDesk HelpCenter section create request client helper
+ *
  * Class SectionCreate
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
  *
@@ -44,14 +46,14 @@ final class SectionCreate extends AbstractHelper
      */
     public function request(Client $client)
     {
-        if ( ! isset($this->params['section']['category_id'])) {
+        if ( ! isset($this->params['category_id'])) {
             throw new MissingParametersException(__METHOD__, array('category_id'));
         }
 
-        $category_id = $this->params['section']['category_id'];
+        $category_id = $this->params['category_id'];
         $params      = $this->params;
 
-        unset($params['section']['category_id']);
+        unset($params['category_id']);
 
         return $this->doPostRequest($client, sprintf('help_center/categories/%d/sections.json', $category_id), $params);
     }

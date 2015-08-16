@@ -31,20 +31,20 @@ use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
- * ZenDesk HelpCenter section findAll request client helper
+ * ZenDesk HelpCenter category delete request client helper
  *
- * Class Sections
+ * Class CategoryDelete
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
  *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/sections#list-sections
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#delete-category
  */
-final class SectionsFindAll extends AbstractHelper
+final class CategoryDelete extends AbstractHelper
 {
     /**
      * {@inheritdoc}
      */
     public function request(Client $client)
     {
-        return $this->doGetRequest($client, 'help_center/sections.json');
+
     }
 }

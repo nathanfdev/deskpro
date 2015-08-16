@@ -79,9 +79,9 @@ final class Sections extends AbstractFixture implements FixturePrepareInterface
 
         $category = $this->categories[rand(0, count($this->categories) - 1)];
         $helper   = new SectionCreate(array(
-            'section' => array(
-                'name'        => $category->name . ': Section' . $prefix,
-                'category_id' => $category->id,
+            'category_id' => $category->id,
+            'section'     => array(
+                'name' => $category->name . ': Section' . $prefix,
             ),
         ));
 
