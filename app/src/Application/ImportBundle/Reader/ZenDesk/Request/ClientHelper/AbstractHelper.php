@@ -26,6 +26,8 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+
+use Symfony\Component\HttpFoundation\Response;
 use Zendesk\API\Client;
 use Zendesk\API\Http;
 use Zendesk\API\ResponseException;
@@ -48,7 +50,7 @@ abstract class AbstractHelper implements ClientHelperInterface
      *
      * @param array $params
      */
-    public function __construct(array $params)
+    public function __construct(array $params = array())
     {
         $this->params = $params;
     }
@@ -67,7 +69,7 @@ abstract class AbstractHelper implements ClientHelperInterface
     {
         $response = Http::send($client, $end_point);
 
-        if (( ! is_object($response)) || ($client->getDebug()->lastResponseCode != 200)) {
+        if ( ! is_object($response) || $client->getDebug()->lastResponseCode != 200) {
             throw new ResponseException(__METHOD__);
         }
 
@@ -87,10 +89,14 @@ abstract class AbstractHelper implements ClientHelperInterface
      */
     protected function doPostRequest(Client $client, $end_point, array $params)
     {
-        $response = Http::send($client, $end_point, $params, 'POST');
+        $response      = Http::send($client, $end_point, $params, 'POST');
+        $success_codes = array(
+            Response::HTTP_OK,
+            Response::HTTP_CREATED,
+        );
 
-        if (( ! is_object($response)) || ($client->getDebug()->lastResponseCode != 200)) {
-            throw new ResponseException(__METHOD__);
+        if ( ! is_object($response) || ! in_array($client->getDebug()->lastResponseCode, $success_codes)) {
+            throw new ResponseException($end_point);
         }
 
         $client->setSideload(null);

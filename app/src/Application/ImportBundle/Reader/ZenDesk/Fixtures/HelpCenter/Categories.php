@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoryCreate;
 use DateTime;
 
 /**
@@ -49,6 +50,13 @@ final class Categories extends AbstractFixture
      */
     protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
     {
+        $helper = new CategoryCreate(array(
+            'category' => array(
+                'name'        => 'Category' . $prefix,
+                'description' => 'Category description' . $prefix,
+            ),
+        ));
 
+        $helper->request($this->client);
     }
 }

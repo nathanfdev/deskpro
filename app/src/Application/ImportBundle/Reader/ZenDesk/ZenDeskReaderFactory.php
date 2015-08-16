@@ -83,6 +83,9 @@ class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
         $collection
             ->attach(new Fixtures\CoreAPI\People($client))
             ->attach(new Fixtures\CoreAPI\Tickets($client))
+            ->attach(new Fixtures\HelpCenter\Categories($client))
+            ->attach(new Fixtures\HelpCenter\Sections($client))
+            ->attach(new Fixtures\HelpCenter\Articles($client))
         ;
 
         return $collection;

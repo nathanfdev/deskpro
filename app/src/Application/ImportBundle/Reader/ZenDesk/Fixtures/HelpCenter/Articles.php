@@ -30,8 +30,9 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
 use DateTime;
-use Zendesk\API\Http;
 use Zendesk\API\ResponseException;
 
 /**
@@ -42,6 +43,11 @@ use Zendesk\API\ResponseException;
  */
 final class Articles extends AbstractFixture implements FixturePrepareInterface
 {
+    /**
+     * @var array
+     */
+    private $sections = array();
+
     /**
      * {@inheritdoc}
      */
@@ -55,7 +61,14 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
      */
     public function prepare(DateTime $initial_time, DateTime $end_time)
     {
+        $helper = new SectionsFindAll();
 
+        try {
+            $this->sections = $helper->request($this->client)->sections;
+
+        } catch (ResponseException $e) {
+            $this->handleResponseException();
+        }
     }
 
     /**
@@ -63,23 +76,22 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
      */
     protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
     {
-        $params = array(
-            'title'      => 'Fake article ' . $prefix,
-            'body'       => 'Fake article content',
-            'author_id'  => '',
-            'section_id' => '',
-            'created_at' => '',
-            'updated_at' => '',
-        );
-
-        $request_url = sprintf('incremental/articles.json?start_time=%s', $params['start_time']);
-        $end_point   = Http::prepare($request_url);
-        $response    = Http::send($this->client, $end_point);
-
-        if (( ! is_object($response)) || ($this->client->getDebug()->lastResponseCode != 200)) {
-            throw new ResponseException(__METHOD__);
+        if (empty($this->sections)) {
+            throw new \RuntimeException('No help center section');
         }
 
-        $this->client->setSideload(null);
+        $section = $this->sections[rand(0, count($this->sections) - 1)];
+        $helper  = new ArticleCreate(array(
+            'article' => array(
+                'title'      => 'Fake article ' . $prefix,
+                'body'       => 'Fake article content',
+                'author_id'  => '',
+                'section_id' => $section->id,
+                'created_at' => '',
+                'updated_at' => '',
+            )
+        ));
+
+        $helper->request($this->client);
     }
 }

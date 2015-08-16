@@ -44,14 +44,14 @@ final class SectionCreate extends AbstractHelper
      */
     public function request(Client $client)
     {
-        if ( ! isset($this->params['category_id'])) {
-            throw new MissingParametersException(__METHOD__, 'category_id');
+        if ( ! isset($this->params['section']['category_id'])) {
+            throw new MissingParametersException(__METHOD__, array('category_id'));
         }
 
-        $category_id = $this->params['category_id'];
+        $category_id = $this->params['section']['category_id'];
         $params      = $this->params;
 
-        unset($params['category_id']);
+        unset($params['section']['category_id']);
 
         return $this->doPostRequest($client, sprintf('help_center/categories/%d/sections.json', $category_id), $params);
     }

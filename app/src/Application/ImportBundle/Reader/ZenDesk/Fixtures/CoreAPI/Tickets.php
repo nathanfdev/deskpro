@@ -31,7 +31,6 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Zendesk\API\ResponseException;
 use DateTime;
 use Exception;
@@ -160,25 +159,5 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
         }
 
         return $this->people_ids[rand(0, count($this->people_ids) - 1)];
-    }
-
-    /**
-     * Shows error output to log
-     */
-    private function handleResponseException()
-    {
-        $this->logWarning(sprintf(
-            'Unable to export %s, code `%s`, headers:',
-
-            $this->getEntityType(),
-            $this->client->getDebug()->lastResponseCode
-        ));
-
-        $debug = $this->client->getDebug();
-        $this->logWarning($debug->lastRequestHeaders);
-
-        if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
-            sleep(60);
-        }
     }
 }

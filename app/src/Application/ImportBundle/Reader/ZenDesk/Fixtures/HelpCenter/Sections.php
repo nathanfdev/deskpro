@@ -29,7 +29,10 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoriesFindAll;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionCreate;
 use DateTime;
+use Zendesk\API\ResponseException;
 
 /**
  * Class Sections
@@ -37,6 +40,11 @@ use DateTime;
  */
 final class Sections extends AbstractFixture implements FixturePrepareInterface
 {
+    /**
+     * @var array
+     */
+    private $categories = array();
+
     /**
      * {@inheritdoc}
      */
@@ -50,7 +58,14 @@ final class Sections extends AbstractFixture implements FixturePrepareInterface
      */
     public function prepare(DateTime $initial_time, DateTime $end_time)
     {
+        $helper = new CategoriesFindAll();
 
+        try {
+            $this->categories = $helper->request($this->client)->categories;
+
+        } catch (ResponseException $e) {
+            $this->handleResponseException();
+        }
     }
 
     /**
@@ -58,6 +73,18 @@ final class Sections extends AbstractFixture implements FixturePrepareInterface
      */
     protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
     {
+        if (empty($this->categories)) {
+            throw new \RuntimeException('No help center category');
+        }
 
+        $category = $this->categories[rand(0, count($this->categories) - 1)];
+        $helper   = new SectionCreate(array(
+            'section' => array(
+                'name'        => $category->name . ': Section' . $prefix,
+                'category_id' => $category->id,
+            ),
+        ));
+
+        $helper->request($this->client);
     }
 }

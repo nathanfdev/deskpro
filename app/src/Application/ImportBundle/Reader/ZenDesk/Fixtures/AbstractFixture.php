@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Psr\Log\LoggerInterface;
 use Zendesk\API\Client;
 use DateTime;
@@ -126,6 +127,26 @@ abstract class AbstractFixture implements FixtureInterface
     {
         if ($this->logger) {
             $this->logger->warning($message);
+        }
+    }
+
+    /**
+     * Shows error output to log
+     */
+    protected function handleResponseException()
+    {
+        $this->logWarning(sprintf(
+            'Unable to export %s, code `%s`, headers:',
+
+            $this->getEntityType(),
+            $this->client->getDebug()->lastResponseCode
+        ));
+
+        $debug = $this->client->getDebug();
+        $this->logWarning($debug->lastRequestHeaders);
+
+        if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
+            sleep(60);
         }
     }
 }
