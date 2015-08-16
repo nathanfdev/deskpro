@@ -66,8 +66,10 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
         $params = array(
             'title'      => 'Fake article ' . $prefix,
             'body'       => 'Fake article content',
-            'role'       => 'end-user',
-            'verified'   => true,
+            'author_id'  => '',
+            'section_id' => '',
+            'created_at' => '',
+            'updated_at' => '',
         );
 
         $request_url = sprintf('incremental/articles.json?start_time=%s', $params['start_time']);

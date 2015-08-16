@@ -27,11 +27,22 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Zendesk\API\Client;
+
 /**
  * Class Sections
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
+ *
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/sections
  */
-class Sections
+final class Sections extends AbstractHelper
 {
-
+    /**
+     * {@inheritdoc}
+     */
+    public function request(Client $client)
+    {
+        return $this->doGetRequest($client, 'help_center/sections.json');
+    }
 }

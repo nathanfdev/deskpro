@@ -26,6 +26,9 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+use Zendesk\API\Client;
+use Zendesk\API\Http;
+use Zendesk\API\ResponseException;
 
 /**
  * Base ZenDesk request client helper
@@ -48,5 +51,27 @@ abstract class AbstractHelper implements ClientHelperInterface
     public function __construct(array $params)
     {
         $this->params = $params;
+    }
+
+    /**
+     * Sends a get request
+     * Some of end points are not implemented in ZenDesk api client library
+     *
+     * @param Client $client
+     * @param string $end_point
+     *
+     * @return mixed
+     * @throws ResponseException
+     */
+    protected function doGetRequest(Client $client, $end_point)
+    {
+        $response = Http::send($client, $end_point);
+
+        if (( ! is_object($response)) || ($client->getDebug()->lastResponseCode != 200)) {
+            throw new ResponseException(__METHOD__);
+        }
+
+        $client->setSideload(null);
+        return $response;
     }
 }

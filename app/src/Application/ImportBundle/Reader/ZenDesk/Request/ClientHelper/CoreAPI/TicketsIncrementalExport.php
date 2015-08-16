@@ -43,10 +43,8 @@ final class TicketsIncrementalExport extends AbstractIncrementalExportHelper
      */
     public function request(Client $client)
     {
-        $result = $this->incrementalExport($client, 'tickets', array(
+        return $this->incrementalExport($client, 'tickets', array(
             'start_time' => $this->params['start_time'],
         ));
-
-        return $result;
     }
 }

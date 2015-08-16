@@ -35,6 +35,8 @@ use Zendesk\API\Client;
  *
  * Class ArticleIncrementalExport
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
+ *
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/articles
  */
 final class ArticleIncrementalExport extends AbstractIncrementalExportHelper
 {
@@ -43,10 +45,10 @@ final class ArticleIncrementalExport extends AbstractIncrementalExportHelper
      */
     public function request(Client $client)
     {
-        $result = $this->incrementalExport($client, 'articles', array(
+        $params = array(
             'start_time' => $this->params['start_time'],
-        ));
+        );
 
-        return $result;
+        return $this->incrementalExport($client, 'articles', $params, 'help_center');
     }
 }
