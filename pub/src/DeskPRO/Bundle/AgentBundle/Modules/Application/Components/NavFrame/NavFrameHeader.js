@@ -12,7 +12,7 @@ export class NavFrameHeader extends React.Component {
                   <i className="fa fa-question"></i>
                 </span>
               </span>
-          <h1>{this.props.title}</h1>
+          <h1>{this.props.children}</h1>
           <hr />
           <a href="#" className="slider-control"></a>
         </div>

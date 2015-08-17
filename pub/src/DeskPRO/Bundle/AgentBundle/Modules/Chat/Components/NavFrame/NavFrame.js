@@ -23,7 +23,7 @@ export class NavFrame extends React.Component {
         </div>
 
         <div part="inner">
-          <NavFrameHeader icon="fa-comments-o" title="Chat" />
+          <NavFrameHeader icon="fa-comments-o">Chat</NavFrameHeader>
 
           <div className="sidebar-list sidebar-list-filters">
             <ChatsList data={lists.my} toggleGroupingVisibility={toggleGroupingVisibility('my')} />
