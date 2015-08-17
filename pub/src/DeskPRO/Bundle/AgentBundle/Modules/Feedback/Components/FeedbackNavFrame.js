@@ -1,13 +1,17 @@
 import React from "react";
 import { connect } from 'redux/react';
 
+import * as FeedbackListActions from "../Actions/FeedbackListActions";
+
+@connect(state => ({
+    user: state.user,
+    dp_window: state.dp_window
+}))
 export default class FeedbackNavFrame extends React.Component {
-    constructor(props) {
-        super(props);
-
-        const { dispatch } = this.props;
-    }
-
+  constructor(props) {
+    super(props);
+    this.props.dispatch(FeedbackListActions.bogusAction());
+  }
     render() {
         console.log(this.props);
         //const { taskList, projectList, agentList, labelList, departmentList, teamList, createdProject } = this.props;
