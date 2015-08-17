@@ -4,7 +4,6 @@ import * as AppActions from "../Actions/AppActions";
 import { Link } from 'react-router';
 
 @connect(state => ({
-  user: state.Application.user,
   dp_window: state.Application.dp_window
 }))
 export default class AppSwitcher extends React.Component {
@@ -24,7 +23,7 @@ export default class AppSwitcher extends React.Component {
   render() {
       const { dp_window, dispatch } = this.props;
 
-      const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
+      const my_classes = "dp-app-switcher" + (dp_window.get('expandedSwitcher') ? ' expanded' : '');
 
     return (
     <nav className={my_classes}>

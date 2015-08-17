@@ -1,5 +1,6 @@
 import { isDSA, getActionType } from '../actions/actionUtils';
 import ReducerBuilder from "./utils/ReducerBuilder";
+import Immutable from "immutable";
 
 /**
  * Creates a reducer using a builder passed to your buildFn.
@@ -34,7 +35,11 @@ export default function createReducer(buildFn) {
     if (isDSA(action)) {
       const type = getActionType(action);
       if (typeof handlersMap[type] !== 'undefined') {
-        return handlersMap[action.type](state, action.payload, action);
+        const newState = handlersMap[action.type](state, action.payload, action);
+        if (!Immutable.Map.isMap(newState)) {
+          console.warn("[Reducer :: " + type + "] newState is not an Immutable.Map", newState);
+        }
+        return newState;
       }
     }
 

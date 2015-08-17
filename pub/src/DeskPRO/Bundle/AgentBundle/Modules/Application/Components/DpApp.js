@@ -11,9 +11,7 @@ import TasksApp from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TasksA
 
 import { routingStarted } from "../Actions/AppActions";
 
-@connect(state => ({
-  ...state
-}))
+@connect(state => state)
 export default class DpApp extends React.Component {
   constructor(props) {
     super(props);

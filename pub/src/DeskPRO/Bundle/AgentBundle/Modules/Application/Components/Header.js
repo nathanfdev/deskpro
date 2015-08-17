@@ -13,7 +13,7 @@ export default class Header extends React.Component {
   	const { user } = this.props;
     return (<header className="dp-window-header top-bar">
 	      <a href="https://www.deskpro.com/" className="logo"></a>
-	      <span>Welcome, {user.display_name}</span>
+	      <span>Welcome, {user.get('display_name')}</span>
 	    </header>);
   }
 }

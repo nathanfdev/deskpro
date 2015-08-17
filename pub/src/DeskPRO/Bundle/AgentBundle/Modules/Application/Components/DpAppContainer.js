@@ -35,7 +35,7 @@ export default class DpAppContainer extends React.Component {
 
     const { dp_window, dispatch } = this.props;
 
-    if (!dp_window.isLoaded) {
+    if (!dp_window.get('isLoaded')) {
       dispatch(AppActions.loadWindow());
     }
   }
@@ -58,7 +58,7 @@ export default class DpAppContainer extends React.Component {
     const { dp_window, history } = this.props;
     const base_path = this.workOutBasePath();
 
-    if (dp_window.isLoaded) {
+    if (dp_window.get('isLoaded')) {
       return (
         <Router history={history}>
           <Route path={base_path} component={ReactRouterWrapper}>

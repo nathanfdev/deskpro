@@ -1,5 +1,6 @@
 import objGet from "lodash/object/get";
 import objSet from "lodash/object/set";
+import Immutable from "immutable";
 
 import { getActionType } from "../../actions/actionUtils";
 import AsyncHandlerBuilder from "./AsyncHandlerBuilder";
@@ -9,7 +10,7 @@ import AsyncHandlerBuilder from "./AsyncHandlerBuilder";
  */
 export default class ReducerBuilder {
   constructor() {
-    this._initialState = {};
+    this._initialState = null;
     this._handlersMap  = {};
   }
 
@@ -19,7 +20,11 @@ export default class ReducerBuilder {
    * @param {Object/Function} An object or a function that returns an object
    */
   initialState(val) {
-    this._initialState = val;
+    if (typeof val === 'function') {
+      this._initialState = val;
+    } else {
+      this._initialState = Immutable.Map(val);
+    }
     return this;
   }
 
@@ -127,26 +132,32 @@ export default class ReducerBuilder {
    */
   _createSimpleAction(name, value, valueType) {
     return (state, payload) => {
-      const newState = { ...state };
-
-      if (typeof value !== 'undefined') {
-        if (vauleType === 'prop') {
-          return {
-            ...state,
-            [name]: valueType
-          }
-        } else if (valueType === 'value') {
-          return {
-            ...state,
-            [name]: objGet(payload, prop)
+      // state slice is an immutable
+      if (Immutable.Map.isMap(state)) {
+        if (typeof value !== 'undefined') {
+          if (vauleType === 'prop') {
+            return state.set(name, objGet(payload, value));
+          } else if (valueType === 'value') {
+            return state.set(name, value);
+          } else {
+            throw new Error("Invalid type for valueType");
           }
         } else {
-          throw new Error("Invalid type for valueType");
+          return state.set(name, payload);
         }
+
+      // state slice is a plain object
       } else {
-        return {
-          ...state,
-          [name]: payload
+        if (typeof value !== 'undefined') {
+          if (vauleType === 'prop') {
+            return { ...state, [name]: objGet(payload, prop) };
+          } else if (valueType === 'value') {
+            return { ...state, [name]: valueType };
+          } else {
+            throw new Error("Invalid type for valueType");
+          }
+        } else {
+          return { ...state, [name]: payload };
         }
       }
     }
@@ -159,7 +170,10 @@ export default class ReducerBuilder {
    */
   getInitialState() {
     if (typeof this._initialState === 'function') {
-      return this._initialState;
+      return this._initialState();
+    }
+    if (this._initialState === null) {
+      this._initialState = Immutable.Map();
     }
     return this._initialState;
   }
