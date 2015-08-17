@@ -1,5 +1,6 @@
 import React from "react";
 import ProjectCreateHover from "../Components/ProjectCreateHover";
+import TaskNavItemProject from "../Components/TaskNavItemProject";
 import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
 import { connect } from 'redux/react';
 
@@ -34,6 +35,13 @@ export default class TasksNavProjects extends React.Component {
         });
     }
 
+    closeWindow() {
+        this.setState({
+            projectData: {},
+            showWindow: false
+        });
+    }
+
     createProject(model) {
         if (typeof model.projectId !== 'undefined') {
             this.props.dispatch(TaskActions.editProject({
@@ -41,14 +49,14 @@ export default class TasksNavProjects extends React.Component {
                 title : model.title,
                 departments : model.departments,
                 teams: model.teams,
-                people : model.members
+                agents : model.members
             }))
         } else {
             this.props.dispatch(TaskActions.createProject({
                 title : model.title,
                 departments : model.departments,
                 teams : model.teams,
-                people : model.members
+                agents : model.members
             }));
         }
     }
@@ -68,21 +76,13 @@ export default class TasksNavProjects extends React.Component {
                             teamList={teamList}
                             departmentList={departmentList}
                             projectData={this.state.projectData}
+                            closeWindow={this.closeWindow.bind(this)}
                         />
                     </ComponentRootWrapper>
                 </div>
                 <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow.bind(this)}><i className="fa fa-plus"/></a></div>
                 <ul>{projectList.projectList ? projectList.projectList.map(function(object) {
-                    return <li key={object.id}>
-                        <div className="list-counter-bucket">
-                            <a href="#" onClick={_this.toggleWindow.bind(_this, object)}><i className="fa fa-cog" /></a>
-                            <a className="list-counter" href="#">
-                                {object.remaining}
-                            </a>
-                        </div>
-                        <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={_this.props.switchTaskList.bind(_this, 'tasks?project=' + object.id)}><i
-                            className="fa fa-book"/> {object.title} </a>
-                    </li>;
+                    return <TaskNavItemProject key={object.id} project={object} switchTaskList={_this.props.switchTaskList.bind(this)} toggleWindow={_this.toggleWindow.bind(_this)} dispatch={_this.props.dispatch.bind(_this)} />;
                 }) : ''}
 
                 </ul>

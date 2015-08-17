@@ -47,7 +47,7 @@ class ProjectType extends AbstractType
             'departments',
             'collection',
             array(
-                'type' => 'department',
+                'type' => 'project_department',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'delete_empty' => true,
@@ -62,7 +62,7 @@ class ProjectType extends AbstractType
             'teams',
             'collection',
             array(
-                'type' => 'agent_team',
+                'type' => 'project_agent_team',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'delete_empty' => true,
@@ -77,7 +77,7 @@ class ProjectType extends AbstractType
             'agents',
             'collection',
             array(
-                'type' => 'person',
+                'type' => 'project_person',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'delete_empty' => true,

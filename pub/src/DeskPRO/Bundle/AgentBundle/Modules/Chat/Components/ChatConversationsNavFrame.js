@@ -22,16 +22,6 @@ export class ChatConversationsNavFrame extends React.Component {
   render() {
     const {myChats, allChats, myChatsGroupBy, allChatsGroupBy} = this.props;
 
-    const toggleMyChatsGroupingControls = (e) => {
-      e.preventDefault();
-      this.props.dispatch(actions.toggleMyChatsGroupingControls());
-    };
-    const toggleAllChatsGroupingControls = (e) => {
-      e.preventDefault();
-      this.props.dispatch(actions.toggleAllChatsGroupingControls());
-    };
-    const renderNestedCounts = (nested, groupBy) => { return this.renderNestedCounts(nested, groupBy) };
-
     return (
       <section className="task-nav-frame dp-nav-frame">
         <div className="sidebar-wrapper" id="sidebar-wrapper">
@@ -61,7 +51,7 @@ export class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   My Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter-dropdown active" href="#" onClick={toggleMyChatsGroupingControls}>
+                    <a className="list-counter-dropdown active" href="#" onClick={this.toggleMyChatsGroupingControls.bind(this)}>
                       <span>&nbsp;</span>
                       <i className="fa fa-angle-down"></i>
                     </a>
@@ -70,7 +60,7 @@ export class ChatConversationsNavFrame extends React.Component {
                 </div>
                 
                 <ul>
-                  {renderNestedCounts(myChats.nested, myChatsGroupBy)}
+                  {this.renderNestedCounts.call(this, myChats.nested, myChatsGroupBy)}
                 </ul>
               
               </section>
@@ -79,7 +69,7 @@ export class ChatConversationsNavFrame extends React.Component {
                 <div className="list-sidebar-title">
                   All Chats
                   <div className="list-counter-bucket">
-                    <a className="list-counter-dropdown active" href="#" onClick={toggleAllChatsGroupingControls}>
+                    <a className="list-counter-dropdown active" href="#" onClick={this.toggleAllChatsGroupingControls.bind(this)}>
                       <span>&nbsp;</span>
                       <i className="fa fa-angle-down"></i>
                     </a>
@@ -88,7 +78,7 @@ export class ChatConversationsNavFrame extends React.Component {
                 </div>
                 
                 <ul>
-                  {renderNestedCounts(allChats.nested, allChatsGroupBy)}
+                  {this.renderNestedCounts.call(this, allChats.nested, allChatsGroupBy)}
                 </ul>
               
               </section>
@@ -126,5 +116,15 @@ export class ChatConversationsNavFrame extends React.Component {
     });
 
     return result;
+  }
+
+  toggleMyChatsGroupingControls(e) {
+    e.preventDefault();
+    this.props.dispatch(actions.toggleMyChatsGroupingControls());
+  }
+
+  toggleAllChatsGroupingControls(e) {
+    e.preventDefault();
+    this.props.dispatch(actions.toggleAllChatsGroupingControls());
   }
 }

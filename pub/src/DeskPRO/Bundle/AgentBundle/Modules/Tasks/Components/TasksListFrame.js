@@ -1,10 +1,12 @@
 import React from "react";
+import { DragSource } from "react-dnd";
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
+import TaskCard from "../Components/TaskCard";
 
 @connect(state => ({
   taskFrameList: state.taskFrameList
@@ -31,6 +33,14 @@ export default class TasksListFrame extends React.Component {
     this.forceUpdate();
 
     this.props.dispatch(TaskActions.editTask(newValues, reload));
+  }
+
+  editTask(source, model) {
+    this.props.dispatch(TaskActions.editTask({
+      taskId : model.taskId,
+      title : model.title,
+      date_due : model.date_due
+    }, source));
   }
 
   createTask(source, model) {
@@ -163,89 +173,10 @@ export default class TasksListFrame extends React.Component {
         </Formsy.Form>
 
         {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
-          let cardClass = object.is_done ? "card task-card task-card-completed" : "card task-card";
-          let doneButton = object.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
-
-          let ticket_link = undefined;
-
-          if (object.linked_items.length > 0) {
-            object.linked_items.forEach((item) => {
-              if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
-                ticket_link = '#' + linked_items[item].ticket;
-              }
-            });
-          }
-
-          let assignee = undefined;
-
-          if (object.agents.length > 0) {
-            // We assume one assignment for now, though we will need to support more later
-            const agentId = object.agents[0];
-            let agent = agents[agentId];
-
-            assignee = <span><span className="text">{agent.name}</span> <span className="chat-avatar"
-                                                                              style={{backgroundImage: "url(./img/avatar6.png)"}} /></span>
-          } else if (object.teams.length > 0) {
-            const teamId = object.teams[0];
-            let team = teams[teamId];
-            assignee = <span><span className="text">{team.name}</span></span>
-          } else if (object.departments.length > 0) {
-            const departmentId = object.departments[0];
-            let department = departments[departmentId];
-            assignee = <span><span className="text">{department.title}</span></span>
-          }
-
-          return <div className={cardClass} key={object.id}>
-            <div className="card-status-bar status-bar-left"></div>
-            <div className="card-status-bar status-bar-right"></div>
-
-            <div className="card-checkbox">
-              <span className="checkbox"><i className="fa fa-check"/></span>
-            </div>
-
-            {assignee ?
-            <div className="top-right-box">
-              {assignee}
-            </div> : ''}
-
-            <div className="card-line">
-              <span className="line-box card-task-mark" onClick={_this.toggleDone.bind(_this, object, taskFrameList.taskFrameSource)}>
-                {doneButton}
-              </span>
-
-              <h1>{object.title}</h1>
-            </div>
-
-            <div className="card-line">
-              <div className="task-extras">
-                <div>{object.comment_count} <i className="fa fa-comment"/></div>
-
-                {object.subtasks_total > 0 ?
-                <span><span className="disc"></span>
-
-                <div className="subtask-count">{object.subtasks_done}/{object.subtasks_total} <i className="fa fa-folder-open"/></div></span> : ''}
-              </div>
-
-              <div className="task-properties">
-                <div>
-                  <i className="fa fa-calendar-o"/> Due: {object.date_due ? <FormattedDate
-                  value={Date.parse(object.date_due)}
-                  day="numeric"
-                  month="long"
-                  year="numeric" /> : 'N/A' }
-                </div>
-
-                {object.project && projects[object.project] ? <span>
-                  <span className="disc"></span><i className="fa fa-book"/> {projects[object.project].title}
-                </span> : ''}
-
-                {ticket_link ? <span>
-                <span className="disc"></span>
-                  <i className="fa fa-link"/><a href={ticket_link}>Linked ticket</a>
-                </span> : ''}
-              </div>
-            </div>
-          </div>
+          return <TaskCard task={object} projects={projects} linked_items={linked_items} departments={departments}
+                           teams={teams} agents={agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
+                           source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
+                           editTask={_this.editTask.bind(_this)} />
         }) : '' }
       </div>
     </section>

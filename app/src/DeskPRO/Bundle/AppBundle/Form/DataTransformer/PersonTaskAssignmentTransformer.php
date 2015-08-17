@@ -31,51 +31,73 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\DepartmentProjectMemberTransformer;
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
+use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use Symfony\Component\Form\DataTransformerInterface;
 
-class DepartmentType extends AbstractType
+class PersonTaskAssignmentTransformer implements DataTransformerInterface
 {
+    /**
+     * @var EntityManager
+     */
     private $entityManager;
 
-    public function __construct(EntityManager $entityManager)
+    /**
+     * @var Task
+     */
+    private $task;
+
+    /**
+     * Constructor
+     * @param EntityManager $entityManager
+     * @param Task $task
+     */
+    public function __construct(EntityManager $entityManager, Task $task)
     {
         $this->entityManager = $entityManager;
+        $this->task = $task;
+
     }
 
     /**
-     * @return string
+     * Transform a Task Assignment into a person
+     * @param mixed $memberObject
+     * @return null
      */
-    public function getName()
+    public function transform($memberObject)
     {
-        return 'department';
-    }
+        if (!is_null($memberObject) && ($memberObject instanceof TaskAssignment)) {
+            return $memberObject->getPerson()->getId();
+        }
 
-    public function getParent()
-    {
-        return 'text';
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addModelTransformer(new DepartmentProjectMemberTransformer($this->entityManager, $options['project']));
-        $builder->addViewTransformer(new DepartmentProjectMemberTransformer($this->entityManager, $options['project']));
+        return null;
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * Transform a person entity into a Task Assignment
+     * @param string $person
+     * @return LabelTask|null|object
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function reverseTransform($person)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Application\DeskPRO\Entity\Department',
-            'project' => null,
-        ));
+        if (!$person instanceof Person) {
+            $person = $this->entityManager->getRepository('DeskPRO:Person')
+                ->find($person);
+        }
+        $member = $this->entityManager->getRepository('App:TaskAssignment')
+            ->findOneBy(array('person' => $person, 'task' => $this->task));
+
+        if (!$member) {
+            $member = new TaskAssignment();
+            $member->setPerson($person);
+            $member->setTask($this->task);
+        }
+
+        return $person;
     }
 }
