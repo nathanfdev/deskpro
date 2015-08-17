@@ -15,7 +15,7 @@ export function loadAddress(address, params = {}) {
 }
 
 /**
- * Load a generic API endpoint. Only use when you need to get the address from the action
+ * Feedback counts
  * @return Promise
  */
 export function toValidate() {
@@ -26,3 +26,29 @@ export function toValidate() {
     return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
+/**
+ * Feedback comments to review count
+ * @return Promise
+ */
+export function commentsToReview() {
+    let query = {
+        awaiting_validation: 1
+    };
+
+    return DpApi.sendGet('DP_API/feedback_comments/counts?' + compileParams(query));
+}
+
+/**
+ * Compile parameters into a URL string
+ * @param params
+ * @returns {string}
+ */
+function compileParams(params) {
+    let compiled = [];
+
+    for (let key of Object.keys(params)) {
+        compiled.push(key + '=' + String(params[key]));
+    }
+
+    return compiled.join('&');
+}

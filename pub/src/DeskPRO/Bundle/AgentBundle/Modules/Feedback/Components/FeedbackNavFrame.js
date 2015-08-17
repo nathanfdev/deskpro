@@ -1,32 +1,33 @@
 import React from "react";
 import { connect } from 'redux/react';
-import $ from "jquery";
 
 import * as FeedbackListActions from "../Actions/FeedbackListActions";
 import FeedbackNavPending from "../Components/FeedbackNavPending.js";
+import $ from "jquery";
 
 @connect(state => ({
     user: state.user,
     dp_window: state.dp_window,
-    feedbackToValidate: state.feedbackToValidate
+    toValidate: state.toValidate,
+    commentsToReview: state.commentsToReview
 }))
-export default
-class FeedbackNavFrame extends React.Component {
+
+export default class FeedbackNavFrame extends React.Component {
     constructor(props) {
         super(props);
         const { dispatch } = this.props;
-        this.props.dispatch(FeedbackListActions.feedbackToValidate());
+        dispatch(FeedbackListActions.feedbackToValidate());
+        dispatch(FeedbackListActions.commentsToReview());
     }
 
-
-    switchTaskList(identifier, event) {
-        this.props.dispatch(TaskActions.loadTaskList(identifier));
+    switchFeedback(identifier, event) {
+        this.props.dispatch(FeedbackListActions.loadFeedbackList(identifier));
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
         $(event.target).closest('a').addClass('active');
     }
 
     render() {
-        const { feedbackToValidate } = this.props;
+        const { toValidate, commentsToReview } = this.props;
 
         return (
             <section className="task-nav-frame dp-nav-frame">
@@ -54,8 +55,8 @@ class FeedbackNavFrame extends React.Component {
                             <a href="#" className="slider-control"></a>
                         </div>
                         <div className="sidebar-list sidebar-list-filters">
-                            <FeedbackNavPending feedbackToValidate={feedbackToValidate}
-                                                switchFeedbackList={this.switchFeedbackList.bind(this)}/>
+                            <FeedbackNavPending toValidate={toValidate} commentsToReview={commentsToReview}
+                                                switchFeedback={this.switchFeedback.bind(this)}/>
                         </div>
 
                     </aside>
