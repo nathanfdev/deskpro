@@ -57,7 +57,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\TicketLinkGenerator
     arguments:
       - @router
-      - @settings_resolver
+      - @ticket.public_id_resolver
 
   object_router.link_generator.downloads:
     public: false

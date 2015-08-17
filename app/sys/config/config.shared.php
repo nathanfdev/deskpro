@@ -58,6 +58,16 @@ $container->setDefinition('form.cleaner_extension', $definition);
 $loader->import(__DIR__."/../../src/DeskPRO/Bundle/AppBundle/Resources/config/services/object_router.yml");
 
 ############################################################################
+# Ticket Public ID Resolver
+############################################################################
+
+
+$definition = new Definition();
+$definition->setClass('DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver');
+$definition->setArguments(array(new Reference('settings_resolver')));
+$container->setDefinition('ticket.public_id_resolver', $definition);
+
+############################################################################
 # Input
 ############################################################################
 

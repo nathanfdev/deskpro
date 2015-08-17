@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
@@ -52,17 +53,17 @@ class TicketLinkGenerator implements LinkGeneratorInterface
     private $url_generator;
 
     /**
-     * @var SettingsResolver
+     * @var TicketPublicIdResolver
      */
-    private $settings_resolver;
+    private $ticket_public_id_resolver;
 
     public function __construct(
         UrlGeneratorInterface $url_generator,
-        SettingsResolver $settings_resolver
+        TicketPublicIdResolver $ticket_public_id_resolver
     )
     {
         $this->url_generator = $url_generator;
-        $this->settings_resolver = $settings_resolver;
+        $this->ticket_public_id_resolver = $ticket_public_id_resolver;
     }
 
     /**
@@ -84,13 +85,6 @@ class TicketLinkGenerator implements LinkGeneratorInterface
             $ticket = $ticket->ticket;
         }
 
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        if ($this->settings_resolver->getGlobalSettings()->get('core.tickets.use_ref')) {
-            $ref = $ticket->getRef();
-        } else {
-            $ref = $ticket->getId();
-        }
-
         if (ObjectRouter::CONTEXT_PORTAL !== $context) {
             throw new ObjectRouterException(
                 'TicketLinkGenerator only supports PORTAL links, please implement the AGENT
@@ -98,19 +92,33 @@ class TicketLinkGenerator implements LinkGeneratorInterface
             ');
         }
 
-        if ($type === 'edit') {
-            return $this->url_generator->generate(
-                'portal_tickets_edit',
-                array_merge(array('ticket_ref' => $ref), $extra_params),
-                $reference_type
-            );
+        $ref = $this->ticket_public_id_resolver->findId($ticket);
+
+        switch ($type) {
+            case 'edit':
+                return $this->url_generator->generate(
+                    'portal_tickets_edit',
+                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    $reference_type
+                );
+            case 'resolve':
+                return $this->url_generator->generate(
+                    'portal_tickets_resolve',
+                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    $reference_type
+                );
+            case 'unresolve':
+                return $this->url_generator->generate(
+                    'portal_tickets_unresolve',
+                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    $reference_type
+                );
+            default:
+                return $this->url_generator->generate(
+                    'portal_tickets_view',
+                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    $reference_type
+                );
         }
-
-
-        return $this->url_generator->generate(
-            'portal_tickets_view',
-            array_merge(array('ticket_ref' => $ref), $extra_params),
-            $reference_type
-        );
     }
 }
