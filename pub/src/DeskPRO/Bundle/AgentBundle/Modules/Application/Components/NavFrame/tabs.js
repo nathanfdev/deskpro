@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class TabPane extends React.Component {
+export class TabsPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +36,7 @@ export class TabPane extends React.Component {
     const children = this.props.children.length ? this.props.children : [this.props.children];
     for (let i = 0; i < children.length; i++) {
       if (children[i].type.name !== 'Tab') {
-        throw 'TabPane can only contain Tab components as first level children';
+        throw 'TabsPane can only contain Tab components as first level children';
       }
 
       tabs.push({

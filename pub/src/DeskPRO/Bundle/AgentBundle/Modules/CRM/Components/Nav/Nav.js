@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabPane, Tab, ListItem }
+import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPane, Tab, ListItem, LabelsDictionary }
        from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/index';
 
 export class Nav extends React.Component {
@@ -10,7 +10,7 @@ export class Nav extends React.Component {
         <SectionsPane>
           <Section>
             <SectionHeader>People</SectionHeader>
-            <TabPane>
+            <TabsPane>
               <Tab title="Groups">
                 <ul>
                   <ListItem count="25" label="Everyone" />
@@ -18,20 +18,24 @@ export class Nav extends React.Component {
                 </ul>
               </Tab>
               <Tab title="Filters">Filters tab content</Tab>
-              <Tab title="Labels">Labels tab content</Tab>
-            </TabPane>
+              <Tab title="Labels">
+                <LabelsDictionary labels={['Apple', 'Avocado', 'Banana', 'Pear', 'Orange', 'Blueberry', 'Blackberry']} />
+              </Tab>
+            </TabsPane>
           </Section>
 
           <Section>
             <SectionHeader>Organizations</SectionHeader>
-            <TabPane>
+            <TabsPane>
               <Tab title="All">
                 <ul>
                   <ListItem count="42" label="All Organizations" />
                 </ul>
               </Tab>
-              <Tab title="Labels">Labels tab content</Tab>
-            </TabPane>
+              <Tab title="Labels">
+                <LabelsDictionary labels={['Apple', 'Samsung', 'Sony', 'HTC', 'Vertu', 'Nokia', 'Siemens', 'Blackberry']} />
+              </Tab>
+            </TabsPane>
           </Section>
 
           <Section>

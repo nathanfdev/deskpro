@@ -2,7 +2,6 @@ import React from 'react';
 
 export class NavFrame extends React.Component {
   render() {
-
     let outer, inner = this.props.children;
     if (this.props.children.length) {
       this.props.children.forEach((child) => {
