@@ -148,7 +148,7 @@ class NewsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY, $category)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
@@ -219,7 +219,7 @@ class NewsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS, $post)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
         }

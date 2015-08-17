@@ -146,7 +146,7 @@ class ArticlesController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $category)
         ) {
             // waiting info regarding article category subscriptions
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
@@ -218,7 +218,7 @@ class ArticlesController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE, $article)
         ) {
             // waiting on info on the kb subs
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());

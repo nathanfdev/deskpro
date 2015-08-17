@@ -147,7 +147,7 @@ class DownloadsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY, $category)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
@@ -223,7 +223,7 @@ class DownloadsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD, $file)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
         }
