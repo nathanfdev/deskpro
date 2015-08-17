@@ -28,14 +28,18 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixtureDeleteInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoriesFindAll;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoryCreate;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoryDelete;
 use DateTime;
+use Zendesk\API\ResponseException;
 
 /**
  * Class Categories
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
  */
-final class Categories extends AbstractFixture
+final class Categories extends AbstractFixture implements FixtureDeleteInterface
 {
     /**
      * {@inheritdoc}
@@ -43,6 +47,32 @@ final class Categories extends AbstractFixture
     public function getEntityType()
     {
         return 'category';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($offset)
+    {
+        try {
+            $helper = new CategoriesFindAll();
+            $categories = $helper->request($this->client);
+
+            $min = $offset;
+            $max = $offset + self::COUNT;
+
+            foreach ($categories->categories as $category) {
+                $prefix = str_replace('Category', '', $category->name);
+
+                if ($min <= $prefix && $prefix <= $max) {
+                    $helper = new CategoryDelete(array('id' => $category->id));
+                    $helper->request($this->client);
+                }
+            }
+
+        } catch (ResponseException $e) {
+            $this->handleResponseException('category');
+        }
     }
 
     /**

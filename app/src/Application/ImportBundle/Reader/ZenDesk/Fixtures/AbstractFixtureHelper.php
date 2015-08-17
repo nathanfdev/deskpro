@@ -99,7 +99,7 @@ abstract class AbstractFixtureHelper
     protected function handleResponseException($entity_type)
     {
         $this->logWarning(sprintf(
-            'Unable to export %s, code `%s`, headers:',
+            'Bad response, entity type=`%s`, code=`%s`, headers:',
 
             $entity_type,
             $this->client->getDebug()->lastResponseCode

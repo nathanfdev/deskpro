@@ -102,4 +102,29 @@ abstract class AbstractHelper implements ClientHelperInterface
         $client->setSideload(null);
         return $response;
     }
+
+    /**
+     * Sends a delete request
+     *
+     * @param Client $client
+     * @param string $end_point
+     *
+     * @return mixed
+     * @throws ResponseException
+     */
+    protected function doDeleteRequest(Client $client, $end_point)
+    {
+        $response      = Http::send($client, $end_point, null, 'DELETE');
+        $success_codes = array(
+            Response::HTTP_OK,
+            Response::HTTP_NO_CONTENT,
+        );
+
+        if ( ! in_array($client->getDebug()->lastResponseCode, $success_codes)) {
+            throw new ResponseException($end_point);
+        }
+
+        $client->setSideload(null);
+        return $response;
+    }
 }

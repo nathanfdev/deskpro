@@ -25,31 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
-
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
-use Zendesk\API\Client;
-use Zendesk\API\MissingParametersException;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
 /**
- * ZenDesk HelpCenter category delete request client helper
+ * ZenDesk fixture delete data interface
  *
- * Class CategoryDelete
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#delete-category
+ * Interface FixtureDeleteInterface
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
  */
-final class CategoryDelete extends AbstractHelper
+interface FixtureDeleteInterface
 {
     /**
-     * {@inheritdoc}
+     * Deletes fixtures by period
+     *
+     * @param int $offset
+     * @return void
      */
-    public function request(Client $client)
-    {
-        if ( ! isset($this->params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
-        }
-
-        return $this->doDeleteRequest($client, sprintf('help_center/categories/%d.json', $this->params['id']));
-    }
+    public function delete($offset);
 }

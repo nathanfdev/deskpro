@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 use DateTime;
 
 /**
- * ZenDesk fixture prepare referred data interface
+ * ZenDesk fixture prepare related data interface
  *
  * Interface FixturePrepareInterface
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
