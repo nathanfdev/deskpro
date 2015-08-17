@@ -122,7 +122,7 @@ export default class ReducerBuilder {
    * @param {String}           name        The name of the property of the state to set
    * @param {bool}             value       The value to set
    */
-  simpleSetAction(actioneType, name, value) {
+  simpleSetAction(actionType, name, value) {
     this.action(actionType, this._createSimpleAction(name, value, 'value'));
     return this;
   }
@@ -135,7 +135,7 @@ export default class ReducerBuilder {
       // state slice is an immutable
       if (Immutable.Map.isMap(state)) {
         if (typeof value !== 'undefined') {
-          if (vauleType === 'prop') {
+          if (valueType === 'prop') {
             return state.set(name, objGet(payload, value));
           } else if (valueType === 'value') {
             return state.set(name, value);
@@ -149,8 +149,8 @@ export default class ReducerBuilder {
       // state slice is a plain object
       } else {
         if (typeof value !== 'undefined') {
-          if (vauleType === 'prop') {
-            return { ...state, [name]: objGet(payload, prop) };
+          if (valueType === 'prop') {
+            return { ...state, [name]: objGet(payload, value) };
           } else if (valueType === 'value') {
             return { ...state, [name]: valueType };
           } else {

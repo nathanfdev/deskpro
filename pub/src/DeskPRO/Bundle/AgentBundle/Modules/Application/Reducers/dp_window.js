@@ -8,11 +8,10 @@ export default createReducer(r => {
 		expandedSwitcher: false,
 	});
 
-	r.simpleAction(AppActions.setIsLoaded, 'isLoaded');
+	r.simpleSetAction(AppActions.setIsLoaded, 'isLoaded', true);
 
 	r.asyncAction(AppActions.loadWindow, aa => {
 		aa.success((state, data) => {
-			console.log("XX");
 			return {
 				...state,
 				isLoaded: true

@@ -9,6 +9,10 @@ function getPromise(action) {
     return null;
   }
 
+  if (!action.payload) {
+    return null;
+  }
+
   // Already been dispatched through the system
   if (typeof action.sequence !== 'undefined' && typeof action.sequence.type !== 'undefined') {
     return null;

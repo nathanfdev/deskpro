@@ -29,11 +29,11 @@ function createDefaultAction(actionType) {
 function createActionFn(actionType, actionFn) {
   // Default -> whatever is passed to the action, dispatch that
   if (typeof actionFn === 'undefined') {
-    return createDefaultAction(actionType);
+    return ({...args}) => args;
 
   // Constant -> the action has a hard-coded value
   } else if (typeof actionFn !== 'function') {
-    return () => createDefaultAction(actionType)(actionFn);
+    return () => actionFn;
 
   // Typical -> The action is a function
   } else {

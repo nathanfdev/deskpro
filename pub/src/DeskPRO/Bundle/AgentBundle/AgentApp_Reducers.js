@@ -7,7 +7,6 @@ import Chat_index                                         from "./Modules/Chat/R
 import Tasks_agentList                                    from "./Modules/Tasks/Reducers/agentList.js";
 import Tasks_createdProject                               from "./Modules/Tasks/Reducers/createdProject.js";
 import Tasks_departmentList                               from "./Modules/Tasks/Reducers/departmentList.js";
-import Tasks_index                                        from "./Modules/Tasks/Reducers/index.js";
 import Tasks_labelList                                    from "./Modules/Tasks/Reducers/labelList.js";
 import Tasks_projectCreate                                from "./Modules/Tasks/Reducers/projectCreate.js";
 import Tasks_projectList                                  from "./Modules/Tasks/Reducers/projectList.js";
@@ -46,7 +45,6 @@ export default {
     "agentList":                                          Tasks_agentList,
     "createdProject":                                     Tasks_createdProject,
     "departmentList":                                     Tasks_departmentList,
-    "index":                                              Tasks_index,
     "labelList":                                          Tasks_labelList,
     "projectCreate":                                      Tasks_projectCreate,
     "projectList":                                        Tasks_projectList,
