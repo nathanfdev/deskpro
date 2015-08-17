@@ -13,3 +13,16 @@ export function loadAddress(address, params = {}) {
 
     return DpApi.sendGet('DP_API/' + address);
 }
+
+/**
+ * Load a generic API endpoint. Only use when you need to get the address from the action
+ * @return Promise
+ */
+export function toValidate() {
+    let query = {
+        awaiting_validation: 1
+    };
+
+    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+

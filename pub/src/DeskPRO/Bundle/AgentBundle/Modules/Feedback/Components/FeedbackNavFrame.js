@@ -1,20 +1,32 @@
 import React from "react";
 import { connect } from 'redux/react';
+import $ from "jquery";
 
 import * as FeedbackListActions from "../Actions/FeedbackListActions";
+import FeedbackNavPending from "../Components/FeedbackNavPending.js";
 
 @connect(state => ({
     user: state.user,
-    dp_window: state.dp_window
+    dp_window: state.dp_window,
+    feedbackToValidate: state.feedbackToValidate
 }))
-export default class FeedbackNavFrame extends React.Component {
-  constructor(props) {
-    super(props);
-    this.props.dispatch(FeedbackListActions.bogusAction());
-  }
+export default
+class FeedbackNavFrame extends React.Component {
+    constructor(props) {
+        super(props);
+        const { dispatch } = this.props;
+        this.props.dispatch(FeedbackListActions.feedbackToValidate());
+    }
+
+
+    switchTaskList(identifier, event) {
+        this.props.dispatch(TaskActions.loadTaskList(identifier));
+        $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
+        $(event.target).closest('a').addClass('active');
+    }
+
     render() {
-        console.log(this.props);
-        //const { taskList, projectList, agentList, labelList, departmentList, teamList, createdProject } = this.props;
+        const { feedbackToValidate } = this.props;
 
         return (
             <section className="task-nav-frame dp-nav-frame">
@@ -41,6 +53,11 @@ export default class FeedbackNavFrame extends React.Component {
                             <hr/>
                             <a href="#" className="slider-control"></a>
                         </div>
+                        <div className="sidebar-list sidebar-list-filters">
+                            <FeedbackNavPending feedbackToValidate={feedbackToValidate}
+                                                switchFeedbackList={this.switchFeedbackList.bind(this)}/>
+                        </div>
+
                     </aside>
                 </div>
             </section>

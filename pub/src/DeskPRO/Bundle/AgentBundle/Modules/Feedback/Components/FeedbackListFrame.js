@@ -10,7 +10,6 @@ export default class TasksListFrame extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         const {taskFrameList} = this.props;
         const _this = this;
         return (
