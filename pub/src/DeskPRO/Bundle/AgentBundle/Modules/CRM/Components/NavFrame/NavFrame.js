@@ -10,7 +10,7 @@ export class NavFrame extends React.Component {
         <div part="outer"></div>
 
         <div part="inner">
-          <NavFrameHeader icon="fa-users" title="CRM" />
+          <NavFrameHeader icon="fa-users">CRM</NavFrameHeader>
 
           <div className="sidebar-list sidebar-list-filters">
             test
