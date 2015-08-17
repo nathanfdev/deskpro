@@ -1,13 +1,13 @@
 import React from 'react';
 import AppContainer from 'DeskPRO/Component/AppContainer';
-import { NavFrameContainer } from './NavFrame/NavFrameContainer';
+import { NavContainer } from './Nav/NavContainer';
 
 export class CrmApp extends React.Component {
 
   render() {
     return (
       <AppContainer thisAppId="crm">
-        <NavFrameContainer />
+        <NavContainer />
       </AppContainer>
     );
   }

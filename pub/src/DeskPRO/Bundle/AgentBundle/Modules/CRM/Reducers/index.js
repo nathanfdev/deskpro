@@ -1,1 +1,2 @@
-export default {};
+import CrmNav from './CrmNav';
+export default {CrmNav,};
