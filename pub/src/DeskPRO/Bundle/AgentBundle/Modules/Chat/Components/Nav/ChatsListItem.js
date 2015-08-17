@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'redux/react';
-import { ListItem } from './ListItem';
+import { ListItem } from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/index';
 
 @connect(state => ({
   labels: {
@@ -17,7 +17,7 @@ import { ListItem } from './ListItem';
     }
   }
 }))
-export class ListItemContainer extends React.Component {
+export class ChatsListItem extends React.Component {
   render() {
     const {count, group, groupBy} = this.props;
     const label = this.props.labels[groupBy][group];

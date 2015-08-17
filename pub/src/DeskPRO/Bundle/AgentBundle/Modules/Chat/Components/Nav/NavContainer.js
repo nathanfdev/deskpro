@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'redux/react';
 import * as actions from '../../Actions/chatNavActions'
-import { NavFrame } from './NavFrame';
+import { Nav } from './Nav';
 
 @connect(state => ({
   lists: state.ChatNav.lists,
@@ -23,7 +23,7 @@ import { NavFrame } from './NavFrame';
     }
   }
 }))
-export class NavFrameContainer extends React.Component {
+export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -37,7 +37,7 @@ export class NavFrameContainer extends React.Component {
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
 
     return (
-      <NavFrame
+      <Nav
         lists={lists}
         grouping={grouping}
         changeGrouping={changeGrouping}

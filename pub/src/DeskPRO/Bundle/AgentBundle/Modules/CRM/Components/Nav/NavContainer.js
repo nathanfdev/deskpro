@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'redux/react';
 import * as actions from '../../Actions/crmNavActions'
-import { NavFrame } from './NavFrame';
+import { Nav } from './Nav';
 
 @connect(state => ({
   test: 'test'
 }))
-export class NavFrameContainer extends React.Component {
+export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -14,7 +14,7 @@ export class NavFrameContainer extends React.Component {
 
   render() {
     return (
-      <NavFrame />
+      <Nav />
     );
   }
 }
