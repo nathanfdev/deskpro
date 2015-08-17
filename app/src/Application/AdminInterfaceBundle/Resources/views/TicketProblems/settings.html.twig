@@ -33,7 +33,7 @@
 
                             <h4>
                                 <select ng-model="perm.selected" ng-change="updateAgents()">
-                                    {% for perm in ['view', 'create', 'close', 'delete'] %}
+                                    {% for perm in ['view', 'create', 'close', 'reopen'] %}
                                         <option value="{{ perm }}">{{ phrase('adm.problems.set_' ~ perm ~ '_perm') }}</option>
                                     {% endfor %}
                                 </select>:
