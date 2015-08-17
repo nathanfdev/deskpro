@@ -4,10 +4,6 @@ import objGet from "lodash/object/get";
 
 import Builder from "./connectHelpers/Builder";
 
-function getDisplayName(Component) {
-  return Component.displayName || Component.name || 'Component';
-}
-
 export default function connect(builderFn) {
 
   const builder = new Builder();

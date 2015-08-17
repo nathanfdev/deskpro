@@ -10,16 +10,33 @@ export default class PropBuilder {
     }
   }
 
+  /**
+   * Sets a custom check function. The function is passed
+   * the value of a property, and if you return true,
+   * the property is considered loaded.
+   *
+   * @param {Function} fn
+   */
   check(fn) {
     this.checkFn = fn;
     return this;
   }
 
+  /**
+   * Sets the check function to just check that the value is not null
+   * and is not undefined.
+   */
   isset() {
-    this.checkFn = (val) => !!val;
+    this.checkFn = (val) => val !== null && typeof val !== 'undefined';
     return this;
   }
 
+  /**
+   * Sets the init method to be a dispatch of an action.
+   *
+   * @param {Function} action The action function to dispatch
+   * @param {...} rest Any other params will be passed to the action function as-is
+   */
   initWithAction(action, ...rest) {
     this.initFn = (dispatch) => {
       dispatch(action(...rest));
@@ -27,6 +44,12 @@ export default class PropBuilder {
     return this.builder;
   }
 
+  /**
+   * Sets the init method to a custom function. Your custom function
+   * is passed the dispatch function.
+   *
+   * @param {Function} fn
+   */
   initWith(fn) {
     this.initFn = (dispatch) => fn(dispatch);
     return this.builder;
