@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -337,6 +338,7 @@ class FeedbackController extends AbstractController
      * @Route("/feedback/view/{slug}/vote-down", name="portal_feedback_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('RATE_FEEDBACK', item)")
+     * @AutoPostOnGetRequest()
      */
     public function feedbackRateAction(Feedback $item, $visitor_id, $up_or_down)
     {

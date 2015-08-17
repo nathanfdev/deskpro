@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -273,6 +274,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}/vote-down", name="portal_downloads_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('RATE_DOWNLOAD', file)")
+     * @AutoPostOnGetRequest()
      */
     public function downloadRateAction(Download $file, $visitor_id, $up_or_down)
     {
@@ -293,6 +295,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}/toggle-subscription", name="portal_downloads_files_toggle_subscription")
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD', file)")
+     * @AutoPostOnGetRequest()
      */
     public function downloadsSubscriptionAction(Download $file)
     {
@@ -314,6 +317,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/category/toggle-subscription/{slug}", name="portal_downloads_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD_CATEGORY', category)")
+     * @AutoPostOnGetRequest()
      */
     public function downloadsCategorySubscriptionAction(DownloadCategory $category)
     {
@@ -337,6 +341,7 @@ class DownloadsController extends AbstractController
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_DOWNLOADS')")
+     * @AutoPostOnGetRequest()
      */
     public function downloadsUnsubscribeAllAction()
     {

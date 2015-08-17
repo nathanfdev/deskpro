@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -272,6 +273,7 @@ class NewsController extends AbstractController
      * @Route("/news/posts/{slug}/vote-down", name="portal_news_post_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('RATE_NEWS', post)")
+     * @AutoPostOnGetRequest()
      */
     public function newsRateAction(News $post, $visitor_id, $up_or_down)
     {
@@ -292,6 +294,7 @@ class NewsController extends AbstractController
      * @Route("/news/posts/{slug}/toggle-subscription", name="portal_news_post_toggle_subscription")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS', post)")
+     * @AutoPostOnGetRequest()
      */
     public function newsSubscriptionAction(News $post)
     {
@@ -313,6 +316,7 @@ class NewsController extends AbstractController
      * @Route("/news/category/toggle-subscription/{slug}", name="portal_news_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS_CATEGORY', category)")
+     * @AutoPostOnGetRequest()
      */
     public function newsCategorySubscriptionAction(NewsCategory $category)
     {
@@ -336,6 +340,7 @@ class NewsController extends AbstractController
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_NEWS')")
+     * @AutoPostOnGetRequest()
      */
     public function newsUnsubscribeAllAction()
     {
