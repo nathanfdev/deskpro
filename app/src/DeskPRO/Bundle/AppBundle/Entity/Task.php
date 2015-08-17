@@ -34,11 +34,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Application\DeskPRO\Entity\Person;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
@@ -185,7 +187,7 @@ class Task extends NotifyPropertyChangeEntity
 
     /**
      * @var TaskAssignment[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="TaskAssignment", mappedBy="task")
+     * @ORM\OneToMany(targetEntity="TaskAssignment", mappedBy="task", cascade={"persist"}, orphanRemoval=true)
      */
     protected $assigned;
 
@@ -512,5 +514,139 @@ class Task extends NotifyPropertyChangeEntity
     public function getAssigned()
     {
         return $this->assigned;
+    }
+
+    public function getDepartments()
+    {
+        $departments = [];
+        if (!empty($this->assigned)) {
+            foreach ($this->assigned as $assigned) {
+                if (!empty($assigned->getDepartment())) {
+                    $departments[] = $assigned->getDepartment();
+                }
+            }
+        }
+
+        return new ArrayCollection($departments);
+    }
+
+    public function getTeams()
+    {
+        $departments = [];
+        if (!empty($this->assigned)) {
+            foreach ($this->assigned as $assigned) {
+                if (!empty($assigned->getTeam())) {
+                    $departments[] = $assigned->getTeam();
+                }
+            }
+        }
+
+        return new ArrayCollection($departments);
+    }
+
+    public function getAgents()
+    {
+        $departments = [];
+        if (!empty($this->assigned)) {
+            foreach ($this->assigned as $assigned) {
+                if (!empty($assigned->getPerson())) {
+                    $departments[] = $assigned->getPerson();
+                }
+            }
+        }
+
+        return new ArrayCollection($departments);
+    }
+
+    /**
+     * @param Department $department
+     */
+    public function addDepartment(Department $department)
+    {
+        $assigned = new TaskAssignment();
+        $assigned->setDepartment($department);
+        $assigned->setTask($this);
+        $this->addAssigned($assigned);
+    }
+
+    /**
+     * @param Department $department
+     */
+    public function removeDepartment(Department $department)
+    {
+        if (!empty($this->assigned)) {
+            foreach ($this->assigned as $assigned) {
+                if ($assigned->getDepartment() === $department) {
+                    $this->assigned->removeElement($assigned);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param AgentTeam $agentTeam
+     */
+    public function addTeam(AgentTeam $agentTeam)
+    {
+        $assigned = new TaskAssignment();
+        $assigned->setTeam($agentTeam);
+        $assigned->setTask($this);
+        $this->addAssigned($assigned);
+    }
+
+    /**
+     * @param AgentTeam $agentTeam
+     */
+    public function removeTeam(AgentTeam $agentTeam)
+    {
+        if (!empty($this->assigned)) {
+            foreach ($this->assigned as $assigned) {
+                if ($assigned->getTeam() === $agentTeam) {
+                    $this->assigned->removeElement($assigned);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function addAgent(Person $person)
+    {
+        $assignment = new TaskAssignment();
+        $assignment->setPerson($person);
+        $assignment->setTask($this);
+        $this->addAssigned($assignment);
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function removeAgent(Person $person)
+    {
+        if (!empty($this->assigned)) {
+            foreach ($this->assigned as $assignment) {
+                if ($assignment->getPerson() === $person) {
+                    $this->assigned->removeElement($assignment);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param TaskAssignment $assignment
+     */
+    public function addAssigned(TaskAssignment $assignment)
+    {
+        $this->assigned->add($assignment);
+        $this->setModelField('assignment', $assignment);
+    }
+
+    /**
+     * @param TaskAssignment $assignment
+     */
+    public function removeAssigned(TaskAssignment $assignment)
+    {
+        $this->assigned->removeElement($assignment);
     }
 }

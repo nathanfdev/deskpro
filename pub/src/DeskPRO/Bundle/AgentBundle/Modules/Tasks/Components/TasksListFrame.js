@@ -36,11 +36,7 @@ export default class TasksListFrame extends React.Component {
   }
 
   editTask(source, model) {
-    this.props.dispatch(TaskActions.editTask({
-      taskId : model.taskId,
-      title : model.title,
-      date_due : model.date_due
-    }, source));
+    this.props.dispatch(TaskActions.editTask(model, source));
   }
 
   createTask(source, model) {
