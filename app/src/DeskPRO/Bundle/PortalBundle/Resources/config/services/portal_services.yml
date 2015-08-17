@@ -26,4 +26,4 @@ services:
 
   portal_search_serializer:
       class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
-      arguments: [@router]
+      arguments: [@object_router]

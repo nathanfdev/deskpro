@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Search;
 
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Application\DeskPRO\Entity;
 
@@ -45,13 +46,13 @@ use Application\DeskPRO\Entity;
 class SimplePortalEntitySerializer
 {
     /**
-     * @var UrlGeneratorInterface
+     * @var ObjectRouter
      */
-    protected $url_generator;
+    private $object_router;
 
-    public function __construct(UrlGeneratorInterface $url_generator)
+    public function __construct(ObjectRouter $object_router)
     {
-        $this->url_generator = $url_generator;
+        $this->object_router = $object_router;
     }
 
     /**
@@ -90,46 +91,18 @@ class SimplePortalEntitySerializer
     {
         $result = array();
 
-        if ($object instanceof Entity\Article) {
+        if ($object instanceof Entity\Article
+            || $object instanceof Entity\News
+            || $object instanceof Entity\Download
+            || $object instanceof Entity\Feedback
+        ) {
             $result['id'] = $object->getId();
             $result['name'] = $object->getTitle();
-            $result['url'] = $this->url_generator->generate(
-                'portal_kb_view',
-                array('slug' => $object->getSlug()),
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-        } elseif ($object instanceof Entity\News) {
-            $result['id'] = $object->getId();
-            $result['name'] = $object->getTitle();
-            $result['url'] = $this->url_generator->generate(
-                'portal_news_view',
-                array('slug' => $object->getSlug()),
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-        } elseif ($object instanceof Entity\Download) {
-            $result['id'] = $object->getId();
-            $result['name'] = $object->getTitle();
-            $result['url'] = $this->url_generator->generate(
-                'portal_downloads_view',
-                array('slug' => $object->getSlug()),
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-        } elseif ($object instanceof Entity\Feedback) {
-            $result['id'] = $object->getId();
-            $result['name'] = $object->getTitle();
-            $result['url'] = $this->url_generator->generate(
-                'portal_feedback_view',
-                array('slug' => $object->getSlug()),
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            $result['url'] = $this->object_router->getPortalUrl($object);
         } elseif ($object instanceof Entity\Ticket) {
             $result['id'] = $object->getId();
             $result['name'] = $object->getSubject();
-            $result['url'] = $this->url_generator->generate(
-                'portal_tickets_view',
-                array('id' => $object->getId()),
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            $result['url'] = $this->object_router->getPortalUrl($object);
         } elseif ($object instanceof Entity\Person) {
             $result['id'] = $object->getId();
             $result['name'] = $object->getDisplayName();
