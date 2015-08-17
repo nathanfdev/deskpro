@@ -67,7 +67,8 @@
 	  "nelmio/api-doc-bundle": "~2.7",
 	  "willdurand/hateoas-bundle": "~1.0",
 	  "phpspec/prophecy-phpunit": "~1.0",
-		"league/fractal": "^0.12.0"
+	  "league/fractal": "^0.12.0",
+	  "beberlei/DoctrineExtensions": "^1.0"
 	},
 	"preferred-install": "dist"
 }

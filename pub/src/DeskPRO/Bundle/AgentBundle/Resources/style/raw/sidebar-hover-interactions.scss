@@ -59,7 +59,8 @@
 // Collection of checkboxes for sidebar intraction hovers
 .sidebar-hover-checkbox-collection {
   display: block;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   width: 100%;
   max-height: 120px;
   margin-top: 4px;
@@ -175,7 +176,6 @@
 
   .button {
     display: inline-block;
-    border-radius: 4px;
     background: #62ad8c;
     color: #fff;
     border-radius: 2px;

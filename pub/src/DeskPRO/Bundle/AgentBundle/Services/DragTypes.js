@@ -1,0 +1,10 @@
+// Drag sources and drop targets only interact
+// if they have the same string type.
+// You want to keep types in a separate file with
+// the rest of your app's constants.
+
+const DragTypes = {
+  TASK: 'card'
+};
+
+export default DragTypes;

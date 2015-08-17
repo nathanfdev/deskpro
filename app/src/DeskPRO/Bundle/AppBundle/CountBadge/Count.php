@@ -31,8 +31,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 /**
  * Represents a count, typically used to show counters/badges in a UI.
  */
@@ -44,72 +42,20 @@ class Count
     private $count;
 
     /**
-     * @var array
+     * @var CountsGroup
      */
-    private $count_meta = array();
+    private $nested;
 
     /**
-     * @var CountCollection
+     * Count constructor.
+     *
+     * @param int $count
+     * @param CountsGroup $nested
      */
-    private $grouped_counts;
-
-    /**
-     * @param int   $count                    The count itself
-     * @param array $count_meta               Any extra information about the count (such as a title or ID for the thing this is a count of)
-     * @param CountCollection $grouped_counts A collection of sub-counts
-     */
-    public function __construct($count, array $count_meta = array(), CountCollection $grouped_counts = null)
+    public function __construct($count, CountsGroup $nested = null)
     {
         $this->count = $count;
-
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->count_meta = $resolver->resolve($count_meta);
-
-        $this->grouped_counts = $grouped_counts ?: new CountCollection(null, array());
-    }
-
-    /**
-     * Sub-classes may implement this to define a custom resolver
-     * @param OptionsResolver $resolver
-     */
-    protected function configureOptions(OptionsResolver $resolver)
-    {
-    }
-
-    /**
-     * @param string $k
-     * @param mixed $default
-     * @return array
-     */
-    public function getCountMeta($k, $default = null)
-    {
-        return array_key_exists($k, $this->count_meta) ? $this->count_meta[$k] : $default;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllCountMeta()
-    {
-        return $this->count_meta;
-    }
-
-    /**
-     * @return CountCollection
-     */
-    public function getGroupedCounts()
-    {
-        return $this->grouped_counts;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasGroupedCounts()
-    {
-        return $this->grouped_counts->count() > 0;
+        $this->nested = $nested;
     }
 
     /**
@@ -118,5 +64,13 @@ class Count
     public function getCount()
     {
         return $this->count;
+    }
+
+    /**
+     * @return CountsGroup
+     */
+    public function getNested()
+    {
+        return $this->nested;
     }
 }

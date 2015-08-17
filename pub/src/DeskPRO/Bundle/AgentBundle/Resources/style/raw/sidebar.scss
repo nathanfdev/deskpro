@@ -449,6 +449,11 @@
     }
   }
 
+  li.droppable a {
+    background: $top-bar-blue;
+    color: #fff;
+  }
+
   .labelCharacter {
     font-weight: 700;
     color: #979797;

@@ -456,28 +456,6 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $submitted = $request->request->all();
 
-        if ($request->getMethod() === 'PUT' && isset($submitted['labels'])) {
-            $oldLabels = $task->getLabels();
-
-            // Put together an array of old labels for comparison
-            $oldLabelsClean = [];
-            foreach ($oldLabels as $oldLabel) {
-                $oldLabelsClean[] = $oldLabel->getLabel();
-
-                // Remove any labels not present in the PUT array
-                if (!in_array($oldLabel->getLabel(), $submitted['labels'])) {
-                    $this->getDoctrine()->getManager()->remove($oldLabel);
-                }
-            }
-
-            // If the label already exists, we don't need to sent it to the model
-            foreach ($submitted['labels'] as $key => $newLabel) {
-                if (in_array($newLabel, $oldLabelsClean)) {
-                    unset($submitted['labels'][$key]);
-                }
-            }
-        }
-
         /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(
             null,

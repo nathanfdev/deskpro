@@ -2,14 +2,22 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Intl\DateFormatter\IntlDateFormatter;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TaskType extends AbstractType
 {
+    /**
+     * @var Task
+     */
+    private $task;
+
     public function getName()
     {
         return 'task';
@@ -17,7 +25,9 @@ class TaskType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->task = $options['task'];
         $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSubmit']);
         $builder->add(
                 'title',
                 'text',
@@ -113,6 +123,51 @@ class TaskType extends AbstractType
                         'description' => 'the task labels',
                     ),
                 )
+//            )
+//            ->add(
+//                'departments',
+//                'collection',
+//                array(
+//                    'type' => 'department',
+//                    'allow_add' => true,
+//                    'allow_delete' => true,
+//                    'delete_empty' => true,
+//                    'options' => array(
+//                        'task' => $options['task'],
+//                        'required' => false,
+//                        'description' => 'task assignees which are departments',
+//                    ),
+//                )
+//            )
+//            ->add(
+//                'teams',
+//                'collection',
+//                array(
+//                    'type' => 'agent_team',
+//                    'allow_add' => true,
+//                    'allow_delete' => true,
+//                    'delete_empty' => true,
+//                    'options' => array(
+//                        'task' => $options['task'],
+//                        'required' => false,
+//                        'description' => 'task assignees which are teams',
+//                    ),
+//                )
+//            )
+//            ->add(
+//                'agents',
+//                'collection',
+//                array(
+//                    'type' => 'person',
+//                    'allow_add' => true,
+//                    'allow_delete' => true,
+//                    'delete_empty' => true,
+//                    'options' => array(
+//                        'task' => $options['task'],
+//                        'required' => false,
+//                        'description' => 'task assignees which are people',
+//                    ),
+//                )
             );
     }
 
@@ -123,5 +178,18 @@ class TaskType extends AbstractType
             'task' => null,
             'entity_manager' => null,
         ));
+    }
+
+    public function onSubmit(FormEvent $event)
+    {
+        /** @var Task $data */
+        $data = $event->getData();
+        $newMembers = $data->getLabels();
+
+        foreach ($this->task->getLabels() as $label) {
+            if (!$newMembers->contains($label)) {
+                $this->task->removeLabel($label);
+            }
+        }
     }
 }

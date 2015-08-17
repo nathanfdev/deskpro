@@ -39,4 +39,14 @@ use Prophecy\PhpUnit\ProphecyTestCase;
 
 abstract class DeskProTestCase extends ProphecyTestCase
 {
+    /**
+     * Stub creation helper
+     *
+     * @param string $type Class or interface
+     * @return object
+     */
+    protected function stub($type)
+    {
+        return $this->prophesize($type)->reveal();
+    }
 }

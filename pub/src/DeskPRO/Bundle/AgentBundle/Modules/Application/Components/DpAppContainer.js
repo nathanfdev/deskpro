@@ -5,6 +5,7 @@ import DpApp from "./DpApp";
 import DpAppLoading from "./DpAppLoading";
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
+import ChatApp from '../../Chat/Components/ChatApp';
 import TestApp from '../../Test/Components/TestApp';
 import * as AppActions from "../Actions/AppActions";
 import { Router, Route, Redirect } from 'react-router';
@@ -63,6 +64,7 @@ export default class DpAppContainer extends React.Component {
           <Route path={base_path} component={ReactRouterWrapper}>
             <Redirect from="/" to="tickets" />
             <Route name="tickets" path="tickets" component={TicketsApp} />
+            <Route name="chat" path="chat" component={ChatApp} />
             <Route name="tasks" path="tasks" component={TasksApp} />
             <Route name="test" path="test" component={TestApp} />
           </Route>

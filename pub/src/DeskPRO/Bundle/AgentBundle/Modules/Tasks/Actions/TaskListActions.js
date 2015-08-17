@@ -182,9 +182,6 @@ export const loadTaskList = createAction(
           }
         });
 
-        // @TODO: Refactor all of this
-        // This should comprise of several promises, which when all complete fire trigger(result)
-
         // Load all the relevant data, and when it's done fire the trigger
         Promise.all([
           Tasks.loadProjects({ids: projects.join(',')}),
