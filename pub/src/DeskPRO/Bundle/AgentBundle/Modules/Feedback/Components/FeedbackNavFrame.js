@@ -8,11 +8,11 @@ import $ from "jquery";
 @connect(state => ({
     user: state.user,
     dp_window: state.dp_window,
-    toValidate: state.toValidate,
-    commentsToReview: state.commentsToReview
+    feedbackList: state.FeedbackList
 }))
 
-export default class FeedbackNavFrame extends React.Component {
+export default
+class FeedbackNavFrame extends React.Component {
     constructor(props) {
         super(props);
         const { dispatch } = this.props;
@@ -27,8 +27,7 @@ export default class FeedbackNavFrame extends React.Component {
     }
 
     render() {
-        const { toValidate, commentsToReview } = this.props;
-
+        const { feedbackList } = this.props;
         return (
             <section className="task-nav-frame dp-nav-frame">
                 <div className="sidebar-wrapper" id="sidebar-wrapper">
@@ -55,7 +54,7 @@ export default class FeedbackNavFrame extends React.Component {
                             <a href="#" className="slider-control"></a>
                         </div>
                         <div className="sidebar-list sidebar-list-filters">
-                            <FeedbackNavPending toValidate={toValidate} commentsToReview={commentsToReview}
+                            <FeedbackNavPending data={feedbackList}
                                                 switchFeedback={this.switchFeedback.bind(this)}/>
                         </div>
 
