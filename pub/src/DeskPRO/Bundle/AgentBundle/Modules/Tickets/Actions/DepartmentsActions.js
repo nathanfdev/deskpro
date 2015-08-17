@@ -1,11 +1,7 @@
-import { createAction } from "Ampliflux/actions";
+import { createAction } from "Ampliflux";
 import * as Departments from "DeskPRO/Bundle/AgentBundle/Services/Api/Departments";
 
-export const loadDepartment = createAction(
-  "TICKETS_DEPARTMENT_LOADED",
-  (trigger, dept_id) => {
-      Departments.loadDepartment(dept_id).then(
-          (values) => trigger(values.getData())
-      );
-  }
-);
+export const setDepartments  = createAction("TICKETS_SET_DEPARTMENTS");
+export const loadDepartments = createAction("TICKETS_LOAD_DEPARTMENTS", () => {
+  return Departments.loadDepartments().then(httpResult => setDepartments(httpResult.getData()));
+});

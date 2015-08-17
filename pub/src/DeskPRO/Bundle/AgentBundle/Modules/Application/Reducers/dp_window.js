@@ -1,17 +1,18 @@
+import Immutable from "immutable";
 import * as AppActions from "../Actions/AppActions";
 import { createReducer } from "Ampliflux";
 
 export default createReducer(r => {
-	r.initialState({
+	r.initialState(Immutable.Map({
 		isLoaded: false,
 		collapsedNav: false,
 		expandedSwitcher: false,
-	});
+	}));
 
-	r.simpleSetAction(AppActions.setIsLoaded, 'isLoaded', true);
+	r.handle(AppActions.setIsLoaded, () => {isLoaded : true});
 
-	r.asyncAction(AppActions.loadWindow, aa => {
-		aa.success((state, data) => {
+	r.handleAsync(AppActions.loadWindow, aa => {
+		aa.handleSuccess((state, data) => {
 			return {
 				...state,
 				isLoaded: true

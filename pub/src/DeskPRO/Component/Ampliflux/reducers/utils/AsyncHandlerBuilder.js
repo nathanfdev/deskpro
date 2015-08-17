@@ -1,3 +1,23 @@
+import Immutable from "immutable";
+
+/**
+ * Combines two handler functions into one.
+ *
+ * @param {Function} fn
+ * @param {Function} fn2
+ * @return {Function}
+ */
+function handlerFunctions(fn, fn2) {
+  if (!fn) {
+    return fn2;
+  }
+  if (!fn2) {
+    return fn;
+  }
+
+  return (state, ...rest) => fn(fn2(state, ...rest), ...rest);
+}
+
 /**
  * Builder used with ReducerBuilder that helps you specify the various handlers
  * in response to an async action.
@@ -6,10 +26,32 @@
  */
 export default class AsyncHandlerBuilder {
   constructor() {
-    this.startFn   = null;
-    this.successFn = null;
-    this.errorFn   = null;
-    this.doneFn    = null;
+    this.startFn      = null;
+    this.successFn    = null;
+    this.errorFn      = null;
+    this.doneFn       = null;
+  }
+
+  /**
+   * Sets `isLoading` state automatically for start/done
+   */
+  handleLoading(propName = 'isLoading') {
+    propName = propName.split('.');
+    this.handleStart((state) => {
+      if (!Immutable.Map.isMap(state)) {
+        state = Immutable.Map(state);
+      }
+
+      state.setIn(propName, true);
+    });
+    this.handleDone((state) => {
+      if (!Immutable.Map.isMap(state)) {
+        state = Immutable.Map(state);
+      }
+
+      state.setIn(propName, false);
+    });
+    return this;
   }
 
   /**
@@ -20,8 +62,8 @@ export default class AsyncHandlerBuilder {
    *
    * @param {Function} fn
    */
-  start(fn) {
-    this.startFn = fn;
+  handleStart(fn) {
+    this.startFn = handlerFunctions(this.startFn, fn);
     return this;
   }
 
@@ -32,8 +74,8 @@ export default class AsyncHandlerBuilder {
    *
    * @param {Function} fn
    */
-  success(fn) {
-    this.successFn = fn;
+  handleSuccess(fn) {
+    this.successFn = handlerFunctions(this.successFn, fn);
     return this;
   }
 
@@ -44,8 +86,8 @@ export default class AsyncHandlerBuilder {
    *
    * @param {Function} fn
    */
-  error(fn) {
-    this.errorFn = fn;
+  handleError(fn) {
+    this.errorFn = handlerFunctions(this.errorFn, fn);
     return this;
   }
 
@@ -58,8 +100,8 @@ export default class AsyncHandlerBuilder {
    *
    * @param {Function} fn
    */
-  done(fn) {
-    this.doneFn = fn;
+  handleDone(fn) {
+    this.doneFn = handlerFunctions(this.doneFn, fn);
     return this;
   }
 }

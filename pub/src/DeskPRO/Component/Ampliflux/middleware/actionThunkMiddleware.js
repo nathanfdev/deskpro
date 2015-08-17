@@ -16,6 +16,17 @@ export default function actionThunkMiddleware({ dispatch, getState }) {
         parentType: action.type,
         payload: action.payload(dispatch, getState, action)
       });
+
+    // the action payload is itself some action, we will dispatch that instead
+    // - This is common when an async action resolves and we want to dispatch something
+    // with the value.
+    // - If we didnt do this, we'd need to return a function to get dispatch, so handling
+    // this case is a shortcut
+    } else if (isDSA(action.payload)) {
+      return dispatch({
+        ...action.payload,
+        parentType: action.type
+      });
     } else {
       return next(action);
     }

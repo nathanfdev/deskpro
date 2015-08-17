@@ -27,7 +27,6 @@ import Tickets_StarsCounts                                from "./Modules/Ticket
 import Tickets_TicketsList                                from "./Modules/Tickets/Reducers/TicketsList.js";
 import Tickets_Translations                               from "./Modules/Tickets/Reducers/Translations.js";
 import Tickets_departments                                from "./Modules/Tickets/Reducers/departments.js";
-import Tickets_index                                      from "./Modules/Tickets/Reducers/index.js";
 import Tickets_people                                     from "./Modules/Tickets/Reducers/people.js";
 
 export default {
@@ -71,7 +70,6 @@ export default {
     "TicketsList":                                        Tickets_TicketsList,
     "Translations":                                       Tickets_Translations,
     "departments":                                        Tickets_departments,
-    "index":                                              Tickets_index,
     "people":                                             Tickets_people,
   },
 };

@@ -10,34 +10,28 @@ import AsyncHandlerBuilder from "./AsyncHandlerBuilder";
  */
 export default class ReducerBuilder {
   constructor() {
-    this._initialState = null;
+    this._initialState = {};
     this._handlersMap  = {};
   }
 
   /**
-   * Set initial state.
-   *
    * @param {Object/Function} An object or a function that returns an object
    */
   initialState(val) {
-    if (typeof val === 'function') {
-      this._initialState = val;
-    } else {
-      this._initialState = Immutable.Map(val);
-    }
+    this._initialState = val;
     return this;
   }
 
   /**
    * Adds a handler for an action.
    *
-   * Your `fn` will accept two params: data and action. The first param 'data' is the same as action.payload; it's
+   * Your `fn` will accept three params: state, data and action. The first param 'data' is the same as action.payload; it's
    * just a bit cleaner to use if you don't need the full details of the action.
    *
    * @param {String/Function}  actionType  The action type. Either a string, or a function created via createAction
    * @param {Function}         fn          `fn(data, payload)` is your function that handles the action
    */
-  action(actionType, fn) {
+  handleSet(actionType, fn) {
     actionType = getActionType(actionType);
 
     if (typeof this._handlersMap[actionType] !== 'undefined') {
@@ -45,6 +39,39 @@ export default class ReducerBuilder {
     }
 
     this._handlersMap[actionType] = fn;
+    return this;
+  }
+
+  /**
+   * Adds a handler that will call `fn(data, action, currentState)` which is expected
+   * to return a Map/object which will be merged into the current state.
+   *
+   * @param {String/Function}  actionType  The action type. Either a string, or a function created via createAction
+   * @param {Function}         fn
+   */
+  handle(actionType, fn, deep = false) {
+    this.handleSet(actionType, (state, data, action) => {
+      const partial  = Immutable.Map(fn(data, action, state));
+      const oldState = Immutable.Map.isMap(state) ? state : Immutable.Map(state);
+      return deep ? oldState.mergeDeep(partial) : oldState.merge(partial);
+    });
+    return this;
+  }
+
+  /**
+   * Shortcut for a handler that will set value on the store using
+   * data from the payload.
+   *
+   * @param {String/Function}  actionType      The action type. Either a string, or a function created via createAction
+   * @param {String}           statePropKey    The key of the value in the store
+   * @param {String}           payloadPropKey  The key of the value in data payload to set
+   */
+  handleProperty(actionType, statePropKey, payloadPropKey) {
+    this.handleSet(actionType, (state, data, action) => {
+      const payloadVal = Immutable.Map.isMap(data) ? data.getIn(payloadPropKey.split('.')) : objGet(data, payloadPropKey);
+      const oldState   = Immutable.Map.isMap(state) ? state : Immutable.Map(state);
+      return oldState.mergeIn(statePropKey.split('.'), payloadVal);
+    });
     return this;
   }
 
@@ -68,99 +95,34 @@ export default class ReducerBuilder {
    * @param {String/Function}  actionType  The action type. Either a string, or a function created via createAction
    * @param {Function}         buildFn     `buildFn(hb)` that uses `hb` to build a handler for async actions
    */
-  asyncAction(actionType, buildFn) {
+  handleAsync(actionType, buildFn) {
     const hb = new AsyncHandlerBuilder();
     buildFn(hb);
 
     if (hb.startFn) {
-      this.action(actionType + ".START", hb.startFn);
+      this.handle(actionType + ".START", hb.startFn);
     }
     if (hb.successFn) {
-      this.action(actionType, hb.succesFns);
+      this.handle(actionType, hb.succesFns);
     }
     if (hb.errorFn) {
-      this.action(actionType + ".ERROR", hb.errorFn);
+      this.handle(actionType + ".ERROR", hb.errorFn);
     }
     if (hb.doneFn) {
-      this.action(actionType + ".DONE", hb.doneFn);
+      this.handle(actionType + ".DONE", hb.doneFn);
     }
 
     return this;
   }
 
-
   /**
-   * A simple action where the payload value is returned as the state,
-   * or optionally the path to a property to assign.
-   *
-   * <code>
-   * r.simlpeAction("MY_ACTION", "something", "foobar");
-   *
-   * // You can use 'paths' in the prop names to target 'deep' values
-   * r.simlpeAction("MY_ACTION", "hello.world", "foo.bar");
-   *
-   * // roughly same as:
-   * r.action("MY_ACTION", (state, data) => {
-   *     return { ...state, hello: { ...state.hello, world: data.foo.bar }}
-   * });
+   * Shortcut for creating a handler that sets `isLoaded` flag on state for an async action.
    *
    * @param {String/Function}  actionType  The action type. Either a string, or a function created via createAction
-   * @param {String}           name        The name of the property of the state to set
-   * @param {String}           prop        The name of the property of the payload to use as the value
    */
-  simpleAction(actionType, name, prop) {
-    this.action(actionType, this._createSimpleAction(name, prop, 'prop'));
+  handleAsyncWithStatus(actionType, propName = 'isLoaded') {
+    this.handleAsync(actionType, b => b.handleLoading(propName));
     return this;
-  }
-
-  /**
-   * Similar to simpleAction except you can specify a hard-coded value rather than
-   * using a property of the payload. So this completely ignores the payload data.
-   * Typically used for actions that result in boolean values being assigned.
-   *
-   * @param {String/Function}  actionType  The action type. Either a string, or a function created via createAction
-   * @param {String}           name        The name of the property of the state to set
-   * @param {bool}             value       The value to set
-   */
-  simpleSetAction(actionType, name, value) {
-    this.action(actionType, this._createSimpleAction(name, value, 'value'));
-    return this;
-  }
-
-  /**
-   * Creates the function used by simpleAction
-   */
-  _createSimpleAction(name, value, valueType) {
-    return (state, payload) => {
-      // state slice is an immutable
-      if (Immutable.Map.isMap(state)) {
-        if (typeof value !== 'undefined') {
-          if (valueType === 'prop') {
-            return state.set(name, objGet(payload, value));
-          } else if (valueType === 'value') {
-            return state.set(name, value);
-          } else {
-            throw new Error("Invalid type for valueType");
-          }
-        } else {
-          return state.set(name, payload);
-        }
-
-      // state slice is a plain object
-      } else {
-        if (typeof value !== 'undefined') {
-          if (valueType === 'prop') {
-            return { ...state, [name]: objGet(payload, value) };
-          } else if (valueType === 'value') {
-            return { ...state, [name]: valueType };
-          } else {
-            throw new Error("Invalid type for valueType");
-          }
-        } else {
-          return { ...state, [name]: payload };
-        }
-      }
-    }
   }
 
   /**
@@ -171,9 +133,6 @@ export default class ReducerBuilder {
   getInitialState() {
     if (typeof this._initialState === 'function') {
       return this._initialState();
-    }
-    if (this._initialState === null) {
-      this._initialState = Immutable.Map();
     }
     return this._initialState;
   }
