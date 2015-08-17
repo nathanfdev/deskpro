@@ -30,5 +30,7 @@
     'portal.flashes.user_registered_must_verify' => 'Thank you for registering. Please check your email, we have sent you a verification link.',
     'portal.flashes.new_feedback_verify' => 'We have sent you the verification link for your feedback. Please check your email and click the link.',
     'portal.flashes.new_feedback_verified' => 'Thank you, your email has been verified.',
-    'portal.flashes.new_feedback_failed_verification' => 'There was a problem verifying your email, please contact us.'
+    'portal.flashes.new_feedback_failed_verification' => 'There was a problem verifying your email, please contact us.',
+    'portal.flashes.ticket_resolved' => 'Your ticket is now marked as resolved. Thank you.',
+    'portal.flashes.ticket_re_opened' => 'You have re-opened this ticket.'
 );

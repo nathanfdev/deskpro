@@ -33,6 +33,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -148,8 +150,6 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
                 // We don't continue here if they just clicked the "add more attachments" button
-
-                // TODO: fire an event (Ticket::ADD_MESSAGE)
                 $this->getRepo('DeskPRO:Ticket')->saveNewMessage($ticket, $message);
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
@@ -232,8 +232,10 @@ class TicketsController extends AbstractController
             throw new AccessDeniedException;
         }
 
+        $person = $this->getUser();
+
         $form = $this->createForm('ticket', $ticket, array(
-            'person'            => $this->getUser(),
+            'person'            => $person,
             'ticket_visibility' => 'edit',
             'settings'          => $this->getBrandContainer()->getSettings(),
         ));
@@ -248,9 +250,7 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
             // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
             if (!$form->has('rerender_form')) {
-                $this->getEm()->persist($ticket);
-                $this->getEm()->flush($ticket);
-                $this->get('tickets.custom_per_field_manager')->flushDataQueue();
+                $this->saveEditedTicket($ticket, $person);
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_updated'));
 
@@ -274,6 +274,79 @@ class TicketsController extends AbstractController
     }
 
     /**
+     * @Route("/tickets/{ticket_ref}/resolve", name="portal_tickets_resolve")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     */
+    public function resolveTicketAction(Request $request, $ticket_ref)
+    {
+        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+        }
+
+        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
+            throw new AccessDeniedException;
+        }
+
+        // already resolved, no need to proceed
+        if ($ticket->isResolved()) {
+            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+        }
+
+        $person = $this->getUser();
+
+        if ('POST' === $request->getMethod()) {
+            $ticket->setStatus(Ticket::STATUS_RESOLVED);
+            $this->saveEditedTicket($ticket, $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
+
+            // TODO: when we do feedback, we'd want to show them that form now
+
+            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+        }
+
+        return $this->renderThemeView('Theme:Tickets:resolve.html.twig', array(
+            'ticket' => $ticket,
+            'breadrcumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
+            'page_title' => $this->createPageTitle()->tickets($ticket)
+        ));
+    }
+
+
+    /**
+     * @Route("/tickets/{ticket_ref}/unresolve", name="portal_tickets_unresolve")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     * @AutoPostOnGetRequest()
+     */
+    public function unresolveTicketAction(Request $request, $ticket_ref)
+    {
+        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+        }
+
+        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
+            throw new AccessDeniedException;
+        }
+
+        $person = $this->getUser();
+
+        if (!$ticket->isResolved()) {
+            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+        }
+
+        // user permission to re-open ticket
+        $permissions_bag = $this->getPermissionBag($person);
+        if (!$permissions_bag->hasPermission('tickets.reopen_resolved')) {
+            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+        }
+
+        $ticket->setStatus(Ticket::STATUS_AWAITING_AGENT);
+        $this->saveEditedTicket($ticket, $person);
+        $this->addFlash('success', $this->phrase('portal.flashes.ticket_re_opened'));
+
+        return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+    }
+
+    /**
      * ticket_ref can either be an ID or a ref depending on settings
      *
      * @param $ticket_ref
@@ -288,5 +361,29 @@ class TicketsController extends AbstractController
         }
 
         return $repo->findOneBy(array('id' => $ticket_ref));
+    }
+
+    private function saveEditedTicket(Ticket $ticket, Person $person)
+    {
+        $em = $this->getEm();
+
+        $em->beginTransaction();
+
+        try {
+            $em->persist($ticket);
+
+            $ticket_manager = $this->getTicketManager();
+            $context = $ticket_manager->createUserExecutorContext($person, 'ticket', 'portal');
+
+            $ticket_manager->saveTicket($ticket, $context);
+            $em->flush();
+            $this->get('tickets.custom_per_field_manager')->flushDataQueue();
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+            throw $e;
+        }
+
+        return $ticket;
     }
 }

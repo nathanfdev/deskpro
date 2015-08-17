@@ -33,11 +33,18 @@ namespace DeskPRO\Bundle\AppBundle\Model;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
+ * These mirror the link annotations from Application\DeskPRO\Entity\Ticket
+ *
+ * We build this in the TicketViewService data service (it calcs all the $attributes for us, so we only do that once per request)
+ *
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
  * @PortalLinkCustom()
  * @PortalLinkCustom(type="edit")
+ * @PortalLinkCustom(type="resolve")
+ * @PortalLinkCustom(type="unresolve")
  */
 class TicketView
 {
@@ -58,6 +65,12 @@ class TicketView
             return $this->ticket->$name;
         }
 
-        return null;
+        // try an accesssor so twig will call the right function to get the value
+        $accessor = PropertyAccess::createPropertyAccessor();
+        try {
+            return $accessor->getValue($this->ticket, $name);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

@@ -122,6 +122,8 @@ use Orb\Util\WorkHoursSetAll;
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
  * @PortalLinkCustom()
  * @PortalLinkCustom(type="edit")
+ * @PortalLinkCustom(type="resolve")
+ * @PortalLinkCustom(type="unresolve")
  */
 class Ticket extends DomainObject implements HighlightableModelInterface
 {
@@ -2292,6 +2294,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function isHidden()
     {
         return $this->getIsHidden();
+    }
+
+    public function isResolved()
+    {
+        return $this->status == self::STATUS_RESOLVED;
     }
 
     public function getIsHidden()
