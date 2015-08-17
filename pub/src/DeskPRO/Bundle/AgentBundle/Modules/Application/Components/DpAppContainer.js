@@ -1,10 +1,11 @@
 import React from "react";
 
 import { connect } from 'redux/react';
-import DpApp from "./DpApp";
+import { DpApp } from "./DpApp";
 import DpAppLoading from "./DpAppLoading";
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
+import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import * as AppActions from "../Actions/AppActions";
 import { Router, Route, Redirect } from 'react-router';
@@ -26,7 +27,7 @@ ReactRouterWrapper.contextTypes = {
   dp_window: state.dp_window,
   routing: state.routing,
 }))
-export default class DpAppContainer extends React.Component {
+export class DpAppContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -56,6 +57,7 @@ export default class DpAppContainer extends React.Component {
         <Router history={history}>
           <Redirect from={base_path} to={default_path} />
           <Route path={base_path} component={ReactRouterWrapper}>
+            <Route name="crm" path="crm" component={CrmApp} />
             <Route name="chat" path="chat" component={ChatApp} />
             <Route name="tickets" path="tickets" component={TicketsApp} />
             <Route name="tasks" path="tasks" component={TasksApp} />

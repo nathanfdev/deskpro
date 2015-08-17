@@ -1,16 +1,18 @@
 import React from 'react';
 
-export class NavFrameTitle extends React.Component {
+export class NavFrameHeader extends React.Component {
   render() {
-    return (
+      const iconClass = 'fa ' + this.props.icon;
+
+      return (
         <div className="sidebar-title">
               <span className="sidebar-type-icon">
-                <i className="fa fa-comments-o"></i>
+                <i className={iconClass}></i>
                 <span className="help">
                   <i className="fa fa-question"></i>
                 </span>
               </span>
-          <h1>Chat</h1>
+          <h1>{this.props.title}</h1>
           <hr />
           <a href="#" className="slider-control"></a>
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavFrameTitle } from './NavFrameTitle';
+import { NavFrame as BaseNavFrame } from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/NavFrame';
+import { NavFrameHeader } from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/NavFrameHeader';
 import { ChatsList } from './ChatsList/ChatsList';
 import { ChatsListGroupingControl } from './ChatsListGroupingControl';
 
@@ -8,40 +9,29 @@ export class NavFrame extends React.Component {
     const {lists, grouping, changeGrouping, toggleGroupingVisibility} = this.props;
 
     return (
-      <div>
-        <ChatsListGroupingControl title="My Chats"
-                                  options={grouping.my.options}
-                                  visible={grouping.my.visible}
-                                  onChange={changeGrouping('my')} />
+      <BaseNavFrame>
 
-        <ChatsListGroupingControl title="All Chats"
-                                  options={grouping.all.options}
-                                  visible={grouping.all.visible}
-                                  onChange={changeGrouping('all')} />
+        <div part="outer">
+          <ChatsListGroupingControl title="My Chats"
+                                    options={grouping.my.options}
+                                    visible={grouping.my.visible}
+                                    onChange={changeGrouping('my')} />
+          <ChatsListGroupingControl title="All Chats"
+                                    options={grouping.all.options}
+                                    visible={grouping.all.visible}
+                                    onChange={changeGrouping('all')} />
+        </div>
 
-        <section className="task-nav-frame dp-nav-frame">
-          <div className="sidebar-wrapper" id="sidebar-wrapper">
-            <a className="collapse-button" href="#"><i className="fa fa-angle-right"></i></a>
-            <span className="collapse-controls">
-              <span className="disc"></span>
-              <span className="disc"></span>
-              <i className="fa fa-caret-right"></i>
-              <span className="disc"></span>
-              <span className="disc"></span>
-            </span>
-            <aside className="sidebar has-tabs" id="sidebar">
+        <div part="inner">
+          <NavFrameHeader icon="fa-comments-o" title="Chat" />
 
-              <NavFrameTitle />
-
-              <div className="sidebar-list sidebar-list-filters">
-                <ChatsList data={lists.my} toggleGroupingVisibility={toggleGroupingVisibility('my')} />
-                <ChatsList data={lists.all} toggleGroupingVisibility={toggleGroupingVisibility('all')} />
-              </div>
-
-            </aside>
+          <div className="sidebar-list sidebar-list-filters">
+            <ChatsList data={lists.my} toggleGroupingVisibility={toggleGroupingVisibility('my')} />
+            <ChatsList data={lists.all} toggleGroupingVisibility={toggleGroupingVisibility('all')} />
           </div>
-        </section>
-      </div>
+        </div>
+
+      </BaseNavFrame>
     );
   }
 }
