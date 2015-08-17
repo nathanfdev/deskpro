@@ -47,7 +47,11 @@
         color: #c6c8cb;
       }
 
-      i { top: 1px; }
+      i {
+        top: 1px;
+        color: #c6c8cb;
+        opacity: 1;
+      }
     }
 
     a.active {
@@ -123,6 +127,7 @@
       border-radius: 2px;
       height: 26px;
       padding: 0px 7px;
+      margin-right: 3px;
       /* padding-right: 5px; */
       text-decoration: none;
       background: #d9d9d9;

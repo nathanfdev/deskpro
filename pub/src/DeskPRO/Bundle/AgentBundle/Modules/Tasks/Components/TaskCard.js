@@ -84,6 +84,10 @@ const TaskCard = React.createClass({
     this.props.editTask(this.props.source, task);
   },
 
+  toggleMassAction: function(event) {
+    this.props.updateMassActions(this.props.task.id);
+  },
+
   componentDidMount() {
     const dueField = "due-" + this.props.task.id;
 
@@ -122,6 +126,8 @@ const TaskCard = React.createClass({
   render: function () {
     const { task, projects, linked_items, departments, teams, agents, source, connectDragSource } = this.props;
 
+    const selected = this.props.selected;
+
     let cardClass = task.is_done ? "card task-card task-card-completed" : "card task-card";
     let detailsButtonText = this.state.expanded ? "Collapse" : "Expand";
 
@@ -142,15 +148,12 @@ const TaskCard = React.createClass({
     if (task.agents.length > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.agents[0];
-      let agent = agents[agentId];
       assigneeId = "agents-" + agentId;
     } else if (task.teams.length > 0) {
       const teamId = task.teams[0];
-      let team = teams[teamId];
       assigneeId = "teams-" + teamId;
     } else if (task.departments.length > 0) {
       const departmentId = task.departments[0];
-      let department = departments[departmentId];
       assigneeId = "departments-" + departmentId;
     }
 
@@ -165,7 +168,9 @@ const TaskCard = React.createClass({
           <div className="card-status-bar status-bar-right"></div>
 
           <div className="card-checkbox">
-            <span className="checkbox"></span>
+            <span className="checkbox" onClick={this.toggleMassAction}>
+              {selected ? <i className="fa fa-check" /> : '' }
+            </span>
           </div>
 
             <div className="top-right-box">
