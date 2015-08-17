@@ -4,6 +4,10 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPan
 
 export class Nav extends React.Component {
   render() {
+    const { labels, groups, organizations, teams, groupNames, teamNames } = this.props;
+
+    let itemKey = 0;
+
     return (
       <NavFrame>
         <NavFrameHeader icon="fa-users">CRM</NavFrameHeader>
@@ -13,13 +17,13 @@ export class Nav extends React.Component {
             <TabsPane>
               <Tab title="Groups">
                 <ul>
-                  <ListItem count="25" label="Everyone" />
-                  <ListItem count="13" label="Some groups" />
+                  {groups.items.map(item =>
+                      <ListItem key={itemKey++} count={item.count} label={groupNames[item.group]} />)}
                 </ul>
               </Tab>
               <Tab title="Filters">Filters tab content</Tab>
               <Tab title="Labels">
-                <LabelsDictionary labels={['Apple', 'Avocado', 'Banana', 'Pear', 'Orange', 'Blueberry', 'Blackberry']} />
+                <LabelsDictionary labels={labels.people} />
               </Tab>
             </TabsPane>
           </Section>
@@ -29,11 +33,11 @@ export class Nav extends React.Component {
             <TabsPane>
               <Tab title="All">
                 <ul>
-                  <ListItem count="42" label="All Organizations" />
+                  <ListItem count={organizations.total} label="All Organizations" />
                 </ul>
               </Tab>
               <Tab title="Labels">
-                <LabelsDictionary labels={['Apple', 'Samsung', 'Sony', 'HTC', 'Vertu', 'Nokia', 'Siemens', 'Blackberry']} />
+                <LabelsDictionary labels={labels.organizations} />
               </Tab>
             </TabsPane>
           </Section>
@@ -41,13 +45,15 @@ export class Nav extends React.Component {
           <Section>
             <SectionHeader>Agents</SectionHeader>
             <ul>
-              <ListItem count="27" label="All Agents" />
-              <ListItem count="18" label="Team A" />
-              <ListItem count="9" label="Team B" />
+              <ListItem count={teams.total} label="All Agents" />
+              {teams.items.map(item =>
+                  <ListItem key={itemKey++} count={item.count} label={teamNames[item.group]} />)}
             </ul>
           </Section>
         </SectionsPane>
       </NavFrame>
     );
   }
+
+
 }
