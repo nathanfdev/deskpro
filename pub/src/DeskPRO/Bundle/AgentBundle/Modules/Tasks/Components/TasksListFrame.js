@@ -16,8 +16,7 @@ export default class TasksListFrame extends React.Component {
     super(props);
 
     this.state = {
-      actionable: [],
-      forceMassActions: false
+      actionable: []
     };
     this.intl = IntlMixin;
   }
@@ -49,6 +48,23 @@ export default class TasksListFrame extends React.Component {
     }, source));
   }
 
+  toggleAllMassActions() {
+    if (this.state.actionable.length === this.props.taskFrameList.taskFrameList.length) {
+      this.hideMassActionControls();
+    } else {
+      let actionable = [];
+
+      this.props.taskFrameList.taskFrameList.map((object) => {
+        actionable.push(object.id);
+      });
+
+      this.setState({
+        actionable: actionable
+      });
+      this.showMassActionControls();
+    }
+  }
+
   updateMassActions(taskId) {
     let actionable = this.state.actionable;
     const actionableIndex = actionable.indexOf(taskId);
@@ -69,29 +85,17 @@ export default class TasksListFrame extends React.Component {
     }
   }
 
-  showMassActionControls() {
-    this.setState({
-      forceMassActions: true
-    });
+  showMassActionControls()
+  {
     $('.ticket-controls-bulk-editing').animate({"left": '22px'});
   }
 
-  hideMassActionControls() {
+  hideMassActionControls()
+  {
     this.setState({
-      actionable: [],
-      forceMassActions: false
+      actionable: []
     });
     $('.ticket-controls-bulk-editing').animate({"left": '100%'});
-  }
-
-  toggleMassActionControls() {
-    const showingMenu = this.state.actionable.length > 0 || this.state.forceMassActions;
-
-    if (showingMenu) {
-      this.hideMassActionControls();
-    } else {
-      this.showMassActionControls();
-    }
   }
 
   render() {
@@ -141,8 +145,8 @@ export default class TasksListFrame extends React.Component {
         <div className="tickets-control-bar">
 
           <div className="bulk-edit-control">
-            <a href="#" onClick={this.toggleMassActionControls.bind(this)}>
-              <span className="checkbox">{this.state.forceMassActions || this.state.actionable.length > 0 ? <i className="fa fa-check" /> : ''}</span>
+            <a href="#" onClick={this.toggleAllMassActions.bind(this)}>
+              <span className="checkbox">{this.state.actionable.length > 0 ? <i className="fa fa-check" /> : ''}</span>
             </a>
             <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}><span>{this.state.actionable.length}</span></span>
           </div>
