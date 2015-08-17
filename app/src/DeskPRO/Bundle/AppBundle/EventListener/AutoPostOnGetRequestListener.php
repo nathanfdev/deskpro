@@ -62,7 +62,7 @@ class AutoPostOnGetRequestListener implements EventSubscriberInterface
             return;
         }
 
-        // if it is not a safe HTTP method
+        // if it's a safe request method, we want to force a POST
         if ($request->isMethodSafe()) {
 
             // resolve the request via a simple closure controller
