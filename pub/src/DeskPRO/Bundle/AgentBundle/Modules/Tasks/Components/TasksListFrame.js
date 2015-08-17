@@ -1,6 +1,6 @@
 import React from "react";
 import { DragSource } from "react-dnd";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";
@@ -9,7 +9,7 @@ import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
 
 @connect(state => ({
-  taskFrameList: state.taskFrameList
+  taskFrameList: state.Tasks.taskFrameList
 }))
 export default class TasksListFrame extends React.Component {
   constructor(props) {

@@ -1,9 +1,13 @@
 import Application_dp_window                              from "./Modules/Application/Reducers/dp_window.js";
+import Application_index                                  from "./Modules/Application/Reducers/index.js";
 import Application_routing                                from "./Modules/Application/Reducers/routing.js";
 import Application_user                                   from "./Modules/Application/Reducers/user.js";
+import Chat_ChatConversationsNavFrame                     from "./Modules/Chat/Reducers/ChatConversationsNavFrame.js";
+import Chat_index                                         from "./Modules/Chat/Reducers/index.js";
 import Tasks_agentList                                    from "./Modules/Tasks/Reducers/agentList.js";
 import Tasks_createdProject                               from "./Modules/Tasks/Reducers/createdProject.js";
 import Tasks_departmentList                               from "./Modules/Tasks/Reducers/departmentList.js";
+import Tasks_index                                        from "./Modules/Tasks/Reducers/index.js";
 import Tasks_labelList                                    from "./Modules/Tasks/Reducers/labelList.js";
 import Tasks_projectCreate                                from "./Modules/Tasks/Reducers/projectCreate.js";
 import Tasks_projectList                                  from "./Modules/Tasks/Reducers/projectList.js";
@@ -24,18 +28,25 @@ import Tickets_StarsCounts                                from "./Modules/Ticket
 import Tickets_TicketsList                                from "./Modules/Tickets/Reducers/TicketsList.js";
 import Tickets_Translations                               from "./Modules/Tickets/Reducers/Translations.js";
 import Tickets_departments                                from "./Modules/Tickets/Reducers/departments.js";
+import Tickets_index                                      from "./Modules/Tickets/Reducers/index.js";
 import Tickets_people                                     from "./Modules/Tickets/Reducers/people.js";
 
 export default {
   "Application": {
     "dp_window":                                          Application_dp_window,
+    "index":                                              Application_index,
     "routing":                                            Application_routing,
     "user":                                               Application_user,
+  },
+  "Chat": {
+    "ChatConversationsNavFrame":                          Chat_ChatConversationsNavFrame,
+    "index":                                              Chat_index,
   },
   "Tasks": {
     "agentList":                                          Tasks_agentList,
     "createdProject":                                     Tasks_createdProject,
     "departmentList":                                     Tasks_departmentList,
+    "index":                                              Tasks_index,
     "labelList":                                          Tasks_labelList,
     "projectCreate":                                      Tasks_projectCreate,
     "projectList":                                        Tasks_projectList,
@@ -62,6 +73,7 @@ export default {
     "TicketsList":                                        Tickets_TicketsList,
     "Translations":                                       Tickets_Translations,
     "departments":                                        Tickets_departments,
+    "index":                                              Tickets_index,
     "people":                                             Tickets_people,
   },
 };
