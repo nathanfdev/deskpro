@@ -1,12 +1,12 @@
 import React from "react";
 
 import { connect } from 'redux/react';
-import DpApp from "./DpApp";
+import { DpApp } from "./DpApp";
 import DpAppLoading from "./DpAppLoading";
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
-import ChatApp from '../../Chat/Components/ChatApp';
-import FeedbackApp from '../../Feedback/Components/FeedbackApp';
+import { CrmApp } from '../../CRM/Components/CrmApp';
+import { ChatApp } from '../../Chat/Components/ChatApp';
 import * as AppActions from "../Actions/AppActions";
 import { Router, Route, Redirect } from 'react-router';
 
@@ -27,10 +27,9 @@ ReactRouterWrapper.contextTypes = {
     dp_window: state.dp_window,
     routing: state.routing,
 }))
-export default
-class DpAppContainer extends React.Component {
-    constructor(props) {
-        super(props);
+export class DpAppContainer extends React.Component {
+  constructor(props) {
+    super(props);
 
         const { dp_window, dispatch } = this.props;
 
@@ -53,20 +52,19 @@ class DpAppContainer extends React.Component {
         const base_path = this.workOutBasePath();
         const default_path = `${base_path}/tickets`;
 
-        if (dp_window.isLoaded) {
-            return (
-                <Router history={history}>
-                    <Redirect from={base_path} to={default_path}/>
-                    <Route path={base_path} component={ReactRouterWrapper}>
-                        <Route name="chat" path="chat" component={ChatApp}/>
-                        <Route name="tickets" path="tickets" component={TicketsApp}/>
-                        <Route name="tasks" path="tasks" component={TasksApp}/>
-                        <Route name="feedback" path="feedback" component={FeedbackApp}/>
-                    </Route>
-                </Router>
-            );
-        } else {
-            return <DpAppLoading />;
-        }
+    if (dp_window.isLoaded) {
+      return (
+        <Router history={history}>
+          <Redirect from={base_path} to={default_path} />
+          <Route path={base_path} component={ReactRouterWrapper}>
+            <Route name="crm" path="crm" component={CrmApp} />
+            <Route name="chat" path="chat" component={ChatApp} />
+            <Route name="tickets" path="tickets" component={TicketsApp} />
+            <Route name="tasks" path="tasks" component={TasksApp} />
+          </Route>
+        </Router>
+      );
+    } else {
+      return <DpAppLoading />;
     }
 }
