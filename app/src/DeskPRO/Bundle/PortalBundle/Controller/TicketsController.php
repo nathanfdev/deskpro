@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketTrigger;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
@@ -150,7 +151,7 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
                 // We don't continue here if they just clicked the "add more attachments" button
-                $this->getRepo('DeskPRO:Ticket')->saveNewMessage($ticket, $message);
+                $this->saveNewReply($ticket, $message);
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
 
@@ -363,7 +364,7 @@ class TicketsController extends AbstractController
         return $repo->findOneBy(array('id' => $ticket_ref));
     }
 
-    private function saveEditedTicket(Ticket $ticket, Person $person)
+    private function saveEditedTicket(Ticket $ticket, Person $person, $event_type = TicketTrigger::EVENT_TYPE_UPDATE)
     {
         $em = $this->getEm();
 
@@ -373,7 +374,35 @@ class TicketsController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
-            $context = $ticket_manager->createUserExecutorContext($person, 'ticket', 'portal');
+            $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
+
+            $ticket_manager->saveTicket($ticket, $context);
+            $em->flush();
+            $this->get('tickets.custom_per_field_manager')->flushDataQueue();
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+            throw $e;
+        }
+
+        return $ticket;
+    }
+
+    private function saveNewReply(Ticket $ticket, TicketMessage $message, $event_type = TicketTrigger::EVENT_TYPE_NEWREPLY)
+    {
+        $person = $message->person;
+
+        $em = $this->getEm();
+
+        $em->beginTransaction();
+
+        try {
+            $ticket->addMessage($message);
+            $em->persist($ticket);
+            $em->persist($message);
+
+            $ticket_manager = $this->getTicketManager();
+            $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
