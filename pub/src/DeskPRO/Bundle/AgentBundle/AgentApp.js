@@ -2,9 +2,10 @@ import "babel/polyfill";
 import $ from "jquery";
 import React from 'react';
 
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 
+import { combineReducerHierarchy } from "Ampliflux";
 import * as ampMiddleware from "Ampliflux/middleware";
 
 import BrowserHistory from 'react-router/lib/BrowserHistory';
@@ -16,35 +17,6 @@ import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Compo
 import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
 import { devTools } from 'redux-devtools';
 
-function legacyCombineReducers(reducers) {
-  let processed_reducers = {};
-  for(let k in reducers) {
-    try {
-      if(reducers[k].isAmplifluxReducer && reducers[k].isAmplifluxReducer()) {
-        let reducer = new reducers[k]();
-        processed_reducers[k] = reducer.compile();
-      } else {
-        processed_reducers[k] = reducers[k];
-      }
-    }
-    catch(err) {
-      processed_reducers[k] = reducers[k];
-    }
-  }
-
-  return combineReducers(processed_reducers);
-}
-
-
-function combineAppReducers(appReducersMap) {
-  let reducers = {};
-  for (let k in appReducersMap) {
-    reducers[k] = legacyCombineReducers(appReducersMap[k]);
-  }
-
-  return combineReducers(reducers);
-}
-
 export default class AgentApp {
   run() {
     $(document).on('ready', () => this.start());
@@ -55,7 +27,19 @@ export default class AgentApp {
     window.DP_ENABLE_ACTION_LOGGER = true;
     window.DP_DEV_MODE = true;
 
-    const reducer    = combineAppReducers(AppReducers);
+    // This builder calls compile on old-style reducers
+    // created via the Reducer class
+    const legacyReducerBuilder = function(r) {
+      if (r.isAmplifluxReducer) {
+        const rInst = new r();
+        const realR = rInst.compile();
+        return realR;
+      } else {
+        return r;
+      }
+    };
+
+    const reducer    = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
     const middleware = applyMiddleware(
       ampMiddleware.intervalMiddleware,
       ampMiddleware.timeoutMiddleware,

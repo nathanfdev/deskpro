@@ -5,7 +5,9 @@ var gulp                  = require('gulp'),
     del                   = require('del'),
     runSeq                = require('run-sequence'),
     path                  = require("path"),
-    ExtractTextPlugin     = require("extract-text-webpack-plugin");
+    ExtractTextPlugin     = require("extract-text-webpack-plugin"),
+    glob                  = require("glob"),
+    reducerRefresh        = require("./build-tools/app-reducer-gen/loader").refreshBundle;
 
 //######################################################################################################################
 //# Util
@@ -56,10 +58,12 @@ gulp.task('priv:start-prod', function () {
 //######################################################################################################################
 
 gulp.task('bundle', function (callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
 gulp.task('bundle:agent', function (callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
 });
 
@@ -68,10 +72,12 @@ gulp.task('bundle:portal', function (callback) {
 });
 
 gulp.task('bundle:dev-server', function(callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   startWebpackServer(getWebpackConfig('all', true, false));
 });
 
 gulp.task('bundle:dev-server:agent', function(callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 
@@ -113,18 +119,11 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     module: {
       preLoaders: [
         {
-          test: /\/Reducers\/.*\.js$/,
+          test: /\/Reducers\/.*?\.js$/,
           include: [
-            path.resolve(__dirname, "src/DeskPRO")
+            path.resolve(__dirname, "src/DeskPRO/Bundle/AgentBundle/Modules")
           ],
-          loader: "reducer-index-loader"
-        },
-        {
-          test: /\/.*?Bundle\/\w+App.js$/,
-          include: [
-            path.resolve(__dirname, "src/DeskPRO")
-          ],
-          loader: "reducer-app-loader"
+          loader: "app-reducer-gen"
         }
       ],
       loaders: [

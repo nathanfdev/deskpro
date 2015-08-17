@@ -46,6 +46,7 @@
     "reselect": "0.0.2",
     "run-sequence": "1.1.1",
     "sass-loader": "1.0.2",
+    "sprintf-js": "1.0.3",
     "style-loader": "0.12.3",
     "uglify": "0.1.5",
     "uglify-loader": "1.2.0",
