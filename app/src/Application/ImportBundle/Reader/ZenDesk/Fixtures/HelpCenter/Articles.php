@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleIdsLoader;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
@@ -46,9 +46,9 @@ use Zendesk\API\ResponseException;
 final class Articles extends AbstractFixture implements FixturePrepareInterface
 {
     /**
-     * @var array
+     * @var PeopleIdsLoader
      */
-    private $people_ids = array();
+    private $people_loader;
 
     /**
      * @var array
@@ -73,22 +73,11 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
             $this->sections = $helper->request($this->client)->sections;
 
         } catch (ResponseException $e) {
-            $this->handleResponseException();
+            $this->handleResponseException('section');
         }
 
-        $people_incremental = new PeopleIncrementalExport(array(
-            'start_time' => $initial_time->getTimestamp(),
-        ));
-
-        try {
-            $people = $people_incremental->request($this->client);
-            foreach($people->users as $person) {
-                $this->people_ids[] = $person->id;
-            }
-
-        } catch (ResponseException $e) {
-            $this->handleResponseException();
-        }
+        $this->people_loader = new PeopleIdsLoader($this->client);
+        $this->people_loader->load($initial_time);
     }
 
     /**
@@ -104,11 +93,10 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
         $helper  = new ArticleCreate(array(
             'id'      => $section->id,
             'article' => array(
-                'title'      => 'Fake article ' . $prefix,
-                'body'       => 'Fake article content',
-                'author_id'  => $this->getRandomPersonId(),
-                'created_at' => '',
-                'updated_at' => '',
+                'title'       => 'Fake article ' . $prefix,
+                'body'        => 'Fake article content',
+                'author_id'   => $this->people_loader->getRandomPersonId(),
+                'label_names' => array('label 1', 'label 2'),
             ),
         ));
 
@@ -123,7 +111,7 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
                 $helper = new ArticleCommentCreate(array(
                     'id'      => $article->id,
                     'comment' => array(
-                        'author_id' => $this->getRandomPersonId(),
+                        'author_id' => $this->people_loader->getRandomPersonId(),
                         'body'      => 'Comment #' . $i,
                         'locale'    => 'en-us',
                     ),
@@ -135,23 +123,8 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
                 $this->logger->debug(json_encode($response->comment));
 
             } catch (ResponseException $e) {
-                $this->handleResponseException();
+                $this->handleResponseException('article comment');
             }
         }
-    }
-
-    /**
-     * Returns a random person id
-     *
-     * @return int
-     * @throws \RuntimeException
-     */
-    private function getRandomPersonId()
-    {
-        if (empty($this->people_ids)) {
-            throw new \RuntimeException('No person found');
-        }
-
-        return $this->people_ids[rand(0, count($this->people_ids) - 1)];
     }
 }

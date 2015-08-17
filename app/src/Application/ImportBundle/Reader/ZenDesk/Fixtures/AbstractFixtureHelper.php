@@ -27,43 +27,105 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Psr\Log\LoggerInterface;
+use Zendesk\API\Client;
 use DateTime;
-use Zendesk\API\ResponseException;
 
 /**
- * ZenDesk abstract fixture
- *
- * Class AbstractFixture
+ * Class AbstractFixtureHelper
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
  */
-abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureInterface
+abstract class AbstractFixtureHelper
 {
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * Constructor
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function create($offset, DateTime $initial_time, DateTime $end_time)
+    public function setLogger(LoggerInterface $logger)
     {
-        for ($i = $offset; $i < $offset + self::COUNT; $i++) {
-            try {
-                $this->logInfo(sprintf('Importing fixture `%s_%d`', $this->getEntityType(), $i));
-                $this->createItem($i, $initial_time, $end_time);
+        $this->logger = $logger;
+        return $this;
+    }
 
-                $this->logInfo(sprintf('Fixture `%s_%d` imported successfully', $this->getEntityType(), $i));
-
-            } catch (ResponseException $e) {
-                $this->handleResponseException($this->getEntityType());
-            }
+    /**
+     * Log info message if logger is defined
+     *
+     * @param string $message
+     */
+    protected function logInfo($message)
+    {
+        if ($this->logger) {
+            $this->logger->info($message);
         }
     }
 
     /**
-     * Create a fixture item
+     * Log warning message if logger is defined
      *
-     * @param int      $prefix
+     * @param string $message
+     */
+    protected function logWarning($message)
+    {
+        if ($this->logger) {
+            $this->logger->warning($message);
+        }
+    }
+
+    /**
+     * Shows error output to log
+     *
+     * @param string $entity_type
+     */
+    protected function handleResponseException($entity_type)
+    {
+        $this->logWarning(sprintf(
+            'Unable to export %s, code `%s`, headers:',
+
+            $entity_type,
+            $this->client->getDebug()->lastResponseCode
+        ));
+
+        $debug = $this->client->getDebug();
+        $this->logWarning($debug->lastRequestHeaders);
+
+        if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
+            sleep(60);
+        }
+    }
+
+    /**
+     * Returns a random datetime
+     *
      * @param DateTime $initial_time
      * @param DateTime $end_time
      *
-     * @return void
+     * @return DateTime
      */
-    protected abstract function createItem($prefix, DateTime $initial_time, DateTime $end_time);
+    protected function getRandomDateTime(DateTime $initial_time, DateTime $end_time)
+    {
+        $time = new DateTime();
+        $time->setTimestamp(rand($initial_time->getTimestamp(), $end_time->getTimestamp()));
+
+        return $time;
+    }
 }

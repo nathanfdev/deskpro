@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleIdsLoader;
 use Zendesk\API\ResponseException;
 use DateTime;
-use Exception;
 
 /**
  * ZenDesk tickets fixtures
@@ -44,9 +43,9 @@ use Exception;
 final class Tickets extends AbstractFixture implements FixturePrepareInterface
 {
     /**
-     * @var array
+     * @var PeopleIdsLoader
      */
-    private $people_ids = array();
+    private $people_loader;
 
     /**
      * {@inheritdoc}
@@ -61,19 +60,8 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
      */
     public function prepare(DateTime $initial_time, DateTime $end_time)
     {
-        try {
-            $people_incremental = new PeopleIncrementalExport(array(
-                'start_time' => $initial_time->getTimestamp(),
-            ));
-
-            $people = $people_incremental->request($this->client);
-            foreach($people->users as $person) {
-                $this->people_ids[] = $person->id;
-            }
-
-        } catch (ResponseException $e) {
-            $this->handleResponseException();
-        }
+        $this->people_loader = new PeopleIdsLoader($this->client);
+        $this->people_loader->load($initial_time);
     }
 
     /**
@@ -92,13 +80,12 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
                 'type'       => 'Comment',
                 'body'       => 'Thanks for your help!',
                 'public'     => true,
-                'created_at' => $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d\TH:i:s\Z'),
             ),
             'type'         => $type,
             'priority'     => $priorities[rand(0, count($priorities) - 1)],
             'status'       => $statuses[rand(0, count($statuses) - 1)],
-            'requester_id' => $this->getRandomPersonId(),
-            'submitter_id' => $this->getRandomPersonId(),
+            'requester_id' => $this->people_loader->getRandomPersonId(),
+            'submitter_id' => $this->people_loader->getRandomPersonId(),
         );
 
         if ($type === 'task') {
@@ -114,10 +101,9 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
                 $comment = $this->client->tickets()->update(array(
                     'id'      => $response->ticket->id,
                     'comment' => array(
-                        'type'       => 'Comment',
-                        'body'       => 'Reply #' . $i,
-                        'public'     => true,
-                        'created_at' => $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d\TH:i:s\Z'),
+                        'type'   => 'Comment',
+                        'body'   => 'Reply #' . $i,
+                        'public' => true,
                     ),
                 ));
 
@@ -125,39 +111,8 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
                 $this->logger->debug(json_encode($comment));
 
             } catch (ResponseException $e) {
-                $this->handleResponseException();
+                $this->handleResponseException('ticket_comment');
             }
         }
-    }
-
-    /**
-     * Returns a random datetime
-     *
-     * @param DateTime $initial_time
-     * @param DateTime $end_time
-     *
-     * @return DateTime
-     */
-    private function getRandomDateTime(DateTime $initial_time, DateTime $end_time)
-    {
-        $time = new DateTime();
-        $time->setTimestamp(rand($initial_time->getTimestamp(), $end_time->getTimestamp()));
-
-        return $time;
-    }
-
-    /**
-     * Returns a random person id
-     *
-     * @return int
-     * @throws Exception
-     */
-    private function getRandomPersonId()
-    {
-        if (empty($this->people_ids)) {
-            throw new Exception('No person found');
-        }
-
-        return $this->people_ids[rand(0, count($this->people_ids) - 1)];
     }
 }

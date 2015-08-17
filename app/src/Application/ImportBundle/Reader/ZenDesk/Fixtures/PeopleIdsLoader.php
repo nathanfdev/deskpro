@@ -27,43 +27,54 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
-use DateTime;
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
 use Zendesk\API\ResponseException;
+use DateTime;
 
 /**
- * ZenDesk abstract fixture
- *
- * Class AbstractFixture
+ * Class PeopleIdsLoader
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
  */
-abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureInterface
+class PeopleIdsLoader extends AbstractFixtureHelper
 {
     /**
-     * {@inheritdoc}
+     * @var array
      */
-    public function create($offset, DateTime $initial_time, DateTime $end_time)
+    protected $people_ids = array();
+
+    /**
+     * @param DateTime $initial_time
+     */
+    public function load(DateTime $initial_time)
     {
-        for ($i = $offset; $i < $offset + self::COUNT; $i++) {
-            try {
-                $this->logInfo(sprintf('Importing fixture `%s_%d`', $this->getEntityType(), $i));
-                $this->createItem($i, $initial_time, $end_time);
+        try {
+            $people_incremental = new PeopleIncrementalExport(array(
+                'start_time' => $initial_time->getTimestamp(),
+            ));
 
-                $this->logInfo(sprintf('Fixture `%s_%d` imported successfully', $this->getEntityType(), $i));
-
-            } catch (ResponseException $e) {
-                $this->handleResponseException($this->getEntityType());
+            $people = $people_incremental->request($this->client);
+            foreach($people->users as $person) {
+                $this->people_ids[] = $person->id;
             }
+
+        } catch (ResponseException $e) {
+            $this->handleResponseException(Entity\EntityInterface::TYPE_PERSON);
         }
     }
 
     /**
-     * Create a fixture item
+     * Returns a random person id
      *
-     * @param int      $prefix
-     * @param DateTime $initial_time
-     * @param DateTime $end_time
-     *
-     * @return void
+     * @return int
+     * @throws \RuntimeException
      */
-    protected abstract function createItem($prefix, DateTime $initial_time, DateTime $end_time);
+    public function getRandomPersonId()
+    {
+        if (empty($this->people_ids)) {
+            throw new \RuntimeException('No person found');
+        }
+
+        return $this->people_ids[rand(0, count($this->people_ids) - 1)];
+    }
 }

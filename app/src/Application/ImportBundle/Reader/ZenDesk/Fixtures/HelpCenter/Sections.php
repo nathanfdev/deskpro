@@ -63,7 +63,7 @@ final class Sections extends AbstractFixture implements FixturePrepareInterface
             $this->categories = $helper->request($this->client)->categories;
 
         } catch (ResponseException $e) {
-            $this->handleResponseException();
+            $this->handleResponseException($this->getEntityType());
         }
     }
 
