@@ -35,7 +35,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 
 /**
- * @PortalLinkRoute("portal_tickets_guest_view", {"auth":"auth"}, type="view_only")
+ * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
  * @PortalLinkCustom()
  * @PortalLinkCustom(type="edit")
  */

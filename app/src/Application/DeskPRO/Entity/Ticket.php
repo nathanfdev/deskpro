@@ -119,7 +119,7 @@ use Orb\Util\WorkHoursSetAll;
  * @property TicketSla[] $ticket_slas
  *
  * REPEAT THESE ANNOTATIONS IN DeskPRO\Bundle\AppBundle\Model\TicketView
- * @PortalLinkRoute("portal_tickets_guest_view", {"auth":"auth"}, type="view_only")
+ * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
  * @PortalLinkCustom()
  * @PortalLinkCustom(type="edit")
  */
