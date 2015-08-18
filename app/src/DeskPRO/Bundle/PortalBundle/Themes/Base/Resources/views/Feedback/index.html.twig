@@ -24,8 +24,10 @@
 
        <article class="feedback-filter-interactive">
            {% show feedback_filter_controls %}
-           {% show feedback_list_detail %}
-           {% show feedback_pager %}
+           <div class="paged-results">
+               {% show feedback_list_detail %}
+               {% show feedback_pager %}
+           </div>
        </article>
     </article>
 {% endblock inner_content %}
