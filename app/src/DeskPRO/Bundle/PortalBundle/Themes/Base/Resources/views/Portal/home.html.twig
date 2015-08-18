@@ -36,7 +36,13 @@
 {% if can_use_articles() %}
 <section>
     <article class="news front-page-kb">
-        <div class="large-title clearfix"><h1>{{ phrase('portal.articles.section-title') }}</h1></div>
+        <div class="large-title clearfix">
+            <h1>
+                <a href="{{ path('portal_kb') }}">
+                    {{ phrase('portal.articles.section-title') }}
+                </a>
+            </h1>
+        </div>
         {% show section kb with { articles_options: { count: 3 }} %}
     </article>
 </section>
@@ -47,7 +53,13 @@
     {% item if has_any_news() %}
     <div class="column">
         <article class="panel-tiny front-page-news-tiny">
-            <div class="large-title"><h1>{{ phrase('portal.news.recent-title') }}</h1></div>
+            <div class="large-title">
+                <h1>
+                    <a href="{{ path('portal_news') }}">
+                        {{ phrase('portal.news.recent-title') }}
+                    </a>
+                </h1>
+            </div>
             {% show section news_list_simple with { count: 5, show_category_link: true } %}
         </article>
     </div>
@@ -56,7 +68,13 @@
     {% item if has_any_feedback() %}
     <div class="column">
         <article class="panel-tiny front-page-feedback">
-            <div class="large-title"><h1>{{ phrase('portal.feedback.recent-feedback') }}</h1></div>
+            <div class="large-title">
+                <h1>
+                    <a href="{{ path('portal_feedback') }}">
+                        {{ phrase('portal.feedback.recent-feedback') }}
+                    </a>
+                </h1>
+            </div>
             {% show  feedback_list_simple with { count: 5, show_category_link: true } %}
         </article>
     </div>
@@ -65,7 +83,13 @@
     {% item if has_any_downloads() %}
     <div class="column">
         <article class="panel-tiny front-page-downloads">
-            <div class="large-title"><h1>{{ phrase('portal.downloads.recent-downloads') }}</h1></div>
+            <div class="large-title">
+                <h1>
+                    <a href="{{ path('portal_downloads') }}">
+                        {{ phrase('portal.downloads.recent-downloads') }}
+                    </a>
+                </h1>
+            </div>
             {% show section download_list_simple with { count: 5, show_category_link: true } %}
         </article>
     </div>

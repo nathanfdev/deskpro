@@ -576,4 +576,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
         return parent::__clone();
     }
+
+    /**
+     * @return string
+     */
+    public function getAuthcode()
+    {
+        return $this->authcode;
+    }
 }

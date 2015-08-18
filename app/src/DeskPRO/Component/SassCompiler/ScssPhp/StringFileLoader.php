@@ -29,32 +29,68 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler\CompilerAdapter;
+namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
-class SimpleImportAdapter implements CompilerAdapterInterface
+class StringFileLoader implements FileLoaderInterface, FileLocatorInterface
 {
     /**
-     * @param string $source_file
-     * @param array $inc_paths
-     * @return string
+     * @var array
      */
-    public function compile($source_file, array $inc_paths)
-    {
-        $source = file_get_contents($source_file);
-        $source = preg_replace_callback('#@import\s+(.*?);#i', function($m) use ($inc_paths) {
-            $url = ltrim(trim(trim(trim($m[1]), "'\"")), '/\\');
-            foreach ($inc_paths as $path) {
-                $try_path = rtrim($path, '/\\') . DIRECTORY_SEPARATOR . $url;
-                if (is_file($try_path)) {
-                    $try_path = realpath($try_path);
-                    if (strpos($try_path, $path) === 0) {
-                        return file_get_contents($try_path);
-                    }
-                }
-            }
-            return $m[0];
-        }, $source);
+    private $files = array();
 
-        return $source;
+    /**
+     * @var array
+     */
+    private $aliases = array();
+
+    /**
+     * @param array $files
+     */
+    public function __construct(array $files)
+    {
+        foreach ($files as $path => $f) {
+            $m = null;
+            if (preg_match('#^@alias:(.*?)$#', trim($f), $m)) {
+                $this->aliases[$path] = $m[1];
+            } else {
+                $this->files[$path] = $f;
+            }
+        }
+    }
+
+    /**
+     * Given a requested path, load the file.
+     *
+     * This should return a string when successful, or NULL if the file could not be loaded.
+     *
+     * @param string $file
+     * @return string|null
+     */
+    public function loadFile($path)
+    {
+        if (isset($this->files[$path])) {
+            return $this->files[$path];
+        }
+
+        return null;
+    }
+
+    /**
+     * Given a requested path, return the real path (as it will be passed to loaders).
+     *
+     * These are used to resolve include paths etc.
+     *
+     * @param string $file
+     * @return string|null
+     */
+    public function locateFile($path)
+    {
+        $path = preg_replace('#\.scss$#', '', $path) . '.scss';
+
+        if (isset($this->aliases[$path])) {
+            return $this->aliases[$path];
+        }
+
+        return isset($this->files[$path]) ? $path : null;
     }
 }

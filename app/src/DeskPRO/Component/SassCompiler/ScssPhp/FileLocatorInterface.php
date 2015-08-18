@@ -29,14 +29,17 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler\CompilerAdapter;
+namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
-interface CompilerAdapterInterface
+interface FileLocatorInterface
 {
     /**
-     * @param string $source_file
-     * @param array $inc_paths
-     * @return string
+     * Given a requested path, return the real path (as it will be passed to loaders).
+     *
+     * These are used to resolve include paths etc.
+     *
+     * @param string $file
+     * @return string|null
      */
-    public function compile($source_file, array $inc_paths);
+    public function locateFile($path);
 }

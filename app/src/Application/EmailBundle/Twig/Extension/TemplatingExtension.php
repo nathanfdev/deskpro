@@ -1068,7 +1068,13 @@ class TemplatingExtension extends \Twig_Extension
 
     public function urlFull($name, array $parameters = array())
     {
-        return $this->container->get('router')->getGenerator()->generateUrl($name, $parameters, false);
+        $router = $this->container->get('router');
+
+        if (!method_exists($router, 'getGenerator')) {
+            return $this->container->get('router')->generateUrl($name, $parameters);
+        } else {
+            return $this->container->get('router')->getGenerator()->generateUrl($name, $parameters, false);
+        }
     }
 
     public function helpdeskUrl($path)

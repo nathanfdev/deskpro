@@ -52,7 +52,7 @@ use Swagger\Annotations as SWG;
  * @property string $sys_name
  * @property boolean $is_enabled
  * @property Permission[] $permissions
- * @SWG\Model(id="Usergroup")
+ * SWG\Model(id="Usergroup")
  */
 class Usergroup extends DomainObject
 {
@@ -60,7 +60,7 @@ class Usergroup extends DomainObject
      * The unique ID.
      *
      * @var int
-     * @SWG\Property(name="id", type="integer")
+     * SWG\Property(name="id", type="integer")
      */
     protected $id = null;
 
@@ -68,7 +68,7 @@ class Usergroup extends DomainObject
      * Title of the usergroup.
      *
      * @var string
-     * @SWG\Property(name="title", type="string")
+     * SWG\Property(name="title", type="string")
      */
     protected $title;
 
@@ -76,7 +76,7 @@ class Usergroup extends DomainObject
      * A note or description about the usergroup.
      *
      * @var string
-     * @SWG\Property(name="note", type="string")
+     * SWG\Property(name="note", type="string")
      */
     protected $note = '';
 
@@ -84,7 +84,7 @@ class Usergroup extends DomainObject
      * Is this an agent group?
      *
      * @var bool
-     * @SWG\Property(name="is_agent_group", type="boolean")
+     * SWG\Property(name="is_agent_group", type="boolean")
      */
     protected $is_agent_group = false;
 
@@ -92,7 +92,7 @@ class Usergroup extends DomainObject
      * When non-null, the group is a special system group (hidden from most interfaces).
      *
      * @var bool
-     * @SWG\Property(name="sys_name", type="string")
+     * SWG\Property(name="sys_name", type="string")
      */
     protected $sys_name = null;
 
@@ -100,13 +100,13 @@ class Usergroup extends DomainObject
      * Is the group enabled?
      *
      * @var bool
-     * @SWG\Property(name="is_enabled", type="boolean")
+     * SWG\Property(name="is_enabled", type="boolean")
      */
     protected $is_enabled = true;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="permissions", type="array", @SWG\Items("Permission"))
+     * SWG\Property(name="permissions", type="array", SWG\Items("Permission"))
      */
     protected $permissions;
 

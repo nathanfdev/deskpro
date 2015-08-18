@@ -46,7 +46,7 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         BrandContainer $brand_container,
         TokenInterface $token
     ) {
-        $this->vote($token, null, array(ContentCommentVoter::COMMENT_ARTICLES))->shouldBe(VoterInterface::ACCESS_ABSTAIN);
+        $this->vote($token, null, array(ContentCommentVoter::COMMENT_ARTICLE))->shouldBe(VoterInterface::ACCESS_ABSTAIN);
     }
 
     public function it_will_deny_if_guest_and_interact_require_login_setting(
@@ -55,7 +55,7 @@ class ContentRatingsVoterSpec extends ObjectBehavior
     ) {
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(true);
 
-        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_DENIED);
+        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_ARTICLE))->shouldBe(VoterInterface::ACCESS_DENIED);
     }
 
     public function it_will_deny_guest_comments_if_permissions_fail(
@@ -66,13 +66,13 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
         $guest_permission_bag->get('articles.rate')->willReturn(false);
-        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_DENIED);
+        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_ARTICLE))->shouldBe(VoterInterface::ACCESS_DENIED);
 
         $guest_permission_bag->get('feedback.rate')->willReturn(false);
         $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_FEEDBACK))->shouldBe(VoterInterface::ACCESS_DENIED);
 
         $guest_permission_bag->get('downloads.rate')->willReturn(false);
-        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_DOWNLOADS))->shouldBe(VoterInterface::ACCESS_DENIED);
+        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_DOWNLOAD))->shouldBe(VoterInterface::ACCESS_DENIED);
 
         $guest_permission_bag->get('news.rate')->willReturn(false);
         $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_NEWS))->shouldBe(VoterInterface::ACCESS_DENIED);
@@ -86,13 +86,13 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
         $guest_permission_bag->get('articles.rate')->willReturn(true);
-        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_GRANTED);
+        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_ARTICLE))->shouldBe(VoterInterface::ACCESS_GRANTED);
 
         $guest_permission_bag->get('feedback.rate')->willReturn(true);
         $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_FEEDBACK))->shouldBe(VoterInterface::ACCESS_GRANTED);
 
         $guest_permission_bag->get('downloads.rate')->willReturn(true);
-        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_DOWNLOADS))->shouldBe(VoterInterface::ACCESS_GRANTED);
+        $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_DOWNLOAD))->shouldBe(VoterInterface::ACCESS_GRANTED);
 
         $guest_permission_bag->get('news.rate')->willReturn(true);
         $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_NEWS))->shouldBe(VoterInterface::ACCESS_GRANTED);
@@ -104,13 +104,13 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         PermissionsBag $person_permission_bag
     ) {
         $person_permission_bag->get('articles.rate')->willReturn(false);
-        $this->vote($token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_DENIED);
+        $this->vote($token, null, array(ContentRatingsVoter::RATE_ARTICLE))->shouldBe(VoterInterface::ACCESS_DENIED);
 
         $person_permission_bag->get('feedback.rate')->willReturn(false);
         $this->vote($token, null, array(ContentRatingsVoter::RATE_FEEDBACK))->shouldBe(VoterInterface::ACCESS_DENIED);
 
         $person_permission_bag->get('downloads.rate')->willReturn(false);
-        $this->vote($token, null, array(ContentRatingsVoter::RATE_DOWNLOADS))->shouldBe(VoterInterface::ACCESS_DENIED);
+        $this->vote($token, null, array(ContentRatingsVoter::RATE_DOWNLOAD))->shouldBe(VoterInterface::ACCESS_DENIED);
 
         $person_permission_bag->get('news.rate')->willReturn(false);
         $this->vote($token, null, array(ContentRatingsVoter::RATE_NEWS))->shouldBe(VoterInterface::ACCESS_DENIED);
@@ -122,13 +122,13 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         PermissionsBag $person_permission_bag
     ) {
         $person_permission_bag->get('articles.rate')->willReturn(true);
-        $this->vote($token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_GRANTED);
+        $this->vote($token, null, array(ContentRatingsVoter::RATE_ARTICLE))->shouldBe(VoterInterface::ACCESS_GRANTED);
 
         $person_permission_bag->get('feedback.rate')->willReturn(true);
         $this->vote($token, null, array(ContentRatingsVoter::RATE_FEEDBACK))->shouldBe(VoterInterface::ACCESS_GRANTED);
 
         $person_permission_bag->get('downloads.rate')->willReturn(true);
-        $this->vote($token, null, array(ContentRatingsVoter::RATE_DOWNLOADS))->shouldBe(VoterInterface::ACCESS_GRANTED);
+        $this->vote($token, null, array(ContentRatingsVoter::RATE_DOWNLOAD))->shouldBe(VoterInterface::ACCESS_GRANTED);
 
         $person_permission_bag->get('news.rate')->willReturn(true);
         $this->vote($token, null, array(ContentRatingsVoter::RATE_NEWS))->shouldBe(VoterInterface::ACCESS_GRANTED);

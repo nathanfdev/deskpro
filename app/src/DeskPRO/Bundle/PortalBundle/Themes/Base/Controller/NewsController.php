@@ -69,10 +69,23 @@ class NewsController extends AbstractController
      */
     public function categoriesAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
+        $person = $this->getCurrentPerson();
+
+        if ($category) {
+            $permissions_bag = $this->getPermissionBag($person);
+            if (!$permissions_bag->hasContentCategoryAccess($category)) {
+                return new Response(''); // no access to the category will exclude children
+            }
+        }
+
         if ($options['from_root']) {
-            $category_children = $this->getNewsDataService()->getCategoryChildren(null);
+            $category_children = $this->getNewsDataService()->getCategoryChildren(null, $person);
         } else {
-            $category_children = $this->getNewsDataService()->getCategoryChildren($category);
+            $category_children = $this->getNewsDataService()->getCategoryChildren($category, $person);
+        }
+
+        if (empty($category_children)) {
+            return new Response(''); // nothing to display here
         }
 
         return $this->renderThemeView(
@@ -113,7 +126,8 @@ class NewsController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
-        $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
+        $person = $this->getCurrentPerson();
+        $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count'], $person);
 
         return $this->renderThemeView(
             sprintf('Theme:News:PostList/%s.html.twig', $options['style']),

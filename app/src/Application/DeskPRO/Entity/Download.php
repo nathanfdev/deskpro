@@ -34,6 +34,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -41,7 +43,13 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 /**
- * A download/file available from the protal.
+ * @PortalLinkRoute("portal_downloads_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_downloads_view", route_param_map={"slug": "id"}, type="permalink")
+ * @PortalLinkRoute("portal_downloads_files_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_downloads_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_downloads_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
+ * @PortalLinkRoute("portal_downloads_download", route_param_map={"slug":"slug"}, type="save")
+ * @PortalLinkCustom(type="serve")
  */
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
@@ -250,30 +258,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getLink()
-    {
-        $url = App::getRouter()->generate('portal_downloads_view', array('slug' => $this->getUrlSlug()), true);
-
-        return $url;
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getPermalink()
-    {
-        $url = App::getRouter()->generate('portal_downloads_view', array('slug' => $this->id), true);
-
-        return $url;
-    }
-
-    /**
      * @return array
      */
     public function getCategoryPath()
@@ -416,6 +400,19 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     public function getCategory()
     {
         return $this->category;
+    }
+
+    public function getCategoryId()
+    {
+        return $this->category['id'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileurl()
+    {
+        return $this->fileurl;
     }
 
     protected function addSlugHistory($old_slug)

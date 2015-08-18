@@ -31,15 +31,173 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchContext;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
+use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Search\StickyWordSearch;
+use Doctrine\ORM\EntityManager;
+use Orb\Util\Numbers;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class SearchController extends AbstractController
 {
     /**
      * @Route("/search", name="portal_search")
+     * @Route("/search", name="user_search")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->renderThemeView('Theme:Search:index.html.twig');
+        $q = $request->get('q');
+
+        $is_search = false;
+        $person = $this->getUser() ?: new PersonGuest();
+        $sticky_results = array();
+        $results = array();
+        $total = 0;
+        $cur_page = $request->get('page', 1);
+        $per_page = 5;
+
+        if ($q) {
+            $is_search = true;
+
+            $se = $this->get('search_engine');
+            $contextFactory = new SearchContextFactory($this->getContainer());
+            $context = $contextFactory->createUserSearchContext($person);
+
+            /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
+            $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page));
+
+            $total = $result_set->getTotal();
+            $results = $result_set->getTypedResults();
+
+            $sticky_search = new StickyWordSearch($this->getEm());
+            $sticky_search->setPersonContext($person);
+            $sticky_results = $sticky_search->getResults($q, 5);
+
+            if ($sticky_results) {
+                $got_sticky = array();
+                foreach ($sticky_results as $sitem) {
+                    $total++;
+                    $got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
+                }
+                $results = array_filter(
+                    $results,
+                    function ($r) use ($got_sticky) {
+                        return !isset($got_sticky[get_class($r['object']) . $r['object']->getId()]);
+                    }
+                );
+            }
+
+            $searchlog = SearchLog::create($q, count($results) + count($sticky_results));
+            $searchlog->person = $this->getUser();
+            $searchlog->ip_address = $request->getClientIp();
+            $this->getEm()->transactional(
+                function (EntityManager $em) use ($searchlog) {
+                    $em->persist($searchlog);
+                    $em->flush();
+                }
+            );
+
+            $request->getSession()->set('last_searchlog_id', $searchlog->id);
+        }
+
+        $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
+
+        return $this->renderThemeView(
+            'Theme:Search:search_results.html.twig',
+            array(
+                'is_search' => $is_search,
+                'results' => $results,
+                'sticky_results' => $sticky_results,
+                'query' => $q,
+                'pageinfo' => $pageinfo,
+                'num_results' => $total,
+            )
+        );
+    }
+
+    /**
+     * @Route("/search/similar/{content_type}", name="portal_search_similar")
+     * @Route("/search/similar/{content_type}", name="user_search_similarto")
+     */
+    public function similarToAction(Request $request, $content_type)
+    {
+        $content = $request->get('content', '');
+
+        if (!$content) {
+            return $this->makeJsonResponse(
+                array(
+                    'results' => array(),
+                    'words' => array()
+                )
+            );
+        }
+
+        $person = $this->getUser() ?: new PersonGuest();
+        $se = $this->get('search_engine');
+        $contextFactory = new SearchContextFactory($this->getContainer());
+        $context = $contextFactory->createUserSearchContext($person);
+        $sticky_search = new StickyWordSearch($this->getEm());
+        /** @var ResultSet $results */
+        $results = $se->getUserSearch()->similarTo(
+            $context,
+            $content,
+            array('limit_types' => array($content_type))
+        );
+
+
+        $search_results = $results->getTypedResults();
+
+        // filter out the unwanted types from response and get the "words" for allowed objects
+        $property_accessor = PropertyAccess::createPropertyAccessor();
+        $typed_results = array();
+        $words = array();
+        $allowed_types = array('article','news','download','feedback');
+        foreach ($search_results as $result) {
+            if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
+                $typed_results[] = $result;
+
+                $object = $result['object'];
+                if (is_object($object)) {
+                    $class = get_class($object);
+                    $type = 'DeskPRO:' . substr($class, strrpos($class, '\\') + 1);
+                    $id = $property_accessor->getValue($object, 'id');
+                    foreach ($sticky_search->getStickyWords($type, $id) as $word) {
+                        if (count($words) < 100) {
+                            $words[] = $word;
+                        }
+                    }
+                }
+            }
+        }
+        $serialized_results = $this->get('portal_search_serializer')->serializeArray($typed_results);
+
+        return $this->makeJsonResponse(
+            array(
+                'results' => $serialized_results,
+                'words' => $words,
+            )
+        );
+    }
+
+    protected function makeJsonResponse(array $array)
+    {
+        $response = new JsonResponse(array('data' => $array));
+
+        // if its 5.4+ make the results pretty
+        if (constant('JSON_PRETTY_PRINT')) {
+            $options = $response->getEncodingOptions();
+            $options = $options | JSON_PRETTY_PRINT;
+            $response->setEncodingOptions($options);
+        }
+
+        return $response;
     }
 }

@@ -43,7 +43,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * TaskComment entity definition.
  *
- * @SWG\Model
+ * SWG\Model
  */
 class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -51,7 +51,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
-     * @SWG\Property(name="id",type="integer")
+     * SWG\Property(name="id",type="integer")
      */
     protected $id = null;
 
@@ -59,7 +59,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      * The comment's content.
      *
      * @var string
-     * @SWG\Property(name="content",type="string")
+     * SWG\Property(name="content",type="string")
      */
     protected $content = '';
 
@@ -69,7 +69,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      *                                      inversedBy="comments",
      *                                      cascade={"persist", "remove", "merge"}
      *                                      )
-     * @SWG\Property(name="task", type="Task")
+     * SWG\Property(name="task", type="Task")
      */
     protected $task;
 
@@ -79,7 +79,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      *                                        inversedBy="task_comments",
      *                                        cascade={"persist", "remove", "merge"}
      *                                        )
-     * @SWG\Property(name="person",type="Person")
+     * SWG\Property(name="person",type="Person")
      */
     protected $person;
 
@@ -87,7 +87,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      * The date the comment was inserted into the system.
      *
      * @var \DateTime
-     * @SWG\Property(name="date_created",type="integer")
+     * SWG\Property(name="date_created",type="integer")
      */
     protected $date_created;
 

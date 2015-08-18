@@ -36,6 +36,9 @@ namespace Application\DeskPRO\People\PermissionLoader;
 use Application\DeskPRO\App;
 use Application\DeskPRO\People\PersonContextInterface;
 
+/**
+ * @deprecated use new PermissionsManager to get the PermissionsBag instead of people helpers
+ */
 class Departments extends AbstractLoader implements NoCache, PersonContextInterface
 {
     /** @var bool */
@@ -171,6 +174,13 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         };
 
         return !empty($this->allowed_cats[$app][$id][$permission]);
+    }
+
+    public function getAllAllowed()
+    {
+        $this->_init();
+
+        return $this->allowed_cats;
     }
 
     /**

@@ -24,7 +24,13 @@
     'portal.flashes.user_updated_emails' => 'Your emails have been updated.',
     'portal.flashes.user_changed_password' => 'Your password was updated.',
     'portal.flashes.validated_email' => 'Your email has been verified. Thank you.',
-    'portal.flashes.sent_verification_email' => 'We have sent you an email with a verification link. Please check your email and follow the link to verify your account.',
+    'portal.flashes.sent_verification_email_primary' => 'We have sent you an email with a verification link. Please check your email and follow the link to verify your account.',
+    'portal.flashes.sent_verification_email_secondary' => 'We have sent you an email with a verification link. Please check your email and follow the link to verify your email address.',
     'portal.flashes.user_registered' => 'Thank you for registering.',
-    'portal.flashes.user_registered_must_verify' => 'Thank you for registering. Please check your email, we have sent you a verification link.'
+    'portal.flashes.user_registered_must_verify' => 'Thank you for registering. Please check your email, we have sent you a verification link.',
+    'portal.flashes.new_feedback_verify' => 'We have sent you the verification link for your feedback. Please check your email and click the link.',
+    'portal.flashes.new_feedback_verified' => 'Thank you, your email has been verified.',
+    'portal.flashes.new_feedback_failed_verification' => 'There was a problem verifying your email, please contact us.',
+    'portal.flashes.ticket_resolved' => 'Your ticket is now marked as resolved. Thank you.',
+    'portal.flashes.ticket_re_opened' => 'You have re-opened this ticket.'
 );

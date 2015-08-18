@@ -45,7 +45,9 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class PageTitleGenerator
 {
@@ -59,10 +61,22 @@ class PageTitleGenerator
      */
     private $brand_stack;
 
-    public function __construct(LanguageManager $language_manager, BrandStack $brand_stack)
+    /**
+     * @var PortalPermissionsManager
+     */
+    private $permissions_manager;
+
+    /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    public function __construct(LanguageManager $language_manager, BrandStack $brand_stack, PortalPermissionsManager $permissions_manager, TokenStorage $token_storage)
     {
         $this->language_manager = $language_manager;
         $this->brand_stack = $brand_stack;
+        $this->permissions_manager = $permissions_manager;
+        $this->token_storage = $token_storage;
     }
 
     public function homepage()
@@ -220,7 +234,7 @@ class PageTitleGenerator
     public function kb($content_or_cat = null)
     {
         $builder = $this->createHelpdeskTitleBuilder();
-        
+
         $section_title = $this->phrase('portal.articles.section-title');
 
         if ($content_or_cat instanceof ArticleCategory) {
@@ -228,8 +242,23 @@ class PageTitleGenerator
                 $this->getCategorySection($content_or_cat, $section_title)
             );
         } elseif ($content_or_cat instanceof Article) {
+
+            $permission_bag = $this->getCurrentUserPermissionBag();
+            $cat = $content_or_cat->getPrimaryCategory();
+
+            // if no access to this cat, try our best to loop to one he can see
+            if (!$permission_bag->hasContentCategoryAccess($cat)) {
+                foreach ($content_or_cat->getCategories() as $cat_to_check) {
+                    if ($permission_bag->hasContentCategoryAccess($cat_to_check)) {
+                        $cat = $cat_to_check;
+                        break;
+                    }
+                }
+            }
+
             $builder->prependSection(
-                    $this->getCategorySection($content_or_cat->getPrimaryCategory(),
+                $this->getCategorySection(
+                    $cat,
                     $section_title
                 )
             );
@@ -259,6 +288,11 @@ class PageTitleGenerator
     {
         $section = array();
 
+        $permission_bag = $this->getCurrentUserPermissionBag();
+        if (!$permission_bag->hasContentCategoryAccess($cat)) {
+            return $section;
+        }
+
         if ($prepend_to_section) {
             $section[] = $prepend_to_section;
         }
@@ -280,5 +314,26 @@ class PageTitleGenerator
     protected function setting($name, $default = null)
     {
         return $this->brand_stack->getActive()->getSetting($name, $default);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
+     */
+    protected function getCurrentUserPermissionBag()
+    {
+        if (null === $token = $this->token_storage->getToken()) {
+            $person = null;
+        }
+
+        if (!is_object($person = $token->getUser())) {
+            // e.g. anonymous authentication
+            $person = null;
+        }
+
+        if ($person) {
+            return $this->permissions_manager->getPermissionsBagForPerson($person);
+        }
+
+        return $this->permissions_manager->getPermissionsBagForGuest();
     }
 }

@@ -64,7 +64,7 @@ class TicketMessageType extends AbstractType
             );
         }
 
-        $builder->add('message', 'textarea', array(
+        $builder->add('message_text', 'textarea', array(
             'label'       => $options['message_label'],
             'required'    => $options['required'],
             'constraints' => $constraints,

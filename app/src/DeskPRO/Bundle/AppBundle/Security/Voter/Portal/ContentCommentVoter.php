@@ -38,14 +38,15 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
  */
 class ContentCommentVoter extends AbstractVoter
 {
-    const COMMENT_ARTICLES  = 'COMMENT_ARTICLES';
+    /** everyone is allowed to VIEW comments, but can they submit a comment? */
+    const COMMENT_ARTICLE  = 'COMMENT_ARTICLE';
     const COMMENT_FEEDBACK  = 'COMMENT_FEEDBACK';
-    const COMMENT_DOWNLOADS = 'COMMENT_DOWNLOADS';
+    const COMMENT_DOWNLOAD = 'COMMENT_DOWNLOAD';
     const COMMENT_NEWS      = 'COMMENT_NEWS';
 
     protected function getSupportedAttributes()
     {
-        return array(self::COMMENT_ARTICLES, self::COMMENT_FEEDBACK, self::COMMENT_DOWNLOADS, self::COMMENT_NEWS);
+        return array(self::COMMENT_ARTICLE, self::COMMENT_FEEDBACK, self::COMMENT_DOWNLOAD, self::COMMENT_NEWS);
     }
 
     protected function isGranted($attribute, $object, $user = null)
@@ -63,15 +64,17 @@ class ContentCommentVoter extends AbstractVoter
             return false; // if this setting is off, never allow comments
         }
 
+        $permitted = $permission_bag->hasContentCategoryAccess($object);
+
         switch ($attribute) {
-            case static::COMMENT_ARTICLES:
-                return $permission_bag->get('articles.comment');
+            case static::COMMENT_ARTICLE:
+                return $permission_bag->get('articles.comment') && $permitted;
             case static::COMMENT_FEEDBACK:
-                return $permission_bag->get('feedback.comment');
-            case static::COMMENT_DOWNLOADS:
-                return $permission_bag->get('downloads.comment');
+                return $permission_bag->get('feedback.comment') && $permitted;
+            case static::COMMENT_DOWNLOAD:
+                return $permission_bag->get('downloads.comment') && $permitted;
             case static::COMMENT_NEWS:
-                return $permission_bag->get('news.comment');
+                return $permission_bag->get('news.comment') && $permitted;
         }
 
         return false;

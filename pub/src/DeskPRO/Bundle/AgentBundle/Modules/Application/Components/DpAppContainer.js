@@ -29,8 +29,8 @@ ReactRouterWrapper.contextTypes = {
     routing: state.routing,
 }))
 export class DpAppContainer extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
         const { dp_window, dispatch } = this.props;
 
@@ -38,6 +38,7 @@ export class DpAppContainer extends React.Component {
             dispatch(AppActions.loadWindow());
         }
     }
+  }
 
     workOutBasePath() {
         let base_end = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);

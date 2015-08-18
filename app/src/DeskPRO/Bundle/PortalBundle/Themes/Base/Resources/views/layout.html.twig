@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}{% endif %}</title>
   <meta name="viewport" content="width=device-width">
-  <link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />
+  <link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />
   <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
 </head>
 <body>
@@ -33,13 +33,13 @@
   document.body.className = document.body.className + ' with-pageload-done';
 
   window.DP_ASSET_URL      = '{{ asset('') }}';
-  window.DP_BASE_URL       = '{{ path('portal_index')|trim('/') }}/';
+  window.DP_BASE_URL       = '{{ path('portal_home')|trim('/') }}/';
 
   if (WITH_DPUI) {
       var s = document.createElement('script');
       s.type = 'text/javascript';
       s.async = true;
-      s.src = '{{ asset('pub/build/DeskPRO_PortalBundle.js') }}';
+      s.src = '{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}';
       document.getElementsByTagName('head')[0].appendChild(s);
   }
 })();

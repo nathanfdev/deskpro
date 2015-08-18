@@ -38,7 +38,10 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -114,6 +117,13 @@ use Orb\Util\WorkHoursSetAll;
  * @property TicketParticipant[] $participants
  * @property TicketCharge[] $charges
  * @property TicketSla[] $ticket_slas
+ *
+ * REPEAT THESE ANNOTATIONS IN DeskPRO\Bundle\AppBundle\Model\TicketView
+ * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
+ * @PortalLinkCustom()
+ * @PortalLinkCustom(type="edit")
+ * @PortalLinkCustom(type="resolve")
+ * @PortalLinkCustom(type="unresolve")
  */
 class Ticket extends DomainObject implements HighlightableModelInterface
 {
@@ -1907,6 +1917,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->department['id'];
     }
 
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
     public function getEmailAccountId()
     {
         if (!$this->email_account) {
@@ -2285,6 +2300,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function isHidden()
     {
         return $this->getIsHidden();
+    }
+
+    public function isResolved()
+    {
+        return $this->status == self::STATUS_RESOLVED;
     }
 
     public function getIsHidden()
@@ -3231,14 +3251,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $string;
     }
 
+    /**
+     * @deprecated use $this->get('object_router')->getPortalPath($ticket) instead
+     */
     public function getPath()
     {
-        return App::getRouter()->generate('portal_tickets_view', array('id' => $this->getId()));
+        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getPath()')
+        )
+        ;
+
+        return App::getObjectRouter()->getPortalPath($this);
     }
 
+    /**
+     * @deprecated use $this->get('object_router')->getPortalUrl($ticket) instead
+     */
     public function getLink()
     {
-        return App::getRouter()->generateUrl('portal_tickets_view', array('id' => $this->getId()));
+        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getLink()')
+        )
+        ;
+
+        return App::getObjectRouter()->getPortalUrl($this);
     }
 
     public function isAgentCreated()

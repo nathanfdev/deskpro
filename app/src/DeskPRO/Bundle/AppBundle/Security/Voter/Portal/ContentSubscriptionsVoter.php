@@ -40,22 +40,22 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
  */
 class ContentSubscriptionsVoter extends AbstractVoter
 {
-    const SUBSCRIBE_ARTICLES             = 'SUBSCRIBE_ARTICLES';
-    const SUBSCRIBE_ARTICLE_CATEGORIES   = 'SUBSCRIBE_ARTICLE_CATEGORIES';
+    const SUBSCRIBE_ARTICLE             = 'SUBSCRIBE_ARTICLE';
+    const SUBSCRIBE_ARTICLE_CATEGORY   = 'SUBSCRIBE_ARTICLE_CATEGORY';
     const SUBSCRIBE_NEWS                 = 'SUBSCRIBE_NEWS';
-    const SUBSCRIBE_NEWS_CATEGORIES      = 'SUBSCRIBE_NEWS_CATEGORIES';
-    const SUBSCRIBE_DOWNLOADS            = 'SUBSCRIBE_DOWNLOADS';
-    const SUBSCRIBE_DOWNLOADS_CATEGORIES = 'SUBSCRIBE_DOWNLOADS_CATEGORIES';
+    const SUBSCRIBE_NEWS_CATEGORY      = 'SUBSCRIBE_NEWS_CATEGORY';
+    const SUBSCRIBE_DOWNLOAD            = 'SUBSCRIBE_DOWNLOAD';
+    const SUBSCRIBE_DOWNLOAD_CATEGORY = 'SUBSCRIBE_DOWNLOAD_CATEGORY';
 
     protected function getSupportedAttributes()
     {
         return array(
-            self::SUBSCRIBE_ARTICLES,
-            self::SUBSCRIBE_ARTICLE_CATEGORIES,
+            self::SUBSCRIBE_ARTICLE,
+            self::SUBSCRIBE_ARTICLE_CATEGORY,
             self::SUBSCRIBE_NEWS,
-            self::SUBSCRIBE_NEWS_CATEGORIES,
-            self::SUBSCRIBE_DOWNLOADS,
-            self::SUBSCRIBE_DOWNLOADS_CATEGORIES,
+            self::SUBSCRIBE_NEWS_CATEGORY,
+            self::SUBSCRIBE_DOWNLOAD,
+            self::SUBSCRIBE_DOWNLOAD_CATEGORY,
         );
     }
 
@@ -65,18 +65,20 @@ class ContentSubscriptionsVoter extends AbstractVoter
             return false;
         }
 
-        $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+        $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+
+        $permitted = $permission_bag->hasContentCategoryAccess($object);
 
         switch ($attribute) {
-            case static::SUBSCRIBE_ARTICLES:
-            case static::SUBSCRIBE_ARTICLE_CATEGORIES:
-                return $this->getActiveBrandSetting('user.kb_subscriptions');
+            case static::SUBSCRIBE_ARTICLE:
+            case static::SUBSCRIBE_ARTICLE_CATEGORY:
+                return $this->getActiveBrandSetting('user.kb_subscriptions') && $permitted;
             case static::SUBSCRIBE_NEWS:
-            case static::SUBSCRIBE_NEWS_CATEGORIES:
-                return $this->getActiveBrandSetting('user.news_subscriptions');
-            case static::SUBSCRIBE_DOWNLOADS:
-            case static::SUBSCRIBE_DOWNLOADS_CATEGORIES:
-                return $this->getActiveBrandSetting('user.downloads_subscriptions');
+            case static::SUBSCRIBE_NEWS_CATEGORY:
+                return $this->getActiveBrandSetting('user.news_subscriptions') && $permitted;
+            case static::SUBSCRIBE_DOWNLOAD:
+            case static::SUBSCRIBE_DOWNLOAD_CATEGORY:
+                return $this->getActiveBrandSetting('user.downloads_subscriptions') && $permitted;
         }
 
         return false;

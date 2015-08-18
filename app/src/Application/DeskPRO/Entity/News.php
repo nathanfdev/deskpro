@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -41,9 +42,11 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * News.
- *
- * @SWG\Model (id="News")
+ * @PortalLinkRoute("portal_news_view", route_param_map={"slug": "slug"})
+ * @PortalLinkRoute("portal_news_view", route_param_map={"slug": "id"}, type="permalink")
+ * @PortalLinkRoute("portal_news_post_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_news_post_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_news_post_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {
@@ -52,19 +55,19 @@ class News extends ContentAbstract implements HighlightableModelInterface
     /**
      * @var \Application\DeskPRO\Entity\NewsCategory
      *
-     * @SWG\Property(name="category", type="NewsCategory")
+     * SWG\Property(name="category", type="NewsCategory")
      */
     protected $category;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @SWG\Property(name="revisions", type="array", @SWG\Items("NewsRevision"))
+     * SWG\Property(name="revisions", type="array", SWG\Items("NewsRevision"))
      */
     protected $revisions;
 
     /**
-     * @SWG\Property(name="labels", type="array", @SWG\Items("string"))
+     * SWG\Property(name="labels", type="array", SWG\Items("string"))
      */
     protected $labels;
 
@@ -128,30 +131,6 @@ class News extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getLink()
-    {
-        $url = App::getRouter()->generate('portal_news_view', array('slug' => $this->getUrlSlug()), true);
-
-        return $url;
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getPermalink()
-    {
-        $url = App::getRouter()->generate('portal_news_view', array('slug' => $this->id), true);
-
-        return $url;
-    }
-
-    /**
      * Set a category.
      *
      * @param NewsCategory $category
@@ -167,6 +146,11 @@ class News extends ContentAbstract implements HighlightableModelInterface
         }
 
         return $this;
+    }
+
+    public function getCategoryId()
+    {
+        return $this->category['id'];
     }
 
     public function getCategoryPath()

@@ -4,7 +4,7 @@
     <ul class="content-list">
       {% for article in pager %}
         <li>
-          <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">{{ article.realTitle }}</a>
+          <a href="{{ portal_path(article) }}">{{ article.realTitle }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -14,7 +14,7 @@
 
   {% if show_category_link %}
     <div class="list-meta">
-      <a href="{{ category ? path('portal_kb_browse', { slug: category.slug }) : path('portal_kb') }}">
+      <a href="{{ category ? portal_path(category) : path('portal_kb') }}">
         {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}{{ icons.view_more() }}
       </a>
     </div>

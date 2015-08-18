@@ -37,13 +37,18 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
- * Article.
+ * @PortalLinkRoute("portal_kb_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_kb_view", route_param_map={"slug": "id"}, type="permalink")
+ * @PortalLinkRoute("portal_kb_article_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_kb_article_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_kb_article_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
 class Article extends ContentAbstract implements HighlightableModelInterface
 {
@@ -125,30 +130,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getLink()
-    {
-        $url = App::getRouter()->generate('portal_kb_view', array('slug' => $this->getUrlSlug()), true);
-
-        return $url;
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated generate the route properly, check route name is right and use getSlug()
-     */
-    public function getPermalink()
-    {
-        $url = App::getRouter()->generate('portal_kb_view', array('slug' => $this->id), true);
-
-        return $url;
     }
 
     /**
@@ -259,6 +240,18 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return implode($sep, $cats);
     }
 
+    public function getCategoryIds()
+    {
+        $ids = array();
+
+        foreach ($this->categories as $cat) {
+            /** @var ArticleCategory $cat */
+            $ids[] = $cat->getId();
+        }
+
+        return $ids;
+    }
+
     public function getCategoryPath($index = 0)
     {
         $path = array();
@@ -282,6 +275,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         foreach ($this->categories as $c) {
             return $c;
         }
+    }
+
+    /**
+     * @return ArrayCollection|ArticleCategory[]
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 
     public function addAttachment(ArticleAttachment $attach)

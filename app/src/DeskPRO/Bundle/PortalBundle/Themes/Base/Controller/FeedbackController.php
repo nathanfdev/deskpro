@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
@@ -71,6 +72,8 @@ class FeedbackController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
+        $person = $this->getUser() ?: new PersonGuest();
+
         $filter = new FeedbackFilter(array(
             'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
@@ -82,7 +85,8 @@ class FeedbackController extends AbstractController
         $pager = $this->getFeedbackDataService()->getItemsPager(
             $options['page'],
             $options['count'],
-            $filter
+            $filter,
+            $person
         );
 
         return $this->renderThemeView(
@@ -123,6 +127,8 @@ class FeedbackController extends AbstractController
             return new Response('');
         }
 
+        $person = $this->getUser() ?: new PersonGuest();
+
         $filter = new FeedbackFilter(array(
             'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
@@ -134,7 +140,8 @@ class FeedbackController extends AbstractController
         $pager = $this->getFeedbackDataService()->getItemsPager(
             $options['page'],
             $options['count'],
-            $filter
+            $filter,
+            $person
         );
 
         return $this->renderThemeView(

@@ -75,7 +75,7 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
     public function it_abstains_from_non_subscription_votes(
         TokenInterface $token
     ) {
-        $this->verifyAbstainVote(ContentCommentVoter::COMMENT_ARTICLES, $token);
+        $this->verifyAbstainVote(ContentCommentVoter::COMMENT_ARTICLE, $token);
     }
 
     public function it_denies_all_guests(
@@ -83,14 +83,14 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
     ) {
         $this->verifyDeniedVote(
             array(
-                ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES,
-                ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES,
-                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS,
-                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES,
+                ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE,
+                ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY,
+                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD,
+                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY,
                 ContentSubscriptionsVoter::SUBSCRIBE_NEWS,
-                ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES,
-                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS,
-                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES,
+                ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY,
+                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD,
+                ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY,
             ),
             $guest_token
         );
@@ -102,8 +102,8 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
     ) {
         $brand_container->getSetting('user.kb_subscriptions', Argument::any())->willReturn(true);
 
-        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES, $token);
-        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES, $token);
+        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE, $token);
+        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $token);
     }
 
     public function it_denies_articles_and_category_subs_by_brand_setting(
@@ -112,8 +112,8 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
     ) {
         $brand_container->getSetting('user.kb_subscriptions', Argument::any())->willReturn(false);
 
-        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES, $token);
-        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES, $token);
+        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE, $token);
+        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $token);
     }
 
     public function it_grants_downloads_and_category_subs_by_brand_setting(
@@ -122,8 +122,8 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
     ) {
         $brand_container->getSetting('user.downloads_subscriptions', Argument::any())->willReturn(true);
 
-        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS, $token);
-        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES, $token);
+        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD, $token);
+        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY, $token);
     }
 
     public function it_denies_downloads_and_category_subs_by_brand_setting(
@@ -132,8 +132,8 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
     ) {
         $brand_container->getSetting('user.downloads_subscriptions', Argument::any())->willReturn(false);
 
-        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS, $token);
-        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES, $token);
+        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD, $token);
+        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY, $token);
     }
 
     public function it_grants_news_and_category_subs_by_brand_setting(
@@ -143,7 +143,7 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
         $brand_container->getSetting('user.news_subscriptions', Argument::any())->willReturn(true);
 
         $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_NEWS, $token);
-        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES, $token);
+        $this->verifyGrantedVote(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY, $token);
     }
 
     public function it_denies_news_and_category_subs_by_brand_setting(
@@ -153,7 +153,7 @@ class ContentSubscriptionsVoterSpec extends ObjectBehavior
         $brand_container->getSetting('user.news_subscriptions', Argument::any())->willReturn(false);
 
         $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_NEWS, $token);
-        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES, $token);
+        $this->verifyDeniedVote(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY, $token);
     }
 
     public function verifyGrantedVote($attribute, $token)

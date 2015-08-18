@@ -29,63 +29,64 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler\Filter;
+namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
-use DeskPRO\Component\Util\RandUtils;
-
-/**
- * Removes absolute and relative paths in @import's.
- * Means only files in the include paths can be imported.
- *
- * This "fixes" it by replacing bad @imports with a token,
- * and then putting them back after SCSS has run (thus it's possible
- * for someone to use an http url for example and still have it @import via usual css).
- */
-class SafeImportIncPathFilter implements FilterInterface
+class DefaultFileLoader implements FileLoaderInterface
 {
     /**
      * @var array
      */
-    private $tokens = array();
+    private $whitelist_paths = array();
 
     /**
-     * Called on a source file BEFORE scss has been compiled.
-     *
-     * @param string $file_name
-     * @param string $source
-     * @return string
+     * @param array|null $whitelist_paths Optionally supply a list of paths you can read from. Every other path will throw an exception.
      */
-    public function preProcessSource($file_name, $source)
+    public function __construct(array $whitelist_paths = null)
     {
-        $tokens = array();
-        $source = preg_replace_callback('#@import\s+(.*?);#i', function($m) use (&$tokens, $source) {
-            $url = trim(trim(trim($m[1]), "'\""));
-            if (!preg_match('#^[a-zA-Z0-9_\-_][a-zA-Z0-9_\-_\.\\/]#', $url)) {
-                $t = RandUtils::randomBodyToken($source);
-                $tokens[$t] = $m[0];
-                return $t;
-            } else {
-                return $m[0];
+        foreach ($whitelist_paths as $path) {
+            $p = @realpath($path);
+            if ($p) {
+                $p = strtolower($p);
+                $this->whitelist_paths[] = $p;
             }
-        }, $source);
+        }
 
-        $this->tokens = $tokens;
-
-        return $source;
+        // Passed options but none were real paths, so we
+        // need to add a bogus path just so the rest of the class
+        // works under the assumption that jailing is enabled
+        if ($whitelist_paths && !$this->whitelist_paths) {
+            $this->whitelist_paths[] = 'bogus_' . md5(uniqid('', true));
+        }
     }
 
     /**
-     * Called on the result AFTER scss has been compiled.
+     * Given a requested path, load the file.
      *
-     * @param string $source
-     * @return string
+     * This should return a string when successful, or NULL if the file could not be loaded.
+     *
+     * @param string $file
+     * @return string|null
      */
-    public function postProcessResult($source)
+    public function loadFile($path)
     {
-        if (!$this->tokens) {
-            return $source;
+        if (file_exists($path)) {
+            if ($this->whitelist_paths) {
+                $realpath_l = strtolower(realpath($path));
+                $ok = false;
+                foreach ($this->whitelist_paths as $p) {
+                    if (strpos($realpath_l, $p) === 0) {
+                        $ok = true;
+                        break;
+                    }
+                }
+                if (!$ok) {
+                    throw new \InvalidArgumentException('Not in allowed paths');
+                }
+            }
+
+            return file_get_contents($path);
         }
 
-        return str_replace(array_keys($this->tokens), array_values($this->tokens), $source);
+        return null;
     }
 }
