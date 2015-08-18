@@ -17,6 +17,20 @@ export function loadPerson(id) {
 }
 
 /**
+ * @return Promise
+ */
+export function loadUsersTotalCount() {
+  return DpApi.sendGet('DP_API/people/counts?is_agent=0&is_deleted=0');
+}
+
+/**
+ * @return Promise
+ */
+export function loadAgentsTotalCount() {
+  return DpApi.sendGet('DP_API/people/counts?is_agent=1&is_deleted=0');
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}

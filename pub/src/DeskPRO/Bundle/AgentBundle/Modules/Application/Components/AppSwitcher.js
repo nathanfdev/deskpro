@@ -7,7 +7,7 @@ import { Link } from 'react-router';
   user: state.user,
   dp_window: state.dp_window
 }))
-export default class AppSwitcher extends React.Component {
+export class AppSwitcher extends React.Component {
   renderAppIcon(appId, title, iconClass) {
     const { dp_window, dispatch } = this.props;
     const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
@@ -32,7 +32,7 @@ export default class AppSwitcher extends React.Component {
       <div className="app-bar">
         <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
-          {this.renderAppIcon('users', 'Users', 'fa-users')}
+          {this.renderAppIcon('crm', 'CRM', 'fa-users')}
           {this.renderAppIcon('chat', 'Chat', 'fa-comments-o')}
           {this.renderAppIcon('feedback', 'Feedback', 'fa-thumbs-up')}
           {this.renderAppIcon('publish', 'Publish', 'fa-edit')}

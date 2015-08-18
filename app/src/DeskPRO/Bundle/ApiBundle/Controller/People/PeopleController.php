@@ -129,7 +129,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *      },
      *      output="Application\DeskPRO\Entity\Person"
      * )
-     * @Get("/people/{id}", name="api_people_get")
+     * @Get("/people/{id}", name="api_people_get", requirements={"id" = "\d+"})
      * @param int $id
      * @return View
      */
@@ -187,7 +187,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *          404="Not Found"
      *      }
      * )
-     * @Put("/people/{id}", name="api_people_put")
+     * @Put("/people/{id}", name="api_people_put", requirements={"id" = "\d+"})
      * @param Request $request
      * @param $id
      * @throws WrappedApiErrorException
@@ -216,7 +216,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/people/{id}", name="api_people_delete")
+     * @Delete("/people/{id}", name="api_people_delete", requirements={"id" = "\d+"})
      * @param $id
      * @return View
      */

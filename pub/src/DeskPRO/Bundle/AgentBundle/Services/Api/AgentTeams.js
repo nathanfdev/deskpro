@@ -5,8 +5,16 @@ export function loadAgentTeams(options = {}) {
   return DpApi.sendGet('DP_API/agent_teams?' + compileParams(options));
 }
 
+export function loadAll() {
+  return loadAgentTeams();
+}
+
 export function loadAgentTeam(team_id) {
   return DpApi.sendGet(`DP_API/agent_teams/${team_id}`);
+}
+
+export function loadCounts() {
+  return DpApi.sendGet('DP_API/agent_teams/counts');
 }
 
 /**

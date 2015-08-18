@@ -4,6 +4,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\PersonDataService
     arguments: [@doctrine.orm.default_entity_manager]
 
+  data.people_counts:
+    class: DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountsDataService
+    arguments: [@doctrine.orm.default_entity_manager]
+
   data.tickets:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
     arguments: [@doctrine.orm.default_entity_manager]
@@ -65,7 +69,7 @@ services:
       arguments: [@doctrine.orm.default_entity_manager]
 
   data.user_groups:
-      class: DeskPRO\Bundle\AppBundle\DataService\UserGroupsDataService
+      class: DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService
       arguments: [@doctrine.orm.default_entity_manager]
 
   data.ticket_slas:
@@ -90,4 +94,8 @@ services:
 
   data.chat:
       class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.agent_teams:
+      class: DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService
       arguments: [@doctrine.orm.default_entity_manager]

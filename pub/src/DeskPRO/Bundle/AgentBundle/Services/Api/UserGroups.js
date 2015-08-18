@@ -15,3 +15,11 @@ export function loadAll() {
 export function loadUserGroup(user_group_id = 'all') {
   return DpApi.sendGet('DP_API/user_groups/' + user_group_id);
 }
+
+/**
+ * Get user counts by groups
+ * @return Promise
+ */
+export function loadCounts() {
+  return DpApi.sendGet('DP_API/user_groups/counts');
+}

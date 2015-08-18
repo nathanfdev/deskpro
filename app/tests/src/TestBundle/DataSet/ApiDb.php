@@ -92,6 +92,16 @@ class ApiDb extends AbstractDbSet
             false
         );
 
+        $deletedAgent = $this->addUser(
+            UserDetailsRepo::DELETED_AGENT_FIRST_NAME,
+            UserDetailsRepo::DELETED_AGENT_LAST_NAME,
+            UserDetailsRepo::DELETED_AGENT_EMAIL,
+            UserDetailsRepo::DELETED_AGENT_PASS,
+            true,
+            false,
+            true
+        );
+
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need a brand and some deps, and some other entities
@@ -303,7 +313,74 @@ class ApiDb extends AbstractDbSet
                 (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
             ;
         ");
-        // end of "/user_chats" endpoint test data ---------------------------------------------------------------------
+        // end of "/user_chats" endpoint test data
+
+        // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `usergroups`
+                (`id`, `title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
+            VALUES
+                (1, 'Group 1', 'test', 0, 'g1', 1),
+                (2, 'Group 2 (disabled)', 'test', 0, 'g2', 0),
+                (3, 'Group 3', 'test', 0, 'g3', 1),
+                (4, 'Group 4', 'test', 0, 'g4', 1)
+            ;
+
+            INSERT INTO `person2usergroups`
+                (`person_id`, `usergroup_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 2),
+                (1, 3),
+                (2, 3),
+                (3, 3),
+                (4, 4)
+            ;
+        ");
+        // end of "/user_groups"
+
+        // "/organizations" endpoint and its' children test data -------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `organizations`
+                (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
+            VALUES
+                (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
+                (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
+        ");
+        // end of "/organizations"
+
+        // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `agent_teams`
+                (`avatar_blob_id`, `name`)
+            VALUES
+                (NULL, 'Support Managers'),
+                (NULL, '1st Level Support')
+            ;
+
+            INSERT INTO `agent_team_members`
+                (`team_id`, `person_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 3),
+                (2, 4)
+            ;
+        ");
+        // end of "/organizations"
+
+        // Labels endpoints test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `label_defs`
+                (`label_type`, `label`, `color`, `total`)
+            VALUES
+                ('organization', 'organization label #1', 'red', 42),
+                ('person', 'person label #1', 'white', 1),
+                ('person', 'person label #2', 'red', 3)
+            ;
+        ");
+        // end of labels endpoints
 
         $count++;
 
