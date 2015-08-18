@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 
 /**
  * Class ChatCountCriteria
@@ -114,13 +115,13 @@ class ChatCountCriteria extends ChatSelectCriteria
                 break;
 
             case 'date_period':
-                $qb->addSelect($this->getDatePeriodCaseWhenDql($alias) . ' as group_name');
+                $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+                $qb->addSelect("$datePeriodsDql as group_name");
 
                 // select hidden group_order to use in ORDER BY
                 $qb->addSelect(
-                    "FIELD(" . $this->getDatePeriodCaseWhenDql($alias) . ",
-                        'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever'
-                    ) as HIDDEN group_order");
+                    "FIELD($datePeriodsDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever')
+                     as HIDDEN group_order");
                 $qb->orderBy('group_order');
 
                 break;

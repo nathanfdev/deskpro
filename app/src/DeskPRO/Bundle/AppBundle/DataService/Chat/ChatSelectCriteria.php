@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Application\DeskPRO\Entity\Person;
 
 /**
@@ -88,7 +89,7 @@ class ChatSelectCriteria
                     break;
 
                 case 'date_period':
-                    $datePeriodCaseWhen = $this->getDatePeriodCaseWhenDql($alias);
+                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
                     $qb->andWhere("$datePeriodCaseWhen = :date_period");
                     $qb->setParameter('date_period', $value);
                     break;
@@ -100,46 +101,6 @@ class ChatSelectCriteria
                     break;
             }
         }
-    }
-
-    /**
-     * Get date_period CASE-WHEN DQL clause
-     *
-     * Handles the following groups:
-     *
-     * today
-     * yesterday
-     * this_week
-     * this_month
-     * last_month
-     * this_year
-     * ever
-     *
-     * @param string $alias
-     * @return string
-     */
-    protected function getDatePeriodCaseWhenDql($alias)
-    {
-        $today = date('Y-m-d', strtotime('today'));
-        $yesterday = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear = date('Y-01-01');
-
-        $target = "DATE($alias.date_created)";
-
-        $groupSelectDql = "(CASE
-            WHEN $target  = '$today' THEN 'today'
-            WHEN $target  = '$yesterday' THEN 'yesterday'
-            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
-            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
-            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
-            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
-            ELSE 'ever'
-        END)";
-
-        return $groupSelectDql;
     }
 
     /**
@@ -162,8 +123,6 @@ class ChatSelectCriteria
         $resolver->setAllowedValues('date_created', function($value) {
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
         });
-        $resolver->setAllowedValues('date_period', [
-            'today', 'yesterday', 'this_week', 'this_month', 'last_month', 'this_year', 'ever'
-        ]);
+        $resolver->setAllowedValues('date_period', DatePeriods::$names);
     }
 }
