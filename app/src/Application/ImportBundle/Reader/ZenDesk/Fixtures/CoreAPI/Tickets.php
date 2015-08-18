@@ -29,8 +29,8 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleIdsLoader;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleLoader;
+use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 use DateTime;
 
@@ -40,12 +40,24 @@ use DateTime;
  * Class Tickets
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
-final class Tickets extends AbstractFixture implements FixturePrepareInterface
+final class Tickets extends AbstractFixture
 {
     /**
-     * @var PeopleIdsLoader
+     * @var PeopleLoader
      */
     private $people_loader;
+
+    /**
+     * Constructor
+     *
+     * @param Client       $client
+     * @param PeopleLoader $people_loader
+     */
+    public function __construct(Client $client, PeopleLoader $people_loader)
+    {
+        parent::__construct($client);
+        $this->people_loader = $people_loader;
+    }
 
     /**
      * {@inheritdoc}
@@ -53,15 +65,6 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_TICKET;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prepare(DateTime $initial_time, DateTime $end_time)
-    {
-        $this->people_loader = new PeopleIdsLoader($this->client);
-        $this->people_loader->load($initial_time);
     }
 
     /**

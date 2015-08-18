@@ -32,7 +32,6 @@ use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\Cate
 use Application\ImportBundle\Reader\ZenDesk\Request\RequestClientAdapter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
-use Zendesk\API\ResponseException;
 
 /**
  * Class CategoryLoader
@@ -67,14 +66,8 @@ class CategoryLoader extends AbstractFixtureHelper
      */
     public function load()
     {
-        try {
-            $response = $this->request_adapter->doRequest(new CategoriesFindAll());
-            $this->categories = new ArrayCollection($this->toArray($response->categories));
-
-        } catch (ResponseException $e) {
-            $this->handleResponseException('category');
-            throw new \RuntimeException('Unable to load categories');
-        }
+        $response = $this->request_adapter->doRequest(new CategoriesFindAll());
+        $this->categories = new ArrayCollection($this->toArray($response->categories));
     }
 
     /**

@@ -29,38 +29,48 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
-use Zendesk\API\ResponseException;
+use Application\ImportBundle\Reader\ZenDesk\Request\RequestClientAdapter;
+use Doctrine\Common\Collections\ArrayCollection;
 use DateTime;
 
 /**
  * Class PeopleIdsLoader
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
  */
-class PeopleIdsLoader extends AbstractFixtureHelper
+class PeopleLoader extends AbstractFixtureHelper
 {
     /**
-     * @var array
+     * @var ArrayCollection
      */
-    protected $people_ids = array();
+    protected $people;
 
     /**
-     * @param DateTime $initial_time
+     * @var RequestClientAdapter
      */
-    public function load(DateTime $initial_time)
+    private $request_adapter;
+
+    /**
+     * Constructor
+     *
+     * @param RequestClientAdapter $request_adapter
+     */
+    public function __construct(RequestClientAdapter $request_adapter)
     {
-        try {
-            $people_incremental = new PeopleIncrementalExport(array(
-                'start_time' => $initial_time->getTimestamp(),
-            ));
+        $this->request_adapter = $request_adapter;
+    }
 
-            $people = $people_incremental->request($this->client);
-            foreach($people->users as $person) {
-                $this->people_ids[] = $person->id;
-            }
+    /**
+     * Loads people batch collection
+     */
+    public function load()
+    {
+        $initial_time       = new DateTime('-2 years');
+        $people_incremental = new PeopleIncrementalExport(array(
+            'start_time' => $initial_time->getTimestamp(),
+        ));
 
-        } catch (ResponseException $e) {
-            $this->handleResponseException(Entity\EntityInterface::TYPE_PERSON);
-        }
+        $response     = $this->request_adapter->doRequest($people_incremental);
+        $this->people = new ArrayCollection($this->toArray($response->users));
     }
 
     /**
@@ -71,10 +81,13 @@ class PeopleIdsLoader extends AbstractFixtureHelper
      */
     public function getRandomPersonId()
     {
-        if (empty($this->people_ids)) {
+        if (null === $this->people) {
+            $this->load();
+        }
+        if (empty($this->people)) {
             throw new \RuntimeException('No person found');
         }
 
-        return $this->people_ids[rand(0, count($this->people_ids) - 1)];
+        return $this->people[rand(0, count($this->people) - 1)]['id'];
     }
 }

@@ -30,11 +30,12 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleIdsLoader;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleLoader;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
 use DateTime;
+use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 
 /**
@@ -46,7 +47,7 @@ use Zendesk\API\ResponseException;
 final class Articles extends AbstractFixture implements FixturePrepareInterface
 {
     /**
-     * @var PeopleIdsLoader
+     * @var PeopleLoader
      */
     private $people_loader;
 
@@ -54,6 +55,18 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
      * @var array
      */
     private $sections = array();
+
+    /**
+     * Constructor
+     *
+     * @param Client       $client
+     * @param PeopleLoader $people_loader
+     */
+    public function __construct(Client $client, PeopleLoader $people_loader)
+    {
+        parent::__construct($client);
+        $this->people_loader = $people_loader;
+    }
 
     /**
      * {@inheritdoc}
@@ -75,9 +88,6 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
         } catch (ResponseException $e) {
             $this->handleResponseException('section');
         }
-
-        $this->people_loader = new PeopleIdsLoader($this->client);
-        $this->people_loader->load($initial_time);
     }
 
     /**

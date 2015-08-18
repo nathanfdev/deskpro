@@ -34,6 +34,8 @@ use DateTime;
  *
  * Interface FixturePrepareInterface
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
+ *
+ * @deprecated Use loader instead
  */
 interface FixturePrepareInterface
 {
@@ -44,6 +46,7 @@ interface FixturePrepareInterface
      * @param DateTime $end_time
      *
      * @return void
+     * @deprecated Use loader instead
      */
     public function prepare(DateTime $initial_time, DateTime $end_time);
 }

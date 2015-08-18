@@ -27,7 +27,9 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
+use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 
 /**
@@ -38,6 +40,21 @@ use Zendesk\API\ResponseException;
  */
 abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureInterface
 {
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * Constructor
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -68,4 +85,26 @@ abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureI
      * @return void
      */
     protected abstract function createItem($num, DateTime $initial_time, DateTime $end_time);
+
+    /**
+     * Shows error output to log
+     *
+     * @param string $entity_type
+     */
+    protected function handleResponseException($entity_type)
+    {
+        $this->logWarning(sprintf(
+            'Bad response, entity type=`%s`, code=`%s`, headers:',
+
+            $entity_type,
+            $this->client->getDebug()->lastResponseCode
+        ));
+
+        $debug = $this->client->getDebug();
+        $this->logWarning($debug->lastRequestHeaders);
+
+        if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
+            sleep(60);
+        }
+    }
 }
