@@ -31,6 +31,7 @@
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
+
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 
 /**
@@ -47,9 +48,9 @@ class FeedbackLabelsDataService extends AbstractDataService
     {
         $qb = $this->getEm()->createQueryBuilder();
         $qb
-            ->select('l.label')
-            ->distinct()
+            ->select('l.label', 'COUNT(l.label) as cnt')
             ->from('DeskPRO:LabelFeedback', 'l')
+            ->groupBy('l.label')
             ->orderBy('l.label', 'ASC');
         if ($term) {
             $qb
@@ -57,10 +58,6 @@ class FeedbackLabelsDataService extends AbstractDataService
                 ->setParameter('term', $term . '%');
         }
         $labels = $qb->getQuery()->getScalarResult();
-
-        $labels = array_map(function ($item) {
-            return $item['label'];
-        }, $labels);
 
         return $labels;
     }

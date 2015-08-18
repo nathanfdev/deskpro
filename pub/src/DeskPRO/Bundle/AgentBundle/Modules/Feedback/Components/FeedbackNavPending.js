@@ -12,7 +12,7 @@ export default class FeedbackNavPending extends React.Component {
                     <li>
                         <div className="list-counter-bucket">
                             <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">{data.toValidate}</a>
+                               onclick="showFilterOptions(this); return false;">{data.toValidateCount}</a>
                         </div>
                         <a href="#" className="item"
                            onClick={this.props.switchFeedback.bind(this, 'feedback?to_validate=1')}
@@ -21,7 +21,7 @@ export default class FeedbackNavPending extends React.Component {
                     <li>
                         <div className="list-counter-bucket">
                             <a className="list-counter" href="#"
-                               onclick="showFilterOptions(this); return false;">{data.commentsToReview}</a>
+                               onclick="showFilterOptions(this); return false;">{data.commentsToReviewCount}</a>
                         </div>
                         <a href="#" className="item"
                            onClick={this.props.switchFeedback.bind(this, 'feedback?to_validate=1')}

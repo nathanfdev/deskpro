@@ -4,28 +4,37 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
     getInitialState() {
         return {
-            toValidate: 0,
-            commentsToReview: 0
+            toValidateCount: 0,
+            commentsToReviewCount: 0,
+            labels: []
         };
     }
 
     toValidate(state, action) {
         return {
             ...state,
-            toValidate: action.payload.data.count
+            toValidateCount: action.payload.data.count
         };
     }
 
     commentsToReview(state, action) {
         return {
             ...state,
-            commentsToReview: action.payload.data.count
+            commentsToReviewCount: action.payload.data.count
+        };
+    }
+
+    labels(state, action) {
+        return {
+            ...state,
+            labels: action.payload.data
         };
     }
 
     registerHandlers() {
         this
             .r(FeedbackListActions.feedbackToValidate, this.toValidate)
+            .r(FeedbackListActions.feedbackLabels, this.labels)
             .r(FeedbackListActions.commentsToReview, this.commentsToReview);
     }
 

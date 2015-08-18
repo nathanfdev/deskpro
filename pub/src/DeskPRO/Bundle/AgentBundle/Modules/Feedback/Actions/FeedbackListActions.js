@@ -20,6 +20,15 @@ export const commentsToReview = createAction(
     }
 );
 
+export const feedbackLabels = createAction(
+    "FEEDBACK_LABELS",
+    (trigger) => {
+        Feedback.getLabels().then(
+            (value) => trigger(value.getData())
+        );
+    }
+);
+
 export const loadFeedbackList = createAction(
     "FEEDBACK_LIST",
     (trigger) => {

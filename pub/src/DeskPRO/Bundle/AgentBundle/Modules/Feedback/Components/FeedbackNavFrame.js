@@ -3,6 +3,7 @@ import { connect } from 'redux/react';
 
 import * as FeedbackListActions from "../Actions/FeedbackListActions";
 import FeedbackNavPending from "../Components/FeedbackNavPending.js";
+import FeedbackNavLabels from "../Components/FeedbackNavLabels.js";
 import $ from "jquery";
 
 @connect(state => ({
@@ -18,6 +19,7 @@ class FeedbackNavFrame extends React.Component {
         const { dispatch } = this.props;
         dispatch(FeedbackListActions.feedbackToValidate());
         dispatch(FeedbackListActions.commentsToReview());
+        dispatch(FeedbackListActions.feedbackLabels());
     }
 
     switchFeedback(identifier, event) {
@@ -54,8 +56,8 @@ class FeedbackNavFrame extends React.Component {
                             <a href="#" className="slider-control"></a>
                         </div>
                         <div className="sidebar-list sidebar-list-filters">
-                            <FeedbackNavPending data={feedbackList}
-                                                switchFeedback={this.switchFeedback.bind(this)}/>
+                            <FeedbackNavPending data={feedbackList} switchFeedback={this.switchFeedback.bind(this)}/>
+                            <FeedbackNavLabels labels={feedbackList.labels} switchFeedback={this.switchFeedback.bind(this)}/>
                         </div>
 
                     </aside>

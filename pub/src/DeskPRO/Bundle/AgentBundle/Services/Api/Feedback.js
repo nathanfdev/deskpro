@@ -39,6 +39,14 @@ export function commentsToReview() {
 }
 
 /**
+ * Feedback labels with counts
+ * @return Promise
+ */
+export function getLabels() {
+    return DpApi.sendGet('DP_API/feedback_labels');
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}
