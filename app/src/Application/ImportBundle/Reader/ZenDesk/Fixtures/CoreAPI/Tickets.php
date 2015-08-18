@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleLoader;
 use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 use DateTime;

@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\CategoryLoader;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleLoader;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;

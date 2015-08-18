@@ -25,39 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
-use Application\ImportBundle\Reader\ZenDesk\Request\RequestClientAdapter;
 use Doctrine\Common\Collections\ArrayCollection;
 use DateTime;
 
 /**
  * Class PeopleIdsLoader
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
-class PeopleLoader extends AbstractFixtureHelper
+class PeopleLoader extends AbstractFixtureLoader
 {
     /**
      * @var ArrayCollection
      */
     protected $people;
-
-    /**
-     * @var RequestClientAdapter
-     */
-    private $request_adapter;
-
-    /**
-     * Constructor
-     *
-     * @param RequestClientAdapter $request_adapter
-     */
-    public function __construct(RequestClientAdapter $request_adapter)
-    {
-        $this->request_adapter = $request_adapter;
-    }
 
     /**
      * Loads people batch collection

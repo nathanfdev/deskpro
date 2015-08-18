@@ -25,79 +25,28 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoriesFindAll;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
+use Application\ImportBundle\Reader\ZenDesk\Request\RequestClientAdapter;
 
 /**
- * Class CategoryLoader
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
+ * Class AbstractLoader
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
  */
-class CategoryLoader extends AbstractFixtureLoader
+abstract class AbstractFixtureLoader extends AbstractFixtureHelper implements FixtureLoaderInterface
 {
-    const FAKE_PREFIX = 'Fake Category';
-
     /**
-     * @var ArrayCollection
+     * @var RequestClientAdapter
      */
-    private $categories;
+    protected $request_adapter;
 
     /**
-     * Loads all categories
-     */
-    public function load()
-    {
-        $response = $this->request_adapter->doRequest(new CategoriesFindAll());
-        $this->categories = new ArrayCollection($this->toArray($response->categories));
-    }
-
-    /**
-     * ZD account should have at least one category
+     * Constructor
      *
-     * @return bool
+     * @param RequestClientAdapter $request_adapter
      */
-    public function hasPrimaryCategory()
+    public function __construct(RequestClientAdapter $request_adapter)
     {
-        if (null === $this->categories) {
-            $this->load();
-        }
-
-        return $this->categories->count() > $this->getFakeCategories()->count();
-    }
-
-    /**
-     * Returns a random fake category
-     *
-     * @return \stdClass
-     */
-    public function getRandomCategory()
-    {
-        $categories = $this->getFakeCategories()->getValues();
-        if (empty($categories))  {
-            throw new \RuntimeException('No fake categories loaded');
-        }
-
-        return $categories[rand(0, count($categories) - 1)];
-    }
-
-    /**
-     * Returns a collection of fake categories
-     * We can easily create or delete them
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFakeCategories()
-    {
-        if (null === $this->categories) {
-            $this->load();
-        }
-
-        $criteria = new Criteria(Criteria::expr()->contains('name', self::FAKE_PREFIX));
-        $matching = $this->categories->matching($criteria);
-
-        return $matching;
+        $this->request_adapter = $request_adapter;
     }
 }

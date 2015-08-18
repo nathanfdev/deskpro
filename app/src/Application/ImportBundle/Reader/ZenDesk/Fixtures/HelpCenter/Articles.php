@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\PeopleLoader;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
