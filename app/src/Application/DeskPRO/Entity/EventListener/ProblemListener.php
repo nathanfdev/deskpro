@@ -30,7 +30,11 @@ namespace Application\DeskPRO\Entity\EventListener;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
+use Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\UI\RuleBuilder;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -65,8 +69,14 @@ class ProblemListener
      */
     protected $queue = array();
 
+    /**
+     * @var \SplQueue
+     */
+    protected $new_problems;
+
     public function __construct(DeskproContainer $container)
     {
+        $this->new_problems = new \SplQueue();
         $this->updates = new \SplQueue();
         $this->conn = $container->getEm()->getConnection();
         $this->cont = $container;
@@ -92,6 +102,10 @@ class ProblemListener
     {
         if (!$problem->id) {
             $this->inserts++;
+        }
+
+        if (!$problem->id) {
+            $this->new_problems->enqueue($problem);
         }
     }
 
@@ -148,7 +162,7 @@ class ProblemListener
     /**
      * @param Problem $problem
      */
-    public function onPostPersist(Problem $problem)
+    public function onPostPersist(Problem $problem, LifecycleEventArgs $event)
     {
         foreach ($this->cont->getAgentData()->getOnlineAgents() as $agent) {
 
@@ -181,6 +195,26 @@ class ProblemListener
                     )
                 )
             );
+        }
+
+        while (!$this->new_problems->isEmpty()) {
+            /** @var Problem $p */
+            $p = $this->new_problems->dequeue();
+            $filter = new TicketFilter();
+            $filter->title = 'Problem #' . $p->id;
+            $filter->sys_name = 'problem_' . $p->id;
+            $filter->terms = array(
+                'type' => TicketSearch::TERM_PROBLEMS,
+                'op' => 'is',
+                'options' => array(
+                    'problems' => array($p->id),
+                ),
+            );
+
+            $filter->is_global = true;
+            $filter->is_enabled = true;
+            $event->getEntityManager()->persist($filter);
+            $event->getEntityManager()->flush($filter);
         }
 
         $this->inserts--;

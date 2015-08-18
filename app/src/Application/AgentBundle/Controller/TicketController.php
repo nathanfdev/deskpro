@@ -66,7 +66,6 @@ use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Application\DeskPRO\Tickets\Problems\EventListener\TicketProblemsChangedListener;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
 use Orb\Util\DpStrings;
@@ -2090,12 +2089,6 @@ class TicketController extends AbstractController
                     }
 
                     if ($this->settings->get('core.problems.enabled')) {
-//                        $problemListener = new TicketProblemsChangedListener(
-//                            $this->em->getConnection(),
-//                            $this->container->getAgentData()
-//                        );
-//                        $problemListener->setPersonContext($this->person);
-//                        $ticket->addPropertyChangedListener($problemListener);
 
                         if (isset($actions['problem_id'])) {
                             $id = (int)$actions['problem_id'];
@@ -4215,13 +4208,6 @@ class TicketController extends AbstractController
                 }
 
                 if ($this->settings->get('core.problems.enabled')) {
-
-//                    $problemListener = new TicketProblemsChangedListener(
-//                        $this->em->getConnection(),
-//                        $this->container->getAgentData()
-//                    );
-//                    $problemListener->setPersonContext($this->person);
-//                    $ticket->addPropertyChangedListener($problemListener);
 
                     $id = (int)$request->get('problem_id');
                     $title = $this->in->getString('problem_title'); // sanitize
