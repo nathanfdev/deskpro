@@ -76,7 +76,11 @@ class TicketSearchController extends AbstractController
 
         // Summary of terms for all filters
         $filters_summary = array();
+        $problem_filters = array();
         foreach ($all_filters as $filter) {
+            if ('problem_' === substr($filter->sys_name, 0, 8)) {
+                $problem_filters[substr($filter->sys_name, 8)] = $filter;
+            }
             $searcher = $filter->getSearcher();
             $filters_summary[$filter['id']] = $searcher->getSummary();
         }
@@ -93,11 +97,9 @@ class TicketSearchController extends AbstractController
          */
         $open_problems = array();
         $closed_problems = array();
-        $problem_counts = array();
         if ($this->settings->get('core.problems.enabled') && $this->person->hasPerm('agent_problems.view')) {
             $rep = $this->em->getRepository('DeskPRO:Problem');
             $problems = $rep->findBy(array(), array('title' => 'asc'));
-            $problem_counts = $rep->getCountsForAgentInterface($problems, $this->person);
 
             foreach ($problems as $problem) {
                 $problem->is_open
@@ -141,6 +143,7 @@ class TicketSearchController extends AbstractController
             'sys_filters' => $sys_filters,
             'sys_filters_hold' => $sys_filters_hold,
             'archive_filters' => $archive_filters,
+            'problem_filters' => $problem_filters,
             'archive_filter_counts' => $archive_filter_counts,
             'filter_id_matches' => $filter_id_matches,
             'filters_summary' => $filters_summary,
@@ -154,7 +157,6 @@ class TicketSearchController extends AbstractController
 
             'open_problems' => $open_problems,
             'closed_problems' => $closed_problems,
-            'problem_counts' => $problem_counts,
 
             'slas' => $slas,
             'sla_counts' => $sla_counts,

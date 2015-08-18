@@ -31,7 +31,7 @@
                 </li>
 
                 {% for p in open_problems %}
-                    <li class="is-nav-item" data-problem-id="{{ p.id }}">
+                    <li class="is-nav-item filter" data-problem-id="{{ p.id }}" data-filter-id="{{ problem_filters[p.id] }}">
 
                         {% set _url = path('agent_ticketsearch_runproblem', {'problem_id': p.id}) %}
 
@@ -39,10 +39,7 @@
                             <h3>{{ p.title }}</h3>
 
                             <div class="float-side">
-                                <em style="cursor:pointer" data-route="listpane:{{ _url }}"
-                                    class="counter list-counter">
-                                    {{ problem_counts[p.id]|default(0) }}
-                                </em>
+                                <em class="counter list-counter" id="ticket_filter_{{problem_filters[p.id]}}_count" data-count="0">0</em>
                             </div>
                         </div>
                     </li>

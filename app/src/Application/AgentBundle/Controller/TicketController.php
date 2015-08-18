@@ -2090,12 +2090,12 @@ class TicketController extends AbstractController
                     }
 
                     if ($this->settings->get('core.problems.enabled')) {
-                        $problemListener = new TicketProblemsChangedListener(
-                            $this->em->getConnection(),
-                            $this->container->getAgentData()
-                        );
-                        $problemListener->setPersonContext($this->person);
-                        $ticket->addPropertyChangedListener($problemListener);
+//                        $problemListener = new TicketProblemsChangedListener(
+//                            $this->em->getConnection(),
+//                            $this->container->getAgentData()
+//                        );
+//                        $problemListener->setPersonContext($this->person);
+//                        $ticket->addPropertyChangedListener($problemListener);
 
                         if (isset($actions['problem_id'])) {
                             $id = (int)$actions['problem_id'];
@@ -4214,6 +4214,40 @@ class TicketController extends AbstractController
                     $this->em->flush();
                 }
 
+                if ($this->settings->get('core.problems.enabled')) {
+
+//                    $problemListener = new TicketProblemsChangedListener(
+//                        $this->em->getConnection(),
+//                        $this->container->getAgentData()
+//                    );
+//                    $problemListener->setPersonContext($this->person);
+//                    $ticket->addPropertyChangedListener($problemListener);
+
+                    $id = (int)$request->get('problem_id');
+                    $title = $this->in->getString('problem_title'); // sanitize
+                    /** @var TicketChecker $checker */
+                    $checker = $this->person->PermissionsManager->TicketChecker;
+                    if ($checker->canAssociateProblem($ticket)) {
+                        if (-1 === $id && $title) {
+                            if ($this->person->hasPerm('agent_problems.create')) {
+                                $problem = new Problem();
+                                $problem->creator = $this->person;
+                                $problem->title = $title;
+                                $this->em->persist($problem);
+                                $this->em->flush($problem);
+                            }
+                        } else {
+                            if (!$problem = $this->em->find('DeskPRO:Problem', $id)) {
+                                // silent?
+                            }
+                        }
+
+                        if ($problem && $problem->is_open) {
+                            $ticket->associateProblem($problem);
+                        }
+                    }
+                }
+
                 $ticket->recomputeHash();
                 if ($dupe_ticket = $this->em->getRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
                     $e = new \Application\DeskPRO\Tickets\DuplicateTicketException();
@@ -4233,41 +4267,6 @@ class TicketController extends AbstractController
             } catch (\Exception $e) {
                 $this->db->rollback();
                 throw $e;
-            }
-
-            if ($this->settings->get('core.problems.enabled')) {
-
-                $problemListener = new TicketProblemsChangedListener(
-                    $this->em->getConnection(),
-                    $this->container->getAgentData()
-                );
-                $problemListener->setPersonContext($this->person);
-                $ticket->addPropertyChangedListener($problemListener);
-
-                $id = (int)$request->get('problem_id');
-                $title = $this->in->getString('problem_title'); // sanitize
-                /** @var TicketChecker $checker */
-                $checker = $this->person->PermissionsManager->TicketChecker;
-                if ($checker->canAssociateProblem($ticket)) {
-                    if (-1 === $id && $title) {
-                        if ($this->person->hasPerm('agent_problems.create')) {
-                            $problem = new Problem();
-                            $problem->creator = $this->person;
-                            $problem->title = $title;
-                            $this->em->persist($problem);
-                            $this->em->flush($problem);
-                        }
-                    } else {
-                        if (!$problem = $this->em->find('DeskPRO:Problem', $id)) {
-                            // silent?
-                        }
-                    }
-
-                    if ($problem && $problem->is_open) {
-                        $ticket->associateProblem($problem);
-                        $this->em->flush();
-                    }
-                }
             }
 
             return $this->createJsonResponse(array(
