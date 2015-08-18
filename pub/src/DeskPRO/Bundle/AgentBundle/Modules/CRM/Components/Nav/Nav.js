@@ -4,7 +4,7 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPan
 
 export class Nav extends React.Component {
   render() {
-    const { labels, groups, organizations, teams, groupNames, teamNames } = this.props;
+    const { labels, users, organizations, agents, groupNames, teamNames } = this.props;
 
     let itemKey = 0;
 
@@ -17,13 +17,14 @@ export class Nav extends React.Component {
             <TabsPane>
               <Tab title="Groups">
                 <ul>
-                  {groups.items.map(item =>
+                  <ListItem count={users.total} label="Everyone" />
+                  {users.groups.map(item =>
                       <ListItem key={itemKey++} count={item.count} label={groupNames[item.group]} />)}
                 </ul>
               </Tab>
               <Tab title="Filters">Filters tab content</Tab>
               <Tab title="Labels">
-                <LabelsDictionary labels={labels.people} />
+                <LabelsDictionary labels={labels.person} />
               </Tab>
             </TabsPane>
           </Section>
@@ -37,7 +38,7 @@ export class Nav extends React.Component {
                 </ul>
               </Tab>
               <Tab title="Labels">
-                <LabelsDictionary labels={labels.organizations} />
+                <LabelsDictionary labels={labels.organization} />
               </Tab>
             </TabsPane>
           </Section>
@@ -45,8 +46,8 @@ export class Nav extends React.Component {
           <Section>
             <SectionHeader>Agents</SectionHeader>
             <ul>
-              <ListItem count={teams.total} label="All Agents" />
-              {teams.items.map(item =>
+              <ListItem count={agents.total} label="All Agents" />
+              {agents.teams.map(item =>
                   <ListItem key={itemKey++} count={item.count} label={teamNames[item.group]} />)}
             </ul>
           </Section>

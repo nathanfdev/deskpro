@@ -3,52 +3,31 @@ import { connect } from 'redux/react';
 import * as actions from '../../Actions/crmNavActions'
 import { Nav } from './Nav';
 
-@connect(state => ({
-  labels: {
-    people: ['Apple', 'Avocado', 'Banana', 'Pear', 'Orange', 'Blueberry', 'Blackberry'],
-    organizations: ['Apple', 'Samsung', 'Sony', 'HTC', 'Vertu', 'Nokia', 'Siemens', 'Blackberry'],
-  },
-  groups: {
-    total: 230,
-    items: [
-      {count: 42, group: 1},
-      {count: 188, group: 2},
-    ],
-  },
-  organizations: {
-    total: 31
-  },
-  teams: {
-    total: 11,
-    items: [
-      {count: 3, group: 1},
-      {count: 8, group: 2},
-    ],
-  },
-  groupNames: {
-    1: 'Group A',
-    2: 'Group B',
-  },
-  teamNames: {
-    1: 'Team One',
-    2: 'Team Two',
-  }
-}))
+@connect(state => state.CrmNav)
 export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
+      this.props.dispatch(actions.loadUsersTotalCount());
+      this.props.dispatch(actions.loadGroupsCounts());
+      this.props.dispatch(actions.loadOrganizationsTotalCount());
+      this.props.dispatch(actions.loadAgentsTotalCount());
+      this.props.dispatch(actions.loadTeamsCounts());
+      this.props.dispatch(actions.loadPersonLabels());
+      this.props.dispatch(actions.loadOrganizationLabels());
+      this.props.dispatch(actions.loadGroups());
+      this.props.dispatch(actions.loadTeams());
   }
 
   render() {
-    const {labels, groups, organizations, teams, groupNames, teamNames} = this.props;
+    const {labels, users, organizations, agents, groupNames, teamNames} = this.props;
 
     return (
       <Nav
           labels={labels}
-          groups={groups}
+          users={users}
           organizations={organizations}
-          teams={teams}
+          agents={agents}
           groupNames={groupNames}
           teamNames={teamNames}
       />
