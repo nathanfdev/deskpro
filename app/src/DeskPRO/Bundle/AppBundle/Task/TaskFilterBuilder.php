@@ -249,10 +249,21 @@ class TaskFilterBuilder
                         END
                     END
                     AS HIDDEN assignment_type');
-                $query = $query->addSelect('COALESCE(IDENTITY(a.person), IDENTITY(a.team), IDENTITY(a.department))
-                    AS HIDDEN column_id');
+
+                if (!in_array('a.person', $this->joins)) {
+                    $query = $query->leftJoin('a.person', 'pe');
+                }
+                if (!in_array('a.team', $this->joins)) {
+                    $query = $query->leftJoin('a.team', 'te');
+                }
+                if (!in_array('a.department', $this->joins)) {
+                    $query = $query->leftJoin('a.department', 'de');
+                }
+
+                $query = $query->addSelect('COALESCE(pe.name, te.name, de.title)
+                    AS HIDDEN assignee_name');
                 $query = $query->addOrderBy('assignment_type', 'ASC');
-                $query = $query->addOrderBy('column_id', 'ASC');
+                $query = $query->addOrderBy('assignee_name', 'ASC');
 
                 break;
             case 'created':
