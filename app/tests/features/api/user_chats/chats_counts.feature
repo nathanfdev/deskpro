@@ -1,4 +1,4 @@
-@counts
+@counts @chat-nav
 Feature: /user_chats/counts endpoint
   To retrieve counts of various sets of DeskPRO chats
   As a developer
