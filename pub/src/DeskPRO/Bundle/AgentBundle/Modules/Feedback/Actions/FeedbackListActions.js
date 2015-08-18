@@ -29,6 +29,15 @@ export const feedbackLabels = createAction(
     }
 );
 
+export const feedbackTypes = createAction(
+    "FEEDBACK_TYPES",
+    (trigger) => {
+        Feedback.getTypes().then(
+            (value) => trigger(value.getData())
+        );
+    }
+);
+
 export const loadFeedbackList = createAction(
     "FEEDBACK_LIST",
     (trigger) => {

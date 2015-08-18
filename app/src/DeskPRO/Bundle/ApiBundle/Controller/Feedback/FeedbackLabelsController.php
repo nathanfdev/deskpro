@@ -72,7 +72,6 @@ class FeedbackLabelsController extends BaseController
     {
         $term = $request->query->get('term');
         $labels = $this->get('data.feedback_labels')->getLabels($term);
-        var_dump($this->dataSerialize(new PrimitiveArray($labels)));
         return View::create(
             $this->dataSerialize(new PrimitiveArray($labels)),
             Response::HTTP_OK

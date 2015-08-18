@@ -47,6 +47,18 @@ export function getLabels() {
 }
 
 /**
+ * Feedback by types with counts
+ * @return Promise
+ */
+export function getTypes() {
+    let query = {
+        group_by: "category"
+    };
+
+    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}

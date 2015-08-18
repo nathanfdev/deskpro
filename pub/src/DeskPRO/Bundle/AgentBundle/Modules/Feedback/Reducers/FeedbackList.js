@@ -6,7 +6,8 @@ export default class FeedbackList extends Reducer {
         return {
             toValidateCount: 0,
             commentsToReviewCount: 0,
-            labels: []
+            labels: [],
+            types: []
         };
     }
 
@@ -31,10 +32,18 @@ export default class FeedbackList extends Reducer {
         };
     }
 
+    types(state, action) {
+        return {
+            ...state,
+            types: action.payload.data
+        };
+    }
+
     registerHandlers() {
         this
             .r(FeedbackListActions.feedbackToValidate, this.toValidate)
             .r(FeedbackListActions.feedbackLabels, this.labels)
+            .r(FeedbackListActions.feedbackTypes, this.types)
             .r(FeedbackListActions.commentsToReview, this.commentsToReview);
     }
 

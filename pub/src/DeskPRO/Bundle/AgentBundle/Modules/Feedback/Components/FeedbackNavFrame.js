@@ -4,6 +4,7 @@ import { connect } from 'redux/react';
 import * as FeedbackListActions from "../Actions/FeedbackListActions";
 import FeedbackNavPending from "../Components/FeedbackNavPending.js";
 import FeedbackNavLabels from "../Components/FeedbackNavLabels.js";
+import FeedbackNavTypes from "../Components/FeedbackNavTypes.js";
 import $ from "jquery";
 
 @connect(state => ({
@@ -12,14 +13,14 @@ import $ from "jquery";
     feedbackList: state.FeedbackList
 }))
 
-export default
-class FeedbackNavFrame extends React.Component {
+export default class FeedbackNavFrame extends React.Component {
     constructor(props) {
         super(props);
         const { dispatch } = this.props;
         dispatch(FeedbackListActions.feedbackToValidate());
         dispatch(FeedbackListActions.commentsToReview());
         dispatch(FeedbackListActions.feedbackLabels());
+        dispatch(FeedbackListActions.feedbackTypes());
     }
 
     switchFeedback(identifier, event) {
@@ -58,6 +59,7 @@ class FeedbackNavFrame extends React.Component {
                         <div className="sidebar-list sidebar-list-filters">
                             <FeedbackNavPending data={feedbackList} switchFeedback={this.switchFeedback.bind(this)}/>
                             <FeedbackNavLabels labels={feedbackList.labels} switchFeedback={this.switchFeedback.bind(this)}/>
+                            <FeedbackNavTypes types={feedbackList.types} switchFeedback={this.switchFeedback.bind(this)}/>
                         </div>
 
                     </aside>

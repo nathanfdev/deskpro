@@ -20,9 +20,13 @@ Feature: /feedback/counts endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.count" should be equal to 6
-    And the JSON node "data.nested.grouped_by" should be equal to "category"
-    And the JSON node "data.nested.counts" should have 3 elements
+    And the JSON node "data[0].title" should be equal to "Test feedback category 1"
+    And the JSON node "data[0].value" should be equal to "3"
+    And the JSON node "data[1].title" should be equal to "Test feedback category 2"
+    And the JSON node "data[1].value" should be equal to "2"
+    And the JSON node "data[2].title" should be equal to "Test feedback category 3"
+    And the JSON node "data[2].value" should be equal to "1"
+
 
   Scenario: I GET count of feedback with status active grouped by status_category
     When I send a GET request to "/api/v2/feedback/counts?status=active&group_by=status_category"

@@ -292,17 +292,15 @@ class FeedbackDataService extends AbstractDataService
         return new Count($count, $nested);
     }
 
-    /**
-     * @return integer
-     */
-    public function countAwaitingValidation()
-    {
-        return $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
-    }
-
 
     public function countsByType()
     {
-        return $this->em->getRepository('DeskPRO:Feedback')->countAllCategoriesGrouped();
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('category.title as title', 'count(f) as value')
+            ->from('DeskPRO:Feedback', 'f')
+            ->leftJoin('f.category', 'category')
+            ->groupBy('category.id')
+            ->orderBy('category.title');
+        return $qb->getQuery()->getScalarResult();
     }
 }

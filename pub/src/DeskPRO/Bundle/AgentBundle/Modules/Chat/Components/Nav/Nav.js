@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader }
-       from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/index';
+       from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 import { ChatsListItem } from './ChatsListItem';
 import { ChatsListGroupingControl } from './ChatsListGroupingControl';
 

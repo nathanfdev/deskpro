@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'redux/react';
-import { ListItem } from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/index';
+import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 @connect(state => ({
   labels: {
