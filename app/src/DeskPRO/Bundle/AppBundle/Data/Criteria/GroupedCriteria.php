@@ -31,45 +31,75 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data;
+namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
+
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class DatePeriods
+ * Class GroupedCriteria
  */
-abstract class DatePeriods
+abstract class GroupedCriteria extends Criteria implements GroupedCriteriaInterface
 {
     /**
-     * @var array Period names
+     * @var string
      */
-    static $names = ['today', 'yesterday', 'this_week', 'this_month', 'last_month', 'this_year', 'ever'];
+    protected $group_by;
 
     /**
-     * Get period select DQL clause for a given target field
-     *
-     * @param string $targetField
+     * @param array $filters
+     * @param string $group_by
+     */
+    public function __construct(array $filters, $group_by)
+    {
+        parent::__construct($filters);
+        $this->group_by = $group_by;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasGroupBy()
+    {
+        return (bool) $this->group_by;
+    }
+
+    /**
      * @return string
      */
-    public static function getDatePeriodCaseWhenDql($targetField)
+    public function getGroupBy()
     {
-        $today = date('Y-m-d', strtotime('today'));
-        $yesterday = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear = date('Y-01-01');
+        return $this->group_by;
+    }
 
-        $target = "DATE($targetField)";
+    /**
+     * throws \LogicException
+     */
+    public function ensureGroupBy()
+    {
+        if (!$this->hasGroupBy()) {
+            throw new \LogicException('Cannot group without group_by');
+        }
+    }
 
-        $groupSelectDql = "(CASE
-            WHEN $target  = '$today' THEN 'today'
-            WHEN $target  = '$yesterday' THEN 'yesterday'
-            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
-            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
-            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
-            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
-            ELSE 'ever'
-        END)";
+    /**
+     * @param array $params
+     * @param OptionsResolver $resolver
+     * @param array $data
+     * @return GroupedCriteria
+     */
+    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
+    {
+        static::configureResolver($resolver, $data);
+        $params = $resolver->resolve($params);
 
-        return $groupSelectDql;
+        $group_by = null;
+        if (array_key_exists('group_by', $params)) {
+            $group_by = $params['group_by'];
+            unset($params['group_by']);
+        }
+
+        $filters = $params;
+
+        return new static($filters, $group_by);
     }
 }

@@ -35,6 +35,8 @@ use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\NoResultException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
@@ -60,12 +62,12 @@ class ChatDataService
     }
 
     /**
-     * @param ChatSelectCriteria $criteria
+     * @param Criteria $criteria
      * @param int $page
      * @param int $count
      * @return Pagerfanta
      */
-    public function selectChats(ChatSelectCriteria $criteria, $page, $count)
+    public function selectChats(Criteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -81,19 +83,19 @@ class ChatDataService
     }
 
     /**
-     * @param ChatCountCriteria $criteria
+     * @param GroupedCriteria $criteria
      * @return Count
      */
-    public function countChats(ChatCountCriteria $criteria)
+    public function countChats(GroupedCriteria $criteria)
     {
-        return $criteria->isGrouped() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
+        return $criteria->hasGroupBy() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
     }
 
     /**
-     * @param ChatCountCriteria $criteria
+     * @param GroupedCriteria $criteria
      * @return Count
      */
-    private function countFlat(ChatCountCriteria $criteria)
+    private function countFlat(GroupedCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -111,10 +113,10 @@ class ChatDataService
     }
 
     /**
-     * @param ChatCountCriteria $criteria
+     * @param GroupedCriteria $criteria
      * @return Count
      */
-    private function countGrouped(ChatCountCriteria $criteria)
+    private function countGrouped(GroupedCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 

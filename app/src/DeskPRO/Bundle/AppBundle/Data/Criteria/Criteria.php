@@ -31,45 +31,45 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data;
+namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
+
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class DatePeriods
+ * Class Criteria
  */
-abstract class DatePeriods
+abstract class Criteria implements CriteriaInterface
 {
     /**
-     * @var array Period names
+     * @var array
      */
-    static $names = ['today', 'yesterday', 'this_week', 'this_month', 'last_month', 'this_year', 'ever'];
+    protected $filters;
 
     /**
-     * Get period select DQL clause for a given target field
-     *
-     * @param string $targetField
-     * @return string
+     * Criteria constructor.
+     * @param array $filters
      */
-    public static function getDatePeriodCaseWhenDql($targetField)
+    protected function __construct(array $filters = [])
     {
-        $today = date('Y-m-d', strtotime('today'));
-        $yesterday = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear = date('Y-01-01');
-
-        $target = "DATE($targetField)";
-
-        $groupSelectDql = "(CASE
-            WHEN $target  = '$today' THEN 'today'
-            WHEN $target  = '$yesterday' THEN 'yesterday'
-            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
-            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
-            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
-            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
-            ELSE 'ever'
-        END)";
-
-        return $groupSelectDql;
+        $this->filters = $filters;
     }
+
+    /**
+     * @param array $params
+     * @param OptionsResolver $resolver
+     * @return Criteria
+     */
+    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
+    {
+        static::configureResolver($resolver, $data);
+        $filters = $resolver->resolve($params);
+
+        return new static($filters);
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     */
+    public abstract function applyFilters(QueryBuilder $qb);
 }

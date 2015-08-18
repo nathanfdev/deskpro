@@ -31,45 +31,34 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data;
+namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
+
+use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class DatePeriods
+ * Interface GroupedCriteriaInterface
  */
-abstract class DatePeriods
+interface GroupedCriteriaInterface extends CriteriaInterface
 {
     /**
-     * @var array Period names
+     * @param QueryBuilder $qb
      */
-    static $names = ['today', 'yesterday', 'this_week', 'this_month', 'last_month', 'this_year', 'ever'];
+    public function applyGroupBy(QueryBuilder $qb);
 
     /**
-     * Get period select DQL clause for a given target field
+     * If group_by value set
      *
-     * @param string $targetField
+     * @return bool
+     */
+    public function hasGroupBy();
+
+    /**
+     * throws \LogicException
+     */
+    public function ensureGroupBy();
+
+    /**
      * @return string
      */
-    public static function getDatePeriodCaseWhenDql($targetField)
-    {
-        $today = date('Y-m-d', strtotime('today'));
-        $yesterday = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear = date('Y-01-01');
-
-        $target = "DATE($targetField)";
-
-        $groupSelectDql = "(CASE
-            WHEN $target  = '$today' THEN 'today'
-            WHEN $target  = '$yesterday' THEN 'yesterday'
-            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
-            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
-            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
-            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
-            ELSE 'ever'
-        END)";
-
-        return $groupSelectDql;
-    }
+    public function getGroupBy();
 }

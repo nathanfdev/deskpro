@@ -33,44 +33,14 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
-use Application\DeskPRO\Entity\Person;
 
 /**
  * Class ChatSelectCriteria
  */
-class ChatSelectCriteria
+class ChatSelectCriteria extends GroupedCriteria
 {
-    /**
-     * @var array
-     */
-    protected $filters = [];
-
-    /**
-     * ChatCountCriteria constructor.
-     *
-     * @param array $filters
-     */
-    protected function __construct(array $filters)
-    {
-        $this->filters = $filters;
-    }
-
-
-    /**
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @param Person $me
-     * @return ChatSelectCriteria
-     */
-    public static function fromParameters(array $params, OptionsResolver $resolver, Person $me)
-    {
-        self::configureResolver($resolver, $me);
-        $filters = $resolver->resolve($params);
-
-        return new self($filters);
-    }
-
     /**
      * @param QueryBuilder $qb
      */
@@ -105,10 +75,13 @@ class ChatSelectCriteria
 
     /**
      * @param OptionsResolver $resolver
-     * @param Person $me
+     * @param array $data
      */
-    protected static function configureResolver(OptionsResolver $resolver, Person $me)
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
+        /** @var \Application\DeskPRO\Entity\Person $me */
+        list($me) = $data;
+
         $resolver->setDefined(['agent', 'department', 'date_created', 'date_period']);
 
         $resolver->setNormalizer('agent', function($options, $value) use ($me) {
@@ -124,5 +97,12 @@ class ChatSelectCriteria
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
         });
         $resolver->setAllowedValues('date_period', DatePeriods::$names);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function applyGroupBy(QueryBuilder $qb)
+    {
     }
 }

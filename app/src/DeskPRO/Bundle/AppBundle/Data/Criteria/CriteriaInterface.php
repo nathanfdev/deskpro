@@ -31,45 +31,34 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data;
+namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
+
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class DatePeriods
+ * Interface CriteriaInterface
  */
-abstract class DatePeriods
+interface CriteriaInterface
 {
     /**
-     * @var array Period names
+     * @param QueryBuilder $qb
      */
-    static $names = ['today', 'yesterday', 'this_week', 'this_month', 'last_month', 'this_year', 'ever'];
+    public function applyFilters(QueryBuilder $qb);
 
     /**
-     * Get period select DQL clause for a given target field
+     * Criteria factory method
      *
-     * @param string $targetField
-     * @return string
+     * @param array $params
+     * @param OptionsResolver $resolver
+     * @param array $data OptionsResolver dependencies
+     * @return CriteriaInterface
      */
-    public static function getDatePeriodCaseWhenDql($targetField)
-    {
-        $today = date('Y-m-d', strtotime('today'));
-        $yesterday = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear = date('Y-01-01');
+    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = []);
 
-        $target = "DATE($targetField)";
-
-        $groupSelectDql = "(CASE
-            WHEN $target  = '$today' THEN 'today'
-            WHEN $target  = '$yesterday' THEN 'yesterday'
-            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
-            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
-            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
-            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
-            ELSE 'ever'
-        END)";
-
-        return $groupSelectDql;
-    }
+    /**
+     * @param OptionsResolver $resolver
+     * @param array $data Configurator dependencies
+     */
+    public static function configureResolver(OptionsResolver $resolver, array $data = []);
 }
