@@ -7,7 +7,10 @@ import DpApi from "../DpApi";
  * @return Promise
  */
 export function loadAddress(address, params = {}) {
-  if (params.length > 0) {
+  // Temporary hard-coded groupings
+  params.order_by = 'created';
+
+  if (params !== {}) {
     address = address + '?' + compileParams(params);
   }
 

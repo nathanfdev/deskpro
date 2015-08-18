@@ -227,8 +227,9 @@ class TaskFilterBuilder
 
         switch($request->get('order_by')) {
             case 'due':
+                $query->addSelect('COALESCE(t.date_due, \'2999-12-31 12:59:59\') AS HIDDEN sort_date');
                 $direction = $this->getSortDirection($request);
-                $query = $query->orderBy('t.date_due', $direction);
+                $query = $query->orderBy('sort_date', $direction);
                 break;
             case 'assigned':
 
