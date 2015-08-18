@@ -488,7 +488,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                     continue;
                 }
 
-                $new_coll = new ArrayCollection($val instanceof PersistentCollection ? $val->getSnapshot() : $val->toArray());
+                $new_coll = $val instanceof PersistentCollection ? new ArrayCollection($val->getSnapshot()) : $val->toArray();
                 $this->_state_clone->__setPropValue__($prop, $new_coll);
             }
         }
