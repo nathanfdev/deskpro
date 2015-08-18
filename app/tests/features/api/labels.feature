@@ -1,3 +1,4 @@
+@crm-nav
 Feature: /*_labels endpoints
   To retrieve labels of different DeskPRO objects
   As a developer

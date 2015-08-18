@@ -1,4 +1,4 @@
-@counts
+@counts @crm-nav
 Feature: /agent_teams/counts endpoint
   To retrieve number of agents in DeskPRO agent teams
   As a developer
