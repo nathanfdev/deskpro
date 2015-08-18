@@ -128,4 +128,15 @@ abstract class AbstractFixtureHelper
 
         return $time;
     }
+
+    /**
+     * Converts stdClass to array
+     *
+     * @param \stdClass $object
+     * @return array
+     */
+    protected function toArray($object)
+    {
+        return json_decode(json_encode($object), true);
+    }
 }

@@ -67,7 +67,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     /**
      * {@inheritdoc}
      */
-    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
+    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         $types      = array('problem', 'incident', 'question', 'task');
         $priorities = array('urgent', 'high', 'normal', 'low');
@@ -75,7 +75,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
 
         $type   = $types[rand(0, count($types) - 1)];
         $params = array(
-            'subject' => 'Fake ticket ' . $prefix,
+            'subject' => 'Fake ticket ' . $num,
             'comment' => array(
                 'type'       => 'Comment',
                 'body'       => 'Thanks for your help!',

@@ -83,7 +83,7 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
     /**
      * {@inheritdoc}
      */
-    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
+    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         if (empty($this->sections)) {
             throw new \RuntimeException('No help center section');
@@ -93,7 +93,7 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
         $helper  = new ArticleCreate(array(
             'id'      => $section->id,
             'article' => array(
-                'title'       => 'Fake article ' . $prefix,
+                'title'       => 'Fake article ' . $num,
                 'body'        => 'Fake article content',
                 'author_id'   => $this->people_loader->getRandomPersonId(),
                 'label_names' => array('label 1', 'label 2'),

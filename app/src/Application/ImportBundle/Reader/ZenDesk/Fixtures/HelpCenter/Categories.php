@@ -29,10 +29,10 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixtureDeleteInterface;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoriesFindAll;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoryCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoryDelete;
 use DateTime;
+use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 
 /**
@@ -41,6 +41,22 @@ use Zendesk\API\ResponseException;
  */
 final class Categories extends AbstractFixture implements FixtureDeleteInterface
 {
+    /**
+     * @var CategoryLoader
+     */
+    private $category_loader;
+
+    /**
+     * Constructor
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        parent::__construct($client);
+        $this->category_loader = new CategoryLoader($this->client);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -52,22 +68,15 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
     /**
      * {@inheritdoc}
      */
-    public function delete($offset)
+    public function delete()
     {
         try {
-            $helper = new CategoriesFindAll();
-            $categories = $helper->request($this->client);
+            $categories = $this->category_loader->getFakeCategories();
+            foreach ($categories as $category) {
+                $helper = new CategoryDelete(array('id' => $category['id']));
+                $helper->request($this->client);
 
-            $min = $offset;
-            $max = $offset + self::COUNT;
-
-            foreach ($categories->categories as $category) {
-                $prefix = str_replace('Category', '', $category->name);
-
-                if ($min <= $prefix && $prefix <= $max) {
-                    $helper = new CategoryDelete(array('id' => $category->id));
-                    $helper->request($this->client);
-                }
+                $this->logInfo(sprintf('Category `%s` deleted successfully', $category['name']));
             }
 
         } catch (ResponseException $e) {
@@ -78,12 +87,40 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
     /**
      * {@inheritdoc}
      */
-    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
+    public function create($offset, DateTime $initial_time, DateTime $end_time)
+    {
+        if ( ! $this->category_loader->hasPrimaryCategory()) {
+            try {
+                $this->logInfo('Importing primary category');
+                $helper = new CategoryCreate(array(
+                    'category' => array(
+                        'name'        => 'Primary Category',
+                        'description' => 'Primary Category description',
+                    ),
+                ));
+
+                $response = $helper->request($this->client);
+
+                $this->logInfo('Primary category imported successfully');
+                $this->logger->debug(json_encode($response->category));
+
+            } catch (ResponseException $e) {
+                $this->handleResponseException($this->getEntityType());
+            }
+        }
+
+        parent::create($offset, $initial_time, $end_time);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         $helper = new CategoryCreate(array(
             'category' => array(
-                'name'        => 'Category' . $prefix,
-                'description' => 'Category description' . $prefix,
+                'name'        => CategoryLoader::FAKE_PREFIX . ' ' . $num,
+                'description' => CategoryLoader::FAKE_PREFIX .' description ' . $num,
             ),
         ));
 

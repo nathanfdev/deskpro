@@ -50,11 +50,11 @@ final class People extends AbstractFixture
     /**
      * {@inheritdoc}
      */
-    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
+    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         $params = array(
-            'name'       => 'Fake name ' . $prefix,
-            'email'      => 'fake_email_' . $prefix . '@domain.com',
+            'name'       => 'Fake name ' . $num,
+            'email'      => 'fake_email_' . $num . '@domain.com',
             'role'       => 'end-user',
             'verified'   => true,
         );

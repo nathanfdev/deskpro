@@ -38,8 +38,7 @@ interface FixtureDeleteInterface
     /**
      * Deletes fixtures by period
      *
-     * @param int $offset
      * @return void
      */
-    public function delete($offset);
+    public function delete();
 }

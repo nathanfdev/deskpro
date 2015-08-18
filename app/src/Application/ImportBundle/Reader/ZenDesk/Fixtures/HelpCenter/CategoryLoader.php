@@ -27,57 +27,84 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionCreate;
-use DateTime;
-use Zendesk\API\Client;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoriesFindAll;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
+use Zendesk\API\ResponseException;
 
 /**
- * Class Sections
+ * Class CategoryLoader
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
  */
-final class Sections extends AbstractFixture
+class CategoryLoader extends AbstractFixtureHelper
 {
-    /**
-     * @var CategoryLoader
-     */
-    private $category_loader;
+    const FAKE_PREFIX = 'Fake Category';
 
     /**
-     * Constructor
+     * @var ArrayCollection
+     */
+    private $categories;
+
+    /**
+     * Loads all categories
+     */
+    public function load()
+    {
+        try {
+            $helper = new CategoriesFindAll();
+            $this->categories = new ArrayCollection($this->toArray($helper->request($this->client)->categories));
+
+        } catch (ResponseException $e) {
+            $this->handleResponseException('category');
+            throw new \RuntimeException('Unable to load categories');
+        }
+    }
+
+    /**
+     * ZD account should have at least one category
      *
-     * @param Client $client
+     * @return bool
      */
-    public function __construct(Client $client)
+    public function hasPrimaryCategory()
     {
-        parent::__construct($client);
-        $this->category_loader = new CategoryLoader($client);
+        if (null === $this->categories) {
+            $this->load();
+        }
+
+        return $this->categories->count() > $this->getFakeCategories()->count();
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a random fake category
+     *
+     * @return \stdClass
      */
-    public function getEntityType()
+    public function getRandomCategory()
     {
-        return 'section';
+        $categories = $this->getFakeCategories()->getValues();
+        if (empty($categories))  {
+            throw new \RuntimeException('No fake categories loaded');
+        }
+
+        return $categories[rand(0, count($categories) - 1)];
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a collection of fake categories
+     * We can easily create or delete them
+     *
+     * @return \Doctrine\Common\Collections\Collection
      */
-    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
+    public function getFakeCategories()
     {
-        $category = $this->category_loader->getRandomCategory();
-        $helper   = new SectionCreate(array(
-            'id'      => $category['id'],
-            'section' => array(
-                'name' => $category['name'] . ': Section' . $num,
-            ),
-        ));
+        if (null === $this->categories) {
+            $this->load();
+        }
 
-        $response = $helper->request($this->client);
+        $criteria = new Criteria(Criteria::expr()->contains('name', self::FAKE_PREFIX));
+        $matching = $this->categories->matching($criteria);
 
-        $this->logger->info('Section created successfully');
-        $this->logger->debug(json_encode($response->section));
+        return $matching;
     }
 }

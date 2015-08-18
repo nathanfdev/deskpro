@@ -43,6 +43,8 @@ abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureI
      */
     public function create($offset, DateTime $initial_time, DateTime $end_time)
     {
+        $offset = (int)$offset;
+
         for ($i = $offset; $i < $offset + self::COUNT; $i++) {
             try {
                 $this->logInfo(sprintf('Importing fixture `%s_%d`', $this->getEntityType(), $i));
@@ -59,11 +61,11 @@ abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureI
     /**
      * Create a fixture item
      *
-     * @param int      $prefix
+     * @param int      $num
      * @param DateTime $initial_time
      * @param DateTime $end_time
      *
      * @return void
      */
-    protected abstract function createItem($prefix, DateTime $initial_time, DateTime $end_time);
+    protected abstract function createItem($num, DateTime $initial_time, DateTime $end_time);
 }

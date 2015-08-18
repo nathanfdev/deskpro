@@ -105,7 +105,7 @@ class FixturesCommand extends ContainerAwareCommand
                 throw new \RuntimeException('No delete methods');
             }
 
-            $fixture->delete($input->getOption('offset'));
+            $fixture->delete();
 
         } else {
             if ($fixture instanceof ZenDesk\Fixtures\FixturePrepareInterface) {
