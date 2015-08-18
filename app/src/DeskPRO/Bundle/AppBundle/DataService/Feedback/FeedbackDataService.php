@@ -1,60 +1,51 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService;
+namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
+use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
-use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Doctrine\ORM\Query\QueryException;
 
 class FeedbackDataService extends AbstractDataService
 {
-    /**
-     * @var PortalPermissionsManager
-     */
-    private $permissions_manager;
-
-    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
-    {
-        $this->em = $em;
-        $this->permissions_manager = $permissions_manager;
-    }
-
     /**
      * @return bool
      */
@@ -62,7 +53,7 @@ class FeedbackDataService extends AbstractDataService
     {
         $em = $this->em;
 
-        return $this->generateAndCache(array('hasAny'), function() use ($em) {
+        return $this->generateAndCache(array('hasAny'), function () use ($em) {
             return $em->getConnection()->fetchColumn("SELECT COUNT(*) FROM feedback LIMIT 1") ? true : false;
         });
     }
@@ -71,17 +62,12 @@ class FeedbackDataService extends AbstractDataService
      * @param $page
      * @param $max_per_page
      * @param FeedbackFilter $filter
-     * @param Person $person
      *
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page, FeedbackFilter $filter, Person $person)
+    public function getItemsPager($page, $max_per_page, FeedbackFilter $filter)
     {
-        // this method is tied to a $person, but we might want to refactor to make
-        // $person be a part of $filter so we can get pagers that don't factor in
-        // permissions at all (or just allow $person to be null and dont process types).
         $em = $this->em;
-        $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
             array(
@@ -89,30 +75,10 @@ class FeedbackDataService extends AbstractDataService
                 $page,
                 $max_per_page,
                 $filter,
-                $person,
             ),
-            function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
+            function () use ($em, $page, $max_per_page, $filter) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('f')->from('DeskPRO:Feedback', 'f');
-
-                // we have to filter the user's requested types with what they
-                // are allowed to access.
-                $permissions_bag = $permissions_manager->getPermissionsBagForPerson($person);
-                $allowed_types = $permissions_bag->getAllowedFeedbackCategoryIds();
-                $requested_types = $filter->getTypes();
-                $types = array();
-                if (null === $requested_types || empty($types)) {
-                    $types = $allowed_types;
-                } else {
-                    foreach ($requested_types as $req_type) {
-                        if (in_array($req_type, $allowed_types)) {
-                            $types[] = $req_type;
-                        }
-                    }
-                }
-                $filter->setTypes($types);
-                //
-                // end filter types
 
                 // status
                 // "all","active","closed"
@@ -226,13 +192,8 @@ class FeedbackDataService extends AbstractDataService
      */
     public function getFeedbackCategoriesForPerson(Person $person)
     {
-        $permissions_bag = $this->permissions_manager->getPermissionsBagForPerson($person);
-
-        return $this->getFeedbackCategoryRepo()->findBy(
-            array(
-                'id' => $permissions_bag->getAllowedFeedbackCategoryIds()
-            )
-        );
+        // TODO: permissions
+        return $this->getFeedbackCategoryRepo()->findAll();
     }
 
     /**
@@ -279,5 +240,67 @@ class FeedbackDataService extends AbstractDataService
     public function getItemCommetRepo()
     {
         return $this->em->getRepository('DeskPRO:FeedbackComment');
+    }
+
+    /**
+     * @param FeedbackCountCriteria $criteria
+     * @return Count
+     * @throws \LogicException
+     */
+    public function countFeedback(FeedbackCountCriteria $criteria)
+    {
+        return $criteria->isGrouped() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
+    }
+
+    /**
+     * @param FeedbackCountCriteria $criteria
+     * @return Count
+     */
+    private function countFlat(FeedbackCountCriteria $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('count(f)')
+            ->from('DeskPRO:Feedback', 'f');
+        $criteria->applyFilters($qb);
+        try {
+            $count = $qb->getQuery()->getSingleScalarResult();
+        } catch (QueryException $e) {
+            $count = 0;
+        }
+        return new Count($count);
+    }
+
+    /**
+     * @param FeedbackCountCriteria $criteria
+     * @return Count
+     * @throws \LogicException
+     */
+    private function countGrouped(FeedbackCountCriteria $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('count(f) as value')
+            ->from('DeskPRO:Feedback', 'f');
+        $criteria->applyFilters($qb);
+        $criteria->applyGroupBy($qb);
+        $result = $qb->getQuery()->getArrayResult();
+        $count = 0;
+        $nested = new CountsGroup($criteria->getGroupBy());
+        foreach ($result as $group) {
+            $count += $group['value'];
+            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+        }
+        return new Count($count, $nested);
+    }
+
+
+    public function countsByType()
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('category.title as title', 'count(f) as value')
+            ->from('DeskPRO:Feedback', 'f')
+            ->leftJoin('f.category', 'category')
+            ->groupBy('category.id')
+            ->orderBy('category.title');
+        return $qb->getQuery()->getScalarResult();
     }
 }

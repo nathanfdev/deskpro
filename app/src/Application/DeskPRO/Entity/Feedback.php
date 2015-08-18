@@ -365,6 +365,42 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @param string $value
+     * @return LabelFeedback
+     */
+    public function addLabelByString($value)
+    {
+        if ($ret = $this->findLabelByString($value)) {
+            return $ret;
+        }
+        $label = new LabelFeedback();
+        $label->label = $value;
+        $label->feedback = $this;
+        $this->labels->add($label);
+        $this->_onPropertyChanged('labels', null, $this->labels);
+        return $label;
+    }
+
+    /**
+     * @param  string $value
+     * @return LabelTicket|null
+     */
+    public function findLabelByString($value)
+    {
+        $x = new LabelTicket();
+        $x->label = $value;
+
+        foreach ($this->labels as $l) {
+            if ($l->label === $x->label) {
+                return $l;
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
      * @return \Application\DeskPRO\Labels\LabelManager
      */
     public function getLabelManager()
@@ -508,6 +544,16 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->slug_history->add($history);
 
         return $history;
+    }
+
+    /**
+     * @param string $value
+     * @return Feedback $this
+     */
+    public function setHiddenStatus($value)
+    {
+        $this->hidden_status = $value;
+        return $this;
     }
 
     ############################################################################
