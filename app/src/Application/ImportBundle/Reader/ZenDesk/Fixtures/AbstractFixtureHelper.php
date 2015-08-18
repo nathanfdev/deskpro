@@ -51,11 +51,11 @@ abstract class AbstractFixtureHelper
     /**
      * Constructor
      *
-     * @param Client $client
+     * @param Client $request
      */
-    public function __construct(Client $client)
+    public function __construct(Client $request)
     {
-        $this->client = $client;
+        $this->client = $request;
     }
 
     /**

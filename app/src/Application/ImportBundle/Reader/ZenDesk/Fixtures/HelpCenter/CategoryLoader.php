@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureHelper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoriesFindAll;
+use Application\ImportBundle\Reader\ZenDesk\Request\RequestClientAdapter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Zendesk\API\ResponseException;
@@ -42,9 +43,24 @@ class CategoryLoader extends AbstractFixtureHelper
     const FAKE_PREFIX = 'Fake Category';
 
     /**
+     * @var RequestClientAdapter
+     */
+    private $request_adapter;
+
+    /**
      * @var ArrayCollection
      */
     private $categories;
+
+    /**
+     * Constructor
+     *
+     * @param RequestClientAdapter $request_adapter
+     */
+    public function __construct(RequestClientAdapter $request_adapter)
+    {
+        $this->request_adapter = $request_adapter;
+    }
 
     /**
      * Loads all categories
@@ -52,8 +68,8 @@ class CategoryLoader extends AbstractFixtureHelper
     public function load()
     {
         try {
-            $helper = new CategoriesFindAll();
-            $this->categories = new ArrayCollection($this->toArray($helper->request($this->client)->categories));
+            $response = $this->request_adapter->doRequest(new CategoriesFindAll());
+            $this->categories = new ArrayCollection($this->toArray($response->categories));
 
         } catch (ResponseException $e) {
             $this->handleResponseException('category');

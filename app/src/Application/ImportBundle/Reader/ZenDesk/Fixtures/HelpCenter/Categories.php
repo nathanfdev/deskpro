@@ -49,12 +49,12 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
     /**
      * Constructor
      *
-     * @param Client         $client
+     * @param Client         $request
      * @param CategoryLoader $category_loader
      */
-    public function __construct(Client $client, CategoryLoader $category_loader)
+    public function __construct(Client $request, CategoryLoader $category_loader)
     {
-        parent::__construct($client);
+        parent::__construct($request);
         $this->category_loader = $category_loader;
     }
 

@@ -46,12 +46,12 @@ final class Sections extends AbstractFixture
     /**
      * Constructor
      *
-     * @param Client         $client
+     * @param Client         $request
      * @param CategoryLoader $category_loader
      */
-    public function __construct(Client $client, CategoryLoader $category_loader)
+    public function __construct(Client $request, CategoryLoader $category_loader)
     {
-        parent::__construct($client);
+        parent::__construct($request);
         $this->category_loader = $category_loader;
     }
 

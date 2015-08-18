@@ -49,24 +49,7 @@ class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
      */
     public function createReader(ZenDeskConfig $config)
     {
-        $client = self::createClient($config);
-        $logger = new Logger('zendesk');
-
-        $formatter = new LineFormatter();
-        $formatter->ignoreEmptyContextAndExtra(true);
-
-        $handler = new StreamHandler(dp_get_log_dir() . '/export_zendesk.log');
-        $handler->setFormatter($formatter);
-
-        $logger->pushHandler($handler);
-
-        return new ZenDeskReader(
-            new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config), $logger)
-            ),
-
-            $config
-        );
+        return new ZenDeskReader(new Request\RequestCacheAdapter(self::createClientAdapter($config)), $config);
     }
 
     /**
@@ -80,16 +63,40 @@ class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
 
+        $request_adapter = self::createClientAdapter($config);
+
         $collection = new Fixtures\Collection();
         $collection
             ->attach(new Fixtures\CoreAPI\People($client))
             ->attach(new Fixtures\CoreAPI\Tickets($client))
-            ->attach(new Fixtures\HelpCenter\Categories($client, new CategoryLoader($client)))
-            ->attach(new Fixtures\HelpCenter\Sections($client, new CategoryLoader($client)))
+            ->attach(new Fixtures\HelpCenter\Categories($client, new CategoryLoader($request_adapter)))
+            ->attach(new Fixtures\HelpCenter\Sections($client, new CategoryLoader($request_adapter)))
             ->attach(new Fixtures\HelpCenter\Articles($client))
         ;
 
         return $collection;
+    }
+
+    /**
+     * Create ZenDesk client adapter
+     *
+     * @param ZenDeskConfig $config
+     * @return Request\RequestClientAdapter
+     */
+    private static function createClientAdapter(ZenDeskConfig $config)
+    {
+        $client = self::createClient($config);
+        $logger = new Logger('zendesk');
+
+        $formatter = new LineFormatter();
+        $formatter->ignoreEmptyContextAndExtra(true);
+
+        $handler = new StreamHandler(dp_get_log_dir() . '/export_zendesk.log');
+        $handler->setFormatter($formatter);
+
+        $logger->pushHandler($handler);
+
+        return new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config), $logger);
     }
 
     /**
