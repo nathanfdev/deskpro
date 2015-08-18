@@ -88,7 +88,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
         @$scope.initial_loading = false
         @$scope.paymentForm.exist_card = info.card_details || null
         @$scope.paymentForm.invoice = info.invoice || null
-        @$scope.availablePlans = info.available_plans.map( (x) -> { num: x+"", title: if x == 100 then 'Unlimited' else x } )
+        @$scope.availablePlans = info.available_plans.map( (x) -> { num: x+"", title: x } )
         @$scope.toPlan = info.next_plan.agents+""
         @currentPlan = info.next_plan.agents
 
