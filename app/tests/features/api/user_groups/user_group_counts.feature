@@ -1,4 +1,4 @@
-@counts
+@counts @crm-nav
 Feature: /user_group/counts endpoint
   To retrieve number of users in DeskPRO user groups
   As a developer
