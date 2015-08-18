@@ -42,6 +42,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * The basic entitiy class
@@ -487,7 +488,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                     continue;
                 }
 
-                $new_coll = new ArrayCollection($val->toArray());
+                $new_coll = new ArrayCollection($val instanceof PersistentCollection ? $val->getSnapshot() : $val->toArray());
                 $this->_state_clone->__setPropValue__($prop, $new_coll);
             }
         }
