@@ -22,8 +22,12 @@ $collection->create('react_agent_tasks', array(
     'path'        => '/tasks',
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
 ));
-$collection->create('react_agent_users', array(
-    'path'        => '/users',
+$collection->create('react_agent_crm', array(
+    'path'        => '/crm',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
+));
+$collection->create('react_agent_chat', array(
+    'path'        => '/chat',
     'controller'  => 'AgentBundle:AgentChrome:agentChrome',
 ));
 $collection->create('react_agent_feedback', array(
