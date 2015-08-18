@@ -229,7 +229,7 @@ class FilestorageLoader extends LoaderAbstract
     public function userPublicAsset($brand_id, $path)
     {
         if ($path == 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css') {
-            $path = DP_WEB_ROOT.'/pub/build/DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css';
+            $path = DP_WEB_ROOT.'/pub/build/DeskPRO_PortalBundle_style.css';
             $src = file_get_contents($path);
             $size = strlen($src);
 
