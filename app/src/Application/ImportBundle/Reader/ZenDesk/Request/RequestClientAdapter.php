@@ -135,7 +135,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
+    public function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);

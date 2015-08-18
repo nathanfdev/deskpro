@@ -260,7 +260,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     private function toArray(\stdClass $object)
     {
-        return @json_decode(json_encode($object), true);
+        return json_decode(json_encode($object), true);
     }
 
     /**
