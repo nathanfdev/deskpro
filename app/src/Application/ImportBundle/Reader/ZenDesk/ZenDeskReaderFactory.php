@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\CategoryLoader;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -83,8 +84,8 @@ class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
         $collection
             ->attach(new Fixtures\CoreAPI\People($client))
             ->attach(new Fixtures\CoreAPI\Tickets($client))
-            ->attach(new Fixtures\HelpCenter\Categories($client))
-            ->attach(new Fixtures\HelpCenter\Sections($client))
+            ->attach(new Fixtures\HelpCenter\Categories($client, new CategoryLoader($client)))
+            ->attach(new Fixtures\HelpCenter\Sections($client, new CategoryLoader($client)))
             ->attach(new Fixtures\HelpCenter\Articles($client))
         ;
 
