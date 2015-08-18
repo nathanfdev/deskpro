@@ -9,6 +9,24 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
+$col = $loader->import(DP_ROOT . '/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php');
+$col->addPrefix('/admin');
+$collection->addCollection($col);
+
+$col = $loader->import(
+    DP_ROOT . '/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php'
+);
+$col->addPrefix('/reports');
+$collection->addCollection($col);
+
+$col = $loader->import(DP_ROOT . '/src/Application/AgentBundle/Resources/config/agent-routing.php');
+$col->addPrefix('/agent');
+$collection->addCollection($col);
+
+$col = $loader->import(DP_ROOT . '/src/Application/EmailBundle/Resources/config/email-routing.php');
+$col->addPrefix('/email');
+$collection->addCollection($col);
+
 $collection->create('proxy', array(
     'path'        => '/proxy/{key}',
     'controller'  => 'DeskPRO:Widget:proxy',

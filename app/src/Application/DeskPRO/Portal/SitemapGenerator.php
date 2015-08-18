@@ -148,7 +148,7 @@ class SitemapGenerator
     {
         $items   = array();
         $items[] = array(
-            'loc'        => $this->router->generate('portal_index', array()),
+            'loc'        => $this->router->generate('portal_home', array()),
             'changefreq' => 'daily',
         );
 

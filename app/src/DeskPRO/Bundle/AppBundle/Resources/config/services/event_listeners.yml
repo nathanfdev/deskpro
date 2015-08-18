@@ -2,4 +2,7 @@ services:
 
   # Note: SecurityHeadersResponseListener's service is defined in config.shared.php as it is used globally
 
-
+  event_listener.auto_post_on_get_request:
+    class: DeskPRO\Bundle\AppBundle\EventListener\AutoPostOnGetRequestListener
+    tags:
+      - { name: kernel.event_subscriber }

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -29,35 +29,26 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Component\Util\ListUtils;
+namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Component\SassCompiler\Filter\SafeImportIncPathFilter;
-use DpTest\DeskProTestCase;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
-class SassFilterTest extends DeskProTestCase
+class TempController extends AbstractController
 {
-    public function testSafeImportPaths()
+    /**
+     * "user" is the "old" route name for homepage, and it's important we back port that.
+     *
+     * @Route("/_delete_perm_cache", name="delete_perm_cache")
+     */
+    public function clearPortalPermissionsCacheAction(Request $request)
     {
-        $f = new SafeImportIncPathFilter();
-
-        $source = <<<STR
-@import "/etc/passwd";
-Test
-@import "//etc/passwd";
-Test
-@import "keep/this";
-Test
-@import "\etc\passwd";
-Test
-@import "../../../etc/passwd";
-Test
-STR;
-
-        $pre = $f->preProcessSource('__main__.scss', $source);
-        $this->assertNotContains('etc/passwd', $pre);
-        $this->assertContains('keep/this', $pre);
-
-        $post = $f->postProcessResult($pre);
-        $this->assertContains('etc/passwd', $post);
+        $this->get('portal_permissions_manager')->invalidatePortalPermissionsCaches();
+        return new Response('CALLED: $this->get(\'portal_permissions_manager\')->invalidatePortalPermissionsCaches()');
     }
 }

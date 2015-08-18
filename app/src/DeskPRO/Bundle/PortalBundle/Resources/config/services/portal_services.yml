@@ -2,7 +2,7 @@ services:
 
   person.portal_validator:
       class: DeskPRO\Bundle\PortalBundle\Person\PersonValidator
-      arguments: [@doctrine.orm.default_entity_manager, @language_router, @data.email, @portal_email_sender]
+      arguments: [@doctrine.orm.default_entity_manager, @language_router, @data.email, @portal_email_sender, @data.feedback]
 
   session.handler.dbal:
     class: DeskPRO\Bundle\PortalBundle\Session\DbalSessionHandler
@@ -18,15 +18,12 @@ services:
       tags:
         - { name: pagerfanta.view, alias: deskpro }
 
-  portal_mailer:
-      class: DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender
-
   portal_mode_factory:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
 
-  portal_person_validator:
-      class: DeskPRO\Bundle\PortalBundle\Person\PersonValidator
-      arguments: [@doctrine.orm.default_entity_manager, @brand_stack, @language_router, @data.email, @portal_mailer]
+  portal_search_serializer:
+      class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
+      arguments: [@object_router]

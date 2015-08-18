@@ -17,13 +17,13 @@
 
         {% if is_agent() %}
             <li>
-                <a href="{{ path('agent_interface') }}">{{ phrase('agent.general.agent_interface') }}</a>
+                <a href="{{ path('agent') }}">{{ phrase('agent.general.agent_interface') }}</a>
             </li>
         {% endif %}
 
         {% if is_admin() %}
             <li>
-                <a href="{{ path('admin_interface') }}">{{ phrase('agent.general.admin_interface') }}</a>
+                <a href="{{ path('admin') }}">{{ phrase('agent.general.admin_interface') }}</a>
             </li>
         {% endif %}
 

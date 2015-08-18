@@ -93,7 +93,7 @@ class EsiTagHandler implements TagHandlerInterface
                 $tag_request->query->all()
             ),
             $tag_request,
-            array('ignore_errors' => true)
+            array('ignore_errors' => false)
         );
     }
 

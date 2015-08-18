@@ -1,3 +1,5 @@
+# This is the "main" file for the api kernel. No other kernel imports this.
+# 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
 api_routes:
     prefix: /api/v2
     type: annotation
@@ -5,6 +7,18 @@ api_routes:
 
 serve_blob:
     path: '/file.php/{blob_auth_id}/{filename}'
+
+portal_routes:
+    resource: "@PortalBundle/Resources/config/routing_portal.yml"
+
+agent_routes:
+    resource: "@AgentBundle/Resources/config/agent-routing.php"
+
+dp_routes:
+    resource: "@DeskPRO/Resources/config/dp-routing.php"
+
+dpkernel_routes:
+    resource: "@DeskPRO/Resources/config/dp-routing.php"
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"

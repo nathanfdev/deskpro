@@ -32,8 +32,10 @@
 namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonEmailValidating;
 use Application\DeskPRO\Entity\Ticket;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use Application\EmailBundle\Templating\Templates\EmailTemplateFile;
@@ -91,11 +93,11 @@ class PortalEmailSender
     {
         $email = $person->getPrimaryEmail();
 
-        if (!$verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email)) {
+        if (!$verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email)) {
             $verify_url = null;
         }
 
-        $portal_url = $this->getRouter()->generate('portal_index', array(), UrlGeneratorInterface::ABSOLUTE_URL);
+        $portal_url = $this->getRouter()->generate('portal_home', array(), UrlGeneratorInterface::ABSOLUTE_URL);
 
         $this->sendToPerson(
             $person,
@@ -109,25 +111,21 @@ class PortalEmailSender
         );
     }
 
-    public function sendEmailConfirmationEmail(PersonEmail $email, $primary = false)
+    public function sendFeedbackValidationLink(Feedback $feedback)
     {
-        $person = $email->getPerson();
+        $person = $feedback->getPerson();
 
-        if ($primary) {
-            $tpl = 'DeskPRO:emails_user:new-email-validate-primary.html.twig';
-            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email);
-        } else {
-            $tpl = 'DeskPRO:emails_user:new-email-validate.html.twig';
-            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email);
-        }
+        $tpl = 'DeskPRO:emails_user:feedback-new.html.twig';
+        $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_FEEDBACK, $person->getPrimaryEmail(), $feedback->getId());
 
         $this->sendToPerson(
             $person,
             $tpl,
             array(
                 'person' => $person,
-                'email' => $email,
-                'verify_url' => $verify_url
+                'verify_url' => $verify_url,
+                'feedback' => $feedback,
+                'validating' => $person->isUserValid() ? null : 'new'
             )
         );
     }

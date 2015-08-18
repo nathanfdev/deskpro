@@ -8,8 +8,8 @@ use Symfony\Component\DependencyInjection\Reference;
 # Parameters
 ############################################################################
 
+$container->setParameter('file_locator.class', 'DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator');
 $container->setParameter('kernel.include_core_classes', false);
-$container->setParameter('routing.file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
 $container->setParameter(
     'templating.cache_warmer.template_paths.class',
     'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer'

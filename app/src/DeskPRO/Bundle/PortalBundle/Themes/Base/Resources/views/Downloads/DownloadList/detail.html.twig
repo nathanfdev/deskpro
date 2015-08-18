@@ -7,24 +7,24 @@
                     <ul>
                         {% if dl.num_comments > 0 %}
                             <li>
-                                <a href="{{ path('portal_downloads_view', { slug: dl.slug }) }}#comments">
+                                <a href="{{ portal_path(dl) }}#comments">
                                     <i class="fa fa-comments"></i>
                                     {{ phrase('portal.general.comments-count', {count: dl.num_comments}) }}
                                 </a>
                             </li>
                         {% endif %}
                         <li class="the-file">
-                            <a href="{{ path('portal_downloads_view', { slug: dl.slug }) }}">
+                            <a href="{{ portal_path(dl) }}">
                                 {{ phrase('portal.downloads.download') }}
                                 {{ icons.dl(dl) }}
                             </a>
                         </li>
-                        <li class="the-cudos has-cudos"><a href="{{ path('portal_downloads_vote_up', { slug: dl.slug }) }}"><i class="fa fa-thumbs-up"></i> {{ dl.total_rating }}</a></li>
+                        <li class="the-cudos has-cudos"><a href="{{ portal_path(dl, 'vote_up') }}"><i class="fa fa-thumbs-up"></i> {{ dl.total_rating }}</a></li>
                     </ul>
                 </div>
 
                 <h1>
-                    <a href="{{ path('portal_downloads_view', { slug: dl.slug }) }}">
+                    <a href="{{ portal_path(dl) }}">
                         {{ icons.dl(dl) }} {{ dl.realTitle }}
                     </a>
                 </h1>
@@ -38,7 +38,7 @@
     </ul>
     {% if show_category_link %}
         <div class="list-meta">
-            <a href="{{ category ? path('portal_downloads_browse', { slug: category.slug }) : path('portal_downloads') }}">
+            <a href="{{ category ? portal_path(category) : path('portal_downloads') }}">
                 {{ phrase('portal.downloads.view-x-files', {count: pager|length}) }}
                 <i class="fa fa-caret-right"></i>
             </a>

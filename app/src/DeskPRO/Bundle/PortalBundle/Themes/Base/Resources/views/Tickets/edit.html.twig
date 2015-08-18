@@ -11,5 +11,5 @@
 
     {% show ticket_form %}
 
-    <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">{{ phrase('portal.tickets.cancel-ticket-edit') }}</a>
+    <a href="{{ portal_path(ticket) }}">{{ phrase('portal.tickets.cancel-ticket-edit') }}</a>
 {% endblock inner_content %}

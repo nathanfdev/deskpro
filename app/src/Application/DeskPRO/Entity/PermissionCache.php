@@ -40,6 +40,10 @@ use Orb\Util\Util;
 /**
  * A cache of various permissions for a given set of usergroups. For example,
  * a computed array of category ID's 1,3,5 has access to.
+ *
+ * @deprecated we cache using a cache adapter now (\Application\DeskPRO\Cache\CacheAdapterInterface)
+ *             on new-portal. this was used on the old way of using permissions.
+ *             AGENT/ADMIN/etc still use this.
  */
 class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 {

@@ -156,11 +156,14 @@ class ThemeResolver
         // get the cache
         $mapCache = $this->container->get('portal_cache.template_map');
 
-        // if fresh, we are done, return the stored array and retain it for easy access
-        if (file_exists($mapCache) && !$mapCache->isFresh()) {
+        // if file exists, use it
+        if (file_exists($mapCache)) {
+            $this->logger->debug('theme resolver: found template map in cache file ' . $mapCache);
             return $this->themeTemplateMap = require $mapCache;
         }
 
+
+        $this->logger->debug('theme resolver: cache file not found, generating and saving to ' . $mapCache);
         // not fresh, let's gen the whole map
         // each theme will be resolved now...
         $this->themeTemplateMap = array();

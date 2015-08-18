@@ -94,6 +94,8 @@ class ResultSet
                 $type = 'person';
             } elseif ($r instanceof Entity\ChatConversation) {
                 $type = 'chat_conversation';
+            } else {
+                $type = 'unknown';
             }
 
             $res[] = array('type' => $type, 'object' => $r);

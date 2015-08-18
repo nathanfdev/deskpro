@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -45,18 +46,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zend\Feed\Writer\Extension\ITunes\Renderer\Feed;
 
 class FeedbackController extends AbstractController
 {
     /**
      * @Route("/feedback.{_format}", name="portal_feedback", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/feedback", name="user_feedback_home")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
      */
     public function indexAction(Request $request, $_format)
     {
         $page = $request->query->get('page', 1);
+        $person = $this->getUser() ?: new PersonGuest();
 
         //
         // RSS
@@ -73,7 +77,8 @@ class FeedbackController extends AbstractController
             $pager = $this->getFeedbackDataService()->getItemsPager(
                 $page,
                 $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
-                $filter
+                $filter,
+                $person
             );
 
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
@@ -89,7 +94,6 @@ class FeedbackController extends AbstractController
         //
         $rerendering_saved = $request->attributes->get('rerender-form', false); // true if auto-submit SavedFormController wants us to definitely rerender
         $is_saved_form = $request->attributes->get('saved-form', false); // true if auto-submit SavedFormController
-        $person       = $this->getUser() ?: new PersonGuest();
         $new_feedback = new Feedback();
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
@@ -97,6 +101,7 @@ class FeedbackController extends AbstractController
             'action' => $this->generateUrl('portal_feedback'),
             'allow_extra_fields' => $is_saved_form
         ));
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             if (
@@ -129,6 +134,11 @@ class FeedbackController extends AbstractController
                     foreach ($new_feedback->getAttachments() as $attachment) {
                         $attachment->setPerson($person);
                     }
+
+                    // hidden if person isn't valid
+                    if (!$person->isUserValid()) {
+                        $new_feedback->setStatusCode('hidden.user_validating');
+                    }
                 }
 
                 $this->persistAndFlushEntity($new_feedback);
@@ -145,8 +155,7 @@ class FeedbackController extends AbstractController
         //
         // FILTER CATEGORIES
         //
-        // TODO: turn this into a service that takes in to account security (access to categories)
-        $feedback_categories = $this->getRepo('DeskPRO:FeedbackCategory')->getAll();
+        $feedback_categories = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
 
         //
         // RENDER THEME
@@ -176,7 +185,6 @@ class FeedbackController extends AbstractController
 
     /**
      * @Route("/feedback/browse/{filter_uri}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"filter_uri":".*"})
-     *
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
@@ -184,6 +192,7 @@ class FeedbackController extends AbstractController
     public function browseAction(Request $request, $filter_uri)
     {
         $page = $request->query->get('page', 1);
+        $person = $this->getUser() ?: new PersonGuest();
 
         try {
             $uri_helper = new FeedbackFilterUriHelper();
@@ -191,6 +200,19 @@ class FeedbackController extends AbstractController
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
+
+        // SECURITY
+        // a permissions check, if the user can't see one of these filtered "types" (i.e. FeedbackCategory)
+        $permissions_bag = $this->getPermissionBag($person);
+        $allowed_category_ids = $permissions_bag->getAllowedFeedbackCategoryIds();
+        foreach ($filter->getTypes() as $type) {
+            if (!in_array($type, $allowed_category_ids)) {
+                throw new AccessDeniedException(
+                    'you dont have access to a category you are trying to filter for
+                ');
+            }
+        }
+
 
         // order was incorrect, redirect
         if ($filter_uri != $generated_uri = $uri_helper->generateUriSegment($filter)) {
@@ -211,8 +233,7 @@ class FeedbackController extends AbstractController
         //
         // FILTER CATEGORIES
         //
-        // TODO: turn this into a service that takes in to account security (access to categories)
-        $feedback_categories = $this->getRepo('DeskPRO:FeedbackCategory')->getAll();
+        $feedback_categories = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
 
         $page_options = array(
             'page'              => $page,
@@ -261,6 +282,7 @@ class FeedbackController extends AbstractController
 
     /**
      * @Route("/feedback/view/{slug}", name="portal_feedback_view")
+     * @Route("/feedback/view/{slug}", name="user_feedback_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")
@@ -271,7 +293,7 @@ class FeedbackController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new FeedbackComment();
             $new_comment_form = $form_handler->createForm($comment);
@@ -316,6 +338,7 @@ class FeedbackController extends AbstractController
      * @Route("/feedback/view/{slug}/vote-down", name="portal_feedback_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('RATE_FEEDBACK', item)")
+     * @AutoPostOnGetRequest()
      */
     public function feedbackRateAction(Feedback $item, $visitor_id, $up_or_down)
     {

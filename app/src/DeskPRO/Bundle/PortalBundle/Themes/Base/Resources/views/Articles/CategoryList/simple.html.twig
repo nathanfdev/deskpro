@@ -2,7 +2,7 @@
   <ul class="kb-simple-articles">
     {% for article in pager %}
       <li>
-        <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
+        <a href="{{ portal_path(article) }}">
           <h1>{{ article.realTitle }}</h1>
 
           <div class="article-meta">

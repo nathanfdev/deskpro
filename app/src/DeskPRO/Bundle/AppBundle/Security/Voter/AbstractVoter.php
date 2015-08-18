@@ -104,6 +104,19 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
     }
 
     /**
+     * @param $user
+     * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
+     */
+    public function getPermissionsBag($user)
+    {
+        if ($user instanceof Person) {
+            return $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+        }
+
+        return $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
      */
     public function getPortalPermissionsManager()

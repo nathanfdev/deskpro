@@ -39,7 +39,16 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 
 /**
- * Log of searches on userend.
+ * Log of searches on user end.
+ *
+ * @property Person $person
+ * @property string $ip_address
+ * @property string $email
+ * @property int $id;
+ * @property string $name
+ * @property string $query
+ * @property string $num_results
+ * @property \DateTime $date_created
  */
 class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -83,17 +92,16 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;
 
-    public static function create($query, $num_results, $use_request = true)
+    /**
+     * @param $query
+     * @param $num_results
+     * @return SearchLog
+     */
+    public static function create($query, $num_results)
     {
         $searchlog              = new self();
         $searchlog->query       = $query;
         $searchlog->num_results = $num_results;
-
-        if ($use_request && App::has('request')) {
-            if (!App::getCurrentPerson()->isGuest()) {
-                $searchlog->person = App::getCurrentPerson();
-            }
-        }
 
         return $searchlog;
     }

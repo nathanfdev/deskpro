@@ -69,7 +69,20 @@ class ArticlesController extends AbstractController
      */
     public function categoriesAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
-        $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
+        $person = $this->getCurrentPerson();
+
+        if ($category) {
+            $permissions_bag = $this->getPermissionBag($person);
+            if (!$permissions_bag->hasContentCategoryAccess($category)) {
+                return new Response(''); // no access to the category will exclude children
+            }
+        }
+
+        $category_children = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+
+        if (empty($category_children)) {
+            return new Response(''); // nothing to display here
+        }
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
 
@@ -112,7 +125,8 @@ class ArticlesController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
+        $person = $this->getCurrentPerson();
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count'], $person);
 
         return $this->renderThemeView(
             sprintf('Theme:Articles:ArticleList/%s.html.twig', $options['style']),

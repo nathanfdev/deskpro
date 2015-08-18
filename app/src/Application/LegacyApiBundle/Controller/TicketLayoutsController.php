@@ -42,7 +42,7 @@ use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 /**
  * Simple ticket layouts CRUD
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_layout",
  * 	description="Operations about Ticket layouts",
  * 	basePath="/api"
@@ -70,15 +70,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param int $dep_id
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get ticket layout for given department",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="dep_id",
      *				description="Ticket department ID",
      *				paramType="path",
@@ -89,9 +89,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/default",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get default ticket layout",
      * 		notes="",
@@ -146,9 +146,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 	/**
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/stats",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Show layout statistic by departments",
      * 		notes="",
@@ -196,29 +196,29 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @return Response
      * @throws \Exception
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Update existing department layout by department ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="dep_id",
      *				description="Department ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="layout[user]",
      *				description="Layout user",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="layout[agent]",
      *				description="Layout agent",
      *				paramType="query",
@@ -229,29 +229,29 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *  )
      * )
 
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/default",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Update default ticket layout",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="dep_id",
      *				description="Department ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="layout[user]",
      *				description="Layout user",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="layout[agent]",
      *				description="Layout agent",
      *				paramType="query",
@@ -336,15 +336,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @return Response
      * @throws \Exception
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete department ticket layout by department ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="dep_id",
      *				description="department ID",
      *				paramType="path",
@@ -376,15 +376,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param $field_id
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/fields/{field_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get field use statistic",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="field_id",
      *				description="Field ID",
      *				paramType="path",
@@ -459,15 +459,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param $field_id
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/fields/{field_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Save field status",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="field_id",
      *				description="Field ID",
      *				paramType="path",
