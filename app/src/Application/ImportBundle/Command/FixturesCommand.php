@@ -108,10 +108,6 @@ class FixturesCommand extends ContainerAwareCommand
             $fixture->delete();
 
         } else {
-            if ($fixture instanceof ZenDesk\Fixtures\FixturePrepareInterface) {
-                $fixture->prepare(new DateTime('-2 year'), new DateTime('-1 year'));
-            }
-
             /** @var ZenDesk\Fixtures\FixtureInterface $fixture */
             $fixture->create(
                 $input->getOption('offset'),
