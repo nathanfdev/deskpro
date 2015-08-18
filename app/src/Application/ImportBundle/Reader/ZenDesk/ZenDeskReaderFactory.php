@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\CategoryLoader;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\SectionLoader;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -68,6 +69,7 @@ class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
 
         $category_loader = new CategoryLoader($request_adapter);
         $people_loader   = new PeopleLoader($request_adapter);
+        $section_loader  = new SectionLoader($request_adapter);
 
         $collection = new Fixtures\Collection();
         $collection
@@ -75,7 +77,7 @@ class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
             ->attach(new Fixtures\CoreAPI\Tickets($client, $people_loader))
             ->attach(new Fixtures\HelpCenter\Categories($client, $category_loader))
             ->attach(new Fixtures\HelpCenter\Sections($client, $category_loader))
-            ->attach(new Fixtures\HelpCenter\Articles($client, $people_loader))
+            ->attach(new Fixtures\HelpCenter\Articles($client, $people_loader, $section_loader))
         ;
 
         return $collection;

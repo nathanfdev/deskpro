@@ -29,11 +29,9 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixturePrepareInterface;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
 use DateTime;
 use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
@@ -44,7 +42,7 @@ use Zendesk\API\ResponseException;
  * Class Articles
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
  */
-final class Articles extends AbstractFixture implements FixturePrepareInterface
+final class Articles extends AbstractFixture
 {
     /**
      * @var PeopleLoader
@@ -52,20 +50,23 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
     private $people_loader;
 
     /**
-     * @var array
+     * @var SectionLoader
      */
-    private $sections = array();
+    private $section_loader;
 
     /**
      * Constructor
      *
-     * @param Client       $client
-     * @param PeopleLoader $people_loader
+     * @param Client        $client
+     * @param PeopleLoader  $people_loader
+     * @param SectionLoader $section_loader
      */
-    public function __construct(Client $client, PeopleLoader $people_loader)
+    public function __construct(Client $client, PeopleLoader $people_loader, SectionLoader $section_loader)
     {
         parent::__construct($client);
-        $this->people_loader = $people_loader;
+
+        $this->people_loader  = $people_loader;
+        $this->section_loader = $section_loader;
     }
 
     /**
@@ -79,29 +80,10 @@ final class Articles extends AbstractFixture implements FixturePrepareInterface
     /**
      * {@inheritdoc}
      */
-    public function prepare(DateTime $initial_time, DateTime $end_time)
-    {
-        try {
-            $helper = new SectionsFindAll();
-            $this->sections = $helper->request($this->client)->sections;
-
-        } catch (ResponseException $e) {
-            $this->handleResponseException('section');
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
-        if (empty($this->sections)) {
-            throw new \RuntimeException('No help center section');
-        }
-
-        $section = $this->sections[rand(0, count($this->sections) - 1)];
         $helper  = new ArticleCreate(array(
-            'id'      => $section->id,
+            'id'      => $this->section_loader->getRandomSectionId(),
             'article' => array(
                 'title'       => 'Fake article ' . $num,
                 'body'        => 'Fake article content',

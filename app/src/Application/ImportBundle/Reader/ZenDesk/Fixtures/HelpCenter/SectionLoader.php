@@ -25,54 +25,46 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
-use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI\PeopleIncrementalExport;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
 use Doctrine\Common\Collections\ArrayCollection;
-use DateTime;
 
 /**
- * Class PeopleIdsLoader
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
+ * Class SectionLoader
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
  */
-class PeopleLoader extends AbstractFixtureLoader
+class SectionLoader extends AbstractFixtureLoader
 {
     /**
      * @var ArrayCollection
      */
-    protected $people;
+    private $sections;
 
     /**
      * {@inheritdoc}
      */
     public function load()
     {
-        $initial_time       = new DateTime('-2 years');
-        $people_incremental = new PeopleIncrementalExport(array(
-            'start_time' => $initial_time->getTimestamp(),
-        ));
-
-        $response     = $this->request_adapter->doRequest($people_incremental);
-        $this->people = new ArrayCollection($this->toArray($response->users));
+        $response = $this->request_adapter->doRequest(new SectionsFindAll());
+        $this->sections = new ArrayCollection($this->toArray($response->sections));
     }
 
     /**
-     * Returns a random person id
+     * Returns a random section id
      *
      * @return int
-     * @throws \RuntimeException
      */
-    public function getRandomPersonId()
+    public function getRandomSectionId()
     {
-        if (null === $this->people) {
+        if (null === $this->sections) {
             $this->load();
         }
-        if (empty($this->people)) {
-            throw new \RuntimeException('No person found');
+        if (empty($this->sections))  {
+            throw new \RuntimeException('No sections');
         }
 
-        return $this->people[rand(0, count($this->people) - 1)]['id'];
+        return $this->sections[rand(0, count($this->sections) - 1)]['id'];
     }
 }

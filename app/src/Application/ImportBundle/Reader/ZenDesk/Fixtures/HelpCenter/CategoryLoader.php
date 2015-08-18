@@ -46,7 +46,7 @@ class CategoryLoader extends AbstractFixtureLoader
     private $categories;
 
     /**
-     * Loads all categories
+     * {@inheritdoc}
      */
     public function load()
     {
