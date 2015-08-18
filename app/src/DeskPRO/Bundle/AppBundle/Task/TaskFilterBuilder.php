@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Task;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class TaskFilterBuilder
@@ -62,17 +63,21 @@ class TaskFilterBuilder
     /**
      * Create a Doctrine query based on a request
      * @param ParameterBag $request
-     * @return Query|\Doctrine\ORM\QueryBuilder
+     * @return Query
      */
     public function filterRequest(ParameterBag $request)
     {
         $filter = $this->getFilter($request);
 
         if (empty($filter)) {
-            return $this->em->createQueryBuilder()->select('t')->from('App:Task', 't')->getQuery();
+            $result =  $this->em->createQueryBuilder()->select('t')->from('App:Task', 't');
+        } else {
+            $result = $this->executeFilter($filter);
         }
 
-        return $this->executeFilter($filter);
+        $result = $this->orderResults($result, $request);
+
+        return $result->getQuery();
     }
 
     /**
@@ -141,7 +146,7 @@ class TaskFilterBuilder
     /**
      * Build up a query according to the filter we need to process
      * @param $filter
-     * @return Query
+     * @return QueryBuilder
      */
     protected function executeFilter($filter)
     {
@@ -190,6 +195,40 @@ class TaskFilterBuilder
             $query = $query->andWhere($field . ' ' . $term);
         }
 
-        return $query->getQuery();
+        return $query;
+    }
+
+    /**
+     * @param QueryBuilder $query
+     * @param ParameterBag $request
+     * @return QueryBuilder
+     */
+    protected function orderResults(QueryBuilder $query, ParameterBag $request)
+    {
+        $mappings = [
+            'due',
+            'assigned',
+            'created',
+            'project'
+        ];
+
+        if (!$request->has('order') || !in_array($request->get('order'), $mappings)) {
+            return $query;
+        }
+
+        switch($request->get('order')) {
+            case 'due':
+                $query = $query->orderBy('t.date_due', 'ASC');
+                break;
+            case 'assigned':
+                break;
+            case 'created':
+                $query = $query->orderBy('t.date_created', 'DESC');
+                break;
+            case 'project':
+                break;
+        }
+
+        return $query;
     }
 }

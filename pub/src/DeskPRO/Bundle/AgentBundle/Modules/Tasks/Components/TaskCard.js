@@ -63,16 +63,42 @@ const TaskCard = React.createClass({
   },
 
   handleAssigneeChange: function(value) {
-    console.log(value.target.value);
+    let task = this.state.task;
+    const assignment = value.target.value;
+
+    task.agents = [];
+    task.teams = [];
+    task.departments = [];
+
+    if (assignment !== 'unassigned') {
+      let assignmentParts = assignment.split('-');
+      task[assignmentParts[0]] = [assignmentParts[1]];
+    }
+
+    this.setState({
+      task: task
+    });
+
+    task.taskId = this.props.task.id;
+
+    this.props.editTask(this.props.source, task);
   },
 
-  componentDidUpdate() {
-    if (this.state.editing === true) {
-      const dueField = "due-" + this.props.task.id;
+  toggleMassAction: function(event) {
+    this.props.updateMassActions(this.props.task.id);
+  },
+
+  componentDidMount() {
+    const dueField = "due-" + this.props.task.id;
+
+    // Check if the due field actually exists before we try and add a date picker (e.g. on done tasks)
+    if (typeof (this.refs[dueField]) !== 'undefined') {
       const dueButton = "due-button-" + this.props.task.id;
 
+      // Get the date for the task, and format it nicely
       const initial = this.props.task.date_due ? Moment(this.props.task.date_due).format() : null;
 
+      // Create the picker
       let picker = new Picker({
         input: React.findDOMNode(this.refs[dueField]),
         button: React.findDOMNode(this.refs[dueButton]),
@@ -80,6 +106,8 @@ const TaskCard = React.createClass({
         format: "hh:mm, MMMM D, YYYY"
       });
       picker.render();
+
+      // Change the component state and submit the edit when the date is changed
       picker.on('change', (newDate) => {
         let task = this.state.task;
         task.date_due = newDate ? Moment(newDate).format() : null;
@@ -88,12 +116,17 @@ const TaskCard = React.createClass({
         });
 
         picker.updateInput();
+        task.taskId = this.props.task.id;
+
+        this.props.editTask(this.props.source, task);
       });
     }
   },
 
   render: function () {
-    const { task, projects, linked_items, departments, teams, agents, source, connectDragSource, isDragging } = this.props;
+    const { task, projects, linked_items, departments, teams, agents, source, connectDragSource } = this.props;
+
+    const selected = this.props.selected;
 
     let cardClass = task.is_done ? "card task-card task-card-completed" : "card task-card";
     let detailsButtonText = this.state.expanded ? "Collapse" : "Expand";
@@ -110,27 +143,18 @@ const TaskCard = React.createClass({
       });
     }
 
-    let assignee = undefined;
     let assigneeId = "unassigned";
 
     if (task.agents.length > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.agents[0];
-      let agent = agents[agentId];
-
-      assignee = <span><span className="text">{agent.name}</span> <span className="chat-avatar"
-                                                                        style={{backgroundImage: "url(./img/avatar6.png)"}} /></span>;
-      assigneeId = "agent-" + agentId;
+      assigneeId = "agents-" + agentId;
     } else if (task.teams.length > 0) {
       const teamId = task.teams[0];
-      let team = teams[teamId];
-      assignee = <span><span className="text">{team.name}</span></span>;
-      assigneeId = "team-" + teamId;
+      assigneeId = "teams-" + teamId;
     } else if (task.departments.length > 0) {
       const departmentId = task.departments[0];
-      let department = departments[departmentId];
-      assignee = <span><span className="text">{department.title}</span></span>;
-      assigneeId = "department-" + departmentId;
+      assigneeId = "departments-" + departmentId;
     }
 
     const dueField = "due-" + task.id;
@@ -138,29 +162,57 @@ const TaskCard = React.createClass({
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<div className={cardClass} key={task.id} onDoubleClick={this.editMode}>
-      { !this.state.editing ?
+    return connectDragSource(<div className={cardClass} key={task.id}>
         <div>
           <div className="card-status-bar status-bar-left"></div>
           <div className="card-status-bar status-bar-right"></div>
 
           <div className="card-checkbox">
-            <span className="checkbox"></span>
+            <span className="checkbox" onClick={this.toggleMassAction}>
+              {selected ? <i className="fa fa-check" /> : '' }
+            </span>
           </div>
 
-          {assignee || task.is_done ?
             <div className="top-right-box">
-              {!task.is_done ? assignee :
+              {!task.is_done ?
+                <span className="assignment">
+                  <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
+                    <option value="unassigned">Unassigned</option>
+                    { agents ? <optgroup label="Agents">
+                      { Object.keys(agents).map((key) => {
+                        let agentId = "agents-" + key;
+                        return <option key={agentId} value={agentId}>{agents[key].name}</option>;
+                      })}
+                    </optgroup> : '' }
+                    { teams ? <optgroup label="Teams">
+                      { Object.keys(teams).map((key) => {
+                        let teamId = "teams-" + key;
+                        return <option key={teamId} value={teamId}>{teams[key].name}</option>;
+                      })}
+                    </optgroup> : '' }
+                    { departments ? <optgroup label="Departments">
+                      { Object.keys(departments).map((key) => {
+                        let departmentId = "departments-" + key;
+                        return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
+                      })}
+                    </optgroup> : '' }
+                  </select>
+                </span>:
                 <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
                   className="fa fa-bars"/></button>}
-            </div> : ''}
+            </div>
 
           <div className="card-line">
               <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
                 {doneButton}
               </span>
 
-            <h1>{task.title}</h1>
+            { !this.state.editing ?
+            <h1 onDoubleClick={this.editMode}>{task.title}</h1> :
+              <Formsy.Form className="inline-form">
+              <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange} /></h1>
+              </Formsy.Form>
+            }
           </div>
 
           { this.state.expanded || !task.is_done ?
@@ -175,12 +227,16 @@ const TaskCard = React.createClass({
               </div>
 
               <div className="task-properties">
-                <div className={overdue ? "overdue" : ""}>
-                  <i className="fa fa-calendar-o"/> Due: {task.date_due ? <FormattedDate
+                <div className={overdue ? "overdue" : ""} ref={dueButton} >
+
+                  <i className="fa fa-calendar-o" /> Due: {task.date_due ? <FormattedDate
                   value={Date.parse(task.date_due)}
                   day="numeric"
                   month="long"
-                  year="numeric"/> : 'N/A' }
+                  year="numeric"
+                  />
+                  : 'N/A' }
+                  <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
                 </div>
 
                 {task.project && projects[task.project] ? <span>
@@ -193,37 +249,7 @@ const TaskCard = React.createClass({
                 </span> : ''}
               </div>
             </div> : '' }
-        </div> :
-        <Formsy.Form>
-          <div className="card-line editing">
-            <span className="assignment">
-              <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
-                <option value="unassigned">Unassigned</option>
-                { agents ? <optgroup label="Agents">
-                  { Object.keys(agents).map((key) => {
-                    let agentId = "agent-" + key;
-                    return <option key={agentId} value={agentId}>{agents[key].name}</option>;
-                  })}
-                </optgroup> : '' }
-                { teams ? <optgroup label="Teams">
-                  { Object.keys(teams).map((key) => {
-                    let teamId = "team-" + key;
-                    return <option key={teamId} value={teamId}>{teams[key].name}</option>;
-                  })}
-                </optgroup> : '' }
-                { departments ? <optgroup label="Departments">
-                  { Object.keys(departments).map((key) => {
-                    let departmentId = "department-" + key;
-                    return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
-                  })}
-                </optgroup> : '' }
-              </select>
-            </span>
-            <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange} /></h1>
-            <span className="due-editor"><button ref={dueButton} className="due-button"><i className="fa fa-calendar" /></button> Due: <input type="text" name="duedate" className="due-date" ref={dueField} defaultValue={task.date_due} /></span>
-          </div>
-        </Formsy.Form>
-      }
+        </div>
     </div>);
   }
 });

@@ -124,14 +124,14 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
      * )
-     * @Get("/tasks/{id}", name="api_tasks_get")
+     * @Get("/tasks/{taskId}", name="api_tasks_get")
      * @param Request $request
-     * @param int $id
+     * @param int $taskId
      * @return View
      */
-    public function getAction(Request $request, $id)
+    public function getAction(Request $request, $taskId)
     {
-        $task = $this->getTask($id);
+        $task = $this->getTask($taskId);
 
         if (empty($task)) {
             throw $this->createNotFoundException();

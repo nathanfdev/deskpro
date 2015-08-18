@@ -15,6 +15,9 @@ export default class TasksListFrame extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      actionable: []
+    };
     this.intl = IntlMixin;
   }
 
@@ -36,17 +39,63 @@ export default class TasksListFrame extends React.Component {
   }
 
   editTask(source, model) {
-    this.props.dispatch(TaskActions.editTask({
-      taskId : model.taskId,
-      title : model.title,
-      date_due : model.date_due
-    }, source));
+    this.props.dispatch(TaskActions.editTask(model, source));
   }
 
   createTask(source, model) {
     this.props.dispatch(TaskActions.createTask({
       title : model.title
     }, source));
+  }
+
+  toggleAllMassActions() {
+    if (this.state.actionable.length === this.props.taskFrameList.taskFrameList.length) {
+      this.hideMassActionControls();
+    } else {
+      let actionable = [];
+
+      this.props.taskFrameList.taskFrameList.map((object) => {
+        actionable.push(object.id);
+      });
+
+      this.setState({
+        actionable: actionable
+      });
+      this.showMassActionControls();
+    }
+  }
+
+  updateMassActions(taskId) {
+    let actionable = this.state.actionable;
+    const actionableIndex = actionable.indexOf(taskId);
+    if (actionableIndex === -1) {
+      actionable.push(taskId);
+    } else {
+       actionable.splice(actionableIndex, 1);
+    }
+
+    this.setState({
+      actionable: actionable
+    });
+
+    if (actionable.length > 0) {
+      this.showMassActionControls();
+    } else {
+      this.hideMassActionControls()
+    }
+  }
+
+  showMassActionControls()
+  {
+    $('.ticket-controls-bulk-editing').animate({"left": '22px'});
+  }
+
+  hideMassActionControls()
+  {
+    this.setState({
+      actionable: []
+    });
+    $('.ticket-controls-bulk-editing').animate({"left": '100%'});
   }
 
   render() {
@@ -96,10 +145,10 @@ export default class TasksListFrame extends React.Component {
         <div className="tickets-control-bar">
 
           <div className="bulk-edit-control">
-            <a href="#">
-              <span className="checkbox"><i className="fa fa-check" /></span>
+            <a href="#" onClick={this.toggleAllMassActions.bind(this)}>
+              <span className="checkbox">{this.state.actionable.length > 0 ? <i className="fa fa-check" /> : ''}</span>
             </a>
-            <span className="count" style={{display: "none"}}><span>14</span></span>
+            <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}><span>{this.state.actionable.length}</span></span>
           </div>
 
           <span className="ticket-controls-default">
@@ -161,7 +210,7 @@ export default class TasksListFrame extends React.Component {
               <span>GO</span>
             </a>
 
-            <a href="#" className="cancel">
+            <a href="#" className="cancel" onClick={this.hideMassActionControls.bind(this)}>
               <span>Cancel</span>
             </a>
           </span>
@@ -176,7 +225,8 @@ export default class TasksListFrame extends React.Component {
           return <TaskCard task={object} projects={projects} linked_items={linked_items} departments={departments}
                            teams={teams} agents={agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
                            source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
-                           editTask={_this.editTask.bind(_this)} />
+                           editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
+                           selected={_this.state.actionable.indexOf(object.id) !== -1} />
         }) : '' }
       </div>
     </section>

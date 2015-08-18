@@ -98,6 +98,10 @@
       text-overflow: ellipsis;
     }
 
+    .inline-form {
+      display: inline-block;
+    }
+
     // A box to the left of the title with stuff (star icon, feedback etc)
     .line-box {
       display: inline-block;
@@ -130,13 +134,14 @@
         border: 1px solid #e2e5e8;
         border-radius: 2px;
         background: #fff;
-        color: #e1e1e3;
+        color: #62ad8c;
         font-size: 9px;
         margin-top: 5px;
 
         i {
           opacity: 1;
           font-size: 9px;
+          color: #62ad8c;
         }
       }
     }
@@ -302,6 +307,13 @@
         border: 1px solid #868686;
         background-color: #fff;
       }
+    }
+
+    .due-date-field {
+      width: 0;
+      border: none;
+      background-color: #fff;
+      color: #fff;
     }
 
     .overdue, .overdue i {
@@ -504,7 +516,7 @@
   display: none;
   position: absolute;
   border: 1px solid #4681b2;
-  z-index: 299;
+  z-index: 2000;
   background-color: #eef1f3;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
   transition: all 0.25s ease-in-out;
