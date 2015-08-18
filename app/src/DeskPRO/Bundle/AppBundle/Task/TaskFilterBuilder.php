@@ -50,6 +50,12 @@ class TaskFilterBuilder
     protected $user;
 
     /**
+     * The tables which have been joined
+     * @var array
+     */
+    protected $joins = [];
+
+    /**
      * Constructor
      * @param EntityManager $em
      * @param $user
@@ -70,7 +76,8 @@ class TaskFilterBuilder
         $filter = $this->getFilter($request);
 
         if (empty($filter)) {
-            $result =  $this->em->createQueryBuilder()->select('t')->from('App:Task', 't');
+            $queryBuilder =  $this->em->createQueryBuilder();
+            $result = $queryBuilder->select('t')->from('App:Task', 't');
         } else {
             $result = $this->executeFilter($filter);
         }
@@ -153,11 +160,10 @@ class TaskFilterBuilder
         $query = $this->em->createQueryBuilder()->select('t')->from('App:Task', 't');
 
         // Join the necessary tables
-        $joins = [];
         foreach ($filter as $param => $details) {
-            if (!empty($details['table']) && !in_array($details['table'][0], $joins)) {
+            if (!empty($details['table']) && !in_array($details['table'][0], $this->joins)) {
                 $query = $query->leftJoin($details['table'][0], $details['table'][1]);
-                $joins[] = $details['table'][0];
+                $this->joins[] = $details['table'][0];
             }
         }
 
@@ -199,8 +205,10 @@ class TaskFilterBuilder
     }
 
     /**
-     * @param QueryBuilder $query
-     * @param ParameterBag $request
+     * Add an orderBy clause to the results
+     * @param QueryBuilder $query           The current query
+     * @param ParameterBag $request         The request
+     * @param QueryBuilder $queryBuilder    The builder used to create the query
      * @return QueryBuilder
      */
     protected function orderResults(QueryBuilder $query, ParameterBag $request)
@@ -212,23 +220,79 @@ class TaskFilterBuilder
             'project'
         ];
 
-        if (!$request->has('order') || !in_array($request->get('order'), $mappings)) {
+        // Kick it out if the request doesn't have the correct mapping
+        if (!$request->has('order_by') || !in_array($request->get('order_by'), $mappings)) {
             return $query;
         }
 
-        switch($request->get('order')) {
+        switch($request->get('order_by')) {
             case 'due':
-                $query = $query->orderBy('t.date_due', 'ASC');
+                $direction = $this->getSortDirection($request);
+                $query = $query->orderBy('t.date_due', $direction);
                 break;
             case 'assigned':
+
+                if (!in_array('t.assigned', $this->joins)) {
+                    $query = $query->leftJoin('t.assigned', 'a');
+                }
+
+                $query = $query->addSelect('CASE WHEN (IDENTITY(a.person) IS NOT NULL)
+                    THEN 1
+                    ELSE
+                        CASE WHEN (IDENTITY(a.team) IS NOT NULL)
+                        THEN 2
+                        ELSE
+                            CASE WHEN (IDENTITY(a.department) IS NOT NULL)
+                            THEN 3
+                            ELSE 0
+                            END
+                        END
+                    END
+                    AS HIDDEN assignment_type');
+                $query = $query->addSelect('COALESCE(IDENTITY(a.person), IDENTITY(a.team), IDENTITY(a.department))
+                    AS HIDDEN column_id');
+                $query = $query->addOrderBy('assignment_type', 'ASC');
+                $query = $query->addOrderBy('column_id', 'ASC');
+
                 break;
             case 'created':
-                $query = $query->orderBy('t.date_created', 'DESC');
+                $direction = $this->getSortDirection($request, 'DESC');
+                $query = $query->orderBy('t.date_created', $direction);
                 break;
             case 'project':
+                if (!in_array('t.projects', $this->joins)) {
+                    $query = $query->leftJoin('t.project', 'p');
+                }
+
+                $direction = $this->getSortDirection($request);
+
+                $query = $query->orderBy('p.title', $direction);
                 break;
         }
 
         return $query;
+    }
+
+    /**
+     * Retrieve, validate, format and return the direction to sort
+     * Defaults to ascending
+     * @throws \LogicException
+     * @param ParameterBag $request
+     * @param string $default
+     * @return string
+     */
+    protected function getSortDirection(ParameterBag $request, $default = 'ASC')
+    {
+        $valid = ['ASC', 'DESC'];
+
+        if (!in_array($default, $valid)) {
+            throw new \LogicException('Default sort direction must be ASC or DESC');
+        }
+
+        if (!$request->has('sort') || !in_array(strtoupper($request->get('sort')), $valid)) {
+            return $default;
+        }
+
+        return strtoupper($request->get('sort'));
     }
 }
