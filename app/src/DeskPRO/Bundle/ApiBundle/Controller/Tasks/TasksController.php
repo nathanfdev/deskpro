@@ -471,7 +471,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $this->getDoctrine()->getManager()->persist($task);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
+            $location = $this->generateUrl('api_tasks_get', array('taskId' => $task->getId()));
 
             return View::create(
                 $this->dataSerialize($task),
