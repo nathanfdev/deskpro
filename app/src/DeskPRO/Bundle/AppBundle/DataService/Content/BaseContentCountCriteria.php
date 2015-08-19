@@ -29,17 +29,47 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+use Application\DeskPRO\Entity\ContentAbstract as Content;
 
 /**
- * Class ChatCountCriteria
+ * Class BaseContentCountCriteria
  */
-class ChatCountCriteria extends ChatSelectCriteria
+abstract class BaseContentCountCriteria extends GroupedCriteria
 {
+    /**
+     * @param QueryBuilder $qb
+     */
+    public function applyFilters(QueryBuilder $qb)
+    {
+        $alias = $qb->getRootAliases()[0];
+
+        foreach ($this->filters as $field => $value) {
+            switch ($field) {
+                case 'status':
+                    $qb->andWhere("$alias.status = :status");
+                    $qb->setParameter('status', $value);
+                    break;
+
+                case 'period_created':
+                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+                    $qb->andWhere("$datePeriodCaseWhen = :period_created");
+                    $qb->setParameter('period_created', $value);
+                    break;
+
+                case 'author':
+                    $qb->andWhere("$alias.person = :person");
+                    $qb->setParameter('person', $value);
+                    break;
+            }
+        }
+    }
+
     /**
      * @param QueryBuilder $qb
      */
@@ -49,26 +79,20 @@ class ChatCountCriteria extends ChatSelectCriteria
 
         $alias = $qb->getRootAliases()[0];
         switch ($this->group_by) {
-            case 'date_created':
-                $qb->addSelect("DATE($alias.date_created) as group_name");
+            case 'author':
+                $qb->addSelect('p.id as group_name');
+                $qb->leftJoin("$alias.person", 'p');
                 break;
 
-            case 'date_period':
-                $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                $qb->addSelect("$datePeriodsDql as group_name");
-
-                // select hidden group_order to use in ORDER BY
-                $qb->addSelect(
-                    "FIELD($datePeriodsDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever')
-                     as HIDDEN group_order");
-                $qb->orderBy('group_order');
-
+            case 'period_created':
+                $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+                $qb->addSelect("$datePeriodCaseWhen as group_name");
                 break;
 
-            case 'agent':
-            case 'department':
-                $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
+            case 'period_updated':
+                $datePeriodCaseWhen =
+                    DatePeriods::getDatePeriodCaseWhenDql("COALESCE($alias.date_updated, $alias.date_created)");
+                $qb->addSelect("$datePeriodCaseWhen as group_name");
                 break;
         }
 
@@ -76,23 +100,25 @@ class ChatCountCriteria extends ChatSelectCriteria
     }
 
     /**
-     * @inheritdoc
-     */
-    public function isGroupByDistinct()
-    {
-        // all grouping options lead to distinct results
-        return true;
-    }
-
-    /**
      * @param OptionsResolver $resolver
-     * @param array $data
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        parent::configureResolver($resolver, $data);
+        $resolver->setDefined(['group_by', 'status', 'author', 'category', 'period_created']);
+        $resolver->setRequired(['group_by']);
 
-        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
+        // group_by validation
+        $resolver->setAllowedValues('group_by', ['author', 'category', 'period_created', 'period_updated']);
+
+        // filters validation
+        $validateInt = function($value) {
+            return is_int($value) || ctype_digit($value);
+        };
+        $resolver->setAllowedValues('author', $validateInt);
+        $resolver->setAllowedValues('category', $validateInt);
+        $resolver->setAllowedValues('status', [
+            Content::STATUS_PUBLISHED, Content::STATUS_ARCHIVED, Content::STATUS_HIDDEN
+        ]);
+        $resolver->setAllowedValues('period_created', DatePeriods::$names);
     }
 }

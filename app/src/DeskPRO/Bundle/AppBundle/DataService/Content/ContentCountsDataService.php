@@ -29,70 +29,65 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
+use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 
 /**
- * Class ChatCountCriteria
+ * Class ContentCountsDataService
  */
-class ChatCountCriteria extends ChatSelectCriteria
+class ContentCountsDataService
 {
     /**
-     * @param QueryBuilder $qb
+     * @var EntityManager
      */
-    public function applyGroupBy(QueryBuilder $qb)
+    private $em;
+
+    /**
+     * PeopleDataService constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
     {
-        $this->ensureGroupBy();
+        $this->em = $em;
+    }
 
-        $alias = $qb->getRootAliases()[0];
-        switch ($this->group_by) {
-            case 'date_created':
-                $qb->addSelect("DATE($alias.date_created) as group_name");
-                break;
+    /**
+     * @param GroupedCriteria $criteria
+     * @return Count
+     */
+    public function countContent($class, GroupedCriteria $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
 
-            case 'date_period':
-                $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                $qb->addSelect("$datePeriodsDql as group_name");
+        $qb->select('count(c) as value')
+           ->from($class, 'c');
+        $criteria->applyFilters($qb);
+        $criteria->applyGroupBy($qb);
 
-                // select hidden group_order to use in ORDER BY
-                $qb->addSelect(
-                    "FIELD($datePeriodsDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever')
-                     as HIDDEN group_order");
-                $qb->orderBy('group_order');
+        $result = $qb->getQuery()->getArrayResult();
 
-                break;
-
-            case 'agent':
-            case 'department':
-                $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
-                break;
+        $count = 0;
+        $nested = new CountsGroup($criteria->getGroupBy());
+        foreach ($result as $group) {
+            $count += $group['value'];
+            $nested->add(new GroupedCount($group['group_name'], $group['value']));
         }
 
-        $qb->groupBy('group_name');
-    }
+        // if $count above isn't a sum of distinct results, then need to perform additional query
+        if (!$criteria->isGroupByDistinct()) {
+            $totalQb = $this->em->createQueryBuilder();
+            $totalQb->select('count(distinct c)')
+                    ->from($class, 'c');
+            $criteria->applyFilters($totalQb);
+            $count = $totalQb->getQuery()->getSingleScalarResult();
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function isGroupByDistinct()
-    {
-        // all grouping options lead to distinct results
-        return true;
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     * @param array $data
-     */
-    public static function configureResolver(OptionsResolver $resolver, array $data = [])
-    {
-        parent::configureResolver($resolver, $data);
-
-        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
+        return new Count($count, $nested);
     }
 }

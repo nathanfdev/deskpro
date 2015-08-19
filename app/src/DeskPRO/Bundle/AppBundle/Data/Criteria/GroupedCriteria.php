@@ -102,4 +102,15 @@ abstract class GroupedCriteria extends Criteria implements GroupedCriteriaInterf
 
         return new static($filters, $group_by);
     }
+
+    /**
+     * If the current $group_by value leads to groups with distinct records (or distinct counts)
+     *
+     * When grouping by a related entity with to-Many relation (results are not distinct), resulting groups will
+     * contain the same records in different groups, so e.g. when selecting grouped counts, the total sum of all
+     * groups will be greater than the total actual count, thus we need to perform additional distinct COUNT().
+     *
+     * @return bool
+     */
+    public abstract function isGroupByDistinct();
 }

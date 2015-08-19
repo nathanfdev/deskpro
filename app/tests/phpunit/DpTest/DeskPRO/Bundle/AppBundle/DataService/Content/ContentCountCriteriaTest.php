@@ -31,61 +31,49 @@
  * @package DeskPRO
  */
 
-namespace DpTest\Bundle\AppBundle\DataService\Chat;
+namespace DpTest\Bundle\AppBundle\DataService\Content;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountCriteria;
 
 /**
- * Class ChatCountCriteriaTest
+ * Class ContentCountCriteriaTest
  */
-class ChatCountCriteriaTest extends DeskProTestCase
+class ContentCountCriteriaTest extends DeskProTestCase
 {
     static $dummyProperParams = [
-        'agent'        => 1,
-        'department'   => 1,
-        'date_created' => '2013-01-01:2015-01-01',
-        'date_period'  => 'this_month',
-        'group_by'     => 'agent'
+        'status'         => 'published',
+        'author'         => 1,
+        'category'       => 1,
+        'period_created' => 'this_month',
+        'group_by'       => 'period_updated'
     ];
 
     /**
      * @test
+     * @expectedException        \Symfony\Component\OptionsResolver\Exception\MissingOptionsException
+     * @expectedExceptionMessage The required option "group_by" is missing.
      */
-    function it_should_be_instantiable_with_factory_method_from_empty_parameter()
+    function it_should_not_be_constructable_without_group_by()
     {
-        $this->assertInstanceOf(ChatCountCriteria::class, $this->instance([]));
+        $this->instance([]);
     }
 
     /**
      * @test
      */
-    function it_should_be_instantiable_with_proper_parameters()
+    function it_should_be_constructable_with_only_group_by()
     {
-        $this->assertInstanceOf(ChatCountCriteria::class, $this->instance(self::$dummyProperParams));
+        $this->assertInstanceOf(ContentCountCriteria::class, $this->instance(['group_by' => 'author']));
     }
 
     /**
      * @test
      */
-    function it_should_extend_ChatSelectCriteria_with_group_by_functionality()
+    function it_should_be_constructable_with_proper_parameters()
     {
-        $this->assertInstanceOf(ChatSelectCriteria::class, $this->instance(['group_by' => 'date_period']));
-    }
-
-    /**
-     * @test
-     * @expectedException        \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
-     * @expectedExceptionMessage The option "group_by" with value "color" is invalid. Accepted values are: "agent",
-     *                           "department", "date_created", "date_period".
-     */
-    function it_should_throw_an_exception_with_list_of_allowed_group_by_values_when_passing_a_wrong_value()
-    {
-        $this->instance(['group_by' => 'color']);
+        $this->assertInstanceOf(ContentCountCriteria::class, $this->instance(self::$dummyProperParams));
     }
 
     /**
@@ -94,24 +82,35 @@ class ChatCountCriteriaTest extends DeskProTestCase
     function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
     {
         $qb = $this->mockQueryBuilder();
+        $qb->groupBy(Argument::any())->shouldBeCalled();
+        $this->instance(self::$dummyProperParams)->applyGroupBy($qb->reveal());
+    }
+
+    /**
+     * @test
+     */
+    function it_should_apply_given_parameters_to_the_passed_QueryBuilder()
+    {
+        $qb = $this->mockQueryBuilder();
 
         // expectations when applying self::$dummyProperParams
-        $qb->groupBy(Argument::any())->shouldBeCalled();
+        $qb->setParameter('status',         'published')->shouldBeCalled();
+        $qb->setParameter('person',         1)->shouldBeCalled();
+        $qb->setParameter('category',       1)->shouldBeCalled();
+        $qb->setParameter('period_created', 'this_month')->shouldBeCalled();
 
-        /** @var QueryBuilder $qb */
+        /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $qb->reveal();
-        $this->instance(self::$dummyProperParams)->applyGroupBy($qb);
+        $this->instance(self::$dummyProperParams)->applyFilters($qb);
     }
 
     /**
      * @param array $parameters
-     * @return ChatCountCriteria
+     * @return ContentCountCriteria
      */
-    private function instance($parameters = [])
+    private function instance(array $parameters)
     {
-        $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
-        $me = new \Application\DeskPRO\Entity\Person();
-
-        return ChatCountCriteria::fromParameters($parameters, $resolver, [$me]);
+        return ContentCountCriteria::fromParameters(
+                   $parameters, new \Symfony\Component\OptionsResolver\OptionsResolver());
     }
 }

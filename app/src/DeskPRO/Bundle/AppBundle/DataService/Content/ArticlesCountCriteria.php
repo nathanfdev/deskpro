@@ -29,17 +29,37 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 
 /**
- * Class ChatCountCriteria
+ * Class ArticlesCountCriteria
+ *
+ * Extends BaseContentCountCriteria with categories relation handling to meet Article entity criteria needs
  */
-class ChatCountCriteria extends ChatSelectCriteria
+class ArticlesCountCriteria extends BaseContentCountCriteria
 {
+    /**
+     * @param QueryBuilder $qb
+     */
+    public function applyFilters(QueryBuilder $qb)
+    {
+        $alias = $qb->getRootAliases()[0];
+
+        foreach ($this->filters as $field => $value) {
+            switch ($field) {
+                case 'category':
+                    $qb->leftJoin("$alias.categories", 'cat');
+                    $qb->andWhere("cat.id = :category");
+                    $qb->setParameter('category', $value);
+                    break;
+            }
+        }
+
+        parent::applyFilters($qb);
+    }
+
     /**
      * @param QueryBuilder $qb
      */
@@ -49,50 +69,23 @@ class ChatCountCriteria extends ChatSelectCriteria
 
         $alias = $qb->getRootAliases()[0];
         switch ($this->group_by) {
-            case 'date_created':
-                $qb->addSelect("DATE($alias.date_created) as group_name");
-                break;
-
-            case 'date_period':
-                $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                $qb->addSelect("$datePeriodsDql as group_name");
-
-                // select hidden group_order to use in ORDER BY
-                $qb->addSelect(
-                    "FIELD($datePeriodsDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever')
-                     as HIDDEN group_order");
-                $qb->orderBy('group_order');
-
-                break;
-
-            case 'agent':
-            case 'department':
-                $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
+            case 'category':
+                $qb->addSelect('cat.id as group_name');
+                $qb->leftJoin("$alias.categories", 'cat');
                 break;
         }
 
-        $qb->groupBy('group_name');
+        parent::applyGroupBy($qb);
     }
 
     /**
-     * @inheritdoc
+     * @return bool
      */
     public function isGroupByDistinct()
     {
-        // all grouping options lead to distinct results
-        return true;
-    }
+        $indistinct = ($this->group_by === 'category') && !array_key_exists('category', $this->filters);
+        $distinct = !$indistinct;
 
-    /**
-     * @param OptionsResolver $resolver
-     * @param array $data
-     */
-    public static function configureResolver(OptionsResolver $resolver, array $data = [])
-    {
-        parent::configureResolver($resolver, $data);
-
-        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
+        return $distinct;
     }
 }

@@ -76,9 +76,11 @@ trait DbalMocksHelper
         $qb->addSelect(Argument::any())->willReturn($qb);
         $qb->from(Argument::any(), Argument::any())->willReturn($qb);
         $qb->join(Argument::any(), Argument::any())->willReturn($qb);
+        $qb->leftJoin(Argument::any(), Argument::any())->willReturn($qb);
         $qb->where(Argument::any())->willReturn($qb);
         $qb->andWhere(Argument::any())->willReturn($qb);
         $qb->groupBy(Argument::any())->willReturn($qb);
+        $qb->expr()->willReturn(new \Doctrine\ORM\Query\Expr());
 
         return $qb;
     }

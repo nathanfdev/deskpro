@@ -84,7 +84,7 @@ class ChatDataServiceTest extends DeskProTestCase
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
-        $criteria = ChatCountCriteria::fromParameters(['group_by' => 'date_created'], $resolver, $me);
+        $criteria = ChatCountCriteria::fromParameters(['group_by' => 'date_created'], $resolver, [$me]);
 
         $result = $this->instance()->countChats($criteria);
 
@@ -98,7 +98,7 @@ class ChatDataServiceTest extends DeskProTestCase
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
-        $criteria = ChatCountCriteria::fromParameters([], $resolver, $me);
+        $criteria = ChatCountCriteria::fromParameters([], $resolver, [$me]);
 
         $result = $this->instance()->countChats($criteria);
 
