@@ -83,13 +83,14 @@ abstract class AbstractHelper implements ClientHelperInterface
      * @param Client $client
      * @param string $end_point
      * @param array  $params
+     * @param string $content_type
      *
      * @return mixed
      * @throws ResponseException
      */
-    protected function doPostRequest(Client $client, $end_point, array $params)
+    protected function doPostRequest(Client $client, $end_point, array $params, $content_type = 'application/json')
     {
-        $response      = Http::send($client, $end_point, $params, 'POST');
+        $response      = Http::send($client, $end_point, $params, 'POST', $content_type);
         $success_codes = array(
             Response::HTTP_OK,
             Response::HTTP_CREATED,

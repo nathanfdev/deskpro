@@ -50,11 +50,11 @@ final class ArticleAttachmentCreate extends AbstractHelper
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        $article_id = $this->params['id'];
-        $params     = $this->params;
+        $end_point = sprintf('help_center/articles/%d/attachments.json', $this->params['id']);
+        $params    = $this->params;
 
         unset($params['id']);
 
-        return $this->doPostRequest($client, sprintf('help_center/articles/%d/attachments.json', $article_id), $params);
+        return $this->doPostRequest($client, $end_point, $params, 'multipart/form-data');
     }
 }

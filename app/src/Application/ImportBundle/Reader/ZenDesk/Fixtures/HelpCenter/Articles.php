@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleAttachmentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
 use DateTime;
@@ -98,7 +99,7 @@ final class Articles extends AbstractFixture
         $this->logger->info('Article created successfully');
         $this->logger->debug(json_encode($article));
 
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             try {
                 $helper = new ArticleCommentCreate(array(
                     'id'      => $article->id,
@@ -116,6 +117,24 @@ final class Articles extends AbstractFixture
 
             } catch (ResponseException $e) {
                 $this->handleResponseException('article comment');
+            }
+        }
+
+        for ($i = 1; $i <= 2; $i++) {
+            try {
+                $helper = new ArticleAttachmentCreate(array(
+                    'id'     => $article->id,
+                    'file'   => '@/deskpro/www/web/images/big-tick.png;filename=big-tick.png',
+                    'inline' => 'false',
+                ));
+
+                $response = $helper->request($this->client);
+
+                $this->logger->info('Article attachment created successfully');
+                $this->logger->debug(json_encode($response->article_attachment));
+
+            } catch (ResponseException $e) {
+                $this->handleResponseException('article attachment');
             }
         }
     }
