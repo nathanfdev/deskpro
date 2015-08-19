@@ -170,35 +170,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		if ($('#problems-section')) {
 
-      DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-created', function (info) {
-        var $list = $('.tickets_outline_problems', self.wrapper)
-          , tpl      = $.trim($list.prev('script').text())
-          , $item    = parseHTML(tpl)
-          , $counter = $item.find('.counter')
-          , $h3      = $item.find('h3')
-          , $nodata  = $list.children('.no-data:first')
-          , $close   = $list.children('.closed-problems-list:first')
-          ;
-
-        $item.attr('data-problem-id', info.id);
-        $h3.text(info.title);
-        $h3.parent().data('route', $h3.parent().data('route').replace('0000', info.id));
-        $counter.text(info.incidents).data('route', $counter.data('route').replace('0000', info.id));
-
-        $item.insertAfter($nodata);
-
-        var $items = $list.children('.is-nav-item').get();
-        $items.sort(function (a, b) {
-          return $(a).find('h3:first').text().toUpperCase().localeCompare($(b).find('h3:first').text().toUpperCase());
-        });
-        $.each($items, function (idx, itm) {
-          $(itm).insertBefore($close);
-        });
-
-        $list.children('.is-nav-item').length
-          ? $nodata.hide()
-          : $nodata.show();
-      });
+      DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-created', this.onProblemCreated, this);
 
       DeskPRO_Window.getMessageBroker().addMessageListener('agent.problems-updated', function (info) {
         if (!info.changeset) return;
@@ -207,14 +179,23 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
           , $closed = $('select.closed_problems_select', self.wrapper)
           , $nodata  = $list.children('.no-data:first')
           , $close   = $list.children('.closed-problems-list:first')
+          , $item = $('[data-filter-id="' + info.filter_id + '"]:first', self.wrapper)
           ;
 
-        if (!info.changeset.is_open) return;
+        if (!$item.length) return;
 
-        if (info.changeset.is_open[0] && !info.changeset.is_open[1]) {
-          $list.children('[data-problem-id="' + info.id + '"]').remove();
+        // handle closed problem
+        if (info.changeset.is_open && info.changeset.is_open[0] && !info.changeset.is_open[1]) {
+
+          var $option = $('<option></option>');
+          $option
+            .attr('data-filter-id', info.filter_id)
+            .attr('value', info.filter_id)
+            .text(info.title + ' (' + $.trim($item.find('em.counter').text()) + ')')
+            .appendTo($closed)
+          ;
+          $item.remove();
           $closed.closest('li').show();
-          $closed.append('<option value="' + info.id + '">' + info.title + ' (' + info.incidents + ')</option>');
 
           var $items = $closed.children().get();
           $items.sort(function (a, b) {
@@ -222,28 +203,16 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
           });
         }
 
-        if (!info.changeset.is_open[0] && info.changeset.is_open[1]) {
-          $closed.children('option[value="' + info.id + '"]').remove();
-
-          var tpl      = $.trim($list.prev('script').text())
-            , $item    = parseHTML(tpl)
-            , $counter = $item.find('.counter')
-            , $h3      = $item.find('h3')
-            ;
-
-          $item.attr('data-problem-id', info.id);
-          $h3.text(info.title);
-          $h3.parent().data('route', $h3.parent().data('route').replace('0000', info.id));
-          $counter.text(info.incidents).data('route', $counter.data('route').replace('0000', info.id));
-          $item.insertAfter($nodata);
-
-          var $items = $list.children('.is-nav-item').get();
-          $items.sort(function (a, b) {
-            return $(a).find('h3:first').text().toUpperCase().localeCompare($(b).find('h3:first').text().toUpperCase());
-          });
-          $.each($items, function (idx, itm) {
-            $(itm).insertBefore($close);
-          });
+        // handle opened problem
+        if (info.changeset.is_open && !info.changeset.is_open[0] && info.changeset.is_open[1]) {
+          var m = /^(.+)\s*\((\d+)\)\s*$/.exec($.trim($item.text()));
+          if (!m || m.length !== 3) return;
+          var count = parseInt(m[2]);
+          if (count !== count) return;
+          info.tickets = count;
+          self.onProblemCreated(info);
+          $item.remove();
+          console.info(count);
         }
 
         $list.children('.is-nav-item').length
@@ -253,34 +222,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
           ? $closed.closest('li').hide()
           : $closed.closest('li').show();
       });
-
-			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-problems-updated', function (info) {
-				$('#problems-section [data-problem-id]').each(function () {
-					var id  = parseInt($(this).data('problem-id'))
-						, ass = info.associated.indexOf(id) > -1
-						, dis = info.disassociated.indexOf(id) > -1
-						;
-					if (!ass && !dis) return;
-					var $cnt = $('.counter', this);
-
-					// handle standard html
-					if ($cnt[0]) {
-						var val = parseInt($cnt.text());
-						// val !== val when val is NaN
-						val === val && ass && $cnt.text(++val);
-						val === val && dis && $cnt.text(--val);
-
-						// handle select options
-					} else {
-						var m = /^(.+)\s*\((\d+)\)\s*$/.exec($(this).text());
-						if (!m || m.length !== 3) return;
-						var val = parseInt(m[2]);
-						val === val && ass && val++;
-						val === val && dis && val--;
-						$(this).text(m[1] + '(' + val + ')');
-					}
-				});
-			});
 		}
 
 		if ($('#ticket_slas_header').length) {
@@ -448,7 +389,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
       sel.on('change', function (ev) {
         var val = $(this).val();
         if (!val) return;
-        $(this).data('route', $(this).data('path').replace('0', $(this).val()))
+        $(this).data('route', $(this).data('path').replace('0000', $(this).val()))
         DeskPRO_Window.runPageRouteFromElement($(this), {event: ev});
         sel.val('');
       });
@@ -462,6 +403,39 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.fireEvent('sectionInit');
 	},
+
+  onProblemCreated: function(info) {
+
+    var self      = this
+      , $list     = $('.tickets_outline_problems', self.wrapper)
+      , tpl       = $.trim($list.prev('script').text())
+      , $item     = parseHTML(tpl)
+      , $nodata   = $list.children('.no-data:first')
+      , $close    = $list.children('.closed-problems-list:first')
+      , $counter  = $item.find('em.counter:first')
+      ;
+
+    $item.attr('data-filter-id', info.filter_id);
+    $item.find('h3').text(info.title);
+    $item.children(':first').data('route', $item.children(':first').data('route').replace('0000', info.filter_id));
+    $counter.attr('id', 'ticket_filter_' + info.filter_id + '_count');
+    $item.insertAfter($nodata);
+
+    undefined !== info.tickets && $counter.text(info.tickets);
+
+    var $items = $list.children('.is-nav-item').get();
+    $items.sort(function (a, b) {
+      return $(a).find('h3:first').text().toUpperCase().localeCompare($(b).find('h3:first').text().toUpperCase());
+    });
+    $.each($items, function (idx, itm) {
+      $(itm).insertBefore($close);
+    });
+
+    $list.children('.is-nav-item').length
+      ? $nodata.hide()
+      : $nodata.show();
+
+  },
 
 	onShow: function() {
 		if (!this.hasLoaded) {
@@ -603,7 +577,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		});
 
 		// Init counts based on IDs we have cached
-		$('li.filter', this.sectionEl).not('.is-archive-filter').each((function(i, el) {
+		$('li.filter, option[data-filter-id]', this.sectionEl).not('.is-archive-filter').each((function(i, el) {
 			el = $(el);
 
 			var filterId = parseInt(el.data('filter-id'));
@@ -623,32 +597,43 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	modFilterCount: function(filter_id, op) {
 		filter_id = parseInt(filter_id);
-		var isTilde = $('#ticket_filter_' + filter_id + '_count').text().indexOf('~') !== -1;
-		var isPlus = $('#ticket_filter_' + filter_id + '_count').text().indexOf('+') !== -1;
-		var count = parseInt($('#ticket_filter_' + filter_id + '_count').data('count'));
+    var $counter = $('#ticket_filter_' + filter_id + '_count')
+      , $counter2 = $('#ticket_filter_' + filter_id + '_count2')
+      , $filter = $('[data-filter-id="' + filter_id + '"]', this.wrapper)
+      ;
 
-		if (op == 'add') {
-			count++;
-		} else {
-			count--;
-		}
+    if ($counter.length) {
+      var isTilde = $counter.text().indexOf('~') !== -1;
+      var isPlus = $counter.text().indexOf('+') !== -1;
+      var count = parseInt($counter.data('count'));
 
-		if (count < 0) {
-			count = 0;
-		}
+      if (op == 'add') {
+        count++;
+      } else {
+        count--;
+      }
 
-		var countStr = count;
-		if (isTilde) {
-			countStr = '~' + count;
-		}
+      if (count < 0) {
+        count = 0;
+      }
 
-		// "10000+" should not change when +1'ing
-		if (isPlus) {
-			$('#ticket_filter_' + filter_id + '_count').data('count', count);
-		} else {
-			$('#ticket_filter_' + filter_id + '_count').html(countStr).data('count', count);
-			$('#ticket_filter_' + filter_id + '_count2').html(count);
-		}
+      var countStr = count;
+      if (isTilde) {
+        countStr = '~' + count;
+      }
+
+      // "10000+" should not change when +1'ing
+      if (isPlus) {
+        $counter.data('count', count);
+      } else {
+        $counter.html(countStr).data('count', count);
+        $counter2.html(count);
+      }
+    }
+
+    if ($filter[0] && $filter[0].tagName === 'OPTION') {
+      $filter.text($.trim($filter.text()).replace(/^(.+)\s*\((\d+)\)\s*$/, "$1 (" + count + ")"));
+    }
 	},
 
 	setFilterCount: function(filter_id, count) {
@@ -663,22 +648,32 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			count_str = '~' + count;
 		}
 
-		var system_name = DeskPRO_Window.getData('systemFilters')[filter_id];
-		if (system_name) {
+		var system_name = DeskPRO_Window.getData('systemFilters')[filter_id]
+      , $counter = $('#ticket_filter_' + filter_id + '_count')
+      , $counter2 = $('#ticket_filter_' + filter_id + '_count2')
+      , $filter = $('[data-filter-id="' + filter_id + '"]', this.wrapper)
+      ;
+
+    if (system_name) {
 
 			if (system_name == 'all') {
 				this.updateBadge(count);
 			}
 
-			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
-			$('#ticket_filter_' + filter_id + '_count2').html(count_str_real);
+			$counter.html(count_str).data('count', count);
+			$counter2.html(count_str_real);
 
-			if (el.is('.is-hold-filter')) {
+			if ($counter.is('.is-hold-filter')) {
 				this._recountHold();
 			}
+
+      if ($filter[0] && $filter[0].tagName === 'OPTION') {
+        $filter.text($.trim($filter.text()).replace(/^(.+)\s*\((\d+)\)\s*$/, "$1 (" + count + ")"));
+      }
+
 		} else {
-			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
-			$('#ticket_filter_' + filter_id + '_count2').html(count_str_real);
+			$counter.html(count_str).data('count', count);
+			$counter2.html(count_str_real);
 		}
 	},
 
@@ -950,6 +945,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			},
 			success: function(batches) {
 
+        return;
 				Object.each(batches, function(html,filterId) {
 
 					var filterEl = $('.filter-' + filterId, this.sectionEl);

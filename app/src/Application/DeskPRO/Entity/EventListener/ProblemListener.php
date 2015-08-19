@@ -103,13 +103,13 @@ class ProblemListener
     /**
      *
      */
-    public function onPostUpdate()
+    public function onPostUpdate(Problem $problem, LifecycleEventArgs $event)
     {
         while (!$this->updates->isEmpty()) {
             $data = $this->updates->dequeue();
             /** @var Problem $p */
             $problem = $data['entity'];
-
+            $filter = $event->getEntityManager()->getRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => 'problem_' . $problem->id));
 
             $this->queue[] = array(
                 'channel' => self::CHANNEL_UPDATE,
@@ -118,6 +118,7 @@ class ProblemListener
                 'data' => serialize(array(
                     'id' => $problem->id,
                     'title' => $problem->title,
+                    'filter_id' => $filter ? $filter->id : 0,
                     'changeset' => $data['changeset'],
                 )),
             );
