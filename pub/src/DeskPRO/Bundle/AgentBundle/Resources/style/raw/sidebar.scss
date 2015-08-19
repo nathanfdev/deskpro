@@ -673,6 +673,10 @@ a.item.urgent {
       left: -1px;
       color: #333;
     }
+
+    &.edit-icon {
+      padding: 3px 1px;
+    }
   }
 
   a.list-counter.list-counter-button {

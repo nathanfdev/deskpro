@@ -110,9 +110,18 @@ const ProjectCreateHover = React.createClass({
 
     let project = this.props.projectData ? this.props.projectData : {};
     let currentMembers = project.members && project.members.length > 0 ? this.parseMembers(project.members) : {};
+    const positionY = (this.props.position.y - 20);
+    const maxY = window.innerHeight - 380;
+    let overshotY = false;
 
-    return (<div className="sidebar-hover" style={{top: '152px'}}>
+    let top = positionY + 'px';
 
+    if (positionY > maxY) {
+      overshotY = true;
+      top = maxY + 'px';
+    }
+
+    return (<div style={{top: top}} className={overshotY ? "sidebar-hover hide-indicator" : "sidebar-hover"}>
         <div className="sidebar-hover-content">
           <div className="sidebar-hover-header">
             <i className="fa fa-tags"/> <span className="title"><span>Project -</span> {project.id ? 'Edit' : 'Create New'}</span>
