@@ -24,21 +24,18 @@ export class Nav extends React.Component {
                             <Tab title="Status">
                                 <ul>
                                     <ListItem count={statuses.new} label="New"/>
-                                    <ListItem count={statuses.active.total} label="Active"/>
-                                    <ul>
+                                    <ListItem count={statuses.active.total} label="Active">
                                         {statuses.active.statuses.map(item =>
                                             <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
-                                    </ul>
-                                    <ListItem count={statuses.closed.total} label="Closed"/>
-                                    <ul>
+                                    </ListItem>
+                                    <ListItem count={statuses.closed.total} label="Closed">
                                         {statuses.closed.statuses.map(item =>
                                             <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
-                                    </ul>
-                                    <ListItem count={statuses.hidden.total} label="Hidden"/>
-                                    <ul>
+                                    </ListItem>
+                                    <ListItem count={statuses.hidden.total} label="Hidden">
                                         {statuses.hidden.statuses.map(item =>
                                             <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
-                                    </ul>
+                                    </ListItem>
                                 </ul>
                             </Tab>
                             <Tab title="Type">
