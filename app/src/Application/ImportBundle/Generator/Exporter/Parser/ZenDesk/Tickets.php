@@ -68,7 +68,7 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
-     * @var TicketsMapper
+     * @var OidMapper
      */
     private $tickets_mapper;
 
@@ -82,15 +82,15 @@ final class Tickets extends AbstractParser
      *
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
-     * @param TicketPeopleStorageInterface $people_storage
+     * @param ParserPeopleStorageInterface $people_storage
      * @param HttpClient                   $http_client
-     * @param TicketsMapper                $tickets_mapper
+     * @param OidMapper                $tickets_mapper
      */
     public function __construct(
         ZenDeskReaderInterface       $reader,
         FormatterInterface           $formatter,
-        TicketPeopleStorageInterface $people_storage,
-        TicketsMapper                $tickets_mapper,
+        ParserPeopleStorageInterface $people_storage,
+        OidMapper                    $tickets_mapper,
         HttpClient                   $http_client
     ) {
         parent::__construct($reader, $formatter);
@@ -459,7 +459,7 @@ final class Tickets extends AbstractParser
                     }
                 }
 
-                $this->tickets_people->loadByTickets($tickets);
+                $this->tickets_people->loadBy($tickets);
 
                 $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
                 if ($this->end_time == $this->getBatchConfig()->getTicketsEndTime()) {

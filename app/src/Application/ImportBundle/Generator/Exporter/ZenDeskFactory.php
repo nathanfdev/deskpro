@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\TicketsMapper;
+use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\OidMapper;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
@@ -54,6 +54,8 @@ class ZenDeskFactory extends AbstractFactory
             throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
         }
 
+        $http_client = new Client();
+
         /** @var ZenDeskReaderFactoryInterface $reader_factory */
         $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
 
@@ -78,17 +80,21 @@ class ZenDeskFactory extends AbstractFactory
         /** @var EntityRepository\ImportMap $import_map_repository */
         $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
 
-        $tickets_mapper = new TicketsMapper($import_map_repository, $entity_manager);
+        $tickets_mapper = new OidMapper($import_map_repository, $entity_manager);
+
+        // Article parser
+        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader);
+        $article_people->setPeopleStorage($storage);
 
         // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\ZenDesk\Downloads($reader, $formatter))
             ->attach(new Parser\ZenDesk\Feedback($reader, $formatter))
-            ->attach(new Parser\ZenDesk\Articles($reader, $formatter))
+            ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $article_people, $http_client))
             ->attach(new Parser\ZenDesk\News($reader, $formatter))
             ->attach($people)
-            ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $ticket_people, $tickets_mapper, new Client()))
+            ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $ticket_people, $tickets_mapper, $http_client))
             ->attach(new Parser\ZenDesk\Organizations($reader, $formatter))
         ;
 

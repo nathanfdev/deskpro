@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -27,75 +27,24 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
-use Doctrine\Common\Persistence\ObjectManager;
-
 /**
- * Class ImportMap
+ * Class ArticlePeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class TicketsMapper
+class ArticlePeopleStorage extends AbstractParserPeopleStorage
 {
     /**
-     * @var EntityRepository\ImportMap
+     * {@inheritdoc}
      */
-    private $repository;
-
-    /**
-     * @var ObjectManager
-     */
-    private $entity_manager;
-
-    /**
-     * Constructor
-     *
-     * @param EntityRepository\ImportMap $repository
-     * @param ObjectManager              $entity_manager
-     */
-    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager)
+    protected function getPeopleIds(array $data)
     {
-        $this->repository     = $repository;
-        $this->entity_manager = $entity_manager;
-    }
+        $people_ids = array();
+        foreach ($data as $article) {
+            if (isset($article['author_id'])) {
+                $people_ids[] = $article['author_id'];
+            }
+        }
 
-    /**
-     * Find a ZenDesk ticket mapping
-     *
-     * @param int $id
-     * @return string|null
-     */
-    public function findRefByOldId($id)
-    {
-        /** @var Entity\ImportMap $mapping */
-        $mapping = $this->repository->findOneBy(array(
-            'old_id'   => $id,
-            'typename' => Entity\ImportMap::TYPE_ZENDESK_TICKET,
-        ));
-
-        return $mapping ? $mapping->getNewId() : null;
-    }
-
-    /**
-     * Saves a ZenDesk ticket mapping
-     *
-     * @param int $old_id
-     * @param int $ref
-     *
-     * @return $this
-     */
-    public function saveMapping($old_id, $ref)
-    {
-        $entity = new Entity\ImportMap();
-        $entity
-            ->setTypename(Entity\ImportMap::TYPE_ZENDESK_TICKET)
-            ->setOldId($old_id)
-            ->setNewId($ref)
-        ;
-
-        $this->entity_manager->persist($entity);
-        $this->entity_manager->flush();
-
-        return $this;
+        return $people_ids;
     }
 }

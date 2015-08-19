@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -27,84 +27,75 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Guzzle\Http\Client as HttpClient;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * ZenDesk articles parser
- *
- * Class Articles
+ * Class ImportMap
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class Articles extends AbstractParser
+class OidMapper
 {
     /**
-     * @var ArticlePeopleStorage
+     * @var EntityRepository\ImportMap
      */
-    private $article_people;
+    private $repository;
 
     /**
-     * @var HttpClient
+     * @var ObjectManager
      */
-    private $http_client;
+    private $entity_manager;
 
     /**
      * Constructor
      *
-     * @param ZenDeskReaderInterface       $reader
-     * @param FormatterInterface           $formatter
-     * @param ParserPeopleStorageInterface $people_storage
-     * @param HttpClient                   $http_client
+     * @param EntityRepository\ImportMap $repository
+     * @param ObjectManager              $entity_manager
      */
-    public function __construct(
-        ZenDeskReaderInterface       $reader,
-        FormatterInterface           $formatter,
-        ParserPeopleStorageInterface $people_storage,
-        HttpClient                   $http_client
-    ) {
-        parent::__construct($reader, $formatter);
-
-        $this->article_people = $people_storage;
-        $this->http_client    = $http_client;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityType()
+    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager)
     {
-        return Entity\EntityInterface::TYPE_ARTICLE;
+        $this->repository     = $repository;
+        $this->entity_manager = $entity_manager;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        // We can read data from ZD reader twice because of ZD reader cache support
-        return count($this->getArticles());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
-    }
-
-    /**
-     * Returns articles
-     * Loads data from ZenDesk reader
+     * Find a ZenDesk ticket mapping
      *
-     * @return array
-     * @throws \Exception
+     * @param int $id
+     * @return string|null
      */
-    private function getArticles()
+    public function findRefByOldId($id)
     {
-        $this->logDebugTimeStart('getArticles', "Reading articles batch");
-        return array();
+        /** @var Entity\ImportMap $mapping */
+        $mapping = $this->repository->findOneBy(array(
+            'old_id'   => $id,
+            'typename' => Entity\ImportMap::TYPE_ZENDESK_TICKET,
+        ));
+
+        return $mapping ? $mapping->getNewId() : null;
+    }
+
+    /**
+     * Saves a ZenDesk ticket mapping
+     *
+     * @param int $old_id
+     * @param int $ref
+     *
+     * @return $this
+     */
+    public function saveMapping($old_id, $ref)
+    {
+        $entity = new Entity\ImportMap();
+        $entity
+            ->setTypename(Entity\ImportMap::TYPE_ZENDESK_TICKET)
+            ->setOldId($old_id)
+            ->setNewId($ref)
+        ;
+
+        $this->entity_manager->persist($entity);
+        $this->entity_manager->flush();
+
+        return $this;
     }
 }

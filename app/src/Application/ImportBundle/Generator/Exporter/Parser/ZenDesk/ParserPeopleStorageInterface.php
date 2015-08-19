@@ -27,84 +27,27 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Guzzle\Http\Client as HttpClient;
-
 /**
- * ZenDesk articles parser
+ * ZenDesk parser people storage interface
  *
- * Class Articles
+ * Interface ParserPeopleStorageInterface
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class Articles extends AbstractParser
+interface ParserPeopleStorageInterface
 {
     /**
-     * @var ArticlePeopleStorage
-     */
-    private $article_people;
-
-    /**
-     * @var HttpClient
-     */
-    private $http_client;
-
-    /**
-     * Constructor
+     * Loads a collection of people by parser data
      *
-     * @param ZenDeskReaderInterface       $reader
-     * @param FormatterInterface           $formatter
-     * @param ParserPeopleStorageInterface $people_storage
-     * @param HttpClient                   $http_client
+     * @param array $data
+     * @return void
      */
-    public function __construct(
-        ZenDeskReaderInterface       $reader,
-        FormatterInterface           $formatter,
-        ParserPeopleStorageInterface $people_storage,
-        HttpClient                   $http_client
-    ) {
-        parent::__construct($reader, $formatter);
-
-        $this->article_people = $people_storage;
-        $this->http_client    = $http_client;
-    }
+    public function loadBy(array $data);
 
     /**
-     * {@inheritdoc}
-     */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_ARTICLE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        // We can read data from ZD reader twice because of ZD reader cache support
-        return count($this->getArticles());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
-    }
-
-    /**
-     * Returns articles
-     * Loads data from ZenDesk reader
+     * Returns person email or null if it was not loaded
      *
-     * @return array
-     * @throws \Exception
+     * @param int $id
+     * @return string|null
      */
-    private function getArticles()
-    {
-        $this->logDebugTimeStart('getArticles', "Reading articles batch");
-        return array();
-    }
+    public function getPersonEmail($id);
 }
