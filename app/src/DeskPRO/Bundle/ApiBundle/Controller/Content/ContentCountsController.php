@@ -55,7 +55,7 @@ class ContentCountsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get news, downloads counts",
+     *      description="Get articles, news, downloads counts",
      *      statusCodes={
      *          200="Success"
      *      }
