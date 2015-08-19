@@ -2029,11 +2029,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     });
 
 		this.getEl('field_holders').on('click', '.incident-link', function () {
-			var $item = $('#problems-section li.is-nav-item[data-problem-id="' + $(this).data('problem-id') + '"] [data-route]');
+			var pid = $(this).data('problem-id')
+				, $item = $('#problems-section li.is-nav-item[data-problem-id="' + pid + '"] [data-route]')
+				;
       $item.trigger('click');
 
       if (!$item.length) {
-        var $sel = $('#problems-section select.closed_problems_select').val($(this).data('problem-id')).trigger('change');
+        var $sel = $('#problems-section select.closed_problems_select');
+        $sel.children('option[data-problem-id="' + pid + '"]').prop('selected', true);
+        $sel.trigger('change');
       }
 		});
 

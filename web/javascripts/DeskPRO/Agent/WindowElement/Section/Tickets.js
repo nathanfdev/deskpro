@@ -189,6 +189,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
           var $option = $('<option></option>');
           $option
+            .attr('data-problem-id', info.id)
             .attr('data-filter-id', info.filter_id)
             .attr('value', info.filter_id)
             .text(info.title + ' (' + $.trim($item.find('em.counter').text()) + ')')
@@ -212,7 +213,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
           info.tickets = count;
           self.onProblemCreated(info);
           $item.remove();
-          console.info(count);
         }
 
         $list.children('.is-nav-item').length
@@ -391,7 +391,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
         if (!val) return;
         $(this).data('route', $(this).data('path').replace('0000', $(this).val()))
         DeskPRO_Window.runPageRouteFromElement($(this), {event: ev});
-        sel.val('');
+        sel.val('').trigger('change');
       });
     });
 
@@ -416,6 +416,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
       ;
 
     $item.attr('data-filter-id', info.filter_id);
+    $item.attr('data-problem-id', info.id);
     $item.find('h3').text(info.title);
     $item.children(':first').data('route', $item.children(':first').data('route').replace('0000', info.filter_id));
     $counter.attr('id', 'ticket_filter_' + info.filter_id + '_count');

@@ -35,6 +35,7 @@
                     {% set filter = problem_filters[p.id] %}
                     <li class="is-nav-item filter filter-{{ filter.id }} nav-filter-{{ filter.id }}"
                         data-filter-id="{{ filter.id }}"
+                        data-problem-id="{{ p.id }}"
                             >
 
                         <div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
@@ -66,7 +67,7 @@
                                 <option value="">{{ phrase('agent.problems.closed_problems') }}</option>
                                 {% for p in closed_problems %}
                                     {% set filter = problem_filters[p.id] %}
-                                    <option value="{{ filter.id }}" data-filter-id="{{ filter.id }}">
+                                    <option value="{{ filter.id }}" data-filter-id="{{ filter.id }}" data-problem-id="{{ p.id }}">
                                         {{ p.title }}
                                         (0)
                                     </option>
