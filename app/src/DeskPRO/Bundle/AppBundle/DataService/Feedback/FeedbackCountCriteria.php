@@ -105,11 +105,18 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
             throw new \LogicException('Cannot group without group_by');
         }
         $alias = $qb->getRootAliases()[0];
+        /** @ToDo  Temporary solution before refactoring of the feedback statuses */
         if ($this->group_by === 'hidden_status') {
-            $qb->addSelect('hidden_status as group_name');
+            $qb
+                ->addSelect("{$alias}.hidden_status as group_name")
+                ->andWhere("{$alias}.hidden_status IS NOT NULL")
+                ->andWhere("{$alias}.hidden_status <> ''");
         } else {
-            $qb->addSelect('g.id as group_name');
-            $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
+            $qb
+                ->addSelect('g.title as group_name')
+                ->leftJoin("{$alias}.{$this->group_by}", 'g')
+                ->andWhere('g.status_type = :type')
+                ->setParameter('type', $this->filters['status']);
         }
         $qb->groupBy('group_name');
     }

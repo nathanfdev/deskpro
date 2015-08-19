@@ -38,6 +38,43 @@ export const feedbackTypes = createAction(
     }
 );
 
+export const feedbackNew = createAction(
+    "FEEDBACK_NEW_STATUS",
+    (trigger) => {
+        Feedback.getNew().then(
+            (value) => trigger(value.getData())
+        );
+    }
+);
+
+
+export const feedbackActiveStatus = createAction(
+    "FEEDBACK_ACTIVE_STATUS",
+    (trigger) => {
+        Feedback.getActive().then(
+            (value) => trigger(value.getData())
+        );
+    }
+);
+
+export const feedbackClosedStatus = createAction(
+    "FEEDBACK_CLOSED_STATUS",
+    (trigger) => {
+        Feedback.getClosed().then(
+            (value) => trigger(value.getData())
+        );
+    }
+);
+
+export const feedbackHiddenStatus = createAction(
+    "FEEDBACK_HIDDEN_STATUS",
+    (trigger) => {
+        Feedback.getHidden().then(
+            (value) => trigger(value.getData())
+        );
+    }
+);
+
 export const loadFeedbackList = createAction(
     "FEEDBACK_LIST",
     (trigger) => {

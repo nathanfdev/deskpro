@@ -38,7 +38,6 @@ export class DpAppContainer extends React.Component {
             dispatch(AppActions.loadWindow());
         }
     }
-  }
 
     workOutBasePath() {
         let base_end = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);

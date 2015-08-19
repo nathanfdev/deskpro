@@ -39,7 +39,7 @@ export function commentsToReview() {
 }
 
 /**
- * Feedback labels with counts
+ * Feedback labels
  * @return Promise
  */
 export function getLabels() {
@@ -53,6 +53,57 @@ export function getLabels() {
 export function getTypes() {
     let query = {
         group_by: "category"
+    };
+
+    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+
+/**
+ * Count of new feedback
+ * @return Promise
+ */
+export function getNew() {
+    let query = {
+        status: "new"
+    };
+
+    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+
+/**
+ * Count of active feedback
+ * @return Promise
+ */
+export function getActive() {
+    let query = {
+        status: "active",
+        group_by: "status_category"
+    };
+
+    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+
+/**
+ * Count of closed feedback
+ * @return Promise
+ */
+export function getClosed() {
+    let query = {
+        status: "closed",
+        group_by: "status_category"
+    };
+
+    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+
+/**
+ * Count of hidden feedback
+ * @return Promise
+ */
+export function getHidden() {
+    let query = {
+        status: "hidden",
+        group_by: "hidden_status"
     };
 
     return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));

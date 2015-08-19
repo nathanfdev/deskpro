@@ -46,35 +46,5 @@ use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
  */
 class FeedbackLabelsController extends BaseController
 {
-    /**
-     * @ApiDoc(
-     *      description="get all available labels for feedback, sorted alphabetically",
-     *      parameters={
-     *          {
-     *              "name"="term",
-     *              "requirement"="\w+",
-     *              "description"="suggest for label search",
-     *              "dataType"="string",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/feedback_labels", name="api_feedback_labels")
-     * @param Request $request
-     * @return View
-     * @throws \InvalidArgumentException
-     */
-    public function cgetAction(Request $request)
-    {
-        $term = $request->query->get('term');
-        $labels = $this->get('data.feedback_labels')->getLabels($term);
-        return View::create(
-            $this->dataSerialize(new PrimitiveArray($labels)),
-            Response::HTTP_OK
-        );
-    }
+
 }
