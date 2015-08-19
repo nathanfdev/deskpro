@@ -78,6 +78,11 @@ class News extends ContentAbstract implements HighlightableModelInterface
     /**
      * @var \DateTime
      */
+    protected $date_updated;
+
+    /**
+     * @var \DateTime
+     */
     protected $date_end;
 
     /**
@@ -253,6 +258,14 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $history;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -266,6 +279,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'name' => 'news',
                 'indexes' => array(
                     'date_published_idx' => array('columns' => array(0 => 'date_published')),
+                    'date_updated_idx' => array('columns' => array('date_updated')),
                     'status_idx' => array('columns' => array('status')),
                 ),
             )
@@ -408,6 +422,16 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'length' => 10,
                 'nullable' => true,
                 'columnName' => 'end_action'
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName' => 'date_updated',
+                'type' => 'datetime',
+                'precision' => 0,
+                'scale' => 0,
+                'nullable' => true,
+                'columnName' => 'date_updated',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
