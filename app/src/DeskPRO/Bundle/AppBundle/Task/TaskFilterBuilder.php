@@ -217,7 +217,8 @@ class TaskFilterBuilder
             'due',
             'assigned',
             'created',
-            'project'
+            'project',
+            'list'
         ];
 
         // Kick it out if the request doesn't have the correct mapping
@@ -227,7 +228,7 @@ class TaskFilterBuilder
 
         switch($request->get('order_by')) {
             case 'due':
-                $query->addSelect('COALESCE(t.date_due, \'2999-12-31 12:59:59\') AS HIDDEN sort_date');
+                $query = $query->addSelect('COALESCE(t.date_due, \'2999-12-31 12:59:59\') AS HIDDEN sort_date');
                 $direction = $this->getSortDirection($request);
                 $query = $query->orderBy('sort_date', $direction);
                 break;
@@ -279,6 +280,10 @@ class TaskFilterBuilder
                 $direction = $this->getSortDirection($request);
 
                 $query = $query->orderBy('p.title', $direction);
+                break;
+            case 'list':
+                $direction = $this->getSortDirection($request);
+                $query = $query->addOrderBy('t.list', $direction);
                 break;
         }
 

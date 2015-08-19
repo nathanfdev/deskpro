@@ -526,6 +526,41 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
+     * @APIDoc(
+     *      description="get lists for a project",
+     *      requirements={
+     *          {
+     *              "name"="projectId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/projects/{projectId}/lists", name="api_projects_lists_get")
+     * @param $projectId
+     * @return View
+     */
+    public function getListsAction($projectId)
+    {
+        $project = $this->getProject($projectId);
+
+        if (empty($project)) {
+            throw $this->createNotFoundException();
+        }
+
+        $lists = $project->getLists();
+
+        return View::create(
+            $this->dataSerialize($lists),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * Create a new member relationship for a department, team or perosn
      * @param Request $request
      * @param $projectId

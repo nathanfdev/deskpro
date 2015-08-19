@@ -7,6 +7,7 @@ import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
+import TaskListCard from "../Components/TaskListCard";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
 
@@ -18,7 +19,8 @@ export default class TasksListFrame extends React.Component {
     super(props);
 
     this.state = {
-      actionable: []
+      actionable: [],
+      kanban: false
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
@@ -105,6 +107,14 @@ export default class TasksListFrame extends React.Component {
     $('.ticket-controls-bulk-editing').animate({"left": '100%'});
   }
 
+  toggleView()
+  {
+    // @TODO: Make this do more than just toggle between kanban and list
+    this.setState({
+      kanban: !this.state.kanban
+    });
+  }
+
   render() {
     const {taskFrameList} = this.props;
     const _this = this;
@@ -141,8 +151,10 @@ export default class TasksListFrame extends React.Component {
       });
     }
 
+    const sectionClass = this.state.kanban ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
+
     return (
-      <section className="task-list-frame dp-list-frame">
+      <section className={sectionClass}>
       <div className="ticket-list">
 
         <div className="tickets-control-bar">
@@ -167,7 +179,7 @@ export default class TasksListFrame extends React.Component {
               <span className="down">Completed <i className="fa fa-caret-down" /></span>
             </a>
 
-            <a href="#" className="ticket-control-button">
+            <a href="#" className="ticket-control-button" onClick={this.toggleView.bind(this)}>
               <span className="title">View:</span>
               <span className="multi">
                 List
@@ -219,6 +231,24 @@ export default class TasksListFrame extends React.Component {
           </span>
         </div>
 
+        {this.state.kanban ?
+          <div className="kanban-columns">
+            <div className="list">
+              <h1 className="kanban-list-header">My awesome list</h1>
+
+              <TaskListCard />
+              <TaskListCard />
+
+            </div>
+            <div className="list">
+              <h1 className="kanban-list-header">List Title</h1>
+
+              <TaskListCard />
+            </div>
+          </div>
+          :
+
+          <div>
         <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
           <FRC.Input name="title" type="text" />
           <button type="submit" value="Save" className="button">Add</button>
@@ -247,7 +277,7 @@ export default class TasksListFrame extends React.Component {
                            editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
                            selected={_this.state.actionable.indexOf(object.id) !== -1} />
           </span>
-        }) : '' }
+        }) : '' }</div>}
       </div>
     </section>
     );

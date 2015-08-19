@@ -164,8 +164,8 @@ const TaskCard = React.createClass({
 
     return connectDragSource(<div className={cardClass} key={task.id}>
         <div>
-          <div className="card-status-bar status-bar-left"></div>
-          <div className="card-status-bar status-bar-right"></div>
+          <div className="card-status-bar status-bar-left" />
+          <div className="card-status-bar status-bar-right" />
 
           <div className="card-checkbox">
             <span className="checkbox" onClick={this.toggleMassAction}>
@@ -221,7 +221,7 @@ const TaskCard = React.createClass({
                 <div>{task.comment_count} <i className="fa fa-comment"/></div>
 
                 {task.subtasks_total > 0 ?
-                  <span><span className="disc"></span>
+                  <span><span className="disc" />
             <div className="subtask-count">{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/>
             </div></span> : ''}
               </div>
@@ -240,7 +240,7 @@ const TaskCard = React.createClass({
                 </div>
 
                 {task.project && projects[task.project] ? <span>
-                  <span className="disc"></span><i className="fa fa-book"/> {projects[task.project].title}
+                  <span className="disc" /><i className="fa fa-book"/> {projects[task.project].title}
                 </span> : ''}
 
                 {ticket_link ? <span>

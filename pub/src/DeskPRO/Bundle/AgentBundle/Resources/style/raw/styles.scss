@@ -86,6 +86,7 @@ a { color: $link-color; }
   @import 'ticket-events';
   @import 'ticket-editing';
   @import 'cards';
+  @import 'kanban';
 
 @import 'ticket';
   @import 'ticket-view';
