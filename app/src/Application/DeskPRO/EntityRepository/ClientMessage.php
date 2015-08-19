@@ -38,7 +38,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EventListener\ProblemListener;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\HttpFoundation\Session as HttpSession;
-use Application\DeskPRO\Tickets\Problems\EventListener\TicketProblemsChangedListener;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 
 class ClientMessage extends AbstractEntityRepository
@@ -286,7 +285,6 @@ class ClientMessage extends AbstractEntityRepository
             $channels[] = 'chat.invited';
 
             $channels[] = SlaClientMessageSender::CHANNEL;
-            $channels[] = TicketProblemsChangedListener::CHANNEL;
             $channels[] = ProblemListener::CHANNEL_NEW;
             $channels[] = ProblemListener::CHANNEL_UPDATE;
         }

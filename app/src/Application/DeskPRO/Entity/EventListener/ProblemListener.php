@@ -60,11 +60,6 @@ class ProblemListener
     protected $updates;
 
     /**
-     * @var int
-     */
-    protected $inserts = 0;
-
-    /**
      * @var array
      */
     protected $queue = array();
@@ -72,11 +67,11 @@ class ProblemListener
     /**
      * @var \SplQueue
      */
-    protected $new_problems;
+    protected $inserts;
 
     public function __construct(DeskproContainer $container)
     {
-        $this->new_problems = new \SplQueue();
+        $this->inserts = new \SplQueue();
         $this->updates = new \SplQueue();
         $this->conn = $container->getEm()->getConnection();
         $this->cont = $container;
@@ -101,11 +96,7 @@ class ProblemListener
     public function onPrePersist(Problem $problem)
     {
         if (!$problem->id) {
-            $this->inserts++;
-        }
-
-        if (!$problem->id) {
-            $this->new_problems->enqueue($problem);
+            $this->inserts->enqueue($problem);
         }
     }
 
@@ -117,46 +108,22 @@ class ProblemListener
         while (!$this->updates->isEmpty()) {
             $data = $this->updates->dequeue();
             /** @var Problem $p */
-            $p = $data['entity'];
+            $problem = $data['entity'];
 
-            foreach ($this->cont->getAgentData()->getOnlineAgents() as $agent) {
 
-                $incidents = 0;
-                /** @var TicketChecker $checker */
-                $checker = $agent->PermissionsManager->TicketChecker;
-
-                foreach ($p->tickets as $ticket) {
-                    if (!$checker->canView($ticket)) {
-                        continue;
-                    }
-
-                    if (Ticket::HIDDEN_STATUS_DELETED === $ticket->hidden_status || Ticket::HIDDEN_STATUS_SPAM === $ticket->hidden_status) {
-                        continue;
-                    }
-
-                    $incidents++;
-                }
-
-                $this->queue[] = array(
-                    'channel' => self::CHANNEL_UPDATE,
-                    'auth' => DpStrings::random(15, Strings::CHARS_KEY),
-                    'for_person_id' => $agent->id,
-                    'date_created' => date('Y-m-d H:i:s'),
-                    'data' => serialize(
-                        array(
-                            'id' => $p->id,
-                            'title' => $p->title,
-                            'incidents' => $incidents,
-                            'changeset' => $data['changeset'],
-                        )
-                    )
-                );
-            }
+            $this->queue[] = array(
+                'channel' => self::CHANNEL_UPDATE,
+                'auth' => DpStrings::random(15, Strings::CHARS_KEY),
+                'date_created' => date('Y-m-d H:i:s'),
+                'data' => serialize(array(
+                    'id' => $problem->id,
+                    'title' => $problem->title,
+                    'changeset' => $data['changeset'],
+                )),
+            );
         }
 
-        if ($this->updates->isEmpty() && $this->queue) {
-            $this->sendQueue();
-        }
+        $this->sendQueue();
     }
 
     /**
@@ -164,64 +131,39 @@ class ProblemListener
      */
     public function onPostPersist(Problem $problem, LifecycleEventArgs $event)
     {
-        foreach ($this->cont->getAgentData()->getOnlineAgents() as $agent) {
+        while (!$this->inserts->isEmpty()) {
+            /** @var Problem $problem */
+            $problem = $this->inserts->dequeue();
 
-            $incidents = 0;
-            /** @var TicketChecker $checker */
-            $checker = $agent->PermissionsManager->TicketChecker;
-
-            foreach ($problem->tickets as $ticket) {
-                if (!$checker->canView($ticket)) {
-                    continue;
-                }
-
-                if (Ticket::HIDDEN_STATUS_DELETED === $ticket->hidden_status || Ticket::HIDDEN_STATUS_SPAM === $ticket->hidden_status) {
-                    continue;
-                }
-
-                $incidents++;
-            }
-
-            $this->queue[] = array(
-                'channel' => self::CHANNEL_NEW,
-                'auth' => DpStrings::random(15, Strings::CHARS_KEY),
-                'for_person_id' => $agent->id,
-                'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(
-                    array(
-                        'id' => $problem->id,
-                        'title' => $problem->title,
-                        'incidents' => $incidents,
-                    )
-                )
-            );
-        }
-
-        while (!$this->new_problems->isEmpty()) {
-            /** @var Problem $p */
-            $p = $this->new_problems->dequeue();
             $filter = new TicketFilter();
-            $filter->title = 'Problem #' . $p->id;
-            $filter->sys_name = 'problem_' . $p->id;
-            $filter->terms = array(
+            $filter->title = 'Problem #' . $problem->id;
+            $filter->sys_name = 'problem_' . $problem->id;
+            $filter->terms = array(array(
                 'type' => TicketSearch::TERM_PROBLEMS,
                 'op' => 'is',
                 'options' => array(
-                    'problems' => array($p->id),
+                    'problems' => array($problem->id),
                 ),
-            );
+            ));
 
             $filter->is_global = true;
             $filter->is_enabled = true;
             $event->getEntityManager()->persist($filter);
             $event->getEntityManager()->flush($filter);
+
+            $this->queue[] = array(
+                'channel' => self::CHANNEL_NEW,
+                'auth' => DpStrings::random(15, Strings::CHARS_KEY),
+                'date_created' => date('Y-m-d H:i:s'),
+                'data' => serialize(array(
+                    'id' => $problem->id,
+                    'title' => $problem->title,
+                    'filter_id' => $filter->id,
+                )),
+            );
         }
 
-        $this->inserts--;
-
-        if (0 === $this->inserts) {
-            $this->sendQueue();
-        }
+        $this->sendQueue();
     }
 
     /**
