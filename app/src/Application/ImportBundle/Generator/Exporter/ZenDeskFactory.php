@@ -87,12 +87,14 @@ class ZenDeskFactory extends AbstractFactory
         $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader);
         $article_people->setPeopleStorage($storage);
 
+        $article_mapper = new OidMapper($import_map_repository, $entity_manager, ImportMap::TYPE_ZENDESK_ARTICLE);
+
         // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\ZenDesk\Downloads($reader, $formatter))
             ->attach(new Parser\ZenDesk\Feedback($reader, $formatter))
-            ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $article_people, $http_client))
+            ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $article_people, $article_mapper, $http_client))
             ->attach(new Parser\ZenDesk\News($reader, $formatter))
             ->attach($people)
             ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $ticket_people, $tickets_mapper, $http_client))

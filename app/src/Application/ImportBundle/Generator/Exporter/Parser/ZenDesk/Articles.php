@@ -46,6 +46,11 @@ final class Articles extends AbstractParser
     private $article_people;
 
     /**
+     * @var OidMapper
+     */
+    private $article_mapper;
+
+    /**
      * @var HttpClient
      */
     private $http_client;
@@ -56,17 +61,20 @@ final class Articles extends AbstractParser
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
      * @param ParserPeopleStorageInterface $people_storage
+     * @param OidMapper                    $article_mapper
      * @param HttpClient                   $http_client
      */
     public function __construct(
         ZenDeskReaderInterface       $reader,
         FormatterInterface           $formatter,
         ParserPeopleStorageInterface $people_storage,
+        OidMapper                    $article_mapper,
         HttpClient                   $http_client
     ) {
         parent::__construct($reader, $formatter);
 
         $this->article_people = $people_storage;
+        $this->article_mapper = $article_mapper;
         $this->http_client    = $http_client;
     }
 
