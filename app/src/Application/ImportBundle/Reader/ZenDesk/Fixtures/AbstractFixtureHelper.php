@@ -104,16 +104,21 @@ abstract class AbstractFixtureHelper
     }
 
     /**
+     * Returns a random local file to upload
+     *
      * @param bool $as_curl
      * @return mixed
      */
     protected function getRandomUploadFile($as_curl = true)
     {
-        $files = array(
-            '/deskpro/www/web/images/big-tick.png',
+        $dp_root = str_replace('/app', '/', DP_ROOT);
+        $files   = array(
+            '/web/images/big-tick.png',
         );
 
         $file = $files[rand(0, count($files) - 1)];
+        $file = $dp_root . $file;
+
         if ( ! file_exists($file)) {
             throw new \RuntimeException(sprintf('File `%s` not found', $file));
         }
