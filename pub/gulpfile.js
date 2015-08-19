@@ -277,7 +277,15 @@ function startWebpackServer(config)
     hot: true,
     historyApiFallback: true,
     stats: {
-      colors: true
+      colors: true,
+      chunks: true,
+      source: false,
+      chunkOrigins: false,
+      reasons: false,
+      cached: false,
+      hash: false,
+      assets: false,
+      version: false
     }
   }).listen(9666, "localhost", function(err) {
     if(err) throw new gutil.PluginError("webpack-dev-server", err);

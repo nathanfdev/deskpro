@@ -61,7 +61,7 @@ class NewTicketControllerTest extends PortalTestCase
         $form = $crawler->selectButton('Submit')->form();
 
         $form['ticket[subject]'] = 'Please help!';
-        $form['ticket[message][message]'] = 'This is my ticket message!';
+        $form['ticket[message][message_text]'] = 'This is my ticket message!';
         $form['ticket[user_email][email]'] = 'chris.tickner@deskpro.com';
 
         $crawler = $client->submit($form);
