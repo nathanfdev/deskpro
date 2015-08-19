@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\OidMapper;
 use Application\ImportBundle\Reader\BaseConfig;
@@ -80,7 +81,7 @@ class ZenDeskFactory extends AbstractFactory
         /** @var EntityRepository\ImportMap $import_map_repository */
         $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
 
-        $tickets_mapper = new OidMapper($import_map_repository, $entity_manager);
+        $tickets_mapper = new OidMapper($import_map_repository, $entity_manager, ImportMap::TYPE_ZENDESK_TICKET);
 
         // Article parser
         $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader);

@@ -52,11 +52,13 @@ class OidMapper
      *
      * @param EntityRepository\ImportMap $repository
      * @param ObjectManager              $entity_manager
+     * @param string                     $type
      */
-    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager)
+    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager, $type)
     {
         $this->repository     = $repository;
         $this->entity_manager = $entity_manager;
+        $this->type           = $type;
     }
 
     /**
@@ -70,7 +72,7 @@ class OidMapper
         /** @var Entity\ImportMap $mapping */
         $mapping = $this->repository->findOneBy(array(
             'old_id'   => $id,
-            'typename' => Entity\ImportMap::TYPE_ZENDESK_TICKET,
+            'typename' => $this->type,
         ));
 
         return $mapping ? $mapping->getNewId() : null;
@@ -88,7 +90,7 @@ class OidMapper
     {
         $entity = new Entity\ImportMap();
         $entity
-            ->setTypename(Entity\ImportMap::TYPE_ZENDESK_TICKET)
+            ->setTypename($this->type)
             ->setOldId($old_id)
             ->setNewId($ref)
         ;
