@@ -1,6 +1,5 @@
 import _ from "lodash";
 import $ from "jquery";
-import Component from "DeskPRO/Component/React/Component";
 import FormActionStore from "DeskPRO/Component/React/Standalone/FormActionStore";
 import React from "react";
 
@@ -68,7 +67,7 @@ export class LevelSelectActionStore extends FormActionStore {
 //# React Component
 //######################################################################################################################
 
-export class LevelSelect extends Component {
+export class LevelSelect extends React.Component {
   init() {
     this.actionStore = this.props.actionStore;
     this.updateOptions();
