@@ -91,6 +91,40 @@ abstract class AbstractFixtureHelper
     }
 
     /**
+     * Returns random boolean string value
+     *
+     * @return mixed
+     */
+    protected function getRandomBoolString()
+    {
+        $rand   = rand(0, 1);
+        $values = array('true', 'false');
+
+        return $values[$rand];
+    }
+
+    /**
+     * @param bool $as_curl
+     * @return mixed
+     */
+    protected function getRandomUploadFile($as_curl = true)
+    {
+        $files = array(
+            '/deskpro/www/web/images/big-tick.png',
+        );
+
+        $file = $files[rand(0, count($files) - 1)];
+        if ( ! file_exists($file)) {
+            throw new \RuntimeException(sprintf('File `%s` not found', $file));
+        }
+        if ($as_curl) {
+            return sprintf('@%s;filename=%s', realpath($file), basename($file));
+        }
+
+        return $file;
+    }
+
+    /**
      * Converts stdClass to array
      *
      * @param \stdClass $object

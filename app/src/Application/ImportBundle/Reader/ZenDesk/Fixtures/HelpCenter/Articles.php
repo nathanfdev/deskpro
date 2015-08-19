@@ -124,8 +124,8 @@ final class Articles extends AbstractFixture
             try {
                 $helper = new ArticleAttachmentCreate(array(
                     'id'     => $article->id,
-                    'file'   => '@/deskpro/www/web/images/big-tick.png;filename=big-tick.png',
-                    'inline' => 'false',
+                    'file'   => $this->getRandomUploadFile(),
+                    'inline' => $this->getRandomBoolString(),
                 ));
 
                 $response = $helper->request($this->client);
