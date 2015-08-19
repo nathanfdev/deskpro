@@ -77,14 +77,28 @@ class PermissionsBagTest extends DeskProTestCase
 
     public function testAllowedDepartmentIds()
     {
-        $bag = new PermissionsBag(array(), array(5,6), array(5));
+        // the input of the dep ids is array(dep_id => extra_array_of_permission_levels)
+        $ticket_dep_perms = array(
+            5 => array(
+                'full' => 1
+            ),
+            6 => array(
+                'full' => 1
+            ),
+        );
+        $chat_dep_perms = array(
+            4 => array(
+                'full' => 1
+            )
+        );
+        $bag = new PermissionsBag(array(), $ticket_dep_perms, $chat_dep_perms);
         $this->assertEquals(array(5,6), $bag->getAllowedTicketDepartmentIds());
-        $this->assertEquals(array(5), $bag->getAllowedChatDepartmentIds());
+        $this->assertEquals(array(4), $bag->getAllowedChatDepartmentIds());
 
         $bag2 = new PermissionsBag();
-        $bag2->setAllowedTicketDepartmentIds(array(2));
-        $bag2->setAllowedChatDepartmentIds(array(7,2));
-        $this->assertEquals(array(2), $bag2->getAllowedTicketDepartmentIds());
-        $this->assertEquals(array(7,2), $bag2->getAllowedChatDepartmentIds());
+        $bag2->setAllowedTicketDepartmentIds($ticket_dep_perms);
+        $bag2->setAllowedChatDepartmentIds($chat_dep_perms);
+        $this->assertEquals(array(5,6), $bag2->getAllowedTicketDepartmentIds());
+        $this->assertEquals(array(4), $bag2->getAllowedChatDepartmentIds());
     }
 }
