@@ -36,6 +36,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class Problem extends \Application\DeskPRO\Domain\DomainObject
 {
+    const FILTER_PREFIX = 'problem_';
+
     /**
      * @var int
      */

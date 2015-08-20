@@ -109,7 +109,9 @@ class ProblemListener
             $data = $this->updates->dequeue();
             /** @var Problem $p */
             $problem = $data['entity'];
-            $filter = $event->getEntityManager()->getRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => 'problem_' . $problem->id));
+            $filter = $event->getEntityManager()->getRepository('DeskPRO:TicketFilter')->findOneBy(array(
+                'sys_name' => Problem::FILTER_PREFIX . $problem->id,
+            ));
 
             $this->queue[] = array(
                 'channel' => self::CHANNEL_UPDATE,
@@ -138,7 +140,7 @@ class ProblemListener
 
             $filter = new TicketFilter();
             $filter->title = 'Problem #' . $problem->id;
-            $filter->sys_name = 'problem_' . $problem->id;
+            $filter->sys_name = Problem::FILTER_PREFIX . $problem->id;
             $filter->terms = array(array(
                 'type' => TicketSearch::TERM_PROBLEMS,
                 'op' => 'is',

@@ -78,7 +78,7 @@ class TicketSearchController extends AbstractController
         $filters_summary = array();
         $problem_filters = array();
         foreach ($all_filters as $filter) {
-            if ('problem_' === substr($filter->sys_name, 0, 8)) {
+            if (Entity\Problem::FILTER_PREFIX === substr($filter->sys_name, 0, 8)) {
                 $problem_filters[substr($filter->sys_name, 8)] = $filter;
             }
             $searcher = $filter->getSearcher();
