@@ -491,6 +491,24 @@ class ApiDb extends AbstractDbSet
         ");
         // end of comments test data
 
+        // Glossary test data ------------------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `glossary_word_definitions`
+                (`id`, `definition`)
+            VALUES
+                (1, 'Definition Text')
+            ;
+
+
+            INSERT INTO `glossary_words`
+                (`id`, `definition_id`, `word`)
+            VALUES
+                (1, 1, 'Word 1'),
+                (2, 1, 'Word 2')
+            ;
+        ");
+        // end of glossary test data
+
         $count++;
 
         return $count;

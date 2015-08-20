@@ -143,6 +143,18 @@ class RestContext extends BaseContext
     }
 
     /**
+     * Checks, whether the header matches a regular expression
+     *
+     * @Then the header :name should match :regex
+     */
+    public function theHeaderShouldMatch($name, $regex)
+    {
+        $actual = $this->getHttpHeader($name);
+        $message = sprintf('Header "%s" value "%s" does not match the regex "%s".', $name, $actual, $regex);
+        $this->assertTrue((bool) preg_match($regex, $actual), $message);
+    }
+
+    /**
      * Checks, whether the header name contains the given text
      *
      * @Then the header :name should contain :value

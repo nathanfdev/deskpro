@@ -101,4 +101,26 @@ class BaseController extends FOSRestController
             $errors_data
         );
     }
+
+    /**
+     * @param string $class
+     * @param int $id
+     * @return object
+     */
+    protected function findOr404($class, $id)
+    {
+        if (!$entity = $this->getDoctrine()->getRepository($class)->find($id)) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getManager()
+    {
+        return $this->getDoctrine()->getManager();
+    }
 }
