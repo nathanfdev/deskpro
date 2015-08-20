@@ -88,6 +88,9 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->checkDbData();
     }
 
+    /**
+     * @param CommandTester $command_tester
+     */
     private function checkJsonData(CommandTester $command_tester)
     {
         $output = $command_tester->getDisplay();
@@ -243,6 +246,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->assertEquals('', $contact->getComment());
         $this->assertEquals('1st street', $contact->getField1());
         $this->assertEquals('London', $contact->getField2());
+        $this->assertEquals('CA', $contact->getField3());
+        $this->assertEquals('10587563456', $contact->getField4());
         $this->assertEquals('UK', $contact->getField5());
     }
 
@@ -255,6 +260,9 @@ class CsvInlineTest extends \DpIntegrationTestCase
         return json_decode(file_get_contents($filename), true);
     }
 
+    /**
+     * @param string $file
+     */
     private function overrideDpRootPath($file)
     {
         $dp_root = str_replace('/app', '/', DP_ROOT);
