@@ -29,6 +29,10 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Guzzle\Http\Client as HttpClient;
 
@@ -100,7 +104,58 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $articles   = $this->getArticles();
+
+        $collection = new Entity\Collection();
+        $collection->setExpectedCount(count($articles));
+
+        foreach ($articles as $num => $data) {
+            $this->advanceProgressBar();
+
+            try {
+                $entity = $this->exportArticle($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDArticle', $this->getEntityType(), 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDArticle', $this->getEntityType(), 'id', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('ZDArticle', $this->getEntityType(), 'id', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a article entity
+     *
+     * @param array $data
+     *
+     * @return Entity\Article
+     * @throws SkippingException
+     */
+    private function exportArticle(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'id'              => TransformerInterface::TYPE_STRING,
+            'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_',
+                'ref'    => 'id',
+            )),
+        ));
+
+        $entity = new Entity\Article();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+        ;
+
+        return $entity;
     }
 
     /**
@@ -113,6 +168,49 @@ final class Articles extends AbstractParser
     private function getArticles()
     {
         $this->logDebugTimeStart('getArticles', "Reading articles batch");
-        return array();
+
+        $articles = array();
+        $start_time = $this->getBatchConfig()->getArticlesEndTime();
+
+        if ($start_time < new \DateTime('-5 minutes')) {
+            if ($start_time) {
+                $this->logDebug(sprintf("Reading from time: %s", $start_time->format('Y-m-d H:i:s')));
+            } else {
+                $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
+            }
+
+            $response = $this->reader->getArticles($start_time);
+
+            if (count($response)) {
+                // ZenDesk API does not allow to get article comments in a single request due to huge response (could be ~20 MB)
+                // We have to load comments for each article separately
+                foreach ($response as $article) {
+//                    $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $article['id']));
+//                    $article['comments'] = $this->reader->getTicketComments($article['id']);
+
+                    $articles[] = $article;
+                }
+
+                $this->article_people->loadBy($articles);
+
+                $this->end_time = $this->reader->getArticlesEndTime($start_time);
+                if ($this->end_time == $start_time) {
+                    $this->end_time->modify('+1 second');
+                }
+
+                $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
+
+            } else {
+                $this->logDebug(sprintf("No more records"));
+            }
+
+        } else {
+            $this->logAlert('No article was exported due 5 minutes timeout of the last end time');
+        }
+
+        $this->logDebug(sprintf('Read %d article', count($articles)));
+        $this->logDebugTimeEnd('getArticles', 'Done reading articles batch');
+
+        return $articles;
     }
 }
