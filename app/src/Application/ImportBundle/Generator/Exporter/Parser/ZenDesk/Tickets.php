@@ -435,15 +435,17 @@ final class Tickets extends AbstractParser
     {
         $this->logDebugTimeStart('getTickets', "Reading tickets batch");
 
-        $tickets = array();
-        if ($this->getBatchConfig()->getTicketsEndTime() < new DateTime('-5 minutes')) {
-            if ($this->getBatchConfig()->getTicketsEndTime()) {
-                $this->logDebug(sprintf("Reading from time: %s", $this->getBatchConfig()->getTicketsEndTime()->format('Y-m-d H:i:s')));
+        $tickets    = array();
+        $start_time = $this->getBatchConfig()->getTicketsEndTime();
+
+        if ($start_time < new DateTime('-5 minutes')) {
+            if ($start_time) {
+                $this->logDebug(sprintf("Reading from time: %s", $start_time->format('Y-m-d H:i:s')));
             } else {
                 $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
             }
 
-            $response = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
+            $response = $this->reader->getTickets($start_time);
 
             if (count($response)) {
                 // ZenDesk API does not allow to get ticket comments in a single request due to huge response (could be ~20 MB)
@@ -461,8 +463,8 @@ final class Tickets extends AbstractParser
 
                 $this->tickets_people->loadBy($tickets);
 
-                $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
-                if ($this->end_time == $this->getBatchConfig()->getTicketsEndTime()) {
+                $this->end_time = $this->reader->getTicketsEndTime($start_time);
+                if ($this->end_time == $start_time) {
                     $this->end_time->modify('+1 second');
                 }
 
