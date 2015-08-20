@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Glossary.
@@ -49,6 +50,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     * @Assert\NotBlank
      */
     protected $definition;
 
