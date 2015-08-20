@@ -32,6 +32,9 @@ use Application\DeskPRO\EntityRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
+ * Oid mapper
+ * Uses to link ZendDesk and DeskPRO entities in case to update
+ *
  * Class ImportMap
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
@@ -62,7 +65,7 @@ class OidMapper
     }
 
     /**
-     * Find a ZenDesk ticket mapping
+     * Find a ZenDesk entity mapping
      *
      * @param int $id
      * @return string|null
@@ -79,7 +82,7 @@ class OidMapper
     }
 
     /**
-     * Saves a ZenDesk ticket mapping
+     * Saves a ZenDesk entity mapping
      *
      * @param int $old_id
      * @param int $ref
