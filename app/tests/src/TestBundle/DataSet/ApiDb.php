@@ -346,20 +346,6 @@ class ApiDb extends AbstractDbSet
         ");
 
         $this->getDb()->exec("
-            INSERT INTO `labels_feedback`
-                (`feedback_id`,`label`)
-
-            VALUES
-                (1, 'foo'),
-                (2, 'foo'),
-                (3, 'foo'),
-                (1, 'bar'),
-                (1, 'foobar'),
-                (2, 'barfoo')
-            ;
-        ");
-
-        $this->getDb()->exec("
             INSERT INTO `feedback_comments`
                 (`feedback_id`,`content`, `status`, `is_reviewed`)
 
@@ -389,6 +375,23 @@ class ApiDb extends AbstractDbSet
             ;
         ");
         // end of "/user_chats" endpoint test data
+
+
+        // Labels endpoints test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `label_defs`
+                (`label_type`, `label`, `color`, `total`)
+            VALUES
+                ('feedback', 'foo', 'red', 0),
+                ('feedback', 'bar', 'white', 0),
+                ('feedback', 'foobar', 'red', 0),
+                ('feedback', 'barfoo', 'white', 0),
+                ('organization', 'organization label #1', 'red', 42),
+                ('person', 'person label #1', 'white', 1),
+                ('person', 'person label #2', 'red', 3)
+            ;
+        ");
+        // end of labels endpoints
 
         // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
         $this->getDb()->exec("
@@ -444,18 +447,6 @@ class ApiDb extends AbstractDbSet
             ;
         ");
         // end of "/organizations"
-
-        // Labels endpoints test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec("
-            INSERT INTO `label_defs`
-                (`label_type`, `label`, `color`, `total`)
-            VALUES
-                ('organization', 'organization label #1', 'red', 42),
-                ('person', 'person label #1', 'white', 1),
-                ('person', 'person label #2', 'red', 3)
-            ;
-        ");
-        // end of labels endpoints
 
         $count++;
 

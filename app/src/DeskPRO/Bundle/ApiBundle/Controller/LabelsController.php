@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -59,10 +60,27 @@ class LabelsController extends BaseController
      *         "type"="person|organization|feedback"
      *     }
      * )
+     * @param Request $request
+     * @param string $type
+     * @return View
+     * @throws \LogicException
      */
-    public function getLabelsAction($type)
+    public function getLabelsAction(Request $request, $type)
     {
-        $definitions = $this->getDoctrine()->getRepository('DeskPRO:LabelDef')->findBy(['label_type' => $type]);
+        /** @ToDo move below functionality into LabelDef repository after removing old code */
+        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb
+            ->select('l')
+            ->from('DeskPRO:LabelDef', 'l')
+            ->where('l.label_type = :type')
+            ->setParameter('type', $type);
+        $term = $request->get('term');
+        if(null !== $term){
+            $qb
+                ->andWhere('l.label LIKE :term')
+                ->setParameter('term', $term.'%');
+        }
+        $definitions = $qb->getQuery()->getResult();
         $labels = array_map([$this, 'labelDefinitionToString'], $definitions);
 
         return View::create(
