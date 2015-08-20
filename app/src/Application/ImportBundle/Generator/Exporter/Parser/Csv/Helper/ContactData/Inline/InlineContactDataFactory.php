@@ -48,11 +48,11 @@ class InlineContactDataFactory
         $contact_types = new ContactType\Collection();
         $contact_types
             ->attach(new ContactType\Mapping(ContactData::TYPE_ADDRESS, array(
-                'address'   => 'address',
-                'city'      => 'city',
-                'state'     => 'state',
-                'post_code' => 'post_code',
-                'country'   => 'country',
+                'address' => 'address',
+                'city'    => 'city',
+                'state'   => 'state',
+                'zip'     => 'post_code',
+                'country' => 'country',
             )))
             ->attach(new ContactType\Mapping(ContactData::TYPE_FACEBOOK, array(
                 'profile_url' => 'facebook',
