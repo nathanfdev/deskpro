@@ -283,6 +283,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
             ))
+            ->addArticlesIncrementalExportResponse((object)array(
+                'articles' => array(),
+                'end_time' => $now->getTimestamp(),
+            ))
             ->addPeopleFindResponse((object)array(
                 'users' => array(
                     (object)array(

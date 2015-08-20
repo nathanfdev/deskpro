@@ -101,6 +101,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
+     * Stores a article incremental export response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addArticlesIncrementalExportResponse($response)
+    {
+        $this->addResponse('articles_incremental_export', $response);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function doPeopleIncrementalExportRequest(array $params = array())
