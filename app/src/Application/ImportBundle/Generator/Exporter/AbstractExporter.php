@@ -133,11 +133,11 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         return array(
             Entity\EntityInterface::TYPE_ORGANIZATION,
             Entity\EntityInterface::TYPE_TICKET,
-            Entity\EntityInterface::TYPE_PERSON,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,
             Entity\EntityInterface::TYPE_NEWS,
+            Entity\EntityInterface::TYPE_PERSON,
         );
     }
 }
