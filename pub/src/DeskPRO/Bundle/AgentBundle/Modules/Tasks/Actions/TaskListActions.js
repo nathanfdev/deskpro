@@ -104,6 +104,15 @@ export const loadDepartments = createAction(
   }
 );
 
+export const loadLists = createAction(
+  "TASKS_LOAD_LISTS",
+  (trigger, data) => {
+    Tasks.loadLists(data).then(
+      (value) => trigger(value.getData())
+    );
+  }
+);
+
 export const failedProject = createAction("TASKS_POST_PROJECT_FAIL");
 export const createProject = createAction(
   "TASKS_POST_PROJECT",

@@ -50,24 +50,6 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
     {
         $data = $transformation_request->getDataToBeTransformed();
 
-        /** @var TaskList[]|ArrayCollection $listsData */
-        $listsData = $data->getLists();
-
-        $lists = [];
-
-        if (!empty($listsData)) {
-            foreach ($listsData as $list) {
-                if (!empty($list->getDisplayOrder())) {
-                    $lists['order:' . $list->getDisplayOrder()] = $list->getTitle();
-                } else {
-                    $lists[] = $list->getTitle();
-                }
-            }
-
-            ksort($lists, SORT_STRING);
-            $lists = array_values($lists);
-        }
-
         /** @var ProjectMember[]|ArrayCollection $members */
         $members = $data->getMembers();
 
@@ -104,7 +86,6 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
             'teams' => $groupedMembers['teams'],
             'agents' => $groupedMembers['agents'],
             'remaining' => $remaining,
-            'lists' => $lists,
         ];
     }
 }

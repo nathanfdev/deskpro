@@ -56,12 +56,6 @@ services:
       tags:
           - { name: form.type, alias: task_link }
 
-  form.task_list:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskListType
-      tags:
-          - { name: form.type, alias: task_list }
-      arguments: [@doctrine.orm.default_entity_manager]
-
   forms.label_task:
       class: DeskPRO\Bundle\AppBundle\Form\Type\LabelTaskType
       tags:

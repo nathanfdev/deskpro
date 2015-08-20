@@ -7,7 +7,7 @@ import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
-import TaskListCard from "../Components/TaskListCard";
+import KanbanFrame from "../Components/KanbanFrame";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
 
@@ -119,12 +119,17 @@ export default class TasksListFrame extends React.Component {
     const {taskFrameList} = this.props;
     const _this = this;
     let linked_items = {};
+    let lists = [];
+
+    // Temp projectId for the sake of development
+    const projectId = "63";
 
     // Attach IDs to the projects
     if (taskFrameList.taskFrameProjects && typeof taskFrameList.taskFrameProjects.forEach === 'function') {
       taskFrameList.taskFrameProjects.forEach((project) => {
         this.projects[project.id.toString()] = project;
       });
+      lists = this.projects[projectId].lists;
     }
 
     // Attach IDs to the linked item
@@ -163,7 +168,9 @@ export default class TasksListFrame extends React.Component {
             <a href="#" onClick={this.toggleAllMassActions.bind(this)}>
               <span className="checkbox">{this.state.actionable.length > 0 ? <i className="fa fa-check" /> : ''}</span>
             </a>
-            <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}><span>{this.state.actionable.length}</span></span>
+            <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}>
+              <span>{this.state.actionable.length}</span>
+            </span>
           </div>
 
           <span className="ticket-controls-default">
@@ -232,52 +239,41 @@ export default class TasksListFrame extends React.Component {
         </div>
 
         {this.state.kanban ?
-          <div className="kanban-columns">
-            <div className="list">
-              <h1 className="kanban-list-header">My awesome list</h1>
-
-              <TaskListCard />
-              <TaskListCard />
-
-            </div>
-            <div className="list">
-              <h1 className="kanban-list-header">List Title</h1>
-
-              <TaskListCard />
-            </div>
-          </div>
+          <KanbanFrame projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
+                       tasks={taskFrameList} />
           :
-
           <div>
-        <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
-          <FRC.Input name="title" type="text" />
-          <button type="submit" value="Save" className="button">Add</button>
-        </Formsy.Form>
+            <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
+              <FRC.Input name="title" type="text" />
+              <button type="submit" value="Save" className="button">Add</button>
+            </Formsy.Form>
 
-        {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
+            {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
 
-          // Temporary hack
-          const tempOrder = "created";
-          const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents);
-          let divider = grouping.getDivider(object, tempOrder);
-          let displayDivider = false;
+              // Temporary hack
+              const tempOrder = "created";
+              const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents);
+              let divider = grouping.getDivider(object, tempOrder);
+              let displayDivider = false;
 
-          if (divider && divider.objectDivider !== this.lastGrouping) {
-            this.lastGrouping = divider.objectDivider;
-            displayDivider = divider.textDisplay;
-          }
+              if (divider && divider.objectDivider !== this.lastGrouping) {
+                this.lastGrouping = divider.objectDivider;
+                displayDivider = divider.textDisplay;
+              }
 
-          return <span>
-            {
-              displayDivider ? <div className="divider"><hr/><h1><span>{displayDivider}</span></h1></div> : ''
-            }
-            <TaskCard task={object} projects={this.projects} linked_items={linked_items} departments={this.departments}
-                           teams={this.teams} agents={this.agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
-                           source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
-                           editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
-                           selected={_this.state.actionable.indexOf(object.id) !== -1} />
-          </span>
-        }) : '' }</div>}
+              return <span>
+                {
+                  displayDivider ? <div className="divider"><hr/><h1><span>{displayDivider}</span></h1></div> : ''
+                }
+                <TaskCard task={object} projects={this.projects} linked_items={linked_items} departments={this.departments}
+                               teams={this.teams} agents={this.agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
+                               source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
+                               editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
+                               selected={_this.state.actionable.indexOf(object.id) !== -1} />
+              </span>
+            }) : '' }
+          </div>
+        }
       </div>
     </section>
     );

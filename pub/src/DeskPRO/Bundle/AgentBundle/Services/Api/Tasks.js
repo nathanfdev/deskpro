@@ -135,6 +135,14 @@ export function loadLinks(params = {}) {
 }
 
 /**
+ * List all lists for a project
+ * @param projectId
+ */
+export function loadLists(projectId) {
+  return DpApi.sendGet('DP_API/projects/' + projectId + '/lists');
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}
