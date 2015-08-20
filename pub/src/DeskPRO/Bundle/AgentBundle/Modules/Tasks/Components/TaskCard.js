@@ -1,5 +1,5 @@
 import React from "react";
-import { DragSource } from "react-dnd"
+import { DragSource } from "react-dnd";
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";

@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class TaskProjectTransformer extends AbstractDataSerializerTransformer
@@ -47,8 +48,28 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
+        $data = $transformation_request->getDataToBeTransformed();
+
+        /** @var TaskList[]|ArrayCollection $listsData */
+        $listsData = $data->getLists();
+
+        $lists = [];
+
+        if (!empty($listsData)) {
+            foreach ($listsData as $list) {
+                if (!empty($list->getDisplayOrder())) {
+                    $lists['order:' . $list->getDisplayOrder()] = $list->getTitle();
+                } else {
+                    $lists[] = $list->getTitle();
+                }
+            }
+
+            ksort($lists, SORT_STRING);
+            $lists = array_values($lists);
+        }
+
         /** @var ProjectMember[]|ArrayCollection $members */
-        $members = $transformation_request->getDataToBeTransformed()->getMembers();
+        $members = $data->getMembers();
 
         $groupedMembers = [
             'departments' => [],
@@ -69,7 +90,7 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
         }
 
         /** @var Task[]|ArrayCollection $tasks */
-        $tasks = $transformation_request->getDataToBeTransformed()->getTasks();
+        $tasks = $data->getTasks();
 
         $remaining = 0;
         foreach ($tasks as $task) {
@@ -83,6 +104,7 @@ class TaskProjectTransformer extends AbstractDataSerializerTransformer
             'teams' => $groupedMembers['teams'],
             'agents' => $groupedMembers['agents'],
             'remaining' => $remaining,
+            'lists' => $lists,
         ];
     }
 }

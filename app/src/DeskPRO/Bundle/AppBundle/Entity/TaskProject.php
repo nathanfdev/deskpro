@@ -37,7 +37,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\People\Helpers\Agent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
@@ -137,6 +136,9 @@ class TaskProject extends NotifyPropertyChangeEntity
         return $this->lists;
     }
 
+    /**
+     * @return Department[]|ArrayCollection
+     */
     public function getDepartments()
     {
         $departments = [];
@@ -151,32 +153,38 @@ class TaskProject extends NotifyPropertyChangeEntity
         return new ArrayCollection($departments);
     }
 
+    /**
+     * @return AgentTeam[]|ArrayCollection
+     */
     public function getTeams()
     {
-        $departments = [];
+        $teams = [];
         if (!empty($this->members)) {
             foreach ($this->members as $member) {
                 if (!empty($member->getTeam())) {
-                    $departments[] = $member->getTeam();
+                    $teams[] = $member->getTeam();
                 }
             }
         }
 
-        return new ArrayCollection($departments);
+        return new ArrayCollection($teams);
     }
 
+    /**
+     * @return Person[]|ArrayCollection
+     */
     public function getAgents()
     {
-        $departments = [];
+        $people = [];
         if (!empty($this->members)) {
             foreach ($this->members as $member) {
                 if (!empty($member->getPerson())) {
-                    $departments[] = $member->getPerson();
+                    $people[] = $member->getPerson();
                 }
             }
         }
 
-        return new ArrayCollection($departments);
+        return new ArrayCollection($people);
     }
 
     /**

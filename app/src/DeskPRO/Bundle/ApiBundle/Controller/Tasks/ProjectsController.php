@@ -54,9 +54,6 @@ use FOS\RestBundle\Controller\Annotations\Delete;
 
 class ProjectsController extends BaseController implements ClassResourceInterface
 {
-    private $storedMembers = array();
-    private $oldMembers = array();
-
     /**
      * @ApiDoc(
      *      description="get a list of projects",
@@ -561,7 +558,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
-     * Create a new member relationship for a department, team or perosn
+     * Create a new member relationship for a department, team or person
      * @param Request $request
      * @param $projectId
      * @param $type

@@ -87,6 +87,21 @@ class ProjectType extends AbstractType
                     'description' => 'project members which are people',
                 ),
             )
+        )
+        ->add(
+            'lists',
+            'collection',
+            array(
+                'type' => 'task_list',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'options' => array(
+                    'project' => $options['project'],
+                    'required' => false,
+                    'description' => 'task lists attached to the project',
+                ),
+            )
         );
     }
 
