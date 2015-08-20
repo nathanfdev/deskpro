@@ -159,8 +159,6 @@ class CustomDataTicket extends CustomDataAbstract
             array(
                 'fieldName' => 'field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
-                'mappedBy' => null,
-                'inversedBy' => null,
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'field_id',
@@ -176,8 +174,6 @@ class CustomDataTicket extends CustomDataAbstract
             array(
                 'fieldName' => 'root_field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
-                'mappedBy' => null,
-                'inversedBy' => null,
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'root_field_id',

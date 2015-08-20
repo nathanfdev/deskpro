@@ -162,8 +162,6 @@ class CustomDataArticle extends CustomDataAbstract
             array(
                 'fieldName' => 'field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
-                'mappedBy' => null,
-                'inversedBy' => null,
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'field_id',
@@ -179,8 +177,6 @@ class CustomDataArticle extends CustomDataAbstract
             array(
                 'fieldName' => 'root_field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
-                'mappedBy' => null,
-                'inversedBy' => null,
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'root_field_id',

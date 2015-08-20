@@ -160,8 +160,7 @@ class CustomDataPerson extends CustomDataAbstract
             array(
                 'fieldName' => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                'mappedBy' => null,
-                'inversedBy' => null,
+                'inversedBy' => 'custom_data',
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'person_id',
@@ -177,8 +176,6 @@ class CustomDataPerson extends CustomDataAbstract
             array(
                 'fieldName' => 'field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-                'mappedBy' => null,
-                'inversedBy' => null,
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'field_id',
@@ -194,7 +191,6 @@ class CustomDataPerson extends CustomDataAbstract
             array(
                 'fieldName' => 'root_field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-                'inversedBy' => 'custom_data',
                 'joinColumns' => array(
                     0 => array(
                         'name' => 'root_field_id',
