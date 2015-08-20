@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -38,9 +38,9 @@ use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 
 /**
- * Class ContentCountsDataService
+ * Class CommentCountsDataService
  */
-class ContentCountsDataService
+class CommentCountsDataService
 {
     /**
      * @var EntityManager
@@ -58,11 +58,11 @@ class ContentCountsDataService
     }
 
     /**
-     * @param string $class Concrete content entity class
+     * @param string $class Concrete comment entity class
      * @param GroupedCriteria $criteria
      * @return Count
      */
-    public function countContent($class, GroupedCriteria $criteria)
+    public function countComments($class, GroupedCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -78,15 +78,6 @@ class ContentCountsDataService
         foreach ($result as $group) {
             $count += $group['value'];
             $nested->add(new GroupedCount($group['group_name'], $group['value']));
-        }
-
-        // if $count above isn't a sum of distinct results, then need to perform additional query
-        if (!$criteria->isGroupByDistinct()) {
-            $totalQb = $this->em->createQueryBuilder();
-            $totalQb->select('count(distinct c)')
-                    ->from($class, 'c');
-            $criteria->applyFilters($totalQb);
-            $count = $totalQb->getQuery()->getSingleScalarResult();
         }
 
         return new Count($count, $nested);

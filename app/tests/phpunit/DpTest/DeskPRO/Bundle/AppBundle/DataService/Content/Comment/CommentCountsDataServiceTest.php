@@ -3,7 +3,7 @@
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and Comment Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -26,69 +26,56 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content;
+namespace DpTest\Bundle\AppBundle\DataService\Comment;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Prophecy\Argument;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use DpTest\DeskProTestCase;
+use Application\DeskPRO\Entity\ArticleComment;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentCountsDataService;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 
 /**
- * Class ContentCountsDataService
+ * Class CommentCountsDataServiceTest
  */
-class ContentCountsDataService
+class CommentCountsDataServiceTest extends DeskProTestCase
 {
     /**
-     * @var EntityManager
+     * @test
      */
-    private $em;
-
-    /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    function it_should_be_instantiable()
     {
-        $this->em = $em;
+        $this->assertInstanceOf(CommentCountsDataService::class, $this->instance());
     }
 
     /**
-     * @param string $class Concrete content entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
+     * @test
      */
-    public function countContent($class, GroupedCriteria $criteria)
+    function it_should_return_Count_instance_with_nested_CountsGroup()
     {
-        $qb = $this->em->createQueryBuilder();
+        $criteria = CommentsCountCriteria::fromParameters(['group_by' => 'status'], new OptionsResolver());
 
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
-        $criteria->applyFilters($qb);
-        $criteria->applyGroupBy($qb);
+        $result = $this->instance()->countComments(ArticleComment::class, $criteria);
 
-        $result = $qb->getQuery()->getArrayResult();
+        $this->assertInstanceOf(Count::class, $result);
+        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
+    }
 
-        $count = 0;
-        $nested = new CountsGroup($criteria->getGroupBy());
-        foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
-        }
+    /**
+     * @return CommentCountsDataService
+     */
+    private function instance($em = null)
+    {
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em or $em = $this->mockQueryBuildingEntityManager()->reveal();
 
-        // if $count above isn't a sum of distinct results, then need to perform additional query
-        if (!$criteria->isGroupByDistinct()) {
-            $totalQb = $this->em->createQueryBuilder();
-            $totalQb->select('count(distinct c)')
-                    ->from($class, 'c');
-            $criteria->applyFilters($totalQb);
-            $count = $totalQb->getQuery()->getSingleScalarResult();
-        }
-
-        return new Count($count, $nested);
+        return new CommentCountsDataService($em);
     }
 }

@@ -463,6 +463,34 @@ class ApiDb extends AbstractDbSet
         ");
         // end of content test data
 
+        // Comments test data ------------------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `article_comments`
+                (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+            VALUES
+                (1, 1, 1, '', NULL, NULL, NULL, 'Article comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+                (2, 1, 2, '', NULL, NULL, NULL, 'Article comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'Article comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+            ;
+
+            INSERT INTO `news_comments`
+                (`id`, `news_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+            VALUES
+                (1, 1, 1, '', NULL, NULL, NULL, 'News comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+                (2, 1, 2, '', NULL, NULL, NULL, 'News comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'News comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+            ;
+
+            INSERT INTO `download_comments`
+                (`id`, `download_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+            VALUES
+                (1, 1, 1, '', NULL, NULL, NULL, 'Download comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+                (2, 1, 2, '', NULL, NULL, NULL, 'Download comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+            ;
+        ");
+        // end of comments test data
+
         $count++;
 
         return $count;
