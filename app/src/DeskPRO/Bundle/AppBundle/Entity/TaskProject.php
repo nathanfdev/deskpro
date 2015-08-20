@@ -83,6 +83,12 @@ class TaskProject extends NotifyPropertyChangeEntity
     protected $members;
 
     /**
+     * @var TaskList[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskList", mappedBy="project", cascade={"persist"})
+     */
+    protected $lists;
+
+    /**
      * Construct
      */
     public function __construct()
@@ -121,6 +127,14 @@ class TaskProject extends NotifyPropertyChangeEntity
     public function getMembers()
     {
         return $this->members;
+    }
+
+    /**
+     * @return TaskList[]|ArrayCollection
+     */
+    public function getLists()
+    {
+        return $this->lists;
     }
 
     public function getDepartments()
@@ -272,5 +286,22 @@ class TaskProject extends NotifyPropertyChangeEntity
     public function removeMember(ProjectMember $member)
     {
         $this->members->removeElement($member);
+    }
+
+    /**
+     * @param TaskList $list
+     */
+    public function addList(TaskList $list)
+    {
+        $this->lists->add($list);
+        $this->setModelField('list', $list);
+    }
+
+    /**
+     * @param TaskList $list
+     */
+    public function removeList(TaskList $list)
+    {
+        $this->lists->removeElement($list);
     }
 }

@@ -7,6 +7,9 @@ import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
+import TaskListCard from "../Components/TaskListCard";
+import Moment from "moment";
+import TaskGrouping from "../../../Services/TaskGrouping";
 
 @connect(state => ({
   taskFrameList: state.taskFrameList
@@ -16,9 +19,15 @@ export default class TasksListFrame extends React.Component {
     super(props);
 
     this.state = {
-      actionable: []
+      actionable: [],
+      kanban: false
     };
     this.intl = IntlMixin;
+    this.lastGrouping = '';
+    this.agents = {};
+    this.teams = {};
+    this.departments = {};
+    this.projects = {};
   }
 
   toggleDone(object, reload) {
@@ -98,19 +107,23 @@ export default class TasksListFrame extends React.Component {
     $('.ticket-controls-bulk-editing').animate({"left": '100%'});
   }
 
+  toggleView()
+  {
+    // @TODO: Make this do more than just toggle between kanban and list
+    this.setState({
+      kanban: !this.state.kanban
+    });
+  }
+
   render() {
     const {taskFrameList} = this.props;
     const _this = this;
-    let projects = {};
     let linked_items = {};
-    let departments = {};
-    let teams = {};
-    let agents = {};
 
     // Attach IDs to the projects
     if (taskFrameList.taskFrameProjects && typeof taskFrameList.taskFrameProjects.forEach === 'function') {
       taskFrameList.taskFrameProjects.forEach((project) => {
-        projects[project.id.toString()] = project;
+        this.projects[project.id.toString()] = project;
       });
     }
 
@@ -124,22 +137,24 @@ export default class TasksListFrame extends React.Component {
     // Attach assignments
     if (taskFrameList.taskFrameAgents && typeof taskFrameList.taskFrameAgents.forEach === 'function') {
       taskFrameList.taskFrameAgents.forEach((agent) => {
-        agents[agent.id.toString()] = agent;
+        this.agents[agent.id.toString()] = agent;
       });
     }
     if (taskFrameList.taskFrameTeams && typeof taskFrameList.taskFrameTeams.forEach === 'function') {
       taskFrameList.taskFrameTeams.forEach((team) => {
-        teams[team.id.toString()] = team;
+        this.teams[team.id.toString()] = team;
       });
     }
     if (taskFrameList.taskFrameDepartments && typeof taskFrameList.taskFrameDepartments.forEach === 'function') {
       taskFrameList.taskFrameDepartments.forEach((department) => {
-        departments[department.id.toString()] = department;
+        this.departments[department.id.toString()] = department;
       });
     }
 
+    const sectionClass = this.state.kanban ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
+
     return (
-      <section className="task-list-frame dp-list-frame">
+      <section className={sectionClass}>
       <div className="ticket-list">
 
         <div className="tickets-control-bar">
@@ -164,7 +179,7 @@ export default class TasksListFrame extends React.Component {
               <span className="down">Completed <i className="fa fa-caret-down" /></span>
             </a>
 
-            <a href="#" className="ticket-control-button">
+            <a href="#" className="ticket-control-button" onClick={this.toggleView.bind(this)}>
               <span className="title">View:</span>
               <span className="multi">
                 List
@@ -216,18 +231,53 @@ export default class TasksListFrame extends React.Component {
           </span>
         </div>
 
+        {this.state.kanban ?
+          <div className="kanban-columns">
+            <div className="list">
+              <h1 className="kanban-list-header">My awesome list</h1>
+
+              <TaskListCard />
+              <TaskListCard />
+
+            </div>
+            <div className="list">
+              <h1 className="kanban-list-header">List Title</h1>
+
+              <TaskListCard />
+            </div>
+          </div>
+          :
+
+          <div>
         <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
           <FRC.Input name="title" type="text" />
           <button type="submit" value="Save" className="button">Add</button>
         </Formsy.Form>
 
         {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
-          return <TaskCard task={object} projects={projects} linked_items={linked_items} departments={departments}
-                           teams={teams} agents={agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
+
+          // Temporary hack
+          const tempOrder = "created";
+          const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents);
+          let divider = grouping.getDivider(object, tempOrder);
+          let displayDivider = false;
+
+          if (divider && divider.objectDivider !== this.lastGrouping) {
+            this.lastGrouping = divider.objectDivider;
+            displayDivider = divider.textDisplay;
+          }
+
+          return <span>
+            {
+              displayDivider ? <div className="divider"><hr/><h1><span>{displayDivider}</span></h1></div> : ''
+            }
+            <TaskCard task={object} projects={this.projects} linked_items={linked_items} departments={this.departments}
+                           teams={this.teams} agents={this.agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
                            source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
                            editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
                            selected={_this.state.actionable.indexOf(object.id) !== -1} />
-        }) : '' }
+          </span>
+        }) : '' }</div>}
       </div>
     </section>
     );

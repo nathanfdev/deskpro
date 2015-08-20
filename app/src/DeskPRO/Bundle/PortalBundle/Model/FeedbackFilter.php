@@ -52,6 +52,12 @@ class FeedbackFilter
         self::STATUS_ACTIVE,
     );
 
+    public static $statuses_translated = array(
+        self::STATUS_ALL => 'All items',
+        self::STATUS_ACTIVE => 'Open items',
+        self::STATUS_CLOSED => 'Closed items',
+    );
+
     public static $sorts = array(
         self::SORT_DATE,
         self::SORT_POPULARITY,
@@ -60,9 +66,22 @@ class FeedbackFilter
         self::SORT_RATING,
     );
 
+    public static $sorts_translated = array(
+        self::SORT_DATE => 'Date',
+        self::SORT_POPULARITY => 'Popularity',
+        self::SORT_VIEWS => 'Views',
+        self::SORT_COMMENTS => 'Comments',
+        self::SORT_RATING => 'Rating',
+    );
+
     public static $sort_directions = array(
         self::SORT_DIRECTION_ASC,
         self::SORT_DIRECTION_DESC,
+    );
+
+    public static $sort_directions_translated = array(
+        self::SORT_DIRECTION_ASC => 'ASC',
+        self::SORT_DIRECTION_DESC => 'DESC',
     );
 
     protected $status;
@@ -84,6 +103,25 @@ class FeedbackFilter
             'types'             => $this->getTypes(),
             'sort'              => $this->getSort(),
             'sort_direction'    => $this->getSortDirection(),
+        );
+    }
+
+    public function toJsArray(array $allowed_status_categories, array  $allowed_types)
+    {
+        $status_categories = array();
+        foreach ($allowed_status_categories as $cat) {
+            $status_categories[$cat->getId()] = $cat->getTitle();
+        }
+
+        return array(
+            'filter'    => $this->toArray(),
+            'available' => array(
+                'status'            => self::$statuses_translated,
+                'status_categories' => $status_categories,
+                'types'             => $allowed_types,
+                'sorts'             => self::$sorts_translated,
+                'sort_directions'   => self::$sort_directions_translated,
+            )
         );
     }
 

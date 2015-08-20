@@ -93,7 +93,7 @@ Feature: Generate URLs
     And french is the active language
     When I generate urls for:
       | route                 | params                              |
-      | agent_interface       |                                     |
+      | agent                 |                                     |
       | admin                 |                                     |
       | serve_blob            | blob_auth_id=foo&filename=bar       |
       | serve_default_picture | s=foo                               |

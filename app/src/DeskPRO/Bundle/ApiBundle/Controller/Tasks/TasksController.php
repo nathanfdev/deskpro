@@ -95,7 +95,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $tasks = $this->filterTasks($request, $entityManager);
 
         $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
+        $count = $request->query->get('count', 100);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
         $pager->setMaxPerPage($count);
@@ -471,7 +471,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $this->getDoctrine()->getManager()->persist($task);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
+            $location = $this->generateUrl('api_tasks_get', array('taskId' => $task->getId()));
 
             return View::create(
                 $this->dataSerialize($task),

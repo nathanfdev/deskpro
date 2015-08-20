@@ -48,9 +48,7 @@ import $ from "jquery";
  * instantiated on it.
  */
 export default class PageWidget {
-  constructor(container, element = null, parent = null) {
-    this.container = container;
-
+  constructor(element = null, parent = null) {
     this.initState = 'pre_init';
     this.waitingRender = false;
     this.waitingRunWidgets = false;
@@ -71,13 +69,6 @@ export default class PageWidget {
       this.initState = 'done_init';
       this._runDoneInit();
     }
-  }
-
-  /**
-   * @returns {Container}
-   */
-  getContainer() {
-    return this.container;
   }
 
   /**
@@ -254,7 +245,7 @@ export default class PageWidget {
       let elInsts = el.data('dpWidgetInsts');
 
       if (!elInsts.has(widgetClass)) {
-        let i = new widgetClass(this.container, el, this);
+        let i = new widgetClass(el, this);
         elInsts.set(widgetClass, i);
         insts.push(i);
       }

@@ -157,10 +157,16 @@ class FeedbackController extends AbstractController
         //
         $feedback_categories = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
 
+
+        //
+        // JS INITIAL DATA
+        //
+        $filter = new FeedbackFilter(); // get the defaults
+        $filter_js = json_encode($filter->toJsArray($feedback_categories, array()), JSON_FORCE_OBJECT | JSON_NUMERIC_CHECK);
+
         //
         // RENDER THEME
         //
-        $filter = new FeedbackFilter(); // get the defaults
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
@@ -178,7 +184,8 @@ class FeedbackController extends AbstractController
                 'rerendering_saved'  => $rerendering_saved,
                 'breadcrumbs' => $breadcrumbs,
                 'page_title' => $this->createPageTitle()->feedback(),
-                'rss_link' => $rss_link
+                'rss_link' => $rss_link,
+                'filter_js' => $filter_js
             )
         );
     }
@@ -247,6 +254,7 @@ class FeedbackController extends AbstractController
             'sort_direction'    => $filter->getSortDirection(),
             'breadcrumbs'       => $breadcrumbs,
             'page_title' => $this->createPageTitle()->feedback(),
+            'filter_js' => json_encode($filter->toArray()),
             'rerendering_saved' => false // wont happen here because we always rerender on index
         );
 

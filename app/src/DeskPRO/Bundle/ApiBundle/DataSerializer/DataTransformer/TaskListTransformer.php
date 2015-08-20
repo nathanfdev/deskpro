@@ -31,54 +31,22 @@
  * @package DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\PortalBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use DpTest\PortalTestCase;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class NewTicketControllerTest extends PortalTestCase
+class TaskListTransformer extends AbstractDataSerializerTransformer
 {
-    public function testNewTicketPageLoads()
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $this->installDataSet('fresh');
-
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/new-ticket');
-
-        $response = $client->getResponse();
-
-        $this->assertSame(200, $response->getStatusCode());
+        return ['id', 'title', 'project'];
     }
 
-    public function testGuestSubmitNewTicket()
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        $this->installDataSet('fresh');
-
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/new-ticket');
-
-        $form = $crawler->selectButton('Submit')->form();
-
-        $form['ticket[subject]'] = 'Please help!';
-        $form['ticket[message][message_text]'] = 'This is my ticket message!';
-        $form['ticket[user_email][email]'] = 'chris.tickner@deskpro.com';
-
-        $crawler = $client->submit($form);
-
-        $response = $client->getResponse();
-        $this->assertSame(302, $response->getStatusCode(), 'redirected');
-        $this->assertRegExp('!^.*?/new-ticket/thank-you$!', $response->headers->get('Location'), 'redirected to the thank you page');
-
-        $this->assertEmailWithSubjectWasSentTo(
-            'chris.tickner@deskpro.com',
-            'Thank you for contacting us',
-            'You may view the status of your ticket online at this address'
-        );
-
-        $client->followRedirect();
-
-        $response = $client->getResponse();
-        $this->assertContains('Thank You', $response->getContent());
+        return [];
     }
 }

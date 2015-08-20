@@ -4,7 +4,7 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <article class="feedback main-feedback">
+    <article class="feedback main-feedback" id="feedback_page">
         <header class="section-header">
             <h1>{{ phrase('portal.feedback.section-title') }}</h1>
 
@@ -12,14 +12,22 @@
                 {% show rss_link %}
             </div>
         </header>
+
         <p>{{ phrase('portal.feedback.section-desc') }}</p>
 
-        {% if rerendering_saved %}
-            <strong>{{ phrase('portal.general.rerender-form') }}</strong>
-        {% endif %}
-        {% show feedback_form %}
-        {% show feedback_filter_controls %}
-        {% show feedback_list_detail %}
+        <article class="feedback-form-interactive">
+            {% if rerendering_saved %}
+                <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+            {% endif %}
+            {% show feedback_form %}
+        </article>
+
+       <article class="feedback-filter-interactive">
+           {% show feedback_filter_controls %}
+           <div class="paged-results">
+               {% show feedback_list_detail %}
+               {% show feedback_pager %}
+           </div>
+       </article>
     </article>
-    {% show feedback_pager %}
 {% endblock inner_content %}

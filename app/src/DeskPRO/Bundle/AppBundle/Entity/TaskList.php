@@ -56,6 +56,7 @@ class TaskList extends NotifyPropertyChangeEntity
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
     protected $title;
