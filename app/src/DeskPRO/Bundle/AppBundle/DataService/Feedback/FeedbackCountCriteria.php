@@ -111,6 +111,14 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
                 ->addSelect("{$alias}.hidden_status as group_name")
                 ->andWhere("{$alias}.hidden_status IS NOT NULL")
                 ->andWhere("{$alias}.hidden_status <> ''");
+        } elseif ($this->group_by === 'custom_category') {
+            $qb
+                ->addSelect('g.input as group_name')
+                ->leftJoin("{$alias}.custom_data", 'g')
+                ->leftJoin('g.field', 'def')
+                ->andWhere('def.sys_name = :cat')
+                ->setParameter('cat', 'cat');
+
         } else {
             $qb
                 ->addSelect('g.title as group_name')
@@ -130,6 +138,6 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
     {
         parent::configureResolver($resolver);
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->setAllowedValues('group_by', ['status_category', 'hidden_status', 'category']);
+        $resolver->setAllowedValues('group_by', ['status_category', 'hidden_status', 'category', 'custom_category']);
     }
 }

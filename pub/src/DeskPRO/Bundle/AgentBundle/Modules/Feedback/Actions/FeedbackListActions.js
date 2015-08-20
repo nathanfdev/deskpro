@@ -38,6 +38,15 @@ export const feedbackTypes = createAction(
     }
 );
 
+export const feedbackCustomCategories = createAction(
+    "FEEDBACK_CUSTOM_CATEGORIES",
+    (trigger) => {
+        Feedback.getCustomCategories().then(
+            (value) => trigger(value.getData())
+        );
+    }
+);
+
 export const feedbackNew = createAction(
     "FEEDBACK_NEW_STATUS",
     (trigger) => {

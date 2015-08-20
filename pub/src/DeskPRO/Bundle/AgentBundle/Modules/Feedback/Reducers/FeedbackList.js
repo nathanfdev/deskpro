@@ -8,6 +8,7 @@ export default class FeedbackList extends Reducer {
             commentsToReviewCount: 0,
             labels: [/* string */],
             types: [/* {title, value} */],
+            customCategories: [/* {title, value} */],
             statuses: {
                 new: 0,
                 active: {
@@ -54,6 +55,13 @@ export default class FeedbackList extends Reducer {
         };
     }
 
+    customCategories(prev, {payload}) {
+        const next = {...prev};
+        next.customCategories = payload.data.nested.counts;
+
+        return next;
+    }
+
     new(prev, {payload}) {
         const next = {...prev};
         next.statuses.new = payload.data.count;
@@ -87,6 +95,7 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackToValidate, this.toValidate)
             .r(FeedbackListActions.feedbackLabels, this.labels)
             .r(FeedbackListActions.feedbackTypes, this.types)
+            .r(FeedbackListActions.feedbackCustomCategories, this.customCategories)
             .r(FeedbackListActions.feedbackNew, this.new)
             .r(FeedbackListActions.feedbackActiveStatus, this.active)
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)

@@ -14,6 +14,7 @@ export class NavContainer extends React.Component {
         dispatch(actions.commentsToReview());
         dispatch(actions.feedbackLabels());
         dispatch(actions.feedbackTypes());
+        dispatch(actions.feedbackCustomCategories());
         dispatch(actions.feedbackNew());
         dispatch(actions.feedbackActiveStatus());
         dispatch(actions.feedbackClosedStatus());
@@ -21,7 +22,7 @@ export class NavContainer extends React.Component {
     }
 
     render() {
-        const {labels, types, toValidateCount, commentsToReviewCount, statuses} = this.props;
+        const {labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories} = this.props;
 
         return (
             <Nav
@@ -30,6 +31,7 @@ export class NavContainer extends React.Component {
                 toValidateCount={toValidateCount}
                 commentsToReviewCount={commentsToReviewCount}
                 statuses={statuses}
+                customCategories={customCategories}
                 />
         );
     }

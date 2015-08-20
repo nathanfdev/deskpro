@@ -4,7 +4,8 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPan
 
 export class Nav extends React.Component {
     render() {
-        const { labels, types, toValidateCount, commentsToReviewCount, statuses } = this.props;
+        const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories } = this.props;
+        console.log(customCategories);
         let itemKey = 0;
 
         return (
@@ -38,14 +39,23 @@ export class Nav extends React.Component {
                                     </ListItem>
                                 </ul>
                             </Tab>
+                            <Tab title="Labels">
+                                <LabelsDictionary labels={labels}/>
+                            </Tab>
+                        </TabsPane>
+                        <TabsPane>
                             <Tab title="Type">
                                 <ul>
                                     {types.map(item =>
                                         <ListItem key={itemKey++} count={item.value} label={item.title}/>)}
                                 </ul>
                             </Tab>
-                            <Tab title="Labels">
-                                <LabelsDictionary labels={labels}/>
+                            <Tab title="Categories">
+                                <ul>
+                                    {customCategories.map(item =>
+                                        <ListItem key={itemKey++} count={item.count} label={item.group}/>)
+                                    }
+                                </ul>
                             </Tab>
                         </TabsPane>
                     </Section>

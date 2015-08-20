@@ -59,6 +59,18 @@ export function getTypes() {
 }
 
 /**
+ * Feedback by custom categories with counts
+ * @return Promise
+ */
+export function getCustomCategories() {
+    let query = {
+        group_by: "custom_category"
+    };
+
+    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+
+/**
  * Count of new feedback
  * @return Promise
  */

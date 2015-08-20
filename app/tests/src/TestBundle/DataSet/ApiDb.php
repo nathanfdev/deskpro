@@ -359,6 +359,25 @@ class ApiDb extends AbstractDbSet
             ;
         ");
 
+        $this->getDb()->exec("
+            INSERT INTO `custom_def_feedback`
+            (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
+            VALUES
+              (1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1)
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `custom_data_feedback`
+            (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`)
+            VALUES
+              (1, 1, 1, NULL, 0, 'Windows'),
+              (2, 2, 1, NULL, 0, 'Linux'),
+              (3, 1, 1, NULL, 0, 'Linux'),
+              (4, 1, 1, NULL, 0, 'Mac')
+            ;
+        ");
+
         // "/user_chats" endpoint test data ----------------------------------------------------------------------------
         $this->getDb()->exec("
             INSERT INTO `chat_conversations`

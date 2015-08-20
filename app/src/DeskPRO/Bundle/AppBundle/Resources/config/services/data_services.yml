@@ -44,10 +44,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
     arguments: [@doctrine.orm.default_entity_manager, @portal_permissions_manager]
 
-  data.feedback_labels:
-    class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackLabelsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
-
   data.feedback_comments:
     class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsDataService
     arguments: [@doctrine.orm.default_entity_manager]
