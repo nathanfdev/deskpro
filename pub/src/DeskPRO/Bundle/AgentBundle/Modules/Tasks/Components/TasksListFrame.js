@@ -12,7 +12,8 @@ import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
 
 @connect(state => ({
-  taskFrameList: state.taskFrameList
+  taskFrameList: state.taskFrameList,
+  taskListList: state.taskListList
 }))
 export default class TasksListFrame extends React.Component {
   constructor(props) {
@@ -28,6 +29,9 @@ export default class TasksListFrame extends React.Component {
     this.teams = {};
     this.departments = {};
     this.projects = {};
+
+    // Temp project ID
+    props.dispatch(TaskActions.loadLists(63));
   }
 
   toggleDone(object, reload) {
@@ -121,6 +125,10 @@ export default class TasksListFrame extends React.Component {
     let linked_items = {};
     let lists = [];
 
+    if (this.props.taskListList.taskList) {
+      lists = this.props.taskListList.taskList;
+    }
+
     // Temp projectId for the sake of development
     const projectId = "63";
 
@@ -129,7 +137,6 @@ export default class TasksListFrame extends React.Component {
       taskFrameList.taskFrameProjects.forEach((project) => {
         this.projects[project.id.toString()] = project;
       });
-      lists = this.projects[projectId].lists;
     }
 
     // Attach IDs to the linked item
@@ -239,8 +246,12 @@ export default class TasksListFrame extends React.Component {
         </div>
 
         {this.state.kanban ?
-          <KanbanFrame projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
-                       tasks={taskFrameList} />
+          <div className="kanban-columns">
+            {lists ? lists.map((taskList) => {
+              return <KanbanFrame projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
+                           tasks={taskFrameList} key={taskList.id} taskList={taskList} />
+              }) : '' }
+            </div>
           :
           <div>
             <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>

@@ -18,6 +18,11 @@
       text-transform: uppercase;
     }
 
+    &.drag-hover h1.kanban-list-header {
+      background-color: #4681b2;
+      color: #fff;
+    }
+
     .card {
       font-weight: normal;
       margin: 5px 0 5px 10px;
