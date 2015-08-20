@@ -253,6 +253,18 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticlesEndTime(DateTime $start_time = null)
+    {
+        $request = $this->adapter->doArticleIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $this->getIncrementalEndDateTime($request);
+    }
+
+    /**
      * Converts stdClass to array
      *
      * @param \stdClass $object

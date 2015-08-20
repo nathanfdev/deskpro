@@ -157,4 +157,14 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @return array
      */
     public function getArticles(DateTime $start_time = null);
+
+    /**
+     * Returns a batch end time of the articles collection
+     *
+     * @param DateTime $start_time
+     *
+     * @return DateTime
+     * @throws RetryAfterException
+     */
+    public function getArticlesEndTime(DateTime $start_time = null);
 }
