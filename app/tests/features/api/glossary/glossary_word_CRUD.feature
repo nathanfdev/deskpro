@@ -45,7 +45,8 @@ Feature: /glossary/word endpoint
     When I send a PUT request to "/api/v2/glossary/words/1" with body:
     """
 {
-  "word": "New Text"
+  "word": "New Text",
+  "definition": 1
 }
     """
     Then the response should be in JSON
@@ -57,7 +58,8 @@ Feature: /glossary/word endpoint
     When I send a PUT request to "/api/v2/glossary/words/1" with body:
     """
 {
-  "word": "Modified"
+  "word": "Modified",
+  "definition": 1
 }
     """
     And I send a GET request to "/api/v2/glossary/words/1"

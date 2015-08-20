@@ -54,6 +54,7 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
  * @todo Write general actions docs
  * @todo Location header
  * @todo More user friendly validation errors output
+ * @todo Allow partial updates (?)
  */
 class CrudController extends BaseController
 {
@@ -160,7 +161,7 @@ class CrudController extends BaseController
         $form = $this->createForm(new static::$type, $model);
         $form->submit(
             json_decode($request->getContent()),
-            false // don't clear missing from the request entity properties (allows partial updates)
+            true
         );
 
         if ($form->isValid()) {
