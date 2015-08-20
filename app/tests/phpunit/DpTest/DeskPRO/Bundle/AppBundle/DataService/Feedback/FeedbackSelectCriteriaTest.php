@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
  * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
@@ -25,56 +24,72 @@
  * |                                                                          |
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
+namespace DpTest\Bundle\AppBundle\DataService\Feedback;
 
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
+use DpTest\DeskProTestCase;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * API access to feedback labels.
+ * Class FeedbackSelectCriteriaTest
  */
-class FeedbackLabelsController extends BaseController
+class FeedbackSelectCriteriaTest extends DeskProTestCase
 {
+    private static $dummyProperParams = [
+        'status' => 'new'
+    ];
+
     /**
-     * @ApiDoc(
-     *      description="get all available labels for feedback, sorted alphabetically",
-     *      parameters={
-     *          {
-     *              "name"="term",
-     *              "requirement"="\w+",
-     *              "description"="suggest for label search",
-     *              "dataType"="string",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/feedback_labels", name="api_feedback_labels")
-     * @param Request $request
-     * @return View
-     * @throws \InvalidArgumentException
+     * @test
      */
-    public function cgetAction(Request $request)
+    public function it_should_be_instantiable_with_factory_method_from_empty_parameter()
     {
-        $term = $request->query->get('term');
-        $labels = $this->get('data.feedback_labels')->getLabels($term);
-        return View::create(
-            $this->dataSerialize(new PrimitiveArray($labels)),
-            Response::HTTP_OK
-        );
+        static::assertInstanceOf(FeedbackSelectCriteria::class, $this->instance());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable_with_proper_parameters()
+    {
+        static::assertInstanceOf(FeedbackSelectCriteria::class, $this->instance(self::$dummyProperParams));
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
+     */
+    public function it_should_throw_an_exception_when_passing_an_unknown_parameter()
+    {
+        $this->instance(['color' => 'purple']);
+    }
+
+    /**
+     * @test
+     * @expectedException        \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     * @expectedExceptionMessage The option "status" with value "unknown" is invalid. Accepted values are:
+     *                           "new", "active", "closed", "hidden".
+     */
+    public function it_should_throw_an_exception_with_list_of_allowed_statuses_values_when_passing_a_wrong_value()
+    {
+        $this->instance(['status' => 'unknown']);
+    }
+
+    /**
+     * @param array $parameters
+     * @return FeedbackSelectCriteria
+     */
+    private function instance(array $parameters = [])
+    {
+        $resolver = new OptionsResolver();
+
+        return FeedbackSelectCriteria::fromParameters($parameters, $resolver);
     }
 }

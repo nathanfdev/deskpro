@@ -243,6 +243,14 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
+     *
+     *
+     * NEW CODE (Aug.2015)
+     *
+     *
+     */
+
+    /**
      * @param FeedbackCountCriteria $criteria
      * @return Count
      * @throws \LogicException
@@ -295,6 +303,7 @@ class FeedbackDataService extends AbstractDataService
 
     public function countsByType()
     {
+        /** @ToDo move to FeedbackRepository after removing old code */
         $qb = $this->em->createQueryBuilder();
         $qb->select('category.title as title', 'count(f) as value')
             ->from('DeskPRO:Feedback', 'f')

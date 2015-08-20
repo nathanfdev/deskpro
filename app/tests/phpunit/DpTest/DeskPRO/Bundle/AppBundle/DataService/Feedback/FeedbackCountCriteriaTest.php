@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
  * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
@@ -25,40 +24,67 @@
  * |                                                                          |
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
+namespace DpTest\Bundle\AppBundle\DataService\Feedback;
+
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
+use DpTest\DeskProTestCase;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @package DeskPRO.
+ * Class FeedbackCountCriteriaTest
+ * @package DeskPRO
  */
-
-namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
-
-use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
-
-/**
- * Provides controller data access to the feedback labels.
- */
-class FeedbackLabelsDataService extends AbstractDataService
+class FeedbackCountCriteriaTest extends DeskProTestCase
 {
-    /**
-     * Get the list of available ticket labels.
-     * @param string|null $term suggest for search labels
-     * @return array the list of all feedback labels names
-     */
-    public function getLabels($term = null)
-    {
-        $qb = $this->getEm()->createQueryBuilder();
-        $qb
-            ->select('l.label', 'COUNT(l.label) as cnt')
-            ->from('DeskPRO:LabelFeedback', 'l')
-            ->groupBy('l.label')
-            ->orderBy('l.label', 'ASC');
-        if ($term) {
-            $qb
-                ->where('l.label LIKE :term')
-                ->setParameter('term', $term . '%');
-        }
-        $labels = $qb->getQuery()->getScalarResult();
+    private static $dummyProperParams = [
+        'status' => 'active',
+        'group_by' => 'status_category'
+    ];
 
-        return $labels;
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable_with_factory_method_from_empty_parameter()
+    {
+        static::assertInstanceOf(FeedbackCountCriteria::class, $this->instance());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable_with_proper_parameters()
+    {
+        static::assertInstanceOf(FeedbackCountCriteria::class, $this->instance(self::$dummyProperParams));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_extend_FeedbackSelectCriteria_with_group_by_functionality()
+    {
+        static::assertInstanceOf(FeedbackSelectCriteria::class, $this->instance(['group_by' => 'custom_category']));
+    }
+
+    /**
+     * @test
+     * @expectedException        \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     * @expectedExceptionMessage The option "group_by" with value "color" is invalid. Accepted values are:
+     *                           'status_category', 'hidden_status', 'category', 'custom_category'.
+     */
+    public function it_should_throw_an_exception_with_list_of_allowed_group_by_values_when_passing_a_wrong_value()
+    {
+        $this->instance(['group_by' => 'color']);
+    }
+
+    /**
+     * @param array $parameters
+     * @return FeedbackCountCriteria
+     */
+    private function instance(array $parameters = [])
+    {
+        $resolver = new OptionsResolver();
+
+        return FeedbackCountCriteria::fromParameters($parameters, $resolver);
     }
 }

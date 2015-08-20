@@ -105,11 +105,26 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
             throw new \LogicException('Cannot group without group_by');
         }
         $alias = $qb->getRootAliases()[0];
+        /** @ToDo  Temporary solution before refactoring of the feedback statuses */
         if ($this->group_by === 'hidden_status') {
-            $qb->addSelect('hidden_status as group_name');
+            $qb
+                ->addSelect("{$alias}.hidden_status as group_name")
+                ->andWhere("{$alias}.hidden_status IS NOT NULL")
+                ->andWhere("{$alias}.hidden_status <> ''");
+        } elseif ($this->group_by === 'custom_category') {
+            $qb
+                ->addSelect('g.input as group_name')
+                ->leftJoin("{$alias}.custom_data", 'g')
+                ->leftJoin('g.field', 'def')
+                ->andWhere('def.sys_name = :cat')
+                ->setParameter('cat', 'cat');
+
         } else {
-            $qb->addSelect('g.id as group_name');
-            $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
+            $qb
+                ->addSelect('g.title as group_name')
+                ->leftJoin("{$alias}.{$this->group_by}", 'g')
+                ->andWhere('g.status_type = :type')
+                ->setParameter('type', $this->filters['status']);
         }
         $qb->groupBy('group_name');
     }
@@ -123,6 +138,6 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
     {
         parent::configureResolver($resolver);
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->setAllowedValues('group_by', ['status_category', 'hidden_status', 'category']);
+        $resolver->setAllowedValues('group_by', ['status_category', 'hidden_status', 'category', 'custom_category']);
     }
 }

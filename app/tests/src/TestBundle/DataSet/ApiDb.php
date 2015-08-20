@@ -346,20 +346,6 @@ class ApiDb extends AbstractDbSet
         ");
 
         $this->getDb()->exec("
-            INSERT INTO `labels_feedback`
-                (`feedback_id`,`label`)
-
-            VALUES
-                (1, 'foo'),
-                (2, 'foo'),
-                (3, 'foo'),
-                (1, 'bar'),
-                (1, 'foobar'),
-                (2, 'barfoo')
-            ;
-        ");
-
-        $this->getDb()->exec("
             INSERT INTO `feedback_comments`
                 (`feedback_id`,`content`, `status`, `is_reviewed`)
 
@@ -370,6 +356,25 @@ class ApiDb extends AbstractDbSet
                 (1, 'Feedback 1 comment 4', 'visible', 0),
                 (2, 'Feedback 2 comment 5', 'visible', 1),
                 (6, 'Feedback 6 comment 6', 'visible', 0)
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `custom_def_feedback`
+            (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
+            VALUES
+              (1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1)
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `custom_data_feedback`
+            (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`)
+            VALUES
+              (1, 1, 1, NULL, 0, 'Windows'),
+              (2, 2, 1, NULL, 0, 'Linux'),
+              (3, 1, 1, NULL, 0, 'Linux'),
+              (4, 1, 1, NULL, 0, 'Mac')
             ;
         ");
 
@@ -389,6 +394,23 @@ class ApiDb extends AbstractDbSet
             ;
         ");
         // end of "/user_chats" endpoint test data
+
+
+        // Labels endpoints test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `label_defs`
+                (`label_type`, `label`, `color`, `total`)
+            VALUES
+                ('feedback', 'foo', 'red', 0),
+                ('feedback', 'bar', 'white', 0),
+                ('feedback', 'foobar', 'red', 0),
+                ('feedback', 'barfoo', 'white', 0),
+                ('organization', 'organization label #1', 'red', 42),
+                ('person', 'person label #1', 'white', 1),
+                ('person', 'person label #2', 'red', 3)
+            ;
+        ");
+        // end of labels endpoints
 
         // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
         $this->getDb()->exec("
@@ -444,18 +466,6 @@ class ApiDb extends AbstractDbSet
             ;
         ");
         // end of "/organizations"
-
-        // Labels endpoints test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec("
-            INSERT INTO `label_defs`
-                (`label_type`, `label`, `color`, `total`)
-            VALUES
-                ('organization', 'organization label #1', 'red', 42),
-                ('person', 'person label #1', 'white', 1),
-                ('person', 'person label #2', 'red', 3)
-            ;
-        ");
-        // end of labels endpoints
 
         $count++;
 

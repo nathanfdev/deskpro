@@ -79,8 +79,11 @@ class FeedbackSelectCriteria
                     $qb->setParameter('validating', 'validating');
                     break;
                 case 'status':
-                    $qb->andWhere("$alias.status = :status");
-                    $qb->setParameter('status', $value);
+                    // Temporary solution before refactoring of the feedback statuses
+                    if ($value === 'new') {
+                        $qb->andWhere("$alias.status = :status");
+                        $qb->setParameter('status', $value);
+                    }
                     break;
             }
         }
