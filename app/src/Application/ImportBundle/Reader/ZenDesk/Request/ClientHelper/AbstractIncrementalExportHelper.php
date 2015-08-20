@@ -63,7 +63,7 @@ abstract class AbstractIncrementalExportHelper extends AbstractHelper
             throw new MissingParametersException(__METHOD__, array('start_time'));
         }
 
-        $request_url = $api_group . sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
+        $request_url = rtrim($api_group, '/') . '/' . sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
         $end_point   = Http::prepare($request_url);
 
         return $this->doGetRequest($client, $end_point);

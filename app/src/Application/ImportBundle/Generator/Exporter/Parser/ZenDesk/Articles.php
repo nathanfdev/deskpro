@@ -185,8 +185,8 @@ final class Articles extends AbstractParser
                 // ZenDesk API does not allow to get article comments in a single request due to huge response (could be ~20 MB)
                 // We have to load comments for each article separately
                 foreach ($response as $article) {
-//                    $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $article['id']));
-//                    $article['comments'] = $this->reader->getTicketComments($article['id']);
+                    $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $article['id']));
+                    $article['comments'] = $this->reader->getArticleComments($article['id']);
 
                     $articles[] = $article;
                 }

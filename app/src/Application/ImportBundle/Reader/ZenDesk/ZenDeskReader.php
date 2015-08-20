@@ -180,9 +180,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function getTicketComments($id)
     {
         $comments = array();
-        $result   = $this->adapter->doTicketCommentsFindAllRequest(array(
-            'ticket_id' => $id,
-        ));
+        $result   = $this->adapter->doTicketCommentsFindAllRequest(array('ticket_id' => $id));
 
         if ($result) {
             foreach ($result->comments as $comment) {
@@ -262,6 +260,23 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
         ));
 
         return $this->getIncrementalEndDateTime($request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticleComments($id)
+    {
+        $comments = array();
+        $result   = $this->adapter->doArticleCommentsFindAllRequest(array('id' => $id));
+
+        if ($result) {
+            foreach ($result->comments as $comment) {
+                $comments[] = $this->toArray($comment);
+            }
+        }
+
+        return $comments;
     }
 
     /**

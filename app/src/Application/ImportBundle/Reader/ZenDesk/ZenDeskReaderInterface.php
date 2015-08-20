@@ -167,4 +167,12 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @throws RetryAfterException
      */
     public function getArticlesEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a collection of article comments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getArticleComments($id);
 }

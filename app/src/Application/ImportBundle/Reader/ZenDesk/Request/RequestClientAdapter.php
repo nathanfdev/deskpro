@@ -125,6 +125,14 @@ final class RequestClientAdapter implements RequestAdapterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function doArticleCommentsFindAllRequest(array $params = array())
+    {
+        return $this->doRequest(new ClientHelper\HelpCenter\ArticleCommentsFindAll($params));
+    }
+
+    /**
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request

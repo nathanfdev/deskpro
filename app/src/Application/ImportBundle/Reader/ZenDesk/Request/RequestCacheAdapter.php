@@ -104,6 +104,14 @@ final class RequestCacheAdapter implements RequestAdapterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function doArticleCommentsFindAllRequest(array $params = array())
+    {
+        return $this->doRequest(__FUNCTION__, $params);
+    }
+
+    /**
      * Do request to ZenDesk API or get from cache
      *
      * @param string $method
