@@ -33,12 +33,11 @@ use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
-use Guzzle\Http\Client as HttpClient;
-use Guzzle\Http\Exception\BadResponseException;
 use Orb\Util\Strings;
 
 /**
@@ -73,31 +72,25 @@ final class Tickets extends AbstractParser
     private $tickets_mapper;
 
     /**
-     * @var HttpClient
-     */
-    private $http_client;
-
-    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
+     * @param ParserHelperSet              $helpers
      * @param ParserPeopleStorageInterface $people_storage
-     * @param HttpClient                   $http_client
-     * @param OidMapper                $tickets_mapper
+     * @param OidMapper                   $tickets_mapper
      */
     public function __construct(
         ZenDeskReaderInterface       $reader,
         FormatterInterface           $formatter,
+        ParserHelperSet              $helpers,
         ParserPeopleStorageInterface $people_storage,
-        OidMapper                    $tickets_mapper,
-        HttpClient                   $http_client
+        OidMapper                    $tickets_mapper
     ) {
-        parent::__construct($reader, $formatter);
+        parent::__construct($reader, $formatter, $helpers);
 
         $this->tickets_people = $people_storage;
         $this->tickets_mapper = $tickets_mapper;
-        $this->http_client    = $http_client;
     }
 
     /**
@@ -333,93 +326,11 @@ final class Tickets extends AbstractParser
             ->setDateCreated($formatted['created_at'])
         ;
 
-        $attachments = $this->exportAttachments($formatted['attachments']);
+        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
         foreach ($attachments as $attachment) {
             /** @var Entity\Attachment $attachment */
             $entity->addAttachment($attachment);
         }
-
-        return $entity;
-    }
-
-    /**
-     * Returns a collection of the ticket message attachments
-     *
-     * @param array $attachments
-     * @return Entity\Collection
-     */
-    private function exportAttachments(array $attachments)
-    {
-        $collection = new Entity\Collection();
-
-        foreach ($attachments as $num => $data) {
-            try {
-                $entity = $this->exportAttachment($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e, $data);
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns an attachment entity
-     *
-     * @param array $data
-     * @return Entity\Attachment|null
-     */
-    private function exportAttachment(array $data)
-    {
-        $formatted = $this->formatter->format($data, array(
-            'id'           => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'attachment_',
-                'ref'    => 'id',
-            )),
-            'file_name'    => TransformerInterface::TYPE_STRING,
-            'content_type' => TransformerInterface::TYPE_STRING,
-            'content_url'  => TransformerInterface::TYPE_STRING,
-            'inline'       => TransformerInterface::TYPE_BOOLEAN,
-        ));
-
-        if ($formatted['inline']) {
-            throw new SkippingException('Inline attachment, skipping', $formatted);
-        }
-
-        try {
-            $request   = $this->http_client->get($formatted['content_url']);
-            $blob_data = base64_encode($request->send()->getBody(true));
-
-        } catch (BadResponseException $e) {
-            $this->logError($e->getMessage());
-
-            $response = $e->getResponse();
-            if ($response) {
-                $this->logError(sprintf('Status code: %s', $response->getStatusCode()));
-                $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
-            }
-
-            throw new SkippingException('Unable to download attachment', $formatted);
-        }
-
-        $entity = new Entity\Attachment();
-        $entity
-            ->setRawData($data)
-            ->setDestination($formatted['destination'])
-            ->setOid($formatted['id'])
-            ->setBlobData($blob_data)
-            ->setFileName($formatted['file_name'])
-            ->setContentType($formatted['content_type'])
-        ;
 
         return $entity;
     }

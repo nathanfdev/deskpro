@@ -27,7 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Exception;
 use DateTime;
@@ -60,11 +62,13 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      *
      * @param ZenDeskReaderInterface $reader
      * @param FormatterInterface     $formatter
+     * @param ParserHelperSet        $helpers
      */
-    public function __construct(ZenDeskReaderInterface $reader, FormatterInterface $formatter)
+    public function __construct(ZenDeskReaderInterface $reader, FormatterInterface $formatter, ParserHelperSet $helpers)
     {
         $this->reader    = $reader;
         $this->formatter = $formatter;
+        $this->helpers   = $helpers;
     }
 
     /**
@@ -109,5 +113,13 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     public function getCurrentEndTime()
     {
         return $this->end_time;
+    }
+
+    /**
+     * @return Helper\Attachment
+     */
+    protected function getAttachmentParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
     }
 }

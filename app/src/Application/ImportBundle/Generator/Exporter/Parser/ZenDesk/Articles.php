@@ -32,9 +32,9 @@ use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Guzzle\Http\Client as HttpClient;
 
 /**
  * ZenDesk articles parser
@@ -55,31 +55,25 @@ final class Articles extends AbstractParser
     private $article_mapper;
 
     /**
-     * @var HttpClient
-     */
-    private $http_client;
-
-    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
+     * @param ParserHelperSet              $helpers
      * @param ParserPeopleStorageInterface $people_storage
      * @param OidMapper                    $article_mapper
-     * @param HttpClient                   $http_client
      */
     public function __construct(
         ZenDeskReaderInterface       $reader,
         FormatterInterface           $formatter,
+        ParserHelperSet              $helpers,
         ParserPeopleStorageInterface $people_storage,
-        OidMapper                    $article_mapper,
-        HttpClient                   $http_client
+        OidMapper                    $article_mapper
     ) {
-        parent::__construct($reader, $formatter);
+        parent::__construct($reader, $formatter, $helpers);
 
         $this->article_people = $people_storage;
         $this->article_mapper = $article_mapper;
-        $this->http_client    = $http_client;
     }
 
     /**
@@ -193,7 +187,7 @@ final class Articles extends AbstractParser
             $entity->addComment($comment);
         }
 
-        $attachments = $this->exportAttachments($formatted['attachments']);
+        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
         foreach ($attachments as $attachment) {
             $entity->addAttachment($attachment);
         }
@@ -202,6 +196,8 @@ final class Articles extends AbstractParser
     }
 
     /**
+     * Returns a collection of the article comments
+     *
      * @param array $comments
      * @return Entity\ArticleComment[]
      */
@@ -229,65 +225,41 @@ final class Articles extends AbstractParser
     }
 
     /**
+     * Returns a comment entity
+     *
      * @param array $data
      * @return Entity\ArticleComment
      */
     private function exportComment(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id' => TransformerInterface::TYPE_INT,
+            'id'          => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_comment_',
+                'ref'    => 'id',
+            )),
+            'body'        => TransformerInterface::TYPE_STRING,
+            'author_id'   => TransformerInterface::TYPE_INT,
+            'created_at'  => TransformerInterface::TYPE_DATE,
         ));
+
+        if (empty($formatted['author_id'])) {
+            throw new SkippingException('Article comment without author_id, skipping', $formatted);
+        }
+
+        $author_email = $this->article_people->getPersonEmail($formatted['author_id']);
+        if ( ! $author_email) {
+            throw new SkippingException('Unable to get article comment author, skipping', $formatted);
+        }
 
         $entity = new Entity\ArticleComment();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
-        ;
-
-        return $entity;
-    }
-
-    /**
-     * @param array $attachments
-     * @return Entity\Attachment[]
-     */
-    private function exportAttachments(array $attachments)
-    {
-        $collection = new Entity\Collection();
-
-        foreach ($attachments as $num => $data) {
-            try {
-                $entity = $this->exportAttachment($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDAttachment', 'article attachment', 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDAttachment', 'article attachment', 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDAttachment', 'article attachment', 'id', $e, $data);
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * @param array $data
-     * @return Entity\Attachment
-     */
-    private function exportAttachment(array $data)
-    {
-        $formatted = $this->formatter->format($data, array(
-            'id' => TransformerInterface::TYPE_INT,
-        ));
-
-        $entity = new Entity\Attachment();
-        $entity
-            ->setRawData($data)
-            ->setOid($formatted['id'])
+            ->setDestination($formatted['destination'])
+            ->setPersonEmail($author_email)
+            ->setContent($formatted['body'])
+            ->setDateCreated($formatted['created_at'])
         ;
 
         return $entity;
