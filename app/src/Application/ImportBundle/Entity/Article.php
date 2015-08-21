@@ -66,7 +66,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $labels = array();
 
     /**
-     * @var Collection
+     * @var CustomField[]
      */
     private $custom_fields;
 
@@ -76,12 +76,18 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $attachments;
 
     /**
+     * @var ArticleComment[]
+     */
+    private $comments;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->custom_fields = new Collection();
         $this->attachments   = new Collection();
+        $this->comments      = new Collection();
     }
 
     /**
@@ -279,6 +285,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             $attachments[] = $attachment->toArray();
         }
 
+        $comments = array();
+        foreach ($this->comments as $comment) {
+            /** @var ArticleComment $comment */
+            $comments[] = $comment->toArray();
+        }
+
         return array(
             'oid'            => $this->oid,
             'person'         => $this->person_email,
@@ -299,6 +311,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'labels'         => $this->labels,
             'custom_fields'  => $custom_fields,
             'attachments'    => $attachments,
+            'comments'       => $comments,
         );
     }
 
