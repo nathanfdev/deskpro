@@ -7,9 +7,10 @@ import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
-import KanbanFrame from "../Components/KanbanFrame";
+import KanbanColumn from "../Components/KanbanColumn";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
+import * as AppActions from "../../Application/Actions/AppActions";
 
 @connect(state => ({
   taskFrameList: state.taskFrameList,
@@ -114,6 +115,8 @@ export default class TasksListFrame extends React.Component {
   toggleView()
   {
     // @TODO: Make this do more than just toggle between kanban and list
+    // Nananana-nananana, nananana-nananana KANBANNNN!
+    this.props.dispatch(AppActions.toggleKanban());
     this.setState({
       kanban: !this.state.kanban
     });
@@ -248,8 +251,8 @@ export default class TasksListFrame extends React.Component {
         {this.state.kanban ?
           <div className="kanban-columns">
             {lists ? lists.map((taskList) => {
-              return <KanbanFrame projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
-                           tasks={taskFrameList} key={taskList.id} taskList={taskList} />
+              return <KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
+                           tasks={taskFrameList} key={taskList.id} taskList={taskList} dispatch={_this.props.dispatch.bind(_this)} />
               }) : '' }
             </div>
           :

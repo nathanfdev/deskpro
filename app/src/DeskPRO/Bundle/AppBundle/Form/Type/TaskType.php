@@ -110,6 +110,14 @@ class TaskType extends AbstractType
                 )
             )
             ->add(
+                'list',
+                'entity',
+                array(
+                    'class' => 'App:TaskList',
+                    'property' => 'title',
+                )
+            )
+            ->add(
                 'labels',
                 'collection',
                 array(

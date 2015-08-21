@@ -24,6 +24,8 @@ $nav-collapsed-width: 10px;
 $list-frame-width: 450px;
 $tab-frame-width: 100%;
 
+$kanban-frame-width: 800px;
+
 .dp-window {
   .dp-window-header {
     @extend .site-header;
@@ -159,6 +161,10 @@ $tab-frame-width: 100%;
             left: $app-switcher-expanded-width + $nav-collapsed-width;
         }
     }
+
+    &.kanban {
+      width: $kanban-frame-width;
+    }
   }
 
   .dp-tab-frame {
@@ -171,6 +177,10 @@ $tab-frame-width: 100%;
 
     &.expanded {
         left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
+    }
+
+    &.kanban-shifted {
+      left: $app-switcher-width + $nav-frame-width + $kanban-frame-width;
     }
 
     .blank-text {

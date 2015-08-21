@@ -14,14 +14,19 @@ function collect(connect, monitor) {
 
 const listTarget = {
   drop(props, monitor) {
-    console.log('DROP!');
+    const item = monitor.getItem();
+    item.dispatch(TaskActions.editTask({
+      taskId : item.id,
+      list : props.taskList.id
+    }, 'tasks'));
   }
 };
 
 @DropTarget(DragTypes.TASK, listTarget, collect)
-export default class KanbanFrame extends React.Component {
+export default class KanbanColumn extends React.Component {
 
   render() {
+    const _this = this;
 
     let tasks = {};
 
@@ -46,7 +51,8 @@ export default class KanbanFrame extends React.Component {
       {
         tasks['list_' + this.props.taskList.id] ? tasks['list_' + this.props.taskList.id].map((task) => {
           return <TaskListCard task={task} key={task.id} departments={this.props.departments}
-                               agents={this.props.agents} teams={this.props.teams} />
+                               agents={this.props.agents} teams={this.props.teams}
+                               dispatch={_this.props.dispatch.bind(_this)} />
         }) : ''
       }
     </div>);
