@@ -141,19 +141,51 @@ final class Articles extends AbstractParser
     private function exportArticle(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'              => TransformerInterface::TYPE_STRING,
-            'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'          => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'article_',
                 'ref'    => 'id',
             )),
+            'author_id'   => TransformerInterface::TYPE_INT,
+            'section_id'  => TransformerInterface::TYPE_INT, // todo
+            'title'       => TransformerInterface::TYPE_STRING,
+            'body'        => TransformerInterface::TYPE_STRING,
+            'draft'       => TransformerInterface::TYPE_BOOLEAN, // todo
+            'created_at'  => TransformerInterface::TYPE_DATE,
+            'updated_at'  => TransformerInterface::TYPE_DATE, // todo
+            'vote_sum'    => TransformerInterface::TYPE_INT,
+            'vote_count'  => TransformerInterface::TYPE_INT,
+            'locale'      => TransformerInterface::TYPE_STRING, // todo
+            'outdated'    => TransformerInterface::TYPE_BOOLEAN, // todo
+            'label_names' => TransformerInterface::TYPE_ARRAY,
+            'comments'    => TransformerInterface::TYPE_ARRAY, // todo
+
         ));
+
+        if (empty($formatted['author_id'])) {
+            throw new SkippingException('Article without author_id, skipping', $formatted);
+        }
+
+        $author_email = $this->article_people->getPersonEmail($formatted['author_id']);
+        if ( ! $author_email) {
+            throw new SkippingException('Unable to get article author, skipping', $formatted);
+        }
 
         $entity = new Entity\Article();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['body'])
+            ->setDateCreated($formatted['created_at'])
+            ->setNumComments($formatted['vote_count'])
+            ->setNumRatings($formatted['vote_sum'])
         ;
+
+        foreach ($formatted['label_names'] as $label) {
+            $entity->addLabel($label);
+        }
 
         return $entity;
     }
