@@ -71,11 +71,17 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $custom_fields;
 
     /**
+     * @var Attachment[]
+     */
+    private $attachments;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->custom_fields = new Collection();
+        $this->attachments   = new Collection();
     }
 
     /**
@@ -238,6 +244,23 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     /**
      * {@inheritdoc}
      */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addAttachment(Attachment $attachment)
+    {
+        $this->attachments->attach($attachment);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function toArray()
     {
         if ( ! $this->date_created) {
@@ -248,6 +271,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
         foreach ($this->custom_fields as $custom_field) {
             /** @var CustomField $custom_field */
             $custom_fields[] = $custom_field->toArray();
+        }
+
+        $attachments = array();
+        foreach ($this->attachments as $attachment) {
+            /** @var Attachment $attachment */
+            $attachments[] = $attachment->toArray();
         }
 
         return array(
@@ -269,6 +298,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'categories'     => $this->categories,
             'labels'         => $this->labels,
             'custom_fields'  => $custom_fields,
+            'attachments'    => $attachments,
         );
     }
 
