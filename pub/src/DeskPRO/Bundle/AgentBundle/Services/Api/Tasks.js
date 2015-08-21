@@ -8,10 +8,14 @@ import DpApi from "../DpApi";
  */
 export function loadAddress(address, params = {}) {
   // Temporary hard-coded groupings
-  params.order_by = 'created';
+  params.order_by = 'labels';
 
   if (params !== {}) {
-    address = address + '?' + compileParams(params);
+    if (address.indexOf('?') === -1) {
+      address = address + '?' + compileParams(params);
+    } else {
+      address = address + '&' + compileParams(params);
+    }
   }
 
   return DpApi.sendGet('DP_API/' + address);

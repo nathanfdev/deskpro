@@ -218,7 +218,11 @@ class TaskFilterBuilder
             'assigned',
             'created',
             'project',
-            'list'
+            'list',
+            'creator',
+            'done',
+            'labels',
+            'ticket',
         ];
 
         // Kick it out if the request doesn't have the correct mapping
@@ -281,9 +285,33 @@ class TaskFilterBuilder
 
                 $query = $query->orderBy('p.title', $direction);
                 break;
-            case 'list':
+            case 'creator':
+                $query = $query->leftJoin('t.creator', 'c');
                 $direction = $this->getSortDirection($request);
-                $query = $query->addOrderBy('t.list', $direction);
+
+                $query = $query->addOrderBy('c.name', $direction);
+                break;
+            case 'list':
+                syslog(LOG_LOCAL0 | LOG_NOTICE, 'ordering');
+                $direction = $this->getSortDirection($request);
+                $query = $query->orderBy('t.list', $direction);
+                break;
+            case 'done':
+                $direction = $this->getSortDirection($request, 'DESC');
+                $query = $query->addSelect('COALESCE(t.date_done, \'2999-12-31 12:59:59\') AS HIDDEN sort_date');
+                $query = $query->addOrderBy('sort_date', $direction);
+                break;
+            case 'labels':
+                $direction = $this->getSortDirection($request);
+                $query = $query->leftJoin('t.labels', 'l');
+                $query = $query->addSelect("group_concat(l.label ORDER BY l.label SEPARATOR ',') AS HIDDEN labelGroup");
+                $query = $query->groupBy('t.id');
+                $query = $query->addOrderBy('labelGroup', $direction);
+                break;
+            case 'ticket':
+                $direction = $this->getSortDirection($request);
+                $query = $query->leftJoin('t.linked_items', 'l');
+                $query = $query->addOrderBy('l.ticket', $direction);
                 break;
         }
 

@@ -128,8 +128,10 @@ export default class TasksListFrame extends React.Component {
     let linked_items = {};
     let lists = [];
 
-    if (this.props.taskListList.taskList) {
-      lists = this.props.taskListList.taskList;
+    if (this.props.taskListList.taskList && typeof this.props.taskListList.taskList.forEach === 'function') {
+      this.props.taskListList.taskList.forEach((listObject) => {
+        lists[listObject.id.toString()] = listObject;
+      });
     }
 
     // Temp projectId for the sake of development
@@ -265,8 +267,8 @@ export default class TasksListFrame extends React.Component {
             {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
 
               // Temporary hack
-              const tempOrder = "created";
-              const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents);
+              const tempOrder = "labels";
+              const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists);
               let divider = grouping.getDivider(object, tempOrder);
               let displayDivider = false;
 
@@ -275,12 +277,12 @@ export default class TasksListFrame extends React.Component {
                 displayDivider = divider.textDisplay;
               }
 
-              return <span>
+              return <span key={object.id}>
                 {
                   displayDivider ? <div className="divider"><hr/><h1><span>{displayDivider}</span></h1></div> : ''
                 }
                 <TaskCard task={object} projects={this.projects} linked_items={linked_items} departments={this.departments}
-                               teams={this.teams} agents={this.agents} toggleDone={this.toggleDone.bind(this)} key={object.id}
+                               teams={this.teams} agents={this.agents} toggleDone={this.toggleDone.bind(this)}
                                source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
                                editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
                                selected={_this.state.actionable.indexOf(object.id) !== -1} />
