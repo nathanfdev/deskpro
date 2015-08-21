@@ -265,6 +265,24 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * @return ArticleComment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param ArticleComment $comment
+     * @return $this
+     */
+    public function addComment(ArticleComment $comment)
+    {
+        $this->comments->attach($comment);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()

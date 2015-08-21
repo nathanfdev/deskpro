@@ -188,6 +188,108 @@ final class Articles extends AbstractParser
             $entity->addLabel($label);
         }
 
+        $comments = $this->exportComments($formatted['comments']);
+        foreach ($comments as $comment) {
+            $entity->addComment($comment);
+        }
+
+        $attachments = $this->exportAttachments($formatted['attachments']);
+        foreach ($attachments as $attachment) {
+            $entity->addAttachment($attachment);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param array $comments
+     * @return Entity\ArticleComment[]
+     */
+    private function exportComments(array $comments)
+    {
+        $collection = new Entity\Collection();
+
+        foreach ($comments as $num => $data) {
+            try {
+                $entity = $this->exportComment($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDArticleComment', 'article comment', 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDArticleComment', 'article comment', 'id', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('ZDArticleComment', 'article comment', 'id', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\ArticleComment
+     */
+    private function exportComment(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'id' => TransformerInterface::TYPE_INT,
+        ));
+
+        $entity = new Entity\ArticleComment();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+        ;
+
+        return $entity;
+    }
+
+    /**
+     * @param array $attachments
+     * @return Entity\Attachment[]
+     */
+    private function exportAttachments(array $attachments)
+    {
+        $collection = new Entity\Collection();
+
+        foreach ($attachments as $num => $data) {
+            try {
+                $entity = $this->exportAttachment($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDAttachment', 'article attachment', 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDAttachment', 'article attachment', 'id', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('ZDAttachment', 'article attachment', 'id', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\Attachment
+     */
+    private function exportAttachment(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'id' => TransformerInterface::TYPE_INT,
+        ));
+
+        $entity = new Entity\Attachment();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+        ;
+
         return $entity;
     }
 
