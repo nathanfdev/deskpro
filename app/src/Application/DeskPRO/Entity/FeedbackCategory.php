@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Feedback categories.
+ * Feedback categories. (These are referred to in code/urls as "types").
  */
 class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
 {

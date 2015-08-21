@@ -155,14 +155,19 @@ class FeedbackController extends AbstractController
         //
         // FILTER CATEGORIES
         //
-        $feedback_categories = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
 
 
         //
         // JS INITIAL DATA
         //
-        $filter = new FeedbackFilter(); // get the defaults
-        $filter_js = json_encode($filter->toJsArray($feedback_categories, array()), JSON_FORCE_OBJECT | JSON_NUMERIC_CHECK);
+        $filter = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
+        $allowed_types_parsed = array();
+        foreach ($feedback_types as $cat) {
+            $allowed_types_parsed[] = $cat->getId();
+        }
+        $filter->setTypes($allowed_types_parsed);
+        $filter_js = $this->generateFilterJs($filter, $feedback_types);
 
         //
         // RENDER THEME
@@ -171,7 +176,7 @@ class FeedbackController extends AbstractController
             'Theme:Feedback:index.html.twig',
             array(
                 'page'            => $page,
-                'feedback_categories' => $feedback_categories,
+                'feedback_types' => $feedback_types,
                 'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
                 'status' => $filter->getStatus(),
@@ -240,11 +245,12 @@ class FeedbackController extends AbstractController
         //
         // FILTER CATEGORIES
         //
-        $feedback_categories = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $filter_js = $this->generateFilterJs($filter, $feedback_types);
 
         $page_options = array(
             'page'              => $page,
-            'feedback_categories' => $feedback_categories,
+            'feedback_types' => $feedback_types,
             'count'             => $this->getBrandSetting('portal.per_page_content'),
             'show_pagination'   => true,
             'status'            => $filter->getStatus(),
@@ -254,7 +260,7 @@ class FeedbackController extends AbstractController
             'sort_direction'    => $filter->getSortDirection(),
             'breadcrumbs'       => $breadcrumbs,
             'page_title' => $this->createPageTitle()->feedback(),
-            'filter_js' => json_encode($filter->toArray()),
+            'filter_js' => $filter_js,
             'rerendering_saved' => false // wont happen here because we always rerender on index
         );
 
@@ -372,5 +378,20 @@ class FeedbackController extends AbstractController
         $default_status_category    = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
 
         return $default_status_category;
+    }
+
+    /**
+     * @param $filter
+     * @param $feedback_types
+     * @return string
+     */
+    public function generateFilterJs(FeedbackFilter $filter, $feedback_types)
+    {
+        $filter_js = json_encode(
+            $filter->toJsArray(array(), $feedback_types),
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK
+        );
+
+        return $filter_js;
     }
 }

@@ -108,17 +108,17 @@ class FeedbackFilter
 
     public function toJsArray(array $allowed_status_categories, array  $allowed_types)
     {
-        $status_categories = array();
-        foreach ($allowed_status_categories as $cat) {
-            $status_categories[$cat->getId()] = $cat->getTitle();
+        $allowed_types_parsed = array();
+        foreach ($allowed_types as $cat) {
+            $allowed_types_parsed[$cat->getId()] = $cat->getTitle();
         }
 
         return array(
             'filter'    => $this->toArray(),
             'available' => array(
                 'status'            => self::$statuses_translated,
-                'status_categories' => $status_categories,
-                'types'             => $allowed_types,
+                'status_categories' => $allowed_status_categories,
+                'types'             => $allowed_types_parsed,
                 'sorts'             => self::$sorts_translated,
                 'sort_directions'   => self::$sort_directions_translated,
             )
