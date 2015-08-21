@@ -67,6 +67,14 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @param GlossaryWordDefinition $definition
+     */
+    public function setDefinition($definition)
+    {
+        $this->setModelField('definition', $definition);
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

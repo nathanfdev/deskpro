@@ -72,6 +72,20 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         $this->words    = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @param array|\ArrayAccess $words
+     */
+    public function setWords($words)
+    {
+        /** @var GlossaryWord[] $words */
+        if (is_array($words) || $words instanceof \ArrayAccess) {
+            foreach ($words as $word) {
+                $this->words->add($word);
+                $word->setDefinition($this);
+            }
+        }
+    }
+
     public function addWord($word)
     {
         $word = trim(strval($word));
