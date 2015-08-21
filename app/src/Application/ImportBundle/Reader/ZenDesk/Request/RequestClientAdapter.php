@@ -133,6 +133,14 @@ final class RequestClientAdapter implements RequestAdapterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function doArticleAttachmentsFindAllRequest(array $params = array())
+    {
+        return $this->doRequest(new ClientHelper\HelpCenter\ArticleAttachmentsFindAll($params));
+    }
+
+    /**
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request

@@ -175,4 +175,12 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @return array
      */
     public function getArticleComments($id);
+
+    /**
+     * Returns a collection of article attachments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getArticleAttachments($id);
 }

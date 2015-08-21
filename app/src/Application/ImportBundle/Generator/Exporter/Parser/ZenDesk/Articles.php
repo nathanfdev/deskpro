@@ -159,6 +159,7 @@ final class Articles extends AbstractParser
             'outdated'    => TransformerInterface::TYPE_BOOLEAN, // todo
             'label_names' => TransformerInterface::TYPE_ARRAY,
             'comments'    => TransformerInterface::TYPE_ARRAY, // todo
+            'attachments' => TransformerInterface::TYPE_ARRAY, // todo
 
         ));
 
@@ -218,7 +219,10 @@ final class Articles extends AbstractParser
                 // We have to load comments for each article separately
                 foreach ($response as $article) {
                     $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $article['id']));
-                    $article['comments'] = $this->reader->getArticleComments($article['id']);
+                    $article['comments']    = $this->reader->getArticleComments($article['id']);
+
+                    $this->logDebug(sprintf('[ZDTicket #%s] Reading attachments', $article['id']));
+                    $article['attachments'] = $this->reader->getArticleAttachments($article['id']);
 
                     $articles[] = $article;
                 }

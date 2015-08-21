@@ -25,77 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Zendesk\API\Client;
+use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk API request adapter interface
+ * ZenDesk article attachments request client helper
  *
- * Interface RequestAdapterInterface
- * @package Application\ImportBundle\Reader\ZenDesk\Request
+ * Class ArticleAttachmentsFindAll
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
+ *
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/article_attachments#list-article-attachments
  */
-interface RequestAdapterInterface
+final class ArticleAttachmentsFindAll extends AbstractHelper
 {
     /**
-     * Request a batch collection of people
-     *
-     * @param array $params
-     * @return \stdClass
+     * {@inheritdoc}
      */
-    public function doPeopleIncrementalExportRequest(array $params = array());
+    public function request(Client $client)
+    {
+        if ( ! isset($this->params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
 
-    /**
-     * Request a batch collection of people by ids
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doPeopleFindRequest(array $params = array());
-
-    /**
-     * Request an organization by id
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doOrganizationFindRequest(array $params = array());
-
-    /**
-     * Request a batch collection of tickets
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doTicketsIncrementalExportRequest(array $params = array());
-
-    /**
-     * Request a collection of ticket comments
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doTicketCommentsFindAllRequest(array $params = array());
-
-    /**
-     * Request a batch collection of articles
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doArticleIncrementalExportRequest(array $params = array());
-
-    /**
-     * Request a collection of article comments
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doArticleCommentsFindAllRequest(array $params = array());
-
-    /**
-     * Request a collection of article attachments
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doArticleAttachmentsFindAllRequest(array $params = array());
+        return $this->doGetRequest($client, sprintf('help_center/articles/%d/attachments.json', $this->params['id']));
+    }
 }

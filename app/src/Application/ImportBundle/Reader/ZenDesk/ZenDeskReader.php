@@ -280,6 +280,23 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticleAttachments($id)
+    {
+        $attachments = array();
+        $result      = $this->adapter->doArticleAttachmentsFindAllRequest(array('id' => $id));
+
+        if ($result) {
+            foreach ($result->article_attachments as $attachment) {
+                $attachments[] = $this->toArray($attachment);
+            }
+        }
+
+        return $attachments;
+    }
+
+    /**
      * Converts stdClass to array
      *
      * @param \stdClass $object

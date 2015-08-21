@@ -125,6 +125,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
+     * Stores a article attachments response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addArticleAttachmentsFindAllResponse($response)
+    {
+        $this->addResponse('article_attachments_find_all', $response);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function doPeopleIncrementalExportRequest(array $params = array())
@@ -178,6 +190,14 @@ class JsonMockAdapter implements RequestAdapterInterface
     public function doArticleCommentsFindAllRequest(array $params = array())
     {
         return $this->getResponse('articles_comments_find_all');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doArticleAttachmentsFindAllRequest(array $params = array())
+    {
+        return $this->getResponse('article_attachments_find_all');
     }
 
     /**
