@@ -55,6 +55,13 @@ class GlossaryWordDefinitionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('definition', 'text');
+        $builder
+            ->add('definition', 'text')
+            ->add('words', 'collection', [
+                'type' => new GlossaryWordType(),
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+            ]);
     }
 }

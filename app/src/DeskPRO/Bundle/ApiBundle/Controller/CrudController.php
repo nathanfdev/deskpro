@@ -54,7 +54,7 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
  * @todo Write general actions docs
  * @todo Location header
  * @todo More user friendly validation errors output
- * @todo Allow partial updates (?)
+ * @todo Allow partial updates as patches (?)
  */
 class CrudController extends BaseController
 {
@@ -159,9 +159,15 @@ class CrudController extends BaseController
 
         /** @var \Symfony\Component\Form\Form $form */
         $form = $this->createForm(new static::$type, $model);
+
+        $decoded = json_decode(
+            $request->getContent(),
+            true // convert to assoc arrays instead of stdClass instances
+        );
+
         $form->submit(
-            json_decode($request->getContent()),
-            true
+            $decoded,
+            true // clear missing
         );
 
         if ($form->isValid()) {

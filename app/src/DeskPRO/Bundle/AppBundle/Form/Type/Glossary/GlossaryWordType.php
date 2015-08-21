@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Glossary;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 
 /**
@@ -59,5 +60,15 @@ class GlossaryWordType extends AbstractType
         $builder
             ->add('word', 'text')
             ->add('definition', 'entity', ['class' => GlossaryWordDefinition::class]);
+    }
+
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => \Application\DeskPRO\Entity\GlossaryWord::class
+        ));
     }
 }

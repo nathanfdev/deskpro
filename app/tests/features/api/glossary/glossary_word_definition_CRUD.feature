@@ -30,6 +30,20 @@ Feature: /glossary/word-definition endpoint
 #    And the header "Location" should match "\/api\/v2\/glossary\/word_definitions\/\d+"
     And the JSON node "data.definition" should be equal to "Sample Definition"
 
+  Scenario: I create a definition with nested words
+    When I send a POST request to "/api/v2/glossary/word_definitions" with body:
+    """
+{
+  "definition": "Sample Definition with nested words",
+  "words": [
+    {"word": "First"}, {"word": "Second"}
+  ]
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.definition" should be equal to "Sample Definition with nested words"
+    And the JSON node "data.words" should have 2 elements
+
   Scenario: I try to create a definition with empty text
     When I send a POST request to "/api/v2/glossary/word_definitions" with body:
     """
