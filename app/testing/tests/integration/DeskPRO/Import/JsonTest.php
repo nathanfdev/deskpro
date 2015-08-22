@@ -128,7 +128,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->overrideDpRootPath('/1/downloads/download1.json');
         $this->overrideDpRootPath('/1/feedback/feedback1.json');
-        $this->overrideDpRootPath('/1/feedback/article1.json');
+        $this->overrideDpRootPath('/1/articles/article1.json');
     }
 
     public function testCheck()
