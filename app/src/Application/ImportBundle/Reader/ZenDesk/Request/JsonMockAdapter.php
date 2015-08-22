@@ -48,7 +48,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addPeopleIncrementalExportResponse($response)
     {
-        $this->addResponse('people_incremental_export', $response);
+        $this->addResponse('CoreAPI\PeopleIncrementalExport', $response);
         return $this;
     }
 
@@ -60,7 +60,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addPeopleFindResponse($response)
     {
-        $this->addResponse('people_find', $response);
+        $this->addResponse('CoreAPI\PeopleFind', $response);
         return $this;
     }
 
@@ -72,7 +72,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addOrganizationFindResponse($response)
     {
-        $this->addResponse('organization_find', $response);
+        $this->addResponse('CoreAPI\OrganizationFind', $response);
         return $this;
     }
 
@@ -84,7 +84,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addTicketsIncrementalExportResponse($response)
     {
-        $this->addResponse('tickets_incremental_export', $response);
+        $this->addResponse('CoreAPI\TicketsIncrementalExport', $response);
         return $this;
     }
 
@@ -96,7 +96,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addTicketCommentsFindAllResponse($response)
     {
-        $this->addResponse('ticket_comments_find_all', $response);
+        $this->addResponse('CoreAPI\TicketCommentsFindAll', $response);
         return $this;
     }
 
@@ -108,7 +108,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticlesIncrementalExportResponse($response)
     {
-        $this->addResponse('articles_incremental_export', $response);
+        $this->addResponse('HelpCenter\ArticleIncrementalExport', $response);
         return $this;
     }
 
@@ -120,7 +120,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleCommentsFindAllResponse($response)
     {
-        $this->addResponse('article_comments_find_all', $response);
+        $this->addResponse('HelpCenter\ArticleCommentsFindAll', $response);
         return $this;
     }
 
@@ -132,72 +132,20 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleAttachmentsFindAllResponse($response)
     {
-        $this->addResponse('article_attachments_find_all', $response);
+        $this->addResponse('HelpCenter\ArticleAttachmentsFindAll', $response);
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function doPeopleIncrementalExportRequest(array $params = array())
+    public function doRequest($helper_class, array $params = array())
     {
-        return $this->getResponse('people_incremental_export');
-    }
+        if (empty($this->responses[$helper_class])) {
+            throw new RuntimeException(sprintf('No response exists for `%s`', $helper_class));
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function doPeopleFindRequest(array $params = array())
-    {
-        return $this->getResponse('people_find');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doOrganizationFindRequest(array $params = array())
-    {
-        return $this->getResponse('organization_find');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketsIncrementalExportRequest(array $params = array())
-    {
-        return $this->getResponse('tickets_incremental_export');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketCommentsFindAllRequest(array $params = array())
-    {
-        return $this->getResponse('ticket_comments_find_all');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doArticleIncrementalExportRequest(array $params = array())
-    {
-        return $this->getResponse('articles_incremental_export');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doArticleCommentsFindAllRequest(array $params = array())
-    {
-        return $this->getResponse('articles_comments_find_all');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doArticleAttachmentsFindAllRequest(array $params = array())
-    {
-        return $this->getResponse('article_attachments_find_all');
+        return array_shift($this->responses[$helper_class]);
     }
 
     /**
@@ -221,22 +169,5 @@ class JsonMockAdapter implements RequestAdapterInterface
         }
 
         $this->responses[$type][] = $response;
-    }
-
-    /**
-     * Returns a response by request
-     *
-     * @param string $type
-     *
-     * @return array
-     * @throws RuntimeException
-     */
-    private function getResponse($type)
-    {
-        if (empty($this->responses[$type])) {
-            throw new RuntimeException(sprintf('No response exists for `%s`', $type));
-        }
-
-        return array_shift($this->responses[$type]);
     }
 }

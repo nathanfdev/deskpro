@@ -38,64 +38,10 @@ interface RequestAdapterInterface
     /**
      * Request a batch collection of people
      *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doPeopleIncrementalExportRequest(array $params = array());
-
-    /**
-     * Request a batch collection of people by ids
+     * @param string $helper_class
+     * @param array  $params
      *
-     * @param array $params
      * @return \stdClass
      */
-    public function doPeopleFindRequest(array $params = array());
-
-    /**
-     * Request an organization by id
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doOrganizationFindRequest(array $params = array());
-
-    /**
-     * Request a batch collection of tickets
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doTicketsIncrementalExportRequest(array $params = array());
-
-    /**
-     * Request a collection of ticket comments
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doTicketCommentsFindAllRequest(array $params = array());
-
-    /**
-     * Request a batch collection of articles
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doArticleIncrementalExportRequest(array $params = array());
-
-    /**
-     * Request a collection of article comments
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doArticleCommentsFindAllRequest(array $params = array());
-
-    /**
-     * Request a collection of article attachments
-     *
-     * @param array $params
-     * @return \stdClass
-     */
-    public function doArticleAttachmentsFindAllRequest(array $params = array());
+    public function doRequest($helper_class, array $params = array());
 }

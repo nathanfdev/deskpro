@@ -129,20 +129,6 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getTicketsEndTime(DateTime $start_time = null);
 
     /**
-     * Returns help center categories (article main categories)
-     *
-     * @return array
-     */
-    public function getHelpCenterCategories();
-
-    /**
-     * Returns help center sections (article categories)
-     *
-     * @return array
-     */
-    public function getHelpCenterSections();
-
-    /**
      * Returns a batch count of articles
      *
      * @param DateTime|null $start_time
@@ -183,4 +169,12 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @return array
      */
     public function getArticleAttachments($id);
+
+    /**
+     * Returns a collection of article categories
+     * Merges help center categories and sections
+     *
+     * @return array
+     */
+    public function getArticleCategories();
 }

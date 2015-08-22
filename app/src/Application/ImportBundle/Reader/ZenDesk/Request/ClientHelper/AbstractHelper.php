@@ -46,9 +46,7 @@ abstract class AbstractHelper implements ClientHelperInterface
     protected $params;
 
     /**
-     * Constructor
-     *
-     * @param array $params
+     * {@inheritdoc}
      */
     public function __construct(array $params = array())
     {
