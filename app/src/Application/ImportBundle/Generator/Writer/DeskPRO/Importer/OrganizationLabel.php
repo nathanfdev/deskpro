@@ -49,11 +49,13 @@ final class OrganizationLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Organization) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
         $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
         $organization->resetLabels();

@@ -54,11 +54,13 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
      * 'total_rating'   => $nval->total_rating,
      * 'num_comments'   => $nval->num_comments,
      * 'num_ratings'    => $nval->num_ratings,
-     *
-     * @var Entity\News $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\News) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
 
         $news = new DeskPROEntity\News();

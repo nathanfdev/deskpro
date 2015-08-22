@@ -72,11 +72,13 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * $record['num_comments']		= $fval->num_comments;
      * $record['num_ratings']		= $fval->num_ratings;
      * $record['popularity']		= $fval->popularity;
-     *
-     * @var Entity\Feedback $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Feedback) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
 
         $feedback = new DeskPROEntity\Feedback();

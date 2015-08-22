@@ -75,11 +75,13 @@ final class Ticket extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Ticket $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Ticket) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
 
         $ticket = $this->findOrCreateTicket($entity);

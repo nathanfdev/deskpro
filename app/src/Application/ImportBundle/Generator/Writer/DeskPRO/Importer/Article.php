@@ -72,11 +72,13 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      * $record['total_rating'] = $kbval->total_rating;
      * $record['num_comments'] = $kbval->num_comments;
      * $record['num_ratings']  = $kbval->num_ratings;
-     *
-     * @var Entity\Article $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Article) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
 
         $article = new DeskPROEntity\Article();

@@ -66,11 +66,13 @@ final class Organization extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Organization) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
 
         $organization = $this->findOrCreateOrganization($entity->getName());

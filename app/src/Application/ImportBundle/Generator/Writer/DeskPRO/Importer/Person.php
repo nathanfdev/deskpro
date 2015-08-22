@@ -49,11 +49,13 @@ final class Person extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Person $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Person) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
 
         if ($entity->isAgent()) {

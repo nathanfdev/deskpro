@@ -67,8 +67,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $entity
-     *
      * todo add referred objects
      * 'total_rating'   => $dval->total_rating,
      * 'num_comments'   => $dval->num_comments,
@@ -76,6 +74,10 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Download) {
+            self::throwUnexpectedEntityTypeException($entity);
+        }
+
         $this->records = new ArrayCollection();
 
         $download = new DeskPROEntity\Download();
