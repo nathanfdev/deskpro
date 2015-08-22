@@ -307,6 +307,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals(new \DateTime('2015-01-15 00:00:00'), $article->getDateCreated());
         $this->assertNull($article->getDatePublished());
         $this->assertNull($article->getDateEnd());
+        $this->assertNull($article->getDateUpdated());
 
         $labels = array();
         foreach ($article->getLabels() as $label) {

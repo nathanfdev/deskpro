@@ -13,6 +13,7 @@
   "status": "published",
   "date_created": "2015-01-15 00:00:00",
   "date_published": null,
+  "date_updated": null,
   "date_end": null,
   "categories": ["Category 1"],
   "labels": ["Label 1", "Label 2", "Label 3"],

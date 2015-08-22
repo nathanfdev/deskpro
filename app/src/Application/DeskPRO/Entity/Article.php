@@ -160,6 +160,24 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->setModelField('date_updated', $date_updated);
+        return $this;
+    }
+
+    /**
      * @param $end_action
      * @return $this
      */

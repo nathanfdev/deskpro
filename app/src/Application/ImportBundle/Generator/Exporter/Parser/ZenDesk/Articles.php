@@ -147,6 +147,7 @@ final class Articles extends AbstractParser
             'title'       => TransformerInterface::TYPE_STRING,
             'body'        => TransformerInterface::TYPE_STRING,
             'created_at'  => TransformerInterface::TYPE_DATE,
+            'updated_at'  => TransformerInterface::TYPE_DATE,
             'vote_sum'    => TransformerInterface::TYPE_INT,
             'vote_count'  => TransformerInterface::TYPE_INT,
             'locale'      => TransformerInterface::TYPE_STRING,
@@ -176,6 +177,7 @@ final class Articles extends AbstractParser
             ->setContent($formatted['body'])
             ->setLanguage(LocaleMapper::getLocale($formatted['locale']))
             ->setDateCreated($formatted['created_at'])
+            ->setDateUpdated($formatted['updated_at'])
             ->setNumComments($formatted['vote_count'])
             ->setNumRatings($formatted['vote_sum'])
         ;

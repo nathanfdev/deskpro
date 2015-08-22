@@ -113,6 +113,9 @@ final class Articles extends AbstractParser
             'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
                 'null' => true,
             )),
+            'date_updated' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
             'date_end' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
                 'null' => true,
             )),
@@ -140,6 +143,7 @@ final class Articles extends AbstractParser
             ->setNumRatings($formatted['num_ratings'])
             ->setStatus($formatted['status'])
             ->setDateCreated($formatted['date_created'])
+            ->setDateUpdated($formatted['date_updated'])
             ->setDatePublished($formatted['date_published'])
             ->setDateEnd($formatted['date_end'])
         ;

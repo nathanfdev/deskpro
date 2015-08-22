@@ -56,6 +56,11 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $date_end;
 
     /**
+     * @var DateTime
+     */
+    private $date_updated;
+
+    /**
      * @var array
      */
     private $categories = array();
@@ -187,6 +192,24 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function setDateEnd(DateTime $date_end = null)
     {
         $this->date_end = $date_end;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->date_updated = $date_updated;
         return $this;
     }
 
@@ -323,6 +346,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'view_count'     => $this->view_count,
             'status'         => $this->status,
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_updated'   => $this->date_updated ? $this->date_updated->format('Y-m-d H:i:s') : null,
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
             'date_end'       => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
             'categories'     => $this->categories,
