@@ -163,6 +163,63 @@ final class Articles extends AbstractParser
             $entity->addAttachment($attachment);
         }
 
+        $comments = $this->exportComments($formatted['comments']);
+        foreach ($comments as $comment) {
+            $entity->addComment($comment);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * Returns a collection of article comment messages
+     *
+     * @param array $comments
+     * @return Entity\ArticleComment[]
+     */
+    private function exportComments(array $comments)
+    {
+        $collection = new Entity\Collection();
+        foreach ($comments as $num => $data) {
+            try {
+                $entity = $this->exportComment($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logTransformerException('JSONArticleComment', 'ticket message', 'oid', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('JSONArticleComment', 'ticket message', 'oid', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an article comment entity
+     *
+     * @param array $data
+     * @return Entity\ArticleComment
+     */
+    private function exportComment(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_comment_',
+                'ref'    => 'oid',
+            )),
+        ));
+
+        $entity = new Entity\ArticleComment();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+        ;
+
         return $entity;
     }
 

@@ -226,9 +226,9 @@ final class Tickets extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTicket', 'ticket message', 'oid', $e);
+                $this->logTransformerException('JSONTicketMessage', 'ticket message', 'oid', $e);
             } catch (\Exception $e) {
-                $this->logUnknownException('JSONTicket', 'ticket message', 'oid', $e, $data);
+                $this->logUnknownException('JSONTicketMessage', 'ticket message', 'oid', $e, $data);
             }
         }
 
@@ -262,7 +262,6 @@ final class Tickets extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
-            ->setOid($formatted['oid'])
             ->setPersonEmail($formatted['person'])
             ->setMessageText($formatted['message_text'])
             ->setMessageHtml($formatted['message_html'])
