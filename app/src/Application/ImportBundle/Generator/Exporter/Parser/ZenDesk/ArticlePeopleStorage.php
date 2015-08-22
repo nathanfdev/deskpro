@@ -43,6 +43,12 @@ class ArticlePeopleStorage extends AbstractParserPeopleStorage
             if (isset($article['author_id'])) {
                 $people_ids[] = $article['author_id'];
             }
+
+            foreach ($article['comments'] as $comment) {
+                if (isset($comment['author_id'])) {
+                    $people_ids[] = $comment['author_id'];
+                }
+            }
         }
 
         return $people_ids;
