@@ -70,13 +70,8 @@ class ZenDeskFactory extends AbstractFactory
         $helpers = new ParserHelperSet();
         $helpers->attach(new Parser\ZenDesk\Helper\Attachment($formatter, $http_client));
 
-        // People parser
-        $people = new Parser\ZenDesk\People($reader, $formatter, $helpers);
-        $people->setPeopleStorage($storage);
-
         // Tickets parser
-        $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader);
-        $ticket_people->setPeopleStorage($storage);
+        $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader, $storage);
 
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
@@ -88,9 +83,7 @@ class ZenDeskFactory extends AbstractFactory
         $tickets_mapper = new OidMapper($import_map_repository, $entity_manager, ImportMap::TYPE_ZENDESK_TICKET);
 
         // Article parser
-        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader);
-        $article_people->setPeopleStorage($storage);
-
+        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $storage);
         $article_mapper = new OidMapper($import_map_repository, $entity_manager, ImportMap::TYPE_ZENDESK_ARTICLE);
 
         // Parsers collection
@@ -100,7 +93,7 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\Feedback($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people, $article_mapper))
             ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
-            ->attach($people)
+            ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
             ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people, $tickets_mapper))
             ->attach(new Parser\ZenDesk\Organizations($reader, $formatter, $helpers))
         ;

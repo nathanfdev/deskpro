@@ -33,7 +33,7 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
  * Class AbstractParserPeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterface, PeopleStorageAwareInterface
+abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterface
 {
     /**
      * @var ZenDeskReaderInterface
@@ -54,19 +54,12 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
      * Constructor
      *
      * @param ZenDeskReaderInterface $reader
+     * @param PeopleStorageInterface $storage
      */
-    public function __construct(ZenDeskReaderInterface $reader)
+    public function __construct(ZenDeskReaderInterface $reader, PeopleStorageInterface $storage)
     {
-        $this->reader = $reader;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPeopleStorage(PeopleStorageInterface $storage)
-    {
+        $this->reader         = $reader;
         $this->people_storage = $storage;
-        return $this;
     }
 
     /**
@@ -93,7 +86,7 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
     private function loadByIds($ids)
     {
         $request_ids = $this->people_storage ? $this->people_storage->getNotContainsIds($ids) : $ids;
-        $result = $this->reader->getPeopleByIds($request_ids);
+        $result      = $this->reader->getPeopleByIds($request_ids);
 
         foreach ($result as $person) {
             $this->people[$person['id']] = $person;
