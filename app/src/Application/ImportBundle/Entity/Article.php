@@ -339,5 +339,9 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('person_email', new Constraints\NotBlank())
+        ;
     }
 }

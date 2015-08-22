@@ -148,7 +148,7 @@ final class Articles extends AbstractParser
             'created_at'  => TransformerInterface::TYPE_DATE,
             'vote_sum'    => TransformerInterface::TYPE_INT,
             'vote_count'  => TransformerInterface::TYPE_INT,
-            'locale'      => TransformerInterface::TYPE_STRING, // todo
+            'locale'      => TransformerInterface::TYPE_STRING,
             'draft'       => TransformerInterface::TYPE_BOOLEAN,
             'label_names' => TransformerInterface::TYPE_ARRAY,
             'comments'    => TransformerInterface::TYPE_ARRAY,
@@ -170,8 +170,10 @@ final class Articles extends AbstractParser
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
+            ->setPersonEmail($author_email)
             ->setTitle($formatted['title'])
             ->setContent($formatted['body'])
+            ->setLanguage($formatted['locale'])
             ->setDateCreated($formatted['created_at'])
             ->setNumComments($formatted['vote_count'])
             ->setNumRatings($formatted['vote_sum'])
