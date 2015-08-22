@@ -179,9 +179,14 @@ final class ArticleComment extends AbstractEntity
      */
     public function toArray()
     {
-        return array_merge(parent::toArray(), array(
-            'person' => $this->person_email,
-        ));
+        return array(
+            'oid'          => $this->oid,
+            'person_email' => $this->person_email,
+            'content'      => $this->content,
+            'status'       => $this->status,
+            'is_reviewed'  => $this->is_reviewed,
+            'date_created' => $this->date_created ? $this->date_created->format('Y-m-d H:i:s') : null,
+        );
     }
 
     /**
