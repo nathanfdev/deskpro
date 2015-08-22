@@ -73,7 +73,7 @@ final class People extends AbstractParser
         PeopleStorage          $people_storage
     ) {
         parent::__construct($reader, $formatter, $helpers);
-        $this->article_people = $people_storage;
+        $this->people_storage = $people_storage;
     }
 
     /**
@@ -190,10 +190,8 @@ final class People extends AbstractParser
     {
         $this->logDebugTimeStart('getPeople', "Reading people batch");
 
-        $people = array();
-        if ($this->people_storage) {
-            $people = $this->people_storage->getPeople();
-        }
+        $people = $this->people_storage->getPeople();
+
         if (empty($people)) {
             if ($this->getBatchConfig()->getPeopleEndTime() < new DateTime('-5 minutes')) {
                 if ($this->getBatchConfig()->getPeopleEndTime()) {

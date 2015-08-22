@@ -67,6 +67,14 @@ interface PeopleStorageInterface
     public function getPeople();
 
     /**
+     * Returns person or null if it was not loaded
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function getPerson($id);
+
+    /**
      * Returns all contained people ids
      *
      * @return int[]

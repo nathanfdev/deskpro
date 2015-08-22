@@ -43,12 +43,7 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
     /**
      * @var PeopleStorage
      */
-    private $people_storage;
-
-    /**
-     * @var array
-     */
-    private $people = array();
+    private $storage;
 
     /**
      * Constructor
@@ -58,8 +53,8 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
      */
     public function __construct(ZenDeskReaderInterface $reader, PeopleStorageInterface $storage)
     {
-        $this->reader         = $reader;
-        $this->people_storage = $storage;
+        $this->reader  = $reader;
+        $this->storage = $storage;
     }
 
     /**
@@ -75,7 +70,8 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
      */
     public function getPersonEmail($id)
     {
-        return isset($this->people[$id]['email']) ? $this->people[$id]['email'] : null;
+        $person = $this->storage->getPerson($id);
+        return isset($person['email']) ? $person['email'] : null;
     }
 
     /**
@@ -85,16 +81,16 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
      */
     private function loadByIds($ids)
     {
-        $request_ids = $this->people_storage ? $this->people_storage->getNotContainsIds($ids) : $ids;
+        $request_ids = $this->storage ? $this->storage->getNotContainsIds($ids) : $ids;
         $result      = $this->reader->getPeopleByIds($request_ids);
 
+        $people = array();
         foreach ($result as $person) {
-            $this->people[$person['id']] = $person;
+            $people[$person['id']] = $person;
         }
-        if ($this->people_storage) {
-            $this->people_storage->addIgnoreIds($request_ids);
-            $this->people_storage->addPeople($this->people);
-        }
+
+        $this->storage->addIgnoreIds($request_ids);
+        $this->storage->addPeople($people);
     }
 
     /**
