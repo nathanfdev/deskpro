@@ -40,7 +40,7 @@ use Application\ImportBundle\AbstractCollection;
 final class GenerateCollection extends AbstractCollection
 {
     /**
-     * Add a entity collection
+     * Add an entity collection
      *
      * @param string            $type
      * @param Entity\Collection $entities
@@ -61,16 +61,18 @@ final class GenerateCollection extends AbstractCollection
     }
 
     /**
-     * Set a entity collection
+     * Remove an entity collection
      *
-     * @param string            $type
-     * @param Entity\Collection $entities
-     *
+     * @param Entity\EntityInterface $entity
      * @return $this
      */
-    public function setByEntityType($type, Entity\Collection $entities)
+    public function detach(Entity\EntityInterface $entity)
     {
-        $this->collection[$type] = $entities;
+        foreach ($this->collection as $type => $type_collection) {
+            /** @var Entity\Collection $type_collection */
+            $type_collection->detach($entity);
+        }
+
         return $this;
     }
 

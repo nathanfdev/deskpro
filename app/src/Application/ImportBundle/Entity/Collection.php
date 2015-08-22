@@ -82,6 +82,23 @@ final class Collection extends AbstractCollection
     }
 
     /**
+     * Remove an entity
+     *
+     * @param EntityInterface $entity
+     * @return $this
+     */
+    public function detach(EntityInterface $entity)
+    {
+        $key = array_search($entity, $this->collection, true);
+
+        if ($key !== false) {
+            unset($this->collection[$key]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Merge another entity collection
      *
      * @param Collection $collection
