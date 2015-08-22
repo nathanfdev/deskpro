@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
@@ -144,16 +145,14 @@ final class Articles extends AbstractParser
             'section_id'  => TransformerInterface::TYPE_INT, // todo
             'title'       => TransformerInterface::TYPE_STRING,
             'body'        => TransformerInterface::TYPE_STRING,
-            'draft'       => TransformerInterface::TYPE_BOOLEAN, // todo
             'created_at'  => TransformerInterface::TYPE_DATE,
-            'updated_at'  => TransformerInterface::TYPE_DATE, // todo
             'vote_sum'    => TransformerInterface::TYPE_INT,
             'vote_count'  => TransformerInterface::TYPE_INT,
             'locale'      => TransformerInterface::TYPE_STRING, // todo
-            'outdated'    => TransformerInterface::TYPE_BOOLEAN, // todo
+            'draft'       => TransformerInterface::TYPE_BOOLEAN,
             'label_names' => TransformerInterface::TYPE_ARRAY,
-            'comments'    => TransformerInterface::TYPE_ARRAY, // todo
-            'attachments' => TransformerInterface::TYPE_ARRAY, // todo
+            'comments'    => TransformerInterface::TYPE_ARRAY,
+            'attachments' => TransformerInterface::TYPE_ARRAY,
 
         ));
 
@@ -177,6 +176,12 @@ final class Articles extends AbstractParser
             ->setNumComments($formatted['vote_count'])
             ->setNumRatings($formatted['vote_sum'])
         ;
+
+        if ($formatted['draft']) {
+            $entity->setStatus(DeskPROEntity\Article::STATUS_HIDDEN . '.' . DeskPROEntity\Article::HIDDEN_STATUS_DRAFT);
+        } else {
+            $entity->setStatus(DeskPROEntity\Article::STATUS_PUBLISHED);
+        }
 
         foreach ($formatted['label_names'] as $label) {
             $entity->addLabel($label);
