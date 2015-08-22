@@ -90,7 +90,7 @@ final class Articles extends AbstractParser
     public function getCount()
     {
         // We can read data from ZD reader twice because of ZD reader cache support
-        return count($this->getArticles());
+        return count($this->getArticles(true));
     }
 
     /**
@@ -269,10 +269,12 @@ final class Articles extends AbstractParser
      * Returns articles
      * Loads data from ZenDesk reader
      *
+     * @param boolean $count_only
+     *
      * @return array
      * @throws \Exception
      */
-    private function getArticles()
+    private function getArticles($count_only = false)
     {
         $this->logDebugTimeStart('getArticles', "Reading articles batch");
 
@@ -292,11 +294,13 @@ final class Articles extends AbstractParser
                 // ZenDesk API does not allow to get article comments in a single request due to huge response (could be ~20 MB)
                 // We have to load comments for each article separately
                 foreach ($response as $article) {
-                    $this->logDebug(sprintf('[ZDArticle #%s] Reading comments', $article['id']));
-                    $article['comments'] = $this->reader->getArticleComments($article['id']);
+                    if ( ! $count_only) {
+                        $this->logDebug(sprintf('[ZDArticle #%s] Reading comments', $article['id']));
+                        $article['comments'] = $this->reader->getArticleComments($article['id']);
 
-                    $this->logDebug(sprintf('[ZDArticle #%s] Reading attachments', $article['id']));
-                    $article['attachments'] = $this->reader->getArticleAttachments($article['id']);
+                        $this->logDebug(sprintf('[ZDArticle #%s] Reading attachments', $article['id']));
+                        $article['attachments'] = $this->reader->getArticleAttachments($article['id']);
+                    }
 
                     $articles[] = $article;
                 }

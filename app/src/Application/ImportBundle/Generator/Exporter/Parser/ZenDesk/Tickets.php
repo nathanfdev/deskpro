@@ -107,7 +107,7 @@ final class Tickets extends AbstractParser
     public function getCount()
     {
         // We can read data from ZD reader twice because of ZD reader cache support
-        return count($this->getTickets());
+        return count($this->getTickets(true));
     }
 
     /**
@@ -339,10 +339,12 @@ final class Tickets extends AbstractParser
      * Returns tickets
      * Loads data from ZenDesk reader
      *
+     * @param boolean $count_only
+     *
      * @return array
      * @throws Exception
      */
-    private function getTickets()
+    private function getTickets($count_only = false)
     {
         $this->logDebugTimeStart('getTickets', "Reading tickets batch");
 
@@ -363,8 +365,10 @@ final class Tickets extends AbstractParser
                 // We have to load comments for each ticket separately
                 foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
-                        $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
-                        $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
+                        if ( ! $count_only) {
+                            $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
+                            $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
+                        }
 
                         $tickets[] = $ticket;
                     } else {
