@@ -176,7 +176,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\DownloadLabel($mappers))
             ->attach(new Importer\Feedback($mappers, $blob_adapter))
             ->attach(new Importer\FeedbackLabel($mappers))
-            ->attach(new Importer\Article($mappers))
+            ->attach(new Importer\Article($mappers, $blob_adapter))
             ->attach(new Importer\ArticleLabel($mappers))
             ->attach(new Importer\News($mappers))
             ->attach(new Importer\NewsLabel($mappers))

@@ -33,10 +33,10 @@ use Symfony\Component\Validator\Constraints;
 /**
  * Exporting base attachment entity
  *
- * Class AbstractAttachment
+ * Class AbstractBlob
  * @package Application\ImportBundle\Entity
  */
-abstract class AbstractAttachment extends AbstractEntity
+abstract class AbstractBlob extends AbstractEntity
 {
     /**
      * @var string

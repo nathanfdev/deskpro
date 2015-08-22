@@ -23,6 +23,17 @@
       "value": "Choice 1 > Choice 2"
     }
   ],
-  "attachments": [],
+  "attachments": [
+    {
+      "oid": 0,
+      "person": "user@example.com",
+      "blob_data": null,
+      "blob_url": "",
+      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/example\/csv\/articles.csv",
+      "file_name": "articles.csv",
+      "content_type": "csv",
+      "is_inline": false
+    }
+  ],
   "comments": []
 }

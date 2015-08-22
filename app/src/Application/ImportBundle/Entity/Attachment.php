@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints;
  * Class Attachment
  * @package Application\ImportBundle\Entity
  */
-final class Attachment extends AbstractAttachment implements PersonAwareInterface
+final class Attachment extends AbstractBlob implements PersonAwareInterface
 {
     /**
      * @var string

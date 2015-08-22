@@ -128,6 +128,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->overrideDpRootPath('/1/downloads/download1.json');
         $this->overrideDpRootPath('/1/feedback/feedback1.json');
+        $this->overrideDpRootPath('/1/feedback/article1.json');
     }
 
     public function testCheck()
@@ -253,11 +254,17 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkJsonFile('/1/organization_some_organization.json', '1/organization_some_organization.json');
     }
 
-    private function checkJsonFile($input, $output)
+    /**
+     * Checking that source and generated json files are equal
+     *
+     * @param string $input_file_path
+     * @param string $output_file_path
+     */
+    private function checkJsonFile($input_file_path, $output_file_path)
     {
         $this->assertEquals(
-            json_decode(file_get_contents($this->input_path . $input)),
-            json_decode(file_get_contents($output))
+            json_decode(file_get_contents($this->input_path . $input_file_path)),
+            json_decode(file_get_contents($output_file_path))
         );
     }
 
@@ -379,11 +386,15 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbBlobData()
     {
-        $this->assertCount(2, $this->blob_repository->findBy(array('content_type' => 'csv')));
+        $this->assertCount(3, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'feedback.csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'articles.csv')));
     }
 
+    /**
+     * @param CommandTester $command_tester
+     */
     private function checkDbWriterOutput(CommandTester $command_tester)
     {
         $output = $command_tester->getDisplay();
@@ -416,6 +427,9 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertContains('Persisted Feedback #2', $output);
     }
 
+    /**
+     * @param string $file
+     */
     private function overrideDpRootPath($file)
     {
         $dp_root = str_replace('/app', '/', DP_ROOT);

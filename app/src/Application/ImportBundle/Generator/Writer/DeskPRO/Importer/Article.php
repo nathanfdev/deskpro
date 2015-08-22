@@ -40,6 +40,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 final class Article extends AbstractImporter implements SkipDuplicateInterface
 {
     /**
+     * @var BlobAdapterInterface
+     */
+    private $blob_adapter;
+
+    /**
+     * Constructor
+     *
+     * @param Mapper\Collection    $mappers
+     * @param BlobAdapterInterface $blob_adapter
+     */
+    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    {
+        parent::__construct($mappers);
+        $this->blob_adapter = $blob_adapter;
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public function getEntityType()
@@ -87,6 +105,9 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
                 $article->addCustomData($custom_field);
             }
         }
+        foreach ($entity->getAttachments() as $attachment) {
+            $article->addAttachment($this->createAttachment($attachment, $entity->getPersonEmail()));
+        }
 
         $this->records->add($article);
         return $this->records;
@@ -107,6 +128,26 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
         if ($this->getArticleMapper()->findOneByTitle($entity->getTitle(), false)) {
             throw new DuplicateException();
         }
+    }
+
+    /**
+     * Returns the importing DeskPRO doctrine article attachment entity
+     *
+     * @param Entity\Attachment $entity
+     * @param string            $person_email
+     *
+     * @return DeskPROEntity\ArticleAttachment
+     */
+    private function createAttachment(Entity\Attachment $entity, $person_email)
+    {
+        $email = $entity->getPersonEmail() ? : $person_email;
+        $attachment = new DeskPROEntity\ArticleAttachment();
+        $attachment
+            ->setPerson($this->getPersonMapper()->findOneByEmail($email))
+            ->setBlob($this->blob_adapter->createByBlob($entity))
+        ;
+
+        return $attachment;
     }
 
     /**

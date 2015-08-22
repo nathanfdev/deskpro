@@ -33,7 +33,7 @@ namespace Application\ImportBundle\Entity;
  * Class Blob
  * @package Application\ImportBundle\Entity
  */
-final class Blob extends AbstractAttachment
+final class Blob extends AbstractBlob
 {
     /**
      * {@inheritdoc}

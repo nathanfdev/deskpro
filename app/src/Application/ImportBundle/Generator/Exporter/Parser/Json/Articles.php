@@ -119,6 +119,8 @@ final class Articles extends AbstractParser
             'categories'     => TransformerInterface::TYPE_ARRAY,
             'labels'         => TransformerInterface::TYPE_ARRAY,
             'custom_fields'  => TransformerInterface::TYPE_ARRAY,
+            'comments'       => TransformerInterface::TYPE_ARRAY,
+            'attachments'    => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity = new Entity\Article();
@@ -153,6 +155,12 @@ final class Articles extends AbstractParser
         foreach ($custom_fields as $custom_field) {
             /** @var Entity\CustomField $custom_field */
             $entity->addCustomField($custom_field);
+        }
+
+        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
+        foreach ($attachments as $attachment) {
+            /** @var Entity\Attachment $attachment */
+            $entity->addAttachment($attachment);
         }
 
         return $entity;

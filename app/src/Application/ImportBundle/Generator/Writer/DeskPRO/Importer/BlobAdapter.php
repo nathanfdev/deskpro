@@ -71,7 +71,7 @@ class BlobAdapter implements BlobAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function createByBlob(Entity\Blob $blob)
+    public function createByBlob(Entity\AbstractBlob $blob)
     {
         $blob_data = $this->mapper->findOneByParams(
             $blob->getBlobData(),

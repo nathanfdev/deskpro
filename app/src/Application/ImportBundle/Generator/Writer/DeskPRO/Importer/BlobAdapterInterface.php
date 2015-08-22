@@ -52,8 +52,8 @@ interface BlobAdapterInterface
     /**
      * Creates a blob object by an importer entity
      *
-     * @param Entity\Blob $blob
+     * @param Entity\AbstractBlob $blob
      * @return DeskPROEntity\Blob
      */
-    public function createByBlob(Entity\Blob $blob);
+    public function createByBlob(Entity\AbstractBlob $blob);
 }
