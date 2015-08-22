@@ -57,17 +57,6 @@ final class Person extends AbstractConstraintValidator
             throw new ValidatorConstraintException($entity, $errors);
         }
 
-        if ($entity->getOrganizationPosition()) {
-            if ( ! $entity->getOrganization()) {
-                throw new ValidatorException('Person organization is not defined');
-            }
-        }
-        if ($entity->isAdmin()) {
-            if ( ! $entity->isAgent()) {
-                throw new ValidatorException('Person is admin but is not agent');
-            }
-        }
-
         foreach ($entity->getCustomFields() as $custom_field) {
             /** @var Entity\CustomField $custom_field */
             $errors = $this->validator->validate($custom_field);

@@ -61,6 +61,20 @@ final class GenerateCollection extends AbstractCollection
     }
 
     /**
+     * Set a entity collection
+     *
+     * @param string            $type
+     * @param Entity\Collection $entities
+     *
+     * @return $this
+     */
+    public function setByEntityType($type, Entity\Collection $entities)
+    {
+        $this->collection[$type] = $entities;
+        return $this;
+    }
+
+    /**
      * Returns a collection of entities
      *
      * @param string $type

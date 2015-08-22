@@ -223,6 +223,10 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     public function setAsAdmin($is_admin)
     {
         $this->is_admin = (bool)$is_admin;
+        if ($this->is_admin) {
+            $this->is_agent = true;
+        }
+
         return $this;
     }
 
@@ -510,6 +514,22 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
+     * Checking for person's organization info
+     *
+     * @return bool
+     */
+    public function isOrganizationValid()
+    {
+        if ($this->getOrganizationPosition()) {
+            if ( ! $this->getOrganization()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Returns person emails
      *
      * @return array
@@ -690,6 +710,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             )))
 
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
-            ->addGetterConstraint('firstEmail', new Constraints\Email());
+            ->addGetterConstraint('firstEmail', new Constraints\Email())
+            ->addGetterConstraint('organizationValid', new Constraints\True())
+        ;
     }
 }

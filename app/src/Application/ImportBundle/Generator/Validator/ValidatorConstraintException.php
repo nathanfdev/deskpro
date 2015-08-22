@@ -36,7 +36,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  * Class ValidatorException
  * @package Application\ImportBundle\Generator\Validator
  */
-final class ValidatorConstraintException extends \Exception implements ValidatorExceptionInterface
+final class ValidatorConstraintException extends \RuntimeException implements ValidatorExceptionInterface
 {
     /**
      * @var Entity\EntityInterface
@@ -61,9 +61,7 @@ final class ValidatorConstraintException extends \Exception implements Validator
     }
 
     /**
-     * Returns the fail entity
-     *
-     * @return Entity\EntityInterface
+     * {@inheritdoc}
      */
     public function getEntity()
     {
@@ -71,9 +69,7 @@ final class ValidatorConstraintException extends \Exception implements Validator
     }
 
     /**
-     * Returns a collection of the errors
-     *
-     * @return ConstraintViolationListInterface
+     * {@inheritdoc}
      */
     public function getErrors()
     {
