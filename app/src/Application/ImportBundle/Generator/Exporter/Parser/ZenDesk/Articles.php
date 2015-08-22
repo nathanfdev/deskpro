@@ -35,6 +35,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
+use Application\ImportBundle\Reader\ZenDesk\LocaleMapper;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
@@ -173,7 +174,7 @@ final class Articles extends AbstractParser
             ->setPersonEmail($author_email)
             ->setTitle($formatted['title'])
             ->setContent($formatted['body'])
-            ->setLanguage($formatted['locale'])
+            ->setLanguage(LocaleMapper::getLocale($formatted['locale']))
             ->setDateCreated($formatted['created_at'])
             ->setNumComments($formatted['vote_count'])
             ->setNumRatings($formatted['vote_sum'])

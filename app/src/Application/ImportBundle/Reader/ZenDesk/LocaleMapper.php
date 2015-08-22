@@ -33,233 +33,90 @@ namespace Application\ImportBundle\Reader\ZenDesk;
  */
 class LocaleMapper
 {
+
     /**
+     * Returns DeskPRO locale by ZenDesk locale code
+     *
+     * @param string $zd_locale
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    public static function getLocale($zd_locale)
+    {
+        $mapping = self::localeCodesMapping();
+        $code    = strtolower($zd_locale);
+
+        if (isset($mapping[$code])) {
+            return $mapping[$code];
+        }
+
+        throw new \RuntimeException(sprintf('Locale name not found by `%s`', $zd_locale));
+    }
+
+    /**
+     * ZenDesk locales
+     *
      * @return array
      */
     public static function localeCodesMapping()
     {
         return array(
-            'ar-EG'  => array(
-                'id'   => 1287,
-                'name' => ' Arabic (Egypt)',
-            ),
-            'ar'     => array(
-                'id'   => 66,
-                'name' => 'Arabic',
-            ),
-            'ms'     => array(
-                'id'   => 1307,
-                'name' => 'Bahasa Melayu',
-            ),
-            'ca'     => array(
-                'id'   => 1075,
-                'name' => 'Català (Catalan)',
-            ),
-            'sr-ME'  => array(
-                'id'   => 1298,
-                'name' => 'Crnogorski (Montenegrin)',
-            ),
-            'da'     => array(
-                'id'   => 1000,
-                'name' => 'Dansk',
-            ),
-            'de'     => array(
-                'id'   => 8,
-                'name' => 'Deutsch',
-            ),
-            'de-AT'  => array(
-                'id'   => 1294,
-                'name' => 'Deutsch (Austria)',
-            ),
-            'de-CH'  => array(
-                'id'   => 1295,
-                'name' => 'Deutsch (Switzerland)',
-            ),
-            'et'     => array(
-                'id'   => 101,
-                'name' => 'Eesti keel (Estonian)',
-            ),
-            'en-US'  => array(
-                'id'   => 1,
-                'name' => 'English',
-            ),
-            'en-au'  => array(
-                'id'   => 1277,
-                'name' => 'English (AU)',
-            ),
-            'en-CA'  => array(
-                'id'   => 1181,
-                'name' => 'English (Canada)',
-            ),
-            'en-ie'  => array(
-                'id'   => 1279,
-                'name' => 'English (IE)',
-            ),
-            'en-GB'  => array(
-                'id'   => 1176,
-                'name' => 'English (UK)',
-            ),
-            'es'     => array(
-                'id'   => 2,
-                'name' => 'Español',
-            ),
-            'es-ES'  => array(
-                'id'   => 1186,
-                'name' => 'Español (España)',
-            ),
-            'es-419' => array(
-                'id'   => 1194,
-                'name' => 'Español (Latinoamérica)',
-            ),
-            'fil'    => array(
-                'id'   => 47,
-                'name' => 'Filipino',
-            ),
-            'fr'     => array(
-                'id'   => 16,
-                'name' => 'Français',
-            ),
-            'fr-be'  => array(
-                'id'   => 1291,
-                'name' => 'Français (Belgium)',
-            ),
-            'fr-CA'  => array(
-                'id'   => 1187,
-                'name' => 'Français (Canada)',
-            ),
-            'fr-CH'  => array(
-                'id'   => 1292,
-                'name' => 'Français (Switzerland)',
-            ),
-            'hr'     => array(
-                'id'   => 74,
-                'name' => 'Hrvatski',
-            ),
-            'id'     => array
-            (
-                'id'   => 77,
-                'name' => 'Indonesian',
-            ),
-            'it'     => array(
-                'id'   => 22,
-                'name' => 'Italiano',
-            ),
-            'lv'     => array(
-                'id'   => 1101,
-                'name' => 'Latvian',
-            ),
-            'lt'     => array(
-                'id'   => 1092,
-                'name' => 'Lietuvių kalba',
-            ),
-            'hu'     => array(
-                'id'   => 1009,
-                'name' => 'Magyar',
-            ),
-            'nl-be'  => array(
-                'id'   => 1293,
-                'name' => 'Nederlands (Belgium)',
-            ),
-            'nl'     => array(
-                'id'   => 1005,
-                'name' => 'Nederlands (Dutch)',
-            ),
-            'no'     => array(
-                'id'   => 34,
-                'name' => 'Norsk',
-            ),
-            'pl'     => array(
-                'id'   => 13,
-                'name' => 'Polski (Polish)',
-            ),
-            'pt-BR'  => array(
-                'id'   => 19,
-                'name' => 'Português (Brasil)',
-            ),
-            'pt'     => array(
-                'id'   => 1011,
-                'name' => 'Português (Portugal)',
-            ),
-            'ro'     => array(
-                'id'   => 23,
-                'name' => 'Romana',
-            ),
-            'sk'     => array(
-                'id'   => 1003,
-                'name' => 'Slovak',
-            ),
-            'sl'     => array(
-                'id'   => 72,
-                'name' => 'Slovenian',
-            ),
-            'sr'     => array(
-                'id'   => 1150,
-                'name' => 'Srpski',
-            ),
-            'fi'     => array(
-                'id'   => 84,
-                'name' => 'Suomi (Finnish)',
-            ),
-            'sv'     => array(
-                'id'   => 92,
-                'name' => 'Svenska',
-            ),
-            'th'     => array(
-                'id'   => 81,
-                'name' => 'Thai (ไทย)',
-            ),
-            'tr'     => array(
-                'id'   => 88,
-                'name' => 'Türkçe',
-            ),
-            'vi'     => array(
-                'id'   => 26,
-                'name' => 'Vietnamese',
-            ),
-            'is'     => array(
-                'id'   => 24,
-                'name' => 'Íslenska',
-            ),
-            'cs'     => array(
-                'id'   => 78,
-                'name' => 'Čeština',
-            ),
-            'el'     => array(
-                'id'   => 93,
-                'name' => 'Ελληνικά (Greek)',
-            ),
-            'ru'     => array(
-                'id'   => 27,
-                'name' => 'Русский',
-            ),
-            'uk'     => array(
-                'id'   => 1173,
-                'name' => 'Українська',
-            ),
-            'he'     => array(
-                'id'   => 30,
-                'name' => 'עִבְרִית (Hebrew)',
-            ),
-            'hi'     => array(
-                'id'   => 1303,
-                'name' => 'हिंदी',
-            ),
-            'ja'     => array(
-                'id'   => 67,
-                'name' => '日本語 (Japanese)',
-            ),
-            'zh-CN'  => array(
-                'id'   => 10,
-                'name' => '简体中文 (Simplified Chinese)',
-            ),
-            'zh-TW'  => array(
-                'id'   => 9,
-                'name' => '繁體中文 (Traditional Chinese)',
-            ),
-            'ko'     => array(
-                'id'   => 69,
-                'name' => '한국어 (Korean)',
-            ),
+            'ar-eg'  => 'en_US', // Arabic (Egypt)
+            'ar'     => 'en_US', // Arabic
+            'ms'     => 'en_US', // Bahasa Melayu
+            'ca'     => 'en_US', // Català (Catalan)
+            'sr-me'  => 'en_US', // Crnogorski (Montenegrin)
+            'da'     => 'en_US', // Dansk
+            'de'     => 'en_US', // Deutsch
+            'de-at'  => 'en_US', // Deutsch (Austria)
+            'de-ch'  => 'en_US', // Deutsch (Switzerland)
+            'et'     => 'en_US', // Eesti keel (Estonian)
+            'en-us'  => 'en_US', // English
+            'en-au'  => 'en_US', // English (AU)
+            'en-ca'  => 'en_US', // English (Canada)
+            'en-ie'  => 'en_US', // English (IE)
+            'en-gb'  => 'en_US', // English (UK)
+            'es'     => 'en_US', // Español
+            'es-es'  => 'en_US', // Español (España)
+            'es-419' => 'en_US', // Español (Latinoamérica)
+            'fil'    => 'en_US', // Filipino
+            'fr'     => 'en_US', // Français
+            'fr-be'  => 'en_US', // Français (Belgium)
+            'fr-ca'  => 'en_US', // Français (Canada)
+            'fr-ch'  => 'en_US', // Français (Switzerland)
+            'hr'     => 'en_US', // Hrvatski
+            'id'     => 'en_US', // Indonesian
+            'it'     => 'en_US', // Italiano
+            'lv'     => 'en_US', // Latvian
+            'lt'     => 'en_US', // Lietuvių kalba
+            'hu'     => 'en_US', // Magyar
+            'nl-be'  => 'en_US', // Nederlands (Belgium)
+            'nl'     => 'en_US', // Nederlands (Dutch)
+            'no'     => 'en_US', // Norsk
+            'pl'     => 'en_US', // Polski (Polish)
+            'pt-br'  => 'en_US', // Português (Brasil)
+            'pt'     => 'en_US', // Português (Portugal)
+            'ro'     => 'en_US', // Romana
+            'sk'     => 'en_US', // Slovak
+            'sl'     => 'en_US', // Slovenian
+            'sr'     => 'en_US', // Srpski
+            'fi'     => 'en_US', // Suomi (Finnish)
+            'sv'     => 'en_US', // Svenska
+            'th'     => 'en_US', // Thai (ไทย)
+            'tr'     => 'en_US', // Türkçe
+            'vi'     => 'en_US', // Vietnamese
+            'is'     => 'en_US', // Íslenska
+            'cs'     => 'en_US', // Čeština
+            'el'     => 'en_US', // Ελληνικά (Greek)
+            'ru'     => 'ru',    // Русский
+            'uk'     => 'ru',    // Українська
+            'he'     => 'en_US', // Hebrew
+            'hi'     => 'en_US', // हिंदी
+            'ja'     => 'en_US', // 日本語 (Japanese)
+            'zh-cn'  => 'en_US', // 简体中文 (Simplified Chinese)
+            'zh-tw'  => 'en_US', // 繁體中文 (Traditional Chinese)
+            'ko'     => 'en_US', // 한국어 (Korean)
         );
     }
 }
