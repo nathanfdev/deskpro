@@ -146,15 +146,22 @@ final class Ticket extends AbstractImporter
     private function findOrCreateTicket(Entity\Ticket $entity, $entity_id)
     {
         $ticket = $this->getTicketMapper()->findOneBy(array('id' => $entity_id), false);
-        if ( ! $ticket) {
-            $ticket = $this->getTicketMapper()->findOneBy(array('ref' => $entity->getRef()), false);
-        }
         if ($ticket) {
             $this->logDebug(sprintf(
-                'Found existing ticket, id=`%d` with ref `%s`',
+                'Found existing ticket by import map, id=`%d` with ref `%s`',
                 $ticket->getId(), $ticket->getRef()
             ));
         } else {
+            $ticket = $this->getTicketMapper()->findOneBy(array('ref' => $entity->getRef()), false);
+            if ($ticket) {
+                $this->logDebug(sprintf(
+                    'Found existing ticket by ref, id=`%d` with ref `%s`',
+                    $ticket->getId(), $ticket->getRef()
+                ));
+            }
+        }
+
+        if ( ! $ticket) {
             $ticket = new DeskPROEntity\Ticket();
             $this->logInfo(sprintf('Creating new ticket with ref `%s`', $entity->getRef()));
 
