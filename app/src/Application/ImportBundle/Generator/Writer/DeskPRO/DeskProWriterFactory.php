@@ -59,6 +59,8 @@ class DeskProWriterFactory extends AbstractFactory
         $article_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ArticleCategory');
         /** @var EntityRepository\LabelArticle $article_label_repository */
         $article_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelArticle');
+        /** @var EntityRepository\ArticleComment $article_comment_repository */
+        $article_comment_repository = $doctrine->getRepository('DeskPRO:ArticleComment');
         /** @var EntityRepository\CustomDefPerson $custom_def_person_repository */
         $custom_def_person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
@@ -127,6 +129,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\Article($article_repository))
             ->attach(new Importer\Mapper\ArticleCategory($article_category_repository))
             ->attach(new Importer\Mapper\ArticleLabel($article_label_repository))
+            ->attach(new Importer\Mapper\ArticleComment($article_comment_repository, $entity_manager))
             ->attach(new Importer\Mapper\CustomDefPerson($custom_def_person_repository))
             ->attach(new Importer\Mapper\CustomDefTicket($custom_def_ticket_repository))
             ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository))

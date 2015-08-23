@@ -209,6 +209,15 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @param Person $person
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+        return $this;
+    }
 
     /**
      * Set the visitor of the person who made this comment. If the name
@@ -247,6 +256,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('status', $new_status);
+    }
+
+    /**
+     * @param string $content
+     * @return $this
+     */
+    public function setContent($content)
+    {
+        $this->setModelField('content', $content);
+        return $this;
     }
 
     /**

@@ -70,7 +70,6 @@ final class Article extends AbstractImporter
      *
      * todo add referred objects
      * $record['total_rating'] = $kbval->total_rating;
-     * $record['num_comments'] = $kbval->num_comments;
      * $record['num_ratings']  = $kbval->num_ratings;
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
@@ -100,6 +99,10 @@ final class Article extends AbstractImporter
             ->resetAttachments()
         ;
 
+        if ($article->getId()) {
+            $this->getArticleCommentMapper()->resetComments($article->getId());
+        }
+
         foreach ($entity->getCategories() as $category) {
             $article->addToCategory($this->findOrCreateArticleCategory($category));
         }
@@ -112,17 +115,41 @@ final class Article extends AbstractImporter
         foreach ($entity->getAttachments() as $attachment) {
             $article->addAttachment($this->createAttachment($attachment, $entity->getPersonEmail()));
         }
+        foreach ($entity->getComments() as $comment) {
+            $article->addComment($this->createArticleComment($comment));
+        }
 
         $this->records->add($article);
         return $this->records;
     }
 
     /**
-     * {@inheritdoc}
+     * Creates an article comment entity
      *
-     * @var Entity\Article $entity
+     * @param Entity\ArticleComment $entity
+     * @return DeskPROEntity\ArticleComment
      */
-    public function findOrCreateArticle(Entity\EntityInterface $entity)
+    public function createArticleComment(Entity\ArticleComment $entity)
+    {
+        $article_comment = new DeskPROEntity\ArticleComment();
+        $article_comment
+            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
+            ->setContent($entity->getContent())
+            ->setStatus($entity->getStatus())
+        ;
+
+        $this->records->add($article_comment);
+        return $article_comment;
+    }
+
+    /**
+     * Returns an article by title
+     * Creates a new article if not found
+     *
+     * @param Entity\Article $entity
+     * @return DeskPROEntity\Article
+     */
+    public function findOrCreateArticle(Entity\Article $entity)
     {
         $this->logDebug(sprintf(
             'Looking for existing article with title `%s`, oid `%d`',
@@ -211,5 +238,16 @@ final class Article extends AbstractImporter
     private function getArticleCategoryMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
+    }
+
+    /**
+     * Returns the article comment mapper
+     *
+     * @return Mapper\ArticleComment
+     * @throws \Exception
+     */
+    private function getArticleCommentMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_COMMENT);
     }
 }

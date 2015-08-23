@@ -51,6 +51,7 @@ interface MapperInterface
     const TYPE_ORGANIZATION_LABEL      = 'organization_label';
     const TYPE_LANGUAGE                = 'language';
     const TYPE_ARTICLE_CATEGORY        = 'article_category';
+    const TYPE_ARTICLE_COMMENT         = 'article_comment';
     const TYPE_ARTICLE_LABEL           = 'article_label';
     const TYPE_ARTICLE                 = 'article';
     const TYPE_NEWS_CATEGORY           = 'news_category';
