@@ -420,7 +420,6 @@ class JsonTest extends \DpIntegrationTestCase
 
         // Checking for articles
         $this->assertContains('Persisted Article #2', $output);
-        $this->assertContains('Found existing article `Article 1`', $output);
         $this->assertContains('Unable to create `article` with oid `2`. Reason Person not found. Criteria: {"email":"another@email.tld"}', $output);
 
         // Checking for downloads

@@ -25,81 +25,58 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Oid mapper
- * Uses to link ZendDesk and DeskPRO entities in case to update
- *
- * Class ImportMap
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class DoctrineEntitiesCollection
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-class OidMapper
+class DoctrineEntitiesCollection extends AbstractCollection
 {
     /**
-     * @var EntityRepository\ImportMap
+     * @var mixed
      */
-    private $repository;
+    private $primary_entity;
 
     /**
-     * @var ObjectManager
+     * @return mixed
      */
-    private $entity_manager;
-
-    /**
-     * Constructor
-     *
-     * @param EntityRepository\ImportMap $repository
-     * @param ObjectManager              $entity_manager
-     * @param string                     $type
-     */
-    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager, $type)
+    public function getPrimaryEntity()
     {
-        $this->repository     = $repository;
-        $this->entity_manager = $entity_manager;
-        $this->type           = $type;
+        return $this->primary_entity;
     }
 
     /**
-     * Find a ZenDesk entity mapping
-     *
-     * @param int $id
-     * @return string|null
-     */
-    public function findRefByOldId($id)
-    {
-        /** @var Entity\ImportMap $mapping */
-        $mapping = $this->repository->findOneBy(array(
-            'old_id'   => $id,
-            'typename' => $this->type,
-        ));
-
-        return $mapping ? $mapping->getNewId() : null;
-    }
-
-    /**
-     * Saves a ZenDesk entity mapping
-     *
-     * @param int $old_id
-     * @param int $ref
-     *
+     * @param mixed $entity
      * @return $this
      */
-    public function saveMapping($old_id, $ref)
+    public function setPrimaryEntity($entity)
     {
-        $entity = new Entity\ImportMap();
-        $entity
-            ->setTypename($this->type)
-            ->setOldId($old_id)
-            ->setNewId($ref)
-        ;
+        $this->primary_entity = $entity;
+        $this->addRelatedEntity($entity);
 
-        $this->entity_manager->persist($entity);
-        $this->entity_manager->flush();
+        return $this;
+    }
+
+    /**
+     * @param mixed $entity
+     * @return $this
+     */
+    public function addRelatedEntity($entity)
+    {
+        $exist = false;
+        foreach ($this->collection as $existing_entity) {
+            if ($entity === $existing_entity) {
+                $exist = true;
+                break;
+            }
+        }
+
+        if ( ! $exist) {
+            $this->collection[] = $entity;
+        }
 
         return $this;
     }

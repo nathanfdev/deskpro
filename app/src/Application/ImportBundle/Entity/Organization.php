@@ -259,14 +259,15 @@ class Organization extends AbstractEntity
         }
 
         return array(
-            'oid'           => $this->oid,
-            'name'          => $this->name,
-            'picture'       => $this->picture ? $this->picture->toArray() : null,
-            'importance'    => $this->importance,
-            'date_created'  => $this->date_created->format('Y-m-d H:i:s'),
-            'contact_data'  => $contact_data,
-            'custom_fields' => $custom_fields,
-            'labels'        => $this->labels,
+            'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
+            'name'           => $this->name,
+            'picture'        => $this->picture ? $this->picture->toArray() : null,
+            'importance'     => $this->importance,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'contact_data'   => $contact_data,
+            'custom_fields'  => $custom_fields,
+            'labels'         => $this->labels,
         );
     }
 

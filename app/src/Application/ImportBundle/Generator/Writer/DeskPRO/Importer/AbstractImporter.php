@@ -31,7 +31,6 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\MapperInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Abstract DeskPRO importer
@@ -48,7 +47,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected $mappers;
 
     /**
-     * @var ArrayCollection
+     * @var DoctrineEntitiesCollection
      */
     protected $records;
 
@@ -127,7 +126,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 $organization = new DeskPROEntity\Organization();
                 $organization->setName($title);
 
-                $this->records->add($organization);
+                $this->records->addRelatedEntity($organization);
                 $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
             }
         }

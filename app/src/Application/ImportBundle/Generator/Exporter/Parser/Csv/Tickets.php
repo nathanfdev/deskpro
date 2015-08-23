@@ -139,6 +139,7 @@ final class Tickets extends AbstractParser
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_TICKET)
             ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setSubject($formatted['subject'])
             ->setPersonEmail($formatted['user'])

@@ -25,64 +25,83 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
+namespace Application\ImportBundle\Generator;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * DeskPRO feedback labels importer
+ * Oid mapper
+ * Uses to link ZendDesk and DeskPRO entities in case to update
  *
- * Class FeedbackLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
+ * Class ImportMap
+ * @package Application\ImportBundle\Generator
  */
-final class FeedbackLabel extends AbstractImporter
+class OidMapper
 {
     /**
-     * {@inheritdoc}
+     * @var EntityRepository\ImportMap
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_FEEDBACK;
-    }
+    private $repository;
 
     /**
-     * {@inheritdoc}
+     * @var ObjectManager
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
-    {
-        if ( ! $entity instanceof Entity\Feedback) {
-            self::throwUnexpectedEntityTypeException($entity);
-        }
-
-        $this->records = new DoctrineEntitiesCollection();
-
-        $feedback = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
-        $feedback->resetLabels();
-
-        foreach ($entity->getLabels() as $label) {
-            $feedback->addLabel($this->createFeedbackLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for feedback with oid `%d`',
-                $label, $feedback->getId()
-            ));
-        }
-
-        return $this->records;
-    }
+    private $entity_manager;
 
     /**
-     * Returns a new feedback label entity
+     * Constructor
      *
-     * @param string $label
-     * @return DeskPROEntity\LabelFeedback
+     * @param EntityRepository\ImportMap $repository
+     * @param ObjectManager              $entity_manager
      */
-    private function createFeedbackLabel($label)
+    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager)
     {
-        $entity = new DeskPROEntity\LabelFeedback();
-        $entity->setLabel($label);
+        $this->repository     = $repository;
+        $this->entity_manager = $entity_manager;
+    }
 
-        $this->records->addRelatedEntity($entity);
-        return $entity;
+    /**
+     * Find a ZenDesk entity mapping
+     *
+     * @param string $type
+     * @param int    $id
+     *
+     * @return string|null
+     */
+    public function findRefByOldId($type, $id)
+    {
+        /** @var Entity\ImportMap $mapping */
+        $mapping = $this->repository->findOneBy(array(
+            'old_id'   => $id,
+            'typename' => $type,
+        ));
+
+        return $mapping ? $mapping->getNewId() : null;
+    }
+
+    /**
+     * Saves a ZenDesk entity mapping
+     *
+     * @param string $type
+     * @param int    $old_id
+     * @param int    $ref
+     *
+     * @return $this
+     */
+    public function saveMapping($type, $old_id, $ref)
+    {
+        $entity = new Entity\ImportMap();
+        $entity
+            ->setTypename($type)
+            ->setOldId($old_id)
+            ->setNewId($ref)
+        ;
+
+        $this->entity_manager->persist($entity);
+        $this->entity_manager->flush();
+
+        return $this;
     }
 }

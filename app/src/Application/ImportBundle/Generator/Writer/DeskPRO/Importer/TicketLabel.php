@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO ticket labels importer
@@ -50,13 +49,13 @@ final class TicketLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Ticket) {
             self::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new ArrayCollection();
+        $this->records = new DoctrineEntitiesCollection();
 
         $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
         $ticket->resetLabels();
@@ -69,7 +68,7 @@ final class TicketLabel extends AbstractImporter
             ));
         }
 
-        $this->records->add($ticket);
+        $this->records->setPrimaryEntity($ticket);
         return $this->records;
     }
 

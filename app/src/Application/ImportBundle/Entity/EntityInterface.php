@@ -61,6 +61,17 @@ interface EntityInterface
     public function setRawData($raw_data);
 
     /**
+     * @return string
+     */
+    public function getImportMapKey();
+
+    /**
+     * @param string $import_map_key
+     * @return $this
+     */
+    public function setImportMapKey($import_map_key);
+
+    /**
      * Get entity type
      *
      * @return string

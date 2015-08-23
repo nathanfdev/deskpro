@@ -28,9 +28,11 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
+use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
 use Exception;
@@ -173,6 +175,11 @@ class DeskProWriterFactory extends AbstractFactory
             throw new Exception('Unable to get the blob storage');
         }
 
+        /** @var EntityRepository\ImportMap $import_map_repository */
+        $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
+
+        $oid_mapper = new OidMapper($import_map_repository, $entity_manager);
+
         $importers = new Importer\Collection();
         $importers
             ->attach(new Importer\Download($mappers, $blob_adapter))
@@ -194,6 +201,6 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var EntityWatcher $entity_watcher */
         $entity_watcher = $this->container->get('deskpro.search.entity_listener');
 
-        return new DeskProWriter($importers, $entity_manager, $entity_watcher);
+        return new DeskProWriter($importers, $entity_manager, $oid_mapper, $entity_watcher);
     }
 }

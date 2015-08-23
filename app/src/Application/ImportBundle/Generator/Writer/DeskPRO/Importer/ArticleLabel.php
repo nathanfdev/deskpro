@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO article labels importer
@@ -50,15 +49,15 @@ final class ArticleLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Article) {
             self::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new ArrayCollection();
+        $this->records = new DoctrineEntitiesCollection();
 
-        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
+        $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id));
         $article->resetLabels();
 
         foreach ($entity->getLabels() as $label_name) {
@@ -69,8 +68,7 @@ final class ArticleLabel extends AbstractImporter
             $this->logDebug(sprintf('Creating a new label `%s` for article with oid `%d`', $label_name, $article->getId()));
         }
 
-        $this->records->add($article);
-
+        $this->records->setPrimaryEntity($article);
         return $this->records;
     }
 }

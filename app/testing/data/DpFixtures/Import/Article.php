@@ -3,6 +3,7 @@
 namespace DpFixtures\Import;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ImportMap;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -35,5 +36,15 @@ class Article extends AbstractFixture
         }
 
         $manager->persist($article);
+
+        $map = new ImportMap();
+        $map
+            ->setTypename(ImportMap::TYPE_ZENDESK_ARTICLE)
+            ->setOldId(1)
+            ->setNewId($article->getId())
+        ;
+
+        $manager->persist($map);
+        $manager->flush();
     }
 }

@@ -1,5 +1,6 @@
 {
   "oid": "2",
+  "import_map_key": "zd_article",
   "person": "another@email.tld",
   "title": "Article 2",
   "content": "Content 2",

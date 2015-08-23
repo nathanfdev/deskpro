@@ -667,6 +667,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
 
         return array(
             'oid'                   => $this->oid,
+            'import_map_key'        => $this->import_map_key,
             'is_agent'              => $this->is_agent,
             'is_user'               => $this->is_user,
             'is_admin'              => $this->is_admin,

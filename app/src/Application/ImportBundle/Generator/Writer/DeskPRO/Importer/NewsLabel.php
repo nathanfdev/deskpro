@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO news labels importer
@@ -50,13 +49,13 @@ final class NewsLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\News) {
             self::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new ArrayCollection();
+        $this->records = new DoctrineEntitiesCollection();
 
         $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
         $news->resetLabels();
@@ -83,7 +82,7 @@ final class NewsLabel extends AbstractImporter
         $entity = new DeskPROEntity\LabelNews();
         $entity->setLabel($label);
 
-        $this->records->add($entity);
+        $this->records->addRelatedEntity($entity);
         return $entity;
     }
 }

@@ -94,6 +94,7 @@ final class Articles extends AbstractParser
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'article_',
                 'ref'    => 'oid',
@@ -130,6 +131,7 @@ final class Articles extends AbstractParser
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
+            ->setImportMapKey($formatted['import_map_key'])
             ->setOid($formatted['oid'])
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])

@@ -52,30 +52,21 @@ final class Articles extends AbstractParser
     private $article_people;
 
     /**
-     * @var OidMapper
-     */
-    private $article_mapper;
-
-    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
      * @param ParserHelperSet              $helpers
      * @param ParserPeopleStorageInterface $people_storage
-     * @param OidMapper                    $article_mapper
      */
     public function __construct(
         ZenDeskReaderInterface       $reader,
         FormatterInterface           $formatter,
         ParserHelperSet              $helpers,
-        ParserPeopleStorageInterface $people_storage,
-        OidMapper                    $article_mapper
+        ParserPeopleStorageInterface $people_storage
     ) {
         parent::__construct($reader, $formatter, $helpers);
-
         $this->article_people = $people_storage;
-        $this->article_mapper = $article_mapper;
     }
 
     /**
@@ -171,6 +162,7 @@ final class Articles extends AbstractParser
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_ZENDESK_ARTICLE)
             ->setOid($formatted['id'])
             ->setPersonEmail($author_email)
             ->setTitle($formatted['title'])

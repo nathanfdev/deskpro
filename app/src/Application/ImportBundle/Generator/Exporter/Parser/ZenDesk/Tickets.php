@@ -67,30 +67,21 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
-     * @var OidMapper
-     */
-    private $tickets_mapper;
-
-    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
      * @param ParserHelperSet              $helpers
      * @param ParserPeopleStorageInterface $people_storage
-     * @param OidMapper                   $tickets_mapper
      */
     public function __construct(
         ZenDeskReaderInterface       $reader,
         FormatterInterface           $formatter,
         ParserHelperSet              $helpers,
-        ParserPeopleStorageInterface $people_storage,
-        OidMapper                    $tickets_mapper
+        ParserPeopleStorageInterface $people_storage
     ) {
         parent::__construct($reader, $formatter, $helpers);
-
         $this->tickets_people = $people_storage;
-        $this->tickets_mapper = $tickets_mapper;
     }
 
     /**
@@ -177,18 +168,13 @@ final class Tickets extends AbstractParser
             throw new SkippingException(sprintf('Unable to get submitter email by id #%s', $formatted['submitter_id']), $formatted);
         }
 
-        $ref = $this->tickets_mapper->findRefByOldId($formatted['id']);
-        if ( ! $ref) {
-            $ref = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
-            $this->tickets_mapper->saveMapping($formatted['id'], $ref);
-        }
-
         $entity = new Entity\Ticket();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
-            ->setRef($ref)
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_ZENDESK_TICKET)
+            ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setPersonEmail($person_email)
             ->setAgentEmail($agent_email)
             ->setSubject($formatted['subject'] ? : 'No subject')

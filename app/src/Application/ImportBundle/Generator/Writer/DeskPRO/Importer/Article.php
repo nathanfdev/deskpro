@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO article importer
@@ -72,15 +71,15 @@ final class Article extends AbstractImporter
      * $record['total_rating'] = $kbval->total_rating;
      * $record['num_ratings']  = $kbval->num_ratings;
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Article) {
             self::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new ArrayCollection();
+        $this->records = new DoctrineEntitiesCollection();
 
-        $article = $this->findOrCreateArticle($entity);
+        $article = $this->findOrCreateArticle($entity_id);
         $article
             ->setTitle($entity->getTitle())
             ->setContent($entity->getContent())
@@ -119,8 +118,28 @@ final class Article extends AbstractImporter
             $article->addComment($this->createArticleComment($comment));
         }
 
-        $this->records->add($article);
+        $this->records->setPrimaryEntity($article);
         return $this->records;
+    }
+
+    /**
+     * Returns an article by title
+     * Creates a new article if not found
+     *
+     * @param int $entity_id
+     *
+     * @return DeskPROEntity\Article
+     */
+    protected function findOrCreateArticle($entity_id)
+    {
+        $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id), false);
+        if ($article) {
+            $this->logDebug(sprintf('Found existing article `%s`', $article->getRealTitle()));
+            return $article;
+        }
+
+        $this->logDebug('Creating new article');
+        return new DeskPROEntity\Article();
     }
 
     /**
@@ -138,33 +157,11 @@ final class Article extends AbstractImporter
             ->setStatus($entity->getStatus())
         ;
 
-        $this->records->add($article_comment);
+        $this->records->addRelatedEntity($article_comment);
         return $article_comment;
     }
 
-    /**
-     * Returns an article by title
-     * Creates a new article if not found
-     *
-     * @param Entity\Article $entity
-     * @return DeskPROEntity\Article
-     */
-    public function findOrCreateArticle(Entity\Article $entity)
-    {
-        $this->logDebug(sprintf(
-            'Looking for existing article with title `%s`, oid `%d`',
-            $entity->getTitle(), $entity->getOid()
-        ));
 
-        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle(), false);
-        if ($article) {
-            $this->logDebug(sprintf('Found existing article `%s`', $entity->getTitle()));
-            return $article;
-        }
-
-        $this->logDebug('Creating new article article');
-        return new DeskPROEntity\Article();
-    }
 
     /**
      * Returns the importing DeskPRO doctrine article attachment entity
@@ -206,7 +203,7 @@ final class Article extends AbstractImporter
                 $category = new DeskPROEntity\ArticleCategory();
                 $category->setRealTitle($title);
 
-                $this->records->add($category);
+                $this->records->addRelatedEntity($category);
                 $this->logInfo(sprintf('New article category creating `%s`', $category->getTitle()));
             }
         }

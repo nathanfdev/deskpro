@@ -68,7 +68,7 @@ final class Article implements MapperInterface, MapperByTitleInterface
     {
         /** @var Entity\Article $record */
         $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Article not found', $criteria);
         }
 

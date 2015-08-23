@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
@@ -133,6 +134,7 @@ final class Articles extends AbstractParser
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_ARTICLE)
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])

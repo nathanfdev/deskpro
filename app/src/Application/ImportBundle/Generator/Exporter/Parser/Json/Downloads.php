@@ -94,6 +94,7 @@ final class Downloads extends AbstractParser
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'download_',
                 'ref'    => 'oid',
@@ -122,6 +123,7 @@ final class Downloads extends AbstractParser
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
+            ->setImportMapKey($formatted['import_map_key'])
             ->setDestination($formatted['destination'])
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])

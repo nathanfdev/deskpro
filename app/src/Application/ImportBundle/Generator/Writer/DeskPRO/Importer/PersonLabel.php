@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO person labels importer
@@ -50,13 +49,13 @@ final class PersonLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Person) {
             self::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new ArrayCollection();
+        $this->records = new DoctrineEntitiesCollection();
 
         $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
         $person->resetLabels();
@@ -83,7 +82,7 @@ final class PersonLabel extends AbstractImporter
         $entity = new DeskPROEntity\LabelPerson();
         $entity->setLabel($label);
 
-        $this->records->add($entity);
+        $this->records->addRelatedEntity($entity);
         return $entity;
     }
 }

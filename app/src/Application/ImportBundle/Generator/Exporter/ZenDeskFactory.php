@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
-use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\OidMapper;
+use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
@@ -84,14 +84,13 @@ class ZenDeskFactory extends AbstractFactory
 
         // Article parser
         $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $storage);
-        $article_mapper = new OidMapper($import_map_repository, $entity_manager, ImportMap::TYPE_ZENDESK_ARTICLE);
 
         // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\ZenDesk\Downloads($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Feedback($reader, $formatter, $helpers))
-            ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people, $article_mapper))
+            ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
             ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
             ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people, $tickets_mapper))

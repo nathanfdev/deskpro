@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO news importer
@@ -55,13 +54,13 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
      * 'num_comments'   => $nval->num_comments,
      * 'num_ratings'    => $nval->num_ratings,
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\News) {
             self::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new ArrayCollection();
+        $this->records = new DoctrineEntitiesCollection();
 
         $news = new DeskPROEntity\News();
         $news
@@ -77,7 +76,7 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
             ->resetLabels()
         ;
 
-        $this->records->add($news);
+        $this->records->setPrimaryEntity($news);
         return $this->records;
     }
 
@@ -113,7 +112,7 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
                 $category = new DeskPROEntity\NewsCategory();
                 $category->setRealTitle($title);
 
-                $this->records->add($category);
+                $this->records->addRelatedEntity($category);
                 $this->logInfo(sprintf('New news category creating `%s`', $category->getTitle()));
             }
         }
