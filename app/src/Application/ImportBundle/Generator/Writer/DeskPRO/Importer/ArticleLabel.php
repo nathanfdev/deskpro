@@ -61,29 +61,16 @@ final class ArticleLabel extends AbstractImporter
         $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
         $article->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $article->addLabel($this->createArticleLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for article with oid `%d`',
-                $label, $article->getId()
-            ));
+        foreach ($entity->getLabels() as $label_name) {
+            $entity = new DeskPROEntity\LabelArticle();
+            $entity->setLabel($label_name);
+
+            $article->addLabel($entity);
+            $this->logDebug(sprintf('Creating a new label `%s` for article with oid `%d`', $label_name, $article->getId()));
         }
 
+        $this->records->add($article);
+
         return $this->records;
-    }
-
-    /**
-     * Returns a new article label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelArticle
-     */
-    private function createArticleLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelArticle();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-        return $entity;
     }
 }

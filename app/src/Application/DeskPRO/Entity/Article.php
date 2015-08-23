@@ -248,6 +248,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this->custom_data;
     }
 
+    /**
+     * Add custom data
+     *
+     * @param CustomDataArticle $data
+     */
     public function addCustomData(CustomDataArticle $data)
     {
         $this->custom_data->add($data);
@@ -268,6 +273,23 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
         $this->custom_data->clear();
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
+    }
+
+    /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCategories()
+    {
+        foreach ($this->categories as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->categories->clear();
+        $this->_onPropertyChanged('categories', null, $this->categories);
 
         return $this;
     }
@@ -342,6 +364,23 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         foreach ($this->categories as $c) {
             return $c;
         }
+    }
+
+    /**
+     * Reset attachments
+     *
+     * @return $this
+     */
+    public function resetAttachments()
+    {
+        foreach ($this->attachments as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->attachments->clear();
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+
+        return $this;
     }
 
     public function addAttachment(ArticleAttachment $attach)

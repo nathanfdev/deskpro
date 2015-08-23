@@ -94,6 +94,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->helper->loadFixtures('Import/Person');
         $this->helper->loadFixtures('Import/Organization');
         $this->helper->loadFixtures('Import/Ticket');
+        $this->helper->loadFixtures('Import/Article');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
@@ -272,9 +273,9 @@ class JsonTest extends \DpIntegrationTestCase
     {
         $this->assertEquals(1, $this->ticket_repository->countAll());
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
-        $this->assertEquals(2, $this->person_repository->countAll());
+        $this->assertEquals(3, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
-        $this->assertEquals(1, $this->article_repository->countAll());
+        $this->assertEquals(2, $this->article_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
@@ -325,7 +326,7 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbPeopleData()
     {
-        $this->assertCount(2, $this->person_repository->findAll());
+        $this->assertCount(3, $this->person_repository->findAll());
 
         /** @var Entity\Person $person */
         $person = $this->person_repository->findOneBy(array('name' => 'Sergey'));
@@ -402,6 +403,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         // Checking for people
         $this->assertContains('Persisted Person #2', $output);
+        $this->assertContains('Persisted Person #3', $output);
 
         // Checking for tickets
         $this->assertContains('Creating new ticket with ref', $output);
@@ -418,6 +420,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         // Checking for articles
         $this->assertContains('Persisted Article #2', $output);
+        $this->assertContains('Found existing article `Article 1`', $output);
         $this->assertContains('Unable to create `article` with oid `2`. Reason Person not found. Criteria: {"email":"another@email.tld"}', $output);
 
         // Checking for downloads

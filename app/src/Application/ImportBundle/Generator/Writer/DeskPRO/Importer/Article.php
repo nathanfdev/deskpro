@@ -37,7 +37,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class Article
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-final class Article extends AbstractImporter implements SkipDuplicateInterface
+final class Article extends AbstractImporter
 {
     /**
      * @var BlobAdapterInterface
@@ -81,7 +81,7 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
 
         $this->records = new ArrayCollection();
 
-        $article = new DeskPROEntity\Article();
+        $article = $this->findOrCreateArticle($entity);
         $article
             ->setTitle($entity->getTitle())
             ->setContent($entity->getContent())
@@ -96,6 +96,8 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
             ->setViewsCount($entity->getViewCount())
             ->resetCustomData()
             ->resetLabels()
+            ->resetCategories()
+            ->resetAttachments()
         ;
 
         foreach ($entity->getCategories() as $category) {
@@ -120,16 +122,21 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      *
      * @var Entity\Article $entity
      */
-    public function checkAlreadyExists(Entity\EntityInterface $entity)
+    public function findOrCreateArticle(Entity\EntityInterface $entity)
     {
         $this->logDebug(sprintf(
             'Looking for existing article with title `%s`, oid `%d`',
             $entity->getTitle(), $entity->getOid()
         ));
 
-        if ($this->getArticleMapper()->findOneByTitle($entity->getTitle(), false)) {
-            throw new DuplicateException();
+        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle(), false);
+        if ($article) {
+            $this->logDebug(sprintf('Found existing article `%s`', $entity->getTitle()));
+            return $article;
         }
+
+        $this->logDebug('Creating new article article');
+        return new DeskPROEntity\Article();
     }
 
     /**
