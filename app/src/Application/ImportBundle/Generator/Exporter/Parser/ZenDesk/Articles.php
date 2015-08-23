@@ -276,6 +276,8 @@ final class Articles extends AbstractParser
             ->setPersonEmail($author_email)
             ->setContent($formatted['body'])
             ->setDateCreated($formatted['created_at'])
+            ->setAsReviewed(true)
+            ->setStatus(DeskPROEntity\ArticleComment::STATUS_VISIBLE)
         ;
 
         return $entity;
