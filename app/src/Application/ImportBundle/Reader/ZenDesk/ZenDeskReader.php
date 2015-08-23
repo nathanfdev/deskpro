@@ -203,14 +203,22 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getArticleCategories()
+    public function getArticleCategory($section_id)
     {
-        $categories = $this->adapter->doRequest('HelpCenter\CategoriesFindAll');
-        $sections   = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+        $response_sections = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+        $response_sections = $this->toArray($response_sections->sections);
 
-        $article_categories = array();
+        $sections = array();
+        foreach ($response_sections as $section) {
+            $sections[$section['id']] = $section;
+        }
 
-        return $article_categories;
+        if (isset($sections[$section_id])) {
+            return $sections[$section_id];
+        } else {
+            $response_section = $this->adapter->doRequest('HelpCenter\SectionFind', array('id' => $section_id));
+            return $this->toArray($response_section->section);
+        }
     }
 
     /**
@@ -293,10 +301,10 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     /**
      * Converts stdClass to array
      *
-     * @param \stdClass $object
+     * @param mixed $object
      * @return array
      */
-    private function toArray(\stdClass $object)
+    private function toArray($object)
     {
         return json_decode(json_encode($object), true);
     }

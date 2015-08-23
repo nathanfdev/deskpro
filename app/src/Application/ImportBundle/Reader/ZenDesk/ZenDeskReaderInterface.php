@@ -174,7 +174,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * Returns a collection of article categories
      * Merges help center categories and sections
      *
+     * @param int $section_id
      * @return array
      */
-    public function getArticleCategories();
+    public function getArticleCategory($section_id);
 }

@@ -143,7 +143,7 @@ final class Articles extends AbstractParser
                 'ref'    => 'id',
             )),
             'author_id'   => TransformerInterface::TYPE_INT,
-            'section_id'  => TransformerInterface::TYPE_INT, // todo
+            'section_id'  => TransformerInterface::TYPE_INT,
             'title'       => TransformerInterface::TYPE_STRING,
             'body'        => TransformerInterface::TYPE_STRING,
             'created_at'  => TransformerInterface::TYPE_DATE,
@@ -186,6 +186,12 @@ final class Articles extends AbstractParser
             $entity->setStatus(DeskPROEntity\Article::STATUS_HIDDEN . '.' . DeskPROEntity\Article::HIDDEN_STATUS_DRAFT);
         } else {
             $entity->setStatus(DeskPROEntity\Article::STATUS_PUBLISHED);
+        }
+        if ($formatted['section_id']) {
+            $section = $this->reader->getArticleCategory($formatted['section_id']);
+            if (isset($section['name'])) {
+                $entity->addCategory($section['name']);
+            }
         }
 
         foreach ($formatted['label_names'] as $label) {
