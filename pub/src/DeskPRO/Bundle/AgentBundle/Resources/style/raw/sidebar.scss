@@ -504,6 +504,16 @@
       z-index: 99;
       opacity: 0.5;
     }
+
+    &.depth-1 {
+      padding-left: 10px;
+    }
+    &.depth-2 {
+      padding-left: 20px;
+    }
+    &.depth-3 {
+      padding-left: 30px;
+    }
   }
 
   .list-icon {
