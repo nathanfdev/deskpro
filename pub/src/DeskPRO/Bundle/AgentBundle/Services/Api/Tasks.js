@@ -8,7 +8,7 @@ import DpApi from "../DpApi";
  */
 export function loadAddress(address, params = {}) {
   // Temporary hard-coded groupings
-  params.order_by = 'labels';
+  params.order_by = 'ticket';
 
   if (params !== {}) {
     if (address.indexOf('?') === -1) {
@@ -136,6 +136,10 @@ export function editTask(taskId, data) {
  */
 export function loadLinks(params = {}) {
   return DpApi.sendGet('DP_API/task_links?' + compileParams(params));
+}
+
+export function loadLinkedTickets(params = {}) {
+  return DpApi.sendGet('DP_API/tickets?' + compileParams(params));
 }
 
 /**

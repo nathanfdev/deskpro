@@ -134,11 +134,13 @@ const TaskCard = React.createClass({
     let doneButton = task.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
 
     let ticket_link = undefined;
+    let ticket_title = 'Linked ticket';
 
     if (task.linked_items.length > 0) {
       task.linked_items.forEach((item) => {
         if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
           ticket_link = '#' + linked_items[item].ticket;
+          ticket_title = this.props.tickets[linked_items[item].ticket].subject;
         }
       });
     }
@@ -245,7 +247,7 @@ const TaskCard = React.createClass({
 
                 {ticket_link ? <span>
                 <span className="disc"></span>
-                  <i className="fa fa-link"/><a href={ticket_link}>Linked ticket</a>
+                  <i className="fa fa-link"/><a href={ticket_link}>{ticket_title}</a>
                 </span> : ''}
               </div>
             </div> : '' }

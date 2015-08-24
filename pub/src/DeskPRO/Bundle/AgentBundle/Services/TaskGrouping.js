@@ -1,13 +1,15 @@
 import Moment from "moment";
 
 export default class TaskGrouping {
-  constructor(projects = {}, departments = {}, teams = {}, agents = {}, lists = {}) {
+  constructor(projects = {}, departments = {}, teams = {}, agents = {}, lists = {}, links = {}, tickets = {}) {
     this.projects = projects;
     this.departments = departments;
     this.teams = teams;
     this.agents = agents;
     this.lastGrouping = '';
     this.lists = lists;
+    this.links = links;
+    this.tickets = tickets;
   }
 
   getDivider(object, grouping = false)
@@ -38,6 +40,9 @@ export default class TaskGrouping {
         break;
       case 'labels':
         results = this.getLabelDividers(object);
+        break;
+      case 'ticket':
+        results = this.getTicketDividers(object);
         break;
       default:
         return false;
@@ -293,7 +298,9 @@ export default class TaskGrouping {
 
     if (object.labels && object.labels.length > 0) {
       let labels = object.labels;
-      labels.sort();
+      labels.sort((a, b) => {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
       labelsDivider = labels.join(', ');
     }
 
@@ -307,6 +314,30 @@ export default class TaskGrouping {
     return {
       objectDivider: labelsDivider,
       textDisplay: labelsDivider
+    }
+  }
+
+  getTicketDividers(object)
+  {
+    let ticketDivider = false;
+    if (object.linked_items && object.linked_items.length > 0) {
+      object.linked_items.forEach((item) => {
+        if (this.links[item] && this.links[item].ticket && ticketDivider === false) {
+          ticketDivider = this.tickets[this.links[item].ticket].subject;
+        }
+      });
+    }
+
+    if (ticketDivider === false ){
+      return {
+        objectDivider: 'none',
+        textDisplay: 'No Ticket'
+      }
+    }
+
+    return {
+      objectDivider: ticketDivider,
+      textDisplay: ticketDivider
     }
   }
 }
