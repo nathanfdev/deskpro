@@ -192,6 +192,13 @@ class Task extends NotifyPropertyChangeEntity
     protected $assigned;
 
     /**
+     * The date the task was completed
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $date_done;
+
+    /**
      * @param Person $creator
      */
     public function __construct(Person $creator)
@@ -355,6 +362,14 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return mixed
+     */
+    public function getDateDone()
+    {
+        return $this->date_done;
+    }
+
+    /**
      * @param string $title
      */
     public function setTitle($title)
@@ -367,6 +382,9 @@ class Task extends NotifyPropertyChangeEntity
      */
     public function setIsDone($is_done)
     {
+        $date_done = !empty($is_done) ? new \DateTime() : null;
+
+        $this->setDateDone($date_done);
         $this->setModelField('is_done', $is_done);
     }
 
@@ -456,6 +474,14 @@ class Task extends NotifyPropertyChangeEntity
     public function setUrgency($urgency)
     {
         $this->setModelField('urgency', $urgency);
+    }
+
+    /**
+     * @param \DateTime $date_done
+     */
+    public function setDateDone(\DateTime $date_done)
+    {
+        $this->setModelField('date_done', $date_done);
     }
 
     /**

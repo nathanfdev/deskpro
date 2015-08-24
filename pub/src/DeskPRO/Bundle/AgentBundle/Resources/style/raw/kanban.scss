@@ -1,5 +1,4 @@
 .kanban {
-  width: 800px !important;
 
   .list {
     margin: 10px 0;
@@ -16,6 +15,11 @@
       font-weight: bold;
       padding: 12px 15px;
       text-transform: uppercase;
+    }
+
+    &.drag-hover h1.kanban-list-header {
+      background-color: #4681b2;
+      color: #fff;
     }
 
     .card {

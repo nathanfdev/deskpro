@@ -10,5 +10,6 @@ export default keyMirror({
   COLLAPSE_NAV: null,
   EXPAND_NAV: null,
   COLLAPSE_SWITCHER: null,
-  EXPAND_SWITCHER: null
+  EXPAND_SWITCHER: null,
+  TOGGLE_KANBAN: null,
 });

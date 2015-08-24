@@ -8,10 +8,14 @@ import DpApi from "../DpApi";
  */
 export function loadAddress(address, params = {}) {
   // Temporary hard-coded groupings
-  params.order_by = 'created';
+  params.order_by = 'labels';
 
   if (params !== {}) {
-    address = address + '?' + compileParams(params);
+    if (address.indexOf('?') === -1) {
+      address = address + '?' + compileParams(params);
+    } else {
+      address = address + '&' + compileParams(params);
+    }
   }
 
   return DpApi.sendGet('DP_API/' + address);
@@ -132,6 +136,14 @@ export function editTask(taskId, data) {
  */
 export function loadLinks(params = {}) {
   return DpApi.sendGet('DP_API/task_links?' + compileParams(params));
+}
+
+/**
+ * List all lists for a project
+ * @param projectId
+ */
+export function loadLists(projectId) {
+  return DpApi.sendGet('DP_API/projects/' + projectId + '/lists');
 }
 
 /**
