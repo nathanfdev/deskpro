@@ -1050,6 +1050,7 @@ php cmd.php dpdev:import:fixtures --type=category -d
   "date_created": "2015-07-30 06:09:01",
   "people_end_time": "2015-06-30 08:00:01",
   "tickets_end_time": "2015-07-30 06:09:01",
+  "articles_end_time":"2015-07-30 07:09:01"
   "retry_after_time": "2015-07-30 06:11:01",
   "has_remaining": true
 }
