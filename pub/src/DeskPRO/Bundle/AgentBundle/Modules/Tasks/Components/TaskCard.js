@@ -9,12 +9,29 @@ import FRC from "../../../../../Component/FormComponents/main.js";
 import DragTypes from "../../../Services/DragTypes.js";
 import Picker from "anytime";
 import Moment from "moment";
+import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
 const cardSource = {
   beginDrag(props) {
-    return { id: props.task.id, dispatch: props.dispatch, source: props.source };
+    return {
+      id: props.task.id,
+      details: props.task,
+      dispatch: props.dispatch,
+      source: props.source,
+      departments: props.departments,
+      teams: props.teams,
+      agents: props.agents,
+      projects: props.projects
+    };
   }
 };
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview()
+  };
+}
 
 const TaskCard = React.createClass({
   mixins: [
@@ -121,6 +138,23 @@ const TaskCard = React.createClass({
         this.props.editTask(this.props.source, task);
       });
     }
+
+    this.props.connectDragPreview(getEmptyImage(), {
+      // IE fallback: specify that we'd rather screenshot the node
+      // when it already knows it's being dragged so we can hide it with CSS.
+      captureDraggingState: true
+    });
+  },
+
+  getStyles: function(props) {
+    const { isDragging } = props;
+
+    return {
+      // IE fallback: hide the real node using CSS when dragging
+      // because IE will ignore our custom "empty image" drag preview.
+      opacity: isDragging ? 0 : 1,
+      height: isDragging ? 0 : ''
+    };
   },
 
   render: function () {
@@ -164,7 +198,7 @@ const TaskCard = React.createClass({
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<div className={cardClass} key={task.id}>
+    return connectDragSource(<div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
         <div>
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />
@@ -258,5 +292,6 @@ const TaskCard = React.createClass({
 
 module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
 }))(TaskCard);

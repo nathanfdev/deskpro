@@ -126,7 +126,7 @@ export default class TasksListFrame extends React.Component {
     const {taskFrameList} = this.props;
     const _this = this;
     let linked_items = {};
-    let lists = {};
+    let lists = [];
     let tickets = {};
 
     if (this.props.taskListList.taskList && typeof this.props.taskListList.taskList.forEach === 'function') {
