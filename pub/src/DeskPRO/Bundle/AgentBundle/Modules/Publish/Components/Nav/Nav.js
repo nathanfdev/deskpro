@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPane, Tab, ListItem }
+import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPane, Tab, ListItem, ButtonsPane, Button }
        from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/index';
 
 export class Nav extends React.Component {
@@ -9,28 +9,11 @@ export class Nav extends React.Component {
         <NavFrameHeader icon="fa-edit">Publish</NavFrameHeader>
         <TabsPane>
           <Tab title="KB">
-            <div className="deskpro-app-major-buttons">
-              <ul>
-                <li>
-                  <a href="#">
-                    <span className="icon"><i className="fa fa-quote-left"></i></span>
-                    <span className="title">Glossary</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="icon"><i className="fa fa-search"></i></span>
-                    <span className="title">Search</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="icon"><i className="fa fa-comments-o"></i></span>
-                    <span className="title">Comments</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <ButtonsPane>
+              <Button title="Glossary" icon="fa-quote-left" />
+              <Button title="Search" icon="fa-search" />
+              <Button title="Comments" icon="fa-comments-o" />
+            </ButtonsPane>
           </Tab>
           <Tab title="News"></Tab>
           <Tab title="Downloads"></Tab>
