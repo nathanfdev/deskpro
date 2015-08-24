@@ -247,8 +247,36 @@ class FeedbackDataService extends AbstractDataService
      *
      * NEW CODE (Aug.2015)
      *
-     *
      */
+
+
+    /**
+     * Select filtered list of feedback
+     *
+     * @param FeedbackSelectCriteria $criteria
+     * @return array
+     */
+    public function selectFeedback(FeedbackSelectCriteria $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
+        /**
+         * 'f.id', 'f.status', 'f.hidden_status', 'statusCategory.id', 'category.id',
+         * 'person.id','f.title', 'f.slug', 'f.date_created', 'f.date_published', 'f.view_count',
+         * 'f.total_rating', 'f.num_ratings', 'f.num_comments', 'f.validating'
+         */
+        $qb
+            ->select('f.id', 'f.status', 'f.hidden_status', 'statusCategory.id as status_category_id',
+                'category.id as category_id', 'person.id as person_id', 'language.id as language_id', 'f.title', 'f.slug',
+                'f.date_created', 'f.date_published', 'f.view_count', 'f.total_rating', 'f.num_ratings', 'f.num_comments',
+                'f.validating')
+            ->from('DeskPRO:Feedback', 'f')
+            ->leftJoin('f.status_category', 'statusCategory')
+            ->leftJoin('f.category', 'category')
+            ->leftJoin('f.person', 'person')
+            ->leftJoin('f.language', 'language');
+        $criteria->applyFilters($qb);
+        return $qb->getQuery()->getResult();
+    }
 
     /**
      * @param FeedbackCountCriteria $criteria

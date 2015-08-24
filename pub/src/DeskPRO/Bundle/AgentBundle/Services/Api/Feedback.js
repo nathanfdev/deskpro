@@ -122,6 +122,14 @@ export function getHidden() {
 }
 
 /**
+ * Get list of filtered feedback
+ * @return Promise
+ */
+export function getList(query) {
+    return DpApi.sendGet('DP_API/feedback/?' + compileParams(query));
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}

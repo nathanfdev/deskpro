@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
@@ -54,8 +55,22 @@ class FeedbackController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get a list of feedback",
+     *      description="get a filtered list of feedback",
      *      parameters={
+     *          {
+     *              "name"="status",
+     *              "requirement"="\w+",
+     *              "description"="filter by status",
+     *              "dataType"="string",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="status_category",
+     *              "requirement"="\w+",
+     *              "description"="filter by status category",
+     *              "dataType"="string",
+     *              "required"=false
+     *          },
      *          {
      *              "name"="page",
      *              "requirement"="\d+",
@@ -75,13 +90,25 @@ class FeedbackController extends BaseController
      *          200="Success"
      *      }
      * )
-     * @Get("/feedback", name="api_feedback")
+     * @Get("/feedback/", name="api_feedback")
      * @param Request $request
      * @return View
      * @throws \LogicException
      */
     public function cgetAction(Request $request)
     {
+        $dataService = $this->get('data.feedback');
+        $params = $request->query->all();
+        try {
+            $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+        $feedback = $dataService->selectFeedback($criteria);
+        return View::create(
+            $this->createRepresentation($feedback),
+            Response::HTTP_OK
+        );
         /*$entityManager = $this->getDoctrine()->getManager();
 
         $datatype = $this->getDatatype($request);

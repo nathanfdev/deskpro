@@ -78,12 +78,19 @@ class FeedbackSelectCriteria
                     $qb->andWhere("$alias.hidden_status = :validating");
                     $qb->setParameter('validating', 'validating');
                     break;
+                case 'category':
+                    $qb->innerJoin("$alias.category", 'cat');
+                    $qb->andWhere('cat.id = :id');
+                    $qb->setParameter('id', $value);
+                    break;
+                case 'status_category':
+                    $qb->innerJoin("$alias.status_category", 'statCat');
+                    $qb->andWhere('statCat.id = :id');
+                    $qb->setParameter('id', $value);
+                    break;
                 case 'status':
-                    // Temporary solution before refactoring of the feedback statuses
-                    if ($value === 'new') {
-                        $qb->andWhere("$alias.status = :status");
-                        $qb->setParameter('status', $value);
-                    }
+                    $qb->andWhere("$alias.status = :status");
+                    $qb->setParameter('status', $value);
                     break;
             }
         }
@@ -96,7 +103,7 @@ class FeedbackSelectCriteria
      */
     protected static function configureResolver(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['awaiting_validation', 'status']);
+        $resolver->setDefined(['awaiting_validation', 'status', 'status_category', 'category']);
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues(
             'status',

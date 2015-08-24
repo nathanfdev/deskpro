@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'redux/react';
 import * as actions from '../../Actions/FeedbackListActions'
 import { Nav } from './Nav';
+import $ from "jquery";
 
 @connect(state => state.FeedbackList)
 
@@ -21,11 +22,17 @@ export class NavContainer extends React.Component {
         dispatch(actions.feedbackHiddenStatus());
     }
 
+    handleClick(action, event) {
+        this.props.dispatch(action);
+        $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
+        $(event.target).closest('a').addClass('active');
+    }
     render() {
-        const {labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories} = this.props;
+        const {labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, feedback} = this.props;
 
         return (
             <Nav
+                onClick={this.handleClick.bind(this)}
                 labels={labels}
                 types={types}
                 toValidateCount={toValidateCount}

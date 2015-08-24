@@ -9,6 +9,7 @@ export default class FeedbackList extends Reducer {
             labels: [/* string */],
             types: [/* {title, value} */],
             customCategories: [/* {title, value} */],
+            feedback: [],
             statuses: {
                 new: 0,
                 active: {
@@ -90,6 +91,13 @@ export default class FeedbackList extends Reducer {
         return next;
     }
 
+    getList(prev, {payload}) {
+        const next = {...prev};
+        next.feedback = payload.data;
+        console.log(next);
+        return next;
+    }
+
     registerHandlers() {
         this
             .r(FeedbackListActions.feedbackToValidate, this.toValidate)
@@ -100,6 +108,7 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackActiveStatus, this.active)
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
+            .r(FeedbackListActions.loadFeedbackList, this.getList)
             .r(FeedbackListActions.commentsToReview, this.commentsToReview);
     }
 

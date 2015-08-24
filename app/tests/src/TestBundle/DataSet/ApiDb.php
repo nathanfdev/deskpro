@@ -333,7 +333,7 @@ class ApiDb extends AbstractDbSet
 
         $this->getDb()->exec("
             INSERT INTO `feedback`
-                (`status_category_id`,`category_id`,`slug`,`title`, `content`,`status`, `hidden_status`)
+                (`status_category_id`,`category_id`,`title`, `slug`, `content`,`status`, `hidden_status`)
 
             VALUES
                 (1, 1, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 'hidden', 'deleted'),

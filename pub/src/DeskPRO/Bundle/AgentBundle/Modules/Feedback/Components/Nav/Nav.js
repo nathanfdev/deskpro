@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import * as actions from '../../Actions/FeedbackListActions'
 import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPane, Tab, ListItem, LabelsDictionary }
     from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 export class Nav extends React.Component {
+
+
     render() {
-        const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories } = this.props;
-        console.log(customCategories);
+        const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, onClick } = this.props;
+
         let itemKey = 0;
 
         return (
@@ -24,10 +27,12 @@ export class Nav extends React.Component {
                         <TabsPane>
                             <Tab title="Status">
                                 <ul>
-                                    <ListItem count={statuses.new} label="New"/>
-                                    <ListItem count={statuses.active.total} label="Active">
+                                    <ListItem onClick={onClick.bind(this, actions.loadFeedbackList({'status':'new'}))} count={statuses.new} label="New"/>
+                                    <ListItem onClick={onClick.bind(this, 'FEEDBACK_COMMENTS_TO_REVIEW')} count={statuses.active.total}
+                                              label="Active">
                                         {statuses.active.statuses.map(item =>
-                                            <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
+                                            <ListItem key={itemKey++}
+                                                      count={item.count} label={item.group}/>)}
                                     </ListItem>
                                     <ListItem count={statuses.closed.total} label="Closed">
                                         {statuses.closed.statuses.map(item =>

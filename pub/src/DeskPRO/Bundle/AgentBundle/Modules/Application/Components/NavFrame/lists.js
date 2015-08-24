@@ -2,10 +2,10 @@ import React from 'react';
 
 export class ListItem extends React.Component {
     render() {
-        const {count, label} = this.props;
+        const {count, label, onClick} = this.props;
 
         return (
-            <li>
+            <li onClick={onClick}>
                 {this.renderCount(count)}
                 <a href="#" className="item">{label}</a>
                 {this.renderChildren()}
