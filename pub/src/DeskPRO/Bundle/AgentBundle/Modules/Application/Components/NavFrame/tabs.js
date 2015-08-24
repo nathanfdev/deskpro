@@ -10,16 +10,12 @@ export class TabsPane extends React.Component {
 
   render() {
     const tabs = this.tabsFromChildren();
+    const className = 'tabs sidebar-tabs tabs-' + tabs.length;
 
     return (
       <div>
-        <ul className="tabs sidebar-tabs">
-          {tabs.map(tab => {
-            const className = tab.index === this.state.active ? 'active' : '';
-            const onClick = this.activate(tab.index).bind(this);
-
-            return (<li key={tab.index} className={className}><a href="#" onClick={onClick}>{tab.title}</a></li>);
-          })}
+        <ul className={className}>
+          {tabs.map(tab => this.renderTabHeader(tab))}
         </ul>
 
         {tabs.map(tab => {
@@ -29,6 +25,16 @@ export class TabsPane extends React.Component {
         })}
       </div>
     );
+  }
+
+  renderTabHeader({title, icon, index}) {
+    const className = index === this.state.active ? 'active' : '';
+    const onClick = this.activate(index).bind(this);
+    const content = title
+                  ? title
+                  : (<span className="icon"><i className={'fa ' + icon}></i></span>);
+
+    return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
   }
 
   tabsFromChildren() {
@@ -42,6 +48,7 @@ export class TabsPane extends React.Component {
       tabs.push({
         index: i,
         title: children[i].props.title,
+        icon: children[i].props.icon,
         content: children[i].props.children
       });
     }

@@ -16,7 +16,7 @@ export class Nav extends React.Component {
             </ButtonsPane>
           </Tab>
           <Tab title="News"></Tab>
-          <Tab title="Downloads"></Tab>
+          <Tab icon="fa-download"></Tab>
           <Tab title="Todos"></Tab>
         </TabsPane>
       </NavFrame>
