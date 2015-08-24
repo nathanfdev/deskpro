@@ -101,7 +101,7 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a article incremental export response
+     * Stores an article incremental export response
      *
      * @param string|array $response
      * @return $this
@@ -113,7 +113,7 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a article comments response
+     * Stores an article comments response
      *
      * @param string|array $response
      * @return $this
@@ -125,7 +125,7 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a article attachments response
+     * Stores an article attachments response
      *
      * @param string|array $response
      * @return $this
@@ -133,6 +133,30 @@ class JsonMockAdapter implements RequestAdapterInterface
     public function addArticleAttachmentsFindAllResponse($response)
     {
         $this->addResponse('HelpCenter\ArticleAttachmentsFindAll', $response);
+        return $this;
+    }
+
+    /**
+     * Stores an article categories response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addArticleCategoriesFindAll($response)
+    {
+        $this->addResponse('HelpCenter\SectionsFindAll', $response);
+        return $this;
+    }
+
+    /**
+     * Stores an article category response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addArticleCategoryFindResponse($response)
+    {
+        $this->addResponse('HelpCenter\SectionFind', $response);
         return $this;
     }
 

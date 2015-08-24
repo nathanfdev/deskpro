@@ -284,8 +284,108 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 'comments' => array(),
             ))
             ->addArticlesIncrementalExportResponse((object)array(
-                'articles' => array(),
+                'articles' => array(
+                    (object)array(
+                        'id'          => 1,
+                        'author_id'   => 1,
+                        'section_id'  => 1,
+                        'title'       => 'Article 1',
+                        'body'        => 'Article content',
+                        'created_at'  => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'  => $date2->format('Y-m-d H:i:s'),
+                        'vote_sum'    => 10,
+                        'vote_count'  => 5,
+                        'locale'      => 'en-us',
+                        'draft'       => false,
+                        'label_names' => array('Label 1', 'Label 2'),
+                    ),
+                    (object)array(
+                        'id'          => 2,
+                        'author_id'   => 1,
+                        'section_id'  => 1,
+                        'title'       => 'Article 2',
+                        'body'        => 'Article content',
+                        'created_at'  => $date2->format('Y-m-d H:i:s'),
+                        'updated_at'  => $date3->format('Y-m-d H:i:s'),
+                        'vote_sum'    => 10,
+                        'vote_count'  => 5,
+                        'locale'      => 'en-us',
+                        'draft'       => true,
+                        'label_names' => array('Label 1', 'Label 3'),
+                    ),
+                ),
                 'end_time' => $now->getTimestamp(),
+            ))
+            ->addArticleCommentsFindAllResponse((object)array(
+                'comments' => array(
+                    (object)array(
+                        'id'          => 1,
+                        'body'        => 'Comment 1',
+                        'author_id'   => 2,
+                        'created_at'  => $date3->format('Y-m-d H:i:s'),
+                    ),
+                    (object)array(
+                        'id'          => 2,
+                        'body'        => 'Comment 2',
+                        'author_id'   => 3,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                    ),
+                )
+            ))
+            ->addArticleCommentsFindAllResponse((object)array(
+                'comments' => array(
+                    (object)array(
+                        'id'          => 3,
+                        'body'        => 'Comment 3',
+                        'author_id'   => 2,
+                        'created_at'  => $date3->format('Y-m-d H:i:s'),
+                    ),
+                    (object)array(
+                        'id'          => 4,
+                        'body'        => 'Comment 4',
+                        'author_id'   => 3,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                    ),
+                )
+            ))
+            ->addArticleAttachmentsFindAllResponse((object)array(
+                'article_attachments' => array(
+                    (object)array(
+                        'id'           => 1,
+                        'file_name'    => 'file 1',
+                        'content_type' => 'image/png',
+                        'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
+                    ),
+                ),
+            ))
+            ->addArticleAttachmentsFindAllResponse((object)array(
+                'article_attachments' => array(
+                    (object)array(
+                        'id'           => 1,
+                        'file_name'    => 'file 1',
+                        'content_type' => 'image/png',
+                        'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
+                    ),
+                ),
+            ))
+            ->addArticleCategoriesFindAll((object)array(
+                'sections' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'name'            => 'Section 1',
+                        'description'     => 'Section description',
+                        'locale'          => 'en-gb',
+                        'source_locale'   => 'ru',
+                        'url'             => 'http://url.com/',
+                        'html_url'        => 'http://url.com/',
+                        'category_id'     => 1,
+                        'outdated'        => false,
+                        'position'        => 0,
+                        'translation_ids' => array(),
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
+                    )
+                ),
             ))
             ->addPeopleFindResponse((object)array(
                 'users' => array(
