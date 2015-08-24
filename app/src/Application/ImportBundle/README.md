@@ -1002,7 +1002,7 @@ $DP_CONFIG['zendesk_import'] = array(
 ##### ZenDesk Fixtures
 
 
-###### Core API
+###### ZenDesk Fixtures Core API
 
 Create fake users:
 
@@ -1016,7 +1016,7 @@ Create fake tickets:
 php cmd.php dpdev:import:fixtures --type=ticket
 ```
 
-###### Help Center
+###### ZenDesk Fixtures Help Center
 
 Create fake help center categories:
 
