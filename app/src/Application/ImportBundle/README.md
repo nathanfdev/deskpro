@@ -34,6 +34,8 @@ IMPORT BUNDLE
     - [Exporter #4. ZenDesk](#exporter-4-zendesk)
         * [ZenDesk Configuration](#zendesk-configuration)
         * [ZenDesk Fixtures](#zendesk-fixtures)
+            - [ZenDesk Fixtures Core API](#zendesk-fixtures-core-api)
+            - [ZenDesk Fixtures Help Center](#zendesk-fixtures-help-center)
         * [ZenDesk Batch.json](#zendesk-batchjson)
 
 ## Commands
@@ -1022,7 +1024,7 @@ Create fake help center categories:
 php cmd.php dpdev:import:fixtures --type=category
 ```
 
-Create fake help center sections:
+Create fake help center sections (sub categories):
 
 ```bash
 php cmd.php dpdev:import:fixtures --type=section
@@ -1034,7 +1036,7 @@ Create fake articles:
 php cmd.php dpdev:import:fixtures --type=article
 ```
 
-You can clear all help center fake data just by removing category, every section and all articles in the category will also be deleted:
+You can clear all category related data just by removing category, every section and all articles in the category will also be deleted:
 
 ```bash
 php cmd.php dpdev:import:fixtures --type=category -d
