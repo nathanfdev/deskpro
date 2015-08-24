@@ -663,7 +663,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ```json
 {
-  "oid": 1,
+  "oid": "1",
+  "import_map_key": "zd_article",
   "person": "user@example.com",
   "title": "Article 1",
   "content": "Content 1",
@@ -677,10 +678,30 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "status": "published",
   "date_created": "2015-01-15 00:00:00",
   "date_published": null,
+  "date_updated": null,
   "date_end": null,
   "categories": ["Category 1"],
-  "labels": ["Label 1"],
-  "custom_fields": []
+  "labels": ["Label 1", "Label 2", "Label 3"],
+  "custom_fields": [
+    {
+      "oid": "1",
+      "key": "Multiple-select box field",
+      "value": "Choice 1 > Choice 2"
+    }
+  ],
+  "attachments": [
+    {
+      "oid": 0,
+      "person": "user@example.com",
+      "blob_data": null,
+      "blob_url": "",
+      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/example\/csv\/articles.csv",
+      "file_name": "articles.csv",
+      "content_type": "csv",
+      "is_inline": false
+    }
+  ],
+  "comments": []
 }
 ```
 
@@ -806,7 +827,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ```json
 {
-  "oid": 1,
+  "oid": "1",
+  "import_map_key": "zd_ticket",
   "ref": "A4G7I8Y1RV",
   "department": null,
   "person": "user@example.com",
@@ -977,9 +999,45 @@ $DP_CONFIG['zendesk_import'] = array(
 
 ##### ZenDesk Fixtures
 
+
+###### Core API
+
+Create fake users:
+
 ```bash
-php cmd.php dpdev:import:fixtures person --offset=1000
-php cmd.php dpdev:import:fixtures ticket --offset=1000
+php cmd.php dpdev:import:fixtures --type=person
+```
+
+Create fake tickets:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=ticket
+```
+
+###### Help Center
+
+Create fake help center categories:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=category
+```
+
+Create fake help center sections:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=section
+```
+
+Create fake articles:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=article
+```
+
+You can clear all help center fake data just by removing category, every section and all articles in the category will also be deleted:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=category -d
 ```
 
 ##### ZenDesk Batch.json
