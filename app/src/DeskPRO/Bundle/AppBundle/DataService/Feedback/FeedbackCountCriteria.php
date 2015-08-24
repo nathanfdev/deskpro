@@ -114,6 +114,7 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
         } elseif ($this->group_by === 'custom_category') {
             $qb
                 ->addSelect('g.input as group_name')
+                ->addSelect('g.id as cust_cat_id')
                 ->leftJoin("{$alias}.custom_data", 'g')
                 ->leftJoin('g.field', 'def')
                 ->andWhere('def.sys_name = :cat')

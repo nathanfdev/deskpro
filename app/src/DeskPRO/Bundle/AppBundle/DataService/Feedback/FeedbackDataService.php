@@ -259,18 +259,14 @@ class FeedbackDataService extends AbstractDataService
     public function selectFeedback(FeedbackSelectCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
-        /**
-         * 'f.id', 'f.status', 'f.hidden_status', 'statusCategory.id', 'category.id',
-         * 'person.id','f.title', 'f.slug', 'f.date_created', 'f.date_published', 'f.view_count',
-         * 'f.total_rating', 'f.num_ratings', 'f.num_comments', 'f.validating'
-         */
         $qb
             ->select('f.id', 'f.status', 'f.hidden_status', 'statusCategory.id as status_category_id',
-                'category.id as category_id', 'person.id as person_id', 'language.id as language_id', 'f.title', 'f.slug',
+                'category.title as type', 'person.name as author_name', 'language.id as language_id', 'f.title', 'f.slug',
                 'f.date_created', 'f.date_published', 'f.view_count', 'f.total_rating', 'f.num_ratings', 'f.num_comments',
-                'f.validating')
+                'f.validating', 'f.popularity', 'f.content', 'customCat.input as custom_category')
             ->from('DeskPRO:Feedback', 'f')
             ->leftJoin('f.status_category', 'statusCategory')
+            ->leftJoin('f.custom_data', 'customCat')
             ->leftJoin('f.category', 'category')
             ->leftJoin('f.person', 'person')
             ->leftJoin('f.language', 'language');
@@ -333,7 +329,7 @@ class FeedbackDataService extends AbstractDataService
     {
         /** @ToDo move to FeedbackRepository after removing old code */
         $qb = $this->em->createQueryBuilder();
-        $qb->select('category.title as title', 'count(f) as value')
+        $qb->select('category.title as title', 'category.id as id', 'count(f) as value')
             ->from('DeskPRO:Feedback', 'f')
             ->leftJoin('f.category', 'category')
             ->groupBy('category.id')

@@ -88,6 +88,10 @@ class FeedbackSelectCriteria
                     $qb->andWhere('statCat.id = :id');
                     $qb->setParameter('id', $value);
                     break;
+                case 'custom_category':
+                    $qb->andWhere('customCat.input = :input');
+                    $qb->setParameter('input', $value);
+                    break;
                 case 'status':
                     $qb->andWhere("$alias.status = :status");
                     $qb->setParameter('status', $value);
@@ -103,7 +107,7 @@ class FeedbackSelectCriteria
      */
     protected static function configureResolver(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['awaiting_validation', 'status', 'status_category', 'category']);
+        $resolver->setDefined(['awaiting_validation', 'status', 'status_category', 'category', 'custom_category']);
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues(
             'status',

@@ -5,7 +5,6 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPan
 
 export class Nav extends React.Component {
 
-
     render() {
         const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, onClick } = this.props;
 
@@ -27,18 +26,25 @@ export class Nav extends React.Component {
                         <TabsPane>
                             <Tab title="Status">
                                 <ul>
-                                    <ListItem onClick={onClick.bind(this, actions.loadFeedbackList({'status':'new'}))} count={statuses.new} label="New"/>
-                                    <ListItem onClick={onClick.bind(this, 'FEEDBACK_COMMENTS_TO_REVIEW')} count={statuses.active.total}
-                                              label="Active">
+                                    <ListItem onClick={onClick.bind(this, actions.loadFeedbackList({'status':'new'}))}
+                                              count={statuses.new} label="New"/>
+                                    <ListItem
+                                        onClick={onClick.bind(this, actions.loadFeedbackList({'status':'active'}))}
+                                        count={statuses.active.total} label="Active">
                                         {statuses.active.statuses.map(item =>
                                             <ListItem key={itemKey++}
+                                                      onClick={onClick.bind(this, actions.loadFeedbackList({'status':'active','status_category':item.group}))}
                                                       count={item.count} label={item.group}/>)}
                                     </ListItem>
-                                    <ListItem count={statuses.closed.total} label="Closed">
+                                    <ListItem
+                                        onClick={onClick.bind(this, actions.loadFeedbackList({'status':'closed'}))}
+                                        count={statuses.closed.total} label="Closed">
                                         {statuses.closed.statuses.map(item =>
                                             <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
                                     </ListItem>
-                                    <ListItem count={statuses.hidden.total} label="Hidden">
+                                    <ListItem
+                                        onClick={onClick.bind(this, actions.loadFeedbackList({'status':'hidden'}))}
+                                        count={statuses.hidden.total} label="Hidden">
                                         {statuses.hidden.statuses.map(item =>
                                             <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
                                     </ListItem>
@@ -52,13 +58,17 @@ export class Nav extends React.Component {
                             <Tab title="Type">
                                 <ul>
                                     {types.map(item =>
-                                        <ListItem key={itemKey++} count={item.value} label={item.title}/>)}
+                                        <ListItem key={itemKey++} count={item.value} label={item.title}
+                                                  onClick={onClick.bind(this, actions.loadFeedbackList({'category':item.id}))}
+                                            />)}
                                 </ul>
                             </Tab>
                             <Tab title="Categories">
                                 <ul>
                                     {customCategories.map(item =>
-                                        <ListItem key={itemKey++} count={item.count} label={item.group}/>)
+                                        <ListItem key={itemKey++} count={item.count} label={item.group}
+                                                  onClick={onClick.bind(this, actions.loadFeedbackList({'custom_category':item.group}))}
+                                            />)
                                     }
                                 </ul>
                             </Tab>

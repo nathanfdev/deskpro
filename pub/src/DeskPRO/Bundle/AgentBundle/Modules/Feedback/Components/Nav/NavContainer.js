@@ -23,10 +23,12 @@ export class NavContainer extends React.Component {
     }
 
     handleClick(action, event) {
+        event.preventDefault();
         this.props.dispatch(action);
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
         $(event.target).closest('a').addClass('active');
     }
+
     render() {
         const {labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, feedback} = this.props;
 
