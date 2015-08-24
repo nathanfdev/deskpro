@@ -12,7 +12,10 @@ export class NavContainer extends React.Component {
 
   render() {
     return (
-      <Nav />
+      <Nav
+        articles={this.props.articles}
+        categories={this.props.categories}
+      />
     );
   }
 }
