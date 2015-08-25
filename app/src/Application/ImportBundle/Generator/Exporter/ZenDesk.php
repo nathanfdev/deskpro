@@ -118,7 +118,7 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
             $updated_config->setPeopleEndTime($people_parser->getCurrentEndTime());
         }
         if ($article_parser->getCurrentEndTime()) {
-            $updated_config->setPeopleEndTime($article_parser->getCurrentEndTime());
+            $updated_config->setArticlesEndTime($article_parser->getCurrentEndTime());
         }
 
         if ($tickets_parser->getCount() > 1 || $people_parser->getCount() > 1 || $article_parser->getCount() > 1) {
