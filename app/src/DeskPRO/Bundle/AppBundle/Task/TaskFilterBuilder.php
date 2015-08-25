@@ -107,6 +107,17 @@ class TaskFilterBuilder
             'project' => ['field' => 'project'],
             'is_done' => ['field' => 'is_done'],
             'label' => ['field' => 'label', 'table' => ['t.labels', 'l']],
+            'attachments' => ['field' => 'id', 'table' => ['t.attachments', 'at']],
+            'list' => ['field' => 'list'],
+            'due' => ['field' => 'date_due'],
+            'created' => ['field' => 'date_created'],
+            'done' => ['field' => 'date_done'],
+            'due_after' => ['field' => 'date_due'],
+            'created_after' => ['field' => 'date_created'],
+            'done_after' => ['field' => 'date_done'],
+            'due_before' => ['field' => 'date_due'],
+            'created_before' => ['field' => 'date_created'],
+            'done_before' => ['field' => 'date_done'],
         ];
 
         foreach($request->all() as $item => $value) {
@@ -120,7 +131,7 @@ class TaskFilterBuilder
 
                 // If the value is set to 'me', get the current user's ID, teams and departments
                 if ($value === 'me') {
-                    switch($allowedFilters[$item]['field']) {
+                    switch ($allowedFilters[$item]['field']) {
                         case 'team':
                             $value = implode(',', $this->user->getTeamIds());
                             break;
@@ -132,6 +143,9 @@ class TaskFilterBuilder
                         default:
                             $value = $this->user->getId();
                     }
+                } else if (!empty($value) && ($value === 'now')) {
+                    $datetime = new \DateTime();
+                    $value = $datetime->format('c');
                 } else if (!empty($value) && ($value === 'false' || $value === 'true')) {
                     // Clean false and true
                     $value = ($value === 'true');
@@ -176,21 +190,32 @@ class TaskFilterBuilder
                 $details['value'] = substr($details['value'], 4);
             }
 
+            // Sort out before and after indicators
+            $after = strrpos($param, '_after') === (strlen($param) - 6);
+            $before = strrpos($param, '_before') === (strlen($param) - 7);
+
             // Filter out null values
             $term = $not ? 'is NOT NULL' : 'is NULL';
 
             // If not null, see what kind of query it is
-            if (!is_null($details['value'])) {
-                $term = $not ? 'NOT IN (:' . $details['field'] . ')' : 'IN (:' . $details['field'] . ')';
+            if (!is_null($details['value']) && $details['value'] !== 'null') {
+                $term = $not ? 'NOT IN (:' . $param . ')' : 'IN (:' . $param . ')';
 
                 // If we don't have an array, check if it equals or doesn't equal
                 if (strpos($details['value'], ',') === false) {
-                    $term = $not ? '!= :' : '= :';
-                    $term .= $details['field'];
+                    if ($after) {
+                        $term = $not ? '<= :' : '> :';
+                    } else if ($before) {
+                        $term = $not ? '>= :' : '< :';
+                    } else {
+                        $term = $not ? '!= :' : '= :';
+                    }
+
+                    $term .= $param;
                 }
 
                 // Set the query parameter
-                $query = $query->setParameter($details['field'], $details['value']);
+                $query = $query->setParameter($param, $details['value']);
             }
 
             // Set the table to check
