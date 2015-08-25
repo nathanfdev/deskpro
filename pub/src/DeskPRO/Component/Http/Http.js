@@ -6,11 +6,11 @@ export default class Http {
     this.ajaxFn = ajaxFn;
 
     this.defaults = {
-      "ALL":    {},
-      "GET":    {},
-      "POST":   {},
-      "PATCH":  {},
-      "PUT":    {},
+      "ALL": {},
+      "GET": {},
+      "POST": {},
+      "PATCH": {},
+      "PUT": {},
       "DELETE": {}
     };
 
@@ -20,7 +20,7 @@ export default class Http {
   }
 
   /**
-   * Called during construc. Meant as a hook point for sub-classes.
+   * Called during constructor. Meant as a hook point for sub-classes.
    */
   init() {
     // add stuff
@@ -83,11 +83,7 @@ export default class Http {
    * @param {Boolean} on Turn it on or off
    */
   enableJsonPayloads(on = true) {
-    if (on) {
-      this.setDefaultConfig('jsonPayload', true);
-    } else {
-      this.setDefaultConfig('jsonPayload', false);
-    }
+    this.setDefaultConfig('jsonPayload', !!on);
   }
 
   /**
@@ -109,7 +105,8 @@ export default class Http {
     ["ALL", config.method].forEach(t => {
       _.forEach(this.defaults[t], (configValue, configName) => {
         if (configName == 'headers') {
-          configValue.forEach((headerValue, headerName) => {
+          Object.keys(configValue).forEach((headerName) => {
+            let headerValue = configValue[headerName];
             if (!config.headers) {
               config.headers = {};
             }
@@ -153,15 +150,15 @@ export default class Http {
       return new Promise((ajaxResolve, ajaxReject) => {
         this.ajaxFn(config).done((data, textStatus, jqXHR) => {
           let r = new HttpResponse(jqXHR, textStatus, config, data);
-          if (config.transformRequest) {
-            r = config.transformRequest(r);
+          if (config.transformResponse) {
+            r = config.transformResponse(r);
           }
 
           ajaxResolve(r);
         }).fail((jqXHR, textStatus, errorThrown) => {
           let r = new HttpResponse(jqXHR, textStatus, config, null);
-          if (config.transformRequest) {
-            r = config.transformRequest(r);
+          if (config.transformResponse) {
+            r = config.transformResponse(r);
           }
 
           ajaxReject(r);
@@ -188,22 +185,26 @@ export default class Http {
     });
 
     while (chain.length) {
-      let res = chain.shift();
-      let err = chain.shift();
-      promise = promise.then(
-        () => this._callInterceptor(res, Array.prototype.slice.call(arguments)),
-        () => this._callInterceptor(err, Array.prototype.slice.call(arguments))
-      );
+      promise = promise.then(chain.shift(), chain.shift());
     }
+
+    // helper success method where data is first
+    promise.success = (fn) => {
+      promise.then((res) => {
+        fn(res.getData(), res);
+      });
+      return promise;
+    };
+
+    // helper error method where data is first
+    promise.error = (fn) => {
+      promise.then(null, (res) => {
+        fn(res.getData(), res);
+      });
+      return promise;
+    };
 
     return promise;
-  }
-
-  _callInterceptor(i, v) {
-    if (!_.isArray(v)) {
-      v = [v];
-    }
-    return i.apply(v);
   }
 
   _getBoundInterceptor(i, s) {
