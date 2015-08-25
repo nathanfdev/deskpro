@@ -12,7 +12,9 @@ import Moment from "moment";
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
 const cardSource = {
-  beginDrag(props) {
+  beginDrag(props, monitor, component) {
+    const width = $(React.findDOMNode(component)).width();
+
     return {
       id: props.task.id,
       details: props.task,
@@ -21,7 +23,9 @@ const cardSource = {
       departments: props.departments,
       teams: props.teams,
       agents: props.agents,
-      projects: props.projects
+      projects: props.projects,
+      tickets: props.tickets,
+      width: width
     };
   }
 };
@@ -158,7 +162,16 @@ const TaskCard = React.createClass({
   },
 
   render: function () {
-    const { task, projects, linked_items, departments, teams, agents, source, connectDragSource } = this.props;
+    const { task,
+      projects,
+      linked_items,
+      departments,
+      teams,
+      agents,
+      source,
+      connectDragSource,
+      connectDragPreview
+    } = this.props;
 
     const selected = this.props.selected;
 
@@ -209,34 +222,34 @@ const TaskCard = React.createClass({
             </span>
           </div>
 
-            <div className="top-right-box">
-              {!task.is_done ?
-                <span className="assignment">
-                  <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
-                    <option value="unassigned">Unassigned</option>
-                    { agents ? <optgroup label="Agents">
-                      { Object.keys(agents).map((key) => {
-                        let agentId = "agents-" + key;
-                        return <option key={agentId} value={agentId}>{agents[key].name}</option>;
-                      })}
-                    </optgroup> : '' }
-                    { teams ? <optgroup label="Teams">
-                      { Object.keys(teams).map((key) => {
-                        let teamId = "teams-" + key;
-                        return <option key={teamId} value={teamId}>{teams[key].name}</option>;
-                      })}
-                    </optgroup> : '' }
-                    { departments ? <optgroup label="Departments">
-                      { Object.keys(departments).map((key) => {
-                        let departmentId = "departments-" + key;
-                        return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
-                      })}
-                    </optgroup> : '' }
-                  </select>
-                </span>:
-                <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
-                  className="fa fa-bars"/></button>}
-            </div>
+          <div className="top-right-box">
+            {!task.is_done ?
+              <span className="assignment">
+                <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
+                  <option value="unassigned">Unassigned</option>
+                  { agents ? <optgroup label="Agents">
+                    { Object.keys(agents).map((key) => {
+                      let agentId = "agents-" + key;
+                      return <option key={agentId} value={agentId}>{agents[key].name}</option>;
+                    })}
+                  </optgroup> : '' }
+                  { teams ? <optgroup label="Teams">
+                    { Object.keys(teams).map((key) => {
+                      let teamId = "teams-" + key;
+                      return <option key={teamId} value={teamId}>{teams[key].name}</option>;
+                    })}
+                  </optgroup> : '' }
+                  { departments ? <optgroup label="Departments">
+                    { Object.keys(departments).map((key) => {
+                      let departmentId = "departments-" + key;
+                      return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
+                    })}
+                  </optgroup> : '' }
+                </select>
+              </span>:
+              <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
+                className="fa fa-bars"/></button>}
+          </div>
 
           <div className="card-line">
               <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
