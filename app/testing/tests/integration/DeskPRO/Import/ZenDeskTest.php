@@ -316,7 +316,20 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 ),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
-                'comments' => array(),
+                'comments' => array(
+                    (object)array(
+                        'id'          => 1,
+                        'body'        => 'Comment 1',
+                        'author_id'   => 1,
+                        'created_at'  => $date2->format('Y-m-d H:i:s'),
+                    ),
+                    (object)array(
+                        'id'          => 2,
+                        'body'        => 'Comment 1',
+                        'author_id'   => 3,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                    ),
+                ),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
