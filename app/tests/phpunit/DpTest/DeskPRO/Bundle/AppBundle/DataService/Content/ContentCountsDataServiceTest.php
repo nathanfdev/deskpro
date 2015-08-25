@@ -80,22 +80,12 @@ class ContentCountsDataServiceTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_perform_additional_query_to_select_articles_distinct_count_when_grouped_by_category()
+    function it_should_perform_additional_query_to_select_distinct_count_when_grouped_by_category()
     {
         $em = $this->mockQueryBuildingEntityManager();
         $em->createQueryBuilder()->shouldBeCalledTimes(2);
         $this->instance($em->reveal())
              ->countContent(Article::class, $this->articlesCriteria(['group_by' => 'category']));
-    }
-
-    /**
-     * @test
-     */
-    function it_should_still_perform_a_single_query_to_select_news_counts_when_grouped_by_category()
-    {
-        $em = $this->mockQueryBuildingEntityManager();
-        $em->createQueryBuilder()->shouldBeCalledTimes(1);
-        $this->instance($em->reveal())->countContent(News::class, $this->contentCriteria(['group_by' => 'category']));
     }
 
     /**

@@ -33,9 +33,8 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService;
+use Application\DeskPRO\Entity\CategoryAbstract as Category;
 
 /**
  * Class ContentCountsDataService
@@ -48,21 +47,27 @@ class ContentCountsDataService
     private $em;
 
     /**
+     * @var CategoriesDataService
+     */
+    private $categories;
+
+    /**
      * PeopleDataService constructor.
      *
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, CategoriesDataService $categories)
     {
         $this->em = $em;
+        $this->categories = $categories;
     }
 
     /**
      * @param string $class Concrete content entity class
-     * @param GroupedCriteria $criteria
+     * @param BaseContentCountCriteria $criteria
      * @return Count
      */
-    public function countContent($class, GroupedCriteria $criteria)
+    public function countContent($class, BaseContentCountCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -73,22 +78,88 @@ class ContentCountsDataService
 
         $result = $qb->getQuery()->getArrayResult();
 
-        $count = 0;
-        $nested = new CountsGroup($criteria->getGroupBy());
-        foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+        // if grouped by category, then structure into nested counts reflecting categories tree
+        // and perform additional query to select total count
+        if ($criteria->isGroupedByCategory()) {
+            $count = Count::fromGroupedBy($criteria->getGroupBy());
+            $roots = $this->categories->getRoots($class . 'Category');
+            $groupToCount = $this->resultToMap($result);
+            $count = $this->createNestedRecursively($count, $roots, $groupToCount);
+            $count->setCount($this->countDistinct($criteria, $class));
         }
 
-        // if $count above isn't a sum of distinct results, then need to perform additional query
-        if (!$criteria->isGroupByDistinct()) {
-            $totalQb = $this->em->createQueryBuilder();
-            $totalQb->select('count(distinct c)')
-                    ->from($class, 'c');
-            $criteria->applyFilters($totalQb);
-            $count = $totalQb->getQuery()->getSingleScalarResult();
+        // else structure into a Count with a CountsGroup containing all result groups
+        else {
+            $count = Count::fromGroupedBy($criteria->getGroupBy());
+            foreach ($result as $group) {
+                $count->add($group['value']);
+                $count->addNested($group['group_name'], $group['value']);
+            }
         }
 
-        return new Count($count, $nested);
+        return $count;
+    }
+
+    /**
+     * @param Count $count
+     * @param Category[] $childrenCategories
+     * @param array $groupToCount
+     * @param int $depth
+     * @return Count
+     * @throws \Exception
+     */
+    private function createNestedRecursively(Count $count, $childrenCategories, $groupToCount, $depth = 0) {
+        if ($depth > 10) {
+            throw new \Exception('Maximum recursion depth exceeded');
+        }
+
+        foreach ($childrenCategories as $category) {
+            $countValue = array_key_exists($category->getId(), $groupToCount)
+                        ? $groupToCount[$category->getId()]
+                        : 0;
+            $count->add($countValue);
+
+            $count->addNestedInstance(
+                $this->createNestedRecursively(
+                    Count::fromValueAndGroup($countValue, $category->getId()),
+                    $category->getChildren(),
+                    $groupToCount,
+                    $depth + 1
+                )
+            );
+        }
+
+        return $count;
+    }
+
+    /**
+     * @param array $result Array of ['group_name', 'value']
+     * @return array Array mapping of 'group_name' to 'value'
+     */
+    private function resultToMap(array $result)
+    {
+        $map = [];
+        foreach ($result as $count) {
+            $map[$count['group_name']] = $count['value'];
+        }
+
+        return $map;
+    }
+
+    /**
+     * @param BaseContentCountCriteria $criteria
+     * @param string $class
+     * @return int
+     */
+    private function countDistinct(BaseContentCountCriteria $criteria, $class)
+    {
+        $totalQb = $this->em->createQueryBuilder();
+        $totalQb
+            ->select('count(distinct c)')
+            ->from($class, 'c');
+        $criteria->applyFilters($totalQb);
+        $total = $totalQb->getQuery()->getSingleScalarResult();
+
+        return $total;
     }
 }

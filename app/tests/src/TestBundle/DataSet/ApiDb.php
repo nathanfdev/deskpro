@@ -398,10 +398,19 @@ class ApiDb extends AbstractDbSet
             ;
 
             INSERT INTO `article_categories`
-                (`id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, `display_order`, `depth`)
+                (`id`, `parent_id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, `display_order`, `depth`)
             VALUES
-                (1, 1, 1, NULL, 'Test Category #1', '1', 1, 1),
-                (2, 0, 0, NULL, 'Test Category #2', '2', 2, 1)
+                (1, NULL, 1, 1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, NULL, 0, 0, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 1, 1, NULL, 'Test Category #3', '3', 1, 1),
+                (4, 1, 1, 1, NULL, 'Test Category #4', '4', 1, 1),
+                (5, 2, 1, 1, NULL, 'Test Category #5', '5', 1, 1),
+                (6, 2, 1, 1, NULL, 'Test Category #6', '6', 1, 1),
+                (7, 3, 1, 1, NULL, 'Test Category #7', '7', 1, 1),
+                (8, 3, 1, 1, NULL, 'Test Category #8', '8', 1, 1),
+                (9, 7, 1, 1, NULL, 'Test Category #9', '9', 1, 1),
+                (10, 7, 1, 1, NULL, 'Test Category #10', '10', 1, 1),
+                (11, 7, 1, 1, NULL, 'Test Category #11', '11', 1, 1)
             ;
 
             INSERT INTO `article_to_categories`
@@ -416,14 +425,23 @@ class ApiDb extends AbstractDbSet
                 (6, 1),
                 (7, 1),
                 (8, 1),
-                (8, 2)
+                (8, 9)
             ;
 
             INSERT INTO `news_categories`
-                (`id`, `title`, `slug`, `display_order`, `depth`)
+                (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
             VALUES
-                (1, 'Test Category #1', '1', 1, 1),
-                (2, 'Test Category #2', '2', 2, 1)
+                (1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 'Test Category #3', '3', 2, 1),
+                (4, 1, 'Test Category #4', '4', 2, 1),
+                (5, 2, 'Test Category #5', '5', 2, 1),
+                (6, 2, 'Test Category #6', '6', 2, 1),
+                (7, 3, 'Test Category #7', '7', 2, 1),
+                (8, 3, 'Test Category #8', '8', 2, 1),
+                (9, 7, 'Test Category #9', '9', 2, 1),
+                (10, 7, 'Test Category #10', '10', 2, 1),
+                (11, 7, 'Test Category #11', '11', 2, 1)
             ;
 
             INSERT INTO `news`
@@ -437,14 +455,23 @@ class ApiDb extends AbstractDbSet
                 (5, 1, 2, '5', 'Test News #5', 'Test News #5', 0, 0, 0, 0, 'hidden', NULL, '2011-08-11 00:00:00', NULL, NULL),
                 (6, 1, 3, '6', 'Test News #6', 'Test News #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00'),
                 (7, 2, 3, '7', 'Test News #7', 'Test News #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL),
-                (8, 2, 3, '8', 'Test News #8', 'Test News #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00')
+                (8, 9, 3, '8', 'Test News #8', 'Test News #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00')
             ;
 
             INSERT INTO `download_categories`
-                (`id`, `title`, `slug`, `display_order`, `depth`)
+                (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
             VALUES
-                (1, 'Test Category #1', '1', 1, 1),
-                (2, 'Test Category #2', '2', 2, 1)
+                (1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 'Test Category #3', '3', 2, 1),
+                (4, 1, 'Test Category #4', '4', 2, 1),
+                (5, 2, 'Test Category #5', '5', 2, 1),
+                (6, 2, 'Test Category #6', '6', 2, 1),
+                (7, 3, 'Test Category #7', '7', 2, 1),
+                (8, 3, 'Test Category #8', '8', 2, 1),
+                (9, 7, 'Test Category #9', '9', 2, 1),
+                (10, 7, 'Test Category #10', '10', 2, 1),
+                (11, 7, 'Test Category #11', '11', 2, 1)
             ;
 
             INSERT INTO `downloads`
@@ -458,7 +485,7 @@ class ApiDb extends AbstractDbSet
                 (5, 1, 2, '5', 'Test Download #5', 'Test Download #5', 0, 0, 0, 0, 'hidden', NULL, '2011-08-11 00:00:00', NULL, NULL, 0),
                 (6, 1, 3, '6', 'Test Download #6', 'Test Download #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00', 0),
                 (7, 2, 3, '7', 'Test Download #7', 'Test Download #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL, 0),
-                (8, 2, 3, '8', 'Test Download #8', 'Test Download #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00', 0)
+                (8, 9, 3, '8', 'Test Download #8', 'Test Download #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00', 0)
             ;
         ");
         // end of content test data

@@ -64,7 +64,7 @@ class CountTest extends DeskProTestCase
      */
     function it_should_create_and_add_nested_counts()
     {
-        $count = new Count(42);
+        $count = Count::fromValue(42);
 
         $count->addNested(1, 1);
         $count->addNested(2, 2);
@@ -77,10 +77,10 @@ class CountTest extends DeskProTestCase
      */
     function it_should_add_nested_Count_instances()
     {
-        $count = new Count(42);
+        $count = Count::fromValue(42);
 
-        $count->addNestedInstance(new Count());
-        $count->addNestedInstance(new Count());
+        $count->addNestedInstance(Count::fromValue(1));
+        $count->addNestedInstance(Count::fromValue(2));
 
         $this->assertCount(2, $count->getNested());
     }
@@ -90,7 +90,7 @@ class CountTest extends DeskProTestCase
      */
     function it_should_increase_its_value()
     {
-        $count = new Count();
+        $count = Count::fromValue(0);
         $count->add(3);
         $count->add(5);
         $this->assertEquals(3 + 5, $count->getCount());
