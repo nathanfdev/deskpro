@@ -37,25 +37,47 @@ namespace DeskPRO\Bundle\AppBundle\CountBadge;
 class Count
 {
     /**
-     * @var int
+     * @var int Count value
      */
-    private $count;
+    private $count = 0;
 
     /**
-     * @var CountsGroup
+     * @var Count[] Nested counts
      */
-    private $nested;
+    private $nested = [];
 
     /**
-     * Count constructor.
-     *
-     * @param int $count
-     * @param CountsGroup $nested
+     * @var string
      */
-    public function __construct($count, CountsGroup $nested = null)
+    private $grouped_by;
+
+    /**
+     * @var string
+     */
+    private $group;
+
+    /**
+     * @param string $grouped_by
+     * @return Count
+     */
+    public static function fromGroupedBy($grouped_by)
     {
-        $this->count = $count;
-        $this->nested = $nested;
+        $count = new self();
+        $count->setGroupedBy($grouped_by);
+
+        return $count;
+    }
+
+    /**
+     * @param int $value
+     * @return Count
+     */
+    public static function fromValue($value)
+    {
+        $count = new self();
+        $count->setCount($value);
+
+        return $count;
     }
 
     /**
@@ -67,10 +89,88 @@ class Count
     }
 
     /**
-     * @return CountsGroup
+     * @param int $count
+     */
+    public function setCount($count)
+    {
+        $this->count = $count;
+    }
+
+    /**
+     * @return Count[]
      */
     public function getNested()
     {
         return $this->nested;
+    }
+
+    /**
+     * @param Count[] $nested
+     */
+    public function setNested($nested)
+    {
+        $this->nested = $nested;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupedBy()
+    {
+        return $this->grouped_by;
+    }
+
+    /**
+     * @param string $grouped_by
+     */
+    public function setGroupedBy($grouped_by)
+    {
+        $this->grouped_by = $grouped_by;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * @param string $group
+     */
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    /**
+     * @param int $value
+     * @param string $group
+     * @param Count $count
+     */
+    public function addNested($value, $group)
+    {
+        $count = new self();
+        $count->setCount($value);
+        $count->setGroup($group);
+
+        $this->nested[] = $count;
+    }
+
+    /**
+     * @param Count $instance
+     */
+    public function addNestedInstance(Count $instance)
+    {
+        $this->nested[] = $instance;
+    }
+
+    /**
+     * @param int $int
+     */
+    public function add($int)
+    {
+        $this->count += $int;
     }
 }

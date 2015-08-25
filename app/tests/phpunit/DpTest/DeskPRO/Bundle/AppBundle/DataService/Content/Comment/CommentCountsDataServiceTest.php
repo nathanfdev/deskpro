@@ -58,14 +58,14 @@ class CommentCountsDataServiceTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_return_Count_instance_with_nested_CountsGroup()
+    function it_should_return_Count_instance_with_group_by_indication()
     {
         $criteria = CommentsCountCriteria::fromParameters(['group_by' => 'status'], new OptionsResolver());
 
         $result = $this->instance()->countComments(ArticleComment::class, $criteria);
 
         $this->assertInstanceOf(Count::class, $result);
-        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
+        $this->assertEquals($result->getGroupedBy(), 'status');
     }
 
     /**

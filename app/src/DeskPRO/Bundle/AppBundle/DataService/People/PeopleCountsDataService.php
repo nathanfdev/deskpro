@@ -73,6 +73,6 @@ class PeopleCountsDataService
             $count = 0;
         }
 
-        return new Count($count);
+        return Count::fromValue($count);
     }
 }

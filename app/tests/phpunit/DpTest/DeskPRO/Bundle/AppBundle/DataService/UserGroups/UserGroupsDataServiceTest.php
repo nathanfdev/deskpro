@@ -55,11 +55,11 @@ class UserGroupsDataServiceTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_return_Count_instance_with_nested_CountsGroup_when_counting_people_in_user_groups()
+    function it_should_return_Count_instance_with_group_by_indication_when_counting_people_in_user_groups()
     {
         $result = $this->instance()->countPeopleInUserGroups();
         $this->assertInstanceOf(Count::class, $result);
-        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
+        $this->assertNotNull($result->getNested());
     }
 
     /**

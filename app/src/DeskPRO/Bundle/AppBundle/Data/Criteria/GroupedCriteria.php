@@ -104,6 +104,8 @@ abstract class GroupedCriteria extends Criteria implements GroupedCriteriaInterf
     }
 
     /**
+     * @todo remove this, let DataServices decide if they need to handle special cases
+     *
      * If the current $group_by value leads to groups with distinct records (or distinct counts)
      *
      * When grouping by a related entity with to-Many relation (results are not distinct), resulting groups will

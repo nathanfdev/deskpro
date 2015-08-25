@@ -63,7 +63,7 @@ class OrganizationsController extends BaseController
         $count = $qb->getQuery()->getSingleScalarResult();
 
         return View::create(
-            $this->createRepresentation(new Count($count)),
+            $this->createRepresentation(Count::fromValue($count)),
             Response::HTTP_OK
         );
     }

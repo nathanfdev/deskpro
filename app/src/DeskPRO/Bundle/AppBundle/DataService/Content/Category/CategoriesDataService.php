@@ -26,36 +26,48 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DpTest\Bundle\AppBundle\CountBadge;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\Category;
 
-use DpTest\DeskProTestCase;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Application\DeskPRO\Entity\CategoryAbstract as Category;
 
 /**
- * Class GroupedCountTest
+ * Class CategoriesDataService
  */
-class GroupedCountTest extends DeskProTestCase
+class CategoriesDataService
 {
     /**
-     * @test
+     * @var EntityManager
      */
-    function it_should_be_instantiable_with_group_name_and_value()
+    private $em;
+
+    /**
+     * PeopleDataService constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
     {
-        $count = new GroupedCount('group_name', 42);
-        $this->assertEquals('group_name', $count->getGroup());
+        $this->em = $em;
     }
 
     /**
-     * @test
+     * @param string $class Category concrete class
+     * @return Category[]
      */
-    function it_should_extend_Count()
+    public function getRoots($class)
     {
-        $this->assertInstanceOf(Count::class, new GroupedCount('group_name', 42));
+        // load all within a single query
+        $categories = $this->em->getRepository($class)->findAll();
+
+        // reduce to roots only
+        $roots = array_filter($categories, function(Category $category) {
+            return !$category->getParent();
+        });
+
+        return $roots;
     }
 }

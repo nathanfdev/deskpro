@@ -37,11 +37,11 @@ use Prophecy\Argument;
 use DpTest\DeskProTestCase;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\News;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountsDataService;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 
 /**
  * Class ContentCountsDataServiceTest
@@ -59,12 +59,12 @@ class ContentCountsDataServiceTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_return_Count_instance_with_nested_CountsGroup()
+    function it_should_return_Count_instance_with_group_by_indication()
     {
         $result = $this->instance()->countContent(Article::class, $this->contentCriteria());
 
         $this->assertInstanceOf(Count::class, $result);
-        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
+        $this->assertNotNull($result->getGroupedBy());
     }
 
     /**
@@ -106,12 +106,13 @@ class ContentCountsDataServiceTest extends DeskProTestCase
         /** @var \Doctrine\ORM\EntityManagerInterface $em */
         $em or $em = $this->mockQueryBuildingEntityManager()->reveal();
 
-        return new ContentCountsDataService($em);
+
+        return new ContentCountsDataService($em, new CategoriesDataService($em));
     }
 
     /**
      * @param array $params
-     * @return \DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria
+     * @return ContentCountCriteria
      */
     private function contentCriteria($params = ['group_by' => 'author'])
     {
@@ -122,7 +123,7 @@ class ContentCountsDataServiceTest extends DeskProTestCase
     }
     /**
      * @param array $params
-     * @return \DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria
+     * @return ArticlesCountCriteria
      */
     private function articlesCriteria($params = ['group_by' => 'author'])
     {

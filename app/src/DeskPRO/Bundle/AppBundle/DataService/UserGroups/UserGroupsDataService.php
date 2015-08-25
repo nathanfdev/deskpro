@@ -34,10 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\UserGroups;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Application\DeskPRO\Entity\Person;
-use Doctrine\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 class UserGroupsDataService extends AbstractDataService
 {
@@ -59,14 +56,13 @@ class UserGroupsDataService extends AbstractDataService
 
         $result = $qb->getQuery()->getArrayResult();
 
-        $count = 0;
-        $nested = new CountsGroup('user_group');
+        $count = Count::fromGroupedBy('user_group');
         foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+            $count->add($group['value']);
+            $count->addNested($group['group_name'], $group['value']);
         }
 
-        return new Count($count, $nested);
+        return $count;
     }
 
     protected function criteriaArray(array $args = [], $agents_only = null, $enabled = null)

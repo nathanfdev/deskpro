@@ -121,4 +121,12 @@ abstract class BaseContentCountCriteria extends GroupedCriteria
         ]);
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
     }
+
+    /**
+     * @return bool
+     */
+    public function isGroupedByCategory()
+    {
+        return $this->group_by === 'category';
+    }
 }

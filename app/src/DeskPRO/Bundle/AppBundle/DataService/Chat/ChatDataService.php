@@ -38,8 +38,6 @@ use Pagerfanta\Pagerfanta;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
  * Class ChatDataService
@@ -109,7 +107,7 @@ class ChatDataService
             $count = 0;
         }
 
-        return new Count($count);
+        return Count::fromValue($count);
     }
 
     /**
@@ -127,13 +125,12 @@ class ChatDataService
 
         $result = $qb->getQuery()->getArrayResult();
 
-        $count = 0;
-        $nested = new CountsGroup($criteria->getGroupBy());
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+            $count->add($group['value']);
+            $count->addNested($group['group_name'], $group['value']);
         }
 
-        return new Count($count, $nested);
+        return $count;
     }
 }

@@ -79,7 +79,7 @@ class ArticlesCountCriteria extends BaseContentCountCriteria
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isGroupByDistinct()
     {

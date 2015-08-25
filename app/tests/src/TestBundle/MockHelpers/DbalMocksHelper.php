@@ -37,6 +37,7 @@ use Prophecy\Argument;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery as Query;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Trait DbalMocksHelper
@@ -46,12 +47,15 @@ use Doctrine\ORM\AbstractQuery as Query;
 trait DbalMocksHelper
 {
     /**
+     * @todo rename to mockQueryBuilder
+     *
      * @param string $class
      * @return \Prophecy\Prophecy\ObjectProphecy
      */
     protected function mockQueryBuildingEntityManager($class = EntityManagerInterface::class)
     {
         $em = $this->prophesize($class);
+        $em->getRepository(Argument::any())->willReturn($this->mockRepository());
         $em->createQueryBuilder()->willReturn($this->mockQueryBuilder());
 
         return $em;
@@ -83,5 +87,16 @@ trait DbalMocksHelper
         $qb->expr()->willReturn(new \Doctrine\ORM\Query\Expr());
 
         return $qb;
+    }
+
+    /**
+     * @return \Prophecy\Prophecy\ObjectProphecy
+     */
+    protected function mockRepository()
+    {
+        $repository = $this->prophesize(EntityRepository::class);
+        $repository->findAll()->willReturn([]);
+
+        return $repository;
     }
 }

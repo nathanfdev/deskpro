@@ -33,8 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 
 /**
@@ -73,13 +71,12 @@ class CommentCountsDataService
 
         $result = $qb->getQuery()->getArrayResult();
 
-        $count = 0;
-        $nested = new CountsGroup($criteria->getGroupBy());
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+            $count->add($group['value']);
+            $count->addNested($group['group_name'], $group['value']);
         }
 
-        return new Count($count, $nested);
+        return $count;
     }
 }
