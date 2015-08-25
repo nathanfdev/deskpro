@@ -37,5 +37,15 @@
       "is_inline": false
     }
   ],
-  "comments": []
+  "comments": [
+    {
+      "oid": 0,
+      "person_email": "user@example.com",
+      "content": "Comment 1",
+      "status": "",
+      "is_reviewed": false,
+      "validating": "",
+      "date_created": "2015-01-15 00:00:00"
+    }
+  ]
 }
