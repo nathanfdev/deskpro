@@ -12,7 +12,7 @@ export const loadUsersTotalCount = createAction(
 
 export const loadGroupsCounts = createAction(
   'CRM_NAV_LOAD_GROUPS_COUNTS',
-  trigger => UserGroups.loadCounts().then(promise => trigger(promise.getData().data.nested.counts))
+  trigger => UserGroups.loadCounts().then(promise => trigger(promise.getData().data.nested))
 );
 
 export const loadOrganizationsTotalCount = createAction(
@@ -27,7 +27,7 @@ export const loadAgentsTotalCount = createAction(
 
 export const loadTeamsCounts = createAction(
   'CRM_NAV_LOAD_TEAMS_COUNTS',
-  trigger => AgentTeams.loadCounts().then(promise => trigger(promise.getData().data.nested.counts))
+  trigger => AgentTeams.loadCounts().then(promise => trigger(promise.getData().data.nested))
 );
 
 export const loadPersonLabels = createAction(

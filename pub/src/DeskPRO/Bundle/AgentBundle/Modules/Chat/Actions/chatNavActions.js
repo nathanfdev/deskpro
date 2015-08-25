@@ -12,14 +12,14 @@ export const loadCounts = createAction(
       });
 
       if (groupBy === 'department') {
-        const nested = promise.getData().data.nested.counts;
+        const nested = promise.getData().data.nested;
         for (let i = 0; i < nested.length; i++) {
           trigger(loadDepartmentName(nested[i].group));
         }
       }
 
       if (groupBy === 'agent') {
-        const nested = promise.getData().data.nested.counts;
+        const nested = promise.getData().data.nested;
         for (let i = 0; i < nested.length; i++) {
           trigger(loadAgentName(nested[i].group));
         }
