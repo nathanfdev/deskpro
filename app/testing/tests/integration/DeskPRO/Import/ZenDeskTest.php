@@ -5,6 +5,8 @@ namespace DpIntegrationTests\DeskPRO\Import;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
+use Application\ImportBundle\Command\ImportBatchCommand;
+use Application\ImportBundle\Command\ImportCommand;
 use Application\ImportBundle\Reader\ZenDesk\Request\JsonMockAdapter;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderMockFactory;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -64,12 +66,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
         $this->ticket_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
 
         $this->output_path = dp_get_data_dir() . '/import/zendesk/export';
-        if ( ! is_dir($this->output_path)) {
+        if (!is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
 
@@ -137,6 +139,42 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->checkJsonData();
     }
 
+    public function testImport()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportCommand());
+
+        $command = $application->find('dp:import:run');
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
+            'command'   => $command->getName(),
+            'script'    => 'zendesk',
+            '--verbose' => true,
+            '--batch'   => true,
+        ));
+
+        $this->checkJsonEmpty();
+    }
+
+    public function testImportBatch()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportBatchCommand());
+
+        $command = $application->find('dp:import:batch');
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'zendesk',
+            '--output-path' => $this->output_path,
+            '--verbose'     => true,
+            '--batch'       => true,
+        ));
+
+        $this->checkDbWriterOutput($command_tester);
+        $this->checkJsonData();
+    }
+
     private function checkJsonEmpty()
     {
         $this->assertFalse(file_exists('1/people/'));
@@ -173,12 +211,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $date2 = new \DateTime('-5 months');
         $date3 = new \DateTime('-2 months');
         $date4 = new \DateTime('-1 months');
-        $now   = new \DateTime();
+        $now = new \DateTime();
 
 
         $this->adapter
             ->addTicketsIncrementalExportResponse((object)array(
-                'tickets' => array(
+                'tickets'  => array(
                     (object)array(
                         'id'              => 1,
                         'submitter_id'    => 1,
@@ -319,32 +357,32 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addArticleCommentsFindAllResponse((object)array(
                 'comments' => array(
                     (object)array(
-                        'id'          => 1,
-                        'body'        => 'Comment 1',
-                        'author_id'   => 2,
-                        'created_at'  => $date3->format('Y-m-d H:i:s'),
+                        'id'         => 1,
+                        'body'       => 'Comment 1',
+                        'author_id'  => 2,
+                        'created_at' => $date3->format('Y-m-d H:i:s'),
                     ),
                     (object)array(
-                        'id'          => 2,
-                        'body'        => 'Comment 2',
-                        'author_id'   => 3,
-                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                        'id'         => 2,
+                        'body'       => 'Comment 2',
+                        'author_id'  => 3,
+                        'created_at' => $date4->format('Y-m-d H:i:s'),
                     ),
                 )
             ))
             ->addArticleCommentsFindAllResponse((object)array(
                 'comments' => array(
                     (object)array(
-                        'id'          => 3,
-                        'body'        => 'Comment 3',
-                        'author_id'   => 2,
-                        'created_at'  => $date3->format('Y-m-d H:i:s'),
+                        'id'         => 3,
+                        'body'       => 'Comment 3',
+                        'author_id'  => 2,
+                        'created_at' => $date3->format('Y-m-d H:i:s'),
                     ),
                     (object)array(
-                        'id'          => 4,
-                        'body'        => 'Comment 4',
-                        'author_id'   => 3,
-                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                        'id'         => 4,
+                        'body'       => 'Comment 4',
+                        'author_id'  => 3,
+                        'created_at' => $date4->format('Y-m-d H:i:s'),
                     ),
                 )
             ))
@@ -426,7 +464,16 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     'id'   => 1,
                     'name' => 'An organization name',
                 ),
-            ))
-        ;
+            ));
+    }
+
+    /**
+     * @param CommandTester $command_tester
+     */
+    private function checkDbWriterOutput(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertContains('Entity `organization` is not supported', $output);
     }
 }
