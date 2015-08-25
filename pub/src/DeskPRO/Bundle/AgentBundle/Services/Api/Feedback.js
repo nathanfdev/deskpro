@@ -126,6 +126,7 @@ export function getHidden() {
  * @return Promise
  */
 export function getList(query) {
+    console.log('DP_API/feedback/?' + compileParams(query));
     return DpApi.sendGet('DP_API/feedback/?' + compileParams(query));
 }
 
@@ -138,7 +139,8 @@ function compileParams(params) {
     let compiled = [];
 
     for (let key of Object.keys(params)) {
-        compiled.push(key + '=' + String(params[key]));
+        var str = String(params[key]);
+        compiled.push(key + '=' + str.replace(/\s/g, "%20"));
     }
 
     return compiled.join('&');

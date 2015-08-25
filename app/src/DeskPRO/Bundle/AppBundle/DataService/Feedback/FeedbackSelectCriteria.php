@@ -85,8 +85,8 @@ class FeedbackSelectCriteria
                     break;
                 case 'status_category':
                     $qb->innerJoin("$alias.status_category", 'statCat');
-                    $qb->andWhere('statCat.id = :id');
-                    $qb->setParameter('id', $value);
+                    $qb->andWhere('statCat.title = :title');
+                    $qb->setParameter('title', $value);
                     break;
                 case 'custom_category':
                     $qb->andWhere('customCat.input = :input');

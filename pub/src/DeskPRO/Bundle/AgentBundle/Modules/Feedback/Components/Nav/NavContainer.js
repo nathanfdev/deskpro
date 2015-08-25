@@ -24,6 +24,7 @@ export class NavContainer extends React.Component {
 
     handleClick(action, event) {
         event.preventDefault();
+        event.stopPropagation();
         this.props.dispatch(action);
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
         $(event.target).closest('a').addClass('active');
