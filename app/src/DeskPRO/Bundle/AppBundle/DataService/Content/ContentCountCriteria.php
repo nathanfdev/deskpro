@@ -77,13 +77,4 @@ class ContentCountCriteria extends BaseContentCountCriteria
 
         parent::applyGroupBy($qb);
     }
-
-    /**
-     * @return bool
-     */
-    public function isGroupByDistinct()
-    {
-        // all group_by values lead to distinct results
-        return true;
-    }
 }

@@ -102,14 +102,6 @@ class ChatSelectCriteria extends GroupedCriteria
     /**
      * @inheritdoc
      */
-    public function isGroupByDistinct()
-    {
-        throw new \LogicException(__CLASS__ . ' extends GroupedCriteria to provide group_by to its child');
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function applyGroupBy(QueryBuilder $qb)
     {
         throw new \LogicException(__CLASS__ . ' extends GroupedCriteria to provide group_by to its child');

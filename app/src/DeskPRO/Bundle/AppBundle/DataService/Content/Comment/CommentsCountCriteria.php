@@ -99,15 +99,6 @@ class CommentsCountCriteria extends GroupedCriteria
     /**
      * @inheritDoc
      */
-    public function isGroupByDistinct()
-    {
-        // all group_by values lead to distinct results
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
         $resolver->setDefined(['group_by', 'article', 'news', 'download', 'status', 'period_created', 'is_reviewed']);

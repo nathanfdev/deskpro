@@ -77,15 +77,4 @@ class ArticlesCountCriteria extends BaseContentCountCriteria
 
         parent::applyGroupBy($qb);
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function isGroupByDistinct()
-    {
-        $indistinct = ($this->group_by === 'category') && !array_key_exists('category', $this->filters);
-        $distinct = !$indistinct;
-
-        return $distinct;
-    }
 }

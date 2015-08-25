@@ -76,15 +76,6 @@ class ChatCountCriteria extends ChatSelectCriteria
     }
 
     /**
-     * @inheritdoc
-     */
-    public function isGroupByDistinct()
-    {
-        // all grouping options lead to distinct results
-        return true;
-    }
-
-    /**
      * @param OptionsResolver $resolver
      * @param array $data
      */
