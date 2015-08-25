@@ -1,5 +1,4 @@
 import React from 'react';
-import * as peopleActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Actions/PeopleActions';
 import { connect } from 'redux/react';
 
 @connect(state => state.FeedbackList)

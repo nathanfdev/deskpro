@@ -108,8 +108,7 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackActiveStatus, this.active)
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
-            .r(FeedbackListActions.loadFeedbackList, this.getList)
-            .r(peopleActions.loadPeople, this.getFeedbackAuthor);
+            .r(FeedbackListActions.loadFeedbackList, this.getList);
     }
 
 }

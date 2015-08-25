@@ -17,7 +17,8 @@ export class Nav extends React.Component {
                     <Section>
                         <SectionHeader>Pending</SectionHeader>
                         <ul>
-                            <ListItem count={toValidateCount} label="Feedback to Validate"/>
+                            <ListItem onClick={onClick.bind(this, {'awaiting_validation':1})} count={toValidateCount}
+                                      label="Feedback to Validate"/>
                             <ListItem count={commentsToReviewCount} label="Comments to Review"/>
                         </ul>
                     </Section>
@@ -29,7 +30,7 @@ export class Nav extends React.Component {
                                     <ListItem onClick={onClick.bind(this, {'status':'new'})}
                                               count={statuses.new} label="New"/>
                                     <ListItem onClick={onClick.bind(this, {'status':'active'})}
-                                        count={statuses.active.total} label="Active">
+                                              count={statuses.active.total} label="Active">
                                         {statuses.active.statuses.map(item =>
                                             <ListItem key={itemKey++}
                                                       onClick={onClick.bind(this, {'status':'active','status_category':item.group})}
