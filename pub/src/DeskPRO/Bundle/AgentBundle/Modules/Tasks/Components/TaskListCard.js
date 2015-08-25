@@ -3,14 +3,38 @@ import Moment from "moment";
 import { DragSource } from "react-dnd";
 import { IntlMixin, FormattedDate } from "react-intl";
 import DragTypes from "../../../Services/DragTypes.js";
+import $ from "jquery";
+import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
 const listCardSource = {
-  beginDrag(props) {
-    return { id: props.task.id, dispatch: props.dispatch, source: props.source };
+  beginDrag(props, monitor, component) {
+    const width = $(React.findDOMNode(component)).width();
+
+    return {
+      id: props.task.id,
+      details: props.task,
+      dispatch: props.dispatch,
+      source: props.source,
+      departments: props.departments,
+      teams: props.teams,
+      agents: props.agents,
+      projects: props.projects,
+      tickets: props.tickets,
+      width: width,
+      subtype: 'kanban'
+    };
   }
 };
 
 const TaskListCard = React.createClass({
+
+  componentDidMount: function() {
+    this.props.connectDragPreview(getEmptyImage(), {
+      // IE fallback: specify that we'd rather screenshot the node
+      // when it already knows it's being dragged so we can hide it with CSS.
+      captureDraggingState: true
+    });
+  },
 
   render: function() {
     let assigneeName = '';
@@ -70,5 +94,6 @@ const TaskListCard = React.createClass({
 
 module.exports = DragSource(DragTypes.TASK, listCardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
 }))(TaskListCard);

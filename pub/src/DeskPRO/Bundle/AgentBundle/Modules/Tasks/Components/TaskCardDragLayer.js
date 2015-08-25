@@ -33,8 +33,8 @@ function getItemStyles(props) {
 
 class TaskCardDragLayer {
   renderItem(type, item) {
-    switch (type) {
-      case DragTypes.TASK:
+    switch (item.subtype) {
+      case 'list':
 
         //return <p>Hello</p>;
 
@@ -128,6 +128,62 @@ class TaskCardDragLayer {
               </div> : '' }
           </div>
         </div>);
+        break;
+      case 'kanban':
+        let assigneeName = '';
+
+        if (item.details.agents && item.details.agents.length > 0) {
+          assigneeName = item.agents[item.details.agents[0]].name;
+        } else if (item.details.teams && item.details.teams.length > 0) {
+          assigneeName = item.teams[item.details.teams[0]].name;
+        } else if (item.details.departments && item.details.departments.length > 0) {
+          assigneeName = item.departments[item.details.departments[0]].title;
+        }
+
+        return (<div className="kanban">
+          <div className="card task-card moving" style={{width: item.width}}>
+            <div>
+              <div className="card-status-bar status-bar-left" />
+              <div className="card-status-bar status-bar-right" />
+
+              <div className="card-checkbox">
+                <span className="checkbox" />
+              </div>
+
+              <div className="content">
+                <h1>{item.details.title}</h1>
+
+                <div className="card-line task-details">
+                  <div className="top-right-box">
+                <span className="assignment">
+                  {assigneeName}
+                </span>
+                  </div>
+                  <div>
+                    <i className="fa fa-calendar-o" /> Due: {item.details.date_due ? <FormattedDate
+                    value={Date.parse(item.details.date_due)}
+                    day="numeric"
+                    month="long"
+                    year="numeric"
+                    />
+                    : 'N/A' }
+                  </div>
+                </div>
+                <hr/>
+                <div className="card-line task-properties">
+                  <span>{item.details.comment_count} <i className="fa fa-comment"/></span>
+
+                  {item.details.subtasks_total > 0 ?
+                    <span>
+                  <span className="disc"/>
+                    <div className="subtask-count">{item.details.subtasks_done}/{item.details.subtasks_total} <i className="fa fa-folder-open"/></div>
+                  </span>
+                      : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>);
     }
   }
 

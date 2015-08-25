@@ -25,7 +25,8 @@ const cardSource = {
       agents: props.agents,
       projects: props.projects,
       tickets: props.tickets,
-      width: width
+      width: width,
+      subtype: 'list'
     };
   }
 };
@@ -109,7 +110,7 @@ const TaskCard = React.createClass({
     this.props.updateMassActions(this.props.task.id);
   },
 
-  componentDidMount() {
+  componentDidMount: function() {
     const dueField = "due-" + this.props.task.id;
 
     // Check if the due field actually exists before we try and add a date picker (e.g. on done tasks)
