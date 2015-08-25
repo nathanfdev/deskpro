@@ -22,10 +22,10 @@ export class NavContainer extends React.Component {
         dispatch(actions.feedbackHiddenStatus());
     }
 
-    handleClick(action, event) {
+    handleClick(params, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.props.dispatch(action);
+        this.props.dispatch(actions.loadFeedbackList(params));
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
         $(event.target).closest('a').addClass('active');
     }

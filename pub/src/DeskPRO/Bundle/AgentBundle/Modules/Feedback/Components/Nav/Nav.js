@@ -26,24 +26,25 @@ export class Nav extends React.Component {
                         <TabsPane>
                             <Tab title="Status">
                                 <ul>
-                                    <ListItem onClick={onClick.bind(this, actions.loadFeedbackList({'status':'new'}))}
+                                    <ListItem onClick={onClick.bind(this, {'status':'new'})}
                                               count={statuses.new} label="New"/>
-                                    <ListItem
-                                        onClick={onClick.bind(this, actions.loadFeedbackList({'status':'active'}))}
+                                    <ListItem onClick={onClick.bind(this, {'status':'active'})}
                                         count={statuses.active.total} label="Active">
                                         {statuses.active.statuses.map(item =>
                                             <ListItem key={itemKey++}
-                                                      onClick={onClick.bind(this, actions.loadFeedbackList({'status':'active','status_category':item.group}))}
+                                                      onClick={onClick.bind(this, {'status':'active','status_category':item.group})}
                                                       count={item.count} label={item.group}/>)}
                                     </ListItem>
                                     <ListItem
-                                        onClick={onClick.bind(this, actions.loadFeedbackList({'status':'closed'}))}
+                                        onClick={onClick.bind(this, {'status':'closed'})}
                                         count={statuses.closed.total} label="Closed">
                                         {statuses.closed.statuses.map(item =>
-                                            <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
+                                            <ListItem key={itemKey++} count={item.count} label={item.group}
+                                                      onClick={onClick.bind(this, {'status':'closed','status_category':item.group})}
+                                                />)}
                                     </ListItem>
                                     <ListItem
-                                        onClick={onClick.bind(this, actions.loadFeedbackList({'status':'hidden'}))}
+                                        onClick={onClick.bind(this, {'status':'hidden'})}
                                         count={statuses.hidden.total} label="Hidden">
                                         {statuses.hidden.statuses.map(item =>
                                             <ListItem key={itemKey++} count={item.count} label={item.group}/>)}
@@ -51,7 +52,9 @@ export class Nav extends React.Component {
                                 </ul>
                             </Tab>
                             <Tab title="Labels">
-                                <LabelsDictionary labels={labels}/>
+                                <LabelsDictionary labels={labels}
+                                                  onClick={onClick.bind(this)}
+                                    />
                             </Tab>
                         </TabsPane>
                         <TabsPane>
@@ -59,7 +62,7 @@ export class Nav extends React.Component {
                                 <ul>
                                     {types.map(item =>
                                         <ListItem key={itemKey++} count={item.value} label={item.title}
-                                                  onClick={onClick.bind(this, actions.loadFeedbackList({'category':item.id}))}
+                                                  onClick={onClick.bind(this, {'category':item.id})}
                                             />)}
                                 </ul>
                             </Tab>
@@ -67,7 +70,7 @@ export class Nav extends React.Component {
                                 <ul>
                                     {customCategories.map(item =>
                                         <ListItem key={itemKey++} count={item.count} label={item.group}
-                                                  onClick={onClick.bind(this, actions.loadFeedbackList({'custom_category':item.group}))}
+                                                  onClick={onClick.bind(this, {'custom_category':item.group})}
                                             />)
                                     }
                                 </ul>
