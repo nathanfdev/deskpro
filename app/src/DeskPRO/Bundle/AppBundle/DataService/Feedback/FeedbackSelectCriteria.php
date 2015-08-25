@@ -78,12 +78,28 @@ class FeedbackSelectCriteria
                     $qb->andWhere("$alias.hidden_status = :validating");
                     $qb->setParameter('validating', 'validating');
                     break;
+                case 'category':
+                    $qb->innerJoin("$alias.category", 'cat');
+                    $qb->andWhere('cat.id = :id');
+                    $qb->setParameter('id', $value);
+                    break;
+                case 'status_category':
+                    $qb->innerJoin("$alias.status_category", 'statCat');
+                    $qb->andWhere('statCat.title = :title');
+                    $qb->setParameter('title', $value);
+                    break;
+                case 'label':
+                    $qb->innerJoin("$alias.labels", 'labels');
+                    $qb->andWhere('labels.label = :label');
+                    $qb->setParameter('label', $value);
+                    break;
+                case 'custom_category':
+                    $qb->andWhere('customCat.input = :input');
+                    $qb->setParameter('input', $value);
+                    break;
                 case 'status':
-                    // Temporary solution before refactoring of the feedback statuses
-                    if ($value === 'new') {
-                        $qb->andWhere("$alias.status = :status");
-                        $qb->setParameter('status', $value);
-                    }
+                    $qb->andWhere("$alias.status = :status");
+                    $qb->setParameter('status', $value);
                     break;
             }
         }
@@ -96,7 +112,7 @@ class FeedbackSelectCriteria
      */
     protected static function configureResolver(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['awaiting_validation', 'status']);
+        $resolver->setDefined(['awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label']);
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues(
             'status',

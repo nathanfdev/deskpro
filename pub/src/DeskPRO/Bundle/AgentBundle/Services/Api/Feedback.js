@@ -122,6 +122,14 @@ export function getHidden() {
 }
 
 /**
+ * Get list of filtered feedback
+ * @return Promise
+ */
+export function getList(query) {
+    return DpApi.sendGet('DP_API/feedback/?' + compileParams(query));
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}
@@ -130,7 +138,8 @@ function compileParams(params) {
     let compiled = [];
 
     for (let key of Object.keys(params)) {
-        compiled.push(key + '=' + String(params[key]));
+        var str = String(params[key]);
+        compiled.push(key + '=' + str.replace(/\s/g, "%20"));
     }
 
     return compiled.join('&');

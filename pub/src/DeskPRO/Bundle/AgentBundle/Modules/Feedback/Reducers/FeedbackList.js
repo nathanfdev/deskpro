@@ -1,4 +1,5 @@
 import * as FeedbackListActions from "../Actions/FeedbackListActions.js";
+import * as peopleActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Actions/PeopleActions';
 import { Reducer } from "Ampliflux/reducers";
 
 export default class FeedbackList extends Reducer {
@@ -9,6 +10,7 @@ export default class FeedbackList extends Reducer {
             labels: [/* string */],
             types: [/* {title, value} */],
             customCategories: [/* {title, value} */],
+            feedback: [],
             statuses: {
                 new: 0,
                 active: {
@@ -58,7 +60,6 @@ export default class FeedbackList extends Reducer {
     customCategories(prev, {payload}) {
         const next = {...prev};
         next.customCategories = payload.data.nested.counts;
-
         return next;
     }
 
@@ -90,6 +91,13 @@ export default class FeedbackList extends Reducer {
         return next;
     }
 
+    getList(prev, {payload}) {
+        const next = {...prev};
+        next.feedback = payload.data;
+        return next;
+    }
+
+
     registerHandlers() {
         this
             .r(FeedbackListActions.feedbackToValidate, this.toValidate)
@@ -100,7 +108,7 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackActiveStatus, this.active)
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
-            .r(FeedbackListActions.commentsToReview, this.commentsToReview);
+            .r(FeedbackListActions.loadFeedbackList, this.getList);
     }
 
 }
