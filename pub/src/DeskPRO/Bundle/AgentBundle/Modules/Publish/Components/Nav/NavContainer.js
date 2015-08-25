@@ -14,6 +14,8 @@ export class NavContainer extends React.Component {
     return (
       <Nav
         articles={this.props.articles}
+        news={this.props.news}
+        downloads={this.props.downloads}
         categories={this.props.categories}
       />
     );
