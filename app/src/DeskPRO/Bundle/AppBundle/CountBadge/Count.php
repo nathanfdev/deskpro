@@ -57,6 +57,11 @@ class Count
     private $group;
 
     /**
+     * Make constructor private to allow construction only through factory methods
+     */
+    private function __construct() {}
+
+    /**
      * @param string $grouped_by
      * @return Count
      */
@@ -76,6 +81,20 @@ class Count
     {
         $count = new self();
         $count->setCount($value);
+
+        return $count;
+    }
+
+    /**
+     * @param int $value
+     * @param string $group
+     * @return Count
+     */
+    public static function fromValueAndGroup($value, $group)
+    {
+        $count = new self();
+        $count->setCount($value);
+        $count->setGroup($group);
 
         return $count;
     }
