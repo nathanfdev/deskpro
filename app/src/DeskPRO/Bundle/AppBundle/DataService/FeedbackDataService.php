@@ -106,7 +106,7 @@ class FeedbackDataService extends AbstractDataService
                 $allowed_types = $permissions_bag->getAllowedFeedbackCategoryIds();
                 $requested_types = $filter->getTypes();
                 $types = array();
-                if (null === $requested_types || empty($types)) {
+                if (null === $requested_types) {
                     $types = $allowed_types;
                 } else {
                     foreach ($requested_types as $req_type) {

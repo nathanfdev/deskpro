@@ -167,7 +167,7 @@ class FeedbackController extends AbstractController
             $allowed_types_parsed[] = $cat->getId();
         }
         $filter->setTypes($allowed_types_parsed);
-        $filter_js = $this->generateFilterJs($filter, $feedback_types);
+        $filter_js = $this->generateFilterJs($filter, $feedback_types, $page);
 
         //
         // RENDER THEME
@@ -225,16 +225,16 @@ class FeedbackController extends AbstractController
             }
         }
 
-
-        // order was incorrect, redirect
-        if ($filter_uri != $generated_uri = $uri_helper->generateUriSegment($filter)) {
+        // order was incorrect, redirect, but only if this is not an ajax request
+        $generated_uri = $uri_helper->generateUriSegment($filter);
+        if (!$request->isXmlHttpRequest() && $filter_uri != $generated_uri) {
             if (strlen($generated_uri) < 1) {
                 // actually, in this case, it is all the defaults, so go back to the index
                 return $this->redirectToRoute(
                     'portal_feedback'
                 );
             }
-            return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri), Response::HTTP_MOVED_PERMANENTLY);
+            return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri, 'page' => $page), Response::HTTP_MOVED_PERMANENTLY);
         }
 
         //
@@ -246,11 +246,11 @@ class FeedbackController extends AbstractController
         // FILTER CATEGORIES
         //
         $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
-        $filter_js = $this->generateFilterJs($filter, $feedback_types);
+        $filter_js = $this->generateFilterJs($filter, $feedback_types, $page);
 
         $page_options = array(
             'page'              => $page,
-            'feedback_types' => $feedback_types,
+            'feedback_types'    => $feedback_types,
             'count'             => $this->getBrandSetting('portal.per_page_content'),
             'show_pagination'   => true,
             'status'            => $filter->getStatus(),
@@ -259,8 +259,8 @@ class FeedbackController extends AbstractController
             'sort'              => $filter->getSort(),
             'sort_direction'    => $filter->getSortDirection(),
             'breadcrumbs'       => $breadcrumbs,
-            'page_title' => $this->createPageTitle()->feedback(),
-            'filter_js' => $filter_js,
+            'page_title'        => $this->createPageTitle()->feedback(),
+            'filter_js'         => $filter_js,
             'rerendering_saved' => false // wont happen here because we always rerender on index
         );
 
@@ -385,10 +385,10 @@ class FeedbackController extends AbstractController
      * @param $feedback_types
      * @return string
      */
-    public function generateFilterJs(FeedbackFilter $filter, $feedback_types)
+    public function generateFilterJs(FeedbackFilter $filter, $feedback_types, $page)
     {
         $filter_js = json_encode(
-            $filter->toJsArray(array(), $feedback_types),
+            $filter->toJsArray(array(), $feedback_types, $page),
             JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK
         );
 

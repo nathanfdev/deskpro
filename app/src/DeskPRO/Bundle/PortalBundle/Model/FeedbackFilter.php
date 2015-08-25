@@ -106,7 +106,7 @@ class FeedbackFilter
         );
     }
 
-    public function toJsArray(array $allowed_status_categories, array  $allowed_types)
+    public function toJsArray(array $allowed_status_categories, array  $allowed_types, $page = 1)
     {
         $allowed_types_parsed = array();
         foreach ($allowed_types as $cat) {
@@ -114,7 +114,7 @@ class FeedbackFilter
         }
 
         return array(
-            'filter'    => $this->toArray(),
+            'filter'    => array_merge($this->toArray(), array('page' => $page)),
             'available' => array(
                 'status'            => self::$statuses_translated,
                 'status_categories' => $allowed_status_categories,

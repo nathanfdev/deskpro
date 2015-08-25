@@ -21,6 +21,7 @@
     "gulp": "3.9.0",
     "gulp-babel": "5.1.0",
     "gulp-util": "3.0.6",
+    "html5-history-api": "^4.2.2",
     "immutable": "3.7.4",
     "jquery": "2.1.4",
     "lodash": "3.10.0",

@@ -46,12 +46,12 @@ class TypeSlider extends React.Component {
           <a href={'/feedback/browse/type-' + this.props.id}
              className={this.props.active ? "slider" : "slider off"}
              onClick={this.click.bind(this)}>
-            <span className="slider-status">on</span>
+            <span className="slider-status">{this.props.active ? "on" : "off"}</span>
             <span className="slider-icon"><i className="fa fa-check"></i></span>
           </a>
-            <span className="slider-label">
-              {this.props.label}
-            </span>
+          <span className="slider-label" onClick={this.click.bind(this)}>
+            {this.props.label}
+          </span>
           {/**<span className="slider-options">
            <i className="fa fa-caret-down"></i>
            </span>**/}
@@ -76,49 +76,25 @@ class FilterTypes extends React.Component {
 }
 
 export default class FilterControls extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = props.filter_data;
-  }
-  generateUrlFromState() {
-    // do a window.BASE_URL type thing
-    let url = '/feedback/browse/';
-    let filter = this.state.filter;
-
-    url += filter.status;
-
-    if (filter.types.length > 0) {
-      url += '/type-';
-      url += filter.types.join(',');
-    }
-
-    return url;
+  updateFilter(filter) {
+    this.props.updateFilter(filter);
   }
   setStatus(status_id) {
-    if (this.state.filter.status != status_id) {
-      this.state.filter.status = status_id;
-      this.setState(this.state);
-    }
+    let filter = this.props.filterModel;
+    filter.setStatus(status_id);
+    this.updateFilter(filter);
   }
   toggleType(type_id) {
-    type_id = _.parseInt(type_id);
-    if (_.includes(this.state.filter.types, type_id)) {
-      this.state.filter.types = _.filter(this.state.filter.types, (n) => {
-        return n != type_id;
-      });
-      this.setState(this.state);
-    } else {
-      this.state.filter.types.push(type_id);
-      this.setState(this.state);
-    }
+    let filter = this.props.filterModel;
+    filter.toggleType(type_id);
+    this.updateFilter(filter);
   }
   render() {
     return (
-
       <div className="feedback-filter">
-        <p>STATE: {JSON.stringify(this.state.filter)}</p>
-        <p>URL: {this.generateUrlFromState()}</p>
-        <FilterTabs available={this.state.available.status} selected={this.state.filter.status} setStatus={this.setStatus.bind(this)} />
+        <p>STATE: {JSON.stringify(this.props.filterModel)}</p>
+        <p>URL: {this.props.filterModel.createUrl().getUrl()}</p>
+        <FilterTabs available={this.props.available.status} selected={this.props.filterModel.status} setStatus={this.setStatus.bind(this)} />
 
         {/**<div className="table-meta">
           <div className="table-controls">
@@ -127,7 +103,7 @@ export default class FilterControls extends React.Component {
           </div>
         </div>**/}
 
-        <FilterTypes available={this.state.available.types} selected={this.state.filter.types} toggleType={this.toggleType.bind(this)} />
+        <FilterTypes available={this.props.available.types} selected={this.props.filterModel.types} toggleType={this.toggleType.bind(this)} />
       </div>
     );
   }
