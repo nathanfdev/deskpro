@@ -59,7 +59,7 @@ class UserGroupsDataService extends AbstractDataService
         $count = Count::fromGroupedBy('user_group');
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['group_name'], $group['value']);
+            $count->addNested($group['value'], $group['group_name']);
         }
 
         return $count;

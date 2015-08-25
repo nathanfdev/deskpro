@@ -74,7 +74,7 @@ class CommentCountsDataService
         $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['group_name'], $group['value']);
+            $count->addNested($group['value'], $group['group_name']);
         }
 
         return $count;
