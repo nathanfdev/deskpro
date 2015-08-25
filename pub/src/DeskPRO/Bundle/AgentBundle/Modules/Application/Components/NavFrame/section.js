@@ -32,7 +32,7 @@ export class SectionHeader extends React.Component {
 
 export class SectionGroupedHeader extends React.Component {
   render() {
-    const { total, callback } = this.props;
+    const { count, callback } = this.props;
 
     return (
       <div className="list-sidebar-title">
@@ -42,7 +42,7 @@ export class SectionGroupedHeader extends React.Component {
             <span>&nbsp;</span>
             <i className="fa fa-angle-down"></i>
           </a>
-          <a className="list-counter active" href="#">{total}</a>
+          <a className="list-counter active" href="#">{count}</a>
         </div>
       </div>
     );

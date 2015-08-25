@@ -49,7 +49,7 @@ export class NestedList extends BaseList {
     );
   }
 
-  renderListItem({total, group, nested}, depth = 1) {
+  renderListItem({count, group, nested}, depth = 1) {
     if (depth > NestedList.maxDepth) {
       throw 'NestedList maximum recursion depth exceeded'
     }
@@ -84,7 +84,7 @@ export class NestedList extends BaseList {
 
     return (
       <li key={group}>
-        {this.renderCount(total)}
+        {this.renderCount(count)}
         <a href className="item" onClick={this.toggleExpanded(group).bind(this)}>
           {renderLabel()}
         </a>

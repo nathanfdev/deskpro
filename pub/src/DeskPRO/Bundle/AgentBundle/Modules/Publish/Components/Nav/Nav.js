@@ -15,7 +15,7 @@ export class Nav extends React.Component {
           <Tab title="KB">
             <SectionsPane>
               <Section>
-                <SectionGroupedHeader total={articles.total} callback={()=>alert(1)}>
+                <SectionGroupedHeader count={articles.count} callback={()=>alert(1)}>
                   Knowledgebase
                 </SectionGroupedHeader>
 
@@ -33,7 +33,7 @@ export class Nav extends React.Component {
           <Tab title="News">
             <SectionsPane>
               <Section>
-                <SectionGroupedHeader total={news.total} callback={()=>alert(2)}>
+                <SectionGroupedHeader count={news.count} callback={()=>alert(2)}>
                   News
                 </SectionGroupedHeader>
 
@@ -45,7 +45,7 @@ export class Nav extends React.Component {
           <Tab icon="fa-download">
             <SectionsPane>
               <Section>
-                <SectionGroupedHeader total={downloads.total} callback={()=>alert(3)}>
+                <SectionGroupedHeader count={downloads.count} callback={()=>alert(3)}>
                   Downloads
                 </SectionGroupedHeader>
 

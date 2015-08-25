@@ -5,41 +5,41 @@ export default class PublishNav extends Reducer {
   getInitialState() {
     return {
       articles: {
-        total: 42,
+        count: 42,
         nested: [
           {
-            total: 13,
+            count: 13,
             group: 2,
             nested: [
               {
-                total: 7,
+                count: 7,
                 group: 3,
                 nested: [
-                  {total: 4, group: 4},
-                  {total: 3, group: 5},
+                  {count: 4, group: 4},
+                  {count: 3, group: 5},
                 ]
               },
               {
-                total: 6,
+                count: 6,
                 group: 6
               }
             ]
           },
           {
-            total: 15,
+            count: 15,
             group: 7
           },
           {
-            total: 14,
+            count: 14,
             group: 8,
             nested: [
               {
-                total: 14,
+                count: 14,
                 group: 9,
                 nested: [
-                  {total: 10, group: 10},
-                  {total: 4, group: 11, nested: [
-                    {total: 4, group: 13}
+                  {count: 10, group: 10},
+                  {count: 4, group: 11, nested: [
+                    {count: 4, group: 13}
                   ]},
                 ]
               }
@@ -49,60 +49,60 @@ export default class PublishNav extends Reducer {
       },
 
       news: {
-        total: 55,
+        count: 55,
         nested: [
           {
-            total: 25,
+            count: 25,
             group: 2,
             nested: [
               {
-                total: 7,
+                count: 7,
                 group: 3,
                 nested: [
-                  {total: 4, group: 4},
-                  {total: 3, group: 5},
+                  {count: 4, group: 4},
+                  {count: 3, group: 5},
                 ]
               },
               {
-                total: 6,
+                count: 6,
                 group: 6
               }
             ]
           },
           {
-            total: 14,
+            count: 14,
             group: 8
           }
         ]
       },
 
       downloads: {
-        total: 7,
+        count: 7,
         nested: [
           {
-            total: 13,
+            count: 13,
             group: 2,
             nested: [
               {
-                total: 7,
+                count: 7,
                 group: 3,
                 nested: [
-                  {total: 4, group: 4},
-                  {total: 3, group: 5},
+                  {count: 4, group: 4},
+                  {count: 3, group: 5},
                 ]
               },
               {
-                total: 6,
+                count: 6,
                 group: 6
               }
             ]
           },
           {
-            total: 3,
+            count: 3,
             group: 7
           },
           {
-            total: 2,
+            count: 2,
             group: 8
           }
         ]
