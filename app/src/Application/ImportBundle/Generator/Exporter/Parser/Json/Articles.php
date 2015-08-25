@@ -217,6 +217,12 @@ final class Articles extends AbstractParser
                 'prefix' => 'article_comment_',
                 'ref'    => 'oid',
             )),
+            'person_email' => TransformerInterface::TYPE_STRING,
+            'content'      => TransformerInterface::TYPE_STRING,
+            'status'       => TransformerInterface::TYPE_STRING,
+            'is_reviewed'  => TransformerInterface::TYPE_BOOLEAN,
+            'validating'   => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
         ));
 
         $entity = new Entity\ArticleComment();
@@ -224,6 +230,12 @@ final class Articles extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
+            ->setPersonEmail($formatted['person_email'])
+            ->setContent($formatted['content'])
+            ->setStatus($formatted['status'])
+            ->setAsReviewed($formatted['is_reviewed'])
+            ->setValidating($formatted['validating'])
+            ->setDateCreated($formatted['date_created'])
         ;
 
         return $entity;
