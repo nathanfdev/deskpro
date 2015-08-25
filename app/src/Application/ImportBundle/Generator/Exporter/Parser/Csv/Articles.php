@@ -134,7 +134,6 @@ final class Articles extends AbstractParser
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
-            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_ARTICLE)
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])
@@ -143,6 +142,11 @@ final class Articles extends AbstractParser
             ->setDateCreated($formatted['date_created'])
             ->setStatus($formatted['status'])
         ;
+
+        // Set import key if it's real oid only
+        if (strpos($entity->getOid(), 'num_') !== 0) {
+            $entity->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_ARTICLE);
+        }
 
         if ($formatted['label']) {
             $entity->addLabel($formatted['label']);

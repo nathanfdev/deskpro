@@ -347,7 +347,7 @@ final class Tickets extends AbstractParser
             $response = $this->reader->getTickets($start_time);
 
             if (count($response)) {
-                // ZenDesk API does not allow to get ticket comments in a single request due to huge response (could be ~20 MB)
+                // ZenDesk API does not allow to get ticket comments in a single request due to huge response (could be up to ~20 MB)
                 // We have to load comments for each ticket separately
                 foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {

@@ -301,7 +301,7 @@ final class Articles extends AbstractParser
             $response = $this->reader->getArticles($start_time);
 
             if (count($response)) {
-                // ZenDesk API does not allow to get article comments in a single request due to huge response (could be ~20 MB)
+                // ZenDesk API does not allow to get article comments in a single request due to huge response (could be up to ~20 MB)
                 // We have to load comments for each article separately
                 foreach ($response as $article) {
                     if ( ! $count_only) {

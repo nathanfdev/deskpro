@@ -33,7 +33,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Oid mapper
- * Uses to link ZendDesk and DeskPRO entities in case to update
+ * Uses to link importing and DeskPRO entities in case to update
  *
  * Class ImportMap
  * @package Application\ImportBundle\Generator

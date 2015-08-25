@@ -274,6 +274,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->seeFileFound('1/articles/article_1.json');
         $this->helper->seeInThisFile('Article 1');
 
+        $article = $this->getContent('1/articles/article_1.json');
+        $this->assertArrayHasKey('import_map_key', $article);
+        $this->assertEquals(Entity\ImportMap::TYPE_CSV_ARTICLE, $article['import_map_key']);
+
         $this->helper->seeFileFound('1/feedback/feedback_1.json');
         $this->helper->seeInThisFile('Feedback 1');
 
@@ -456,6 +460,15 @@ class CsvTest extends \DpIntegrationTestCase
 
         // Checking for news
         $this->assertContains('Persisted News #2', $output);
+    }
+
+    /**
+     * @param string $filename
+     * @return array
+     */
+    private function getContent($filename)
+    {
+        return json_decode(file_get_contents($filename), true);
     }
 
     /**

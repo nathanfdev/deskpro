@@ -139,7 +139,6 @@ final class Tickets extends AbstractParser
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
-            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_TICKET)
             ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setSubject($formatted['subject'])
             ->setPersonEmail($formatted['user'])
@@ -147,6 +146,11 @@ final class Tickets extends AbstractParser
             ->setStatus($formatted['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
             ->setDateCreated($formatted['date_created'])
         ;
+
+        // Set import key if it's real oid only
+        if (strpos($entity->getOid(), 'num_') !== 0) {
+            $entity->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_TICKET);
+        }
 
         return $entity;
     }
