@@ -155,6 +155,7 @@ final class Article extends AbstractImporter
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setContent($entity->getContent())
             ->setStatus($entity->getStatus())
+            ->setDateCreated($entity->getDateCreated())
         ;
 
         $this->records->addRelatedEntity($article_comment);

@@ -144,6 +144,9 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $comment;
     }
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
@@ -172,7 +175,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * Get the name for the person who made the comment, trying
      * the person record first if it exists.
      *
-     * @param $force_user If true, forces the user display name
+     * @param bool $force_user If true, forces the user display name
      *
      * @return string
      */
@@ -223,6 +226,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * Set the visitor of the person who made this comment. If the name
      * and email arent set they will be set to values of the visitor.
      *
+     * @param Visitor $visitor
      * @return string
      */
     public function setVisitor(Visitor $visitor = null)
@@ -246,6 +250,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * Set the Status
      *
      * @param $new_status
+     * @return $this
      */
     public function setStatus($new_status)
     {
@@ -256,6 +261,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('status', $new_status);
+        return $this;
     }
 
     /**
@@ -276,12 +282,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return Strings::linkify(nl2br(htmlspecialchars($this->content, \ENT_NOQUOTES, 'UTF-8')));
     }
 
-
+    /**
+     * @return string
+     */
     public function getContentReal()
     {
         return $this->content;
     }
-
 
     /**
      * @return string
@@ -290,7 +297,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return nl2br(htmlspecialchars($this->content));
     }
-
 
     /**
      * Strip all HTML from the content and convert breaks and paragraphs to linebreaks.
@@ -382,5 +388,17 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getObjectContentType()
     {
         return $this->getObject()->getTableName();
+    }
+
+    /**
+     * Set created at
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
     }
 }
