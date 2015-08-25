@@ -292,7 +292,6 @@ class TaskFilterBuilder
                 $query = $query->addOrderBy('c.name', $direction);
                 break;
             case 'list':
-                syslog(LOG_LOCAL0 | LOG_NOTICE, 'ordering');
                 $direction = $this->getSortDirection($request);
                 $query = $query->orderBy('t.list', $direction);
                 break;
@@ -310,7 +309,7 @@ class TaskFilterBuilder
                 break;
             case 'ticket':
                 $direction = $this->getSortDirection($request);
-                $query = $query->leftJoin('t.linked_items', 'l');
+                $query = $query->leftJoin('t.linked_items', 'l', 'WITH', 'l.ticket != \'NULL\'');
                 $query = $query->addOrderBy('l.ticket', $direction);
                 break;
         }

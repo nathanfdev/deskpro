@@ -127,6 +127,7 @@ export default class TasksListFrame extends React.Component {
     const _this = this;
     let linked_items = {};
     let lists = [];
+    let tickets = {};
 
     if (this.props.taskListList.taskList && typeof this.props.taskListList.taskList.forEach === 'function') {
       this.props.taskListList.taskList.forEach((listObject) => {
@@ -165,6 +166,13 @@ export default class TasksListFrame extends React.Component {
     if (taskFrameList.taskFrameDepartments && typeof taskFrameList.taskFrameDepartments.forEach === 'function') {
       taskFrameList.taskFrameDepartments.forEach((department) => {
         this.departments[department.id.toString()] = department;
+      });
+    }
+
+    // Attach tickets
+    if (taskFrameList.taskFrameTickets && typeof taskFrameList.taskFrameTickets.forEach === 'function') {
+      taskFrameList.taskFrameTickets.forEach((ticket) => {
+        tickets[ticket.id.toString()] = ticket;
       });
     }
 
@@ -267,8 +275,8 @@ export default class TasksListFrame extends React.Component {
             {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
 
               // Temporary hack
-              const tempOrder = "labels";
-              const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists);
+              const tempOrder = "ticket";
+              const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
               let divider = grouping.getDivider(object, tempOrder);
               let displayDivider = false;
 
@@ -285,7 +293,7 @@ export default class TasksListFrame extends React.Component {
                                teams={this.teams} agents={this.agents} toggleDone={this.toggleDone.bind(this)}
                                source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
                                editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
-                               selected={_this.state.actionable.indexOf(object.id) !== -1} />
+                               selected={_this.state.actionable.indexOf(object.id) !== -1} tickets={tickets} />
               </span>
             }) : '' }
           </div>

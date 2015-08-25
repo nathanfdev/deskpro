@@ -55,7 +55,6 @@ export default class dp_window extends Reducer {
 	}
 
 	toggleKanban(state, action) {
-    console.log(state.kanbanOpen);
 		return {
 			...state,
 			kanbanOpen: !state.kanbanOpen

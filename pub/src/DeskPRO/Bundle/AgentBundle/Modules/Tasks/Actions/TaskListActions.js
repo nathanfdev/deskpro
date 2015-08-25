@@ -207,8 +207,19 @@ export const loadTaskList = createAction(
 
           result['source'] = data;
 
-          trigger(result);
-        })
+        }).then(() => {
+          let linked_tickets = [];
+          result['linked_items'].forEach((value) => {
+            if (value.ticket) {
+              linked_tickets.push(value.ticket);
+            }
+          });
+
+          Tasks.loadLinkedTickets({ids: linked_tickets.join(',')}).then((data) => {
+            result['tickets'] = data.getData().data;
+            trigger(result);
+          });
+        });
       }
     );
   }
