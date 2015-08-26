@@ -49,6 +49,7 @@ a { color: $link-color; }
   @import 'sidebar-flags';
   @import 'sidebar-collapsed';
   @import 'sidebar-apps';
+@import 'control-bar'; // Filters, order by and so on in ListFrame
 
 @import 'top-bar';//Basic structure, logo
   @import 'top-bar-search-form';// Search form (look in live-search.scss for the live results)

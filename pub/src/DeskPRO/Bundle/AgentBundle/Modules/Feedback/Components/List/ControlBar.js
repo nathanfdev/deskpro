@@ -10,18 +10,22 @@ export class ControlBar extends React.Component {
         super(props);
     }
 
-    showFocusChoice(event) {
+    showOrderChoice(event) {
         event.preventDefault();
         event.stopPropagation();
-        $(event.target).closest('a').find('div.filter-choice').show();
+        var elem = $(event.target),
+            filterChoice = elem.closest('a.ticket-control-button').find('div.focus-choice');
+        $('div.dropdown-choice').hide();
+        filterChoice.show();
     }
 
-    showDownChoice(event) {
+    showFilterChoice(event) {
         event.preventDefault();
         event.stopPropagation();
-        var elem = $(event.target);
-        console.log('Down: ', elem.siblings('div.down-choice'));
-        elem.siblings('div.down-choice').show();
+        var elem = $(event.target),
+            filterChoice = elem.closest('a.ticket-control-button').find('div.filter-choice');
+        $('div.dropdown-choice').hide();
+        filterChoice.show();
     }
 
     focusChosen(event) {
@@ -29,15 +33,44 @@ export class ControlBar extends React.Component {
         event.stopPropagation();
         var elem = $(event.target);
         elem.closest('a.ticket-control-button').find('span.focus').text(elem.text());
-        elem.closest('div.filter-choice').hide();
+        $('div.dropdown-choice').hide();
     }
 
-    downChosen(event) {
+    filterChosen(event) {
         event.preventDefault();
         event.stopPropagation();
+        var elem = $(event.target),
+            target = elem.closest('a.ticket-control-button').find('span.down');
+        target.text(elem.text()).append('<i class="fa fa-caret-down"/>');;
+        $('div.dropdown-choice').hide();
+    }
+
+    changeSortDirection(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        $('div.dropdown-choice').hide();
         var elem = $(event.target);
-        elem.closest('a.ticket-control-button').find('span.down').text(elem.text());
-        elem.closest('div.down-choice').hide();
+        if (elem.hasClass('asc')) {
+            elem.removeClass('asc').text('Desc ');
+            elem.siblings('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
+        }
+        else {
+            elem.addClass('asc').text('Asc ');
+            elem.siblings('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
+        }
+    }
+
+    changeView(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        $('div.dropdown-choice').hide();
+        var elem = $(event.target);
+        if (elem.hasClass('list-view')) {
+            elem.removeClass('list-view').text('Table');
+        }
+        else {
+            elem.addClass('list-view').text('List');
+        }
     }
 
     render() {
@@ -59,41 +92,40 @@ export class ControlBar extends React.Component {
                 <span className="ticket-controls-default">
             <a href="#" className="ticket-control-button">
                 <span className="title">Order by:</span>
-                <span className="focus" onClick={this.showFocusChoice.bind(this)}>Date</span>
-                <span className="down" onClick={this.showDownChoice.bind(this)}>Asc <i className="fa fa-caret-down"/></span>
+                <span className="focus" onClick={this.showOrderChoice.bind(this)}>Date</span>
+                <span className="asc" onClick={this.changeSortDirection.bind(this)}>Asc </span>
+                <i className="fa fa-caret-down"/>
 
-                <div className="focus-choice"
-                     style={{display:'none', position:'fixed', top:0, left:0, zIndex:1000}}>
+                <div className="focus-choice dropdown-choice">
                     <ul>
                         <li onClick={this.focusChosen.bind(this)}>Date</li>
                         <li onClick={this.focusChosen.bind(this)}>Rating</li>
                         <li onClick={this.focusChosen.bind(this)}>Number of votes</li>
                     </ul>
                 </div>
-
-                <div className="down-choice"
-                     style={{display:'none', position:'fixed', zIndex:1000}}>
-                    <ul>
-                        <li onClick={this.downChosen.bind(this)}>Asc</li>
-                        <li onClick={this.downChosen.bind(this)}>Desc</li>
-                    </ul>
-                </div>
             </a>
 
-            <a href="#" className="ticket-control-button">
-                <span className="title">Filter by:</span>
-                <span className="focus">12</span>
-                <span className="down">Completed <i className="fa fa-caret-down"/></span>
-            </a>
+                <a href="#" className="ticket-control-button">
+                    <span className="title">Filter by:</span>
+                    <span className="focus">12</span>
+                    <span className="down" onClick={this.showFilterChoice.bind(this)}>
+                        Status <i className="fa fa-caret-down"/>
+                    </span>
 
-            <a href="#" className="ticket-control-button">
-                <span className="title">View:</span>
-              <span className="multi">
-                List
-                <span className="multi-down"><i className="fa fa-caret-down"/></span>
-              </span>
-            </a>
-          </span>
+                    <div className="filter-choice dropdown-choice">
+                        <ul>
+                            <li onClick={this.filterChosen.bind(this)}>Status</li>
+                            <li onClick={this.filterChosen.bind(this)}>Type</li>
+                            <li onClick={this.filterChosen.bind(this)}>Category</li>
+                        </ul>
+                    </div>
+                </a>
+
+                <a href="#" className="ticket-control-button">
+                    <span className="title">View:</span>
+                    <span className="focus list-view" onClick={this.changeView.bind(this)}>List</span>
+                </a>
+            </span>
             </div>
         );
     }
