@@ -294,6 +294,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Returns article comments
+     *
      * @return ArticleComment[]
      */
     public function getComments()
@@ -302,12 +304,36 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Add an article comment
+     *
      * @param ArticleComment $comment
      * @return $this
      */
     public function addComment(ArticleComment $comment)
     {
         $this->comments->attach($comment);
+        return $this;
+    }
+
+    /**
+     * Returns article translations
+     *
+     * @return ObjectLang[]
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * Add an article property translation
+     *
+     * @param ObjectLang $translation
+     * @return $this
+     */
+    public function addTranslation(ObjectLang $translation)
+    {
+        $this->translations->attach($translation);
         return $this;
     }
 
@@ -343,6 +369,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'custom_fields'  => $this->custom_fields->entitiesToArray(),
             'attachments'    => $this->attachments->entitiesToArray(),
             'comments'       => $this->comments->entitiesToArray(),
+            'translations'   => $this->translations->entitiesToArray(),
         );
     }
 
