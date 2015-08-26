@@ -52,6 +52,9 @@ final class News extends AbstractConstraintValidator
      */
     public function validate(Entity\EntityInterface $entity)
     {
-
+        $errors = $this->validator->validate($entity);
+        if (count($errors) > 0) {
+            throw new ValidatorConstraintException($entity, $errors);
+        }
     }
 }
