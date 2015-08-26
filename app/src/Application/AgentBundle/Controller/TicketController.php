@@ -366,15 +366,10 @@ class TicketController extends AbstractController
         }
 
         $open_problems = array();
-        $closed_problems = array();
         $incidents = 0;
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
-                array('title' => 'asc')
-            );
-            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
-                array('is_open' => false),
                 array('title' => 'asc')
             );
 
@@ -440,7 +435,6 @@ class TicketController extends AbstractController
             'addable_slas'               => $addable_slas,
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
             'open_problems'              => $open_problems,
-            'closed_problems'            => $closed_problems,
             'incidents'                  => $incidents,
         );
 
@@ -2155,15 +2149,10 @@ class TicketController extends AbstractController
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
         $open_problems = array();
-        $closed_problems = array();
         $incidents = 0;
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
-                array('title' => 'asc')
-            );
-            $closed_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
-                array('is_open' => false),
                 array('title' => 'asc')
             );
 
@@ -2182,7 +2171,6 @@ class TicketController extends AbstractController
             'custom_org_fields'   => $custom_org_fields,
             'new_custom_fields'   => $new_custom_fields->createView(),
             'open_problems'       => $open_problems,
-            'closed_problems'     => $closed_problems,
             'incidents'           => $incidents,
         ));
 
