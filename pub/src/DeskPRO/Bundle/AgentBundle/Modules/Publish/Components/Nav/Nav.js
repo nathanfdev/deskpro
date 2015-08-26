@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionGroupedHeader, TabsPane, Tab, NestedList, ButtonsPane,
          Button }
-       from 'DeskPRO/Bundle/Agentbundle/Modules/Application/Components/NavFrame/index';
+       from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 export class Nav extends React.Component {
   render() {
