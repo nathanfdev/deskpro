@@ -387,6 +387,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
       DP.select(sel);
 
       sel.on('change', function (ev) {
+				$('ul.nav-list.tickets_outline_problems > li.nav-selected').removeClass('nav-selected');
         var val = $(this).val();
         if (!val) return;
         $(this).data('route', $(this).data('path').replace('0000', $(this).val()))
