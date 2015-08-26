@@ -55,10 +55,10 @@ class Tab extends React.Component {
         return cat.title;
       }
     });
+
     cat_titles = _.filter(cat_titles, (title) => {
       return typeof title !== 'undefined';
     });
-    console.log(cat_titles);
 
     let avail = this.props.available.getStatusCategoriesForStatus(this.props.id);
     if (cat_titles.length > 0) {
@@ -139,13 +139,20 @@ class TypeSlider extends React.Component {
 class FilterTypes extends React.Component {
   render() {
     return (
-      <ul className="slider-list">
-        {_.map(this.props.available, (type, type_id) => {
-          return (
-            <TypeSlider key={type_id} label={type} id={type_id} active={_.includes(this.props.selected, _.parseInt(type_id))} toggleType={this.props.toggleType}  />
-          );
-        })}
-      </ul>
+      <div className="types">
+        <ul className="slider-list">
+          {_.map(this.props.available, (type, type_id) => {
+            return (
+              <TypeSlider key={type_id} label={type} id={type_id}
+                          active={_.includes(this.props.selected, _.parseInt(type_id))}
+                          toggleType={this.props.toggleType}/>
+            );
+          })}
+          <li style={{float: "right", "margin-right":"20px"}}>
+              <img style={{display: this.props.doSpin ? "inline" : "none", height: "30px", width: "30px"}} src={ window.DESKPRO_BASE_URL + '/web/spinner.gif' }/>
+          </li>
+        </ul>
+      </div>
     );
   }
 }
@@ -186,7 +193,7 @@ export default class FilterControls extends React.Component {
           </div>
         </div>**/}
 
-        <FilterTypes available={this.props.available.types} selected={this.props.filterModel.types} toggleType={this.toggleType.bind(this)} />
+        <FilterTypes available={this.props.available.types} selected={this.props.filterModel.types} toggleType={this.toggleType.bind(this)} doSpin={this.props.doSpin} />
       </div>
     );
   }

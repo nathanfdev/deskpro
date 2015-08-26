@@ -4373,6 +4373,9 @@ h1.fancy-header {
       padding-left: 5px;
     }
 
+    small {
+      font-size: 0.7em;
+    }
   }
 
   .no-dropdown a:hover {
@@ -4530,6 +4533,10 @@ h1.fancy-header {
       padding-bottom: 0;
       border-bottom: 0;
     }
+  }
+
+  .paged-results {
+    min-height: 500px;
   }
 
   .feedback-item-controls, .feedback-item-content {

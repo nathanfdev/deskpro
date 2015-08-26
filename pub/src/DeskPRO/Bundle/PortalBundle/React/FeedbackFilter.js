@@ -7,8 +7,12 @@ import $ from "jquery"
 
 class FeedbackResults extends React.Component {
   render() {
+    let html = this.props.partial;
+    if (html.length === 0) {
+      html = '&nbsp';
+    }
     return (
-      <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: this.props.partial }}>
+      <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: html }}>
       </div>
     );
   }
@@ -53,7 +57,6 @@ class FilterOptions {
     let f = _.filter(this.status_categories[status_id], (cat) => {
       return cat.id == status_category_id;
     });
-    console.log('cat after filter', f);
     return _.first(f);
   }
   getAvailableTypeIds() {
@@ -123,7 +126,7 @@ class FilterModel {
     return this.available;
   }
   createUrl() {
-    let url = '/feedback/browse/';
+    let url = window.DESKPRO_BASE_URL + 'feedback/browse/';
 
     url += this.status;
 
@@ -145,6 +148,7 @@ class FilterModel {
     if (this.page > 1) {
       url += '?page=' + this.page;
     }
+    console.log(url);
 
     return new FilterUrl(url);
   }
@@ -207,7 +211,9 @@ export default class FeedbackFilter extends React.Component {
     let filter = new FilterModel(this.props.filter_data.filter, available);
     this.state = {
       available: available,
-      filter: filter
+      filter: filter,
+      doSpin: true,
+      partial: ''
     };
   }
   componentDidMount() {
@@ -218,15 +224,18 @@ export default class FeedbackFilter extends React.Component {
         return;
       }
       this.setState({
-        filter: new FilterModel(e.state.filter, this.state.available),
-        partial: e.state.partial}
+          filter: new FilterModel(e.state.filter, this.state.available),
+          partial: e.state.partial,
+          doSpin: true
+        }
       );
     });
   }
   updateFilter(filter_model) {
     this.setState({
       filter: this.state.filter,
-      partial: '<div style="min-height: 800px;"><i>loading...</i></div>'
+      doSpin: true,
+      partial: ''
     }, () => {
       let http = new Http($.ajax);
       let url = filter_model.createUrl().getUrl();
@@ -234,7 +243,8 @@ export default class FeedbackFilter extends React.Component {
       http.sendGet(url).then(r => {
         let state = {
           filter: filter_model,
-          partial: r.getData()
+          partial: r.getData(),
+          doSpin: false
         };
         history.pushState(state, null, url);
         this.setState(state);
@@ -246,7 +256,8 @@ export default class FeedbackFilter extends React.Component {
       <article className="feedback-filter-interactive">
         <FilterControls filterModel={this.state.filter}
                         available={this.state.available}
-                        updateFilter={this.updateFilter.bind(this)} />
+                        updateFilter={this.updateFilter.bind(this)}
+                        doSpin={this.state.doSpin}/>
         <FeedbackResults filterModel={this.state.filter}
                          partial={this.state.partial}
                          updateFilter={this.updateFilter.bind(this)} />
