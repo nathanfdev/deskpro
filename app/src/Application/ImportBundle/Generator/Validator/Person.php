@@ -47,11 +47,13 @@ final class Person extends AbstractConstraintValidator
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Person $entity
      */
     public function validate(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Person) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
         $errors = $this->validator->validate($entity);
         if (count($errors) > 0) {
             throw new ValidatorConstraintException($entity, $errors);
