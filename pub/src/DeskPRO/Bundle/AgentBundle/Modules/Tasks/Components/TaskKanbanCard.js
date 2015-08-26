@@ -26,7 +26,7 @@ const listCardSource = {
   }
 };
 
-const TaskListCard = React.createClass({
+const TaskKanbanCard = React.createClass({
 
   componentDidMount: function() {
     this.props.connectDragPreview(getEmptyImage(), {
@@ -96,4 +96,4 @@ module.exports = DragSource(DragTypes.TASK, listCardSource, (connect, monitor) =
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
-}))(TaskListCard);
+}))(TaskKanbanCard);

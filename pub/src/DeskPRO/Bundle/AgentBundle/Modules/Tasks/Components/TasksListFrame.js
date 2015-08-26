@@ -7,6 +7,7 @@ import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
+import TaskCardGroup from "../Components/TaskCardGroup";
 import KanbanColumn from "../Components/KanbanColumn";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
@@ -29,7 +30,7 @@ export default class TasksListFrame extends React.Component {
     this.agents = {};
     this.teams = {};
     this.departments = {};
-    this.projects = {};
+    this.projects = [];
 
     // Temp project ID
     props.dispatch(TaskActions.loadLists(63));
@@ -129,12 +130,6 @@ export default class TasksListFrame extends React.Component {
     let lists = [];
     let tickets = {};
 
-    if (this.props.taskListList.taskList && typeof this.props.taskListList.taskList.forEach === 'function') {
-      this.props.taskListList.taskList.forEach((listObject) => {
-        lists[listObject.id.toString()] = listObject;
-      });
-    }
-
     // Temp projectId for the sake of development
     const projectId = "63";
 
@@ -176,7 +171,36 @@ export default class TasksListFrame extends React.Component {
       });
     }
 
+    if (this.props.taskListList.taskList && typeof this.props.taskListList.taskList.forEach === 'function') {
+      this.props.taskListList.taskList.forEach((listObject) => {
+        lists[listObject.id.toString()] = listObject;
+      });
+    }
+
+    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
+
+    // Temporary hack
+    const columnField = "due";
+
+    const rawGroupings = grouping.getRawGroupings(columnField);
+
     const sectionClass = this.state.kanban ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
+
+    let tasks = [];
+
+    // Split tasks up into the appropriate kanban columns
+    if (taskFrameList && taskFrameList.taskFrameList && taskFrameList.taskFrameList.length > 0) {
+      taskFrameList.taskFrameList.forEach((object) => {
+
+        let columnId = grouping.getGroup(object, columnField);
+
+        if (typeof tasks[columnId] === 'undefined') {
+          tasks[columnId] = [];
+        }
+
+        tasks[columnId].push(object);
+      });
+    }
 
     return (
       <section className={sectionClass}>
@@ -260,9 +284,11 @@ export default class TasksListFrame extends React.Component {
 
         {this.state.kanban ?
           <div className="kanban-columns">
-            {lists ? lists.map((taskList) => {
+            {rawGroupings ? rawGroupings.map((grouping) => {
               return <KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
-                           tasks={taskFrameList} key={taskList.id} taskList={taskList} dispatch={_this.props.dispatch.bind(_this)} />
+                                  tasks={tasks[grouping.key]} key={grouping.id} taskList={grouping}
+                                  dispatch={_this.props.dispatch.bind(_this)} columnField={columnField}
+                                  updateField={grouping.updateField} updateValue={grouping.updateValue} />
               }) : '' }
             </div>
           :
@@ -272,30 +298,19 @@ export default class TasksListFrame extends React.Component {
               <button type="submit" value="Save" className="button">Add</button>
             </Formsy.Form>
 
-            {taskFrameList.taskFrameList ? taskFrameList.taskFrameList.map((object) => {
+            {rawGroupings ? rawGroupings.map((grouping) => {
 
-              // Temporary hack
-              const tempOrder = "ticket";
-              const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
-              let divider = grouping.getDivider(object, tempOrder);
-              let displayDivider = false;
+              return <TaskCardGroup tasks={tasks[grouping.key]} key={grouping.id} columnField={columnField}
+                                    source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
+                                    updateField={grouping.updateField} updateValue={grouping.updateValue}
+                                    teams={this.teams} projects={this.projects} linked_items={linked_items}
+                                    departments={this.departments} agents={this.agents} tickets={tickets}
+                                    toggleDone={this.toggleDone.bind(this)} editTask={_this.editTask.bind(_this)}
+                                    updateMassActions={_this.updateMassActions.bind(_this)}
+                                    actionable={_this.state.actionable}
+                                    divider={grouping.title}/>
+              }) : '' }
 
-              if (divider && divider.objectDivider !== this.lastGrouping) {
-                this.lastGrouping = divider.objectDivider;
-                displayDivider = divider.textDisplay;
-              }
-
-              return <span key={object.id}>
-                {
-                  displayDivider ? <div className="divider"><hr/><h1><span>{displayDivider}</span></h1></div> : ''
-                }
-                <TaskCard task={object} projects={this.projects} linked_items={linked_items} departments={this.departments}
-                               teams={this.teams} agents={this.agents} toggleDone={this.toggleDone.bind(this)}
-                               source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
-                               editTask={_this.editTask.bind(_this)} updateMassActions={_this.updateMassActions.bind(_this)}
-                               selected={_this.state.actionable.indexOf(object.id) !== -1} tickets={tickets} />
-              </span>
-            }) : '' }
           </div>
         }
       </div>
