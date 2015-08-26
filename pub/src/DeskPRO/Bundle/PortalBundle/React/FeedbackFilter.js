@@ -148,7 +148,6 @@ class FilterModel {
     if (this.page > 1) {
       url += '?page=' + this.page;
     }
-    console.log(url);
 
     return new FilterUrl(url);
   }

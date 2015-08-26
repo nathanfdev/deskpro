@@ -148,7 +148,7 @@ class FilterTypes extends React.Component {
                           toggleType={this.props.toggleType}/>
             );
           })}
-          <li style={{float: "right", "margin-right":"20px"}}>
+          <li style={{float: "right"}}>
               <img style={{display: this.props.doSpin ? "inline" : "none", height: "30px", width: "30px"}} src={ window.DESKPRO_BASE_URL + '/web/spinner.gif' }/>
           </li>
         </ul>
