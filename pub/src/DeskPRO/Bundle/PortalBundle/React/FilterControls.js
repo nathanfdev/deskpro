@@ -163,6 +163,7 @@ export default class FilterControls extends React.Component {
   }
   setStatus(status_id) {
     let filter = this.props.filterModel;
+    filter.status_categories = [];
     filter.setStatus(status_id);
     this.updateFilter(filter);
   }
