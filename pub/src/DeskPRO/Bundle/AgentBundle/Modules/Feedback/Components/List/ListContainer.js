@@ -15,7 +15,7 @@ export class ListContainer extends React.Component {
     render() {
         const {feedback} = this.props;
         return (
-            <List feedback={feedback} />
+            <List feedback={feedback} {...this.props} />
         );
     }
 }
