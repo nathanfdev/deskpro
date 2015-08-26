@@ -49,6 +49,20 @@ class FilterOptions {
     this.sorts = available.sorts;
     this.sort_directions = available.sort_directions;
   }
+  getStatusCategoryById(status_id, status_category_id) {
+    let f = _.filter(this.status_categories[status_id], (cat) => {
+      return cat.id == status_category_id;
+    });
+    console.log('cat after filter', f);
+    return _.first(f);
+  }
+  getAvailableTypeIds() {
+    let result = [];
+    _.forEach(this.types, (type_name, type_id) => {
+      result.push(_.parseInt(type_id));
+    });
+    return result;
+  }
   getStatusForStatusCategory(status_category_id) {
     let result = null;
 
@@ -71,6 +85,9 @@ class FilterOptions {
     });
     return result;
   }
+  getStatusCategoryIdsForStatus(status_id) {
+    return _.map(this.getStatusCategoriesForStatus(status_id), 'id');
+  }
 }
 
 class FilterModel {
@@ -86,6 +103,21 @@ class FilterModel {
       return _.parseInt(val);
     });
     this.page = _.parseInt(data.page || 1);
+    this.checkEmptyTypes();
+    this.checkEmptyStatusCategories();
+  }
+  checkEmptyTypes() {
+    if (this.types.length === 0) {
+      // if no types are checked, default back to all types
+      // this is the behaviour of the URL
+      this.types = this.available.getAvailableTypeIds();
+    }
+  }
+  checkEmptyStatusCategories() {
+    if (this.status_categories.length === 0) {
+      this.status_categories = this.available.getStatusCategoryIdsForStatus(this.status);
+    }
+    // if no status cats are picked and this status has some, check em all!
   }
   getAvailable() {
     return this.available;
@@ -100,8 +132,14 @@ class FilterModel {
     }
 
     if (this.types.length > 0) {
-      url += '/type-';
-      url += this.types.join(',');
+      let diff = _.difference(this.available.getAvailableTypeIds(), this.types);
+      if (diff.length > 0) {
+        // we only add the /type-x to the URL if it's a subset of types. default is to
+        // include them all. if user has all selected, then we don't need it.
+        // _.intersection above with a length of > 0 means the arrays have diff elements.
+        url += '/type-';
+        url += this.types.join(',');
+      }
     }
 
     if (this.page > 1) {
@@ -121,6 +159,7 @@ class FilterModel {
     this.status_categories = _.filter(this.status_categories, (cat) => {
       return _.includes(avil, cat);
     });
+    this.checkEmptyStatusCategories();
   }
   getStatus() {
     return this.status;
@@ -135,6 +174,7 @@ class FilterModel {
     } else {
       this.types.push(type_id);
     }
+    this.checkEmptyTypes();
   }
   toggleStatusCategory(status_category_id) {
     this.page = 1;

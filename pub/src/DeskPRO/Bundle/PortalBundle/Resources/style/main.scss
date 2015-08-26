@@ -31,7 +31,6 @@
   background: $bg;
 }
 
-
 @mixin make-this-a-button($bg, $text, $padding-vertical, $padding-horizontal) {
   display: inline-block;
   padding: $padding-vertical $padding-horizontal;
@@ -4320,83 +4319,12 @@ h1.fancy-header {
   @include blank-list;
 
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   border-bottom: 1px solid $divider-color;
 
   li {
     display: inline-block;
     margin: 0 15px;
-  }
-
-  .quick-jump {
-    background: $page-background;
-    color: $text-color;;
-    padding: 5px;
-    position: relative;
-    display: inline-block;
-    z-index: 300;
-    cursor: pointer;
-
-    &:hover {
-      .fa-navicon {
-        color: #3d77b6;
-      }
-    }
-  }
-
-  .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
-    display: block;
-  }
-
-  .quick-jump .dropdown-content {
-    background-color: $page-background;
-    text-align: left;
-    border-top: 3px solid #3d77b6;
-    min-width: 250px;
-    position: absolute;
-    margin-left: 0;
-    top: 30px;
-    display: none;
-
-    &:before {
-      content: "";
-      display: block;
-      position: absolute;
-      width: 0px;
-      height: 0px;
-      border: 3px solid rgba(0, 0, 0, 0);
-      border-top: 3px solid #3d77b6;
-      bottom: -9px;
-      left: 10px;
-    }
-  }
-
-  .dropdown {
-    position: relative;
-    display: block;
-    margin-bottom: 20px;
-    padding: 10px;
-    max-width: 300px;
-    border: 1px solid $divider-color;
-    border-radius: 4px;
-    background: $world-background;
-    color: $text-color;
-
-    ul {
-      @include blank-list;
-
-      margin-bottom: 10px;
-    }
-
-    a {
-      text-decoration: none;
-
-      &.not-selected {
-        color: $text-color-darker;
-      }
-
-        color: $text-color-lighter;
-    }
   }
 
   a {
@@ -4429,6 +4357,83 @@ h1.fancy-header {
     &.active-control {
       background: $gold;
       color: $page-background;
+    }
+  }
+
+  .quick-jump {
+    background: $page-background;
+    color: $text-color;;
+    padding: 0;
+    position: relative;
+    display: inline-block;
+    z-index: 300;
+    cursor: pointer;
+
+    .fa {
+      padding-left: 5px;
+    }
+
+  }
+
+  .no-dropdown a:hover {
+    color: $text-color-darker;
+    border-bottom: 3px solid $button-color-secondary;
+  }
+
+  .quick-jump a.active {
+    color: $text-color-darker;
+    border-bottom: 3px solid $button-color-secondary;
+  }
+
+  .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
+    display: block;
+  }
+
+  .quick-jump .dropdown-content {
+    @include generate-background-and-border($surface-secondary);
+    text-align: left;
+    border-top: 3px solid $button-color-secondary;
+    min-width: 120px;
+    position: absolute;
+    margin-left: 0;
+    top: 27px;
+    left: 0;
+    display: none;
+
+    ul {
+      text-align: left;
+      width: 100%;
+      display: block;
+      padding: 0;
+      border-bottom: 1px solid $divider-color;
+      border-left: 1px solid $divider-color;
+      border-right: 1px solid $divider-color;
+      li {
+        .cat-checkbox-title {
+          white-space: nowrap;
+          display: block;
+          width: 100%;
+          &:hover {
+            background-color: $surface-main;
+          }
+          input {
+            display: inline-block;
+            margin-right: 4px;
+          }
+          a {
+            display: inline-block;
+          }
+        }
+        &:hover {
+          background-color: $surface-main;
+        }
+        white-space: nowrap;
+        padding: 5px;
+        margin: 0;
+        text-align: left;
+        width: 100%;
+        display: block;
+      }
     }
   }
 }

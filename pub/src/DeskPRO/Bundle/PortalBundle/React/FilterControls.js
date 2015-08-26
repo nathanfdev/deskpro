@@ -8,9 +8,12 @@ class StatusCategory extends React.Component {
   }
   render() {
     return (
-        <a style={this.props.isActive ? { fontWeight: 'bold'} : {}} onClick={this.clicked.bind(this)}>
-          {this.props.cat.title}
-        </a>
+        <div className="cat-checkbox-title">
+          <input type="checkbox" checked={this.props.isActive} onChange={this.clicked.bind(this)} />
+          <a style={this.props.isActive ? { fontWeight: 'bold'} : {}} onClick={this.clicked.bind(this)}>
+            {this.props.cat.title}
+          </a>
+        </div>
     );
   }
 }
@@ -24,34 +27,61 @@ class Tab extends React.Component {
     return _.includes(this.props.activeCategories, cat_id);
   }
   render() {
+    let dropdownCats = this.props.available.getStatusCategoriesForStatus(this.props.id);
+    let canRenderDropdown = dropdownCats.length > 0;
     return (
       <li>
-        <div className="quick-jump">
+        <div className={"quick-jump" + (canRenderDropdown ? "" : " no-dropdown")}>
           <a href={'/feedback/browse/' + this.props.id}
              className={this.props.active ? "active" : ""}
              onClick={this.clickTab.bind(this)}
             >
             {this.props.label}
-            {/* TODO implement types <span><i className="fa fa-caret-down"></i></span>*/}
+            {this.renderActiveCats()}
+            {canRenderDropdown
+              ? <span><i className="fa fa-caret-down"></i></span>
+              : null
+            }
           </a>
+          {canRenderDropdown ? this.renderDropdown(dropdownCats) : null}
+        </div>
+      </li>
+    );
+  }
+  renderActiveCats() {
+    let cat_titles = _.map(this.props.activeCategories, (active_status_category) => {
+      let cat = this.props.available.getStatusCategoryById(this.props.id, active_status_category);
+      if (typeof cat !== 'undefined') {
+        return cat.title;
+      }
+    });
+    cat_titles = _.filter(cat_titles, (title) => {
+      return typeof title !== 'undefined';
+    });
+    console.log(cat_titles);
 
-          <div className="dropdown-content">
-            <ul>
-            {_.map(this.props.available.getStatusCategoriesForStatus(this.props.id), (cat) => {
-              return (
-                <li>
+    let avail = this.props.available.getStatusCategoriesForStatus(this.props.id);
+    if (cat_titles.length > 0) {
+      return (<small> ({cat_titles.length}/{avail.length})</small>);
+    }
+  }
+  renderDropdown(dropdownCats) {
+    return (
+      <div className="dropdown-content">
+        <ul>
+          {_.map(dropdownCats, (cat) => {
+            return (
+              <li key={cat.id}>
                 <StatusCategory
-                  key={cat.id}
                   cat={cat}
                   isActive={this.isActiveStatusCategory(cat.id)}
                   setStatusCategory={this.props.setStatusCategory}
                   />
-                  </li>
-              );
-            })}
-            </ul>
-          </div></div>
-    </li>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     );
   }
 }
@@ -142,8 +172,6 @@ export default class FilterControls extends React.Component {
   render() {
     return (
       <div className="feedback-filter">
-        <p>STATE: {JSON.stringify(this.props.filterModel)}</p>
-        <p>URL: {this.props.filterModel.createUrl().getUrl()}</p>
         <FilterTabs
           available={this.props.available}
           filter={this.props.filterModel}

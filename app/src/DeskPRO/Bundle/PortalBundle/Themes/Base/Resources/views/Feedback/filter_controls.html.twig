@@ -1,7 +1,7 @@
 <script>
     window.FEEDBACK_FILTER_STATE = {{ filter_js|raw }};
 </script>
-<div class="feedback-filter as-no-dpui">
+<div class="feedback-filter">
     <ul class="flat-tabs">
         <li>
             <a href="{{ path('portal_feedback_browse', { filter_uri: 'all' }) }}"{% if status == 'all' %} class="active"{% endif %}>{{ phrase('portal.feedback.filter_all_items') }}</a>
