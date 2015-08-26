@@ -86,6 +86,11 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $comments;
 
     /**
+     * @var ObjectLang[]
+     */
+    private $translations;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -93,6 +98,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
         $this->custom_fields = new Collection();
         $this->attachments   = new Collection();
         $this->comments      = new Collection();
+        $this->translations  = new Collection();
     }
 
     /**
@@ -314,24 +320,6 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             throw new \Exception('Date created is not set up');
         }
 
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
-        $attachments = array();
-        foreach ($this->attachments as $attachment) {
-            /** @var Attachment $attachment */
-            $attachments[] = $attachment->toArray();
-        }
-
-        $comments = array();
-        foreach ($this->comments as $comment) {
-            /** @var ArticleComment $comment */
-            $comments[] = $comment->toArray();
-        }
-
         return array(
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
@@ -352,9 +340,9 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'date_end'       => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
             'categories'     => $this->categories,
             'labels'         => $this->labels,
-            'custom_fields'  => $custom_fields,
-            'attachments'    => $attachments,
-            'comments'       => $comments,
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
+            'attachments'    => $this->attachments->entitiesToArray(),
+            'comments'       => $this->comments->entitiesToArray(),
         );
     }
 

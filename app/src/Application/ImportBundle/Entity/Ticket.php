@@ -625,17 +625,6 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             throw new \Exception('Date created is not set up');
         }
 
-        $messages = array();
-        foreach ($this->messages as $message) {
-            /** @var TicketMessage $message */
-            $messages[] = $message->toArray();
-        }
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
         return array(
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
@@ -659,8 +648,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             'urgency'        => $this->urgency,
             'participants'   => $this->participants,
             'labels'         => $this->labels,
-            'messages'       => $messages,
-            'custom_fields'  => $custom_fields,
+            'messages'       => $this->messages->entitiesToArray(),
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
             'log_message'    => $this->log_message,
         );
     }

@@ -115,4 +115,20 @@ final class Collection extends AbstractCollection
 
         return $this;
     }
+
+    /**
+     * Converts collection's entities to array
+     *
+     * @return array
+     */
+    public function entitiesToArray()
+    {
+        $entities = array();
+        foreach ($this->collection as $entity) {
+            /** @var EntityInterface $entity */
+            $entities[] = $entity->toArray();
+        }
+
+        return $entities;
+    }
 }
