@@ -19,7 +19,7 @@ export class Nav extends React.Component {
                   Knowledgebase
                 </SectionGroupedHeader>
 
-                <NestedList items={articles.nested} groups={categories.article} />
+                <NestedList items={articles.nested} groups={categories.articles} />
               </Section>
             </SectionsPane>
 

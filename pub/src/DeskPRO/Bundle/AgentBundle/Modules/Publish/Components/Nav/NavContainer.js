@@ -8,6 +8,10 @@ export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
+    this.props.dispatch(actions.loadArticlesCounts(this.props.articles.grouped_by));
+    this.props.dispatch(actions.loadNewsCounts(this.props.news.grouped_by));
+    this.props.dispatch(actions.loadDownloadsCounts(this.props.downloads.grouped_by));
+    this.props.dispatch(actions.loadCategories());
   }
 
   render() {

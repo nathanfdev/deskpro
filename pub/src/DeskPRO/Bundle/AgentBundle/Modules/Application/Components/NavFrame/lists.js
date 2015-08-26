@@ -3,14 +3,14 @@ import React from 'react';
 
 class BaseList extends React.Component {
   renderCount(count) {
-    if (!count) {
+    if ((count !== 0) && !count) {
       return;
     }
 
     return (
-        <div className="list-counter-bucket">
-          <a className="list-counter active" href="#">{count}</a>
-        </div>
+      <div className="list-counter-bucket">
+        <a className="list-counter active" href="#">{count}</a>
+      </div>
     );
   }
 }

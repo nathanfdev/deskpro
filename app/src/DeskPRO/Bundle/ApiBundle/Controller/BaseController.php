@@ -123,4 +123,13 @@ class BaseController extends FOSRestController
     {
         return $this->getDoctrine()->getManager();
     }
+
+    /**
+     * @param string $class
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getRepository($class)
+    {
+        return $this->getManager()->getRepository($class);
+    }
 }
