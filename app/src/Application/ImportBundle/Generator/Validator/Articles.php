@@ -56,5 +56,21 @@ final class Articles extends AbstractConstraintValidator
         if (count($errors) > 0) {
             throw new ValidatorConstraintException($entity, $errors);
         }
+
+        foreach ($entity->getComments() as $comment) {
+            /** @var Entity\ArticleComment $comment */
+            $errors = $this->validator->validate($comment);
+            if (count($errors) > 0) {
+                throw new ValidatorConstraintException($entity, $errors);
+            }
+        }
+
+        foreach ($entity->getAttachments() as $attachment) {
+            /** @var Entity\Attachment $attachment */
+            $errors = $this->validator->validate($attachment);
+            if (count($errors) > 0) {
+                throw new ValidatorConstraintException($entity, $errors);
+            }
+        }
     }
 }

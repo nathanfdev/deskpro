@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -107,6 +108,23 @@ final class ArticleComment extends AbstractEntity
     }
 
     /**
+     * Returns a list of available statuses
+     *
+     * @return array
+     */
+    public static function getValidStatuses()
+    {
+        return array(
+            DeskPROEntity\ArticleComment::STATUS_VISIBLE,
+            DeskPROEntity\ArticleComment::STATUS_VALIDATING,
+            DeskPROEntity\ArticleComment::STATUS_USER_VALIDATING,
+            DeskPROEntity\ArticleComment::STATUS_TEMP,
+            DeskPROEntity\ArticleComment::STATUS_DELETED,
+            DeskPROEntity\ArticleComment::STATUS_AGENT,
+        );
+    }
+
+    /**
      * Set comment status
      *
      * @param string $status
@@ -116,6 +134,14 @@ final class ArticleComment extends AbstractEntity
     {
         $this->status = $status;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStatusValid()
+    {
+        return in_array($this->status, self::getValidStatuses(), true);
     }
 
     /**
@@ -221,9 +247,13 @@ final class ArticleComment extends AbstractEntity
         parent::loadValidatorMetadata($metadata);
 
         $metadata
-            ->addPropertyConstraint('name', new Constraints\NotBlank())
             ->addPropertyConstraint('content', new Constraints\NotBlank())
             ->addPropertyConstraint('person_email', new Constraints\NotBlank())
+            ->addPropertyConstraint('status', new Constraints\NotBlank())
+
+            ->addGetterConstraint('statusValid', new Constraints\True(array(
+                'message' => sprintf('Value is not valid, use one of (%s): ', implode(', ', self::getValidStatuses()))
+            )))
         ;
     }
 }
