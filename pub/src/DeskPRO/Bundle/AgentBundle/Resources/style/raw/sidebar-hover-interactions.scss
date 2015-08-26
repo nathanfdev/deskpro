@@ -14,9 +14,11 @@
   
   &.hide {
     max-width: 0px;
+    display: none;
   }
   &.show {
     max-width: 1000px;
+    display: block;
   }
 }
 
