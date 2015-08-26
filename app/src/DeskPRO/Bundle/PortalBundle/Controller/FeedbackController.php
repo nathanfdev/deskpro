@@ -234,7 +234,10 @@ class FeedbackController extends AbstractController
                     'portal_feedback'
                 );
             }
-            return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri, 'page' => $page), Response::HTTP_MOVED_PERMANENTLY);
+            return $this->redirectToRoute('portal_feedback_browse', array(
+                'filter_uri' => $generated_uri,
+                'page' => $page
+            ), Response::HTTP_MOVED_PERMANENTLY);
         }
 
         //
@@ -385,10 +388,41 @@ class FeedbackController extends AbstractController
      * @param $feedback_types
      * @return string
      */
-    public function generateFilterJs(FeedbackFilter $filter, $feedback_types, $page)
+    public function generateFilterJs(FeedbackFilter $filter, array $feedback_types, $page)
     {
+
+        $allowed_types_parsed = array();
+        foreach ($feedback_types as $cat) {
+            $allowed_types_parsed[$cat->getId()] = $cat->getTitle();
+        }
+
+        $status_categories = array();
+        $status_categories_entity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(array('status_type' => FeedbackFilter::$statuses));
+        foreach ($status_categories_entity as $status_category) {
+            $status_type = $status_category->getStatusType();
+            if (!array_key_exists($status_type, $status_categories)) {
+                $status_categories[$status_type] = array();
+            }
+            $status_categories[$status_type][] = array(
+                'id' => $status_category->getId(),
+                'title' => $status_category->getTitle()
+            );
+        }
+
+
+        $the_array = array(
+            'filter'    => array_merge($filter->toArray(), array('page' => $page)),
+            'available' => array(
+                'status'            => FeedbackFilter::$statuses_translated,
+                'status_categories' => $status_categories,
+                'types'             => $allowed_types_parsed,
+                'sorts'             => FeedbackFilter::$sorts_translated,
+                'sort_directions'   => FeedbackFilter::$sort_directions_translated,
+            )
+        );
+
         $filter_js = json_encode(
-            $filter->toJsArray(array(), $feedback_types, $page),
+            $the_array,
             JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK
         );
 

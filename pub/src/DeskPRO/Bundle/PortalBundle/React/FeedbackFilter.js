@@ -40,8 +40,42 @@ class FeedbackResults extends React.Component {
   }
 }
 
+class FilterOptions {
+  constructor(available) {
+    this._available = available;
+    this.status = available.status;
+    this.status_categories = available.status_categories;
+    this.types = available.types;
+    this.sorts = available.sorts;
+    this.sort_directions = available.sort_directions;
+  }
+  getStatusForStatusCategory(status_category_id) {
+    let result = null;
+
+    _.forEach(this.status_categories, (st_cats, st_id) => {
+      _.forEach(st_cats, (st_cat) => {
+        if (st_cat.id === status_category_id) {
+          result = st_id;
+        }
+      });
+
+    });
+    return result;
+  }
+  getStatusCategoriesForStatus(status_id) {
+    let result = [];
+    _.forEach(this.status_categories, (st_cats, st_id) => {
+      if (st_id == status_id) {
+        result = st_cats;
+      }
+    });
+    return result;
+  }
+}
+
 class FilterModel {
-  constructor(data) {
+  constructor(data, available) {
+    this.available = available;
     this.sort = data.sort;
     this.sort_direction = data.sort_direction;
     this.status = data.status;
@@ -53,10 +87,17 @@ class FilterModel {
     });
     this.page = _.parseInt(data.page || 1);
   }
+  getAvailable() {
+    return this.available;
+  }
   createUrl() {
     let url = '/feedback/browse/';
 
     url += this.status;
+
+    if (this.status_categories.length > 0) {
+      url += '-' + this.status_categories.join(',');
+    }
 
     if (this.types.length > 0) {
       url += '/type-';
@@ -70,10 +111,19 @@ class FilterModel {
     return new FilterUrl(url);
   }
   setStatus(status_id) {
+    this.page = 1;
     if (this.status != status_id) {
       this.status = status_id;
-      this.page = 1;
     }
+    let avil = _.map(this.available.getStatusCategoriesForStatus(this.status), (cat) => {
+        return cat.id;
+    });
+    this.status_categories = _.filter(this.status_categories, (cat) => {
+      return _.includes(avil, cat);
+    });
+  }
+  getStatus() {
+    return this.status;
   }
   toggleType(type_id) {
     this.page = 1;
@@ -85,6 +135,19 @@ class FilterModel {
     } else {
       this.types.push(type_id);
     }
+  }
+  toggleStatusCategory(status_category_id) {
+    this.page = 1;
+    status_category_id = _.parseInt(status_category_id);
+    if (_.includes(this.status_categories, status_category_id)) {
+      this.status_categories = _.filter(this.status_categories, (n) => {
+        return n != status_category_id;
+      });
+    } else {
+      this.status_categories.push(status_category_id);
+    }
+    // force a filter on this.status_categories
+    this.setStatus(this.available.getStatusForStatusCategory(status_category_id));
   }
 }
 
@@ -100,8 +163,11 @@ class FilterUrl {
 export default class FeedbackFilter extends React.Component {
   constructor(props) {
     super(props);
+    let available = new FilterOptions(this.props.filter_data.available);
+    let filter = new FilterModel(this.props.filter_data.filter, available);
     this.state = {
-      filter: new FilterModel(this.props.filter_data.filter)
+      available: available,
+      filter: filter
     };
   }
   componentDidMount() {
@@ -111,12 +177,13 @@ export default class FeedbackFilter extends React.Component {
       if (e.state == null) {
         return;
       }
-      let nstate = {filter: new FilterModel(e.state.filter), partial: e.state.partial};
-      this.setState(nstate);
+      this.setState({
+        filter: new FilterModel(e.state.filter, this.state.available),
+        partial: e.state.partial}
+      );
     });
   }
   updateFilter(filter_model) {
-    console.log ('updating to this filter', filter_model);
     this.setState({
       filter: this.state.filter,
       partial: '<div style="min-height: 800px;"><i>loading...</i></div>'
@@ -125,8 +192,6 @@ export default class FeedbackFilter extends React.Component {
       let url = filter_model.createUrl().getUrl();
 
       http.sendGet(url).then(r => {
-        console.log(url, r);
-
         let state = {
           filter: filter_model,
           partial: r.getData()
@@ -140,7 +205,7 @@ export default class FeedbackFilter extends React.Component {
     return (
       <article className="feedback-filter-interactive">
         <FilterControls filterModel={this.state.filter}
-                        available={this.props.filter_data.available}
+                        available={this.state.available}
                         updateFilter={this.updateFilter.bind(this)} />
         <FeedbackResults filterModel={this.state.filter}
                          partial={this.state.partial}

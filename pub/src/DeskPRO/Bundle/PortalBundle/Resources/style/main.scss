@@ -2409,6 +2409,8 @@ header {
 
   .select-dropdown {
     border: 1px solid $form-border-color;
+    position: absolute;
+    top: 20px;
 
     a {
       display: block;
@@ -4302,9 +4304,11 @@ h1.fancy-header {
     margin: 0 4px;
     color: $text-color-lighter;
     font-size: 0.9em;
+    cursor: pointer;
   }
 
   .slider-options {
+
     padding: 0 8px;
     border-left: 1px solid $divider-color;
     font-size: 0.9em;
@@ -4324,15 +4328,84 @@ h1.fancy-header {
     margin: 0 15px;
   }
 
+  .quick-jump {
+    background: $page-background;
+    color: $text-color;;
+    padding: 5px;
+    position: relative;
+    display: inline-block;
+    z-index: 300;
+    cursor: pointer;
+
+    &:hover {
+      .fa-navicon {
+        color: #3d77b6;
+      }
+    }
+  }
+
+  .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
+    display: block;
+  }
+
+  .quick-jump .dropdown-content {
+    background-color: $page-background;
+    text-align: left;
+    border-top: 3px solid #3d77b6;
+    min-width: 250px;
+    position: absolute;
+    margin-left: 0;
+    top: 30px;
+    display: none;
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 0px;
+      height: 0px;
+      border: 3px solid rgba(0, 0, 0, 0);
+      border-top: 3px solid #3d77b6;
+      bottom: -9px;
+      left: 10px;
+    }
+  }
+
+  .dropdown {
+    position: relative;
+    display: block;
+    margin-bottom: 20px;
+    padding: 10px;
+    max-width: 300px;
+    border: 1px solid $divider-color;
+    border-radius: 4px;
+    background: $world-background;
+    color: $text-color;
+
+    ul {
+      @include blank-list;
+
+      margin-bottom: 10px;
+    }
+
+    a {
+      text-decoration: none;
+
+      &.not-selected {
+        color: $text-color-darker;
+      }
+
+        color: $text-color-lighter;
+    }
+  }
+
   a {
     display: block;
     padding-bottom: 3px;
-    border-bottom: 3px solid $page-background;
     color: $text-color-lighter;
     text-decoration: none;
 
     &:hover, &.active {
-      border-bottom: 3px solid $button-color-secondary;
       color: $text-color-darker;
     }
   }

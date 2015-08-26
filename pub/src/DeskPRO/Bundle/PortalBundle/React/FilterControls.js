@@ -1,22 +1,56 @@
 import React from "react"
 import _ from "lodash"
 
+class StatusCategory extends React.Component {
+  clicked(e) {
+    e.preventDefault();
+    this.props.setStatusCategory(this.props.cat.id);
+  }
+  render() {
+    return (
+        <a style={this.props.isActive ? { fontWeight: 'bold'} : {}} onClick={this.clicked.bind(this)}>
+          {this.props.cat.title}
+        </a>
+    );
+  }
+}
+
 class Tab extends React.Component {
-  click(e) {
+  clickTab(e) {
     e.preventDefault();
     this.props.setStatus(this.props.id);
-
+  }
+  isActiveStatusCategory(cat_id) {
+    return _.includes(this.props.activeCategories, cat_id);
   }
   render() {
     return (
       <li>
-        <a href={'/feedback/browse/' + this.props.id}
-           className={this.props.active ? "active" : ""}
-           onClick={this.click.bind(this)}
-          >
-          {this.props.label}
-          {/* TODO implement types <span><i className="fa fa-caret-down"></i></span>*/}
-        </a>
+        <div className="quick-jump">
+          <a href={'/feedback/browse/' + this.props.id}
+             className={this.props.active ? "active" : ""}
+             onClick={this.clickTab.bind(this)}
+            >
+            {this.props.label}
+            {/* TODO implement types <span><i className="fa fa-caret-down"></i></span>*/}
+          </a>
+
+          <div className="dropdown-content">
+            <ul>
+            {_.map(this.props.available.getStatusCategoriesForStatus(this.props.id), (cat) => {
+              return (
+                <li>
+                <StatusCategory
+                  key={cat.id}
+                  cat={cat}
+                  isActive={this.isActiveStatusCategory(cat.id)}
+                  setStatusCategory={this.props.setStatusCategory}
+                  />
+                  </li>
+              );
+            })}
+            </ul>
+          </div></div>
     </li>
     );
   }
@@ -26,8 +60,19 @@ class FilterTabs extends React.Component {
   render() {
     return (
       <ul className="flat-tabs">
-        {_.map(this.props.available, (status, status_id) => {
-          return (<Tab key={status_id} label={status} id={status_id} active={this.props.selected == status_id} setStatus={this.props.setStatus} />);
+        {_.map(this.props.available.status, (status, status_id) => {
+          return (
+            <Tab
+              key={status_id}
+              label={status}
+              id={status_id}
+              active={this.props.filter.getStatus() == status_id}
+              activeCategories={this.props.filter.status_categories}
+              setStatus={this.props.setStatus}
+              available={this.props.available}
+              setStatusCategory={this.props.setStatusCategory}
+            />
+          );
         })}
       </ul>
     );
@@ -84,6 +129,11 @@ export default class FilterControls extends React.Component {
     filter.setStatus(status_id);
     this.updateFilter(filter);
   }
+  setStatusCategory(status_category_id) {
+    let filter = this.props.filterModel;
+    filter.toggleStatusCategory(status_category_id);
+    this.updateFilter(filter);
+  }
   toggleType(type_id) {
     let filter = this.props.filterModel;
     filter.toggleType(type_id);
@@ -94,7 +144,12 @@ export default class FilterControls extends React.Component {
       <div className="feedback-filter">
         <p>STATE: {JSON.stringify(this.props.filterModel)}</p>
         <p>URL: {this.props.filterModel.createUrl().getUrl()}</p>
-        <FilterTabs available={this.props.available.status} selected={this.props.filterModel.status} setStatus={this.setStatus.bind(this)} />
+        <FilterTabs
+          available={this.props.available}
+          filter={this.props.filterModel}
+          setStatus={this.setStatus.bind(this)}
+          setStatusCategory={this.setStatusCategory.bind(this)}
+          />
 
         {/**<div className="table-meta">
           <div className="table-controls">

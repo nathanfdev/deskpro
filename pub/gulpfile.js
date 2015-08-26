@@ -114,19 +114,14 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         },
         {
           test: /\.scss$/,
-          loader: ExtractTextPlugin.extract("style-loader",
-            "css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&" +
-            "includePaths[]=" + (path.resolve(__dirname, "./bower_components")) + "&" +
-            "includePaths[]=" + (path.resolve(__dirname, "./node_modules")),
-            { "publicPath": "../../../../../../../pub/build/" }
-          )
+          loader: ExtractTextPlugin.extract("css!sass")
         }
       ]
     },
     plugins: [
       // this path is so the relative paths are the same between build/ and src/ dirs
       // makes it generally easier to keep in your head
-      new ExtractTextPlugin("DeskPRO/Bundle/Build/Resources/style/[name].css"),
+      new ExtractTextPlugin("./DeskPRO/Bundle/Build/Resources/style/[name].css", {allChunks: true}),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       })
