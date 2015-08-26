@@ -30,9 +30,11 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
+use Application\ImportBundle\Reader\ZenDesk\LocaleMapper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleAttachmentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleTranslationCreate;
 use DateTime;
 use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
@@ -135,6 +137,29 @@ final class Articles extends AbstractFixture
 
             } catch (ResponseException $e) {
                 $this->handleResponseException('article attachment');
+            }
+        }
+
+        $locales = array_keys(LocaleMapper::getLocaleCodesMapping());
+
+        foreach ($locales as $locale) {
+            try {
+                $helper = new ArticleTranslationCreate(array(
+                    'id'          => $article->id,
+                    'translation' => array(
+                        'locale' => $locale,
+                        'title'  => 'Translation title ' . $locale,
+                        'body'   => 'Translation body ' . $locale,
+                    ),
+                ));
+
+                $response = $helper->request($this->client);
+
+                $this->logger->info('Article translation created successfully');
+                $this->logger->debug(json_encode($response->translation));
+
+            } catch (ResponseException $e) {
+                $this->handleResponseException('article translation');
             }
         }
     }

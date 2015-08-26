@@ -44,7 +44,7 @@ class LocaleMapper
      */
     public static function getLocale($zd_locale)
     {
-        $mapping = self::localeCodesMapping();
+        $mapping = self::getLocaleCodesMapping();
         $code    = strtolower($zd_locale);
 
         if (isset($mapping[$code])) {
@@ -59,7 +59,7 @@ class LocaleMapper
      *
      * @return array
      */
-    public static function localeCodesMapping()
+    public static function getLocaleCodesMapping()
     {
         return array(
             'ar-eg'  => 'ar',    // Arabic (Egypt)

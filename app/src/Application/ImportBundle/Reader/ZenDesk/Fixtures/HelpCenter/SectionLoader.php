@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionsFindAll;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -47,7 +46,7 @@ class SectionLoader extends AbstractFixtureLoader
      */
     public function load()
     {
-        $response = $this->request_adapter->doRequest(new SectionsFindAll());
+        $response = $this->request_adapter->doRequest('HelpCenter\SectionsFindAll');
         $this->sections = new ArrayCollection($this->toArray($response->sections));
     }
 
