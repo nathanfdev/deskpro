@@ -322,14 +322,4 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
     }
-
-    /**
-     * Unexpected entity type exception
-     *
-     * @param Entity\EntityInterface $entity
-     */
-    protected static function throwUnexpectedEntityTypeException(Entity\EntityInterface $entity)
-    {
-        throw new \RuntimeException(sprintf('Unexpected entity type `%s`', $entity));
-    }
 }

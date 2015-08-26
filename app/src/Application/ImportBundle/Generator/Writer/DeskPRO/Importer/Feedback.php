@@ -75,7 +75,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Feedback) {
-            self::throwUnexpectedEntityTypeException($entity);
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
         $this->records = new DoctrineEntitiesCollection();

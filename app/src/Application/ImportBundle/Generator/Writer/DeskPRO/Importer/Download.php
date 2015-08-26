@@ -74,7 +74,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Download) {
-            self::throwUnexpectedEntityTypeException($entity);
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
         $this->records = new DoctrineEntitiesCollection();

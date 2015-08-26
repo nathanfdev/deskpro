@@ -52,7 +52,7 @@ final class NewsLabel extends AbstractImporter
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\News) {
-            self::throwUnexpectedEntityTypeException($entity);
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
         $this->records = new DoctrineEntitiesCollection();

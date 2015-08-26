@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,63 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
-
-use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Entity;
 
 /**
- * DeskPRO organization label importer
- *
- * Class OrganizationLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
+ * Class UnexpectedException
+ * @package Application\ImportBundle\Entity
  */
-final class OrganizationLabel extends AbstractImporter
+final class UnexpectedException extends \RuntimeException
 {
     /**
-     * {@inheritdoc}
-     */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_ORGANIZATION;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
-    {
-        if ( ! $entity instanceof Entity\Organization) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
-        }
-
-        $this->records = new DoctrineEntitiesCollection();
-        $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
-        $organization->resetLabels();
-
-        foreach ($entity->getLabels() as $label) {
-            $organization->addLabel($this->createOrganizationLabel($label));
-            $this->logInfo(sprintf(
-                'Creating a new label `%s` for organization with oid `%d`',
-                $label, $organization->getId()
-            ));
-        }
-
-        $this->records->setPrimaryEntity($organization);
-        return $this->records;
-    }
-
-    /**
-     * Returns a new organization label entity
+     * Unexpected entity type exception
      *
-     * @param string $label
-     * @return DeskPROEntity\LabelOrganization
+     * @param EntityInterface $entity
      */
-    private function createOrganizationLabel($label)
+    public static function throwUnexpectedEntityTypeException(EntityInterface $entity)
     {
-        $entity = new DeskPROEntity\LabelOrganization();
-        $entity->setLabel($label);
-
-        return $entity;
+        throw new self(sprintf('Unexpected entity type `%s`', $entity));
     }
 }

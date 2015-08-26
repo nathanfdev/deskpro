@@ -78,7 +78,7 @@ final class Ticket extends AbstractImporter
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Ticket) {
-            self::throwUnexpectedEntityTypeException($entity);
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
         $this->records = new DoctrineEntitiesCollection();

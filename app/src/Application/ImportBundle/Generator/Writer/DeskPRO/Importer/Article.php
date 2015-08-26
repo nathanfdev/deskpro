@@ -74,7 +74,7 @@ final class Article extends AbstractImporter
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Article) {
-            self::throwUnexpectedEntityTypeException($entity);
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
         $this->records = new DoctrineEntitiesCollection();
