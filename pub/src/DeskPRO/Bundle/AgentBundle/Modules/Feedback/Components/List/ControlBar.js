@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'redux/react';
+import * as actions from '../../Actions/FeedbackListActions'
 import $ from "jquery";
 
 @connect(state => state.FeedbackList)
@@ -41,7 +42,7 @@ export class ControlBar extends React.Component {
         event.stopPropagation();
         var elem = $(event.target),
             target = elem.closest('a.ticket-control-button').find('span.down');
-        target.text(elem.text()).append('<i class="fa fa-caret-down"/>');;
+        target.text(elem.text()).append('<i class="fa fa-caret-down"/>');
         $('div.dropdown-choice').hide();
     }
 
@@ -61,20 +62,25 @@ export class ControlBar extends React.Component {
     }
 
     changeView(event) {
+        console.log('ChangeView: ', this.props);
+        const {filters, dispatch, query} = this.props;
         event.preventDefault();
         event.stopPropagation();
         $('div.dropdown-choice').hide();
         var elem = $(event.target);
-        if (elem.hasClass('list-view')) {
-            elem.removeClass('list-view').text('Table');
+        if (filters.view === 'list') {
+            elem.text('Table');
+            filters.view = 'table';
         }
         else {
-            elem.addClass('list-view').text('List');
+            elem.text('List');
+            filters.view = 'list';
         }
+        dispatch(actions.loadFeedbackList(query));
     }
 
     render() {
-        const {feedback} = this.props;
+        const {feedback, filters} = this.props;
         return (
             <div className="tickets-control-bar">
 
@@ -92,8 +98,8 @@ export class ControlBar extends React.Component {
                 <span className="ticket-controls-default">
             <a href="#" className="ticket-control-button">
                 <span className="title">Order by:</span>
-                <span className="focus" onClick={this.showOrderChoice.bind(this)}>Date</span>
-                <span className="asc" onClick={this.changeSortDirection.bind(this)}>Asc </span>
+                <span className="focus" onClick={this.showOrderChoice.bind(this)}>{filters.sort}</span>
+                <span className={filters.order} onClick={this.changeSortDirection.bind(this)}>Asc </span>
                 <i className="fa fa-caret-down"/>
 
                 <div className="focus-choice dropdown-choice">
@@ -123,7 +129,7 @@ export class ControlBar extends React.Component {
 
                 <a href="#" className="ticket-control-button">
                     <span className="title">View:</span>
-                    <span className="focus list-view" onClick={this.changeView.bind(this)}>List</span>
+                    <span className="focus" onClick={this.changeView.bind(this)}>{filters.view}</span>
                 </a>
             </span>
             </div>

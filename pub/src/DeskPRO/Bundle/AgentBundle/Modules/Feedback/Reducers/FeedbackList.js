@@ -5,6 +5,14 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
     getInitialState() {
         return {
+            filters:{
+                view:'list',
+                sort:'date',
+                order:'asc'
+            },
+            query:{
+                awaiting_validation: 1
+            },
             toValidateCount: 0,
             commentsToReviewCount: 0,
             labels: [/* string */],
@@ -28,6 +36,7 @@ export default class FeedbackList extends Reducer {
             }
         };
     }
+
 
     toValidate(state, action) {
         return {
@@ -94,6 +103,7 @@ export default class FeedbackList extends Reducer {
     getList(prev, {payload}) {
         const next = {...prev};
         next.feedback = payload.data;
+        console.log('NEXT: ', next.query);
         return next;
     }
 
