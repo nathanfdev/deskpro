@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -47,12 +49,14 @@ class ArticlesController extends AbstractController
 {
     /**
      * @Route("/kb.{_format}", name="portal_kb", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/kb", name="user_articles_home")
      * @Security("is_granted('USE_ARTICLES')")
      * @PageHttpCache
      */
     public function indexAction(Request $request, $_format)
     {
         $page = $request->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -61,7 +65,8 @@ class ArticlesController extends AbstractController
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 null,
                 $page,
-                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array(
@@ -97,6 +102,7 @@ class ArticlesController extends AbstractController
 
     /**
      * @Route("/kb/{slug}.{_format}", name="portal_kb_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/kb/{slug}", name="user_articles")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE_CATEGORY', category)")
      * @PageHttpCache
@@ -104,6 +110,7 @@ class ArticlesController extends AbstractController
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
         $page = $request->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -112,7 +119,8 @@ class ArticlesController extends AbstractController
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 $category,
                 $page,
-                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array(
@@ -138,7 +146,7 @@ class ArticlesController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $category)
         ) {
             // waiting info regarding article category subscriptions
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
@@ -148,7 +156,7 @@ class ArticlesController extends AbstractController
         // PAGER
         //
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count);
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person);
 
         //
         // RENDER THEME
@@ -170,6 +178,7 @@ class ArticlesController extends AbstractController
 
     /**
      * @Route("/kb/articles/{slug}", name="portal_kb_view")
+     * @Route("/kb/articles/{slug}", name="user_articles_article")
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
      * @PageHttpCache(content="article")
@@ -180,7 +189,7 @@ class ArticlesController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLES)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $article)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new ArticleComment();
             $new_comment_form = $form_handler->createForm($comment);
@@ -209,7 +218,7 @@ class ArticlesController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE, $article)
         ) {
             // waiting on info on the kb subs
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
@@ -238,7 +247,8 @@ class ArticlesController extends AbstractController
      * @Route("/kb/articles/{slug}/vote-up", name="portal_kb_article_vote_up", defaults={"up_or_down":"up"})
      * @Route("/kb/articles/{slug}/vote-down", name="portal_kb_article_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('RATE_ARTICLES', article)")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('RATE_ARTICLE', article)")
+     * @AutoPostOnGetRequest()
      */
     public function articleRateAction(Article $article, $visitor_id, $up_or_down)
     {
@@ -258,7 +268,8 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/kb/articles/{slug}/toggle-subscription", name="portal_kb_article_toggle_subscription")
      * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLES', article)")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE', article)")
+     * @AutoPostOnGetRequest()
      */
     public function articleSubscriptionAction(Article $article)
     {
@@ -279,7 +290,8 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/kb/category/toggle-subscription/{slug}", name="portal_kb_article_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORIES', category)")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORY', category)")
+     * @AutoPostOnGetRequest()
      */
     public function articleCategorySubscriptionAction(ArticleCategory $category)
     {
@@ -299,7 +311,11 @@ class ArticlesController extends AbstractController
 
     /**
      * @Route("/kb/articles/subscriptions/unsubscribe", name="portal_kb_unsubscribe_all")
+     * NOTE: we don't check if they have access to this content, because we might
+     *       let someone UN-subscribe from all even if they don't have access to some
+     *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_ARTICLES')")
+     * @AutoPostOnGetRequest()
      */
     public function articleUnsubscribeAllAction()
     {
@@ -307,6 +323,6 @@ class ArticlesController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe_everything'));
 
-        return $this->redirectToRoute('portal_index');
+        return $this->redirectToRoute('portal_home');
     }
 }

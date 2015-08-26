@@ -56,6 +56,7 @@ class TaskList extends NotifyPropertyChangeEntity
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
     protected $title;
@@ -74,6 +75,12 @@ class TaskList extends NotifyPropertyChangeEntity
      * @ORM\OneToMany(targetEntity="Task", mappedBy="list")
      */
     protected $tasks;
+
+    /**
+     * @var int
+     * @Orm\Column(type="integer", nullable=true)
+     */
+    protected $display_order = 0;
 
     /**
      * Construct
@@ -116,6 +123,14 @@ class TaskList extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
      * @param Project $project
      */
     public function setProject(Project $project)
@@ -140,5 +155,22 @@ class TaskList extends NotifyPropertyChangeEntity
     {
         $this->tasks->add($task);
         $this->setModelField('task', $task);
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function removeTask(Task $task)
+    {
+        $this->tasks->remove($task);
+    }
+
+    /**
+     * @param $displayOrder
+     */
+    public function setDisplayOrder($displayOrder)
+    {
+        $this->display_order = $displayOrder;
+        $this->setModelField('display_order', $displayOrder);
     }
 }

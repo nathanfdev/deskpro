@@ -6,7 +6,7 @@
                 <li>
                     <span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.total_rating }}</span>
                     <span class="text-tag">{{ item.status_category ?: item.status }}</span>
-                    <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
+                    <a href="{{ portal_path(item) }}">{{ item.title }}</a>
                 </li>
             {% endfor %}
         </ul>

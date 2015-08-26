@@ -99,12 +99,20 @@ class PersonFactory
         return $this->brand_stack->getActive()->getSetting($name, $default);
     }
 
+    /**
+     * Saves a new person, this will set validation flags based on settings, so only do this for NEW people
+     *
+     * @param Person $person
+     * @param CreatePersonContext $context
+     * @return Person
+     */
     public function saveNewPerson(Person $person, CreatePersonContext $context)
     {
         $email = $person->getPrimaryEmail();
 
         if ($this->getBrandSetting('core.email_validation')) {
             $email->is_validated = false;
+            $person->getChangeTracker()->recordExtra('email_validating', $person->primary_email->email);
         } else {
             $email->is_validated = true;
         }
@@ -115,7 +123,7 @@ class PersonFactory
             $person->is_agent_confirmed = true;
         }
 
-        $person->is_confirmed = true;
+        $person->is_confirmed = true; // this is deprecated, so it shouldn't really matter
 
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
 
@@ -176,16 +184,11 @@ class PersonFactory
         } else {
             $person = $this->getPersonByEmail($email);
 
-            // Still no, if we're here then we make a new profile
+            // Still no, if we're here then we make a new person
             if (!$person) {
                 $person = Person::newContactPerson();
                 if ($guest->name) {
                     $person->name = $guest->name;
-                }
-                $person->getChangeTracker()->recordExtra('email_validating', $guest->primary_email->email);
-
-                if ($settings->get('core.agent_validation')) {
-                    $person->is_agent_confirmed = false;
                 }
 
                 $email = new PersonEmail();
@@ -193,8 +196,8 @@ class PersonFactory
                 $email->person = $person;
                 $person->addEmailAddress($email);
 
-                $this->em->persist($person);
-                $this->em->persist($email);
+                // saveNewPerson() will check settings and take care of validation flags
+                $this->saveNewPerson($person, new CreatePersonContext('gateway.person'));
             }
         }
 

@@ -3,6 +3,7 @@ import { connect } from 'redux/react';
 import AppContainer from "DeskPRO/Component/AppContainer";
 import HTML5Backend from 'react-dnd/modules/backends/HTML5';
 import { DragDropContext } from 'react-dnd';
+import TaskCardDragLayer from './TaskCardDragLayer';
 
 //import TasksSidebarHoverFrame from "./TasksSidebarHoverFrame";
 import TasksNavFrame from "./TasksNavFrame";
@@ -18,6 +19,7 @@ class TasksApp extends React.Component {
       <AppContainer thisAppId="tasks" {...this.props}>
         <TasksNavFrame {...this.props} />
         <TasksListFrame {...this.props} />
+        <TaskCardDragLayer />
       </AppContainer>
     );
   }

@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -47,12 +48,14 @@ class NewsController extends AbstractController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
      */
     public function indexAction(Request $request, $_format)
     {
         $page = $request->query->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -61,7 +64,8 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 null,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
@@ -97,6 +101,7 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/{slug}.{_format}", name="portal_news_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/news/{slug}", name="user_news")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS_CATEGORY', category)")
      * @PageHttpCache()
@@ -104,6 +109,7 @@ class NewsController extends AbstractController
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
         $page = $request->query->get('page', 1);
+        $person = $this->getCurrentPerson();
 
         //
         // RSS
@@ -112,7 +118,8 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 $category,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $person
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
@@ -141,7 +148,7 @@ class NewsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY, $category)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
@@ -150,7 +157,7 @@ class NewsController extends AbstractController
         // PAGER
         //
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $count);
+        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $count, $person);
 
         //
         // RENDER THEME
@@ -172,6 +179,7 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/posts/{slug}", name="portal_news_view")
+     * @Route("/news/posts/{slug}", name="user_news_view")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")
@@ -182,7 +190,7 @@ class NewsController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new NewsComment();
             $new_comment_form = $form_handler->createForm($comment);
@@ -211,7 +219,7 @@ class NewsController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS, $post)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
         }
@@ -265,6 +273,7 @@ class NewsController extends AbstractController
      * @Route("/news/posts/{slug}/vote-down", name="portal_news_post_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('RATE_NEWS', post)")
+     * @AutoPostOnGetRequest()
      */
     public function newsRateAction(News $post, $visitor_id, $up_or_down)
     {
@@ -285,6 +294,7 @@ class NewsController extends AbstractController
      * @Route("/news/posts/{slug}/toggle-subscription", name="portal_news_post_toggle_subscription")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS', post)")
+     * @AutoPostOnGetRequest()
      */
     public function newsSubscriptionAction(News $post)
     {
@@ -305,7 +315,8 @@ class NewsController extends AbstractController
     /**
      * @Route("/news/category/toggle-subscription/{slug}", name="portal_news_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS_CATEGORIES', category)")
+     * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS_CATEGORY', category)")
+     * @AutoPostOnGetRequest()
      */
     public function newsCategorySubscriptionAction(NewsCategory $category)
     {
@@ -325,7 +336,11 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/posts/subscriptions/unsubscribe", name="portal_news_unsubscribe_all")
+     * NOTE: we don't check if they have access to this content, because we might
+     *       let someone UN-subscribe from all even if they don't have access to some
+     *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_NEWS')")
+     * @AutoPostOnGetRequest()
      */
     public function newsUnsubscribeAllAction()
     {
@@ -333,6 +348,6 @@ class NewsController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe_everything'));
 
-        return $this->redirectToRoute('portal_index');
+        return $this->redirectToRoute('portal_home');
     }
 }

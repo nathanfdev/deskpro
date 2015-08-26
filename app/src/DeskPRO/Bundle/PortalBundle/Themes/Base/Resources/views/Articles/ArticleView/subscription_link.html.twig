@@ -1,5 +1,5 @@
 {% if brand_setting('user.kb_subscriptions') %}
-    <a href="{{ path('portal_kb_article_toggle_subscription', { slug: article.slug }) }}">
+    <a href="{{ portal_path(article, 'toggle_subscription') }}">
         {% if is_subscribed %}
             {{ phrase('portal.general.btn-unsubscribe') }}
         {% else %}

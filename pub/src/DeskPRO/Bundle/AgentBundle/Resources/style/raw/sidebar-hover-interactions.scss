@@ -7,8 +7,8 @@
   width: 400px;
   background: white;
   transition: all 0.25s ease-in-out;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow-x: visible;
+  overflow-y: visible;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
   border: none;
   
@@ -26,8 +26,14 @@
   border: 4px solid rgba(0, 0, 0, 0);
   border-right: 4px solid #4681b2;
   position: absolute;
-  left: -12px;
+  left: -8px;
   top: 16px;
+}
+
+.hide-indicator:before {
+  content: none;
+  display: none;
+  border: none;
 }
 
 .sidebar-hover-button-row { @include clearfix(); }

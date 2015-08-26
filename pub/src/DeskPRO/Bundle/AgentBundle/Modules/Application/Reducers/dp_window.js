@@ -8,6 +8,7 @@ export default class dp_window extends Reducer {
 			activeAppId: 'tickets',
 			collapsedNav: false,
 			expandedSwitcher: false,
+      kanbanOpen: false,
 		};
 	}
 
@@ -40,7 +41,6 @@ export default class dp_window extends Reducer {
 	}
 
 	expandSwitcher(state, action) {
-		console.log("KOIN");
 		return {
 			...state,
 			expandedSwitcher: true
@@ -54,6 +54,13 @@ export default class dp_window extends Reducer {
 		};
 	}
 
+	toggleKanban(state, action) {
+		return {
+			...state,
+			kanbanOpen: !state.kanbanOpen
+		}
+	}
+
 	registerHandlers() {this
 		.r(ActionTypes.APP_IS_LOADED, this.appHasLoaded)
 		.r(ActionTypes.SET_ACTIVE_APP, this.setActiveApp)
@@ -61,5 +68,6 @@ export default class dp_window extends Reducer {
 		.r(ActionTypes.EXPAND_NAV, this.expandNav)
 		.r(ActionTypes.EXPAND_SWITCHER, this.expandSwitcher)
 		.r(ActionTypes.COLLAPSE_SWITCHER, this.collapseSwitcher)
+    .r(ActionTypes.TOGGLE_KANBAN, this.toggleKanban)
 	}
 }

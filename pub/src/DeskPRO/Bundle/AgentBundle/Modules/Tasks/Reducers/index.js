@@ -7,5 +7,6 @@ import projectList from './projectList';
 import taskCreate from './taskCreate';
 import taskFrameList from './taskFrameList';
 import taskList from './taskList';
+import taskListList from './taskListList';
 import teamList from './teamList';
-export default {agentList,createdProject,departmentList,labelList,projectCreate,projectList,taskCreate,taskFrameList,taskList,teamList,};
+export default {agentList,createdProject,departmentList,labelList,projectCreate,projectList,taskCreate,taskFrameList,taskList,taskListList,teamList,};

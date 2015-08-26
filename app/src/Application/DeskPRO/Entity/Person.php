@@ -52,6 +52,7 @@ use Orb\Util\Util;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -373,6 +374,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     * @Assert\Valid()
      */
     protected $emails;
 

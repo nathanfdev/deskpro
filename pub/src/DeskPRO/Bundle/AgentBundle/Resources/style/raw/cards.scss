@@ -60,6 +60,38 @@
     &.status-bar-right.level-10 { border-right: 2px solid $level-10; }
   }
 
+.divider {
+  padding: 7px;
+
+  h1 {
+    text-align: center;
+    z-index: 10;
+    font-size: 1.0em;
+    color: #C0C0C0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    span {
+      background-color: #f8f8f8;
+      display: inline-block;
+      padding: 0 5px;
+      position: relative;
+      z-index: 10;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  hr {
+    position: relative;
+    top: 8px;
+    z-index: 5;
+  }
+}
+
   // Main card structure
   .card {
     background: #fff;

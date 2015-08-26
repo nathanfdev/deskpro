@@ -220,6 +220,7 @@ $annotation_mappings = array(
     'Nelmio\ApiDocBundle\Annotation' => DP_ROOT . '/vendor/nelmio/api-doc-bundle',
     'Symfony\Component\Validator\Constraints' => DP_ROOT . '/vendor/symfony/symfony/src',
     'Hateoas\Configuration\Annotation' => DP_ROOT . '/vendor/willdurand/hateoas/src',
+    'DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation' => DP_ROOT . '/src'
 );
 
 foreach ($annotation_mappings as $namespace => $dir) {

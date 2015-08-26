@@ -1,10 +1,10 @@
 <div class="content">
   <div class="search-and-ticket">
     <div class="search-form">
-      <form>
+      <form action="{{ path('portal_search') }}">
         <div class="input-wrap">
           <i class="fa fa-search"></i>
-          <input type="text" placeholder="{{ phrase('portal.general.search_btn') }}...">
+          <input type="text" name="q" placeholder="{{ phrase('portal.general.search_btn') }}...">
         </div>
         <button type="submit">{{ phrase('portal.general.search_btn') }}</button>
       </form>

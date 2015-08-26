@@ -1,0 +1,48 @@
+Feature: /feedback/counts endpoint
+  To obtain counters for different types of feedback
+  As a developer
+  I want an endpoint for feedback counts
+
+  Background:
+    Given I install the "api" data set
+    And my request is authenticated
+
+  @reinstall
+  Scenario: I GET count of feedback with hidden_status set to validating
+    When I send a GET request to "/api/v2/feedback/counts?awaiting_validation=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data.count" should be equal to 4
+
+  Scenario: I GET count of feedback grouped by category
+    When I send a GET request to "/api/v2/feedback/counts?group_by=category"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data[0].title" should be equal to "Test feedback category 1"
+    And the JSON node "data[0].value" should be equal to "3"
+    And the JSON node "data[1].title" should be equal to "Test feedback category 2"
+    And the JSON node "data[1].value" should be equal to "2"
+    And the JSON node "data[2].title" should be equal to "Test feedback category 3"
+    And the JSON node "data[2].value" should be equal to "1"
+
+
+  Scenario: I GET count of feedback with status active grouped by status_category
+    When I send a GET request to "/api/v2/feedback/counts?status=active&group_by=status_category"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data.count" should be equal to 5
+    And the JSON node "data.nested.grouped_by" should be equal to "status_category"
+    And the JSON node "data.nested.counts" should have 1 elements
+
+  Scenario: I GET count of feedback grouped by custom_category
+    When I send a GET request to "/api/v2/feedback/counts?group_by=custom_category"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data.count" should be equal to 4
+    And the JSON node "data.nested.grouped_by" should be equal to "custom_category"
+    And the JSON node "data.nested.counts" should have 3 elements
+

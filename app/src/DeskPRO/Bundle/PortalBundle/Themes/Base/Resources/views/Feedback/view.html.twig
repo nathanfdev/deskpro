@@ -7,7 +7,7 @@
     <article class="feedback main-feedback">
         <div class="feedback-item">
             <div class="feedback-item-controls">
-                <a href="{{ path('portal_feedback_vote_up', { slug: item.slug }) }}" class="i-agree">
+                <a href="{{ portal_path(item, 'vote_up') }}" class="i-agree">
                     <i class="fa fa-thumbs-up"></i>
                     <div>{{ phrase('portal.feedback.btn-vote') }}</div>
                     <span class="counter">{{ item.total_rating }}</span>
@@ -23,8 +23,10 @@
                 <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
 
                 <h1>
+                    {# we dont have a way to link to feedback categories yet (since its a search filter)#}
+                    {# but we should! it can be a @PortalLinkCustom annotation and implemented in a new FeedbackCategoryLinkGenerator #}
                     <span class="text-tag">{{ item.category }}</span>
-                    <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
+                    <a href="{{ portal_path(item) }}">{{ item.title }}</a>
                 </h1>
 
 

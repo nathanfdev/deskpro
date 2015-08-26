@@ -1,13 +1,20 @@
-user_context_hash:
-    path: /_portal_user_hash
-portal_logout:
-    path: /logout
+# This is the "main" file for the portal kernel. No other kernel imports this.
+# 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
+api_routes:
+    resource: "@ApiBundle/Resources/config/routing_api.yml"
+    prefix: /api/v2
+
 portal_routes:
     resource: "@PortalBundle/Resources/config/routing_portal.yml"
-dp_routes:
-    resource: "@DeskPRO/Resources/config/dp-routing.php"
+
 agent_routes:
     resource: "@AgentBundle/Resources/config/agent-routing.php"
+
+dp_routes:
+    resource: "@DeskPRO/Resources/config/dp-routing.php"
+
+dpkernel_routes:
+    resource: "@DeskPRO/Resources/config/dp-routing.php"
 
 # this is the last registered route, so its the last one checked
 # it matches EVERYTHING, and the controller just throws a NotFoundHttpException

@@ -2,13 +2,13 @@
 <div class="content-list-wrap simple as-news {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
   {% if pager|length %}
     <ul>
-      {% for news in pager %}
+      {% for item in pager %}
         <li>
           <div class="date-tag">
-            <span class="month">{{ news.date_published | date('M') }}</span>
-            <span class="day">{{ news.date_published | date('j') }}</span>
+            <span class="month">{{ item.date_published | date('M') }}</span>
+            <span class="day">{{ item.date_published | date('j') }}</span>
           </div>
-          <a href="{{ path('portal_news_view', { slug: news.slug }) }}">{{ news.title }}</a>
+          <a href="{{ portal_path(item) }}">{{ item.title }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -18,7 +18,7 @@
 
   {% if show_category_link %}
     <div class="list-meta">
-      <a href="{{ category ? path('portal_news_browse', { slug: category.slug }) : path('portal_news') }}">
+      <a href="{{ category ? portal_path(category) : path('portal_news') }}">
         {{ phrase('portal.news.view-x-news', {count: pager|length}) }}{{ icons.view_more() }}
       </a>
     </div>

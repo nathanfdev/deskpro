@@ -18,6 +18,7 @@
     'portal.tickets.cancel-ticket-edit' => 'Cancel edit, show me the ticket again',
     'portal.tickets.add-reply' => 'Add a Reply',
     'portal.tickets.mark-resolved' => 'Mark as Resolved',
+    'portal.tickets.mark-unresolved' => 'Re-open Ticket',
     'portal.tickets.assigned-agent' => 'Assigned agent',
     'portal.tickets.opened-by' => 'Opened by',
     'portal.tickets.also-cc' => 'Also CC\'ed',
@@ -31,4 +32,7 @@
     'portal.tickets.please_login_to_reply' => 'Login to reply.',
     'portal.tickets.guest_thank_you_title' => 'Thank You',
     'portal.tickets.guest_thank_you_desc' => 'Thank you for contacting us. We have sent you an email with instructions on how to manage your ticket with us.',
+    'portal.tickets.resolve_my_ticket_btn'               => 'Resolve my ticket',
+    'portal.tickets.resolve_ticket'                      => 'Resolve Ticket: {{subject}}',
+    'portal.tickets.resolve_ticket_explain'              => 'Are you sure you want to resolve your ticket? Once your ticket is resolved, our agents will no longer respond.',
 );

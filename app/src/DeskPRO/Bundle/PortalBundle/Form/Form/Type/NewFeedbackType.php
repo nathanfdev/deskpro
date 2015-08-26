@@ -66,6 +66,7 @@ class NewFeedbackType extends AbstractType
         $builder->add('content', 'textarea', array('label' => 'portal.forms.label_content'));
         $builder->add('category', 'feedback_category', array(
             'person' => $options['person'],
+            'empty_value' => 'Select...'
         ));
         $builder->add('custom_data_collection', 'custom_feedback_fields');
         $builder->add('attachments', 'feedback_attachment_collection', array(

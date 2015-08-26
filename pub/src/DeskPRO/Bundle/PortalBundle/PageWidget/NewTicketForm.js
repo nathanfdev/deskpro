@@ -48,7 +48,7 @@ class TicketValueReader {
 
 export default class NewTicketForm extends PageWidget {
   init() {
-    this.addWidgetDef(DpLevelSelect, "select[dp-select]");
+    //this.addWidgetDef(DpLevelSelect, "select[dp-select]");
   }
 
   renderWidget() {

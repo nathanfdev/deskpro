@@ -251,6 +251,14 @@ class App
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
+     */
+    public static function getObjectRouter()
+    {
+        return self::$container->get('object_router');
+    }
+
+    /**
      * @return Routing\Router
      */
     public static function getRouter()

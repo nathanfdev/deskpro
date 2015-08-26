@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Email addresses attached to a person. This is a separate entity because emails are
@@ -51,6 +52,9 @@ use Orb\Util\Strings;
  * @property bool $is_validated
  * @property string $comment
  * @property \DateTime $date_created
+ * @property \DateTime $date_validated
+ *
+ * @UniqueEntity("email", message="This email already exists in the system.")
  */
 class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -216,6 +220,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setEmail($email)
     {
+        $email_domain = null;
+
         if ($email) {
             if (!strpos($email, '@')) {
                 throw new \InvalidArgumentException("Email address is invalid");

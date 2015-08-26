@@ -17,12 +17,12 @@
 
     {% if is_agent() %}
       &middot;
-      <a href="{{ path('agent_interface') }}">{{ phrase('agent.general.agent_interface') }}</a>
+      <a href="{{ path('agent') }}">{{ phrase('agent.general.agent_interface') }}</a>
     {% endif %}
 
     {% if is_admin() %}
       &middot;
-      <a href="{{ path('admin_interface') }}">{{ phrase('agent.general.admin_interface') }}</a>
+      <a href="{{ path('admin') }}">{{ phrase('agent.general.admin_interface') }}</a>
     {% endif %}
 
     {% if ticket_count > 0 %}

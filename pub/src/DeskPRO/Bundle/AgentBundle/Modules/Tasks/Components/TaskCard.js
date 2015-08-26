@@ -1,5 +1,5 @@
 import React from "react";
-import { DragSource } from "react-dnd"
+import { DragSource } from "react-dnd";
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
@@ -9,12 +9,34 @@ import FRC from "../../../../../Component/FormComponents/main.js";
 import DragTypes from "../../../Services/DragTypes.js";
 import Picker from "anytime";
 import Moment from "moment";
+import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
 const cardSource = {
-  beginDrag(props) {
-    return { id: props.task.id, dispatch: props.dispatch, source: props.source };
+  beginDrag(props, monitor, component) {
+    const width = $(React.findDOMNode(component)).width();
+
+    return {
+      id: props.task.id,
+      details: props.task,
+      dispatch: props.dispatch,
+      source: props.source,
+      departments: props.departments,
+      teams: props.teams,
+      agents: props.agents,
+      projects: props.projects,
+      tickets: props.tickets,
+      width: width,
+      subtype: 'list'
+    };
   }
 };
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview()
+  };
+}
 
 const TaskCard = React.createClass({
   mixins: [
@@ -88,7 +110,7 @@ const TaskCard = React.createClass({
     this.props.updateMassActions(this.props.task.id);
   },
 
-  componentDidMount() {
+  componentDidMount: function() {
     const dueField = "due-" + this.props.task.id;
 
     // Check if the due field actually exists before we try and add a date picker (e.g. on done tasks)
@@ -121,10 +143,36 @@ const TaskCard = React.createClass({
         this.props.editTask(this.props.source, task);
       });
     }
+
+    this.props.connectDragPreview(getEmptyImage(), {
+      // IE fallback: specify that we'd rather screenshot the node
+      // when it already knows it's being dragged so we can hide it with CSS.
+      captureDraggingState: true
+    });
+  },
+
+  getStyles: function(props) {
+    const { isDragging } = props;
+
+    return {
+      // IE fallback: hide the real node using CSS when dragging
+      // because IE will ignore our custom "empty image" drag preview.
+      opacity: isDragging ? 0 : 1,
+      height: isDragging ? 0 : ''
+    };
   },
 
   render: function () {
-    const { task, projects, linked_items, departments, teams, agents, source, connectDragSource } = this.props;
+    const { task,
+      projects,
+      linked_items,
+      departments,
+      teams,
+      agents,
+      source,
+      connectDragSource,
+      connectDragPreview
+    } = this.props;
 
     const selected = this.props.selected;
 
@@ -134,11 +182,13 @@ const TaskCard = React.createClass({
     let doneButton = task.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
 
     let ticket_link = undefined;
+    let ticket_title = 'Linked ticket';
 
     if (task.linked_items.length > 0) {
       task.linked_items.forEach((item) => {
         if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
           ticket_link = '#' + linked_items[item].ticket;
+          ticket_title = this.props.tickets[linked_items[item].ticket].subject;
         }
       });
     }
@@ -162,10 +212,10 @@ const TaskCard = React.createClass({
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<div className={cardClass} key={task.id}>
+    return connectDragSource(<div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
         <div>
-          <div className="card-status-bar status-bar-left"></div>
-          <div className="card-status-bar status-bar-right"></div>
+          <div className="card-status-bar status-bar-left" />
+          <div className="card-status-bar status-bar-right" />
 
           <div className="card-checkbox">
             <span className="checkbox" onClick={this.toggleMassAction}>
@@ -173,34 +223,34 @@ const TaskCard = React.createClass({
             </span>
           </div>
 
-            <div className="top-right-box">
-              {!task.is_done ?
-                <span className="assignment">
-                  <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
-                    <option value="unassigned">Unassigned</option>
-                    { agents ? <optgroup label="Agents">
-                      { Object.keys(agents).map((key) => {
-                        let agentId = "agents-" + key;
-                        return <option key={agentId} value={agentId}>{agents[key].name}</option>;
-                      })}
-                    </optgroup> : '' }
-                    { teams ? <optgroup label="Teams">
-                      { Object.keys(teams).map((key) => {
-                        let teamId = "teams-" + key;
-                        return <option key={teamId} value={teamId}>{teams[key].name}</option>;
-                      })}
-                    </optgroup> : '' }
-                    { departments ? <optgroup label="Departments">
-                      { Object.keys(departments).map((key) => {
-                        let departmentId = "departments-" + key;
-                        return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
-                      })}
-                    </optgroup> : '' }
-                  </select>
-                </span>:
-                <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
-                  className="fa fa-bars"/></button>}
-            </div>
+          <div className="top-right-box">
+            {!task.is_done ?
+              <span className="assignment">
+                <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
+                  <option value="unassigned">Unassigned</option>
+                  { agents ? <optgroup label="Agents">
+                    { Object.keys(agents).map((key) => {
+                      let agentId = "agents-" + key;
+                      return <option key={agentId} value={agentId}>{agents[key].name}</option>;
+                    })}
+                  </optgroup> : '' }
+                  { teams ? <optgroup label="Teams">
+                    { Object.keys(teams).map((key) => {
+                      let teamId = "teams-" + key;
+                      return <option key={teamId} value={teamId}>{teams[key].name}</option>;
+                    })}
+                  </optgroup> : '' }
+                  { departments ? <optgroup label="Departments">
+                    { Object.keys(departments).map((key) => {
+                      let departmentId = "departments-" + key;
+                      return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
+                    })}
+                  </optgroup> : '' }
+                </select>
+              </span>:
+              <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
+                className="fa fa-bars"/></button>}
+          </div>
 
           <div className="card-line">
               <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
@@ -221,7 +271,7 @@ const TaskCard = React.createClass({
                 <div>{task.comment_count} <i className="fa fa-comment"/></div>
 
                 {task.subtasks_total > 0 ?
-                  <span><span className="disc"></span>
+                  <span><span className="disc" />
             <div className="subtask-count">{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/>
             </div></span> : ''}
               </div>
@@ -240,12 +290,12 @@ const TaskCard = React.createClass({
                 </div>
 
                 {task.project && projects[task.project] ? <span>
-                  <span className="disc"></span><i className="fa fa-book"/> {projects[task.project].title}
+                  <span className="disc" /><i className="fa fa-book"/> {projects[task.project].title}
                 </span> : ''}
 
                 {ticket_link ? <span>
                 <span className="disc"></span>
-                  <i className="fa fa-link"/><a href={ticket_link}>Linked ticket</a>
+                  <i className="fa fa-link"/><a href={ticket_link}>{ticket_title}</a>
                 </span> : ''}
               </div>
             </div> : '' }
@@ -256,5 +306,6 @@ const TaskCard = React.createClass({
 
 module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
 }))(TaskCard);

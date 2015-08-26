@@ -47,6 +47,7 @@ class NewTicketController extends AbstractController
 {
     /**
      * @Route("/new-ticket", name="portal_new_ticket")
+     * @Route("/new-ticket", name="user_tickets_new")
      * @Security("is_granted('USE_TICKETS')")
      * @PageHttpCache()
      */
@@ -121,7 +122,7 @@ class NewTicketController extends AbstractController
                     }
 
                     // is a user, redirect to ticket view (will ask to login if not already)
-                    return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+                    return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
                 }
             }
         }

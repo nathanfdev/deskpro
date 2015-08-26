@@ -29,17 +29,32 @@ function collect(connect, monitor) {
 }))
 @DropTarget(DragTypes.TASK, projectTarget, collect)
 export default class TaskNavItemProject extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showEditIcon: false
+    };
+  }
+
+  toggleEditIcon(state) {
+    this.setState({
+      showEditIcon: state
+    });
+  }
+
   render() {
     const { project, connectDropTarget, isOver, switchTaskList } = this.props;
 
-    return connectDropTarget(<li className={isOver ? "droppable" : ""}>
-      <div className="list-counter-bucket">
-        <a href="#" onClick={this.props.toggleWindow.bind(this, project)}><i className="fa fa-cog" /></a>
+    return connectDropTarget(<li className={isOver ? "droppable project-list-item" : "project-list-item"}>
+      <div className="list-counter-bucket" onMouseEnter={this.toggleEditIcon.bind(this, true)} onMouseLeave={this.toggleEditIcon.bind(this, false)}>
+        {this.state.showEditIcon ?
+        <a href="#" className="edit-icon" onClick={this.props.toggleWindow.bind(this, project, event)}><i className="fa fa-cog" /></a> :
         <a className="list-counter" href="#">
           {project.remaining}
-        </a>
+        </a>}
       </div>
-      <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={switchTaskList.bind(this, 'tasks?project=' + project.id)}><i
+      <a href="#" className="item" onClick={switchTaskList.bind(this, 'tasks?project=' + project.id)}><i
         className="fa fa-book"/> {project.title} </a>
     </li>);
   }

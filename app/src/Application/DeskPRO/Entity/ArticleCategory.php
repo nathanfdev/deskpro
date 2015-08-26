@@ -33,14 +33,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Article categories.
- *
- * @property ArrayCollection $articles
+ * @PortalLinkRoute("portal_kb_browse", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_kb_article_category_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  */
 class ArticleCategory extends CategoryAbstract
 {

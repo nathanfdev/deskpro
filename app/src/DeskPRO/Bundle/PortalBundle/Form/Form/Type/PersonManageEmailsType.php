@@ -85,7 +85,7 @@ class PersonManageEmailsType extends AbstractType
             $form = $event->getForm();
             $person = $event->getData();
 
-            // clean up attachments that don't have a blob (delete them from the message)
+            // clean up emails that were blank on submit, persist the others
             foreach ($person->emails as $person_email) {
                 if (!$person_email->email) {
                     $person->emails->removeElement($person_email);

@@ -10,7 +10,8 @@ export default class TaskFrameList extends Reducer {
       taskFrameLinks: null,
       taskFrameAgents: null,
       taskFrameTeams: null,
-      taskFrameDepartments: null
+      taskFrameDepartments: null,
+      taskFrameTickets: null
     };
   }
   
@@ -20,6 +21,7 @@ export default class TaskFrameList extends Reducer {
     let agents = [];
     let teams = [];
     let departments = [];
+    let tickets = [];
     
     if (typeof action.payload.projects !== 'undefined' && typeof action.payload.projects !== 'undefined') {
       projects = action.payload.projects;
@@ -41,6 +43,10 @@ export default class TaskFrameList extends Reducer {
       departments = action.payload['departments'];
     }
 
+    if (typeof action.payload.tickets !== 'undefined') {
+      tickets = action.payload['tickets'];
+    }
+
     return {
       ...state,
       taskFrameList: action.payload.data,
@@ -49,7 +55,8 @@ export default class TaskFrameList extends Reducer {
       taskFrameLinks: links,
       taskFrameAgents: agents,
       taskFrameTeams: teams,
-      taskFrameDepartments: departments
+      taskFrameDepartments: departments,
+      taskFrameTickets: tickets
     };
   }
   

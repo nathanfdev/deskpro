@@ -33,6 +33,10 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Ticket;
@@ -263,24 +267,25 @@ class ApiDb extends AbstractDbSet
         $agent1 = $em->find('DeskPRO:Person', 1);
         $agent2 = $em->find('DeskPRO:Person', 2);
 
-		$ticket1 = new Ticket();
+// Tickets
+        $ticket1 = new Ticket();
         $ticket1->disableAutoTicketProcess();
-		$ticket1->setPersonId(3);
+        $ticket1->setPersonId(3);
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
-		$em->persist($ticket1);
+        $em->persist($ticket1);
         $ticket2 = new Ticket();
         $ticket2->disableAutoTicketProcess();
-		$ticket2->setPersonId(3);
+        $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
-		$em->persist($ticket2);
+        $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
-		$ticket3->setPersonId(3);
+        $ticket3->setPersonId(3);
         $ticket3->agent = $agent1;
         $ticket3->setDepartmentId(2);
-		$em->persist($ticket3);
+        $em->persist($ticket3);
         $em->flush();
 
         // Add a blue flag on the first ticket.
@@ -297,6 +302,81 @@ class ApiDb extends AbstractDbSet
         $em->persist($ticket3);
         $em->flush();
 
+// Feedback
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback_categories`
+                (`title`,`slug`)
+
+            VALUES
+
+                ('Test feedback category 1', '1'),
+                ('Test feedback category 2', '2'),
+                ('Test feedback category 3', '3'),
+                ('Test feedback category 4', '4'),
+                ('Test feedback category 5', '5'),
+                ('Test feedback category 6', '6')
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback_status_categories` (`status_type`, `title`, `display_order`)
+            VALUES
+              ('active', 'Gathering Feedback', 0),
+              ('active', 'Planning', 0),
+              ('active', 'Started', 0),
+              ('active', 'Under Review', 0),
+              ('closed', 'Completed', 0),
+              ('closed', 'Duplicate', 0),
+              ('closed', 'Declined', 0);
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback`
+                (`status_category_id`,`category_id`,`title`, `slug`, `content`,`status`, `hidden_status`)
+
+            VALUES
+                (1, 1, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 'hidden', 'deleted'),
+                (1, 2, 'Test feedback 2', 'Slug to feedback 2', 'Content of test feedback 2', 'active', 'validating'),
+                (1, 3, 'Test feedback 3', 'Slug to feedback 3', 'Content of test feedback 3', 'active', 'validating'),
+                (1, 1, 'Test feedback 4', 'Slug to feedback 4', 'Content of test feedback 4', 'hidden', 'spam'),
+                (5, 1, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 'closed', 'validating'),
+                (1, 2, 'Test feedback 6', 'Slug to feedback 6', 'Content of test feedback 6', 'new', 'validating')
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback_comments`
+                (`feedback_id`,`content`, `status`, `is_reviewed`)
+
+            VALUES
+                (1, 'Feedback 1 comment 1', 'validating', 0),
+                (2, 'Feedback 2 comment 2', 'validating', 0),
+                (3, 'Feedback 3 comment 3', 'validating', 0),
+                (1, 'Feedback 1 comment 4', 'visible', 0),
+                (2, 'Feedback 2 comment 5', 'visible', 1),
+                (6, 'Feedback 6 comment 6', 'visible', 0)
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `custom_def_feedback`
+            (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
+            VALUES
+              (1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1)
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `custom_data_feedback`
+            (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`)
+            VALUES
+              (1, 1, 1, NULL, 0, 'Windows'),
+              (2, 2, 1, NULL, 0, 'Linux'),
+              (3, 1, 1, NULL, 0, 'Linux'),
+              (4, 1, 1, NULL, 0, 'Mac')
+            ;
+        ");
 
         // "/user_chats" endpoint test data ----------------------------------------------------------------------------
         $this->getDb()->exec("
@@ -314,6 +394,23 @@ class ApiDb extends AbstractDbSet
             ;
         ");
         // end of "/user_chats" endpoint test data
+
+
+        // Labels endpoints test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `label_defs`
+                (`label_type`, `label`, `color`, `total`)
+            VALUES
+                ('feedback', 'foo', 'red', 0),
+                ('feedback', 'bar', 'white', 0),
+                ('feedback', 'foobar', 'red', 0),
+                ('feedback', 'barfoo', 'white', 0),
+                ('organization', 'organization label #1', 'red', 42),
+                ('person', 'person label #1', 'white', 1),
+                ('person', 'person label #2', 'red', 3)
+            ;
+        ");
+        // end of labels endpoints
 
         // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
         $this->getDb()->exec("
@@ -369,18 +466,6 @@ class ApiDb extends AbstractDbSet
             ;
         ");
         // end of "/organizations"
-
-        // Labels endpoints test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec("
-            INSERT INTO `label_defs`
-                (`label_type`, `label`, `color`, `total`)
-            VALUES
-                ('organization', 'organization label #1', 'red', 42),
-                ('person', 'person label #1', 'white', 1),
-                ('person', 'person label #2', 'red', 3)
-            ;
-        ");
-        // end of labels endpoints
 
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
         $this->getDb()->exec("

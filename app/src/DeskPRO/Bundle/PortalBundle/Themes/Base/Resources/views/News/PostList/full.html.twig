@@ -7,14 +7,14 @@
           <hr>
           <span class="day">{{ item.date_published | date('j') }}</span>
         </div>
-        <h1><a href="{{ path('portal_news_view', { slug: item.slug }) }}">{{ item.title }}</a></h1>
+        <h1><a href="{{ portal_path(item) }}">{{ item.title }}</a></h1>
         <div class="article-meta">
           {% if item.person %}
             By <span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span> {{ item.person.name }}
           {% endif %}
-          <a href="{{ path('portal_news_browse', { slug: item.category.slug }) }}"><i class="fa fa-folder-o"> {{ item.category.getRealTitle() }}</i></a>
+          <a href="{{ portal_path(item.category) }}"><i class="fa fa-folder-o"> {{ item.category.getRealTitle() }}</i></a>
           {% if item.num_comments > 0 %}
-          <span class="comments"><i class="fa fa-comments"></i> <a href="{{ path('portal_news_view', { slug: item.slug }) }}#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
+          <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
           {% endif %}
         </div>
       </header>
