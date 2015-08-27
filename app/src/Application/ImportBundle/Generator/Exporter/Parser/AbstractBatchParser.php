@@ -47,6 +47,7 @@ abstract class AbstractBatchParser implements BatchParserInterface
             'type',
             'date_created',
             'date_modified',
+            'has_remaining',
         );
 
         return $this->hasRequiredColumns($config, $columns);
@@ -57,6 +58,7 @@ abstract class AbstractBatchParser implements BatchParserInterface
      */
     public function parse(array $config)
     {
+        /** @var AbstractBatchConfig $batch_config */
         $batch_config = $this->getDefaultBatchConfig();
         $batch_config->setId($config['id']);
 
@@ -66,6 +68,8 @@ abstract class AbstractBatchParser implements BatchParserInterface
         if ($config['date_modified']) {
             $batch_config->setDateModified(new DateTime($config['date_modified']));
         }
+
+        $batch_config->setHasRemaining((bool) $config['has_remaining']);
 
         return $batch_config;
     }
