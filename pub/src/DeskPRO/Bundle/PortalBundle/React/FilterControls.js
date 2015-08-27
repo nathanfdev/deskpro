@@ -86,6 +86,35 @@ class Tab extends React.Component {
   }
 }
 
+class SortWidget extends React.Component {
+  changeSort(e) {
+    this.props.changeSort(e.target.value)
+  }
+  render() {
+    let sorts = {
+      'date-desc': 'Date &darr;',
+      'date-asc': 'Date &uarr;',
+      'most-views-desc': 'Views &darr;',
+      'most-views-asc': 'Views &uarr;',
+      'highest-rating-desc': 'Rating &darr;',
+      'highest-rating-asc': 'Rating &uarr;',
+      'most-popular-desc': 'Popularity &darr;',
+      'most-popular-asc': 'Popularity &uarr;',
+      'most-discussed-desc': 'Comments &darr;',
+      'most-discussed-asc': 'Comments &uarr;'
+    };
+    let selected_sort = this.props.filter.sort + '-' + this.props.filter.sort_direction;
+    console.log(selected_sort, this.props.filter);
+    return (
+      <select style={{float:"right"}} value={selected_sort} onChange={this.changeSort.bind(this)}>
+        {_.map(sorts, (title, key) => {
+          return (<option key={key} value={key} dangerouslySetInnerHTML={{__html:title}}></option>);
+        })}
+      </select>
+    );
+    }
+}
+
 class FilterTabs extends React.Component {
   render() {
     return (
@@ -104,6 +133,7 @@ class FilterTabs extends React.Component {
             />
           );
         })}
+        <SortWidget filter={this.props.filter} changeSort={this.props.changeSort} />
       </ul>
     );
   }
@@ -127,9 +157,6 @@ class TypeSlider extends React.Component {
           <span className="slider-label" onClick={this.click.bind(this)}>
             {this.props.label}
           </span>
-          {/**<span className="slider-options">
-           <i className="fa fa-caret-down"></i>
-           </span>**/}
         </div>
       </li>
     );
@@ -177,6 +204,12 @@ export default class FilterControls extends React.Component {
     filter.toggleType(type_id);
     this.updateFilter(filter);
   }
+  changeSort(new_sort) {
+    let filter = this.props.filterModel;
+    console.log('NEW SORT', new_sort);
+    filter.changeSort(new_sort);
+    this.updateFilter(filter);
+  }
   render() {
     return (
       <div className="feedback-filter">
@@ -184,15 +217,9 @@ export default class FilterControls extends React.Component {
           available={this.props.available}
           filter={this.props.filterModel}
           setStatus={this.setStatus.bind(this)}
+          changeSort={this.changeSort.bind(this)}
           setStatusCategory={this.setStatusCategory.bind(this)}
           />
-
-        {/**<div className="table-meta">
-          <div className="table-controls">
-            <a href="#" className="column-control sort"><span>Sort</span></a>
-            <a href="#" className="expand-control"><i className="fa fa-caret-right"></i></a>
-          </div>
-        </div>**/}
 
         <FilterTypes available={this.props.available.types} selected={this.props.filterModel.types} toggleType={this.toggleType.bind(this)} doSpin={this.props.doSpin} />
       </div>

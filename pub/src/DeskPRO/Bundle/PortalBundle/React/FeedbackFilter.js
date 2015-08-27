@@ -11,7 +11,6 @@ class FeedbackResults extends React.Component {
     if (html.length === 0) {
       return (
         <div className="paged-results centered" ref="results">
-
           <img
             style={{display: this.props.doSpin ? "table" : "none", margin: "0 auto", height: "70px", width: "70px"}}
              src={ window.DESKPRO_BASE_URL + '/web/spinner.gif' } />
@@ -104,7 +103,7 @@ class FilterModel {
   constructor(data, available) {
     this.available = available;
     this.sort = data.sort;
-    this.sort_direction = data.sort_direction;
+    this.sort_direction = data.sort_direction || 'desc';
     this.status = data.status;
     this.status_categories = _.map(data.status_categories, function(val) {
       return _.parseInt(val);
@@ -115,6 +114,17 @@ class FilterModel {
     this.page = _.parseInt(data.page || 1);
     this.checkEmptyTypes();
     this.checkEmptyStatusCategories();
+  }
+  changeSort(new_sort) {
+    let parts = new_sort.split('-');
+    if (parts.length == 2) {
+      this.sort = parts[0];
+      this.sort_direction = parts[1];
+    }
+    if (parts.length == 3) {
+      this.sort = parts[0] + '-' + parts[1];
+      this.sort_direction = parts[2];
+    }
   }
   checkEmptyTypes() {
     if (this.types.length === 0) {
@@ -149,6 +159,13 @@ class FilterModel {
         // _.intersection above with a length of > 0 means the arrays have diff elements.
         url += '/type-';
         url += this.types.join(',');
+      }
+    }
+
+    if (this.sort) {
+      url += '/' + this.sort;
+      if (this.sort_direction) {
+        url += '-' + this.sort_direction;
       }
     }
 
@@ -232,7 +249,7 @@ export default class FeedbackFilter extends React.Component {
       this.setState({
           filter: new FilterModel(e.state.filter, this.state.available),
           partial: e.state.partial,
-          doSpin: true
+          doSpin: e.state.doSpin
         }
       );
     });
@@ -252,6 +269,7 @@ export default class FeedbackFilter extends React.Component {
           partial: r.getData(),
           doSpin: false
         };
+        if(state.doSpin !== false) { throw new Error('wtf') };
         history.pushState(state, null, url);
         this.setState(state);
     });
