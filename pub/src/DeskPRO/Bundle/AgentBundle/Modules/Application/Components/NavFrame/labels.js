@@ -3,7 +3,7 @@ import React from 'react';
 export class LabelsDictionary extends React.Component {
     render() {
         const grouped = this.groupByFirstLetter(this.props.labels);
-        const {onClick} = this.props;
+        const onClick = this.props.onClick ? this.props.onClick : ()=>{};
         let groupKey = 0, labelKey = 0;
 
         return (
