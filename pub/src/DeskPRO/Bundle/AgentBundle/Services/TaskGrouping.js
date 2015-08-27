@@ -1,7 +1,7 @@
 import Moment from "moment";
 
 export default class TaskGrouping {
-  constructor(projects = [], departments = {}, teams = {}, agents = {}, lists = {}, links = {}, tickets = {}) {
+  constructor(projects = [], departments = [], teams = [], agents = [], lists = [], links = [], tickets = []) {
     this.projects = projects;
     this.departments = departments;
     this.teams = teams;
@@ -40,7 +40,7 @@ export default class TaskGrouping {
    * Get the divider to return according to the grouping type
    * @param object object
    * @param grouping string
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getDivider(object, grouping = false)
   {
@@ -93,13 +93,13 @@ export default class TaskGrouping {
 
     switch(grouping) {
       case 'due':
-        result = this.getDueDivider(object).objectDivider;
+        result = this.getDueDivider(object);
         break;
       case 'created':
-        result = this.getCreatedDivider(object).objectDivider;
+        result = this.getCreatedDivider(object);
         break;
       case 'assignee':
-        result = this.getAssigneeDivider(object).objectDivider;
+        result = this.getAssigneeDivider(object);
         break;
       case 'project':
         result = 'project_' + object.project;
@@ -111,13 +111,13 @@ export default class TaskGrouping {
         result = 'creator_' + object.creator;
         break;
       case 'done':
-        result = this.getDoneDateDivider(object).objectDivider;
+        result = this.getDoneDateDivider(object);
         break;
       case 'labels':
-        result = this.getLabelDivider(object).objectDivider;
+        result = this.getLabelDivider(object);
         break;
       case 'ticket':
-        result = this.getTicketDivider(object).objectDivider;
+        result = this.getTicketDivider(object);
         break;
       default:
         return false;
@@ -181,6 +181,44 @@ export default class TaskGrouping {
             key: date.key
           });
         });
+        break;
+      case 'assignee':
+        this.departments.forEach((department) => {
+          returnGroups.push({
+            id: 'department_' + department.id.toString(),
+            title: department.title,
+            updateField: 'departments',
+            updateValue: [department.id],
+            key: 'department_' + department.id
+          })
+        });
+        this.teams.forEach((team) => {
+          returnGroups.push({
+            id: 'team_' + team.id.toString(),
+            title: team.name,
+            updateField: 'teams',
+            updateValue: [team.id],
+            key: 'team_' + team.id
+          })
+        });
+        this.agents.forEach((agent) => {
+          returnGroups.push({
+            id: 'agent_' + agent.id.toString(),
+            title: agent.name,
+            updateField: 'agents',
+            updateValue: [agent.id],
+            key: 'agent_' + agent.id
+          })
+        });
+
+        returnGroups.push({
+          id: 'none',
+          title: 'Unassigned',
+          updateField: 'agents',
+          updateValue: false,
+          key: 'none'
+        });
+        break;
     }
 
     return returnGroups;
@@ -189,150 +227,119 @@ export default class TaskGrouping {
   /**
    * Get the divider to use when grouping by due date
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getDueDivider(object)
   {
     let objectDivider = false;
-    let textDisplay = false;
 
     switch(true) {
       case (Moment(object.date_due).utc().isBefore()):
         objectDivider = 'overdue';
-        textDisplay = 'Overdue';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('hour').local())):
         objectDivider = 'hour';
-        textDisplay = 'This Hour';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('day').local())):
         objectDivider = 'day';
-        textDisplay = 'Today';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('day').add(1, 'd').local())):
         objectDivider = 'tomorrow';
-        textDisplay = 'Tomorrow';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('week').local())):
         objectDivider = 'week';
-        textDisplay = 'This Week';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('week').add(7, 'd').local())):
         objectDivider = 'nextweek';
-        textDisplay = 'Next Week';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('month').local())):
         objectDivider = 'month';
-        textDisplay = 'This Month';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('month').add(1, 'M').local())):
         objectDivider = 'nextmonth';
-        textDisplay = 'Next Month';
         break;
       case (Moment(object.date_due).local().isBefore(Moment().endOf('year').local())):
         objectDivider = 'year';
-        textDisplay = 'This Year';
         break;
       default:
         objectDivider = 'forever';
-        textDisplay = 'Other';
         break;
     }
 
-    return {
-      objectDivider: objectDivider,
-      textDisplay: textDisplay
-    };
+    return objectDivider;
   }
 
   /**
    * Get divider to use when grouping by created date
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getCreatedDivider(object)
   {
     let objectDivider = false;
-    let textDisplay = false;
 
     switch(true) {
       case (Moment(object.date_created).utc().isAfter(Moment().startOf('hour').local())):
         objectDivider = 'hour';
-        textDisplay = 'This Hour';
         break;
       case (Moment(object.date_created).local().isAfter(Moment().startOf('day').local())):
         objectDivider = 'day';
-        textDisplay = 'Today';
         break;
       case (Moment(object.date_created).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
         objectDivider = 'tomorrow';
-        textDisplay = 'Yesterday';
         break;
       case (Moment(object.date_created).local().isAfter(Moment().startOf('week').local())):
         objectDivider = 'week';
-        textDisplay = 'This Week';
         break;
       case (Moment(object.date_created).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
         objectDivider = 'lastweek';
-        textDisplay = 'Last Week';
         break;
       case (Moment(object.date_created).local().isAfter(Moment().startOf('month').local())):
         objectDivider = 'month';
-        textDisplay = 'This Month';
         break;
       case (Moment(object.date_created).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
         objectDivider = 'lastmonth';
-        textDisplay = 'Last Month';
         break;
       case (Moment(object.date_created).local().isAfter(Moment().startOf('year').local())):
         objectDivider = 'year';
-        textDisplay = 'This Year';
         break;
       default:
         objectDivider = 'forever';
-        textDisplay = 'Older';
         break;
     }
 
-    return {
-      objectDivider: objectDivider,
-      textDisplay: textDisplay
-    };
+    return objectDivider;
   }
 
   /**
    * Get divider to use when grouping by assignee
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getAssigneeDivider(object)
   {
     let assignee = false;
     if (object.agents.length > 0) {
-      assignee = this.agents[object.agents[0]].name;
+      console.log('Agents');
+      console.log(object.agents);
+      assignee = 'agent_' + object.agents[0].toString();
     } else if (object.teams.length > 0) {
-      assignee = this.teams[object.teams[0]].name;
+      assignee = 'team_' + object.teams[0].toString();
     } else if (object.departments.length > 0) {
-      assignee = this.departments[object.departments[0]].title;
+      assignee = 'department_' + object.departments[0].toString();
     }
 
     if (assignee === false) {
-      return {
-        objectDivider: 'none',
-        textDisplay: 'Unassigned'
-      }
+      return 'none';
     }
 
-    return {
-      objectDivider: assignee,
-      textDisplay: assignee
-    }
+    return assignee;
   }
 
   /**
    * Get divider to use when grouping by assignee
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getProjectDivider(object)
   {
@@ -342,22 +349,16 @@ export default class TaskGrouping {
     }
 
     if (project === false) {
-      return {
-        objectDivider: 'none',
-        textDisplay: 'No Project'
-      }
+      return 'none';
     }
 
-    return {
-      objectDivider: project,
-      textDisplay: project
-    }
+    return project;
   }
 
   /**
    * Get the divider to use when grouping by list
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getListDivider(object)
   {
@@ -368,22 +369,16 @@ export default class TaskGrouping {
     }
 
     if (listTitle === false) {
-      return {
-        objectDivider: 'none',
-        textDisplay: 'No List'
-      }
+      return 'none';
     }
 
-    return {
-      objectDivider: listTitle,
-      textDisplay: listTitle
-    }
+    return listTitle;
   }
 
   /**
    * Get the divider to use when grouping by creator
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getCreatorDivider(object)
   {
@@ -394,78 +389,59 @@ export default class TaskGrouping {
     }
 
     if (creator === false) {
-      return {
-        objectDivider: 'none',
-        textDisplay: 'No Creator'
-      }
+      return 'none';
     }
 
-    return {
-      objectDivider: creator,
-      textDisplay: creator
-    }
+    return creator;
   }
 
   /**
    * Get the divider to use when grouping by done date
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getDoneDateDivider(object) {
     let objectDivider = false;
-    let textDisplay = false;
 
     if (object.date_done) {
       switch (true) {
         case (Moment(object.date_done).utc().isAfter(Moment().startOf('hour').local())):
           objectDivider = 'hour';
-          textDisplay = 'This Hour';
           break;
         case (Moment(object.date_done).local().isAfter(Moment().startOf('day').local())):
           objectDivider = 'day';
-          textDisplay = 'Today';
           break;
         case (Moment(object.date_done).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
           objectDivider = 'tomorrow';
-          textDisplay = 'Yesterday';
           break;
         case (Moment(object.date_done).local().isAfter(Moment().startOf('week').local())):
           objectDivider = 'week';
-          textDisplay = 'This Week';
           break;
         case (Moment(object.date_done).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
           objectDivider = 'lastweek';
-          textDisplay = 'Last Week';
           break;
         case (Moment(object.date_done).local().isAfter(Moment().startOf('month').local())):
           objectDivider = 'month';
-          textDisplay = 'This Month';
           break;
         case (Moment(object.date_done).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
           objectDivider = 'lastmonth';
-          textDisplay = 'Last Month';
           break;
         case (Moment(object.date_done).local().isAfter(Moment().startOf('year').local())):
           objectDivider = 'year';
-          textDisplay = 'This Year';
           break;
         default:
           objectDivider = 'forever';
-          textDisplay = 'Older';
           break;
       }
     }
 
-    return {
-      objectDivider: objectDivider,
-      textDisplay: textDisplay
-    }
+    return objectDivider;
   }
 
   /**
    * Get the divider to use when grouping by labels
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getLabelDivider(object)
   {
@@ -480,22 +456,16 @@ export default class TaskGrouping {
     }
 
     if (labelsDivider === false) {
-      return {
-        objectDivider: 'none',
-        textDisplay: 'No Labels'
-      }
+      return 'none';
     }
 
-    return {
-      objectDivider: labelsDivider,
-      textDisplay: labelsDivider
-    }
+    return labelsDivider;
   }
 
   /**
    * Get the divider to use when grouping by linked ticket
    * @param object
-   * @returns {{objectDivider: string, textDisplay: string}}
+   * @return string
    */
   getTicketDivider(object)
   {
@@ -509,15 +479,9 @@ export default class TaskGrouping {
     }
 
     if (ticketDivider === false) {
-      return {
-        objectDivider: 'none',
-        textDisplay: 'No Ticket'
-      }
+      return 'none';
     }
 
-    return {
-      objectDivider: ticketDivider,
-      textDisplay: ticketDivider
-    }
+    return ticketDivider;
   }
 }

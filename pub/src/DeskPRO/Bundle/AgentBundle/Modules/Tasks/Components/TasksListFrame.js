@@ -27,9 +27,9 @@ export default class TasksListFrame extends React.Component {
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
-    this.agents = {};
-    this.teams = {};
-    this.departments = {};
+    this.agents = [];
+    this.teams = [];
+    this.departments = [];
     this.projects = [];
 
     // Temp project ID
@@ -180,7 +180,7 @@ export default class TasksListFrame extends React.Component {
     const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
 
     // Temporary hack
-    const columnField = "due";
+    const columnField = "assignee";
 
     const rawGroupings = grouping.getRawGroupings(columnField);
 
