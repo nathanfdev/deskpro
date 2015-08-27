@@ -7,6 +7,7 @@ import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
+import TaskControls from "../Components/TaskControls";
 import TaskCardGroup from "../Components/TaskCardGroup";
 import KanbanColumn from "../Components/KanbanColumn";
 import Moment from "moment";
@@ -217,27 +218,7 @@ export default class TasksListFrame extends React.Component {
             </span>
           </div>
 
-          <span className="ticket-controls-default">
-            <a href="#" className="ticket-control-button">
-              <span className="title">Order by:</span>
-              <span className="focus">Date</span>
-              <span className="down">Asc <i className="fa fa-caret-down" /></span>
-            </a>
-
-            <a href="#" className="ticket-control-button">
-              <span className="title">Filter by:</span>
-              <span className="focus">12</span>
-              <span className="down">Completed <i className="fa fa-caret-down" /></span>
-            </a>
-
-            <a href="#" className="ticket-control-button" onClick={this.toggleView.bind(this)}>
-              <span className="title">View:</span>
-              <span className="multi">
-                List
-                <span className="multi-down"><i className="fa fa-caret-down" /></span>
-              </span>
-            </a>
-          </span>
+          <TaskControls toggleView={this.toggleView.bind(this)} />
 
           <span className="ticket-controls-bulk-editing">
             <a href="#">
