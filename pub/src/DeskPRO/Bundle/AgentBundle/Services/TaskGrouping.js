@@ -102,10 +102,10 @@ export default class TaskGrouping {
         result = this.getAssigneeDivider(object);
         break;
       case 'project':
-        result = 'project_' + object.project;
+        result = object.project ? 'project_' + object.project : 'none';
         break;
       case 'list':
-        result = 'list_' + object.list;
+        result = object.list ? 'list_' + object.list : 'none';
         break;
       case 'creator':
         result = 'creator_' + object.creator;
@@ -145,7 +145,14 @@ export default class TaskGrouping {
             updateValue: listObject.id,
             key: 'list_' + listObject.id
           });
+        });
 
+        returnGroups.push({
+          id: 'none',
+          title: 'Tasks not in any list',
+          updateField: 'list',
+          updateValue: false,
+          key: 'none'
         });
         break;
       case 'project':

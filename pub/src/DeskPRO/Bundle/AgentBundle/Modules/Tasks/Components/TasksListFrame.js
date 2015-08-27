@@ -180,7 +180,7 @@ export default class TasksListFrame extends React.Component {
     const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
 
     // Temporary hack
-    const columnField = "assignee";
+    const columnField = "list";
 
     const rawGroupings = grouping.getRawGroupings(columnField);
 
