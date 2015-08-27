@@ -374,6 +374,8 @@ class TicketsController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
+            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
+            $ticket->disableAutoTicketProcess();
             $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
@@ -402,6 +404,8 @@ class TicketsController extends AbstractController
             $em->persist($message);
 
             $ticket_manager = $this->getTicketManager();
+            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
+            $ticket->disableAutoTicketProcess();
             $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);

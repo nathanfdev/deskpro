@@ -295,7 +295,6 @@ class TicketManager
             $context->setEventType('noop');
             $is_noop = true;
         }
-
         if ($context->getPersonContext()) {
             $context->getLogger()->debug(sprintf(
                 "PersonContext: <Person:%d> %s %s",

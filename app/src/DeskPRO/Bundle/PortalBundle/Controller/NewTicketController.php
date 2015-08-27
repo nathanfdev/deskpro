@@ -189,6 +189,8 @@ class NewTicketController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
+            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
+            $ticket->disableAutoTicketProcess();
             $context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
