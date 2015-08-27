@@ -33,79 +33,19 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 
 /**
  * Class ChatCountCriteria
- *
- * This class uses the same filtering criteria as ChatSelectCriteria and additionally adds GROUP BY functionality
  */
 class ChatCountCriteria extends ChatSelectCriteria
 {
-    /**
-     * @var string
-     */
-    private $group_by;
-
-    /**
-     * ChatCountCriteria constructor.
-     *
-     * @param array $filters
-     * @param string $group_by
-     */
-    protected function __construct(array $filters, $group_by)
-    {
-        parent::__construct($filters);
-        $this->group_by = $group_by;
-    }
-
-
-    /**
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @param Person $me
-     * @return ChatCountCriteria
-     */
-    public static function fromParameters(array $params, OptionsResolver $resolver, Person $me)
-    {
-        self::configureResolver($resolver, $me);
-        $params = $resolver->resolve($params);
-
-        $group_by = null;
-        if (array_key_exists('group_by', $params)) {
-            $group_by = $params['group_by'];
-            unset($params['group_by']);
-        }
-
-        $filters = $params;
-
-        return new self($filters, $group_by);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGrouped()
-    {
-        return (bool) $this->group_by;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroupBy()
-    {
-        return $this->group_by;
-    }
-
     /**
      * @param QueryBuilder $qb
      */
     public function applyGroupBy(QueryBuilder $qb)
     {
-        if (!$this->isGrouped()) {
-            throw new \LogicException('Cannot group without group_by');
-        }
+        $this->ensureGroupBy();
 
         $alias = $qb->getRootAliases()[0];
         switch ($this->group_by) {
@@ -114,13 +54,13 @@ class ChatCountCriteria extends ChatSelectCriteria
                 break;
 
             case 'date_period':
-                $qb->addSelect($this->getDatePeriodCaseWhenDql($alias) . ' as group_name');
+                $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+                $qb->addSelect("$datePeriodsDql as group_name");
 
                 // select hidden group_order to use in ORDER BY
                 $qb->addSelect(
-                    "FIELD(" . $this->getDatePeriodCaseWhenDql($alias) . ",
-                        'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever'
-                    ) as HIDDEN group_order");
+                    "FIELD($datePeriodsDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever')
+                     as HIDDEN group_order");
                 $qb->orderBy('group_order');
 
                 break;
@@ -137,11 +77,11 @@ class ChatCountCriteria extends ChatSelectCriteria
 
     /**
      * @param OptionsResolver $resolver
-     * @param Person $me
+     * @param array $data
      */
-    protected static function configureResolver(OptionsResolver $resolver, Person $me)
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        parent::configureResolver($resolver, $me);
+        parent::configureResolver($resolver, $data);
 
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
         $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);

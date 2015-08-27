@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Glossary.
@@ -48,11 +49,13 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     * @Assert\NotBlank
      */
     protected $word;
 
     /**
      * @var GlossaryWordDefinition
+     * @Assert\NotNull
      */
     protected $definition;
 
@@ -62,6 +65,14 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param GlossaryWordDefinition $definition
+     */
+    public function setDefinition($definition)
+    {
+        $this->setModelField('definition', $definition);
     }
 
     ############################################################################

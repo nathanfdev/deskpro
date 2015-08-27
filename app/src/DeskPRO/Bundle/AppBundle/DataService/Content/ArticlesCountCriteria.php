@@ -29,36 +29,52 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content;
+
+use Doctrine\ORM\QueryBuilder;
 
 /**
- * Represents a count within a CountsGroup
+ * Class ArticlesCountCriteria
+ *
+ * Extends BaseContentCountCriteria with categories relation handling to meet Article entity criteria needs
  */
-class GroupedCount extends Count
+class ArticlesCountCriteria extends BaseContentCountCriteria
 {
     /**
-     * @var string
+     * @param QueryBuilder $qb
      */
-    private $group;
-
-    /**
-     * GroupedCount constructor.
-     *
-     * @param string $group
-     * @param int $count
-     * @param CountsGroup $nested
-     */
-    public function __construct($group, $count, CountsGroup $nested = null)
+    public function applyFilters(QueryBuilder $qb)
     {
-        parent::__construct($count, $nested);
-        $this->group = $group;
+        $alias = $qb->getRootAliases()[0];
+
+        foreach ($this->filters as $field => $value) {
+            switch ($field) {
+                case 'category':
+                    $qb->leftJoin("$alias.categories", 'cat');
+                    $qb->andWhere("cat.id = :category");
+                    $qb->setParameter('category', $value);
+                    break;
+            }
+        }
+
+        parent::applyFilters($qb);
     }
 
     /**
-     * @return string
+     * @param QueryBuilder $qb
      */
-    public function getGroup()
+    public function applyGroupBy(QueryBuilder $qb)
     {
-        return $this->group;
+        $this->ensureGroupBy();
+
+        $alias = $qb->getRootAliases()[0];
+        switch ($this->group_by) {
+            case 'category':
+                $qb->addSelect('cat.id as group_name');
+                $qb->leftJoin("$alias.categories", 'cat');
+                break;
+        }
+
+        parent::applyGroupBy($qb);
     }
 }

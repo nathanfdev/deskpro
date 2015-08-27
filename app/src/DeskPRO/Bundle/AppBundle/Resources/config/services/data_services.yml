@@ -103,3 +103,15 @@ services:
   data.agent_teams:
       class: DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.content_counts:
+      class: DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountsDataService
+      arguments: [@doctrine.orm.default_entity_manager, @data.categories]
+
+  data.comment_counts:
+      class: DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentCountsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
+  data.categories:
+      class: DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService
+      arguments: [@doctrine.orm.default_entity_manager]

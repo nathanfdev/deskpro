@@ -69,7 +69,7 @@ class ChatCountsController extends BaseController
 
         $params = $request->query->all();
         try {
-            $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), $this->getUser());
+            $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }

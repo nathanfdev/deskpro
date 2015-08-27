@@ -26,36 +26,57 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DpTest\Bundle\AppBundle\CountBadge;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
-use DpTest\DeskProTestCase;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 
 /**
- * Class GroupedCountTest
+ * Class CommentCountsDataService
  */
-class GroupedCountTest extends DeskProTestCase
+class CommentCountsDataService
 {
     /**
-     * @test
+     * @var EntityManager
      */
-    function it_should_be_instantiable_with_group_name_and_value()
+    private $em;
+
+    /**
+     * PeopleDataService constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
     {
-        $count = new GroupedCount('group_name', 42);
-        $this->assertEquals('group_name', $count->getGroup());
+        $this->em = $em;
     }
 
     /**
-     * @test
+     * @param string $class Concrete comment entity class
+     * @param GroupedCriteria $criteria
+     * @return Count
      */
-    function it_should_extend_Count()
+    public function countComments($class, GroupedCriteria $criteria)
     {
-        $this->assertInstanceOf(Count::class, new GroupedCount('group_name', 42));
+        $qb = $this->em->createQueryBuilder();
+
+        $qb->select('count(c) as value')
+           ->from($class, 'c');
+        $criteria->applyFilters($qb);
+        $criteria->applyGroupBy($qb);
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
+        foreach ($result as $group) {
+            $count->add($group['value']);
+            $count->addNested($group['value'], $group['group_name']);
+        }
+
+        return $count;
     }
 }

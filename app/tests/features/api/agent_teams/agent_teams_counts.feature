@@ -13,4 +13,4 @@ Feature: /agent_teams/counts endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.count" should be equal to 3
-    And the JSON node "data.nested.counts" should have 2 elements
+    And the JSON node "data.nested" should have 2 elements

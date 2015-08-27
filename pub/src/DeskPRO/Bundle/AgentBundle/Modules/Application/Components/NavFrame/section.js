@@ -29,3 +29,22 @@ export class SectionHeader extends React.Component {
     );
   }
 }
+
+export class SectionGroupedHeader extends React.Component {
+  render() {
+    const { count, callback } = this.props;
+
+    return (
+      <div className="list-sidebar-title">
+        {this.props.children}
+        <div className="list-counter-bucket">
+          <a className="list-counter-dropdown active" href="#" onClick={callback}>
+            <span>&nbsp;</span>
+            <i className="fa fa-angle-down"></i>
+          </a>
+          <a className="list-counter active" href="#">{count}</a>
+        </div>
+      </div>
+    );
+  }
+}

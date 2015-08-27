@@ -113,12 +113,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
      */
     protected $date_updated;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setModelField('date_updated', new \DateTime());
-    }
-
     public function _preUpdate()
     {
         $this->setModelField('date_updated', new \DateTime());
@@ -599,7 +593,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 'type' => 'datetime',
                 'precision' => 0,
                 'scale' => 0,
-                'nullable' => false,
+                'nullable' => true,
                 'columnName' => 'date_updated',
             )
         );

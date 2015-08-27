@@ -33,8 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\DataService\AgentTeams;
 
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
  * Class AgentTeamsDataService
@@ -57,13 +55,12 @@ class AgentTeamsDataService extends AbstractDataService
 
         $result = $qb->getQuery()->getArrayResult();
 
-        $count = 0;
-        $nested = new CountsGroup('agent_teams');
+        $count = Count::fromGroupedBy('agent_teams');
         foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+            $count->add($group['value']);
+            $count->addNested($group['value'], $group['group_name']);
         }
 
-        return new Count($count, $nested);
+        return $count;
     }
 }

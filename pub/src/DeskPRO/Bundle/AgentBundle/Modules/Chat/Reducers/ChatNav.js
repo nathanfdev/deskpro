@@ -39,7 +39,7 @@ export default class ChatNav extends Reducer {
 
     let next = {...prev};
     next.lists[list].total = counts.count;
-    next.lists[list].items = counts.nested.counts;
+    next.lists[list].items = counts.nested;
 
     return next;
   }
@@ -67,7 +67,7 @@ export default class ChatNav extends Reducer {
 
   listGroupingChanged(prev, {payload}) {
     const {list, groupBy} = payload;
-    
+
     let next = {...prev};
     next.lists[list].groupBy = groupBy;
 

@@ -3,7 +3,7 @@
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and Comment Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -26,60 +26,56 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CountBadge;
+namespace DpTest\Bundle\AppBundle\DataService\Comment;
+
+use Prophecy\Argument;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use DpTest\DeskProTestCase;
+use Application\DeskPRO\Entity\ArticleComment;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentCountsDataService;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 
 /**
- * Represents a collection of counts. Typically used when returning counts
- * grouped by some sort of variable.
+ * Class CommentCountsDataServiceTest
  */
-class CountsGroup
+class CommentCountsDataServiceTest extends DeskProTestCase
 {
     /**
-     * @var string
+     * @test
      */
-    private $grouped_by;
-
-    /**
-     * @var GroupedCount[]
-     */
-    private $counts;
-
-    /**
-     * CountsGroup constructor.
-     *
-     * @param string $grouped_by
-     * @param GroupedCount[] $counts
-     */
-    public function __construct($grouped_by, array $counts = [])
+    function it_should_be_instantiable()
     {
-        $this->grouped_by = $grouped_by;
-        $this->counts = $counts;
+        $this->assertInstanceOf(CommentCountsDataService::class, $this->instance());
     }
 
     /**
-     * @param GroupedCount $count
+     * @test
      */
-    public function add(GroupedCount $count)
+    function it_should_return_Count_instance_with_group_by_indication()
     {
-        $this->counts[] = $count;
+        $criteria = CommentsCountCriteria::fromParameters(['group_by' => 'status'], new OptionsResolver());
+
+        $result = $this->instance()->countComments(ArticleComment::class, $criteria);
+
+        $this->assertInstanceOf(Count::class, $result);
+        $this->assertEquals($result->getGroupedBy(), 'status');
     }
 
     /**
-     * @return string
+     * @return CommentCountsDataService
      */
-    public function getGroupedBy()
+    private function instance($em = null)
     {
-        return $this->grouped_by;
-    }
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em or $em = $this->mockQueryBuildingEntityManager()->reveal();
 
-    /**
-     * @return GroupedCount[]
-     */
-    public function getCounts()
-    {
-        return $this->counts;
+        return new CommentCountsDataService($em);
     }
 }

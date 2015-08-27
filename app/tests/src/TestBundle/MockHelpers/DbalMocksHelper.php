@@ -37,6 +37,7 @@ use Prophecy\Argument;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery as Query;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Trait DbalMocksHelper
@@ -46,12 +47,15 @@ use Doctrine\ORM\AbstractQuery as Query;
 trait DbalMocksHelper
 {
     /**
+     * @todo rename to mockQueryBuilder
+     *
      * @param string $class
      * @return \Prophecy\Prophecy\ObjectProphecy
      */
     protected function mockQueryBuildingEntityManager($class = EntityManagerInterface::class)
     {
         $em = $this->prophesize($class);
+        $em->getRepository(Argument::any())->willReturn($this->mockRepository());
         $em->createQueryBuilder()->willReturn($this->mockQueryBuilder());
 
         return $em;
@@ -76,10 +80,23 @@ trait DbalMocksHelper
         $qb->addSelect(Argument::any())->willReturn($qb);
         $qb->from(Argument::any(), Argument::any())->willReturn($qb);
         $qb->join(Argument::any(), Argument::any())->willReturn($qb);
+        $qb->leftJoin(Argument::any(), Argument::any())->willReturn($qb);
         $qb->where(Argument::any())->willReturn($qb);
         $qb->andWhere(Argument::any())->willReturn($qb);
         $qb->groupBy(Argument::any())->willReturn($qb);
+        $qb->expr()->willReturn(new \Doctrine\ORM\Query\Expr());
 
         return $qb;
+    }
+
+    /**
+     * @return \Prophecy\Prophecy\ObjectProphecy
+     */
+    protected function mockRepository()
+    {
+        $repository = $this->prophesize(EntityRepository::class);
+        $repository->findAll()->willReturn([]);
+
+        return $repository;
     }
 }

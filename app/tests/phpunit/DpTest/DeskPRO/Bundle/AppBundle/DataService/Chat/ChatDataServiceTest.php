@@ -40,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 
 /**
  * Class ChatDataServiceTest
@@ -80,29 +79,29 @@ class ChatDataServiceTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_return_Count_instance_with_nested_CountsGroup_when_counting_criteria_has_grouped_by_option()
+    function it_should_return_Count_instance_with_group_by_indication_when_counting_criteria_has_group_by_option()
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
-        $criteria = ChatCountCriteria::fromParameters(['group_by' => 'date_created'], $resolver, $me);
+        $criteria = ChatCountCriteria::fromParameters(['group_by' => 'date_created'], $resolver, [$me]);
 
         $result = $this->instance()->countChats($criteria);
 
-        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
+        $this->assertEquals($result->getGroupedBy(), 'date_created');
     }
 
     /**
      * @test
      */
-    function it_should_return_Count_instance_without_nested_CountsGroup_when_counting_criteria_has_no_grouped_by_option()
+    function it_should_return_Count_instance_without_group_by_indication_when_counting_criteria_has_no_group_by_option()
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
-        $criteria = ChatCountCriteria::fromParameters([], $resolver, $me);
+        $criteria = ChatCountCriteria::fromParameters([], $resolver, [$me]);
 
         $result = $this->instance()->countChats($criteria);
 
-        $this->assertNull($result->getNested());
+        $this->assertNull($result->getGroupedBy());
     }
 
     /**
