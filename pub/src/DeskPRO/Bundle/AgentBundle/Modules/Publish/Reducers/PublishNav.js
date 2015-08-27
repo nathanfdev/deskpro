@@ -20,32 +20,54 @@ export default class PublishNav extends Reducer {
         nested: []
       },
 
+      grouping: {
+        options: [
+          {value: 'category', label: 'Category'},
+          {value: 'author', label: 'Author'},
+          {value: 'period_created', label: 'Created'},
+          {value: 'period_updated', label: 'Updated'},
+        ],
+        visibility: {
+          articles: false,
+          news: false,
+          downloads: false
+        }
+      },
+
       categories: {
         articles:  { /* id: name */ },
         news:      { /* id: name */ },
         downloads: { /* id: name */ }
+      },
+      authors: {
+        /* id: name */
       }
     };
   }
 
   registerHandlers() {
     this
-      .r(actions.loadArticlesCounts, this.articlesCountsLoaded)
-      .r(actions.loadNewsCounts, this.newsCountsLoaded)
-      .r(actions.loadDownloadsCounts, this.downloadsCountsLoaded)
+      .r(actions.loadCounts, this.countsLoaded)
+      .r(actions.loadAuthorName, this.authorNameLoaded)
       .r(actions.loadCategories, this.categoriesLoaded)
+      .r(actions.toggleListGroupingVisibility, this.listGroupingVisibilityChanged)
     ;
   }
 
-  articlesCountsLoaded(prev, {payload}) {
-    return {...prev, articles: payload};
+  countsLoaded(prev, {payload}) {
+    const next = {...prev};
+    next[payload.content] = payload.counts;
+
+    return next;
   }
-  newsCountsLoaded(prev, {payload}) {
-    return {...prev, news: payload};
+
+  authorNameLoaded(prev, {payload}) {
+    const next = {...prev};
+    next.authors[payload.id] = payload.name;
+
+    return next;
   }
-  downloadsCountsLoaded(prev, {payload}) {
-    return {...prev, downloads: payload};
-  }
+
   categoriesLoaded(prev, {payload}) {
     const categories = {articles: {}, news: {}, downloads: {}};
     for (let i = 0; i < payload.articles.length; i++) {
@@ -59,5 +81,13 @@ export default class PublishNav extends Reducer {
     }
 
     return {...prev, categories};
+  }
+
+  listGroupingVisibilityChanged(prev, {payload}) {
+    const next = {...prev};
+    next.grouping = Object.assign({}, next.grouping);
+    next.grouping.visibility[payload] = !next.grouping.visibility[payload];
+
+    return next;
   }
 }

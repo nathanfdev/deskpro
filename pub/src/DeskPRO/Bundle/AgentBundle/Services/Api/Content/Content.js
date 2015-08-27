@@ -1,27 +1,16 @@
 import DpApi from "../../DpApi";
 
 /**
+ * @param target
  * @param groupBy
  * @return Promise
  */
-export function loadArticlesCounts(groupBy) {
-  return DpApi.sendGet('DP_API/articles/counts?group_by=' + groupBy);
-}
+export function loadCounts(target, groupBy) {
+  if (['articles', 'news', 'downloads'].indexOf(target) === -1) {
+    throw 'Unknown content type ' + target;
+  }
 
-/**
- * @param groupBy
- * @return Promise
- */
-export function loadNewsCounts(groupBy) {
-  return DpApi.sendGet('DP_API/news/counts?group_by=' + groupBy);
-}
-
-/**
- * @param groupBy
- * @return Promise
- */
-export function loadDownloadsCounts(groupBy) {
-  return DpApi.sendGet('DP_API/downloads/counts?group_by=' + groupBy);
+  return DpApi.sendGet('DP_API/' + target + '/counts?group_by=' + groupBy);
 }
 
 /**

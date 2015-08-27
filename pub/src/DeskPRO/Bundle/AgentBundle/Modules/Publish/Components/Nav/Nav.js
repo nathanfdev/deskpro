@@ -1,62 +1,89 @@
 import React from 'react';
 import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionGroupedHeader, TabsPane, Tab, NestedList, ButtonsPane,
-         Button }
+         Button, ListGroupingControl }
        from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 export class Nav extends React.Component {
   render() {
-    const { articles, news, downloads, categories } = this.props;
+    const { articles, news, downloads, categories, grouping, onGroupingChange, toggleGroupingVisibility } = this.props;
 
     return (
       <NavFrame>
-        <NavFrameHeader icon="fa-edit">Publish</NavFrameHeader>
-        <TabsPane>
+        <div part="outer">
 
-          <Tab title="KB">
-            <SectionsPane>
-              <Section>
-                <SectionGroupedHeader count={articles.count} callback={()=>alert(1)}>
-                  Knowledgebase
-                </SectionGroupedHeader>
+          <ListGroupingControl
+            title="Articles"
+            options={grouping.options}
+            visible={grouping.visibility.articles}
+            onChange={onGroupingChange('articles')}
+          />
 
-                <NestedList items={articles.nested} groups={categories.articles} />
-              </Section>
-            </SectionsPane>
+          <ListGroupingControl
+            title="News"
+            options={grouping.options}
+            visible={grouping.visibility.news}
+            onChange={onGroupingChange('news')}
+          />
 
-            <ButtonsPane>
-              <Button title="Glossary" icon="fa-quote-left" />
-              <Button title="Search" icon="fa-search" />
-              <Button title="Comments" icon="fa-comments-o" />
-            </ButtonsPane>
-          </Tab>
+          <ListGroupingControl
+            title="Downloads"
+            options={grouping.options}
+            visible={grouping.visibility.downloads}
+            onChange={onGroupingChange('downloads')}
+          />
 
-          <Tab title="News">
-            <SectionsPane>
-              <Section>
-                <SectionGroupedHeader count={news.count} callback={()=>alert(2)}>
-                  News
-                </SectionGroupedHeader>
+        </div>
 
-                <NestedList items={news.nested} groups={categories.news} />
-              </Section>
-            </SectionsPane>
-          </Tab>
+        <div part="inner">
+          <NavFrameHeader icon="fa-edit">Publish</NavFrameHeader>
+          <TabsPane>
 
-          <Tab icon="fa-download">
-            <SectionsPane>
-              <Section>
-                <SectionGroupedHeader count={downloads.count} callback={()=>alert(3)}>
-                  Downloads
-                </SectionGroupedHeader>
+            <Tab title="KB">
+              <SectionsPane>
+                <Section>
+                  <SectionGroupedHeader count={articles.count} callback={toggleGroupingVisibility('articles')}>
+                    Knowledgebase
+                  </SectionGroupedHeader>
 
-                <NestedList items={downloads.nested} groups={categories.downloads} />
-              </Section>
-            </SectionsPane>
-          </Tab>
+                  <NestedList items={articles.nested} groups={categories.articles} />
+                </Section>
+              </SectionsPane>
 
-          <Tab title="Todos"></Tab>
+              <ButtonsPane>
+                <Button title="Glossary" icon="fa-quote-left" />
+                <Button title="Search" icon="fa-search" />
+                <Button title="Comments" icon="fa-comments-o" />
+              </ButtonsPane>
+            </Tab>
 
-        </TabsPane>
+            <Tab title="News">
+              <SectionsPane>
+                <Section>
+                  <SectionGroupedHeader count={news.count} callback={toggleGroupingVisibility('news')}>
+                    News
+                  </SectionGroupedHeader>
+
+                  <NestedList items={news.nested} groups={categories.news} />
+                </Section>
+              </SectionsPane>
+            </Tab>
+
+            <Tab icon="fa-download">
+              <SectionsPane>
+                <Section>
+                  <SectionGroupedHeader count={downloads.count} callback={toggleGroupingVisibility('downloads')}>
+                    Downloads
+                  </SectionGroupedHeader>
+
+                  <NestedList items={downloads.nested} groups={categories.downloads} />
+                </Section>
+              </SectionsPane>
+            </Tab>
+
+            <Tab title="Todos"></Tab>
+
+          </TabsPane>
+        </div>
       </NavFrame>
     );
   }

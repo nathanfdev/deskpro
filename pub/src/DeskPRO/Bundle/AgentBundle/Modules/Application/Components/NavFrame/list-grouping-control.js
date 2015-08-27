@@ -1,6 +1,7 @@
 import React from 'react';
 
-export class ChatsListGroupingControl extends React.Component {
+
+export class ListGroupingControl extends React.Component {
 
   render() {
     const {title, onChange, options, visible} = this.props;
