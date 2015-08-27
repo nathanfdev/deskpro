@@ -12,26 +12,26 @@ export default class TaskGrouping {
 
     this.futureDates = [
       { key: 'overdue', title: 'Overdue', value: false },
-      { key: 'hour', title: 'This Hour', value: Moment().endOf('hour').format() },
-      { key: 'day', title: 'Today', value: Moment().endOf('day').format() },
-      { key: 'tomorrow', title: 'Tomorrow', value: Moment().endOf('day').add(1, 'd').format() },
-      { key: 'week', title: 'This Week', value: Moment().endOf('week').format() },
-      { key: 'nextweek', title: 'Next Week', value: Moment().endOf('week').add(7, 'd').format() },
-      { key: 'month', title: 'This Month', value: Moment().endOf('month').format() },
-      { key: 'nextmonth', title: 'Next Month', value: Moment().endOf('month').add(1, 'M').format() },
-      { key: 'year', title: 'This Year', value: Moment().endOf('year').format() },
+      { key: 'hour', title: 'This Hour', value: Moment().endOf('hour').utc().format() },
+      { key: 'day', title: 'Today', value: Moment().endOf('day').utc().format() },
+      { key: 'tomorrow', title: 'Tomorrow', value: Moment().endOf('day').add(1, 'd').utc().format() },
+      { key: 'week', title: 'This Week', value: Moment().endOf('week').utc().format() },
+      { key: 'nextweek', title: 'Next Week', value: Moment().endOf('week').add(7, 'd').utc().format() },
+      { key: 'month', title: 'This Month', value: Moment().endOf('month').utc().format() },
+      { key: 'nextmonth', title: 'Next Month', value: Moment().endOf('month').add(1, 'M').utc().format() },
+      { key: 'year', title: 'This Year', value: Moment().endOf('year').utc().format() },
       { key: 'forever', title: 'Other', value: false }
     ];
 
     this.pastDates = [
-      { key: 'hour', title: 'This Hour', value: Moment().startOf('hour').format() },
-      { key: 'day', title: 'Today', value: Moment().startOf('day').format() },
-      { key: 'tomorrow', title: 'Yesterday', value: Moment().startOf('day').subtract(1, 'd').format() },
-      { key: 'week', title: 'This Week', value: Moment().startOf('week').format() },
-      { key: 'nextweek', title: 'Last Week', value: Moment().startOf('week').subtract(7, 'd').format() },
-      { key: 'month', title: 'This Month', value: Moment().startOf('month').format() },
-      { key: 'nextmonth', title: 'Last Month', value: Moment().startOf('month').subtract(1, 'M').format() },
-      { key: 'year', title: 'This Year', value: Moment().startOf('year').format() },
+      { key: 'hour', title: 'This Hour', value: Moment().startOf('hour').utc().format() },
+      { key: 'day', title: 'Today', value: Moment().startOf('day').utc().format() },
+      { key: 'tomorrow', title: 'Yesterday', value: Moment().startOf('day').subtract(1, 'd').utc().format() },
+      { key: 'week', title: 'This Week', value: Moment().startOf('week').utc().format() },
+      { key: 'nextweek', title: 'Last Week', value: Moment().startOf('week').subtract(7, 'd').utc().format() },
+      { key: 'month', title: 'This Month', value: Moment().startOf('month').utc().format() },
+      { key: 'nextmonth', title: 'Last Month', value: Moment().startOf('month').subtract(1, 'M').utc().format() },
+      { key: 'year', title: 'This Year', value: Moment().startOf('year').utc().format() },
       { key: 'forever', title: 'Older', value: false }
     ];
   }
@@ -197,39 +197,39 @@ export default class TaskGrouping {
     let textDisplay = false;
 
     switch(true) {
-      case (Moment(object.date_due).isBefore()):
+      case (Moment(object.date_due).utc().isBefore()):
         objectDivider = 'overdue';
         textDisplay = 'Overdue';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('hour'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('hour').local())):
         objectDivider = 'hour';
         textDisplay = 'This Hour';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('day'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('day').local())):
         objectDivider = 'day';
         textDisplay = 'Today';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('day').add(1, 'd'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('day').add(1, 'd').local())):
         objectDivider = 'tomorrow';
         textDisplay = 'Tomorrow';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('week'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('week').local())):
         objectDivider = 'week';
         textDisplay = 'This Week';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('week').add(7, 'd'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('week').add(7, 'd').local())):
         objectDivider = 'nextweek';
         textDisplay = 'Next Week';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('month'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('month').local())):
         objectDivider = 'month';
         textDisplay = 'This Month';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('month').add(1, 'M'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('month').add(1, 'M').local())):
         objectDivider = 'nextmonth';
         textDisplay = 'Next Month';
         break;
-      case (Moment(object.date_due).isBefore(Moment().endOf('year'))):
+      case (Moment(object.date_due).local().isBefore(Moment().endOf('year').local())):
         objectDivider = 'year';
         textDisplay = 'This Year';
         break;
@@ -256,35 +256,35 @@ export default class TaskGrouping {
     let textDisplay = false;
 
     switch(true) {
-      case (Moment(object.date_created).isAfter(Moment().startOf('hour'))):
+      case (Moment(object.date_created).utc().isAfter(Moment().startOf('hour').local())):
         objectDivider = 'hour';
         textDisplay = 'This Hour';
         break;
-      case (Moment(object.date_created).isAfter(Moment().startOf('day'))):
+      case (Moment(object.date_created).local().isAfter(Moment().startOf('day').local())):
         objectDivider = 'day';
         textDisplay = 'Today';
         break;
-      case (Moment(object.date_created).isAfter(Moment().startOf('day').subtract(1, 'd'))):
+      case (Moment(object.date_created).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
         objectDivider = 'tomorrow';
         textDisplay = 'Yesterday';
         break;
-      case (Moment(object.date_created).isAfter(Moment().startOf('week'))):
+      case (Moment(object.date_created).local().isAfter(Moment().startOf('week').local())):
         objectDivider = 'week';
         textDisplay = 'This Week';
         break;
-      case (Moment(object.date_created).isAfter(Moment().startOf('week').subtract(7, 'd'))):
+      case (Moment(object.date_created).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
         objectDivider = 'lastweek';
         textDisplay = 'Last Week';
         break;
-      case (Moment(object.date_created).isAfter(Moment().startOf('month'))):
+      case (Moment(object.date_created).local().isAfter(Moment().startOf('month').local())):
         objectDivider = 'month';
         textDisplay = 'This Month';
         break;
-      case (Moment(object.date_created).isAfter(Moment().startOf('month').subtract(1, 'M'))):
+      case (Moment(object.date_created).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
         objectDivider = 'lastmonth';
         textDisplay = 'Last Month';
         break;
-      case (Moment(object.date_created).isAfter(Moment().startOf('year'))):
+      case (Moment(object.date_created).local().isAfter(Moment().startOf('year').local())):
         objectDivider = 'year';
         textDisplay = 'This Year';
         break;
@@ -417,35 +417,35 @@ export default class TaskGrouping {
 
     if (object.date_done) {
       switch (true) {
-        case (Moment(object.date_done).isAfter(Moment().startOf('hour'))):
+        case (Moment(object.date_done).utc().isAfter(Moment().startOf('hour').local())):
           objectDivider = 'hour';
           textDisplay = 'This Hour';
           break;
-        case (Moment(object.date_done).isAfter(Moment().startOf('day'))):
+        case (Moment(object.date_done).local().isAfter(Moment().startOf('day').local())):
           objectDivider = 'day';
           textDisplay = 'Today';
           break;
-        case (Moment(object.date_done).isAfter(Moment().startOf('day').subtract(1, 'd'))):
+        case (Moment(object.date_done).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
           objectDivider = 'tomorrow';
           textDisplay = 'Yesterday';
           break;
-        case (Moment(object.date_done).isAfter(Moment().startOf('week'))):
+        case (Moment(object.date_done).local().isAfter(Moment().startOf('week').local())):
           objectDivider = 'week';
           textDisplay = 'This Week';
           break;
-        case (Moment(object.date_done).isAfter(Moment().startOf('week').subtract(7, 'd'))):
+        case (Moment(object.date_done).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
           objectDivider = 'lastweek';
           textDisplay = 'Last Week';
           break;
-        case (Moment(object.date_done).isAfter(Moment().startOf('month'))):
+        case (Moment(object.date_done).local().isAfter(Moment().startOf('month').local())):
           objectDivider = 'month';
           textDisplay = 'This Month';
           break;
-        case (Moment(object.date_done).isAfter(Moment().startOf('month').subtract(1, 'M'))):
+        case (Moment(object.date_done).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
           objectDivider = 'lastmonth';
           textDisplay = 'Last Month';
           break;
-        case (Moment(object.date_done).isAfter(Moment().startOf('year'))):
+        case (Moment(object.date_done).local().isAfter(Moment().startOf('year').local())):
           objectDivider = 'year';
           textDisplay = 'This Year';
           break;

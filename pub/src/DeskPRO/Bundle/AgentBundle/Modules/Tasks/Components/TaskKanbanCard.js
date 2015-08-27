@@ -66,12 +66,7 @@ const TaskKanbanCard = React.createClass({
               </span>
             </div>
             <div>
-              <i className="fa fa-calendar-o" /> Due: {this.props.task.date_due ? <FormattedDate
-                  value={Date.parse(this.props.task.date_due)}
-                  day="numeric"
-                  month="long"
-                  year="numeric"
-              />
+              <i className="fa fa-calendar-o" /> Due: {this.props.task.date_due ? Moment(this.props.task.date_due).local().format('MMMM D, YYYY')
               : 'N/A' }
             </div>
           </div>
