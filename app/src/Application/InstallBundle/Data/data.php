@@ -158,7 +158,7 @@ if (!$IMPORT_INSTALL) {
     $DEFAULT_IDEA->person = $AGENT;
     $DEFAULT_IDEA->title = $translate->phrase('user.defaults.feedback_example_title');
     $DEFAULT_IDEA->content = $translate->phrase('user.defaults.feedback_example_content');
-    $DEFAULT_IDEA->status = 'new';
+    $DEFAULT_IDEA->status = 'active';
     $DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
     $em->persist($DEFAULT_IDEA);
     $em->flush();
