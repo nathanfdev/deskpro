@@ -29,12 +29,17 @@ export class ControlBar extends React.Component {
         filterChoice.show();
     }
 
-    focusChosen(event) {
+    orderChosen(event) {
         event.preventDefault();
         event.stopPropagation();
-        var elem = $(event.target);
-        elem.closest('a.ticket-control-button').find('span.focus').text(elem.text());
+        const {sort} = this.props;
+        var elem = $(event.target),
+            name = elem.text();
+        sort.sort = elem.data('field');
+        this.setState({sortName: name});
+        elem.closest('a.ticket-control-button').find('span.focus').text(name);
         $('div.dropdown-choice').hide();
+        console.log('Set sort: ', sort);
     }
 
     filterChosen(event) {
@@ -49,37 +54,41 @@ export class ControlBar extends React.Component {
     changeSortDirection(event) {
         event.preventDefault();
         event.stopPropagation();
+        const {dispatch, sort, filters, query} = this.props;
         $('div.dropdown-choice').hide();
         var elem = $(event.target);
         if (elem.hasClass('asc')) {
             elem.removeClass('asc').text('Desc ');
             elem.siblings('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
+            sort.order = 'desc';
         }
         else {
             elem.addClass('asc').text('Asc ');
             elem.siblings('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
+            sort.order = 'asc';
         }
+        dispatch(actions.loadFeedbackList(sort, filters, query));
     }
 
     changeView(event) {
-        const {filters, dispatch, query} = this.props;
         event.preventDefault();
         event.stopPropagation();
+        const {dispatch, view, query, filters, sort} = this.props;
         $('div.dropdown-choice').hide();
         var elem = $(event.target);
-        if (filters.view === 'list') {
+        if (view === 'list') {
             elem.text('Table');
-            filters.view = 'table';
         }
         else {
             elem.text('List');
-            filters.view = 'list';
         }
-        dispatch(actions.loadFeedbackList(query));
+        dispatch(actions.switchView());
+        dispatch(actions.loadFeedbackList(query, filters, sort));
+        console.log(this.props);
     }
 
     render() {
-        const {feedback, filters} = this.props;
+        const {view, sort, sortName} = this.props;
         return (
             <div className="tickets-control-bar">
 
@@ -97,15 +106,15 @@ export class ControlBar extends React.Component {
                 <span className="ticket-controls-default">
             <a href="#" className="ticket-control-button">
                 <span className="title">Order by:</span>
-                <span className="focus" onClick={this.showOrderChoice.bind(this)}>{filters.sort}</span>
-                <span className={filters.order} onClick={this.changeSortDirection.bind(this)}>Asc </span>
+                <span className="focus" onClick={this.showOrderChoice.bind(this)}>{sortName}</span>
+                <span className={sort.order} onClick={this.changeSortDirection.bind(this)}>Asc </span>
                 <i className="fa fa-caret-down"/>
 
                 <div className="focus-choice dropdown-choice">
                     <ul>
-                        <li onClick={this.focusChosen.bind(this)}>Date</li>
-                        <li onClick={this.focusChosen.bind(this)}>Rating</li>
-                        <li onClick={this.focusChosen.bind(this)}>Number of votes</li>
+                        <li onClick={this.orderChosen.bind(this)} data-field="date_created">Date</li>
+                        <li onClick={this.orderChosen.bind(this)} data-field="total_rating">Rating</li>
+                        <li onClick={this.orderChosen.bind(this)} data-field="num_ratings">Number of votes</li>
                     </ul>
                 </div>
             </a>
@@ -128,7 +137,7 @@ export class ControlBar extends React.Component {
 
                 <a href="#" className="ticket-control-button">
                     <span className="title">View:</span>
-                    <span className="focus" onClick={this.changeView.bind(this)}>{filters.view}</span>
+                    <span className="focus" onClick={this.changeView.bind(this)}>{view}</span>
                 </a>
             </span>
             </div>

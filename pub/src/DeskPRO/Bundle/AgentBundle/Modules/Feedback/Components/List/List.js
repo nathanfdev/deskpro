@@ -13,7 +13,7 @@ import { connect } from 'redux/react';
 export class List extends React.Component {
 
     render() {
-        const { feedback, filters } = this.props;
+        const { feedback, view } = this.props;
         let itemKey = 0;
 
         return (
@@ -23,7 +23,7 @@ export class List extends React.Component {
                         <ControlBar {...this.props}/>
                     </Section>
                     <Section>
-                        {filters.view === 'list' ?
+                        {view === 'list' ?
                             feedback.map(item =>
                                     <FeedbackCard key={itemKey++} feedback={item}/>
                             ) : <TableView/>}

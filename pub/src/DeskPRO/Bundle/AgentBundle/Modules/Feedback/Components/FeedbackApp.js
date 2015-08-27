@@ -13,7 +13,7 @@ export class FeedbackApp extends React.Component {
 
     constructor(props) {
         super(props);
-        const { dispatch } = this.props;
+        const { query, filters, sort, dispatch } = this.props;
         dispatch(actions.feedbackToValidate());
         dispatch(actions.commentsToReview());
         dispatch(actions.feedbackLabels());
@@ -23,16 +23,16 @@ export class FeedbackApp extends React.Component {
         dispatch(actions.feedbackActiveStatus());
         dispatch(actions.feedbackClosedStatus());
         dispatch(actions.feedbackHiddenStatus());
-        dispatch(actions.loadFeedbackList(this.props.query));
+        dispatch(actions.loadFeedbackList(query, filters, sort));
     }
 
 
     handleClick(params, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.props.dispatch(actions.changeQueryState(params));
-        this.props.dispatch(actions.loadFeedbackList(params));
-        this.props.query = params;
+        const {filters, sort, dispatch} = this.props;
+        dispatch(actions.changeQueryState(params));
+        dispatch(actions.loadFeedbackList(params, filters, sort));
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
         $(event.target).closest('a').addClass('active');
     }

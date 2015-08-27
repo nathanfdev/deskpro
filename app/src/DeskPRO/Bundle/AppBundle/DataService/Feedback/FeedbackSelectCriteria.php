@@ -72,6 +72,8 @@ class FeedbackSelectCriteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
+        $sort = "$alias.date_created";
+        $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'awaiting_validation':
@@ -101,7 +103,14 @@ class FeedbackSelectCriteria
                     $qb->andWhere("$alias.status = :status");
                     $qb->setParameter('status', $value);
                     break;
+                case 'sort':
+                    $sort = "$alias.$value";
+                    break;
+                case 'order':
+                    $order = "$value";
+                    break;
             }
+            $qb->orderBy($sort, $order);
         }
     }
 
@@ -112,11 +121,15 @@ class FeedbackSelectCriteria
      */
     protected static function configureResolver(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label']);
+        $resolver->setDefined([
+            'awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label', 'sort', 'order'
+        ]);
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues(
             'status',
             ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
         );
+        $resolver->setAllowedValues('sort', ['date_created', 'total_rating', 'num_ratings']);
+        $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

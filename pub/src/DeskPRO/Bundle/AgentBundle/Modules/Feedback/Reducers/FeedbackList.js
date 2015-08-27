@@ -5,14 +5,14 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
     getInitialState() {
         return {
-            filters:{
-                view:'list',
-                sort:'date',
-                order:'asc'
+            view: 'list',
+            query: {awaiting_validation: 1},
+            filters: {},
+            sort: {
+                sort: 'date_created',
+                order: 'asc'
             },
-            query:{
-                awaiting_validation: 1
-            },
+            sortName: 'Date',
             toValidateCount: 0,
             commentsToReviewCount: 0,
             labels: [/* string */],
@@ -106,9 +106,15 @@ export default class FeedbackList extends Reducer {
         return next;
     }
 
-    changeQueryState(prev, {payload}) {
+    changeQuery(prev, {payload}) {
         const next = {...prev};
         next.query = payload;
+        return next;
+    }
+
+    switchView(prev) {
+        const next = {...prev};
+        next.view = prev.view === 'list' ? 'table' : 'list';
         return next;
     }
 
@@ -123,7 +129,8 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackActiveStatus, this.active)
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
-            .r(FeedbackListActions.changeQueryState, this.changeQueryState)
+            .r(FeedbackListActions.changeQueryState, this.changeQuery)
+            .r(FeedbackListActions.switchView, this.switchView)
             .r(FeedbackListActions.loadFeedbackList, this.getList);
     }
 
