@@ -137,6 +137,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
+     * Stores an article translations response
+     *
+     * @param string|array$response
+     * @return $this
+     */
+    public function addArticleTranslationsFindAllResponse($response)
+    {
+        $this->addResponse('HelpCenter\ArticleTranslationsFindAll', $response);
+        return $this;
+    }
+
+    /**
      * Stores an article categories response
      *
      * @param string|array $response

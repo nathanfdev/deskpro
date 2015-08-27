@@ -110,8 +110,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
         $this->assertContains('[ZDTicketComment #3] Skipping exception with ticket message: Comment without author_id, skipping', $output);
         $this->assertContains('[ZDTicketComment #4] Skipping exception with ticket message: Unable to get comment author, skipping', $output);
-        $this->assertContains('[ZDTicketCommentAttachment #2] Skipping exception with ticket message attachment: Inline attachment, skipping', $output);
-        $this->assertContains('[ZDTicketCommentAttachment #3] Skipping exception with ticket message attachment: Unable to download attachment', $output);
+        $this->assertContains('[ZDAttachment #2] Skipping exception with attachment: Inline attachment, skipping', $output);
+        $this->assertContains('[ZDAttachment #3] Skipping exception with attachment: Unable to download attachment', $output);
 
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
         $this->assertContains('[ZDTicket #3] Reading comments', $output);
@@ -418,6 +418,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
                     ),
                 ),
+            ))
+            ->addArticleTranslationsFindAllResponse((object)array(
+                'translations' => array(),
+            ))
+            ->addArticleTranslationsFindAllResponse((object)array(
+                'translations' => array(),
             ))
             ->addArticleCategoriesFindAll((object)array(
                 'sections' => array(
