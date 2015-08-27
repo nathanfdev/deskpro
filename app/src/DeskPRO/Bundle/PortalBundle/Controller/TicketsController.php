@@ -284,7 +284,7 @@ class TicketsController extends AbstractController
             throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
         }
 
-        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
             throw new AccessDeniedException;
         }
 
@@ -324,7 +324,7 @@ class TicketsController extends AbstractController
             throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
         }
 
-        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
             throw new AccessDeniedException;
         }
 

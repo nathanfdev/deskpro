@@ -3506,6 +3506,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             || $this->isOrganizationManager($person);
     }
 
+    public function hasVisibleStatus()
+    {
+        return in_array($this->status, array(self::STATUS_AWAITING_AGENT, self::STATUS_AWAITING_AGENT));
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
