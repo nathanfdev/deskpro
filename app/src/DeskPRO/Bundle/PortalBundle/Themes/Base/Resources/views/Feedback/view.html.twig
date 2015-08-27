@@ -23,9 +23,7 @@
                 <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
 
                 <h1>
-                    {# we dont have a way to link to feedback categories yet (since its a search filter)#}
-                    {# but we should! it can be a @PortalLinkCustom annotation and implemented in a new FeedbackCategoryLinkGenerator #}
-                    <span class="text-tag">{{ item.category }}</span>
+                    <span class="text-tag"><a href="{{ portal_path(item.category) }}">{{ item.category }}</a></span>
                     <a href="{{ portal_path(item) }}">{{ item.title }}</a>
                 </h1>
 

@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -42,6 +43,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * Feedback categories. (These are referred to in code/urls as "types").
+ * @PortalLinkCustom()
  */
 class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
 {

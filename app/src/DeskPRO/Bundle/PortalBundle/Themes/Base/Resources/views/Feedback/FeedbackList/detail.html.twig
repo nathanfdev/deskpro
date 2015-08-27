@@ -16,7 +16,7 @@
         <div class="feedback-item-content">
             <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
                 <h1>
-                    <span class="text-tag">{{ item.category }}</span>
+                    <span class="text-tag"><a href="{{ portal_path(item.category) }}">{{ item.category }}</a></span>
                     <a href="{{ portal_path(item) }}">{{ item.title }}</a>
                 </h1>
 

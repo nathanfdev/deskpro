@@ -4657,6 +4657,14 @@ h1.fancy-header {
         &:after {
           display: none;
         }
+        a {
+          text-decoration: none;
+          color: $text-color;
+        }
+      }
+      a {
+        text-decoration: none;
+        color: $text-color;
       }
     }
 
