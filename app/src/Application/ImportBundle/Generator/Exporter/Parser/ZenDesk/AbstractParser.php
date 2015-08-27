@@ -122,4 +122,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     {
         return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
     }
+
+    /**
+     * @return Helper\Translations
+     */
+    protected function getTranslationsParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_OBJECT_LANG);
+    }
 }

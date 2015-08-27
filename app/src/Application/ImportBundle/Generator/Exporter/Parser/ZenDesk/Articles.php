@@ -128,25 +128,25 @@ final class Articles extends AbstractParser
     private function exportArticle(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerInterface::TYPE_INT,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'           => TransformerInterface::TYPE_INT,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'article_',
                 'ref'    => 'id',
             )),
-            'author_id'   => TransformerInterface::TYPE_INT,
-            'section_id'  => TransformerInterface::TYPE_INT,
-            'title'       => TransformerInterface::TYPE_STRING,
-            'body'        => TransformerInterface::TYPE_STRING,
-            'created_at'  => TransformerInterface::TYPE_DATE,
-            'updated_at'  => TransformerInterface::TYPE_DATE,
-            'vote_sum'    => TransformerInterface::TYPE_INT,
-            'vote_count'  => TransformerInterface::TYPE_INT,
-            'locale'      => TransformerInterface::TYPE_STRING,
-            'draft'       => TransformerInterface::TYPE_BOOLEAN,
-            'label_names' => TransformerInterface::TYPE_ARRAY,
-            'comments'    => TransformerInterface::TYPE_ARRAY,
-            'attachments' => TransformerInterface::TYPE_ARRAY,
-
+            'author_id'    => TransformerInterface::TYPE_INT,
+            'section_id'   => TransformerInterface::TYPE_INT,
+            'title'        => TransformerInterface::TYPE_STRING,
+            'body'         => TransformerInterface::TYPE_STRING,
+            'created_at'   => TransformerInterface::TYPE_DATE,
+            'updated_at'   => TransformerInterface::TYPE_DATE,
+            'vote_sum'     => TransformerInterface::TYPE_INT,
+            'vote_count'   => TransformerInterface::TYPE_INT,
+            'locale'       => TransformerInterface::TYPE_STRING,
+            'draft'        => TransformerInterface::TYPE_BOOLEAN,
+            'label_names'  => TransformerInterface::TYPE_ARRAY,
+            'comments'     => TransformerInterface::TYPE_ARRAY,
+            'attachments'  => TransformerInterface::TYPE_ARRAY,
+            'translations' => TransformerInterface::TYPE_ARRAY,
         ));
 
         if (empty($formatted['author_id'])) {
@@ -195,9 +195,14 @@ final class Articles extends AbstractParser
             $entity->addComment($comment);
         }
 
-        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
+        $attachments = $this->getAttachmentParser()->export($formatted['attachments']);
         foreach ($attachments as $attachment) {
             $entity->addAttachment($attachment);
+        }
+
+        $translations = $this->getTranslationsParser()->export($formatted['translations']);
+        foreach ($translations as $translation) {
+            $entity->addTranslation($translation);
         }
 
         return $entity;
@@ -310,6 +315,9 @@ final class Articles extends AbstractParser
 
                         $this->logDebug(sprintf('[ZDArticle #%s] Reading attachments', $article['id']));
                         $article['attachments'] = $this->reader->getArticleAttachments($article['id']);
+
+                        $this->logDebug(sprintf('[ZDArticle #%s] Reading translations', $article['id']));
+                        $article['translations'] = $this->reader->getArticleTranslations($article['id']);
                     }
 
                     $articles[] = $article;

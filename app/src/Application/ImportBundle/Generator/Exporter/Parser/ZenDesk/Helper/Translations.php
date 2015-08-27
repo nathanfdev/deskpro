@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Helper;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
@@ -35,7 +35,7 @@ use Application\ImportBundle\Entity;
 
 /**
  * Class Translations
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json\Helper
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Helper
  */
 class Translations extends AbstractParserFormatterHelper
 {
@@ -62,7 +62,7 @@ class Translations extends AbstractParserFormatterHelper
                 $collection->attach($entity);
 
             } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTranslation', $this->getEntityType(), 'oid', $e);
+                $this->logTransformerException('ZDTranslation', $this->getEntityType(), 'id', $e);
             }
         }
 
@@ -78,14 +78,15 @@ class Translations extends AbstractParserFormatterHelper
     public function exportTranslation(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'oid'         => TransformerInterface::TYPE_STRING,
+            'id'          => TransformerInterface::TYPE_STRING,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'translation_',
-                'ref'    => 'oid',
+                'ref'    => 'id',
             )),
-            'language'    => TransformerInterface::TYPE_STRING,
-            'property'    => TransformerInterface::TYPE_STRING,
-            'value'       => TransformerInterface::TYPE_STRING,
+            'locale'      => TransformerInterface::TYPE_STRING,
+            'title'       => TransformerInterface::TYPE_STRING,
+            'body'        => TransformerInterface::TYPE_STRING,
+            'draft'       => TransformerInterface::TYPE_BOOLEAN,
         ));
 
         $entity = new Entity\ObjectLang();

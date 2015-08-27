@@ -312,7 +312,7 @@ final class Tickets extends AbstractParser
             ->setDateCreated($formatted['created_at'])
         ;
 
-        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
+        $attachments = $this->getAttachmentParser()->export($formatted['attachments']);
         foreach ($attachments as $attachment) {
             /** @var Entity\Attachment $attachment */
             $entity->addAttachment($attachment);

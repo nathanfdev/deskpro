@@ -74,7 +74,7 @@ class Attachment extends AbstractParserFormatterHelper
      * @param array $attachments
      * @return Entity\Collection
      */
-    public function exportAttachments(array $attachments)
+    public function export(array $attachments)
     {
         $collection = new Entity\Collection();
 
@@ -86,11 +86,11 @@ class Attachment extends AbstractParserFormatterHelper
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (SkippingException $e) {
-                $this->logSkippingException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e);
+                $this->logSkippingException('ZDAttachment', 'attachment', 'id', $e);
             } catch (TransformerException $e) {
-                $this->logTransformerException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e);
+                $this->logTransformerException('ZDAttachment', 'attachment', 'id', $e);
             } catch (\Exception $e) {
-                $this->logUnknownException('ZDTicketCommentAttachment', 'ticket message attachment', 'id', $e, $data);
+                $this->logUnknownException('ZDAttachment', 'attachment', 'id', $e, $data);
             }
         }
 

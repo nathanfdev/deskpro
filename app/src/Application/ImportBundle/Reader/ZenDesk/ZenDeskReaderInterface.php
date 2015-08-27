@@ -171,6 +171,14 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getArticleAttachments($id);
 
     /**
+     * Returns a collection of article translations
+     *
+     * @param $id
+     * @return array
+     */
+    public function getArticleTranslations($id);
+
+    /**
      * Returns a collection of article categories
      * Merges help center categories and sections
      *

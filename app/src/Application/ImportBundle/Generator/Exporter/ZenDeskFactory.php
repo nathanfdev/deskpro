@@ -27,10 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
-use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
@@ -60,29 +58,19 @@ class ZenDeskFactory extends AbstractFactory
 
         /** @var ZenDeskReaderFactoryInterface $reader_factory */
         $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
+        /** @var FormatterInterface $formatter */
+        $formatter = $container->get('deskpro.import.formatter');
 
         $reader  = $reader_factory->createReader($config);
         $storage = new Parser\ZenDesk\PeopleStorage();
 
-        /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
-
         $helpers = new ParserHelperSet();
-        $helpers->attach(new Parser\ZenDesk\Helper\Attachment($formatter, $http_client));
+        $helpers
+            ->attach(new Parser\ZenDesk\Helper\Attachment($formatter, $http_client))
+            ->attach(new Parser\ZenDesk\Helper\Translations($formatter))
+        ;
 
-        // Tickets parser
-        $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader, $storage);
-
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $container->get('doctrine');
-        /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
-        $entity_manager = $container->get('doctrine.orm.entity_manager');
-        /** @var EntityRepository\ImportMap $import_map_repository */
-        $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
-
-        $tickets_mapper = new OidMapper($import_map_repository, $entity_manager, ImportMap::TYPE_ZENDESK_TICKET);
-
-        // Article parser
+        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $storage);
         $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $storage);
 
         // Parsers collection
@@ -93,7 +81,7 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
             ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
-            ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people, $tickets_mapper))
+            ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people))
             ->attach(new Parser\ZenDesk\Organizations($reader, $formatter, $helpers))
         ;
 

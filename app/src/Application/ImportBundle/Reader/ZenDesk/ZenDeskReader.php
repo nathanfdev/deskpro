@@ -299,6 +299,23 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticleTranslations($id)
+    {
+        $translations = array();
+        $result       = $this->adapter->doRequest('HelpCenter\ArticleTranslationsFindAll', array('id' => $id));
+
+        if ($result) {
+            foreach ($result->translations as $translation) {
+                $attachments[] = $this->toArray($translation);
+            }
+        }
+
+        return $translations;
+    }
+
+    /**
      * Converts stdClass to array
      *
      * @param mixed $object
