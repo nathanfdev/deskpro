@@ -32,14 +32,14 @@ export class ControlBar extends React.Component {
     orderChosen(event) {
         event.preventDefault();
         event.stopPropagation();
-        const {sort} = this.props;
+        const {dispatch, sort, filters, query} = this.props;
         var elem = $(event.target),
             name = elem.text();
         sort.sort = elem.data('field');
         this.setState({sortName: name});
         elem.closest('a.ticket-control-button').find('span.focus').text(name);
         $('div.dropdown-choice').hide();
-        console.log('Set sort: ', sort);
+        dispatch(actions.loadFeedbackList(sort, filters, query));
     }
 
     filterChosen(event) {
@@ -84,7 +84,6 @@ export class ControlBar extends React.Component {
         }
         dispatch(actions.switchView());
         dispatch(actions.loadFeedbackList(query, filters, sort));
-        console.log(this.props);
     }
 
     render() {

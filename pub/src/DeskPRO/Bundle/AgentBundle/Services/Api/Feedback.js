@@ -126,12 +126,10 @@ export function getHidden() {
  * @return Promise
  */
 export function getList(query, filters, sort) {
-    console.log(compileParams(query));
     let params = [];
     params.push(compileParams(query));
     params.push(compileParams(filters));
     params.push(compileParams(sort));
-    console.log(params);
     return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
 }
 
