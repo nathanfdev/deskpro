@@ -38,11 +38,10 @@ export default class FeedbackList extends Reducer {
     }
 
 
-    toValidate(state, action) {
-        return {
-            ...state,
-            toValidateCount: action.payload.data.count
-        };
+    toValidate(prev, {payload}) {
+        const next = {...prev};
+        next.toValidateCount = payload.data.count;
+        return next;
     }
 
     commentsToReview(state, action) {
@@ -68,7 +67,7 @@ export default class FeedbackList extends Reducer {
 
     customCategories(prev, {payload}) {
         const next = {...prev};
-        next.customCategories = payload.data.nested.counts;
+        next.customCategories = payload.data.nested;
         return next;
     }
 
@@ -81,21 +80,21 @@ export default class FeedbackList extends Reducer {
 
     active(prev, {payload}) {
         const next = {...prev};
-        next.statuses.active.statuses = payload.data.nested.counts;
+        next.statuses.active.statuses = payload.data.nested;
         next.statuses.active.total = payload.data.count;
         return next;
     }
 
     closed(prev, {payload}) {
         const next = {...prev};
-        next.statuses.closed.statuses = payload.data.nested.counts;
+        next.statuses.closed.statuses = payload.data.nested;
         next.statuses.closed.total = payload.data.count;
         return next;
     }
 
     hidden(prev, {payload}) {
         const next = {...prev};
-        next.statuses.hidden.statuses = payload.data.nested.counts;
+        next.statuses.hidden.statuses = payload.data.nested;
         next.statuses.hidden.total = payload.data.count;
         return next;
     }

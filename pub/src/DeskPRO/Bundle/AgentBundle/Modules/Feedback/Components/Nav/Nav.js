@@ -7,7 +7,6 @@ export class Nav extends React.Component {
 
     render() {
         const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, onClick } = this.props;
-
         let itemKey = 0;
 
         return (

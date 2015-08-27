@@ -18,7 +18,7 @@ Feature: /feedback/ endpoint
     And the JSON node "meta.count" should be equal to 4
 
   Scenario: I GET list of feedback with active status category
-    When I send a GET request to "/api/v2/feedback/?status=active&status_category=1"
+    When I send a GET request to "/api/v2/feedback/?status=active&status_category=Gathering+Feedback"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist

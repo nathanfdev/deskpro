@@ -31,6 +31,7 @@ export class FeedbackApp extends React.Component {
         event.preventDefault();
         event.stopPropagation();
         const {filters, sort, dispatch} = this.props;
+        console.log('HERE WE GO');
         dispatch(actions.changeQueryState(params));
         dispatch(actions.loadFeedbackList(params, filters, sort));
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
