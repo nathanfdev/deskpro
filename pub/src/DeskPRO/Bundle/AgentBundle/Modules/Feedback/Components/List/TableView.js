@@ -14,6 +14,7 @@ export class TableView extends React.Component {
         return (
             <div className="tickets-tabular">
                 <table>
+                    <thead>
                     <tr>
                         <th>ID</th>
                         <th>Votes</th>
@@ -23,6 +24,8 @@ export class TableView extends React.Component {
                         <th>Labels</th>
                         <th>Submitter</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     {feedback.map(feedback =>
                         <tr key={feedback.id}>
                             <td>{feedback.id}</td>
@@ -33,6 +36,7 @@ export class TableView extends React.Component {
                             <td></td>
                             <td>{feedback.author_name}</td>
                         </tr>)}
+                    </tbody>
                 </table>
             </div>
         );

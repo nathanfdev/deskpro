@@ -139,7 +139,9 @@ function compileParams(params) {
 
     for (let key of Object.keys(params)) {
         var str = String(params[key]);
-        compiled.push(key + '=' + str.replace(/\s/g, "%20"));
+        if ('null' !== str) {
+            compiled.push(key + '=' + str.replace(/\s/g, "%20"));
+        }
     }
 
     return compiled.join('&');

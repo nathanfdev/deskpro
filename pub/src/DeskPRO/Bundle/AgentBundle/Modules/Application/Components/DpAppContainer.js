@@ -5,7 +5,7 @@ import { DpApp } from "./DpApp";
 import DpAppLoading from "./DpAppLoading";
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
-import FeedbackApp from '../../Feedback/Components/FeedbackApp';
+import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';

@@ -6,23 +6,24 @@ import { ListFrame }
 import { FeedbackCard} from './FeedbackCard';
 import { ControlBar} from './ControlBar';
 import { TableView} from './TableView';
+import { connect } from 'redux/react';
+
+@connect(state => state.FeedbackList)
 
 export class List extends React.Component {
 
     render() {
-        const { feedback } = this.props;
-
+        const { feedback, filters } = this.props;
         let itemKey = 0;
-        let view = 'table';
 
         return (
             <ListFrame>
                 <SectionsPane>
                     <Section>
-                        <ControlBar/>
+                        <ControlBar {...this.props}/>
                     </Section>
                     <Section>
-                        {view === 'cards' ?
+                        {filters.view === 'list' ?
                             feedback.map(item =>
                                     <FeedbackCard key={itemKey++} feedback={item}/>
                             ) : <TableView/>}

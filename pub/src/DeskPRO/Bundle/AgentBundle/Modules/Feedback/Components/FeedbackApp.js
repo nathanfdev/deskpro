@@ -2,13 +2,44 @@ import React from "react";
 import AppContainer from "DeskPRO/Component/AppContainer";
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
+import * as actions from '../Actions/FeedbackListActions'
+import { connect } from 'redux/react';
+import $ from "jquery";
 
-export default class FeedbackApp extends React.Component {
+@connect(state => state.FeedbackList)
+
+export class FeedbackApp extends React.Component {
+
+    constructor(props) {
+        super(props);
+        const { dispatch } = this.props;
+        console.log('Constructor: ', this.props);
+        dispatch(actions.feedbackToValidate());
+        dispatch(actions.commentsToReview());
+        dispatch(actions.feedbackLabels());
+        dispatch(actions.feedbackTypes());
+        dispatch(actions.feedbackCustomCategories());
+        dispatch(actions.feedbackNew());
+        dispatch(actions.feedbackActiveStatus());
+        dispatch(actions.feedbackClosedStatus());
+        dispatch(actions.feedbackHiddenStatus());
+        dispatch(actions.loadFeedbackList(this.props.query));
+    }
+
+    handleClick(params, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.dispatch(actions.loadFeedbackList(params));
+        this.props.query = params;
+        $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
+        $(event.target).closest('a').addClass('active');
+    }
+
     render() {
         return (
             <AppContainer thisAppId="feedback">
-                <NavContainer />
-                <ListContainer />
+                <NavContainer {...this.props} handleClick={this.handleClick.bind(this)}/>
+                <ListContainer {...this.props} />
             </AppContainer>
         );
     }

@@ -26,7 +26,7 @@ const listCardSource = {
   }
 };
 
-const TaskListCard = React.createClass({
+const TaskKanbanCard = React.createClass({
 
   componentDidMount: function() {
     this.props.connectDragPreview(getEmptyImage(), {
@@ -66,12 +66,7 @@ const TaskListCard = React.createClass({
               </span>
             </div>
             <div>
-              <i className="fa fa-calendar-o" /> Due: {this.props.task.date_due ? <FormattedDate
-                  value={Date.parse(this.props.task.date_due)}
-                  day="numeric"
-                  month="long"
-                  year="numeric"
-              />
+              <i className="fa fa-calendar-o" /> Due: {this.props.task.date_due ? Moment(this.props.task.date_due).local().format('MMMM D, YYYY')
               : 'N/A' }
             </div>
           </div>
@@ -96,4 +91,4 @@ module.exports = DragSource(DragTypes.TASK, listCardSource, (connect, monitor) =
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
-}))(TaskListCard);
+}))(TaskKanbanCard);

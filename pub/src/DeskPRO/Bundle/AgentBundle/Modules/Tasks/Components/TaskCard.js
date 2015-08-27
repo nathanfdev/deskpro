@@ -279,12 +279,7 @@ const TaskCard = React.createClass({
               <div className="task-properties">
                 <div className={overdue ? "overdue" : ""} ref={dueButton} >
 
-                  <i className="fa fa-calendar-o" /> Due: {task.date_due ? <FormattedDate
-                  value={Date.parse(task.date_due)}
-                  day="numeric"
-                  month="long"
-                  year="numeric"
-                  />
+                  <i className="fa fa-calendar-o" /> Due: {task.date_due ? Moment(task.date_due).format('MMMM D, YYYY')
                   : 'N/A' }
                   <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
                 </div>
