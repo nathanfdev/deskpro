@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
@@ -65,14 +66,20 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
 
     public function supports($object, $type, $context)
     {
-        return $object instanceof FeedbackCategory;
+        return $object instanceof FeedbackCategory || $object instanceof FeedbackStatusCategory;
     }
 
-    public function generate($feedback_category, $type, $context, $extra_params, $reference_type)
+    public function generate($object, $type, $context, $extra_params, $reference_type)
     {
-        /** @var \Application\DeskPRO\Entity\FeedbackCategory $feedback_category */
         $filter = new FeedbackFilter();
-        $filter->setTypes(array($feedback_category->getId()));
+
+        if ($object instanceof FeedbackCategory) {
+            $filter->setTypes(array($object->getId()));
+        } elseif ($object instanceof FeedbackStatusCategory) {
+            $filter->setStatus($object->getStatusType());
+            $filter->setStatusCategories(array($object->getId()));
+        }
+
         $uri_helper = new FeedbackFilterUriHelper();
         $filter_uri = $uri_helper->generateUriSegment($filter);
 

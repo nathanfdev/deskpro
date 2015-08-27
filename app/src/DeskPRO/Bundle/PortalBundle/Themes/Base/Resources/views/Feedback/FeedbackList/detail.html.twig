@@ -14,11 +14,22 @@
         </div>
 
         <div class="feedback-item-content">
-            <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
-                <h1>
-                    <span class="text-tag"><a href="{{ portal_path(item.category) }}">{{ item.category }}</a></span>
-                    <a href="{{ portal_path(item) }}">{{ item.title }}</a>
-                </h1>
+             <span class="feedback-status">
+            {% if item.status_category %}
+                <a href="{{ portal_path(item.status_category) }}">
+                    {{ item.status_category }}
+                </a>
+            {% else %}
+                {{ item.status }}
+                {# no link here because it's a worse case fallback #}
+                {# every feedback should have a status_category! #}
+            {% endif %}
+                 </span>
+
+            <h1>
+                <span class="text-tag"><a href="{{ portal_path(item.category) }}">{{ item.category }}</a></span>
+                <a href="{{ portal_path(item) }}">{{ item.title }}</a>
+            </h1>
 
 
             <div class="comment">
