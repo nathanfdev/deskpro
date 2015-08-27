@@ -32,6 +32,8 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
+use Application\ImportBundle\Reader\ZenDesk\LocaleMapper;
 
 /**
  * Class Translations
@@ -58,9 +60,12 @@ class Translations extends AbstractParserFormatterHelper
         $collection = new Entity\Collection();
         foreach ($translations as $num => $translation) {
             try {
-                $entity = $this->exportTranslation($translation);
-                $collection->attach($entity);
+                /** @var Entity\Collection $translation_entities */
+                $translation_entities = $this->exportTranslation($translation);
+                $collection->merge($translation_entities);
 
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDTranslation', $this->getEntityType(), 'id', $e);
             } catch (TransformerException $e) {
                 $this->logTransformerException('ZDTranslation', $this->getEntityType(), 'id', $e);
             }
@@ -73,7 +78,7 @@ class Translations extends AbstractParserFormatterHelper
      * Exports object lang entity
      *
      * @param array $data
-     * @return Entity\ObjectLang
+     * @return Entity\ObjectLang[]
      */
     public function exportTranslation(array $data)
     {
@@ -89,16 +94,36 @@ class Translations extends AbstractParserFormatterHelper
             'draft'       => TransformerInterface::TYPE_BOOLEAN,
         ));
 
-        $entity = new Entity\ObjectLang();
-        $entity
+        if ($formatted['draft']) {
+            throw new SkippingException('Draft translation', $formatted);
+        }
+
+        $title_entity = new Entity\ObjectLang();
+        $title_entity
             ->setRawData($data)
-            ->setOid($formatted['oid'])
-            ->setDestination($formatted['destination'])
-            ->setLanguage($formatted['language'])
-            ->setProperty($formatted['property'])
-            ->setValue($formatted['value'])
+            ->setOid($formatted['id'] . '_title')
+            ->setDestination($formatted['destination'] . '_title')
+            ->setLanguage(LocaleMapper::getLocale($formatted['locale']))
+            ->setProperty('title')
+            ->setValue($formatted['title'])
         ;
 
-        return $entity;
+        $content_entity = new Entity\ObjectLang();
+        $content_entity
+            ->setRawData($data)
+            ->setOid($formatted['id'] . '_content')
+            ->setDestination($formatted['destination'] . '_content')
+            ->setLanguage(LocaleMapper::getLocale($formatted['locale']))
+            ->setProperty('content')
+            ->setValue($formatted['body'])
+        ;
+
+        $collection = new Entity\Collection();
+        $collection
+            ->attach($title_entity)
+            ->attach($content_entity)
+        ;
+
+        return $collection;
     }
 }

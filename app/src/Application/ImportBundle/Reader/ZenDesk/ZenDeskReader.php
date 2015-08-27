@@ -308,7 +308,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
 
         if ($result) {
             foreach ($result->translations as $translation) {
-                $attachments[] = $this->toArray($translation);
+                $translations[] = $this->toArray($translation);
             }
         }
 
