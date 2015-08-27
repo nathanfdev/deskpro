@@ -126,4 +126,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     {
         return $this->helpers->get($this, Entity\EntityInterface::TYPE_CONTACT_DATA);
     }
+
+    /**
+     * @return Helper\Translations
+     */
+    protected function getTranslationsParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_OBJECT_LANG);
+    }
 }

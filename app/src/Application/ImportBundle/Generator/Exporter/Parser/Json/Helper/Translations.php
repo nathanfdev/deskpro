@@ -34,35 +34,35 @@ use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHe
 use Application\ImportBundle\Entity;
 
 /**
- * Class CustomFields
+ * Class Translations
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json\Helper
  */
-class CustomFields extends AbstractParserFormatterHelper
+class Translations extends AbstractParserFormatterHelper
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_CUSTOM_FIELD;
+        return Entity\EntityInterface::TYPE_OBJECT_LANG;
     }
 
     /**
-     * Exports custom fields
+     * Exports object lang entities
      *
-     * @param array $custom_fields
-     * @return Entity\CustomField[]
+     * @param array $translations
+     * @return Entity\ObjectLang[]
      */
-    public function export(array $custom_fields)
+    public function export(array $translations)
     {
         $collection = new Entity\Collection();
-        foreach ($custom_fields as $num => $custom_field) {
+        foreach ($translations as $num => $translation) {
             try {
-                $entity = $this->exportCustomField($custom_field);
+                $entity = $this->exportTranslation($translation);
                 $collection->attach($entity);
 
             } catch (TransformerException $e) {
-                $this->logTransformerException('JSONCustomField', $this->getEntityType(), 'oid', $e);
+                $this->logTransformerException('JSONTranslation', $this->getEntityType(), 'oid', $e);
             }
         }
 
@@ -70,12 +70,12 @@ class CustomFields extends AbstractParserFormatterHelper
     }
 
     /**
-     * Returns a custom field entity
+     * Exports object lang entity
      *
      * @param array $data
-     * @return Entity\CustomField|null
+     * @return Entity\ObjectLang
      */
-    protected function exportCustomField(array $data)
+    public function exportTranslation(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'         => TransformerInterface::TYPE_STRING,
@@ -83,16 +83,18 @@ class CustomFields extends AbstractParserFormatterHelper
                 'prefix' => 'custom_field_',
                 'ref'    => 'oid',
             )),
-            'key'         => TransformerInterface::TYPE_STRING,
+            'language'    => TransformerInterface::TYPE_STRING,
+            'property'    => TransformerInterface::TYPE_STRING,
             'value'       => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = new Entity\CustomField();
+        $entity = new Entity\ObjectLang();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
-            ->setKey($formatted['key'])
+            ->setLanguage($formatted['language'])
+            ->setProperty($formatted['property'])
             ->setValue($formatted['value'])
         ;
 

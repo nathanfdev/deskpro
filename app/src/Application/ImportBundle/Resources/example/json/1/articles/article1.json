@@ -48,5 +48,18 @@
       "date_created": "2015-01-15 00:00:00"
     }
   ],
-  "translations": []
+  "translations": [
+    {
+      "oid": "0",
+      "language": "en_US",
+      "property": "title",
+      "value": "Article 1 (en_US)"
+    },
+    {
+      "oid": "1",
+      "language": "en_US",
+      "property": "content",
+      "value": "Content 1 (en_US)"
+    }
+  ]
 }
