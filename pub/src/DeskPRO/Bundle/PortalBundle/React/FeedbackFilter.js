@@ -9,7 +9,14 @@ class FeedbackResults extends React.Component {
   render() {
     let html = this.props.partial;
     if (html.length === 0) {
-      html = '&nbsp';
+      return (
+        <div className="paged-results centered" ref="results">
+
+          <img
+            style={{display: this.props.doSpin ? "table" : "none", margin: "0 auto", height: "70px", width: "70px"}}
+             src={ window.DESKPRO_BASE_URL + '/web/spinner.gif' } />
+        </div>
+      );
     }
     return (
       <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: html }}>
@@ -259,7 +266,8 @@ export default class FeedbackFilter extends React.Component {
                         doSpin={this.state.doSpin}/>
         <FeedbackResults filterModel={this.state.filter}
                          partial={this.state.partial}
-                         updateFilter={this.updateFilter.bind(this)} />
+                         updateFilter={this.updateFilter.bind(this)}
+                         doSpin={this.state.doSpin} />
       </article>
     );
   }
