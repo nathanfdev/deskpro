@@ -4,22 +4,27 @@ import * as actions from '../Actions/publishNavActions';
 export default class PublishNav extends Reducer {
   getInitialState() {
     return {
-      articles: {
-        grouped_by: 'category',
-        count: 0,
-        nested: []
-      },
-      news: {
-        grouped_by: 'category',
-        count: 0,
-        nested: []
-      },
-      downloads: {
-        grouped_by: 'category',
-        count: 0,
-        nested: []
+
+      // Lists data
+      lists: {
+        articles: {
+          grouped_by: 'category',
+          count: 0,
+          nested: []
+        },
+        news: {
+          grouped_by: 'category',
+          count: 0,
+          nested: []
+        },
+        downloads: {
+          grouped_by: 'category',
+          count: 0,
+          nested: []
+        },
       },
 
+      // Lists grouping control popup data
       grouping: {
         options: [
           {value: 'category', label: 'Category'},
@@ -34,13 +39,16 @@ export default class PublishNav extends Reducer {
         }
       },
 
-      categories: {
-        articles:  { /* id: name */ },
-        news:      { /* id: name */ },
-        downloads: { /* id: name */ }
-      },
-      authors: {
-        /* id: name */
+      // List labels
+      groups: {
+        categories: {
+          articles: {/* id: name */},
+          news: {/* id: name */},
+          downloads: {/* id: name */}
+        },
+        authors: {
+          /* id: name */
+        }
       }
     };
   }
@@ -56,14 +64,14 @@ export default class PublishNav extends Reducer {
 
   countsLoaded(prev, {payload}) {
     const next = {...prev};
-    next[payload.content] = payload.counts;
+    next.lists[payload.content] = payload.counts;
 
     return next;
   }
 
   authorNameLoaded(prev, {payload}) {
     const next = {...prev};
-    next.authors[payload.id] = payload.name;
+    next.groups.authors[payload.id] = payload.name;
 
     return next;
   }
@@ -80,7 +88,10 @@ export default class PublishNav extends Reducer {
       categories.downloads[payload.downloads[i].id] = payload.downloads[i].title;
     }
 
-    return {...prev, categories};
+    const next = {...prev};
+    next.groups.categories = categories;
+
+    return next;
   }
 
   listGroupingVisibilityChanged(prev, {payload}) {

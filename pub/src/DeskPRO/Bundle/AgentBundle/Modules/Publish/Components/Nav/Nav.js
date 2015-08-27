@@ -5,7 +5,7 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionGroupedHeader, 
 
 export class Nav extends React.Component {
   render() {
-    const { articles, news, downloads, categories, grouping, onGroupingChange, toggleGroupingVisibility } = this.props;
+    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility } = this.props;
 
     return (
       <NavFrame>
@@ -41,11 +41,11 @@ export class Nav extends React.Component {
             <Tab title="KB">
               <SectionsPane>
                 <Section>
-                  <SectionGroupedHeader count={articles.count} callback={toggleGroupingVisibility('articles')}>
+                  <SectionGroupedHeader count={lists.articles.count} callback={toggleGroupingVisibility('articles')}>
                     Knowledgebase
                   </SectionGroupedHeader>
 
-                  <NestedList items={articles.nested} groups={categories.articles} />
+                  <NestedList items={lists.articles.nested} groups={labels.articles} />
                 </Section>
               </SectionsPane>
 
@@ -59,11 +59,11 @@ export class Nav extends React.Component {
             <Tab title="News">
               <SectionsPane>
                 <Section>
-                  <SectionGroupedHeader count={news.count} callback={toggleGroupingVisibility('news')}>
+                  <SectionGroupedHeader count={lists.news.count} callback={toggleGroupingVisibility('news')}>
                     News
                   </SectionGroupedHeader>
 
-                  <NestedList items={news.nested} groups={categories.news} />
+                  <NestedList items={lists.news.nested} groups={labels.news} />
                 </Section>
               </SectionsPane>
             </Tab>
@@ -71,11 +71,11 @@ export class Nav extends React.Component {
             <Tab icon="fa-download">
               <SectionsPane>
                 <Section>
-                  <SectionGroupedHeader count={downloads.count} callback={toggleGroupingVisibility('downloads')}>
+                  <SectionGroupedHeader count={lists.downloads.count} callback={toggleGroupingVisibility('downloads')}>
                     Downloads
                   </SectionGroupedHeader>
 
-                  <NestedList items={downloads.nested} groups={categories.downloads} />
+                  <NestedList items={lists.downloads.nested} groups={labels.downloads} />
                 </Section>
               </SectionsPane>
             </Tab>

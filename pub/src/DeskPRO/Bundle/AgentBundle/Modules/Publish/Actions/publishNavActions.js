@@ -6,23 +6,12 @@ export const loadCounts = createAction(
   'PUBLISH_NAV_LOAD_CONTENT_COUNTS',
   (trigger, content, groupBy) => Content.loadCounts(content, groupBy).then(promise => {
     const counts = promise.getData().data;
-    trigger({content, counts});
 
-    switch (groupBy) {
-      case 'category':
-        return loadCategories();
-
-      case 'author':
-        counts.nested.forEach(count => trigger(loadAuthorName(count.group)));
-        return;
-
-      case 'period_created':
-      case 'period_updated':
-        return;
-
-      default:
-        throw 'Unknown grouping by ' + groupBy;
+    if (groupBy === 'author') {
+      counts.nested.forEach(count => trigger(loadAuthorName(count.group)));
     }
+
+    trigger({content, counts});
   })
 );
 
