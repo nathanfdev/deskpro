@@ -103,7 +103,12 @@ export default class FeedbackList extends Reducer {
     getList(prev, {payload}) {
         const next = {...prev};
         next.feedback = payload.data;
-        console.log('NEXT: ', next.query);
+        return next;
+    }
+
+    changeQueryState(prev, {payload}) {
+        const next = {...prev};
+        next.query = payload;
         return next;
     }
 
@@ -118,6 +123,7 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackActiveStatus, this.active)
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
+            .r(FeedbackListActions.changeQueryState, this.changeQueryState)
             .r(FeedbackListActions.loadFeedbackList, this.getList);
     }
 

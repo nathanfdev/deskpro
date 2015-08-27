@@ -89,6 +89,13 @@ export const loadFeedbackList = createAction(
     (trigger, query) => {
         Feedback.getList(query).then(
             (value) => trigger(value.getData())
-        );
+        )
+    }
+);
+
+export const changeQueryState = createAction(
+    "FEEDBACK_CHANGE_QUERY",
+    (trigger, query) => {
+        trigger(query);
     }
 );

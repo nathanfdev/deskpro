@@ -5,6 +5,7 @@ import { ListContainer } from './List/ListContainer';
 import * as actions from '../Actions/FeedbackListActions'
 import { connect } from 'redux/react';
 import $ from "jquery";
+import reducer from '../Reducers/index';
 
 @connect(state => state.FeedbackList)
 
@@ -13,7 +14,6 @@ export class FeedbackApp extends React.Component {
     constructor(props) {
         super(props);
         const { dispatch } = this.props;
-        console.log('Constructor: ', this.props);
         dispatch(actions.feedbackToValidate());
         dispatch(actions.commentsToReview());
         dispatch(actions.feedbackLabels());
@@ -26,9 +26,11 @@ export class FeedbackApp extends React.Component {
         dispatch(actions.loadFeedbackList(this.props.query));
     }
 
+
     handleClick(params, event) {
         event.preventDefault();
         event.stopPropagation();
+        this.props.dispatch(actions.changeQueryState(params));
         this.props.dispatch(actions.loadFeedbackList(params));
         this.props.query = params;
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');

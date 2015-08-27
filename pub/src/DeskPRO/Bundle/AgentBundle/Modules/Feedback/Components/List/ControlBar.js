@@ -62,7 +62,6 @@ export class ControlBar extends React.Component {
     }
 
     changeView(event) {
-        console.log('ChangeView: ', this.props);
         const {filters, dispatch, query} = this.props;
         event.preventDefault();
         event.stopPropagation();
