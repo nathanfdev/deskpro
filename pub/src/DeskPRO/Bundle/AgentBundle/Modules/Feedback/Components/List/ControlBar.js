@@ -1,12 +1,7 @@
 import React from 'react';
-import { connect } from 'redux/react';
-import * as actions from '../../Actions/FeedbackListActions'
-import $ from "jquery";
 import { OrderBy } from './OrderBy';
 import { View } from './View';
 import { FilterBy } from './FilterBy';
-
-@connect(state => state.FeedbackList)
 
 export class ControlBar extends React.Component {
 
@@ -15,7 +10,7 @@ export class ControlBar extends React.Component {
     }
 
     render() {
-        const {view, sort, sortName} = this.props;
+        const {view, sort, sortName, filters, query} = this.props;
         return (
             <div className="tickets-control-bar">
 
@@ -30,7 +25,7 @@ export class ControlBar extends React.Component {
 
                 <span className="ticket-controls-default">
                     <OrderBy sort={sort} sortName={sortName}/>
-                    <FilterBy/>
+                    <FilterBy filters={filters} query={query} />
                     <View view={view}/>
                 </span>
             </div>

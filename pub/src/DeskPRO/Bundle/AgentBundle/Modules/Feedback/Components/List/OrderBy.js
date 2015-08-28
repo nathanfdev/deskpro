@@ -19,33 +19,33 @@ export class OrderBy extends React.Component {
     orderChosen(event) {
         event.preventDefault();
         event.stopPropagation();
-        const {dispatch, sort, filters, query} = this.props;
+        const {dispatch, sort, query} = this.props;
         var elem = $(event.target),
             name = elem.text();
         sort.sort = elem.data('field');
         this.setState({sortName: name});
         elem.closest('a.ticket-control-button').find('span.focus').text(name);
         $('div.dropdown-choice').hide();
-        dispatch(actions.loadFeedbackList(sort, filters, query));
+        dispatch(actions.loadFeedbackList(query, sort));
     }
 
     changeSortDirection(event) {
         event.preventDefault();
         event.stopPropagation();
-        const {dispatch, sort, filters, query} = this.props;
+        const {dispatch, sort, query} = this.props;
         $('div.dropdown-choice').hide();
         var elem = $(event.target);
-        if (elem.hasClass('asc')) {
-            elem.removeClass('asc').text('Desc ');
-            elem.siblings('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
-            sort.order = 'desc';
+        if (elem.hasClass('Asc')) {
+            elem.removeClass('Asc').text('Desc ');
+            elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
+            sort.order = 'Desc';
         }
         else {
-            elem.addClass('asc').text('Asc ');
-            elem.siblings('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
-            sort.order = 'asc';
+            elem.addClass('Asc').text('Asc ');
+            elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
+            sort.order = 'Asc';
         }
-        dispatch(actions.loadFeedbackList(sort, filters, query));
+        dispatch(actions.loadFeedbackList(query, sort));
     }
 
     render() {
@@ -54,8 +54,8 @@ export class OrderBy extends React.Component {
             <a href="#" className="ticket-control-button">
                 <span className="title">Order by:</span>
                 <span className="focus" onClick={this.showOrderChoice.bind(this)}>{sortName}</span>
-                <span className={sort.order} onClick={this.changeSortDirection.bind(this)}>Asc </span>
-                <i className="fa fa-caret-down"/>
+                <span className={sort.order} onClick={this.changeSortDirection.bind(this)}>{sort.order} </span>
+                <i className={sort.order === 'Desc' ? "fa fa-caret-down" : "fa fa-caret-up" }/>
 
                 <div className="focus-choice dropdown-choice">
                     <ul>

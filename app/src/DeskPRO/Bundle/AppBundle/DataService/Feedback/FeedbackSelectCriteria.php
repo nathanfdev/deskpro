@@ -82,8 +82,8 @@ class FeedbackSelectCriteria
                     break;
                 case 'category':
                     $qb->innerJoin("$alias.category", 'cat');
-                    $qb->andWhere('cat.id = :id');
-                    $qb->setParameter('id', $value);
+                    $qb->andWhere('cat.title = :title');
+                    $qb->setParameter('title', $value);
                     break;
                 case 'status_category':
                     $qb->innerJoin("$alias.status_category", 'statCat');
@@ -130,6 +130,6 @@ class FeedbackSelectCriteria
             ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
         );
         $resolver->setAllowedValues('sort', ['date_created', 'total_rating', 'num_ratings']);
-        $resolver->setAllowedValues('order', ['asc', 'desc']);
+        $resolver->setAllowedValues('order', ['Asc', 'Desc']);
     }
 }

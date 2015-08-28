@@ -20,7 +20,7 @@ export class View extends React.Component {
             elem.text('List');
         }
         dispatch(actions.switchView());
-        dispatch(actions.loadFeedbackList(query, filters, sort));
+        dispatch(actions.loadFeedbackList(query, sort));
     }
 
     render() {

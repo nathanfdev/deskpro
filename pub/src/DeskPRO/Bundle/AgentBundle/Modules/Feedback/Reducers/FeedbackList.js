@@ -7,10 +7,12 @@ export default class FeedbackList extends Reducer {
         return {
             view: 'table',
             query: {awaiting_validation: 1},
-            filters: {},
+            filters: {
+                filter: 'Status'
+            },
             sort: {
                 sort: 'date_created',
-                order: 'asc'
+                order: 'Desc'
             },
             sortName: 'Date',
             toValidateCount: 0,

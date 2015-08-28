@@ -27,19 +27,20 @@ export class FilterBy extends React.Component {
     }
 
     render() {
+        const {query} = this.props;
         return (
             <a href="#" className="ticket-control-button">
                 <span className="title">Filter by:</span>
                 <span className="focus">12</span>
                     <span className="down" onClick={this.showFilterChoice.bind(this)}>
-                        Status <i className="fa fa-caret-down"/>
+                        {query.hasOwnProperty('status') ? 'Type' : 'Status'} <i className="fa fa-caret-down"/>
                     </span>
 
                 <div className="filter-choice dropdown-choice">
                     <ul>
-                        <li onClick={this.filterChosen.bind(this)}>Status</li>
-                        <li onClick={this.filterChosen.bind(this)}>Type</li>
-                        <li onClick={this.filterChosen.bind(this)}>Category</li>
+                        {query.hasOwnProperty('status') ? '' : <li onClick={this.filterChosen.bind(this)}>Status</li>}
+                        {query.hasOwnProperty('category') ? '' : <li onClick={this.filterChosen.bind(this)}>Type</li>}
+                        {query.hasOwnProperty('custom_category') ? '' : <li onClick={this.filterChosen.bind(this)}>Category</li>}
                     </ul>
                 </div>
             </a>);
