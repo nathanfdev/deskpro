@@ -57,7 +57,7 @@ const TaskKanbanCard = React.createClass({
         </div>
 
         <div className="content">
-          <h1>{this.props.task.title}</h1>
+          <h1 className={this.props.task.is_done ? 'complete' : ''}>{this.props.task.title}</h1>
 
           <div className="card-line task-details">
             <div className="top-right-box">

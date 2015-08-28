@@ -107,12 +107,7 @@ class TaskCardDragLayer {
                 <div className="task-properties">
                   <div className={overdue ? "overdue" : ""}>
 
-                    <i className="fa fa-calendar-o" /> Due: {item.details.date_due ? <FormattedDate
-                    value={Date.parse(item.details.date_due)}
-                    day="numeric"
-                    month="long"
-                    year="numeric"
-                    />
+                    <i className="fa fa-calendar-o" /> Due: {item.details.date_due ? Moment(item.details.date_due).local().format('MMMM D, YYYY')
                     : 'N/A' }
                   </div>
 
@@ -151,7 +146,7 @@ class TaskCardDragLayer {
               </div>
 
               <div className="content">
-                <h1>{item.details.title}</h1>
+                <h1 className={item.details.is_done ? 'complete' : ''}>{item.details.title}</h1>
 
                 <div className="card-line task-details">
                   <div className="top-right-box">

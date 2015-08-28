@@ -77,6 +77,10 @@
   border: 1px solid #e4e4e4;
   border-radius: 2px;
 
+  &.inline-radio span {
+    padding-right: 10px;
+  }
+
   ul {
     @include clearfix();
     margin: 0;
