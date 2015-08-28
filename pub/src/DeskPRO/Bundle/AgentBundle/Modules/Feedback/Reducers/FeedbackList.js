@@ -5,7 +5,7 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
     getInitialState() {
         return {
-            view: 'list',
+            view: 'table',
             query: {awaiting_validation: 1},
             filters: {},
             sort: {

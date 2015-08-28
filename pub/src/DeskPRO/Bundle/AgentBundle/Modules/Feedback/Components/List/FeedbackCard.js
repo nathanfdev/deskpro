@@ -1,13 +1,6 @@
 import React from 'react';
-import { connect } from 'redux/react';
-
-@connect(state => state.FeedbackList)
 
 export class FeedbackCard extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const {feedback} = this.props;

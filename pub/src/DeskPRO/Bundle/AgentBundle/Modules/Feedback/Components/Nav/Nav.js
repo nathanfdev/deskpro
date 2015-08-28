@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPane, Tab, ListItem, LabelsDictionary, NestedList }
+import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPane, Tab, LabelsDictionary }
     from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';

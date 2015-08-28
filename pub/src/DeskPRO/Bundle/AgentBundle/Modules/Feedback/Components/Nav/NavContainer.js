@@ -1,7 +1,5 @@
 import React from 'react';
-import * as actions from '../../Actions/FeedbackListActions'
 import { Nav } from './Nav';
-import $ from "jquery";
 
 export class NavContainer extends React.Component {
 

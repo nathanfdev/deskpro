@@ -1,21 +1,33 @@
 import React from 'react';
-import { connect } from 'redux/react';
-import * as actions from '../../Actions/FeedbackListActions'
-import { List } from './List';
-import $ from "jquery";
+import { SectionsPane, Section, SectionHeader }
+    from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+import { ListFrame }
+    from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { FeedbackCard} from './FeedbackCard';
+import { ControlBar} from './ControlBar';
+import { TableView} from './TableView';
 
-@connect(state => state.FeedbackList)
 
 export class ListContainer extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        const {feedback} = this.props;
+        const { feedback, view } = this.props;
+        let itemKey = 0;
+
         return (
-            <List feedback={feedback} {...this.props} />
+            <ListFrame>
+                <SectionsPane>
+                    <Section>
+                        <ControlBar {...this.props}/>
+                    </Section>
+                    <Section>
+                        {view === 'list' ?
+                            feedback.map(item =>
+                                    <FeedbackCard key={itemKey++} feedback={item}/>
+                            ) : <TableView feedback={feedback}/>}
+                    </Section>
+                </SectionsPane>
+            </ListFrame>
         );
     }
 }
