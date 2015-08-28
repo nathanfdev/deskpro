@@ -80,8 +80,8 @@ class ContentCountsController extends BaseController
             // news and downloads internally because of Category relation (Article::$categories, while
             // News::$category and Download::$category)
             $criteria = $type === 'articles'
-                      ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver())
-                      : ContentCountCriteria::fromParameters($params, new OptionsResolver());
+                      ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
+                      : ContentCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
 
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());

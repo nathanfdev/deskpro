@@ -105,6 +105,9 @@ abstract class BaseContentCountCriteria extends GroupedCriteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
+        /** @var \Application\DeskPRO\Entity\Person $me */
+        list($me) = $data;
+
         $resolver->setDefined(['group_by', 'status', 'hidden_status', 'author', 'category', 'period_created']);
 
         // group_by validation
@@ -114,8 +117,15 @@ abstract class BaseContentCountCriteria extends GroupedCriteria
         $validateInt = function($value) {
             return is_int($value) || ctype_digit($value);
         };
-        $resolver->setAllowedValues('author', $validateInt);
         $resolver->setAllowedValues('category', $validateInt);
+
+        $resolver->setNormalizer('author', function($options, $value) use ($me) {
+            return $value === 'me' ? $me->getId() : $value;
+        });
+        $resolver->setAllowedValues('author', function($value) {
+            return is_int($value) || ctype_digit($value) || ($value === 'me');
+        });
+
         $resolver->setAllowedValues('status', Content::getAllStatuses());
         $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
