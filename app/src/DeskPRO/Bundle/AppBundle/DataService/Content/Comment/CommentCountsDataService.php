@@ -67,14 +67,19 @@ class CommentCountsDataService
         $qb->select('count(c) as value')
            ->from($class, 'c');
         $criteria->applyFilters($qb);
-        $criteria->applyGroupBy($qb);
 
-        $result = $qb->getQuery()->getArrayResult();
+        if ($criteria->hasGroupBy()) {
+            $criteria->applyGroupBy($qb);
 
-        $count = Count::fromGroupedBy($criteria->getGroupBy());
-        foreach ($result as $group) {
-            $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name']);
+            $result = $qb->getQuery()->getArrayResult();
+            $count = Count::fromGroupedBy($criteria->getGroupBy());
+            foreach ($result as $group) {
+                $count->add($group['value']);
+                $count->addNested($group['value'], $group['group_name']);
+            }
+        } else {
+            $total = $qb->getQuery()->getSingleScalarResult();
+            $count = Count::fromValue($total);
         }
 
         return $count;
