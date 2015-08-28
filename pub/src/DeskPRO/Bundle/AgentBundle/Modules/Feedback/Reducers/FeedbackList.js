@@ -22,8 +22,8 @@ export default class FeedbackList extends Reducer {
             statuses: {
                 new: 0,
                 active: {
-                    total: 0,
-                    statuses: [/* {count, group} */]
+                    count: 0,
+                    nested: [/* {count, group} */]
                 },
                 closed: {
                     total: 0,
@@ -79,9 +79,10 @@ export default class FeedbackList extends Reducer {
     }
 
     active(prev, {payload}) {
+        console.log('Active: ', payload);
         const next = {...prev};
-        next.statuses.active.statuses = payload.data.nested;
-        next.statuses.active.total = payload.data.count;
+        next.statuses.active = payload.data;
+        //next.statuses.active.total = payload.data.count;
         return next;
     }
 

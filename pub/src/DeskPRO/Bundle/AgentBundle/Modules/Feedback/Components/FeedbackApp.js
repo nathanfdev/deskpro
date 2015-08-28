@@ -27,11 +27,10 @@ export class FeedbackApp extends React.Component {
     }
 
 
-    handleClick(params, event) {
+    choiceClick(params, event) {
         event.preventDefault();
         event.stopPropagation();
         const {filters, sort, dispatch} = this.props;
-        console.log('HERE WE GO');
         dispatch(actions.changeQueryState(params));
         dispatch(actions.loadFeedbackList(params, filters, sort));
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
@@ -41,7 +40,7 @@ export class FeedbackApp extends React.Component {
     render() {
         return (
             <AppContainer thisAppId="feedback">
-                <NavContainer {...this.props} handleClick={this.handleClick.bind(this)}/>
+                <NavContainer {...this.props} choiceClick={this.choiceClick.bind(this)}/>
                 <ListContainer {...this.props} />
             </AppContainer>
         );
