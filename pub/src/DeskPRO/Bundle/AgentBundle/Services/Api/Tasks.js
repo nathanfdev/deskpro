@@ -155,7 +155,7 @@ export function loadLists(projectId) {
  * @param params
  * @returns {string}
  */
-function compileParams(params) {
+export function compileParams(params) {
   let compiled = [];
 
   for (let key of Object.keys(params)) {

@@ -16,7 +16,9 @@ import * as AppActions from "../../Application/Actions/AppActions";
 
 @connect(state => ({
   taskFrameList: state.taskFrameList,
-  taskListList: state.taskListList
+  taskListList: state.taskListList,
+  projectList: state.projectList,
+  taskFilter: state.taskFilter
 }))
 export default class TasksListFrame extends React.Component {
   constructor(props) {
@@ -24,7 +26,8 @@ export default class TasksListFrame extends React.Component {
 
     this.state = {
       actionable: [],
-      kanban: false
+      kanban: false,
+      filter: {}
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
@@ -124,8 +127,13 @@ export default class TasksListFrame extends React.Component {
     });
   }
 
+  applyFilter(filter) {
+    this.props.dispatch(TaskActions.setFilter(filter));
+  }
+
   render() {
-    const {taskFrameList} = this.props;
+    const {taskFrameList, projectList, taskFilter} = this.props;
+
     const _this = this;
     let linked_items = {};
     let lists = [];
@@ -135,8 +143,8 @@ export default class TasksListFrame extends React.Component {
     const projectId = "63";
 
     // Attach IDs to the projects
-    if (taskFrameList.taskFrameProjects && typeof taskFrameList.taskFrameProjects.forEach === 'function') {
-      taskFrameList.taskFrameProjects.forEach((project) => {
+    if (projectList.projectList && typeof projectList.projectList.forEach === 'function') {
+      projectList.projectList.forEach((project) => {
         this.projects[project.id.toString()] = project;
       });
     }
@@ -218,7 +226,13 @@ export default class TasksListFrame extends React.Component {
             </span>
           </div>
 
-          <TaskControls toggleView={this.toggleView.bind(this)} />
+          <TaskControls toggleView={this.toggleView.bind(this)}
+                        agents={this.agents}
+                        teams={this.teams}
+                        departments={this.departments}
+                        projects={this.projects}
+                        applyFilter={this.applyFilter.bind(this)}
+                        taskFilter={taskFilter} />
 
           <span className="ticket-controls-bulk-editing">
             <a href="#">
