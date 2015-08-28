@@ -44,25 +44,22 @@ export default class FeedbackList extends Reducer {
         return next;
     }
 
-    commentsToReview(state, action) {
-        return {
-            ...state,
-            commentsToReviewCount: action.payload.data.count
-        };
+    commentsToReview(prev, {payload}) {
+        const next = {...prev};
+        next.commentsToReviewCount = payload.data.count;
+        return next;
     }
 
-    labels(state, action) {
-        return {
-            ...state,
-            labels: action.payload.data
-        };
+    labels(prev, {payload}) {
+        const next = {...prev};
+        next.labels = payload.data;
+        return next;
     }
 
-    types(state, action) {
-        return {
-            ...state,
-            types: action.payload.data
-        };
+    types(prev, {payload}) {
+        const next = {...prev};
+        next.types = payload.data;
+        return next;
     }
 
     customCategories(prev, {payload}) {
