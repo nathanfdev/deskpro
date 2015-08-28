@@ -55,7 +55,6 @@ final class Article extends AbstractImporter
         $this->blob_adapter = $blob_adapter;
     }
 
-
     /**
      * {@inheritdoc}
      */

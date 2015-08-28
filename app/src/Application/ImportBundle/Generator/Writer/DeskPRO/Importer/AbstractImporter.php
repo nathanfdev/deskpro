@@ -236,6 +236,22 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * Creates object lang
+     *
+     * @param Entity\ObjectLang $translation
+     * @param mixed             $record
+     *
+     * @throws Mapper\MapperException
+     */
+    protected function addObjectLang(Entity\ObjectLang $translation, $record)
+    {
+        $language    = $this->getLanguageMapper()->findOneByTitle($translation->getLanguage());
+        $object_lang = DeskPROEntity\ObjectLang::createObjectLang($language, $record, $translation->getProperty(), $translation->getValue());
+
+        $this->records->addRelatedEntity($object_lang);
+    }
+
+    /**
      * Returns the person mapper
      *
      * @return Mapper\Person

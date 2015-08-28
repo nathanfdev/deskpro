@@ -127,6 +127,30 @@ final class ObjectLang extends AbstractEntity
     }
 
     /**
+     * Filters duplicate translations
+     *
+     * @param Collection $translations
+     * @return ObjectLang[]
+     */
+    public static function getUniqueCollection(Collection $translations)
+    {
+        $unique    = new Collection();
+        $languages = array();
+
+        foreach ($translations as $translation) {
+            /** @var ObjectLang $translation */
+            $language = $translation->getLanguage();
+
+            if ( ! isset($languages[$language])) {
+                $languages[$language] = 1;
+                $unique->attach($translation);
+            }
+        }
+
+        return $unique;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)

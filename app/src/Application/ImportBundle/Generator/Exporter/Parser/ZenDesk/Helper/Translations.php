@@ -98,12 +98,17 @@ class Translations extends AbstractParserFormatterHelper
             throw new SkippingException('Draft translation', $formatted);
         }
 
+        $language = LocaleMapper::getLocale($formatted['locale']);
+        if ('?' === $language) {
+            throw new SkippingException('Locale is not supported', $formatted);
+        }
+
         $title_entity = new Entity\ObjectLang();
         $title_entity
             ->setRawData($data)
             ->setOid($formatted['id'] . '_title')
             ->setDestination($formatted['destination'] . '_title')
-            ->setLanguage(LocaleMapper::getLocale($formatted['locale']))
+            ->setLanguage($language)
             ->setProperty('title')
             ->setValue($formatted['title'])
         ;
@@ -113,7 +118,7 @@ class Translations extends AbstractParserFormatterHelper
             ->setRawData($data)
             ->setOid($formatted['id'] . '_content')
             ->setDestination($formatted['destination'] . '_content')
-            ->setLanguage(LocaleMapper::getLocale($formatted['locale']))
+            ->setLanguage($language)
             ->setProperty('content')
             ->setValue($formatted['body'])
         ;

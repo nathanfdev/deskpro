@@ -326,6 +326,16 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Returns article translations grouped by language
+     *
+     * @return ObjectLang[]
+     */
+    public function getUniqueTranslations()
+    {
+        return ObjectLang::getUniqueCollection($this->translations);
+    }
+
+    /**
      * Add an article property translation
      *
      * @param ObjectLang $translation
