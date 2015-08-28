@@ -50,3 +50,16 @@ Feature: Content counts endpoints (/articles/counts, /news/counts, /downloads/co
       | articles  |
       | news      |
       | downloads |
+
+  Scenario Outline: I select total count of drafts
+    When I send a GET request to "/api/v2/<endpoint>/counts?status=hidden&hidden_status=draft"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.count" should be equal to 1
+    And the JSON node "data.nested" should have 0 elements
+
+    Examples:
+      | endpoint  |
+      | articles  |
+      | news      |
+      | downloads |

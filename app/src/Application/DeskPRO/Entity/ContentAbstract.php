@@ -164,6 +164,34 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $slug_history;
 
+    /**
+     * @return array
+     */
+    public static function getAllStatuses()
+    {
+        return [
+            self::STATUS_PUBLISHED,
+            self::STATUS_ARCHIVED,
+            self::STATUS_HIDDEN,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllHiddenStatuses()
+    {
+        return [
+            self::HIDDEN_STATUS_UNPUBLISHED,
+            self::HIDDEN_STATUS_VALIDATING,
+            self::HIDDEN_STATUS_USER_VALIDATING,
+            self::HIDDEN_STATUS_DELETED,
+            self::HIDDEN_STATUS_SPAM,
+            self::HIDDEN_STATUS_DRAFT,
+            self::HIDDEN_STATUS_TEMP,
+        ];
+    }
+
     public function __construct()
     {
         $this['date_created'] = new \DateTime();

@@ -52,8 +52,9 @@ abstract class BaseContentCountCriteria extends GroupedCriteria
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'status':
-                    $qb->andWhere("$alias.status = :status");
-                    $qb->setParameter('status', $value);
+                case 'hidden_status':
+                    $qb->andWhere("$alias.$field = :$field");
+                    $qb->setParameter($field, $value);
                     break;
 
                 case 'period_created':
@@ -104,8 +105,7 @@ abstract class BaseContentCountCriteria extends GroupedCriteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $resolver->setDefined(['group_by', 'status', 'author', 'category', 'period_created']);
-        $resolver->setRequired(['group_by']);
+        $resolver->setDefined(['group_by', 'status', 'hidden_status', 'author', 'category', 'period_created']);
 
         // group_by validation
         $resolver->setAllowedValues('group_by', ['author', 'category', 'period_created', 'period_updated']);
@@ -116,9 +116,8 @@ abstract class BaseContentCountCriteria extends GroupedCriteria
         };
         $resolver->setAllowedValues('author', $validateInt);
         $resolver->setAllowedValues('category', $validateInt);
-        $resolver->setAllowedValues('status', [
-            Content::STATUS_PUBLISHED, Content::STATUS_ARCHIVED, Content::STATUS_HIDDEN
-        ]);
+        $resolver->setAllowedValues('status', Content::getAllStatuses());
+        $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
     }
 
