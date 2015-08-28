@@ -1,11 +1,12 @@
 import React from 'react';
-import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionGroupedHeader, TabsPane, Tab, NestedList, ButtonsPane,
-         Button, ListGroupingControl }
+import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, SectionGroupedHeader, TabsPane, Tab,
+         NestedList, ListItem, ButtonsPane, Button, ListGroupingControl }
        from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 export class Nav extends React.Component {
   render() {
-    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility } = this.props;
+    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine } = this.props;
+    const mine = lists.todo.articles.mine;
 
     return (
       <NavFrame>
@@ -80,7 +81,38 @@ export class Nav extends React.Component {
               </SectionsPane>
             </Tab>
 
-            <Tab title="Todos"></Tab>
+            <Tab title="Todos">
+              <SectionsPane>
+                <Section>
+                  <SectionHeader>
+                    Articles
+                    <div className="sla" style={{display: "inline-block", float: "right"}}>
+                      <span className={mine ? 'selected' : ''} onClick={setMine(true)}>Mine</span>
+                      <span className={!mine ? 'selected' : ''} onClick={setMine(false)}>All</span>
+                    </div>
+                  </SectionHeader>
+
+                  <ul>
+                    <ListItem label="Draft Articles" count={lists.todo.articles.draft} />
+                    <ListItem label="Pending Articles" count={lists.todo.articles.pending} />
+                  </ul>
+                </Section>
+                <Section>
+                  <SectionHeader>Comments</SectionHeader>
+
+                  <ul>
+                    <ListItem label="Comments to validate" count={lists.todo.comments.validate.count}>
+                      <NestedList items={lists.todo.comments.validate.nested} groups={labels.commentsToValidate} depth="2" />
+                    </ListItem>
+                    <ListItem label="Comments to review" count={lists.todo.comments.review} />
+                  </ul>
+                </Section>
+                <Section>
+                  <SectionHeader>Translations</SectionHeader>
+                  &nbsp;
+                </Section>
+              </SectionsPane>
+            </Tab>
 
           </TabsPane>
         </div>

@@ -112,7 +112,7 @@ class CommentCountsController extends BaseController
         // validate group_by
 
         if (array_key_exists('group_by', $params)) {
-            if (!in_array($params['group_by'], [$type, 'status'])) {
+            if (!in_array($params['group_by'], [$type, 'status', 'period_created'])) {
                 throw new BadRequestHttpException(
                     "You can't group_by \"{$params['group_by']}\" when selecting $type comments.");
             }

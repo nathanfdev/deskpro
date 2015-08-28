@@ -91,6 +91,11 @@ class CommentsCountCriteria extends GroupedCriteria
             case 'status':
                 $qb->addSelect("$alias.status as group_name");
                 break;
+
+            case 'period_created':
+                $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+                $qb->addSelect("$datePeriodCaseWhen as group_name");
+                break;
         }
 
         $qb->groupBy('group_name');
@@ -102,10 +107,9 @@ class CommentsCountCriteria extends GroupedCriteria
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
         $resolver->setDefined(['group_by', 'article', 'news', 'download', 'status', 'period_created', 'is_reviewed']);
-        $resolver->setRequired(['group_by']);
 
         // group_by validation
-        $resolver->setAllowedValues('group_by', ['article', 'news', 'download', 'status']);
+        $resolver->setAllowedValues('group_by', ['article', 'news', 'download', 'status', 'period_created']);
 
         // filters validation
         $validateInt = function($value) {
