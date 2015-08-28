@@ -23,6 +23,8 @@ export class ListItem extends BaseList {
       <li>
         {this.renderCount(count)}
         <a href="#" className="item">{label}</a>
+
+        {this.props.children}
       </li>
     );
   }
@@ -42,14 +44,19 @@ export class NestedList extends BaseList {
   }
 
   render() {
+    const depth = this.props.depth || 1;
+    const className = depth > 1
+                    ? 'with-connectors depth-' + (depth - 1)
+                    : '';
+
     return (
-      <ul>
-        {this.props.items.map(item => this.renderListItem(item))}
+      <ul className={className}>
+        {this.props.items.map(item => this.renderListItem(item, depth))}
       </ul>
     );
   }
 
-  renderListItem({count, group, nested}, depth = 1) {
+  renderListItem({count, group, nested}, depth) {
     if (depth > NestedList.maxDepth) {
       throw 'NestedList maximum recursion depth exceeded'
     }
