@@ -26,12 +26,12 @@ export default class FeedbackList extends Reducer {
                     nested: [/* {count, group} */]
                 },
                 closed: {
-                    total: 0,
-                    statuses: [/* {count, group} */]
+                    count: 0,
+                    nested: [/* {count, group} */]
                 },
                 hidden: {
-                    total: 0,
-                    statuses: [/* {count, group} */]
+                    count: 0,
+                    nested: [/* {count, group} */]
                 }
             }
         };
@@ -79,24 +79,20 @@ export default class FeedbackList extends Reducer {
     }
 
     active(prev, {payload}) {
-        console.log('Active: ', payload);
         const next = {...prev};
         next.statuses.active = payload.data;
-        //next.statuses.active.total = payload.data.count;
         return next;
     }
 
     closed(prev, {payload}) {
         const next = {...prev};
-        next.statuses.closed.statuses = payload.data.nested;
-        next.statuses.closed.total = payload.data.count;
+        next.statuses.closed = payload.data;
         return next;
     }
 
     hidden(prev, {payload}) {
         const next = {...prev};
-        next.statuses.hidden.statuses = payload.data.nested;
-        next.statuses.hidden.total = payload.data.count;
+        next.statuses.hidden = payload.data;
         return next;
     }
 

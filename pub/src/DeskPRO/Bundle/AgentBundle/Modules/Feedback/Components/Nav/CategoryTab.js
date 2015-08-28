@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Section, SectionHeader, ListItem }
+import { ListItem }
     from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 export class CategoryTab extends React.Component {

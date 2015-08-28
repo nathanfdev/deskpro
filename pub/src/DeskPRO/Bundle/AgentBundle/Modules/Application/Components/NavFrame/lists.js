@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 class BaseList extends React.Component {
     renderCount(count) {
         if ((count !== 0) && !count) {
