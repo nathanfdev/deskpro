@@ -55,6 +55,6 @@ class FeedbackCommentsDataService extends AbstractDataService
         } catch (QueryException $e) {
             $count = 0;
         }
-        return new Count($count);
+        return Count::fromValue($count);
     }
 }

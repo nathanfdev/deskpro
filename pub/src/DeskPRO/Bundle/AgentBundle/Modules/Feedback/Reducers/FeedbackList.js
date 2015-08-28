@@ -5,14 +5,14 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
     getInitialState() {
         return {
-            filters:{
-                view:'list',
-                sort:'date',
-                order:'asc'
+            view: 'table',
+            query: {awaiting_validation: 1},
+            filters: {},
+            sort: {
+                sort: 'date_created',
+                order: 'asc'
             },
-            query:{
-                awaiting_validation: 1
-            },
+            sortName: 'Date',
             toValidateCount: 0,
             commentsToReviewCount: 0,
             labels: [/* string */],
@@ -22,53 +22,49 @@ export default class FeedbackList extends Reducer {
             statuses: {
                 new: 0,
                 active: {
-                    total: 0,
-                    statuses: [/* {count, group} */]
+                    count: 0,
+                    nested: [/* {count, group} */]
                 },
                 closed: {
-                    total: 0,
-                    statuses: [/* {count, group} */]
+                    count: 0,
+                    nested: [/* {count, group} */]
                 },
                 hidden: {
-                    total: 0,
-                    statuses: [/* {count, group} */]
+                    count: 0,
+                    nested: [/* {count, group} */]
                 }
             }
         };
     }
 
 
-    toValidate(state, action) {
-        return {
-            ...state,
-            toValidateCount: action.payload.data.count
-        };
+    toValidate(prev, {payload}) {
+        const next = {...prev};
+        next.toValidateCount = payload.data.count;
+        return next;
     }
 
-    commentsToReview(state, action) {
-        return {
-            ...state,
-            commentsToReviewCount: action.payload.data.count
-        };
+    commentsToReview(prev, {payload}) {
+        const next = {...prev};
+        next.commentsToReviewCount = payload.data.count;
+        return next;
     }
 
-    labels(state, action) {
-        return {
-            ...state,
-            labels: action.payload.data
-        };
+    labels(prev, {payload}) {
+        const next = {...prev};
+        next.labels = payload.data;
+        return next;
     }
 
-    types(state, action) {
-        return {
-            ...state,
-            types: action.payload.data
-        };
+    types(prev, {payload}) {
+        const next = {...prev};
+        next.types = payload.data;
+        return next;
     }
 
     customCategories(prev, {payload}) {
         const next = {...prev};
-        next.customCategories = payload.data.nested.counts;
+        next.customCategories = payload.data.nested;
         return next;
     }
 
@@ -81,29 +77,37 @@ export default class FeedbackList extends Reducer {
 
     active(prev, {payload}) {
         const next = {...prev};
-        next.statuses.active.statuses = payload.data.nested.counts;
-        next.statuses.active.total = payload.data.count;
+        next.statuses.active = payload.data;
         return next;
     }
 
     closed(prev, {payload}) {
         const next = {...prev};
-        next.statuses.closed.statuses = payload.data.nested.counts;
-        next.statuses.closed.total = payload.data.count;
+        next.statuses.closed = payload.data;
         return next;
     }
 
     hidden(prev, {payload}) {
         const next = {...prev};
-        next.statuses.hidden.statuses = payload.data.nested.counts;
-        next.statuses.hidden.total = payload.data.count;
+        next.statuses.hidden = payload.data;
         return next;
     }
 
     getList(prev, {payload}) {
         const next = {...prev};
         next.feedback = payload.data;
-        console.log('NEXT: ', next.query);
+        return next;
+    }
+
+    changeQuery(prev, {payload}) {
+        const next = {...prev};
+        next.query = payload;
+        return next;
+    }
+
+    switchView(prev) {
+        const next = {...prev};
+        next.view = prev.view === 'list' ? 'table' : 'list';
         return next;
     }
 
@@ -118,6 +122,8 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackActiveStatus, this.active)
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
+            .r(FeedbackListActions.changeQueryState, this.changeQuery)
+            .r(FeedbackListActions.switchView, this.switchView)
             .r(FeedbackListActions.loadFeedbackList, this.getList);
     }
 

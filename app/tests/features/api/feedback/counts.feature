@@ -33,9 +33,10 @@ Feature: /feedback/counts endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.count" should be equal to 5
-    And the JSON node "data.nested.grouped_by" should be equal to "status_category"
-    And the JSON node "data.nested.counts" should have 1 elements
+    And the JSON node "data.count" should be equal to 2
+    And the JSON node "data.grouped_by" should be equal to "status_category"
+    And the JSON node "data.nested[0].count" should be equal to 2
+    And the JSON node "data.nested[0].group" should be equal to "Gathering Feedback"
 
   Scenario: I GET count of feedback grouped by custom_category
     When I send a GET request to "/api/v2/feedback/counts?group_by=custom_category"
@@ -43,6 +44,7 @@ Feature: /feedback/counts endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 4
-    And the JSON node "data.nested.grouped_by" should be equal to "custom_category"
-    And the JSON node "data.nested.counts" should have 3 elements
+    And the JSON node "data.grouped_by" should be equal to "custom_category"
+    And the JSON node "data.nested[0].group" should be equal to "Linux"
+    And the JSON node "data.nested[0].count" should be equal to 2
 

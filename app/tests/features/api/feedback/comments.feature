@@ -14,3 +14,4 @@ Feature: /feedback_comments/counts endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 5
+    And the JSON node "data.nested" should have 0 elements

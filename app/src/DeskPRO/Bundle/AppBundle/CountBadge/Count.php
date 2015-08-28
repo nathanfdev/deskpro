@@ -166,7 +166,6 @@ class Count
     /**
      * @param int $value
      * @param string $group
-     * @param Count $count
      */
     public function addNested($value, $group)
     {

@@ -86,9 +86,23 @@ export const feedbackHiddenStatus = createAction(
 
 export const loadFeedbackList = createAction(
     "FEEDBACK_LIST",
-    (trigger, query) => {
-        Feedback.getList(query).then(
+    (trigger, query, filters, sort) => {
+        Feedback.getList(query, filters, sort).then(
             (value) => trigger(value.getData())
-        );
+        )
+    }
+);
+
+export const changeQueryState = createAction(
+    "FEEDBACK_CHANGE_QUERY",
+    (trigger, query) => {
+        trigger(query);
+    }
+);
+
+export const switchView = createAction(
+    "FEEDBACK_SWITCH_VIEW",
+    (trigger) => {
+        trigger();
     }
 );

@@ -300,7 +300,7 @@ class FeedbackDataService extends AbstractDataService
         } catch (QueryException $e) {
             $count = 0;
         }
-        return new Count($count);
+        return Count::fromValue($count);
     }
 
     /**
@@ -316,13 +316,12 @@ class FeedbackDataService extends AbstractDataService
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
-        $count = 0;
-        $nested = new CountsGroup($criteria->getGroupBy());
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+            $count->add($group['value']);
+            $count->addNested($group['value'], $group['group_name']);
         }
-        return new Count($count, $nested);
+        return $count;
     }
 
 
