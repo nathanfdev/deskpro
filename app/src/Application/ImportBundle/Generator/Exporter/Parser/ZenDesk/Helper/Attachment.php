@@ -126,12 +126,12 @@ class Attachment extends AbstractParserFormatterHelper
             $blob_data = base64_encode($request->send()->getBody(true));
 
         } catch (BadResponseException $e) {
-            $this->logError($e->getMessage());
+            $this->logWarning($e->getMessage());
 
             $response = $e->getResponse();
             if ($response) {
-                $this->logError(sprintf('Status code: %s', $response->getStatusCode()));
-                $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
+                $this->logWarning(sprintf('Status code: %s', $response->getStatusCode()));
+                $this->logWarning(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
             }
 
             throw new SkippingException('Unable to download attachment', $formatted);

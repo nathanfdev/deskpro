@@ -118,6 +118,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertContains('Read 3 people', $output);
         $this->assertContains('[ZDPerson #3] Skipping exception with person: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
+
+        $this->checkNoErrors($command_tester);
     }
 
     public function testExport()
@@ -137,6 +139,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->checkDbEmpty();
         $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testImport()
@@ -154,6 +157,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         ));
 
         $this->checkJsonEmpty();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testImportBatch()
@@ -173,6 +177,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->checkDbWriterOutput($command_tester);
         $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
     }
 
     private function checkJsonEmpty()
@@ -185,17 +190,28 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $this->helper->seeFileFound('output.batch.json');
 
+        // Checking for people
         $this->helper->seeFileFound('1/people/person_1.json');
         $this->helper->seeInThisFile('Person 1');
 
         $this->helper->seeFileFound('1/people/person_2.json');
         $this->helper->seeInThisFile('Person 2');
 
+        // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
         $this->helper->seeInThisFile('Ticket 1');
 
         $this->helper->seeFileFound('1/tickets/ticket_2.json');
         $this->helper->seeInThisFile('Ticket 2');
+
+        // Checking for articles
+        $this->helper->seeFileFound('1/articles/article_1.json');
+
+        $this->helper->dontSeeInThisFile('Title (es_ES)');
+        $this->helper->dontSeeInThisFile('Content (es_ES)');
+
+        $this->helper->seeInThisFile('Title (de)');
+        $this->helper->seeInThisFile('Content (de)');
     }
 
     private function checkDbEmpty()
@@ -420,7 +436,22 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 ),
             ))
             ->addArticleTranslationsFindAllResponse((object)array(
-                'translations' => array(),
+                'translations' => array(
+                    (object)array(
+                        'id'     => '1',
+                        'locale' => 'es',
+                        'title'  => 'Title (es_ES)',
+                        'body'   => 'Content (es_ES)',
+                        'draft'  => true,
+                    ),
+                    (object)array(
+                        'id'     => '2',
+                        'locale' => 'de',
+                        'title'  => 'Title (de)',
+                        'body'   => 'Content (de)',
+                        'draft'  => false,
+                    ),
+                ),
             ))
             ->addArticleTranslationsFindAllResponse((object)array(
                 'translations' => array(),
@@ -494,5 +525,16 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Entity `organization` is not supported', $output);
+    }
+
+    /**
+     * @param CommandTester $command_tester
+     */
+    private function checkNoErrors(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertNotContains('ERROR', $output);
+        $this->assertNotContains('CRITICAL', $output);
     }
 }

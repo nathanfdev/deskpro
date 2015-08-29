@@ -49,7 +49,10 @@ final class ArrayTransformer implements TransformerInterface
         if (array_key_exists($property, $transformed)) {
             return (array)$transformed[$property];
         }
+        if (isset($options['null']) && $options['null'] === true) {
+            return null;
+        }
 
-        return null;
+        return array();
     }
 }
