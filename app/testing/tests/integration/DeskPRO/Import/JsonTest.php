@@ -4,6 +4,7 @@ namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Translate\ObjectLangRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
 use Application\ImportBundle\Command\ImportBatchCommand;
@@ -80,6 +81,11 @@ class JsonTest extends \DpIntegrationTestCase
     private $blob_repository;
 
     /**
+     * @var \Doctrine\ORM\EntityRepository
+     */
+    private $object_lang_repository;
+
+    /**
      * {@inheritdoc}
      */
     public function runBefore()
@@ -94,6 +100,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->helper->loadFixtures('Import/Person');
         $this->helper->loadFixtures('Import/Organization');
         $this->helper->loadFixtures('Import/Ticket');
+        $this->helper->loadFixtures('Import/Languages');
         $this->helper->loadFixtures('Import/Article');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
@@ -109,6 +116,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
         $this->organization_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
         $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
+        $this->object_lang_repository         = $entity_manager->getRepository('Application\DeskPRO\Entity\ObjectLang');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
@@ -322,6 +330,16 @@ class JsonTest extends \DpIntegrationTestCase
         $custom_data = $article->getCustomData()->first();
         $this->assertEquals(2, $custom_data->getArticleId());
         $this->assertEquals(1, $custom_data->getData());
+
+        /** @var Entity\ObjectLang[] $object_langs */
+        $object_langs = $this->object_lang_repository->findBy(array('ref_type' => 'articles', 'ref_id' => $article->getId()));
+        $this->assertCount(2, $object_langs);
+
+        $object_lang_1 = $object_langs[0];
+        $this->assertEquals('Article 1 (es_ES)', $object_lang_1->getValue());
+
+        $object_lang_2 = $object_langs[1];
+        $this->assertEquals('Content 1 (es_ES)', $object_lang_2->getValue());
     }
 
     private function checkDbPeopleData()

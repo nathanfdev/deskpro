@@ -46,5 +46,11 @@ class Article extends AbstractFixture
 
         $manager->persist($map);
         $manager->flush();
+
+        /** @var Entity\Language $language */
+        $language = $manager->find('Application\DeskPRO\Entity\Language', 1);
+
+        $manager->persist(Entity\ObjectLang::createObjectLang($language, $article, 'title', 'Title en_US'));
+        $manager->persist(Entity\ObjectLang::createObjectLang($language, $article, 'content', 'Content en_US'));
     }
 }
