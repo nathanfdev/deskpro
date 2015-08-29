@@ -51,15 +51,15 @@
   "translations": [
     {
       "oid": "0",
-      "language": "en_US",
+      "language": "es_ES",
       "property": "title",
-      "value": "Article 1 (en_US)"
+      "value": "Article 1 (es_ES)"
     },
     {
       "oid": "1",
-      "language": "en_US",
+      "language": "es_ES",
       "property": "content",
-      "value": "Content 1 (en_US)"
+      "value": "Content 1 (es_ES)"
     }
   ]
 }

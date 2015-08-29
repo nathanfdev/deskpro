@@ -703,7 +703,31 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
       "is_inline": false
     }
   ],
-  "comments": []
+  "comments": [
+    {
+      "oid": 0,
+      "person_email": "user@example.com",
+      "content": "Comment 1",
+      "status": "validating",
+      "is_reviewed": false,
+      "validating": "",
+      "date_created": "2015-01-15 00:00:00"
+    }
+  ],
+  "translations": [
+    {
+      "oid": "0",
+      "language": "es_ES",
+      "property": "title",
+      "value": "Article 1 (es_ES)"
+    },
+    {
+      "oid": "1",
+      "language": "es_ES",
+      "property": "content",
+      "value": "Content 1 (es_ES)"
+    }
+  ]
 }
 ```
 
