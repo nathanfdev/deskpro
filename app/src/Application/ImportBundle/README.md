@@ -1054,7 +1054,7 @@ Create fake help center sections (sub categories):
 php cmd.php dpdev:import:fixtures --type=section
 ```
 
-Create fake articles:
+Create fake articles (includes comments, attachments and translations):
 
 ```bash
 php cmd.php dpdev:import:fixtures --type=article
