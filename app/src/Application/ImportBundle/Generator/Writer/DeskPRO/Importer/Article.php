@@ -99,6 +99,7 @@ final class Article extends AbstractImporter
 
         if ($article->getId()) {
             $this->getArticleCommentMapper()->resetComments($article->getId());
+            $this->getObjectLangMapper()->removeBy('articles', $article->getId());
         }
 
         foreach ($entity->getCategories() as $category) {

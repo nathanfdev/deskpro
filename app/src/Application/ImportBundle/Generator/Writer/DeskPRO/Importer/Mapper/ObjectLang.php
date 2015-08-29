@@ -25,43 +25,82 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
- * Class ArticleTranslation
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
+ * Class ObjectLang
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class ArticleTranslation extends AbstractImporter
+final class ObjectLang implements MapperInterface
 {
     /**
-     * {@inheritdoc}
+     * @var ObjectRepository
      */
-    public function getEntityType()
+    private $repository;
+
+    /**
+     * @var EntityManager
+     */
+    private $manager;
+
+    /**
+     * Constructor
+     *
+     * @param ObjectRepository $repository
+     * @param EntityManager    $manager
+     */
+    public function __construct(ObjectRepository $repository, EntityManager $manager)
     {
-        return Entity\EntityInterface::TYPE_ARTICLE;
+        $this->repository = $repository;
+        $this->manager    = $manager;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function getType()
     {
-        if ( ! $entity instanceof Entity\Article) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        return self::TYPE_OBJECT_LANG;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        $record = $this->repository->findOneBy($criteria);
+        if ( ! $record && $throw_exception) {
+            throw new MapperException('Object lang not found', $criteria);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        return $record;
+    }
 
-        $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id));
-        $this->getObjectLangMapper()->removeBy('article', $article->getId());
+    /**
+     * Returns object translations
+     *
+     * @param string $ref_type
+     * @param int    $ref_id
+     *
+     * @return ObjectLang[]
+     */
+    public function removeBy($ref_type, $ref_id)
+    {
+        $qb = $this->manager->createQueryBuilder();
+        $qb
+            ->delete()
+            ->from('DeskPRO:ObjectLang', 'o')
+            ->andWhere($qb->expr()->eq('o.ref_type', ':ref_type'))
+            ->andWhere($qb->expr()->eq('o.ref_id', ':ref_id'))
+            ->setParameter('ref_type', $ref_type)
+            ->setParameter('ref_id', $ref_id)
+        ;
 
-        foreach ($entity->getUniqueTranslations() as $translation) {
-            $this->addObjectLang($translation, $article);
-        }
-
-        return $this->records;
+        $query = $qb->getQuery();
+        $query->execute();
     }
 }

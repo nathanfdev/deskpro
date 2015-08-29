@@ -70,6 +70,7 @@ interface MapperInterface
     const TYPE_CUSTOM_DEF_ARTICLE      = 'custom_def_article';
     const TYPE_BLOB_DATA               = 'blob_data';
     const TYPE_EMAIL_ACCOUNT           = 'email_account';
+    const TYPE_OBJECT_LANG             = 'object_lang';
 
     /**
      * Returns DeskPRO record type

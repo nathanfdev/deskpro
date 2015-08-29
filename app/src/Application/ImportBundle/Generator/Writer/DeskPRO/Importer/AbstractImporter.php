@@ -338,4 +338,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
     }
+
+    /**
+     * Returns the object lang mapper
+     *
+     * @return Mapper\ObjectLang
+     * @throws \Exception
+     */
+    protected function getObjectLangMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_OBJECT_LANG);
+    }
 }
