@@ -134,20 +134,20 @@ final class ObjectLang extends AbstractEntity
      */
     public static function getUniqueCollection(Collection $translations)
     {
-        $unique    = new Collection();
-        $languages = array();
+        $unique_entities = new Collection();
+        $unique_keys     = array();
 
         foreach ($translations as $translation) {
             /** @var ObjectLang $translation */
-            $language = $translation->getLanguage();
+            $unique_key = $translation->getLanguage() . '_' . $translation->getProperty();
 
-            if ( ! isset($languages[$language])) {
-                $languages[$language] = 1;
-                $unique->attach($translation);
+            if ( ! isset($unique_keys[$unique_key])) {
+                $unique_keys[$unique_key] = 1;
+                $unique_entities->attach($translation);
             }
         }
 
-        return $unique;
+        return $unique_entities;
     }
 
     /**
