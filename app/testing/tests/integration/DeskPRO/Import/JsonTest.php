@@ -4,7 +4,6 @@ namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Translate\ObjectLangRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
 use Application\ImportBundle\Command\ImportBatchCommand;
@@ -169,6 +168,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->checkDbEmpty();
         $this->checkJsonEmpty();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testExport()
@@ -188,6 +188,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->checkDbEmpty();
         $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testImport()
@@ -208,6 +209,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonEmpty();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testImportBatch()
@@ -229,6 +231,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
     }
 
     private function checkJsonEmpty()
@@ -446,6 +449,17 @@ class JsonTest extends \DpIntegrationTestCase
 
         // Checking for feedback
         $this->assertContains('Persisted Feedback #2', $output);
+    }
+
+    /**
+     * @param CommandTester $command_tester
+     */
+    private function checkNoErrors(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertNotContains('ERROR', $output);
+        $this->assertNotContains('CRITICAL', $output);
     }
 
     /**
