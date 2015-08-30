@@ -270,6 +270,15 @@ class PageTitleGenerator
         return (string) $builder;
     }
 
+    public function search()
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $builder->prependSection($this->phrase('portal.general.search-section-title'));
+
+        return (string) $builder;
+    }
+
     public function createHelpdeskTitleBuilder()
     {
         $builder = new PageTitleBuilder();

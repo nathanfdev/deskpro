@@ -48,6 +48,7 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
     const DOWNLOADS        = 'downloads';
     const DOWNLOADS_CAT    = 'downloads.cat';
     const DOWNLOADS_VIEW   = 'downloads.view';
+    const SEARCH           = 'search';
     const FEEDBACK         = 'feedback';
     const FEEDBACK_FILTER  = 'feedback.filter';
     const FEEDBACK_VIEW    = 'feedback.view';

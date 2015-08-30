@@ -55,5 +55,9 @@
     'portal.general.id' => 'ID',
     'portal.general.comment_btn_save' => 'Save Comment',
     'portal.general.search_btn' => 'Search',
+    'portal.general.search-section-title' => 'Search',
+    'portal.general.x-search-results' => '{{ num }} search results for "{{ query }}"',
+    'portal.general.no-search-results' => 'We couldn\'t find any results for "{{ query }}"',
+    'portal.general.no-search-query' => 'Please type a search query into the search box.',
     'portal.general.software_provided_by' => 'Helpdesk software provided by',
 );

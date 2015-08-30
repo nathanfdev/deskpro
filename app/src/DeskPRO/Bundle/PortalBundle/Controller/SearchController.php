@@ -38,8 +38,11 @@ use Application\DeskPRO\NewSearch\SearchEngine\SearchContext;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\StickyWordSearch;
+use DeskPRO\Bundle\AppBundle\Pagerfanta\Adapter\DeskproSearchAdapter;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Numbers;
+use Pagerfanta\Adapter\NullAdapter;
+use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -62,7 +65,21 @@ class SearchController extends AbstractController
         $results = array();
         $total = 0;
         $cur_page = $request->get('page', 1);
-        $per_page = 5;
+        $per_page = 10;
+
+        ////////////////////////////////////////////////////////////////////////
+        // search types
+        $allowed_search_types = array('article', 'news', 'download', 'feedback');
+        if (!$limit_types_array = $request->get('types', null)) {
+            $limit_types_array = $allowed_search_types;
+        }
+        if (!is_array($limit_types_array)) {
+            $limit_types_array = explode(',', $limit_types_array);
+        }
+        $limit_types_array = array_filter($limit_types_array, function($value) use ($allowed_search_types) {
+            return in_array($value, $allowed_search_types);
+        });
+        $limit_types = implode(',', $limit_types_array);
 
         if ($q) {
             $is_search = true;
@@ -72,7 +89,7 @@ class SearchController extends AbstractController
             $context = $contextFactory->createUserSearchContext($person);
 
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
-            $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page));
+            $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page, 'limit_types' => $limit_types));
 
             $total = $result_set->getTotal();
             $results = $result_set->getTypedResults();
@@ -110,6 +127,12 @@ class SearchController extends AbstractController
 
         $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
 
+        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
+        $pagination->setMaxPerPage((int)$pageinfo['per_page']);
+        $pagination->setCurrentPage((int)$pageinfo['curpage']);
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
+
         return $this->renderThemeView(
             'Theme:Search:search_results.html.twig',
             array(
@@ -119,6 +142,10 @@ class SearchController extends AbstractController
                 'query' => $q,
                 'pageinfo' => $pageinfo,
                 'num_results' => $total,
+                'pager' => $pagination,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->search(),
+                'limit_types' => $limit_types_array
             )
         );
     }

@@ -236,6 +236,27 @@ class BreadcrumbBuilder
     }
 
     #####################################################################################################################
+    # Search
+    #####################################################################################################################
+
+    public function addSearch($query)
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_search', array('q' => $query)),
+            Breadcrumbs::SEARCH,
+            array('phrase' => 'portal.general.search-section-title')
+        );
+
+        $this->b->add(
+            $this->url_generator->generate('portal_search', array('q' => $query)),
+            Breadcrumbs::SEARCH,
+            array('name' => sprintf('"%s"', $query))
+        );
+
+        return $this;
+    }
+
+    #####################################################################################################################
     # Feedback
     #####################################################################################################################
 
@@ -249,6 +270,7 @@ class BreadcrumbBuilder
 
         return $this;
     }
+
     public function addFeedbackView(Feedback $a)
     {
         $this->b->add(
