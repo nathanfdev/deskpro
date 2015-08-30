@@ -36,7 +36,9 @@
 	{% include 'AgentBundle:Publish:drafts-massactions-bar.html.twig' %}
 
 	<section class="comments-list list-listing">
-		{% include 'AgentBundle:Publish:drafts-page.html.twig' %}
+		<div class="with-scrollbar">
+			{% include 'AgentBundle:Publish:drafts-page.html.twig' %}
+		</div>
 	</section>
 
 {% endblock pane_content %}
