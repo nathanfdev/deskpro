@@ -76,6 +76,16 @@ class PortalExtension extends \Twig_Extension
     private $permission_manager;
 
     /**
+     * @var \DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
+     */
+    private $ratings_helper;
+
+    /**
+     * @var \DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
+     */
+    private $visitor_identification_provider;
+
+    /**
      * @param ContainerInterface $continer
      */
     public function __construct(ContainerInterface $continer)
@@ -87,6 +97,8 @@ class PortalExtension extends \Twig_Extension
         $this->ticket_public_id_resolver = $continer->get('ticket.public_id_resolver');
         $this->permission_manager = $continer->get('portal_permissions_manager');
         $this->token_storage = $continer->get('security.token_storage');
+        $this->ratings_helper = $continer->get('ratings_helper');
+        $this->visitor_identification_provider = $continer->get('visitor_identification_provider');
     }
 
     /**
@@ -102,8 +114,59 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
             new \Twig_SimpleFunction('render_message', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('get_secure_content_cats', array($this, 'getSecureCats'))
+            new \Twig_SimpleFunction('get_secure_content_cats', array($this, 'getSecureCats')),
+            new \Twig_SimpleFunction('user_up_voted', array($this, 'didUserUpVote')),
+            new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote'))
         );
+    }
+
+    /**
+     * @param $object
+     * @return bool
+     */
+    public function didUserUpVote($object)
+    {
+        if ($rating = $this->getRating($object)) {
+            return $rating->isPositive();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $object
+     * @return bool
+     */
+    public function didUserDownVote($object)
+    {
+        if ($rating = $this->getRating($object)) {
+            return $rating->isNegative();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $object
+     * @return Entity\Rating|null
+     */
+    public function getRating($object)
+    {
+        $person = $this->getPerson();
+
+        if ($person instanceof Entity\Person && !$person instanceof PersonGuest) {
+            if ($rating = $this->ratings_helper->findPersonRating($object, $person)) {
+                return $rating;
+            }
+        } else {
+            $visitor_id = $this->visitor_identification_provider->getVisitorIdentifier();
+
+            if ($rating = $this->ratings_helper->findVisitorRating($object, $visitor_id)) {
+                return $rating;
+            }
+        }
+
+        return null;
     }
 
     public function getPublicTicketId($ticket)
@@ -246,7 +309,10 @@ class PortalExtension extends \Twig_Extension
         return array('global_settings' => $this->settings_resolver->getGlobalSettings());
     }
 
-    protected function getPermissionBagForCurrentUser()
+    /**
+     * @return PersonGuest|Entity\Person
+     */
+    protected function getPerson()
     {
         $person = null;
         if ($token = $this->token_storage->getToken()) {
@@ -255,7 +321,14 @@ class PortalExtension extends \Twig_Extension
 
         if (!$person instanceof Entity\Person) {
             $person = new PersonGuest();
-        }
+        };
+
+        return $person;
+    }
+
+    protected function getPermissionBagForCurrentUser()
+    {
+        $person = $this->getPerson();
 
         if ($person) {
             return $this->permission_manager->getPermissionsBagForPerson($person);

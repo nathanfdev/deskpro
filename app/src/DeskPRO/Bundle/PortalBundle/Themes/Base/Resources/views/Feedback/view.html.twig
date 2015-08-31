@@ -7,7 +7,7 @@
     <article class="feedback main-feedback">
         <div class="feedback-item">
             <div class="feedback-item-controls">
-                <a href="{{ portal_path(item, 'vote_up') }}" class="i-agree">
+                <a href="{{ portal_path(item, 'vote_up') }}" class="i-agree post-link {% if user_up_voted(item) %} agreed{% endif %}">
                     <i class="fa fa-thumbs-up"></i>
                     <div>{{ phrase('portal.feedback.btn-vote') }}</div>
                     <span class="counter">{{ item.total_rating }}</span>

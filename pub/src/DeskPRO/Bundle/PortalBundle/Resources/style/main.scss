@@ -4549,7 +4549,7 @@ h1.fancy-header {
   }
 
   .paged-results {
-    min-height: 500px;
+    min-height: 100px;
   }
 
   .feedback-item-controls, .feedback-item-content {
@@ -4607,6 +4607,14 @@ h1.fancy-header {
           color: #14d3a1;
           opacity: 1;
         }
+      }
+    }
+
+    .agreed {
+      border: 1px solid #14d3a1;
+      i {
+        color: #14d3a1;
+        opacity: 1;
       }
     }
 

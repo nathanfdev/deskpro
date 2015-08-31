@@ -304,7 +304,7 @@ class FeedbackController extends AbstractController
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")
      */
-    public function viewAction(Request $request, Feedback $item)
+    public function viewAction(Request $request, Feedback $item, $visitor_id)
     {
         //
         // COMMENT FORM
@@ -331,7 +331,9 @@ class FeedbackController extends AbstractController
         //
         // RATING
         //
-        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser())) {
+            $rating = $this->getRatingsHelper()->findVisitorRating($item, $visitor_id);
+        }
 
         //
         // RENDER THEME
