@@ -50,6 +50,13 @@
   }
 }
 
+@mixin remove-link-styling {
+  a {
+    text-decoration: none;
+    color: $text-color-darker;
+  }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main page
@@ -4137,6 +4144,9 @@ h1.fancy-header {
 }
 
 .front-page-news {
+
+  @include remove-link-styling;
+
   header, footer {
     text-align: center;
     hr {
@@ -4174,6 +4184,7 @@ h1.fancy-header {
 
         a {
           text-decoration: none;
+          color: $text-color-lighter;
         }
       }
 
@@ -4212,10 +4223,12 @@ h1.fancy-header {
 }
 
 .front-page-news-tiny {
+  @include remove-link-styling;
+
   ul {
     li {
       a {
-        color: $button-color;
+        color: $text-color;
       }
     }
   }
@@ -4705,6 +4718,8 @@ h1.fancy-header {
 
 // Small feedback list
 .front-page-feedback {
+  @include remove-link-styling;
+
   ul {
     li {
       span.thumbs {
@@ -4846,6 +4861,8 @@ h1.fancy-header {
 
 // Downloads
 .front-page-downloads {
+  @include remove-link-styling;
+
   ul {
     li {
       .file-icon {
@@ -4878,6 +4895,10 @@ h1.fancy-header {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Knowledgebase
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.front-page-kb {
+  @include remove-link-styling;
+}
 
 //Big list of articles
 .article-categories-expandable {
