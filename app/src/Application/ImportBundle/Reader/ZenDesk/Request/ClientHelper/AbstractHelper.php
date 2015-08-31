@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Zendesk\API\Client;
 use Zendesk\API\Http;
+use Zendesk\API\MissingParametersException;
 use Zendesk\API\ResponseException;
 
 /**
@@ -73,6 +74,35 @@ abstract class AbstractHelper implements ClientHelperInterface
 
         $client->setSideload(null);
         return $response;
+    }
+
+    /**
+     * Incremental exports with a supplied start_time
+     * Not implemented in zendesk_api_client_php yet
+     *
+     * @param Client $client
+     * @param string $type
+     * @param array  $params
+     * @param string $api_group
+     *
+     * @throws MissingParametersException
+     * @throws ResponseException
+     *
+     * @return \stdClass
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/core/incremental_export
+     * @see https://support.zendesk.com/hc/en-us/articles/204396193-New-Incremental-APIs-now-available-to-all-accounts?preview%5Btheme_id%5D=202201216&use_theme_settings=false
+     */
+    protected function incrementalExport(Client $client, $type, array $params, $api_group = '')
+    {
+        if ( ! $params['start_time']) {
+            throw new MissingParametersException(__METHOD__, array('start_time'));
+        }
+
+        $request_url = rtrim($api_group, '/') . '/' . sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
+        $end_point   = Http::prepare($request_url);
+
+        return $this->doGetRequest($client, $end_point);
     }
 
     /**

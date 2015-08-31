@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractIncrementalExportHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
@@ -36,7 +36,7 @@ use Zendesk\API\Client;
  * Class TicketsIncremental
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class TicketsIncrementalExport extends AbstractIncrementalExportHelper
+final class TicketsIncrementalExport extends AbstractHelper
 {
     /**
      * {@inheritdoc}

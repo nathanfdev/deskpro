@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractIncrementalExportHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
@@ -38,7 +38,7 @@ use Zendesk\API\Client;
  *
  * @see https://developer.zendesk.com/rest_api/docs/help_center/articles#list-articles
  */
-final class ArticleIncrementalExport extends AbstractIncrementalExportHelper
+final class ArticleIncrementalExport extends AbstractHelper
 {
     /**
      * {@inheritdoc}
