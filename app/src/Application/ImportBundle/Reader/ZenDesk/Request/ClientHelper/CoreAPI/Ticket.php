@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperIncrementalInterface;
-use Zendesk\API\Client;
 
 /**
  * ZenDesk tickets request client helper
@@ -42,9 +41,9 @@ final class Ticket extends AbstractHelper implements ClientHelperIncrementalInte
     /**
      * {@inheritdoc}
      */
-    public function incrementalExport(Client $client, array $params = array())
+    public function incrementalExport(array $params = array())
     {
-        return $this->doIncrementalExportRequest($client, 'tickets', array(
+        return $this->doIncrementalExportRequest('tickets', array(
             'start_time' => $params['start_time'],
         ));
     }

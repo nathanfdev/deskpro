@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
-use Zendesk\API\Client;
 
 /**
  * ZenDesk ticket comments request client helper
@@ -42,9 +41,9 @@ final class TicketComment extends AbstractHelper implements ClientHelperFindAllI
     /**
      * {@inheritdoc}
      */
-    public function findAll(Client $client, array $params = array())
+    public function findAll(array $params = array())
     {
-        return $client->tickets()->comments()->findAll(array(
+        return $this->client->tickets()->comments()->findAll(array(
             'ticket_id' => $params['ticket_id'],
         ));
     }

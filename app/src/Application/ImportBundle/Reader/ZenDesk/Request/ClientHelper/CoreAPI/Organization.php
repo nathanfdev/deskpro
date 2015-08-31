@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
-use Zendesk\API\Client;
 
 /**
  * ZenDesk organizations request client helper
@@ -42,8 +41,8 @@ final class Organization extends AbstractHelper implements ClientHelperFindInter
     /**
      * {@inheritdoc}
      */
-    public function find(Client $client, array $params = array())
+    public function find(array $params = array())
     {
-        return $client->organizations()->find($params);
+        return $this->client->organizations()->find($params);
     }
 }

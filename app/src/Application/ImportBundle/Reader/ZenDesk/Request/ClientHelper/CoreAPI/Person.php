@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperIncrementalInterface;
-use Zendesk\API\Client;
 
 /**
  * ZenDesk people request client helper
@@ -43,17 +42,17 @@ final class Person extends AbstractHelper implements ClientHelperFindInterface, 
     /**
      * {@inheritdoc}
      */
-    public function find(Client $client, array $params = array())
+    public function find(array $params = array())
     {
-        return $client->users()->find($params);
+        return $this->client->users()->find($params);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function incrementalExport(Client $client, array $params = array())
+    public function incrementalExport(array $params = array())
     {
-        return $this->doIncrementalExportRequest($client, 'users', array(
+        return $this->doIncrementalExportRequest('users', array(
             'start_time' => $params['start_time'],
         ));
     }

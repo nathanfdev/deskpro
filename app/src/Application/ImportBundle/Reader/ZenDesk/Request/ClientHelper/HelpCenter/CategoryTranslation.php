@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCente
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
-use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
@@ -46,7 +45,7 @@ final class CategoryTranslation extends AbstractHelper implements ClientHelperCr
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#create-translation
      */
-    public function create(Client $client, array $params = array())
+    public function create(array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
@@ -55,7 +54,7 @@ final class CategoryTranslation extends AbstractHelper implements ClientHelperCr
         $category_id = $params['id'];
         unset($params['id']);
 
-        return $this->doPostRequest($client, sprintf('help_center/categories/%d/translations.json', $category_id), $params);
+        return $this->doPostRequest(sprintf('help_center/categories/%d/translations.json', $category_id), $params);
     }
 
     /**
@@ -63,12 +62,12 @@ final class CategoryTranslation extends AbstractHelper implements ClientHelperCr
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#list-translations
      */
-    public function findAll(Client $client, array $params = array())
+    public function findAll(array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        return $this->doGetRequest($client, sprintf('help_center/categories/%d/translations.json', $params['id']));
+        return $this->doGetRequest(sprintf('help_center/categories/%d/translations.json', $params['id']));
     }
 }

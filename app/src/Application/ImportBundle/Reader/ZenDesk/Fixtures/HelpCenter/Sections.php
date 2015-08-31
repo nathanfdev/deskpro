@@ -70,8 +70,8 @@ final class Sections extends AbstractFixture
     {
         $category = $this->category_loader->getRandomCategory();
 
-        $helper   = new Section();
-        $response = $helper->create($this->client, array(
+        $helper   = new Section($this->client);
+        $response = $helper->create(array(
             'id'      => $category['id'],
             'section' => array(
                 'name' => $category['name'] . ': Section' . $num,

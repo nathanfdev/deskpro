@@ -27,8 +27,6 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 
-use Zendesk\API\Client;
-
 /**
  * Interface ClientHelperDeleteInterface
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
@@ -38,10 +36,8 @@ interface ClientHelperDeleteInterface
     /**
      * Do request via ZenDesk client
      *
-     * @param Client $client
-     * @param array  $params
-     *
+     * @param array $params
      * @return \stdClass
      */
-    public function delete(Client $client, array $params = array());
+    public function delete(array $params = array());
 }

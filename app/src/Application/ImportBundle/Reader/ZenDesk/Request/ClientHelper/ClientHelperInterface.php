@@ -26,6 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+use Zendesk\API\Client;
 
 /**
  * ZenDesk request client helper interface
@@ -35,5 +36,10 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
  */
 interface ClientHelperInterface
 {
-
+    /**
+     * Constructor
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client);
 }

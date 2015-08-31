@@ -70,12 +70,12 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
      */
     public function delete()
     {
-        $helper = new Category();
+        $helper = new Category($this->client);
 
         try {
             $categories = $this->category_loader->getFakeCategories();
             foreach ($categories as $category) {
-                $helper->delete($this->client, array('id' => $category['id']));
+                $helper->delete(array('id' => $category['id']));
                 $this->logInfo(sprintf('Category `%s` deleted successfully', $category['name']));
             }
 
@@ -93,8 +93,8 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
             try {
                 $this->logInfo('Importing primary category');
 
-                $helper   = new Category();
-                $response = $helper->create($this->client, array(
+                $helper   = new Category($this->client);
+                $response = $helper->create(array(
                     'category' => array(
                         'name'        => 'Primary Category',
                         'description' => 'Primary Category description',
@@ -117,8 +117,8 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
      */
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
-        $helper   = new Category();
-        $response = $helper->create($this->client, array(
+        $helper   = new Category($this->client);
+        $response = $helper->create(array(
             'category' => array(
                 'name'        => CategoryLoader::FAKE_PREFIX . ' ' . $num,
                 'description' => CategoryLoader::FAKE_PREFIX .' description ' . $num,

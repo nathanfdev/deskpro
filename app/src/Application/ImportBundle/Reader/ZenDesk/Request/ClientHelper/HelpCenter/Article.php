@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCente
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperIncrementalInterface;
-use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
@@ -46,7 +45,7 @@ final class Article extends AbstractHelper implements ClientHelperCreateInterfac
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/articles#create-article
      */
-    public function create(Client $client, array $params = array())
+    public function create(array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
@@ -55,7 +54,7 @@ final class Article extends AbstractHelper implements ClientHelperCreateInterfac
         $section_id = $params['id'];
         unset($params['id']);
 
-        return $this->doPostRequest($client, sprintf('help_center/sections/%d/articles.json', $section_id), $params);
+        return $this->doPostRequest(sprintf('help_center/sections/%d/articles.json', $section_id), $params);
     }
 
     /**
@@ -63,12 +62,12 @@ final class Article extends AbstractHelper implements ClientHelperCreateInterfac
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/articles#list-articles
      */
-    public function incrementalExport(Client $client, array $params = array())
+    public function incrementalExport(array $params = array())
     {
         $params = array(
             'start_time' => $params['start_time'],
         );
 
-        return $this->doIncrementalExportRequest($client, 'articles', $params, 'help_center');
+        return $this->doIncrementalExportRequest('articles', $params, 'help_center');
     }
 }

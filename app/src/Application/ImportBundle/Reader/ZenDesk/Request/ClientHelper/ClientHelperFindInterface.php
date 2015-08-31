@@ -27,8 +27,6 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 
-use Zendesk\API\Client;
-
 /**
  * Interface ClientHelperFindInterface
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
@@ -38,10 +36,8 @@ interface ClientHelperFindInterface extends ClientHelperInterface
     /**
      * Do request via ZenDesk client
      *
-     * @param Client $client
-     * @param array  $params
-     *
+     * @param array $params
      * @return \stdClass
      */
-    public function find(Client $client, array $params = array());
+    public function find(array $params = array());
 }

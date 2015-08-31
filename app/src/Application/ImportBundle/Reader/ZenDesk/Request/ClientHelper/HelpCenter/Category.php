@@ -32,7 +32,6 @@ use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCre
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperDeleteInterface;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
-use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
@@ -49,9 +48,9 @@ final class Category extends AbstractHelper
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#list-categories
      */
-    public function findAll(Client $client, array $params = array())
+    public function findAll(array $params = array())
     {
-        return $this->doGetRequest($client, 'help_center/categories.json');
+        return $this->doGetRequest('help_center/categories.json');
     }
 
     /**
@@ -59,9 +58,9 @@ final class Category extends AbstractHelper
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#create-category
      */
-    public function create(Client $client, array $params = array())
+    public function create(array $params = array())
     {
-        return $this->doPostRequest($client, 'help_center/categories.json', $params);
+        return $this->doPostRequest('help_center/categories.json', $params);
     }
 
     /**
@@ -69,13 +68,13 @@ final class Category extends AbstractHelper
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#show-category
      */
-    public function find(Client $client, array $params = array())
+    public function find(array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        return $this->doGetRequest($client, sprintf('help_center/categories/%d.json', $params['id']));
+        return $this->doGetRequest(sprintf('help_center/categories/%d.json', $params['id']));
     }
 
     /**
@@ -83,12 +82,12 @@ final class Category extends AbstractHelper
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#delete-category
      */
-    public function delete(Client $client, array $params = array())
+    public function delete(array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        return $this->doDeleteRequest($client, sprintf('help_center/categories/%d.json', $params['id']));
+        return $this->doDeleteRequest(sprintf('help_center/categories/%d.json', $params['id']));
     }
 }

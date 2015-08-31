@@ -85,12 +85,12 @@ final class Articles extends AbstractFixture
      */
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
-        $article_helper             = new Article();
-        $article_comment_helper     = new ArticleComment();
-        $article_attachment_helper  = new ArticleAttachment();
-        $article_translation_helper = new ArticleTranslation();
+        $article_helper             = new Article($this->client);
+        $article_comment_helper     = new ArticleComment($this->client);
+        $article_attachment_helper  = new ArticleAttachment($this->client);
+        $article_translation_helper = new ArticleTranslation($this->client);
 
-        $response = $article_helper->create($this->client, array(
+        $response = $article_helper->create(array(
             'id'      => $this->section_loader->getRandomSectionId(),
             'article' => array(
                 'title'       => 'Fake article ' . $num,
@@ -107,7 +107,7 @@ final class Articles extends AbstractFixture
 
         for ($i = 1; $i <= 10; $i++) {
             try {
-                $response = $article_comment_helper->create($this->client, array(
+                $response = $article_comment_helper->create(array(
                     'id'      => $article->id,
                     'comment' => array(
                         'author_id' => $this->people_loader->getRandomPersonId(),
@@ -126,7 +126,7 @@ final class Articles extends AbstractFixture
 
         for ($i = 1; $i <= 2; $i++) {
             try {
-                $response = $article_attachment_helper->create($this->client, array(
+                $response = $article_attachment_helper->create(array(
                     'id'     => $article->id,
                     'file'   => $this->getRandomUploadFile(),
                     'inline' => $this->getRandomBoolString(),
@@ -144,7 +144,7 @@ final class Articles extends AbstractFixture
 
         foreach ($locales as $locale) {
             try {
-                $response = $article_translation_helper->create($this->client, array(
+                $response = $article_translation_helper->create(array(
                     'id'          => $article->id,
                     'translation' => array(
                         'locale' => $locale,
