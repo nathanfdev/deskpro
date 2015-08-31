@@ -28,28 +28,58 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
 use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk HelpCenter section translations request client helper
+ * ZenDesk HelpCenter section request client helper
  *
- * Class SectionTranslations
+ * Class Section
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#list-translations
  */
-final class SectionTranslationsFindAll extends AbstractHelper
+final class Section extends AbstractHelper implements ClientHelperCreateInterface, ClientHelperFindInterface, ClientHelperFindAllInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/sections#create-section
      */
-    public function request(Client $client, array $params = array())
+    public function create(Client $client, array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        return $this->doGetRequest($client, sprintf('help_center/sections/%d/translations.json', $params['id']));
+        $category_id = $params['id'];
+        unset($params['id']);
+
+        return $this->doPostRequest($client, sprintf('help_center/categories/%d/sections.json', $category_id), $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/sections#show-section
+     */
+    public function find(Client $client, array $params = array())
+    {
+        if ( ! isset($params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
+
+        return $this->doGetRequest($client, sprintf('help_center/sections/%d.json', $params['id']));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/sections#list-sections
+     */
+    public function findAll(Client $client, array $params = array())
+    {
+        return $this->doGetRequest($client, 'help_center/sections.json');
     }
 }

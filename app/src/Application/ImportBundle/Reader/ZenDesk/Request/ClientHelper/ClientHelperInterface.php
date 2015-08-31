@@ -27,8 +27,6 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 
-use Zendesk\API\Client;
-
 /**
  * ZenDesk request client helper interface
  *
@@ -37,13 +35,5 @@ use Zendesk\API\Client;
  */
 interface ClientHelperInterface
 {
-    /**
-     * Do request via ZenDesk client
-     *
-     * @param Client $client
-     * @param array  $params
-     *
-     * @return \stdClass
-     */
-    public function request(Client $client, array $params = array());
+
 }

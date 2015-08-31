@@ -25,31 +25,36 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperIncrementalInterface;
 use Zendesk\API\Client;
-use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk article comments request client helper
+ * ZenDesk people request client helper
  *
- * Class ArticleCommentsFindAll
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/comments#list-comments
+ * Class Person
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class ArticleCommentsFindAll extends AbstractHelper
+final class Person extends AbstractHelper implements ClientHelperFindInterface, ClientHelperIncrementalInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client, array $params = array())
+    public function find(Client $client, array $params = array())
     {
-        if ( ! isset($params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
-        }
+        return $client->users()->find($params);
+    }
 
-        return $this->doGetRequest($client, sprintf('help_center/articles/%d/comments.json', $params['id']));
+    /**
+     * {@inheritdoc}
+     */
+    public function incrementalExport(Client $client, array $params = array())
+    {
+        return $this->doIncrementalExportRequest($client, 'users', array(
+            'start_time' => $params['start_time'],
+        ));
     }
 }

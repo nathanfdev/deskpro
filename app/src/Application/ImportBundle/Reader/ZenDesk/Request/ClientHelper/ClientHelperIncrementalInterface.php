@@ -25,26 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
- * ZenDesk people incremental export request client helper
- *
- * Class PeopleFindAll
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
+ * Interface ClientHelperIncrementalInterface
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
  */
-final class PeopleIncrementalExport extends AbstractHelper
+interface ClientHelperIncrementalInterface extends ClientHelperInterface
 {
     /**
-     * {@inheritdoc}
+     * Do request via ZenDesk client
+     *
+     * @param Client $client
+     * @param array  $params
+     *
+     * @return \stdClass
      */
-    public function request(Client $client, array $params = array())
-    {
-        return $this->incrementalExport($client, 'users', array(
-            'start_time' => $params['start_time'],
-        ));
-    }
+    public function incrementalExport(Client $client, array $params = array());
 }

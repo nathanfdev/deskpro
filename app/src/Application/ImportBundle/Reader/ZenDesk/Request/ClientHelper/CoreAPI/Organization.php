@@ -28,23 +28,22 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
 use Zendesk\API\Client;
 
 /**
- * ZenDesk tickets incremental export request client helper
+ * ZenDesk organizations request client helper
  *
- * Class TicketsIncremental
+ * Class Organization
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class TicketsIncrementalExport extends AbstractHelper
+final class Organization extends AbstractHelper implements ClientHelperFindInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client, array $params = array())
+    public function find(Client $client, array $params = array())
     {
-        return $this->incrementalExport($client, 'tickets', array(
-            'start_time' => $params['start_time'],
-        ));
+        return $client->organizations()->find($params);
     }
 }

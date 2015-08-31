@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
+use Application\ImportBundle\Reader\ZenDesk\Request\Request;
 use Doctrine\Common\Collections\ArrayCollection;
 use DateTime;
 
@@ -49,9 +50,9 @@ class PeopleLoader extends AbstractFixtureLoader
     public function load()
     {
         $initial_time = new DateTime('-2 years');
-        $response     = $this->request_adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
+        $response     = $this->request_adapter->doRequest(Request::createFromString('CoreAPI\People::incrementalExport', array(
             'start_time' => $initial_time->getTimestamp(),
-        ));
+        )));
 
         $this->people = new ArrayCollection($this->toArray($response->users));
     }

@@ -25,34 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
-use Zendesk\API\Client;
-use Zendesk\API\MissingParametersException;
+use Zend\View\Helper\Escaper\AbstractHelper;
 
 /**
- * ZenDesk HelpCenter article translation create request client helper
- *
- * Class ArticleTranslationCreate
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#create-translation
+ * Class TicketField
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class ArticleTranslationCreate extends AbstractHelper
+final class TicketField extends AbstractHelper
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function request(Client $client, array $params = array())
-    {
-        if ( ! isset($params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
-        }
 
-        $category_id = $params['id'];
-        unset($params['id']);
-
-        return $this->doPostRequest($client, sprintf('help_center/articles/%d/translations.json', $category_id), $params);
-    }
 }

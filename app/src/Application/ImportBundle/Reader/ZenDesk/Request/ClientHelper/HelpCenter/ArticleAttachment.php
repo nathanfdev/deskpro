@@ -28,23 +28,42 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
 use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk article attachments request client helper
+ * ZenDesk HelpCenter article attachments request client helper
  *
- * Class ArticleAttachmentsFindAll
+ * Class ArticleAttachment
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/article_attachments#list-article-attachments
  */
-final class ArticleAttachmentsFindAll extends AbstractHelper
+final class ArticleAttachment extends AbstractHelper implements ClientHelperCreateInterface, ClientHelperFindAllInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/article_attachments#create-article-attachment
      */
-    public function request(Client $client, array $params = array())
+    public function create(Client $client, array $params = array())
+    {
+        if ( ! isset($params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
+
+        $end_point = sprintf('help_center/articles/%d/attachments.json', $params['id']);
+        unset($params['id']);
+
+        return $this->doPostRequest($client, $end_point, $params, 'multipart/form-data');
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/article_attachments#list-article-attachments
+     */
+    public function findAll(Client $client, array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));

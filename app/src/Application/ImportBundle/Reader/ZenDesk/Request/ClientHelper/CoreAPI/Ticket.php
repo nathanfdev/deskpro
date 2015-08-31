@@ -25,31 +25,27 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperIncrementalInterface;
 use Zendesk\API\Client;
-use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk HelpCenter category find request client helper
+ * ZenDesk tickets request client helper
  *
- * Class CategoryFind
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#show-category
+ * Class Ticket
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class CategoryFind extends AbstractHelper
+final class Ticket extends AbstractHelper implements ClientHelperIncrementalInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client, array $params = array())
+    public function incrementalExport(Client $client, array $params = array())
     {
-        if ( ! isset($params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
-        }
-
-        return $this->doGetRequest($client, sprintf('help_center/categories/%d.json', $params['id']));
+        return $this->doIncrementalExportRequest($client, 'tickets', array(
+            'start_time' => $params['start_time'],
+        ));
     }
 }

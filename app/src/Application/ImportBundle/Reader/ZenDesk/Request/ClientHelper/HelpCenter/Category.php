@@ -28,31 +28,67 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperDeleteInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
 use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk HelpCenter article create request client helper
+ * ZenDesk HelpCenter categories request client helper
  *
- * Class ArticleCreate
+ * Class Category
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/articles#create-article
  */
-final class ArticleCreate extends AbstractHelper
+final class Category extends AbstractHelper
+    implements ClientHelperFindAllInterface, ClientHelperCreateInterface, ClientHelperFindInterface, ClientHelperDeleteInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#list-categories
      */
-    public function request(Client $client, array $params = array())
+    public function findAll(Client $client, array $params = array())
+    {
+        return $this->doGetRequest($client, 'help_center/categories.json');
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#create-category
+     */
+    public function create(Client $client, array $params = array())
+    {
+        return $this->doPostRequest($client, 'help_center/categories.json', $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#show-category
+     */
+    public function find(Client $client, array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        $section_id = $params['id'];
-        unset($params['id']);
+        return $this->doGetRequest($client, sprintf('help_center/categories/%d.json', $params['id']));
+    }
 
-        return $this->doPostRequest($client, sprintf('help_center/sections/%d/articles.json', $section_id), $params);
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/categories#delete-category
+     */
+    public function delete(Client $client, array $params = array())
+    {
+        if ( ! isset($params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
+
+        return $this->doDeleteRequest($client, sprintf('help_center/categories/%d.json', $params['id']));
     }
 }

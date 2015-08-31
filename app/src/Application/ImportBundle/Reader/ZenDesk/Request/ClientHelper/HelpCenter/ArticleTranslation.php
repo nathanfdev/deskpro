@@ -28,23 +28,25 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
 use Zendesk\API\Client;
 use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk HelpCenter section create request client helper
+ * ZenDesk HelpCenter article translations request client helper
  *
- * Class SectionCreate
+ * Class ArticleTranslation
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/sections#create-section
  */
-final class SectionCreate extends AbstractHelper
+final class ArticleTranslation extends AbstractHelper implements ClientHelperCreateInterface, ClientHelperFindAllInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#create-translation
      */
-    public function request(Client $client, array $params = array())
+    public function create(Client $client, array $params = array())
     {
         if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
@@ -53,6 +55,20 @@ final class SectionCreate extends AbstractHelper
         $category_id = $params['id'];
         unset($params['id']);
 
-        return $this->doPostRequest($client, sprintf('help_center/categories/%d/sections.json', $category_id), $params);
+        return $this->doPostRequest($client, sprintf('help_center/articles/%d/translations.json', $category_id), $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#list-translations
+     */
+    public function findAll(Client $client, array $params = array())
+    {
+        if ( ! isset($params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
+
+        return $this->doGetRequest($client, sprintf('help_center/articles/%d/translations.json', $params['id']));
     }
 }

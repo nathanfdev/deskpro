@@ -29,8 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixtureDeleteInterface;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoryCreate;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\CategoryDelete;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\Category;
 use DateTime;
 use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
@@ -71,12 +70,12 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
      */
     public function delete()
     {
+        $helper = new Category();
+
         try {
             $categories = $this->category_loader->getFakeCategories();
             foreach ($categories as $category) {
-                $helper = new CategoryDelete(array('id' => $category['id']));
-                $helper->request($this->client);
-
+                $helper->delete($this->client, array('id' => $category['id']));
                 $this->logInfo(sprintf('Category `%s` deleted successfully', $category['name']));
             }
 
@@ -93,14 +92,14 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
         if ( ! $this->category_loader->hasPrimaryCategory()) {
             try {
                 $this->logInfo('Importing primary category');
-                $helper = new CategoryCreate(array(
+
+                $helper   = new Category();
+                $response = $helper->create($this->client, array(
                     'category' => array(
                         'name'        => 'Primary Category',
                         'description' => 'Primary Category description',
-                    ),
+                    )
                 ));
-
-                $response = $helper->request($this->client);
 
                 $this->logInfo('Primary category imported successfully');
                 $this->logger->debug(json_encode($response->category));
@@ -118,14 +117,13 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
      */
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
-        $helper = new CategoryCreate(array(
+        $helper   = new Category();
+        $response = $helper->create($this->client, array(
             'category' => array(
                 'name'        => CategoryLoader::FAKE_PREFIX . ' ' . $num,
                 'description' => CategoryLoader::FAKE_PREFIX .' description ' . $num,
             ),
         ));
-
-        $response = $helper->request($this->client);
 
         $this->logger->info('Category created successfully');
         $this->logger->debug(json_encode($response->category));

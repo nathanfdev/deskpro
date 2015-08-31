@@ -25,24 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
 
 /**
- * ZenDesk organization find request client helper
- *
- * Class OrganizationFind
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
+ * Interface ClientHelperDeleteInterface
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
  */
-final class OrganizationFind extends AbstractHelper
+interface ClientHelperDeleteInterface
 {
     /**
-     * {@inheritdoc}
+     * Do request via ZenDesk client
+     *
+     * @param Client $client
+     * @param array  $params
+     *
+     * @return \stdClass
      */
-    public function request(Client $client, array $params = array())
-    {
-        return $client->organizations()->find($params);
-    }
+    public function delete(Client $client, array $params = array());
 }

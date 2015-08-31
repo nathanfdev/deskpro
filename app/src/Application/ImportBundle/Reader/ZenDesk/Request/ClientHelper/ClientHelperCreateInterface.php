@@ -25,34 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
-use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk HelpCenter article comment create request client helper
- *
- * Class ArticleCommentCreate
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/comments#create-comment
+ * Interface ClientHelperCreateInterface
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
  */
-final class ArticleCommentCreate extends AbstractHelper
+interface ClientHelperCreateInterface extends ClientHelperInterface
 {
     /**
-     * {@inheritdoc}
+     * Do request via ZenDesk client
+     *
+     * @param Client $client
+     * @param array  $params
+     *
+     * @return \stdClass
      */
-    public function request(Client $client, array $params = array())
-    {
-        if ( ! isset($params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
-        }
-
-        $article_id = $params['id'];
-        unset($params['id']);
-
-        return $this->doPostRequest($client, sprintf('help_center/articles/%d/comments.json', $article_id), $params);
-    }
+    public function create(Client $client, array $params = array());
 }

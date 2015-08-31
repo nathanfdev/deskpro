@@ -80,7 +80,7 @@ abstract class AbstractHelper implements ClientHelperInterface
      * @see https://developer.zendesk.com/rest_api/docs/core/incremental_export
      * @see https://support.zendesk.com/hc/en-us/articles/204396193-New-Incremental-APIs-now-available-to-all-accounts?preview%5Btheme_id%5D=202201216&use_theme_settings=false
      */
-    protected function incrementalExport(Client $client, $type, array $params, $api_group = '')
+    protected function doIncrementalExportRequest(Client $client, $type, array $params, $api_group = '')
     {
         if ( ! $params['start_time']) {
             throw new MissingParametersException(__METHOD__, array('start_time'));
