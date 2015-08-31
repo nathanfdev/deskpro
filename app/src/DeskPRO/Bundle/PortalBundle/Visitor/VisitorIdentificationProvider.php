@@ -74,7 +74,7 @@ class VisitorIdentificationProvider
 
     public function getVisitorIdentifier()
     {
-        if ($identifier = $this->request_stack->getCurrentRequest()->cookies->get(static::COOKIE_NAME)) {
+        if ($identifier = $this->request_stack->getMasterRequest()->cookies->get(static::COOKIE_NAME)) {
             $this->logger->info(sprintf('found visitor identifier in cookie "%s"', static::COOKIE_NAME));
 
             return $identifier;
