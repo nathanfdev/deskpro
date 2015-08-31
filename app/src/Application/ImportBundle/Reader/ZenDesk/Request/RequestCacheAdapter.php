@@ -58,11 +58,17 @@ final class RequestCacheAdapter implements RequestAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function doRequest($helper_class, array $params = array())
+    public function doRequest(Request $request)
     {
-        $hash = md5($helper_class . json_encode($params));
+        $hash = md5(
+            $request->getApiGroup() .
+            $request->getEntityType() .
+            $request->getMethod() .
+            json_encode($request->getParams())
+        );
+
         if ( ! isset($this->cache[$hash])) {
-            $this->cache[$hash] = $this->request_adapter->doRequest($helper_class, $params);
+            $this->cache[$hash] = $this->request_adapter->doRequest($request);
         }
 
         return $this->cache[$hash];

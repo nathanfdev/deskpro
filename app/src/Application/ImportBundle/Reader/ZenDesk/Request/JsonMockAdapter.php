@@ -48,7 +48,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addPeopleIncrementalExportResponse($response)
     {
-        $this->addResponse('CoreAPI\PeopleIncrementalExport', $response);
+        $this->addResponse('CoreAPI\PeopleIncrementalExport::request', $response);
         return $this;
     }
 
@@ -60,7 +60,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addPeopleFindResponse($response)
     {
-        $this->addResponse('CoreAPI\PeopleFind', $response);
+        $this->addResponse('CoreAPI\PeopleFind::request', $response);
         return $this;
     }
 
@@ -72,7 +72,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addOrganizationFindResponse($response)
     {
-        $this->addResponse('CoreAPI\OrganizationFind', $response);
+        $this->addResponse('CoreAPI\OrganizationFind::request', $response);
         return $this;
     }
 
@@ -84,7 +84,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addTicketsIncrementalExportResponse($response)
     {
-        $this->addResponse('CoreAPI\TicketsIncrementalExport', $response);
+        $this->addResponse('CoreAPI\TicketsIncrementalExport::request', $response);
         return $this;
     }
 
@@ -96,7 +96,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addTicketCommentsFindAllResponse($response)
     {
-        $this->addResponse('CoreAPI\TicketCommentsFindAll', $response);
+        $this->addResponse('CoreAPI\TicketCommentsFindAll::request', $response);
         return $this;
     }
 
@@ -108,7 +108,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticlesIncrementalExportResponse($response)
     {
-        $this->addResponse('HelpCenter\ArticleIncrementalExport', $response);
+        $this->addResponse('HelpCenter\ArticleIncrementalExport::request', $response);
         return $this;
     }
 
@@ -120,7 +120,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleCommentsFindAllResponse($response)
     {
-        $this->addResponse('HelpCenter\ArticleCommentsFindAll', $response);
+        $this->addResponse('HelpCenter\ArticleCommentsFindAll::request', $response);
         return $this;
     }
 
@@ -132,7 +132,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleAttachmentsFindAllResponse($response)
     {
-        $this->addResponse('HelpCenter\ArticleAttachmentsFindAll', $response);
+        $this->addResponse('HelpCenter\ArticleAttachmentsFindAll::request', $response);
         return $this;
     }
 
@@ -144,7 +144,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleTranslationsFindAllResponse($response)
     {
-        $this->addResponse('HelpCenter\ArticleTranslationsFindAll', $response);
+        $this->addResponse('HelpCenter\ArticleTranslationsFindAll::request', $response);
         return $this;
     }
 
@@ -156,7 +156,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleCategoriesFindAll($response)
     {
-        $this->addResponse('HelpCenter\SectionsFindAll', $response);
+        $this->addResponse('HelpCenter\SectionsFindAll::request', $response);
         return $this;
     }
 
@@ -168,20 +168,22 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleCategoryFindResponse($response)
     {
-        $this->addResponse('HelpCenter\SectionFind', $response);
+        $this->addResponse('HelpCenter\SectionFind::request', $response);
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function doRequest($helper_class, array $params = array())
+    public function doRequest(Request $request)
     {
-        if (empty($this->responses[$helper_class])) {
-            throw new RuntimeException(sprintf('No response exists for `%s`', $helper_class));
+        $hash = $request->concatMethod();
+
+        if (empty($this->responses[$hash])) {
+            throw new RuntimeException(sprintf('No response exists for `%s`', $hash));
         }
 
-        return array_shift($this->responses[$helper_class]);
+        return array_shift($this->responses[$hash]);
     }
 
     /**

@@ -80,25 +80,26 @@ final class RequestClientAdapter implements RequestAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function doRequest($helper_class, array $params = array())
+    public function doRequest(Request $request)
     {
-        $helper_class = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\' . $helper_class;
-        if ( ! class_exists($helper_class)) {
-            throw new \RuntimeException(sprintf('ZenDesk reader helper class `%s` not found', $helper_class));
+        $helper = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\' . $request->concatClass();
+        if ( ! class_exists($helper)) {
+            throw new \RuntimeException(sprintf('ZenDesk reader helper class `%s` not found', $helper));
         }
 
-        $helper = new $helper_class($params);
+        $helper = new $helper();
         if ( ! $helper instanceof ClientHelperInterface) {
             throw new \RuntimeException('Helper is not instance of ClientHelperInterface');
         }
 
-        return $this->doApiRequest($helper);
+        return $this->doApiRequest($helper, $request);
     }
 
     /**
      * Do API request
      *
-     * @param ClientHelper\ClientHelperInterface $request
+     * @param ClientHelper\ClientHelperInterface $helper
+     * @param Request                            $request
      * @param int                                $retry_attempt
      *
      * @return \stdClass
@@ -106,12 +107,12 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doApiRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
+    private function doApiRequest(ClientHelper\ClientHelperInterface $helper, Request $request, $retry_attempt = 0)
     {
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);
 
-            $response = $request->request($this->client);
+            $response = $helper->{$request->getMethod()}($this->client, $request->getParams());
             $this->was_request = true;
 
             return $response;
@@ -138,6 +139,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
                         }
 
                         return $this->retry(
+                            $helper,
                             $request,
                             $retry_attempt,
                             new RetryAfterException($e->getMessage(), $timeout),
@@ -155,7 +157,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
                             $this->logger->error($e);
                         }
 
-                        return $this->retry($request, $retry_attempt, $e);
+                        return $this->retry($helper, $request, $retry_attempt, $e);
                 }
             }
 
@@ -165,7 +167,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
                 $this->logger->error($e);
             }
 
-            return $this->retry($request, $retry_attempt, $e);
+            return $this->retry($helper, $request, $retry_attempt, $e);
         }
 
         return null;
@@ -174,7 +176,8 @@ final class RequestClientAdapter implements RequestAdapterInterface
     /**
      * Retry api request on error response
      *
-     * @param ClientHelper\ClientHelperInterface $request
+     * @param ClientHelper\ClientHelperInterface $helper
+     * @param Request                            $request
      * @param int                                $retry_attempt
      * @param Exception                          $exception
      * @param int                                $timeout
@@ -184,7 +187,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * @throws Exception
      * @throws RetryAfterException
      */
-    private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
+    private function retry(ClientHelper\ClientHelperInterface $helper, Request $request, $retry_attempt, Exception $exception, $timeout = 0)
     {
         // Retry attempt timeouts (in seconds)
         $retry_timeouts = array(2, 5, 10, 30);
@@ -202,7 +205,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
 
             sleep($timeout);
 
-            return $this->doApiRequest($request, $retry_attempt);
+            return $this->doApiRequest($helper, $request, $retry_attempt);
         }
 
         throw $exception;

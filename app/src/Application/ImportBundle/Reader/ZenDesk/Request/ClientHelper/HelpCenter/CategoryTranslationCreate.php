@@ -39,7 +39,7 @@ use Zendesk\API\MissingParametersException;
  *
  * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#create-translation
  */
-class CategoryTranslationCreate extends AbstractHelper
+final class CategoryTranslationCreate extends AbstractHelper
 {
     /**
      * {@inheritdoc}

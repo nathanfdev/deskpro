@@ -28,18 +28,107 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
 /**
- * ZenDesk API request adapter interface
- *
- * Interface RequestAdapterInterface
+ * Class Request
  * @package Application\ImportBundle\Reader\ZenDesk\Request
  */
-interface RequestAdapterInterface
+class Request
 {
     /**
-     * ZenDesk API request
-     *
-     * @param Request $request
-     * @return \stdClass
+     * @var string
      */
-    public function doRequest(Request $request);
+    private $api_group;
+
+    /**
+     * @var string
+     */
+    private $entity_type;
+
+    /**
+     * @var string
+     */
+    private $method;
+
+    /**
+     * @var array
+     */
+    private $params = array();
+
+    /**
+     * Constructor
+     *
+     * @param string $api_group
+     * @param string $entity_type
+     * @param string $method
+     * @param array  $params
+     */
+    public function __construct($api_group, $entity_type, $method, array $params = array())
+    {
+        $this->api_group   = $api_group;
+        $this->entity_type = $entity_type;
+        $this->method      = $method;
+        $this->params      = $params;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiGroup()
+    {
+        return $this->api_group;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return $this->entity_type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @return string
+     */
+    public function concatClass()
+    {
+        return $this->api_group . '\\' . $this->entity_type;
+    }
+
+    /**
+     * @return string
+     */
+    public function concatMethod()
+    {
+        return $this->concatClass() . '::' . $this->method;
+    }
+
+    /**
+     * @param string $helper_string
+     * @param array  $params
+     *
+     * @return Request
+     */
+    public static function createFromString($helper_string, array $params = array())
+    {
+        if (preg_match('/^(\w+)\x5c(\w+)::(\w+)$/', $helper_string, $matches)) {
+            return new Request($matches[1], $matches[2], $matches[3], $params);
+        }
+
+        throw new \RuntimeException(sprintf('Unable to parse ZD request `%s`', $helper_string));
+    }
 }
