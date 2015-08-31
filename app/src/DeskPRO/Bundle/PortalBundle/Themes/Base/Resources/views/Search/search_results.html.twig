@@ -12,6 +12,7 @@
                     <label class="box">
                         <input type="text" name="q" value="{{ query }}" style="width: 100%; border: 1px solid #fff0ec;" />
                     </label>
+                    {% if can_use_articles() %}
                     <hr />
                     <label class="box">
                         <span class="kb-checkbox-wrapper">
@@ -19,6 +20,8 @@
                           <span class="kb-checkbox-title">{{ phrase('portal.articles.section-title') }}</span>
                         </span>
                     </label>
+                    {% endif %}
+                    {% if can_use_news() %}
                     <hr />
                     <label class="box">
                         <span class="kb-checkbox-wrapper">
@@ -26,6 +29,8 @@
                           <span class="kb-checkbox-title">{{ phrase('portal.news.section-title') }}</span>
                         </span>
                     </label>
+                    {% endif %}
+                    {% if can_use_downloads() %}
                     <hr />
                     <label class="box">
                         <span class="kb-checkbox-wrapper">
@@ -33,6 +38,8 @@
                           <span class="kb-checkbox-title">{{ phrase('portal.downloads.section-title') }}</span>
                         </span>
                     </label>
+                    {% endif %}
+                    {% if can_use_feedback() %}
                     <hr />
                     <label class="box">
                         <span class="kb-checkbox-wrapper">
@@ -40,6 +47,7 @@
                           <span class="kb-checkbox-title">{{ phrase('portal.feedback.section-title') }}</span>
                         </span>
                     </label>
+                    {% endif %}
                     <hr />
                     <div style="width: 100%; text-align: center; margin-top:5px;">
                         <button type="submit" style="width: 80%; margin-top: 12px;">Search</button>
