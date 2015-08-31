@@ -30,21 +30,75 @@ class FeedbackResults extends React.Component {
     new_filter.page = page;
     this.props.updateFilter(new_filter);
   }
+  setStatusCategory(id) {
+    let new_filter = this.props.filterModel;
+    new_filter.reset();
+    new_filter.setStatusCategory(id);
+    this.props.updateFilter(new_filter);
+  }
+  setType(id) {
+    let new_filter = this.props.filterModel;
+    new_filter.reset();
+    new_filter.setType(id);
+    this.props.updateFilter(new_filter);
+  }
   componentDidUpdate() {
     this.setEvents();
   }
   setEvents() {
+    let self = this;
     let results = $(React.findDOMNode(this.refs.results));
-    let that = this;
+
+    // process pager
     results.find('.deskpro-pager a').each(function () {
       $(this).click(function(e){
         e.preventDefault();
         let uri = $(this).attr('href');
         let getparam = function get(n) {
-          var half = uri.split(n + '=')[1];
+          let half = uri.split(n + '=')[1];
           return half !== undefined ? decodeURIComponent(half.split('&')[0]) : null;
         };
-        that.updatePage(getparam('page'));
+        self.updatePage(getparam('page'));
+
+        return false;
+      });
+    });
+
+    // add events to "I Agree"
+    results.find('.feedback-item-controls a.i-agree').each(function() {
+      let $iAgreeBox = $(this);
+      $iAgreeBox.click(function (e) {
+        e.preventDefault();
+        if ($iAgreeBox.hasClass('agreed')) {
+          return; // already agreed
+        }
+        let action = $iAgreeBox.attr('href');
+        $.post(action);
+        let $counter = $iAgreeBox.find('span.counter');
+        $counter.text(_.parseInt($counter.text()) + 1);
+        $iAgreeBox.addClass('agreed');
+
+        return false;
+      });
+    });
+
+    // add events to status category links
+    results.find('.feedback-item-content .feedback-status a').each(function () {
+      let $statusCategoryLink = $(this);
+      $statusCategoryLink.click(function (e) {
+        e.preventDefault();
+        self.setStatusCategory($statusCategoryLink.data('id'));
+        return false;
+      });
+    });
+
+    // add events to type (categories) links
+    results.find('a.feedback-category').each(function () {
+      let $typeLink = $(this);
+      $typeLink.click(function (e) {
+        e.preventDefault();
+        self.setType($typeLink.data('id'));
+        return false;
       });
     });
   }
@@ -112,6 +166,16 @@ class FilterModel {
       return _.parseInt(val);
     });
     this.page = _.parseInt(data.page || 1);
+    this.checkEmptyTypes();
+    this.checkEmptyStatusCategories();
+  }
+  reset() {
+    this.page = 1;
+    this.sort = 'date';
+    this.sort_direction = 'desc';
+    this.status = 'all';
+    this.status_categories = [];
+    this.types = [];
     this.checkEmptyTypes();
     this.checkEmptyStatusCategories();
   }
@@ -203,6 +267,13 @@ class FilterModel {
     }
     this.checkEmptyTypes();
   }
+  setType(type_id) {
+    this.page = 1;
+    type_id = _.parseInt(type_id);
+    this.types = [];
+    this.types.push(type_id);
+    this.checkEmptyTypes();
+  }
   toggleStatusCategory(status_category_id) {
     this.page = 1;
     status_category_id = _.parseInt(status_category_id);
@@ -213,6 +284,14 @@ class FilterModel {
     } else {
       this.status_categories.push(status_category_id);
     }
+    // force a filter on this.status_categories
+    this.setStatus(this.available.getStatusForStatusCategory(status_category_id));
+  }
+  setStatusCategory(status_category_id) {
+    this.page = 1;
+    status_category_id = _.parseInt(status_category_id);
+    this.status_categories = [];
+    this.status_categories.push(status_category_id);
     // force a filter on this.status_categories
     this.setStatus(this.available.getStatusForStatusCategory(status_category_id));
   }
