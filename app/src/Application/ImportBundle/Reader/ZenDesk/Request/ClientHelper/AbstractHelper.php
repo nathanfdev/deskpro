@@ -42,19 +42,6 @@ use Zendesk\API\ResponseException;
 abstract class AbstractHelper implements ClientHelperInterface
 {
     /**
-     * @var array
-     */
-    protected $params;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(array $params = array())
-    {
-        $this->params = $params;
-    }
-
-    /**
      * Sends a get request
      * Some of end points are not implemented in ZenDesk api client library
      *

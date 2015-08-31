@@ -44,15 +44,13 @@ final class ArticleAttachmentCreate extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
-        if ( ! isset($this->params['id'])) {
+        if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        $end_point = sprintf('help_center/articles/%d/attachments.json', $this->params['id']);
-        $params    = $this->params;
-
+        $end_point = sprintf('help_center/articles/%d/attachments.json', $params['id']);
         unset($params['id']);
 
         return $this->doPostRequest($client, $end_point, $params, 'multipart/form-data');

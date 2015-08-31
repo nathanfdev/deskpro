@@ -43,8 +43,8 @@ final class CategoryCreate extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
-        return $this->doPostRequest($client, 'help_center/categories.json', $this->params);
+        return $this->doPostRequest($client, 'help_center/categories.json', $params);
     }
 }

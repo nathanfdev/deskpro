@@ -41,10 +41,10 @@ final class TicketCommentsFindAll extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
         return $client->tickets()->comments()->findAll(array(
-            'ticket_id' => $this->params['ticket_id'],
+            'ticket_id' => $params['ticket_id'],
         ));
     }
 }

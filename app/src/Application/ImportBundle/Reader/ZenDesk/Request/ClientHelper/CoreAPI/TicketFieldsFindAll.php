@@ -25,31 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
-use Zendesk\API\Client;
-use Zendesk\API\MissingParametersException;
+use Zend\View\Helper\Escaper\AbstractHelper;
 
 /**
- * ZenDesk HelpCenter category translations request client helper
- *
- * Class CategoryTranslations
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#list-translations
+ * Class TicketFieldsFindAll
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class CategoryTranslationsFindAll extends AbstractHelper
+final class TicketFieldsFindAll extends AbstractHelper
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function request(Client $client, array $params = array())
-    {
-        if ( ! isset($params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
-        }
 
-        return $this->doGetRequest($client, sprintf('help_center/categories/%d/translations.json', $params['id']));
-    }
 }

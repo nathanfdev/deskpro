@@ -43,10 +43,10 @@ final class ArticleIncrementalExport extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
         $params = array(
-            'start_time' => $this->params['start_time'],
+            'start_time' => $params['start_time'],
         );
 
         return $this->incrementalExport($client, 'articles', $params, 'help_center');

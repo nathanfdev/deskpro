@@ -43,7 +43,7 @@ final class CategoriesFindAll extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
         return $this->doGetRequest($client, 'help_center/categories.json');
     }

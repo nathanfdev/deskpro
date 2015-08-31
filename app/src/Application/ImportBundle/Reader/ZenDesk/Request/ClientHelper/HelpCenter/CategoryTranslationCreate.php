@@ -44,15 +44,13 @@ final class CategoryTranslationCreate extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
-        if ( ! isset($this->params['id'])) {
+        if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        $category_id = $this->params['id'];
-        $params      = $this->params;
-
+        $category_id = $params['id'];
         unset($params['id']);
 
         return $this->doPostRequest($client, sprintf('help_center/categories/%d/translations.json', $category_id), $params);

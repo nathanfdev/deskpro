@@ -41,8 +41,8 @@ final class PeopleFind extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
-        return $client->users()->find($this->params);
+        return $client->users()->find($params);
     }
 }

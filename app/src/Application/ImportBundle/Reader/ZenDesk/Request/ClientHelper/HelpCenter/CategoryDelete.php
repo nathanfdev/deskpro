@@ -44,12 +44,12 @@ final class CategoryDelete extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
-        if ( ! isset($this->params['id'])) {
+        if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        return $this->doDeleteRequest($client, sprintf('help_center/categories/%d.json', $this->params['id']));
+        return $this->doDeleteRequest($client, sprintf('help_center/categories/%d.json', $params['id']));
     }
 }

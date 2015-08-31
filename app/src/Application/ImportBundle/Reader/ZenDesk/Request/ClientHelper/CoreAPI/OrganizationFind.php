@@ -41,8 +41,8 @@ final class OrganizationFind extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
-        return $client->organizations()->find($this->params);
+        return $client->organizations()->find($params);
     }
 }

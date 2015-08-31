@@ -41,10 +41,10 @@ final class PeopleIncrementalExport extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function request(Client $client, array $params = array())
     {
         return $this->incrementalExport($client, 'users', array(
-            'start_time' => $this->params['start_time'],
+            'start_time' => $params['start_time'],
         ));
     }
 }
