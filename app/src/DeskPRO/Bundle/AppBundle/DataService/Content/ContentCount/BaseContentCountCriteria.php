@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;

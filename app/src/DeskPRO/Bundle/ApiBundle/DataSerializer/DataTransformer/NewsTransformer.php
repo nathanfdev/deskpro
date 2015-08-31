@@ -26,55 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content;
-
-use Doctrine\ORM\QueryBuilder;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 /**
- * Class ArticlesCountCriteria
- *
- * Extends BaseContentCountCriteria with categories relation handling to meet Article entity criteria needs
+ * Class NewsTransformer
  */
-class ArticlesCountCriteria extends BaseContentCountCriteria
+class NewsTransformer extends ArticleTransformer
 {
-    /**
-     * @param QueryBuilder $qb
-     */
-    public function applyFilters(QueryBuilder $qb)
-    {
-        $alias = $qb->getRootAliases()[0];
-
-        foreach ($this->filters as $field => $value) {
-            switch ($field) {
-                case 'category':
-                    $qb->leftJoin("$alias.categories", 'cat');
-                    $qb->andWhere("cat.id = :category");
-                    $qb->setParameter('category', $value);
-                    break;
-            }
-        }
-
-        parent::applyFilters($qb);
-    }
-
-    /**
-     * @param QueryBuilder $qb
-     */
-    public function applyGroupBy(QueryBuilder $qb)
-    {
-        $this->ensureGroupBy();
-
-        $alias = $qb->getRootAliases()[0];
-        switch ($this->group_by) {
-            case 'category':
-                $qb->addSelect('cat.id as group_name');
-                $qb->leftJoin("$alias.categories", 'cat');
-                break;
-        }
-
-        parent::applyGroupBy($qb);
-    }
 }

@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -52,8 +52,6 @@ class ContentCountsDataService
     private $categories;
 
     /**
-     * PeopleDataService constructor.
-     *
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em, CategoriesDataService $categories)

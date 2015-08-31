@@ -31,71 +31,93 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations\Get;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCountCriteria;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\Download;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations\Get;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class ContentCountsController
+ * Class ChatsController
  */
-class ContentCountsController extends BaseController
+class ChatsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get articles, news, downloads counts",
+     *      description="Get chats count",
      *      statusCodes={
-     *          200="Success"
-     *      }
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Get(
-     *     "/{type}/counts",
-     *     name="api_content_counts",
-     *     requirements={
-     *         "type"="articles|news|downloads"
-     *     }
-     * )
+     * @Get("/user_chats/counts", name="api_chats_count")
      */
-    public function getContentCountsAction($type, Request $request)
+    public function getCountsAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountsDataService $dataService */
-        $dataService = $this->get('data.content_counts');
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
+        $dataService = $this->get('data.chat');
 
         $params = $request->query->all();
         try {
-
-            // API interfaces for all content types are identical, however articles is different from
-            // news and downloads internally because of Category relation (Article::$categories, while
-            // News::$category and Download::$category)
-            $criteria = $type === 'articles'
-                      ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
-                      : ContentCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
-
+            $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $typeToClass = [
-            'articles'  => Article::class,
-            'news'      => News::class,
-            'downloads' => Download::class,
-        ];
-        $count = $dataService->countContent($typeToClass[$type], $criteria);
-
+        $count = $dataService->countChats($criteria);
+        
         return View::create(
             $this->createRepresentation($count),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get chats",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Get("/user_chats", name="api_chats")
+     */
+    public function getAction(Request $request)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
+        $dataService = $this->get('data.chat');
+
+        $params = $request->query->all();
+        if (array_key_exists('page', $params)) {
+            unset($params['page']);
+        }
+        if (array_key_exists('count', $params)) {
+            unset($params['count']);
+        }
+
+        try {
+            $criteria = ChatSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+        $chats = $dataService->selectChats($criteria, $page, $count);
+
+        return View::create(
+            $this->dataSerialize($chats),
             Response::HTTP_OK
         );
     }

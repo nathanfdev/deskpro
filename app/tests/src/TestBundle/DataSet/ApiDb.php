@@ -467,6 +467,15 @@ class ApiDb extends AbstractDbSet
         ");
         // end of "/organizations"
 
+        // Default language --------------------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `languages`
+                (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
+                 `has_agent`, `has_admin`)
+            VALUES
+                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
+        ");
+
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
         $this->getDb()->exec("
             INSERT INTO `articles`

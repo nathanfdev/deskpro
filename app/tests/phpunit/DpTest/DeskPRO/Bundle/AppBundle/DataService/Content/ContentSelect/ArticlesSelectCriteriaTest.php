@@ -31,23 +31,24 @@
  * @package DeskPRO
  */
 
-namespace DpTest\Bundle\AppBundle\DataService\Content;
+namespace DpTest\Bundle\AppBundle\DataService\Content\ContentSelect;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
-use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ArticlesSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ArticlesCountCriteria;
 
 /**
- * Class CommentCountCriteriaTest
+ * Class ArticlesSelectCriteriaTest
  */
-class CommentCountCriteriaTest extends DeskProTestCase
+class ArticlesSelectCriteriaTest extends DeskProTestCase
 {
     static $dummyProperParams = [
-        'status'         => 'validating',
-        'article'        => '1',
-        'is_reviewed'    => '0',
-        'period_created' => 'ever',
-        'group_by'       => 'status'
+        'status'         => 'published',
+        'author'         => 1,
+        'category'       => 1,
+        'period_created' => 'this_month'
     ];
 
     /**
@@ -55,15 +56,7 @@ class CommentCountCriteriaTest extends DeskProTestCase
      */
     function it_should_be_constructable_with_empty_params()
     {
-        $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance([]));
-    }
-
-    /**
-     * @test
-     */
-    function it_should_be_constructable_with_only_group_by()
-    {
-        $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance(['group_by' => 'status']));
+        $this->assertInstanceOf(ArticlesSelectCriteria::class, $this->instance([]));
     }
 
     /**
@@ -71,44 +64,44 @@ class CommentCountCriteriaTest extends DeskProTestCase
      */
     function it_should_be_constructable_with_proper_parameters()
     {
-        $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance(self::$dummyProperParams));
+        $this->assertInstanceOf(ArticlesSelectCriteria::class, $this->instance(self::$dummyProperParams));
     }
 
     /**
      * @test
      */
-    function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
+    function it_should_extend_ArticlesCountCriteria()
     {
-        $qb = $this->mockQueryBuilder();
-        $qb->groupBy(Argument::any())->shouldBeCalled();
-        $this->instance(self::$dummyProperParams)->applyGroupBy($qb->reveal());
+        $this->assertInstanceOf(ArticlesCountCriteria::class, $this->instance());
     }
 
     /**
      * @test
      */
-    function it_should_apply_given_parameters_to_the_passed_QueryBuilder()
+    function it_should_inherit_all_OptionsResolver_configurations_from_ArticlesCountCriteria_except_group_by_option()
     {
-        $qb = $this->mockQueryBuilder();
+        $data = [new \Application\DeskPRO\Entity\Person()];
+        ArticlesCountCriteria::configureResolver($countOptionsResolver = new OptionsResolver(), $data);
+        ArticlesSelectCriteria::configureResolver($selectOptionsResolver = new OptionsResolver(), $data);
+        $countOptions = $countOptionsResolver->getDefinedOptions();
+        $selectOptions = $selectOptionsResolver->getDefinedOptions();
 
-        // expectations when applying self::$dummyProperParams
-        $qb->setParameter('status',         'validating')->shouldBeCalled();
-        $qb->setParameter('article',        '1')->shouldBeCalled();
-        $qb->setParameter('is_reviewed',    '0')->shouldBeCalled();
-        $qb->setParameter('period_created', 'ever')->shouldBeCalled();
-
-        /** @var \Doctrine\ORM\QueryBuilder $qb */
-        $qb = $qb->reveal();
-        $this->instance(self::$dummyProperParams)->applyFilters($qb);
+        $this->assertEquals(
+            array_values($selectOptions),
+            array_values($this->removeFromArray('group_by', $countOptions))
+        );
     }
 
     /**
      * @param array $parameters
-     * @return CommentsCountCriteria
+     * @return ArticlesSelectCriteria
      */
-    private function instance(array $parameters)
+    private function instance(array $parameters = [])
     {
-        return CommentsCountCriteria::fromParameters(
-                   $parameters, new \Symfony\Component\OptionsResolver\OptionsResolver());
+        return ArticlesSelectCriteria::fromParameters(
+            $parameters,
+            new \Symfony\Component\OptionsResolver\OptionsResolver(),
+            [new \Application\DeskPRO\Entity\Person()]
+        );
     }
 }
