@@ -103,12 +103,12 @@ final class RequestClientAdapter implements RequestAdapterInterface
 
             $helper = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\' . $request->concatClass();
             if ( ! class_exists($helper)) {
-                throw new \RuntimeException(sprintf('ZenDesk reader helper class `%s` not found', $helper));
+                trigger_error(sprintf('ZenDesk reader helper class `%s` not found', $helper), E_ERROR);
             }
 
             $helper = new $helper($this->client);
             if ( ! $helper instanceof ClientHelperInterface) {
-                throw new \RuntimeException('Helper is not instance of ClientHelperInterface');
+                trigger_error('Helper is not instance of ClientHelperInterface');
             }
 
             $response = $helper->{$request->getMethod()}($request->getParams());
