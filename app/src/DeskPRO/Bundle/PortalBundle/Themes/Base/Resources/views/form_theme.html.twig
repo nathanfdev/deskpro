@@ -26,27 +26,55 @@
         {% set label = name|humanize %}
     {%- endif -%}
 {%- endif -%}
+{{ no_dp_title is defined? dump(no_dp_title) : '' }}
+{%- if no_dp_title is not defined  -%}
     {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' title')|trim}) %}
+    {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}</label>
     {%- endif -%}
 {%- endblock form_label -%}
 
 {# Generic Form Types #}
 {% block form_widget -%}
-    {% if compound %}
-        {{- block('form_widget_compound') -}}
-    {% else %}
-        {{- block('form_widget_simple') -}}
-    {% endif %}
+        {% if compound %}
+            {{- block('form_widget_compound') -}}
+        {% else %}
+            {{- block('form_widget_simple') -}}
+        {% endif %}
     {% if form.vars.help %}
         <small class="help">{{ form.vars.help }}</small>
     {% endif %}
 {%- endblock form_widget %}
 
+{%- block textarea_widget -%}
+    <div class="form-widget">
+        <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+    </div>
+{%- endblock textarea_widget -%}
+
 {%- block form_widget_simple -%}
-    {%- set type = type|default('text') -%}
-    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    <div class="form-widget">
+        {%- set type = type|default('text') -%}
+        <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    </div>
 {%- endblock form_widget_simple -%}
+
+{%- block choice_widget_collapsed -%}
+    <div class="deskpro-choice-widget">
+        {{ parent() }}
+    </div>
+{%- endblock choice_widget_collapsed -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        <div class="deskpro-choice-widget">
+            {%- for child in form %}
+                {{- form_widget(child) -}}
+                {{- form_label(child, { no_dp_title: true }) -}}
+            {% endfor -%}
+        </div>
+    </div>
+{%- endblock choice_widget_expanded -%}
 
 {% block email_widget -%}
     {% set type = type|default('email') %}
@@ -73,15 +101,17 @@
 {# letting logged in users choose their email #}
 {% block deskpro_person_email_choice_widget %}
     <div {{ block('widget_container_attributes') }}>
-        {% set count = form|length %}
-        {% if count > 1 %}
-            {%- for child in form %}
-                {{- form_widget(child) -}}
-                {{- form_label(child) -}}<br>
-            {% endfor -%}
-        {% else %}
-            <strong>{{ person.primary_email_address }}</strong>
-        {% endif %}
+        <div class="deskpro-choice-widget">
+            {% set count = form|length %}
+            {% if count > 1 %}
+                {%- for child in form %}
+                    {{- form_widget(child) -}}
+                    {{- form_label(child) -}}<br>
+                {% endfor -%}
+            {% else %}
+                <strong>{{ person.primary_email_address }}</strong>
+            {% endif %}
+        </div>
     </div>
 {% endblock deskpro_person_email_choice_widget %}
 
@@ -224,19 +254,19 @@
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}
-                {% if attr.options is defined %}
-                    <script type="text/javascript">
-                        var RecaptchaOptions =
-                        {{ attr.options|json_encode|raw }}
-                    </script>
-                {% endif %}
-                <script src="{{ form.vars.url_challenge }}" type="text/javascript"></script>
-                <noscript>
-                    <iframe src="{{ form.vars.url_noscript }}" height="300" width="500"></iframe>
-                    <br/>
-                    <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-                    <input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-                </noscript>
+        {% if attr.options is defined %}
+            <script type="text/javascript">
+                var RecaptchaOptions =
+                {{ attr.options|json_encode|raw }}
+            </script>
+        {% endif %}
+        <script src="{{ form.vars.url_challenge }}" type="text/javascript"></script>
+        <noscript>
+            <iframe src="{{ form.vars.url_noscript }}" height="300" width="500"></iframe>
+            <br/>
+            <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+            <input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+        </noscript>
     {% endspaceless %}
 {% endblock deskpro_captcha_widget %}
 
@@ -265,23 +295,25 @@ HEIRARCHY
 {% endblock deskpro_heirarchical_choice_widget_expanded %}
 
 {% block deskpro_heirarchical_choice_widget_collapsed -%}
-    {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
-        {% set required = false %}
-    {%- endif -%}
-    <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
-        {% if empty_value is not none -%}
-            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
-        {%- endif %}
-        {%- if preferred_choices|length > 0 -%}
-            {% set options = preferred_choices %}
-            {{- block('deskpro_heirarchical_choice_widget_options') -}}
-            {% if choices|length > 0 and separator is not none -%}
-                <option disabled="disabled">{{ separator }}</option>
-            {%- endif %}
+    <div class="deskpro-choice-widget">
+        {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+            {% set required = false %}
         {%- endif -%}
-        {% set options = choices -%}
-        {{- block('deskpro_heirarchical_choice_widget_options') -}}
-    </select>
+        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if empty_value is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {%- endif %}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('deskpro_heirarchical_choice_widget_options') -}}
+                {% if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif %}
+            {%- endif -%}
+            {% set options = choices -%}
+            {{- block('deskpro_heirarchical_choice_widget_options') -}}
+        </select>
+    </div>
 {%- endblock deskpro_heirarchical_choice_widget_collapsed %}
 
 {% block deskpro_heirarchical_choice_widget_options -%}
@@ -324,15 +356,17 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
-        {%- for child in form %}
-            {% if form.vars.choices[loop.index0] is defined %}
-                {% if form.vars.choices[loop.index0].data|length == 0 %}
-                {{- form_widget(child) -}}
-                {{- form_label(child) -}}
+        <div class="deskpro-choice-widget">
+            {%- for child in form %}
+                {% if form.vars.choices[loop.index0] is defined %}
+                    {% if form.vars.choices[loop.index0].data|length == 0 %}
+                    {{- form_widget(child) -}}
+                    {{- form_label(child) -}}
                     <br>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        {% endfor -%}
+            {% endfor -%}
+        </div>
     </div>
 {% endblock deskpro_custom_field_choice_widget_expanded %}
 
@@ -402,23 +436,25 @@ END HEIRARCHY
 {% endblock entity_hierarchy_expanded %}
 
 {% block entity_hierarchy_collapsed -%}
-    {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
-        {% set required = false %}
-    {%- endif -%}
-    <select dp-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
-        {% if empty_value is not none -%}
-            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
-        {%- endif %}
-        {%- if preferred_choices|length > 0 -%}
-            {% set options = preferred_choices %}
-            {{- block('entity_hierarchy_widget_options') -}}
-            {% if choices|length > 0 and separator is not none -%}
-                <option disabled="disabled">{{ separator }}</option>
-            {%- endif %}
+    <div class="deskpro-choice-widget">
+        {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+            {% set required = false %}
         {%- endif -%}
-        {% set options = choices -%}
-        {{- block('entity_hierarchy_widget_options') -}}
-    </select>
+        <select dp-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if empty_value is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {%- endif %}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('entity_hierarchy_widget_options') -}}
+                {% if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif %}
+            {%- endif -%}
+            {% set options = choices -%}
+            {{- block('entity_hierarchy_widget_options') -}}
+        </select>
+    </div>
 {%- endblock entity_hierarchy_collapsed %}
 
 {% block entity_hierarchy_widget_options -%}

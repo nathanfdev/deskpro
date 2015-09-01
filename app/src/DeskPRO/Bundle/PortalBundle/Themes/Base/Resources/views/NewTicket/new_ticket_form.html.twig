@@ -13,11 +13,9 @@
         <div class="dynamic-fields-container">
             {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
                 <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">
-                    <div class="bucket {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}">
+                    <div class="{% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}">
                         {{ form_label(widget, null, {'label_attr': {'class': 'title'}}) }}
-                        <div class="form-widget">
-                            {{ form_widget(widget) }}
-                        </div>
+                        {{ form_widget(widget) }}
                         {% if widget.vars.valid is defined %}
                             {{ form_errors(widget) }}
                         {% endif %}

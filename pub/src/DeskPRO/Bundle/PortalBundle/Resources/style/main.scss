@@ -817,7 +817,20 @@ textarea {
     margin-bottom: 7px;
     padding-left: $form-padding-horizontal;
     color: $text-color;
-    font-weight: lighter;
+    font-weight: darker;
+  }
+
+  .deskpro-choice-widget {
+    .title {
+      display: inline;
+      font-weight: lighter;
+      padding-left: 0;
+    }
+    padding-left: $form-padding-horizontal;
+  }
+
+  .ticket_user_email label {
+      display: inline;
   }
 
   .form-widget {
