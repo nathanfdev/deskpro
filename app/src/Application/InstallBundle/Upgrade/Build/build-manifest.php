@@ -1936,7 +1936,12 @@
 
 	1439992701 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1439992701.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/Sergey/Sites/deskpro.lo/app/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1439992701'
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1439992701'
+	),
+
+	1440766882 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1440766882.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/Sergey/Sites/deskpro.lo/app/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1440766882'
 	),
 
 );

@@ -29,59 +29,31 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
 
 /**
- * Class CommentCountsDataService
+ * Class ContentSelectCriteria
  */
-class CommentCountsDataService
+class ContentSelectCriteria extends ContentCountCriteria
 {
     /**
-     * @var EntityManager
+     * @param OptionsResolver $resolver
      */
-    private $em;
-
-    /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $this->em = $em;
+        parent::configureResolver($resolver, $data);
+        $resolver->remove('group_by');
     }
 
     /**
-     * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
+     * @inheritdoc
      */
-    public function countComments($class, GroupedCriteria $criteria)
+    public function applyGroupBy(QueryBuilder $qb)
     {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
-        $criteria->applyFilters($qb);
-
-        if ($criteria->hasGroupBy()) {
-            $criteria->applyGroupBy($qb);
-
-            $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
-            foreach ($result as $group) {
-                $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
-            }
-        } else {
-            $total = $qb->getQuery()->getSingleScalarResult();
-            $count = Count::fromValue($total);
-        }
-
-        return $count;
+        throw new \LogicException('You can\'t group_by in ' . __CLASS__);
     }
 }

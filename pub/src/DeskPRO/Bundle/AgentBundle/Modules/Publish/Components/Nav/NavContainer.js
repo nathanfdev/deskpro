@@ -5,7 +5,6 @@ import * as actions from '../../Actions/publishNavActions'
 import { Nav } from './Nav';
 
 @connect(state => {
-
   // select lists labels depending on their grouping
   const labels = {};
   ['articles', 'news', 'downloads'].forEach(list => {
@@ -23,21 +22,30 @@ import { Nav } from './Nav';
     }
   });
 
+  labels.commentsToValidate = DatePeriods.all;
+
   return {labels, lists: state.PublishNav.lists, grouping: state.PublishNav.grouping};
 })
 export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.props.dispatch(actions.loadCounts('articles', this.props.lists.articles.grouped_by));
-    this.props.dispatch(actions.loadCounts('news', this.props.lists.news.grouped_by));
-    this.props.dispatch(actions.loadCounts('downloads', this.props.lists.downloads.grouped_by));
-    this.props.dispatch(actions.loadCategories());
+    const { dispatch, lists } = this.props;
+
+    dispatch(actions.loadCounts('articles', lists.articles.grouped_by));
+    dispatch(actions.loadCounts('news', lists.news.grouped_by));
+    dispatch(actions.loadCounts('downloads', lists.downloads.grouped_by));
+    dispatch(actions.loadCategories());
+    dispatch(actions.loadDraftsCount(lists.todo.articles.mine));
+    dispatch(actions.loadPendingCount(lists.todo.articles.mine));
+    dispatch(actions.loadCommentsToValidateCounts());
+    dispatch(actions.loadCommentsToReviewCount());
   }
 
   render() {
     const onGroupingChange = (listName) => this.onGroupingChange(listName).bind(this);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
+    const setMine = (isMine) => this.setMine(isMine).bind(this);
 
     return (
       <Nav
@@ -46,6 +54,7 @@ export class NavContainer extends React.Component {
         grouping={this.props.grouping}
         onGroupingChange={onGroupingChange}
         toggleGroupingVisibility={toggleGroupingVisibility}
+        setMine={setMine}
       />
     );
   }
@@ -65,6 +74,13 @@ export class NavContainer extends React.Component {
           this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
         }
       }
+    }
+  }
+
+  setMine(isMine) {
+    return function(e) {
+      e.preventDefault();
+      this.props.dispatch(actions.setMine(isMine));
     }
   }
 }

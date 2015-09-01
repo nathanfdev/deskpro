@@ -17,14 +17,9 @@ export default class TaskControls extends React.Component {
     });
   }
 
-  applyFilter() {
-    console.log('Filter applied');
-  }
-
-  openWindow() {
-    this.setState({
-      showWindow: true
-    });
+  applyFilter(filter) {
+    this.props.applyFilter(filter);
+    this.closeWindow();
   }
 
   closeWindow() {
@@ -51,10 +46,12 @@ export default class TaskControls extends React.Component {
         <TaskFilterHover
           position={this.state.position}
           applyFilter={this.applyFilter.bind(this)}
-          //agentList={agentList}
-          //teamList={teamList}
-          //departmentList={departmentList}
+          agents={this.props.agents}
+          teams={this.props.teams}
+          departments={this.props.departments}
+          projects={this.props.projects}
           closeWindow={this.closeWindow.bind(this)}
+          taskFilter={this.props.taskFilter}
           />
       </ComponentRootWrapper>
 

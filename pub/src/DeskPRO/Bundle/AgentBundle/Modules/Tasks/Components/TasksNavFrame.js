@@ -37,8 +37,19 @@ export default class TasksNavFrame extends React.Component {
     dispatch(TaskActions.loadLabels());
   }
 
+  /**
+   * @deprecated in favour of filterTasks, which updates the filter form
+   * @param identifier
+   * @param event
+   */
   switchTaskList(identifier, event) {
     this.props.dispatch(TaskActions.loadTaskList(identifier));
+    $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
+    $(event.target).closest('a').addClass('active');
+  }
+
+  filterTasks(filter, event) {
+    this.props.dispatch(TaskActions.setFilter(filter));
     $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
     $(event.target).closest('a').addClass('active');
   }
@@ -75,7 +86,14 @@ export default class TasksNavFrame extends React.Component {
             <div className="sidebar-list sidebar-list-filters">
               <TaskNavGroups taskList={taskList} switchTaskList={this.switchTaskList.bind(this)} />
 
-              <TaskNavProjects projectList={projectList} agentList={agentList} teamList={teamList} departmentList={departmentList} createdProject={createdProject} switchTaskList={this.switchTaskList.bind(this)} />
+              <TaskNavProjects projectList={projectList}
+                               agentList={agentList}
+                               teamList={teamList}
+                               departmentList={departmentList}
+                               createdProject={createdProject}
+                               switchTaskList={this.switchTaskList.bind(this)}
+                               filterTasks={this.filterTasks.bind(this)}
+                />
 
               <TaskNavPeople agentList={agentList} switchTaskList={this.switchTaskList.bind(this)} />
 

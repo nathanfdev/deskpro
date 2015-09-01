@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -52,8 +52,6 @@ class ContentCountsDataService
     private $categories;
 
     /**
-     * PeopleDataService constructor.
-     *
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em, CategoriesDataService $categories)
@@ -73,8 +71,11 @@ class ContentCountsDataService
 
         $qb->select('count(c) as value')
            ->from($class, 'c');
+
         $criteria->applyFilters($qb);
-        $criteria->applyGroupBy($qb);
+        if ($criteria->hasGroupBy()) {
+            $criteria->applyGroupBy($qb);
+        }
 
         $result = $qb->getQuery()->getArrayResult();
 
@@ -89,12 +90,17 @@ class ContentCountsDataService
         }
 
         // else structure into a Count with a CountsGroup containing all result groups
-        else {
+        else if ($criteria->hasGroupBy()) {
             $count = Count::fromGroupedBy($criteria->getGroupBy());
             foreach ($result as $group) {
                 $count->add($group['value']);
                 $count->addNested($group['value'], $group['group_name']);
             }
+        }
+
+        // return a single int result if count isn't grouped
+        else {
+            $count = Count::fromValue($result[0]['value']);
         }
 
         return $count;

@@ -29,16 +29,17 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 
 /**
- * Class CommentCountsDataService
+ * Class ContentDataService
  */
-class CommentCountsDataService
+class ContentDataService
 {
     /**
      * @var EntityManager
@@ -46,8 +47,6 @@ class CommentCountsDataService
     private $em;
 
     /**
-     * PeopleDataService constructor.
-     *
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
@@ -56,32 +55,24 @@ class CommentCountsDataService
     }
 
     /**
-     * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
+     * @param string $class Concrete content entity class
+     * @param Criteria $criteria
+     * @param int $page
+     * @param int $count
+     * @return Pagerfanta
      */
-    public function countComments($class, GroupedCriteria $criteria)
+    public function selectContent($class, Criteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 
-        $qb->select('count(c) as value')
+        $qb->select('c')
            ->from($class, 'c');
         $criteria->applyFilters($qb);
 
-        if ($criteria->hasGroupBy()) {
-            $criteria->applyGroupBy($qb);
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
 
-            $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
-            foreach ($result as $group) {
-                $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
-            }
-        } else {
-            $total = $qb->getQuery()->getSingleScalarResult();
-            $count = Count::fromValue($total);
-        }
-
-        return $count;
+        return $pager;
     }
 }

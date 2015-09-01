@@ -35,64 +35,58 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations\Get;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCountCriteria;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\Download;
-use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ArticlePendingCreate;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class ContentCountsController
+ * Class ArticlePendingCreateCountsController
  */
-class ContentCountsController extends BaseController
+class ArticlePendingCreateCountsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get articles, news, downloads counts",
+     *      description="Get ArticlePendingCreate total count",
      *      statusCodes={
-     *          200="Success"
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Assigned person not found"
      *      }
      * )
-     * @Get(
-     *     "/{type}/counts",
-     *     name="api_content_counts",
-     *     requirements={
-     *         "type"="articles|news|downloads"
-     *     }
-     * )
+     * @Get("/article_pending_create/counts", name="api_article_pending_create_counts")
      */
-    public function getContentCountsAction($type, Request $request)
+    public function getTotalCountAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountsDataService $dataService */
-        $dataService = $this->get('data.content_counts');
 
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('COUNT(apc)')
+            ->from(ArticlePendingCreate::class, 'apc');
+
+        // handle the only allowed filter "assigned_person"
         $params = $request->query->all();
-        try {
-
-            // API interfaces for all content types are identical, however articles is different from
-            // news and downloads internally because of Category relation (Article::$categories, while
-            // News::$category and Download::$category)
-            $criteria = $type === 'articles'
-                      ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver())
-                      : ContentCountCriteria::fromParameters($params, new OptionsResolver());
-
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
+        if (array_key_exists('assigned_person', $params)) {
+            $assignee = $params['assigned_person'] === 'me'
+                      ? $this->getUser()
+                      : $this->findOr404(Person::class, $params['assigned_person']);
+            $qb
+                ->where('apc.assigned_person = :assignee')
+                ->setParameters(compact('assignee'));
+            unset($params['assigned_person']);
         }
 
-        $typeToClass = [
-            'articles'  => Article::class,
-            'news'      => News::class,
-            'downloads' => Download::class,
-        ];
-        $count = $dataService->countContent($typeToClass[$type], $criteria);
+        // throw Bad Request if there are any filers except "assigned_person"
+        if (!empty($params)) {
+            throw new BadRequestHttpException('Unknown parameters: ' . join(', ', array_keys($params)));
+        }
+
+        $total = $qb->getQuery()->getSingleScalarResult();
+        $count = Count::fromValue($total);
 
         return View::create(
             $this->createRepresentation($count),

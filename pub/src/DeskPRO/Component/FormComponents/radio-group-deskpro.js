@@ -5,7 +5,7 @@
 var React = require('react');
 var Formsy = require('formsy-react');
 var ComponentMixin = require('./mixins/component');
-var RowDeskPRO = require('./row');
+var RowDeskPRO = require('./row-deskpro');
 
 var RadioGroupDeskPRO = React.createClass({
 
@@ -37,7 +37,7 @@ var RadioGroupDeskPRO = React.createClass({
             var checked = (_this.getValue() === radio.value);
             var disabled = _this.isFormDisabled() || radio.disabled || _this.props.disabled;
             if (_this.props.type === 'inline') {
-                return (<span>
+                return (<span key={key}>
                         <input
                             checked={checked}
                             type="radio"

@@ -90,7 +90,7 @@ var RowDeskPRO = React.createClass({
 
         return (
             <div className={classNames.formGroup.join(' ')}>
-                {this.props.label && this.props.label.length > 0 && this.props.label !== '' ? this.renderLabel() : ''}
+                {this.props.label && this.props.label.length > 0 && this.props.label !== '' ? this.renderLabel() : null}
                 {element}
             </div>
         );

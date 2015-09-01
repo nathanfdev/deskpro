@@ -31,51 +31,66 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
+use FOS\RestBundle\View\View;
+use FOS\RestBundle\Controller\Annotations\Get;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ArticlesCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ArticlesSelectCriteria;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Download;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class ChatCountsController
+ * Class ContentController
  */
-class ChatCountsController extends BaseController
+class ContentController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get chats count",
+     *      description="Get articles, news, downloads counts",
      *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     *          200="Success"
+     *      }
      * )
-     * @Get("/user_chats/counts", name="api_chats_count")
+     * @Get(
+     *     "/{type}/counts",
+     *     name="api_content_counts",
+     *     requirements={
+     *         "type"="articles|news|downloads"
+     *     }
+     * )
      */
-    public function getCountsAction(Request $request)
+    public function getContentCountsAction($type, Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
-        $dataService = $this->get('data.chat');
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService $dataService */
+        $dataService = $this->get('data.content_counts');
 
         $params = $request->query->all();
         try {
-            $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
+
+            // API interfaces for all content types are identical, however articles is different from
+            // news and downloads internally because of Category relation (Article::$categories, while
+            // News::$category and Download::$category)
+            $criteria = $type === 'articles'
+                      ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
+                      : ContentCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
+
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $count = $dataService->countChats($criteria);
-        
+        $count = $dataService->countContent($this->getClass($type), $criteria);
+
         return View::create(
             $this->createRepresentation($count),
             Response::HTTP_OK
@@ -84,20 +99,25 @@ class ChatCountsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Get chats",
+     *      description="Get articles, news, downloads",
      *      statusCodes={
      *          200="Success",
      *          400="Bad Request",
      *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     *      }
      * )
-     * @Get("/user_chats", name="api_chats")
+     * @Get(
+     *     "/{type}",
+     *     name="api_content",
+     *     requirements={
+     *         "type"="articles|news|downloads"
+     *     }
+     * )
      */
-    public function getAction(Request $request)
+    public function getAction($type, Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
-        $dataService = $this->get('data.chat');
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService $dataService */
+        $dataService = $this->get('data.content');
 
         $params = $request->query->all();
         if (array_key_exists('page', $params)) {
@@ -108,18 +128,37 @@ class ChatCountsController extends BaseController
         }
 
         try {
-            $criteria = ChatSelectCriteria::fromParameters($params, new OptionsResolver(), $this->getUser());
+            $criteria = $type === 'articles'
+                      ? ArticlesSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
+                      : ContentSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
-        $chats = $dataService->selectChats($criteria, $page, $count);
+        $chats = $dataService->selectContent($this->getClass($type), $criteria, $page, $count);
 
         return View::create(
             $this->dataSerialize($chats),
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * Get content concrete class full name by content short name
+     *
+     * @param string $type
+     * @return string
+     */
+    private function getClass($type)
+    {
+        $typeToClass = [
+            'articles'  => Article::class,
+            'news'      => News::class,
+            'downloads' => Download::class,
+        ];
+
+        return $typeToClass[$type];
     }
 }

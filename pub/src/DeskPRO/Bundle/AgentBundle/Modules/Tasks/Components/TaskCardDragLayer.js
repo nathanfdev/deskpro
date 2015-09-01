@@ -27,7 +27,7 @@ function getItemStyles(props) {
   const transform = `translate(${x}px, ${y}px)`;
   return {
     transform: transform,
-    WebkitTransform: transform
+    WebkitTransform: transform,
   };
 }
 

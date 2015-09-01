@@ -26,62 +26,76 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
+namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use Prophecy\Argument;
+use DpTest\DeskProTestCase;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ArticlesCountCriteria;
 
 /**
- * Class CommentCountsDataService
+ * Class ArticlesCountCriteriaTest
  */
-class CommentCountsDataService
+class ArticlesCountCriteriaTest extends DeskProTestCase
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    static $dummyProperParams = [
+        'status'         => 'published',
+        'author'         => 1,
+        'category'       => 1,
+        'period_created' => 'this_month',
+        'group_by'       => 'category'
+    ];
 
     /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
+     * @test
      */
-    public function __construct(EntityManager $em)
+    function it_should_be_constructable_with_empty_params()
     {
-        $this->em = $em;
+        $this->assertInstanceOf(ArticlesCountCriteria::class, $this->instance([]));
     }
 
     /**
-     * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
+     * @test
      */
-    public function countComments($class, GroupedCriteria $criteria)
+    function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->mockQueryBuilder();
+        $qb->groupBy(Argument::any())->shouldBeCalled();
+        $this->instance(self::$dummyProperParams)->applyGroupBy($qb->reveal());
+    }
 
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
-        $criteria->applyFilters($qb);
+    /**
+     * @test
+     */
+    function it_should_apply_given_parameters_to_the_passed_QueryBuilder()
+    {
+        $qb = $this->mockQueryBuilder();
 
-        if ($criteria->hasGroupBy()) {
-            $criteria->applyGroupBy($qb);
+        // expectations when applying self::$dummyProperParams
+        $qb->setParameter('status',         'published')->shouldBeCalled();
+        $qb->setParameter('person',         1)->shouldBeCalled();
+        $qb->setParameter('category',       1)->shouldBeCalled();
+        $qb->setParameter('period_created', 'this_month')->shouldBeCalled();
 
-            $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
-            foreach ($result as $group) {
-                $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
-            }
-        } else {
-            $total = $qb->getQuery()->getSingleScalarResult();
-            $count = Count::fromValue($total);
-        }
+        /** @var \Doctrine\ORM\QueryBuilder $qb */
+        $qb = $qb->reveal();
+        $this->instance(self::$dummyProperParams)->applyFilters($qb);
+    }
 
-        return $count;
+    /**
+     * @param array $parameters
+     * @return ArticlesCountCriteria
+     */
+    private function instance(array $parameters)
+    {
+        return ArticlesCountCriteria::fromParameters(
+            $parameters,
+            new \Symfony\Component\OptionsResolver\OptionsResolver(),
+            [new \Application\DeskPRO\Entity\Person()]
+        );
     }
 }

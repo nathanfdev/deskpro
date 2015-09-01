@@ -113,6 +113,14 @@ export const loadLists = createAction(
   }
 );
 
+export const setFilter = createAction(
+  "TASKS_SET_FILTER",
+  (trigger, data) => {
+    trigger(null, loadFilter(data));
+    trigger(data);
+  }
+);
+
 export const failedProject = createAction("TASKS_POST_PROJECT_FAIL");
 export const createProject = createAction(
   "TASKS_POST_PROJECT",
@@ -141,6 +149,39 @@ export const editProject = createAction(
         trigger(value.xhr.responseJSON, failedProject);
       }
     );
+  }
+);
+
+export const loadFilter = createAction(
+  "TASKS_LOAD_FILTER",
+  (trigger, data)=> {
+    // Make sure we don't accidentally break the filter details
+    const filter = data;
+    let filterElements = {};
+
+    if (filter.done && filter.done !== 'all') {
+      filterElements.is_done = (filter.done === 'done');
+    }
+
+    if (filter.projects && filter.projects.length > 0) {
+      filterElements.project = filter.projects;
+    }
+
+    if (filter.agents && filter.agents.length > 0) {
+      filterElements.assigned = filter.agents;
+    }
+
+    if (filter.teams && filter.teams.length > 0) {
+      filterElements.assigned_team = filter.teams;
+    }
+
+    if (filter.departments && filter.departments.length > 0) {
+      filterElements.assigned_department = filter.departments;
+    }
+
+    const compiled = 'tasks?' + Tasks.compileParams(filterElements);
+
+    trigger(null, loadTaskList(compiled));
   }
 );
 

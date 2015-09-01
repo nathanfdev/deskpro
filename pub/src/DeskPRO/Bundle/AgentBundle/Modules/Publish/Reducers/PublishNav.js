@@ -22,6 +22,22 @@ export default class PublishNav extends Reducer {
           count: 0,
           nested: []
         },
+        todo: {
+          articles: {
+            draft: 0,
+            pending: 0,
+            mine: true
+          },
+          comments: {
+            validate: {
+              grouped_by: 'period_created',
+              count: 0,
+              nested: [
+              ],
+            },
+            review: 0
+          }
+        }
       },
 
       // Lists grouping control popup data
@@ -59,6 +75,11 @@ export default class PublishNav extends Reducer {
       .r(actions.loadAuthorName, this.authorNameLoaded)
       .r(actions.loadCategories, this.categoriesLoaded)
       .r(actions.toggleListGroupingVisibility, this.listGroupingVisibilityChanged)
+      .r(actions.setMine, this.mineChanged)
+      .r(actions.loadDraftsCount, this.draftsCountLoaded)
+      .r(actions.loadPendingCount, this.pendingCountLoaded)
+      .r(actions.loadCommentsToValidateCounts, this.commentsToValidateCountsLoaded)
+      .r(actions.loadCommentsToReviewCount, this.commentsToReviewCountLoaded)
     ;
   }
 
@@ -98,6 +119,41 @@ export default class PublishNav extends Reducer {
     const next = {...prev};
     next.grouping = Object.assign({}, next.grouping);
     next.grouping.visibility[payload] = !next.grouping.visibility[payload];
+
+    return next;
+  }
+
+  mineChanged(prev, {payload}) {
+    const next = {...prev};
+    next.lists.todo.articles.mine = payload;
+
+    return next;
+  }
+
+  draftsCountLoaded(prev, {payload}) {
+    const next = {...prev};
+    next.lists.todo.articles.draft = payload;
+
+    return next;
+  }
+
+  pendingCountLoaded(prev, {payload}) {
+    const next = {...prev};
+    next.lists.todo.articles.pending = payload;
+
+    return next;
+  }
+
+  commentsToValidateCountsLoaded(prev, {payload}) {
+    const next = {...prev};
+    next.lists.todo.comments.validate = payload;
+
+    return next;
+  }
+
+  commentsToReviewCountLoaded(prev, {payload}) {
+    const next = {...prev};
+    next.lists.todo.comments.review = payload;
 
     return next;
   }

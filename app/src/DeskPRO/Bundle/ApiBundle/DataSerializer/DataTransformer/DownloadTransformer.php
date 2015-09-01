@@ -26,62 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
-
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 /**
- * Class CommentCountsDataService
+ * Class DownloadTransformer
  */
-class CommentCountsDataService
+class DownloadTransformer extends ArticleTransformer
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
-     * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
-     */
-    public function countComments($class, GroupedCriteria $criteria)
-    {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
-        $criteria->applyFilters($qb);
-
-        if ($criteria->hasGroupBy()) {
-            $criteria->applyGroupBy($qb);
-
-            $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
-            foreach ($result as $group) {
-                $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
-            }
-        } else {
-            $total = $qb->getQuery()->getSingleScalarResult();
-            $count = Count::fromValue($total);
-        }
-
-        return $count;
-    }
 }

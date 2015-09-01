@@ -505,14 +505,12 @@
       opacity: 0.5;
     }
 
-    &.depth-1 {
-      padding-left: 5px;
-    }
-    &.depth-2 {
+    &.depth-1,
+    &.depth-2,
+    &.depth-3,
+    &.depth-4,
+    &.depth-5 {
       padding-left: 10px;
-    }
-    &.depth-3 {
-      padding-left: 15px;
     }
   }
 

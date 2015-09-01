@@ -212,10 +212,12 @@ class TaskFilterBuilder
                     }
 
                     $term .= $param;
-                }
 
-                // Set the query parameter
-                $query = $query->setParameter($param, $details['value']);
+                    // Set the query parameter
+                    $query = $query->setParameter($param, $details['value']);
+                } else {
+                    $query = $query->setParameter($param, explode(',', $details['value']));
+                }
             }
 
             // Set the table to check

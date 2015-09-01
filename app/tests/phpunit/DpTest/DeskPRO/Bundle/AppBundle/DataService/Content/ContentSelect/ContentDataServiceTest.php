@@ -26,62 +26,52 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
+namespace DpTest\Bundle\AppBundle\DataService\Content\ContentSelect;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use Prophecy\Argument;
+use DpTest\DeskProTestCase;
+use Pagerfanta\Pagerfanta;
+use Application\DeskPRO\Entity\Article;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ArticlesSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService;
 
 /**
- * Class CommentCountsDataService
+ * Class ContentDataServiceTest
  */
-class CommentCountsDataService
+class ContentDataServiceTest extends DeskProTestCase
 {
     /**
-     * @var EntityManager
+     * @test
      */
-    private $em;
-
-    /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    function it_should_be_instantiable()
     {
-        $this->em = $em;
+        $this->assertInstanceOf(ContentDataService::class, $this->instance());
     }
 
     /**
-     * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
+     * @test
      */
-    public function countComments($class, GroupedCriteria $criteria)
+    function it_should_return_Pagerfanta_instance()
     {
-        $qb = $this->em->createQueryBuilder();
+        /** @var ArticlesSelectCriteria $criteria */
+        $criteria = $this->prophesize(ArticlesSelectCriteria::class)->reveal();
+        $result = $this->instance()->selectContent(Article::class, $criteria, 1, 10);
+        $this->assertInstanceOf(Pagerfanta::class, $result);
+    }
 
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
-        $criteria->applyFilters($qb);
+    /**
+     * @return ContentDataService
+     */
+    private function instance()
+    {
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em = $this->mockQueryBuildingEntityManager()->reveal();
 
-        if ($criteria->hasGroupBy()) {
-            $criteria->applyGroupBy($qb);
-
-            $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
-            foreach ($result as $group) {
-                $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
-            }
-        } else {
-            $total = $qb->getQuery()->getSingleScalarResult();
-            $count = Count::fromValue($total);
-        }
-
-        return $count;
+        return new ContentDataService($em);
     }
 }

@@ -29,59 +29,52 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class CommentCountsDataService
+ * Class ContentCountCriteria
+ *
+ * Extends BaseContentCountCriteria with category relation handling to meet News and Download entities' criteria needs
  */
-class CommentCountsDataService
+class ContentCountCriteria extends BaseContentCountCriteria
 {
     /**
-     * @var EntityManager
+     * @param QueryBuilder $qb
      */
-    private $em;
-
-    /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public function applyFilters(QueryBuilder $qb)
     {
-        $this->em = $em;
+        $alias = $qb->getRootAliases()[0];
+
+        foreach ($this->filters as $field => $value) {
+            switch ($field) {
+                case 'category':
+                    $qb->leftJoin("$alias.category", 'cat');
+                    $qb->andWhere("cat.id = :category");
+                    $qb->setParameter('category', $value);
+                    break;
+            }
+        }
+
+        parent::applyFilters($qb);
     }
 
     /**
-     * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
+     * @param QueryBuilder $qb
      */
-    public function countComments($class, GroupedCriteria $criteria)
+    public function applyGroupBy(QueryBuilder $qb)
     {
-        $qb = $this->em->createQueryBuilder();
+        $this->ensureGroupBy();
 
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
-        $criteria->applyFilters($qb);
-
-        if ($criteria->hasGroupBy()) {
-            $criteria->applyGroupBy($qb);
-
-            $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
-            foreach ($result as $group) {
-                $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
-            }
-        } else {
-            $total = $qb->getQuery()->getSingleScalarResult();
-            $count = Count::fromValue($total);
+        $alias = $qb->getRootAliases()[0];
+        switch ($this->group_by) {
+            case 'category':
+                $qb->addSelect('cat.id as group_name');
+                $qb->leftJoin("$alias.category", 'cat');
+                break;
         }
 
-        return $count;
+        parent::applyGroupBy($qb);
     }
 }

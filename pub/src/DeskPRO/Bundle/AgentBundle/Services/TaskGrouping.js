@@ -327,8 +327,6 @@ export default class TaskGrouping {
   {
     let assignee = false;
     if (object.agents.length > 0) {
-      console.log('Agents');
-      console.log(object.agents);
       assignee = 'agent_' + object.agents[0].toString();
     } else if (object.teams.length > 0) {
       assignee = 'team_' + object.teams[0].toString();

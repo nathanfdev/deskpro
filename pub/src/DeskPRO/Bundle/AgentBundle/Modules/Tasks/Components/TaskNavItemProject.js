@@ -44,7 +44,7 @@ export default class TaskNavItemProject extends React.Component {
   }
 
   render() {
-    const { project, connectDropTarget, isOver, switchTaskList } = this.props;
+    const { project, connectDropTarget, isOver, filterTasks } = this.props;
 
     return connectDropTarget(<li className={isOver ? "droppable project-list-item" : "project-list-item"}>
       <div className="list-counter-bucket" onMouseEnter={this.toggleEditIcon.bind(this, true)} onMouseLeave={this.toggleEditIcon.bind(this, false)}>
@@ -54,7 +54,7 @@ export default class TaskNavItemProject extends React.Component {
           {project.remaining}
         </a>}
       </div>
-      <a href="#" className="item" onClick={switchTaskList.bind(this, 'tasks?project=' + project.id)}><i
+      <a href="#" className="item" onClick={filterTasks.bind(this, {projects: [project.id]})}><i
         className="fa fa-book"/> {project.title} </a>
     </li>);
   }

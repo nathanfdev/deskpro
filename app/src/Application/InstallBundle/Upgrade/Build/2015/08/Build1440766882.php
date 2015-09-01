@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -26,62 +26,21 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
-
-/**
- * Class CommentCountsDataService
- */
-class CommentCountsDataService
+class Build1440766882 extends AbstractBuild
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public function run()
     {
-        $this->em = $em;
-    }
-
-    /**
-     * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
-     * @return Count
-     */
-    public function countComments($class, GroupedCriteria $criteria)
-    {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
-        $criteria->applyFilters($qb);
-
-        if ($criteria->hasGroupBy()) {
-            $criteria->applyGroupBy($qb);
-
-            $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
-            foreach ($result as $group) {
-                $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
-            }
-        } else {
-            $total = $qb->getQuery()->getSingleScalarResult();
-            $count = Count::fromValue($total);
-        }
-
-        return $count;
+        $this->out("Added assigned_person_id to the article_pending_create table");
+		$this->execMutateSql("ALTER TABLE article_pending_create ADD assigned_person_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE article_pending_create ADD CONSTRAINT FK_27A971C358DA0EE5 FOREIGN KEY (assigned_person_id) REFERENCES people (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_27A971C358DA0EE5 ON article_pending_create (assigned_person_id)");
     }
 }

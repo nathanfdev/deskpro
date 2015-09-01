@@ -51,4 +51,17 @@ abstract class DeskProTestCase extends ProphecyTestCase
     {
         return $this->prophesize($type)->reveal();
     }
+
+    /**
+     * @param mixed $value
+     * @param array $array
+     * @return array
+     */
+    protected function removeFromArray($value, array $array)
+    {
+        $this->assertContains($value, $array);
+        unset($array[array_search($value, $array)]);
+
+        return $array;
+    }
 }

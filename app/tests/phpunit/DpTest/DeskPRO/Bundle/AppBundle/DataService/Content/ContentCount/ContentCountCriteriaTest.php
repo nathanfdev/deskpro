@@ -31,11 +31,11 @@
  * @package DeskPRO
  */
 
-namespace DpTest\Bundle\AppBundle\DataService\Content;
+namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
 
 /**
  * Class ContentCountCriteriaTest
@@ -52,12 +52,10 @@ class ContentCountCriteriaTest extends DeskProTestCase
 
     /**
      * @test
-     * @expectedException        \Symfony\Component\OptionsResolver\Exception\MissingOptionsException
-     * @expectedExceptionMessage The required option "group_by" is missing.
      */
-    function it_should_not_be_constructable_without_group_by()
+    function it_should_be_constructable_with_empty_params()
     {
-        $this->instance([]);
+        $this->assertInstanceOf(ContentCountCriteria::class, $this->instance([]));
     }
 
     /**
@@ -111,6 +109,9 @@ class ContentCountCriteriaTest extends DeskProTestCase
     private function instance(array $parameters)
     {
         return ContentCountCriteria::fromParameters(
-                   $parameters, new \Symfony\Component\OptionsResolver\OptionsResolver());
+            $parameters,
+            new \Symfony\Component\OptionsResolver\OptionsResolver(),
+            [new \Application\DeskPRO\Entity\Person()]
+        );
     }
 }

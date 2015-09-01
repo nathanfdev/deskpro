@@ -31,16 +31,15 @@
  * @package DeskPRO
  */
 
-namespace DpTest\Bundle\AppBundle\DataService\Content;
+namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\News;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCountsDataService;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ArticlesCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 
 /**
@@ -96,7 +95,6 @@ class ContentCountsDataServiceTest extends DeskProTestCase
         /** @var \Doctrine\ORM\EntityManagerInterface $em */
         $em or $em = $this->mockQueryBuildingEntityManager()->reveal();
 
-
         return new ContentCountsDataService($em, new CategoriesDataService($em));
     }
 
@@ -107,7 +105,8 @@ class ContentCountsDataServiceTest extends DeskProTestCase
     private function contentCriteria($params = ['group_by' => 'author'])
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
-        $criteria = ContentCountCriteria::fromParameters($params, $resolver);
+        $me = new \Application\DeskPRO\Entity\Person();
+        $criteria = ContentCountCriteria::fromParameters($params, $resolver, [$me]);
 
         return $criteria;
     }
@@ -118,7 +117,8 @@ class ContentCountsDataServiceTest extends DeskProTestCase
     private function articlesCriteria($params = ['group_by' => 'author'])
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
-        $criteria = ArticlesCountCriteria::fromParameters($params, $resolver);
+        $me = new \Application\DeskPRO\Entity\Person();
+        $criteria = ArticlesCountCriteria::fromParameters($params, $resolver, [$me]);
 
         return $criteria;
     }
