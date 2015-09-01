@@ -29,6 +29,7 @@ export default class TaskControls extends React.Component {
   }
 
   render() {
+    const taskView = this.props.windowProps.taskView;
     return <span className="ticket-controls-default">
       <a href="#" className="ticket-control-button">
         <span className="title">Order by:</span>
@@ -59,7 +60,7 @@ export default class TaskControls extends React.Component {
       <a href="#" className="ticket-control-button" onClick={this.props.toggleView.bind(this)}>
         <span className="title">View:</span>
         <span className="multi">
-          List
+          { taskView.charAt(0).toUpperCase() + taskView.slice(1) }
           <span className="multi-down"><i className="fa fa-caret-down" /></span>
         </span>
       </a>

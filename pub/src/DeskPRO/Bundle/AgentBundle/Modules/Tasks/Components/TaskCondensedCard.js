@@ -38,7 +38,7 @@ function collect(connect, monitor) {
   };
 }
 
-const TaskCard = React.createClass({
+const TaskCondensedCard = React.createClass({
   mixins: [
     require('react-onclickoutside')
   ],
@@ -176,7 +176,6 @@ const TaskCard = React.createClass({
 
     const selected = this.props.selected;
 
-    let cardClass = task.is_done ? "card task-card task-card-completed" : "card task-card";
     let detailsButtonText = this.state.expanded ? "Collapse" : "Expand";
 
     let doneButton = task.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
@@ -193,108 +192,50 @@ const TaskCard = React.createClass({
       });
     }
 
-    let assigneeId = "unassigned";
+    let assignee = null;
 
-    if (task.agents.length > 0) {
-      // We assume one assignment for now, though we will need to support more later
-      const agentId = task.agents[0];
-      assigneeId = "agents-" + agentId;
-    } else if (task.teams.length > 0) {
-      const teamId = task.teams[0];
-      assigneeId = "teams-" + teamId;
-    } else if (task.departments.length > 0) {
-      const departmentId = task.departments[0];
-      assigneeId = "departments-" + departmentId;
+    if (task.agents && task.agents.length > 0) {
+      assignee = this.props.agents[task.agents[0]].name;
+    } else if (task.teams && task.teams.length > 0) {
+      assignee = this.props.teams[task.teams[0]].name;
+    } else if (task.departments && task.departments.length > 0) {
+      assignee = this.props.departments[task.departments[0]].title;
     }
+
+    const ticketClass = task.is_done ? "ticket done" : "ticket";
 
     const dueField = "due-" + task.id;
     const dueButton = "due-button-" + task.id;
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
-        <div>
-          <div className="card-status-bar status-bar-left" />
-          <div className="card-status-bar status-bar-right" />
+    return connectDragSource(<div key={task.id} className={ticketClass} style={this.getStyles(this.props)}>
+      <div className="bulk-editing"></div>
 
-          <div className="card-checkbox">
-            <span className="checkbox" onClick={this.toggleMassAction}>
-              {selected ? <i className="fa fa-check" /> : '' }
-            </span>
-          </div>
+      <div className="ticket-title">
+        <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
+          {doneButton}
+        </span>
+        <a href="#">{task.title}</a>
+      </div>
 
-          <div className="top-right-box">
-            {!task.is_done ?
-              <span className="assignment">
-                <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
-                  <option value="unassigned">Unassigned</option>
-                  { agents ? <optgroup label="Agents">
-                    { Object.keys(agents).map((key) => {
-                      let agentId = "agents-" + key;
-                      return <option key={agentId} value={agentId}>{agents[key].name}</option>;
-                    })}
-                  </optgroup> : '' }
-                  { teams ? <optgroup label="Teams">
-                    { Object.keys(teams).map((key) => {
-                      let teamId = "teams-" + key;
-                      return <option key={teamId} value={teamId}>{teams[key].name}</option>;
-                    })}
-                  </optgroup> : '' }
-                  { departments ? <optgroup label="Departments">
-                    { Object.keys(departments).map((key) => {
-                      let departmentId = "departments-" + key;
-                      return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
-                    })}
-                  </optgroup> : '' }
-                </select>
-              </span>:
-              <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
-                className="fa fa-bars"/></button>}
-          </div>
+      {assignee ? <div className="agent">
+        <span style={{backgroundImage: "url(./img/avatar.jpg)"}} className="chat-avatar"></span>
+        <span className="agent-name">{assignee}</span>
+      </div> : '' }
 
-          <div className="card-line">
-              <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
-                {doneButton}
-              </span>
+      <div className="ticket-details task-condensed-details">
+        <div className={overdue ? "overdue ticket-timer" : "ticket-timer"} ref={dueButton} >
 
-            { !this.state.editing ?
-            <h1 onDoubleClick={this.editMode}>{task.title}</h1> :
-              <Formsy.Form className="inline-form">
-              <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange} /></h1>
-              </Formsy.Form>
-            }
-          </div>
-
-          { this.state.expanded || !task.is_done ?
-            <div className="card-line task-details">
-              <div className="task-extras">
-                <div>{task.comment_count} <i className="fa fa-comment"/></div>
-
-                {task.subtasks_total > 0 ?
-                  <span><span className="disc" />
-            <div className="subtask-count">{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/>
-            </div></span> : ''}
-              </div>
-
-              <div className="task-properties">
-                <div className={overdue ? "overdue" : ""} ref={dueButton} >
-
-                  <i className="fa fa-calendar-o" /> Due: {task.date_due ? Moment(task.date_due).format('MMMM D, YYYY')
-                  : 'N/A' }
-                  <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
-                </div>
-
-                {task.project && projects[task.project] ? <span>
-                  <span className="disc" /><i className="fa fa-book"/> {projects[task.project].title}
-                </span> : ''}
-
-                {ticket_link ? <span>
-                <span className="disc" />
-                  <i className="fa fa-link"/><a href={ticket_link}>{ticket_title}</a>
-                </span> : ''}
-              </div>
-            </div> : '' }
+          <i className="fa fa-calendar-o" /> Due: {task.date_due ? Moment(task.date_due).format('DD/MM/YY')
+          : 'N/A' }
+          <input type="hidden" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
         </div>
+
+        {task.project && projects[task.project] ? <div className="ticket-timer">
+            <i className="fa fa-book"/>{projects[task.project].title}
+          </div> : ''}
+      </div>
     </div>);
   }
 });
@@ -303,4 +244,4 @@ module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
-}))(TaskCard);
+}))(TaskCondensedCard);

@@ -8,7 +8,7 @@ export default class dp_window extends Reducer {
 			activeAppId: 'tickets',
 			collapsedNav: false,
 			expandedSwitcher: false,
-      kanbanOpen: false,
+      taskView: 'list'
 		};
 	}
 
@@ -54,10 +54,12 @@ export default class dp_window extends Reducer {
 		};
 	}
 
-	toggleKanban(state, action) {
+	toggleView(state, action) {
+		const taskView = action.payload;
+
 		return {
 			...state,
-			kanbanOpen: !state.kanbanOpen
+			taskView: taskView
 		}
 	}
 
@@ -68,6 +70,6 @@ export default class dp_window extends Reducer {
 		.r(ActionTypes.EXPAND_NAV, this.expandNav)
 		.r(ActionTypes.EXPAND_SWITCHER, this.expandSwitcher)
 		.r(ActionTypes.COLLAPSE_SWITCHER, this.collapseSwitcher)
-    .r(ActionTypes.TOGGLE_KANBAN, this.toggleKanban)
+    .r(ActionTypes.TOGGLE_VIEW, this.toggleView)
 	}
 }
