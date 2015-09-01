@@ -99,7 +99,6 @@ export default class TasksNavProjects extends React.Component {
         <ul>{projectList.projectList ? projectList.projectList.map(function(object) {
             return <TaskNavItemProject key={object.id}
                                        project={object}
-                                       switchTaskList={_this.props.switchTaskList.bind(this)}
                                        filterTasks={_this.props.filterTasks.bind(this)}
                                        toggleWindow={_this.toggleWindow.bind(_this)}
                                        dispatch={_this.props.dispatch.bind(_this)}

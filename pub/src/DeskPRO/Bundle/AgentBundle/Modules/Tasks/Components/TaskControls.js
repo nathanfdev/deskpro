@@ -50,6 +50,7 @@ export default class TaskControls extends React.Component {
           teams={this.props.teams}
           departments={this.props.departments}
           projects={this.props.projects}
+          labels={this.props.labels}
           closeWindow={this.closeWindow.bind(this)}
           taskFilter={this.props.taskFilter}
           />

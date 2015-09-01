@@ -18,7 +18,11 @@ import * as AppActions from "../../Application/Actions/AppActions";
   taskFrameList: state.taskFrameList,
   taskListList: state.taskListList,
   projectList: state.projectList,
-  taskFilter: state.taskFilter
+  taskFilter: state.taskFilter,
+  labelList: state.labelList,
+  agentList: state.agentList,
+  teamList: state.teamList,
+  departmentList: state.departmentList
 }))
 export default class TasksListFrame extends React.Component {
   constructor(props) {
@@ -132,11 +136,12 @@ export default class TasksListFrame extends React.Component {
   }
 
   render() {
-    const {taskFrameList, projectList, taskFilter} = this.props;
+    const {taskFrameList, projectList, taskFilter, labelList, agentList, teamList, departmentList} = this.props;
 
     const _this = this;
     let linked_items = {};
     let lists = [];
+    let labels = [];
     let tickets = {};
 
     // Temp projectId for the sake of development
@@ -157,18 +162,18 @@ export default class TasksListFrame extends React.Component {
     }
 
     // Attach assignments
-    if (taskFrameList.taskFrameAgents && typeof taskFrameList.taskFrameAgents.forEach === 'function') {
-      taskFrameList.taskFrameAgents.forEach((agent) => {
+    if (agentList.agentList && typeof agentList.agentList.forEach === 'function') {
+      agentList.agentList.forEach((agent) => {
         this.agents[agent.id.toString()] = agent;
       });
     }
-    if (taskFrameList.taskFrameTeams && typeof taskFrameList.taskFrameTeams.forEach === 'function') {
-      taskFrameList.taskFrameTeams.forEach((team) => {
+    if (teamList.teamList && typeof teamList.teamList.forEach === 'function') {
+      teamList.teamList.forEach((team) => {
         this.teams[team.id.toString()] = team;
       });
     }
-    if (taskFrameList.taskFrameDepartments && typeof taskFrameList.taskFrameDepartments.forEach === 'function') {
-      taskFrameList.taskFrameDepartments.forEach((department) => {
+    if (departmentList.departmentList && typeof departmentList.departmentList.forEach === 'function') {
+      departmentList.departmentList.forEach((department) => {
         this.departments[department.id.toString()] = department;
       });
     }
@@ -186,10 +191,18 @@ export default class TasksListFrame extends React.Component {
       });
     }
 
+    if (labelList.labelList && typeof labelList.labelCharacters.forEach === 'function') {
+      labelList.labelCharacters.forEach((character) => {
+        labelList.labelList[character].forEach((label) => {
+          labels[label.id.toString()] = label;
+        });
+      });
+    }
+
     const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
 
     // Temporary hack
-    const columnField = "list";
+    const columnField = "assignee";
 
     const rawGroupings = grouping.getRawGroupings(columnField);
 
@@ -231,6 +244,7 @@ export default class TasksListFrame extends React.Component {
                         teams={this.teams}
                         departments={this.departments}
                         projects={this.projects}
+                        labels={labels}
                         applyFilter={this.applyFilter.bind(this)}
                         taskFilter={taskFilter} />
 

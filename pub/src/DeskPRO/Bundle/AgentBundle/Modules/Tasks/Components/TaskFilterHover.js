@@ -26,6 +26,7 @@ const TaskFilterHover = React.createClass({
     let teams = [];
     let agents = [];
     let projects = [];
+    let labels = [];
 
     if (typeof this.props.departments !== 'undefined' && this.props.departments !== null) {
       this.props.departments.forEach(function(object) {
@@ -55,7 +56,13 @@ const TaskFilterHover = React.createClass({
         projects.push({value: object.id, label: object.title});
       });
     }
-    
+
+    if (typeof this.props.labels !== 'undefined' && this.props.labels !== null) {
+      this.props.labels.forEach(function(object){
+        labels.push({value: object.label, label: object.label});
+      });
+    }
+
     return (<div style={{top: 94}} className="sidebar-hover hide-indicator">
         <div className="sidebar-hover-content">
           <div className="sidebar-hover-header">
@@ -81,22 +88,25 @@ const TaskFilterHover = React.createClass({
                   name="departments"
                   label="Departments"
                   options={departments}
+                  value={filter && filter.departments ? filter.departments : []}
                   multiple
                   /> : ''}
               </div>
               <div className="sidebar-hover-checkbox-collection">
-                {departments ? <FRC.CheckboxGroupDeskPRO
+                {teams ? <FRC.CheckboxGroupDeskPRO
                   name="teams"
                   label="Teams"
                   options={teams}
+                  value={filter && filter.teams ? filter.teams : []}
                   multiple
                   /> : ''}
               </div>
               <div className="sidebar-hover-checkbox-collection">
-                {departments ? <FRC.CheckboxGroupDeskPRO
+                {agents ? <FRC.CheckboxGroupDeskPRO
                   name="agents"
                   label="Agents"
                   options={agents}
+                  value={filter && filter.agents ? filter.agents : []}
                   multiple
                   /> : ''}
               </div>
@@ -104,11 +114,23 @@ const TaskFilterHover = React.createClass({
             <div className="sidebar-hover-content-box">
               <h2>Projects</h2>
               <div className="sidebar-hover-checkbox-collection">
-                {departments ? <FRC.CheckboxGroupDeskPRO
+                {projects ? <FRC.CheckboxGroupDeskPRO
                   name="projects"
                   label="Projects"
                   options={projects}
                   value={filter && filter.projects ? filter.projects : []}
+                  multiple
+                  /> : ''}
+              </div>
+            </div>
+            <div className="sidebar-hover-content-box">
+              <h2>Labels</h2>
+              <div className="sidebar-hover-checkbox-collection">
+                {labels ? <FRC.CheckboxGroupDeskPRO
+                  name="labels"
+                  label="Labels"
+                  options={labels}
+                  value={filter && filter.labels ? filter.labels : []}
                   multiple
                   /> : ''}
               </div>

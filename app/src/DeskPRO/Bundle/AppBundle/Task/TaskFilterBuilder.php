@@ -106,7 +106,7 @@ class TaskFilterBuilder
             'creator' => ['field' => 'creator'],
             'project' => ['field' => 'project'],
             'is_done' => ['field' => 'is_done'],
-            'label' => ['field' => 'label', 'table' => ['t.labels', 'l']],
+            'labels' => ['field' => 'label', 'table' => ['t.labels', 'lab']],
             'attachments' => ['field' => 'id', 'table' => ['t.attachments', 'at']],
             'list' => ['field' => 'list'],
             'due' => ['field' => 'date_due'],
