@@ -21,14 +21,6 @@
         {#</li>#}
     </ul>
 
-    <!-- Controls -->
-    <div class="table-meta">
-        <div class="table-controls">
-            <a href="#" class="column-control sort"><span>{{ phrase('portal.feedback.filter_sort') }}</span></a>
-            <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
-        </div>
-    </div>
-
     {% if feedback_types is defined and feedback_types|length > 0 %}
     <div>
         <ul class="slider-list">
