@@ -134,7 +134,6 @@ abstract class AbstractHelper implements ClientHelperInterface
     /**
      * Sends a delete request
      *
-     * @param Client $client
      * @param string $end_point
      *
      * @return mixed

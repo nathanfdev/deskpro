@@ -27,13 +27,35 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
-use Zend\View\Helper\Escaper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
 
 /**
+ * ZenDesk ticket fields request client helper
+ *
  * Class TicketField
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class TicketField extends AbstractHelper
+final class TicketField extends AbstractHelper implements ClientHelperCreateInterface, ClientHelperFindAllInterface
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/core/ticket_fields#create-ticket-fields
+     */
+    public function create(array $params = array())
+    {
+        return $this->client->ticketFields()->create($params);
+    }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/core/ticket_fields#list-ticket-fields
+     */
+    public function findAll(array $params = array())
+    {
+        return $this->client->ticketFields()->findAll();
+    }
 }
