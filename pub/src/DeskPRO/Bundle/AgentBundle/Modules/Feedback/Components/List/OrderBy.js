@@ -24,7 +24,7 @@ export class OrderBy extends React.Component {
             name = elem.text();
         sort.sort = elem.data('field');
         this.setState({sortName: name});
-        elem.closest('a.ticket-control-button').find('span.focus').text(name);
+        elem.closest('a.ticket-control-button').find('span.sort-name').text(name);
         $('div.dropdown-choice').hide();
         dispatch(actions.loadFeedbackList(query, sort));
     }
@@ -53,7 +53,11 @@ export class OrderBy extends React.Component {
         return (
             <a href="#" className="ticket-control-button">
                 <span className="title">Order by:</span>
-                <span className="focus" onClick={this.showOrderChoice.bind(this)}>{sortName}</span>
+                <span className="multi" onClick={this.showOrderChoice.bind(this)}>
+                    <span className="sort-name">{sortName}</span>
+                    <span className="multi-down"><i className="fa fa-caret-down" /></span>
+                </span>
+
                 <span className={sort.order} onClick={this.changeSortDirection.bind(this)}>{sort.order} </span>
                 <i className={sort.order === 'Desc' ? "fa fa-caret-down" : "fa fa-caret-up" }/>
 

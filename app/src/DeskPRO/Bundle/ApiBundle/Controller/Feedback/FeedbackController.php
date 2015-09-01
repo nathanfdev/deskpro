@@ -171,4 +171,58 @@ class FeedbackController extends BaseController
         );
     }
 
+    /**
+     * @ApiDoc(
+     *      description="Get values for chosen filter",
+     *      parameters={
+     *          {
+     *              "name"="name",
+     *              "requirement"="\w+",
+     *              "description"="name of chosen filter (e.g. 'type', 'status', 'category')",
+     *              "dataType"="string",
+     *              "required"=true
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      },
+     * )
+     * @Get("/feedback/filter", name="api_feedback_filter_values")
+     * @param Request $request
+     * @return View
+     * @throws \LogicException
+     */
+    public function getFilterValues(Request $request)
+    {
+        $filterName = $request->query->get('name');
+        /** @var \Doctrine\ORM\QueryBuilder $qb */
+        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        switch ($filterName) {
+            case 'status':
+                $qb
+                    ->select('s.title')
+                    ->from('DeskPRO:FeedbackStatusCategory', 's');
+                break;
+            case 'category':
+                $qb
+                    ->select('c.title')
+                    ->from('DeskPRO:FeedbackCategory', 'c')
+                    ->orderBy('c.title');
+                break;
+            case 'custom_category':
+                $qb
+                    ->select('c.input as title')
+                    ->distinct()
+                    ->from('DeskPRO:CustomDataFeedback', 'c')
+                    ->orderBy('c.input');
+                break;
+        }
+        $result = $qb->getQuery()->getScalarResult();
+        return View::create(
+            $this->createRepresentation($result),
+            Response::HTTP_OK
+        );
+    }
 }

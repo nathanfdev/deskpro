@@ -22,6 +22,10 @@ export class FeedbackCard extends React.Component {
                   </span>
 
                     <h1>{feedback.title}</h1>
+
+                    <div className="task-extras">
+                        <span className="text">{feedback.status}</span>
+                    </div>
                 </div>
 
                 <div className="card-line">

@@ -125,11 +125,21 @@ export function getHidden() {
  * Get list of filtered feedback
  * @return Promise
  */
-export function getList(query, sort) {
+export function getList(query, sort, filters) {
     let params = [];
     params.push(compileParams(query));
     params.push(compileParams(sort));
+    if (filters.value.length > 0) {
+        params.push(filters.alias + '=' + filters.value);
+    }
     return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
+}
+/**
+ * Get values for chosen filter
+ * @return Promise
+ */
+export function getFilterValues(filterName) {
+    return DpApi.sendGet('DP_API/feedback/filter?name=' + filterName);
 }
 
 /**

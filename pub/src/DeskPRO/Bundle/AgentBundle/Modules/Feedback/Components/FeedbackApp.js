@@ -13,7 +13,7 @@ export class FeedbackApp extends React.Component {
 
     constructor(props) {
         super(props);
-        const { query, sort, dispatch } = this.props;
+        const { query, sort, filters, dispatch } = this.props;
         dispatch(actions.feedbackToValidate());
         dispatch(actions.commentsToReview());
         dispatch(actions.feedbackLabels());
@@ -23,21 +23,23 @@ export class FeedbackApp extends React.Component {
         dispatch(actions.feedbackActiveStatus());
         dispatch(actions.feedbackClosedStatus());
         dispatch(actions.feedbackHiddenStatus());
-        dispatch(actions.loadFeedbackList(query, sort));
+        dispatch(actions.loadFeedbackList(query, sort, filters));
+        dispatch(actions.getFilterValues(filters.alias));
     }
 
 
     choiceClick(params, event) {
         event.preventDefault();
         event.stopPropagation();
-        const {sort, dispatch} = this.props;
+        const {sort, dispatch, filters} = this.props;
         dispatch(actions.changeQueryState(params));
-        dispatch(actions.loadFeedbackList(params, sort));
+        dispatch(actions.loadFeedbackList(params, sort, filters));
         $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
         $(event.target).closest('a').addClass('active');
     }
 
     render() {
+        //console.log(this.props);
         return (
             <AppContainer thisAppId="feedback">
                 <NavContainer {...this.props} choiceClick={this.choiceClick.bind(this)}/>

@@ -8,8 +8,11 @@ export default class FeedbackList extends Reducer {
             view: 'table',
             query: {awaiting_validation: 1},
             filters: {
-                filter: 'Status'
+                name: 'type',
+                alias: 'category',
+                value: ''
             },
+            filterValues: [/* string */],
             sort: {
                 sort: 'date_created',
                 order: 'Desc'
@@ -38,7 +41,6 @@ export default class FeedbackList extends Reducer {
             }
         };
     }
-
 
     toValidate(prev, {payload}) {
         const next = {...prev};
@@ -113,6 +115,36 @@ export default class FeedbackList extends Reducer {
         return next;
     }
 
+    getFilterValues(prev, {payload}) {
+        const next = {...prev};
+        let values = [];
+        payload.data.map(item => values.push(item['title']));
+        next.filterValues = values;
+        return next;
+    }
+
+    setFilterValue(prev, {payload}) {
+        const next = {...prev};
+        next.filters.alias = payload.filter;
+        next.filters.value = payload.value;
+
+        return next;
+    }
+
+    resetFilterValue(prev) {
+        const next = {...prev};
+        next.filters.value = '';
+
+        return next;
+    }
+
+    resetFilters(prev, {payload}) {
+        const next = {...prev};
+        next.filters = payload;
+
+        return next;
+    }
+
 
     registerHandlers() {
         this
@@ -126,6 +158,10 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
             .r(FeedbackListActions.changeQueryState, this.changeQuery)
             .r(FeedbackListActions.switchView, this.switchView)
+            .r(FeedbackListActions.getFilterValues, this.getFilterValues)
+            .r(FeedbackListActions.setFilterValue, this.setFilterValue)
+            .r(FeedbackListActions.resetFilterValue, this.resetFilterValue)
+            .r(FeedbackListActions.resetFilters, this.resetFilters)
             .r(FeedbackListActions.loadFeedbackList, this.getList);
     }
 
