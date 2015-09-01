@@ -1,6 +1,9 @@
 import React from "react";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
+import Picker from "anytime";
+import Moment from "moment";
+import $ from 'jquery';
 
 import * as TaskActions from "../Actions/TaskListActions";
 
@@ -10,12 +13,63 @@ const TaskFilterHover = React.createClass({
     require('react-onclickoutside')
   ],
 
+  getInitialState: function() {
+    return {
+      filterDates: {}
+    };
+  },
+
   handleClickOutside: function(evt) {
     this.props.closeWindow();
   },
 
+  componentDidMount: function() {
+    const dateFields = [
+      'filter-created-after',
+      'filter-created-before'
+    ];
+
+    let pickers = [];
+
+    const pickerOptions = {
+      format: "hh:mm, MMMM D, YYYY"
+    };
+
+    dateFields.forEach((field) => {
+      let options = pickerOptions;
+      options.input = React.findDOMNode(this.refs[field + '-value']);
+      options.button = React.findDOMNode(this.refs[field + '-button']);
+
+      // Create the picker
+      let picker = new Picker(options);
+      picker.render();
+
+      // Change the component state and submit the edit when the date is changed
+      picker.on('change', (newDate) => {
+        let updated = newDate ? Moment(newDate).format() : null;
+
+        let dates = this.state.filterDates;
+        dates[field] = newDate ? Moment(newDate).format('MMMM D, YYYY') : null;
+
+        this.setState({
+          filterDates: dates
+        });
+
+        console.log('setting state');
+
+        //React.findDOMNode(this.refs[field + '-value']).setValue(updated);
+
+        picker.updateInput();
+      });
+
+      pickers.push(picker);
+    });
+  },
+
   render: function() {
     const filter = this.props.taskFilter.taskFilter;
+    const dates = this.state.filterDates;
+
     const doneOptions = [
       {value: 'all', label: <span>All</span>},
       {value: 'done', label: <span>Done</span>},
@@ -115,6 +169,17 @@ const TaskFilterHover = React.createClass({
                   value={filter && filter.agents ? filter.agents : []}
                   multiple
                   /> : ''}
+              </div>
+            </div>
+            <div className="sidebar-hover-content-box">
+              <h2>Created</h2>
+              <div className="filter-created">
+                <FRC.Input type="hidden" ref="filter-created-after-value" name="created_after" />
+                After: <a href="#" ref="filter-created-after-button"><i className="fa fa-calendar-o" /> <span className="filter-created-after" ref="filter-created-after">{dates && dates.created_after ? dates.created_after : 'N/A'}</span></a>
+              </div>
+              <div className="filter-created">
+                <FRC.Input type="hidden" ref="filter-created-before-value" name="created_before" />
+                Before: <a href="#" ref="filter-created-before-button"><i className="fa fa-calendar-o" /> <span className="filter-created-before" ref="filter-created-before">{dates && dates.created_before ? dates.created_before : 'N/A'}</span></a>
               </div>
             </div>
             <div className="sidebar-hover-content-box">

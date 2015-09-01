@@ -195,6 +195,10 @@ export const loadFilter = createAction(
       filterElements.attachments = (filter.has_attachments === 'has') ? 'not_null' : 'null';
     }
 
+    if (filter.created_before) {
+      filterElements.created_before = filter.created_before;
+    }
+
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);
 
     trigger(null, loadTaskList(compiled));

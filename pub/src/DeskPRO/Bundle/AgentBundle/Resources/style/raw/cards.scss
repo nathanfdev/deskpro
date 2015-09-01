@@ -79,7 +79,6 @@ $level-10: #ac2020;
       padding: 0 5px;
       position: relative;
       z-index: 10;
-      width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -554,6 +553,7 @@ $level-10: #ac2020;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
   transition: all 0.25s ease-in-out;
   width: 208px;
+  left: 0 !important;
 
   .anytime-picker__header {
     background-color: #fff;
