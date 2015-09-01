@@ -77,31 +77,37 @@ class FeedbackSelectCriteria
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'awaiting_validation':
-                    $qb->andWhere("$alias.hidden_status = :validating");
-                    $qb->setParameter('validating', 'validating');
+                    $qb
+                        ->andWhere("$alias.hidden_status = :validating")
+                        ->setParameter('validating', 'validating');
                     break;
                 case 'category':
-                    $qb->innerJoin("$alias.category", 'cat');
-                    $qb->andWhere('cat.id = :id');
-                    $qb->setParameter('id', $value);
+                    $qb
+                        ->innerJoin("$alias.category", 'cat')
+                        ->andWhere('cat.title = :title')
+                        ->setParameter('title', $value);
                     break;
                 case 'status_category':
-                    $qb->innerJoin("$alias.status_category", 'statCat');
-                    $qb->andWhere('statCat.title = :title');
-                    $qb->setParameter('title', $value);
+                    $qb
+                        ->innerJoin("$alias.status_category", 'statCat')
+                        ->andWhere('statCat.title = :title')
+                        ->setParameter('title', $value);
                     break;
                 case 'label':
-                    $qb->innerJoin("$alias.labels", 'labels');
-                    $qb->andWhere('labels.label = :label');
-                    $qb->setParameter('label', $value);
+                    $qb
+                        ->innerJoin("$alias.labels", 'labels')
+                        ->andWhere('labels.label = :label')
+                        ->setParameter('label', $value);
                     break;
                 case 'custom_category':
-                    $qb->andWhere('customCat.input = :input');
-                    $qb->setParameter('input', $value);
+                    $qb
+                        ->andWhere('customCat.input = :input')
+                        ->setParameter('input', $value);
                     break;
                 case 'status':
-                    $qb->andWhere("$alias.status = :status");
-                    $qb->setParameter('status', $value);
+                    $qb
+                        ->andWhere("$alias.status = :status")
+                        ->setParameter('status', $value);
                     break;
                 case 'sort':
                     $sort = "$alias.$value";
@@ -130,6 +136,6 @@ class FeedbackSelectCriteria
             ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
         );
         $resolver->setAllowedValues('sort', ['date_created', 'total_rating', 'num_ratings']);
-        $resolver->setAllowedValues('order', ['asc', 'desc']);
+        $resolver->setAllowedValues('order', ['Asc', 'Desc']);
     }
 }

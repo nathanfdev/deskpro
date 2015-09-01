@@ -36,21 +36,26 @@ Feature: /feedback/ endpoint
     And the JSON node "meta.count" should be equal to 2
 
   Scenario: I GET list of feedback from one category
-    When I send a GET request to "/api/v2/feedback/?category=1"
+    When I send a GET request to "/api/v2/feedback/?category=Test+feedback+category+1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data" should exist
     And the JSON node "data" should have 3 elements
+    And the JSON node "data[0].type" should be equal to "Test feedback category 1"
+    And the JSON node "data[1].type" should be equal to "Test feedback category 1"
+    And the JSON node "data[2].type" should be equal to "Test feedback category 1"
     And the JSON node "meta" should exist
     And the JSON node "meta.count" should be equal to 3
 
   Scenario: I GET list of feedback tagged with one label
-    When I send a GET request to "/api/v2/feedback/?category=1"
+    When I send a GET request to "/api/v2/feedback/?custom_category=Linux"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data" should exist
-    And the JSON node "data" should have 3 elements
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].custom_category" should be equal to "Linux"
+    And the JSON node "data[1].custom_category" should be equal to "Linux"
     And the JSON node "meta" should exist
-    And the JSON node "meta.count" should be equal to 3
+    And the JSON node "meta.count" should be equal to 2

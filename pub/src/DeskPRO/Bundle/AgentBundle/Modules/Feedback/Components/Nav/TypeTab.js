@@ -11,7 +11,7 @@ export class TypeTab extends React.Component {
         return (
             <ul>
                 {types.map(item =>
-                        <div key={itemKey++} onClick={onClick.bind(this, {'category':item.id})}>
+                        <div key={itemKey++} onClick={onClick.bind(this, {'category':item.title})}>
                             <ListItem key={itemKey++} count={item.value} label={item.title}/>
                         </div>
                 )}

@@ -106,3 +106,30 @@ export const switchView = createAction(
         trigger();
     }
 );
+export const getFilterValues = createAction(
+    "FEEDBACK_SELECT_FILTER",
+    (trigger, filterName) => {
+        Feedback.getFilterValues(filterName).then(
+            (value) => trigger(value.getData())
+        )
+    }
+);
+
+export const setFilterValue = createAction(
+    "FEEDBACK_SET_FILTER_VALUE",
+    (trigger, filter, value) => {
+        trigger({filter: filter, value: value});
+    }
+);
+
+export const resetFilterValue = createAction(
+    "FEEDBACK_RESET_FILTER_VALUE",
+    (trigger) => {
+        trigger();
+    });
+
+export const resetFilters = createAction(
+    "FEEDBACK_RESET_FILTERS",
+    (trigger, filterAlias, filterName) => {
+        trigger({alias: filterAlias, name: filterName, value: ''});
+    });
