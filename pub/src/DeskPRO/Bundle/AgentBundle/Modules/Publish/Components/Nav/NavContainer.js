@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'redux/react';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import * as actions from '../../Actions/publishNavActions'
+import * as listActions from '../../Actions/publishListActions'
 import { Nav } from './Nav';
 
 @connect(state => {
@@ -47,6 +48,18 @@ export class NavContainer extends React.Component {
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
     const setMine = (isMine) => this.setMine(isMine).bind(this);
 
+    const onClick = {
+      articles: (group) => {
+        this.props.dispatch(listActions.load('articles', this.props.lists.articles.grouped_by, group));
+      },
+      news: (group) => {
+        this.props.dispatch(listActions.load('news', this.props.lists.news.grouped_by, group));
+      },
+      downloads: (group) => {
+        this.props.dispatch(listActions.load('downloads', this.props.lists.downloads.grouped_by, group));
+      }
+    };
+
     return (
       <Nav
         lists={this.props.lists}
@@ -55,6 +68,7 @@ export class NavContainer extends React.Component {
         onGroupingChange={onGroupingChange}
         toggleGroupingVisibility={toggleGroupingVisibility}
         setMine={setMine}
+        onClick={onClick}
       />
     );
   }

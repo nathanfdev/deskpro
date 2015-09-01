@@ -112,6 +112,11 @@ export class NestedList extends BaseList {
         expanded.splice(i, 1);
       } else {
         expanded.push(group);
+
+        // perform onClick when expanding a list item
+        if (this.props.onClick) {
+          this.props.onClick(group);
+        }
       }
 
       this.setState({expanded});

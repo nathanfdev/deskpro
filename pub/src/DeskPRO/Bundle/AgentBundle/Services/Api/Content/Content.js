@@ -3,6 +3,16 @@ import DpApi from '../../DpApi';
 /**
  * @param target
  * @param groupBy
+ * @param group
+ * @return Promise
+ */
+export function load(target, groupBy, group) {
+  return DpApi.sendGet('DP_API/' + validateTarget(target) + '?' + groupBy + '=' + group);
+}
+
+/**
+ * @param target
+ * @param groupBy
  * @return Promise
  */
 export function loadCounts(target, groupBy) {

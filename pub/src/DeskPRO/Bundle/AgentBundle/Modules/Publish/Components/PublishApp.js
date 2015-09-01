@@ -1,6 +1,7 @@
 import React from 'react';
 import AppContainer from 'DeskPRO/Component/AppContainer';
 import { NavContainer } from './Nav/NavContainer';
+import { ListContainer } from './List/ListContainer';
 
 export class PublishApp extends React.Component {
 
@@ -8,6 +9,7 @@ export class PublishApp extends React.Component {
     return (
       <AppContainer thisAppId="crm">
         <NavContainer />
+        <ListContainer />
       </AppContainer>
     );
   }
