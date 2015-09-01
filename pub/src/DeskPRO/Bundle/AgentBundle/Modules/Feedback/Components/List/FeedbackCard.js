@@ -18,7 +18,7 @@ export class FeedbackCard extends React.Component {
                     <span className="feedback-id">#{feedback.id}</span>
                   </span>
                     <span className="line-box card-feedback-mark">
-                    <i className="fa fa-thumbs-up"></i><span className="feedback-count">{feedback.popularity}</span>
+                    <i className="fa fa-thumbs-up"></i><span className="feedback-count">{feedback.num_ratings}</span>
                   </span>
 
                     <h1>{feedback.title}</h1>

@@ -133,3 +133,9 @@ export const resetFilters = createAction(
     (trigger, filterAlias, filterName) => {
         trigger({alias: filterAlias, name: filterName, value: ''});
     });
+
+export const setSort = createAction(
+    "FEEDBACK_SET_SORT",
+    (trigger, param, order) => {
+        trigger({sort: param, order: order});
+    });

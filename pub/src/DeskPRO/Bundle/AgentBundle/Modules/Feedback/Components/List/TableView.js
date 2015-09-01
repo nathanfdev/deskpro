@@ -1,35 +1,18 @@
 import React from 'react';
+import {Row} from './Row';
+import {TableHeader} from './TableHeader';
 
 export class TableView extends React.Component {
 
-    render() {
-        const {feedback} = this.props;
 
+    render() {
+        const {feedback, sortTable} = this.props;
         return (
             <div className="tickets-tabular">
                 <table>
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Votes</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Type</th>
-                        <th>Labels</th>
-                        <th>Submitter</th>
-                    </tr>
-                    </thead>
+                    <TableHeader sortTable={sortTable.bind(this)}/>
                     <tbody>
-                    {feedback.map(feedback =>
-                        <tr key={feedback.id}>
-                            <td>{feedback.id}</td>
-                            <td>{feedback.popularity}</td>
-                            <td><a href="#">{feedback.title}</a></td>
-                            <td>{feedback.status}</td>
-                            <td>{feedback.type}</td>
-                            <td></td>
-                            <td>{feedback.author_name}</td>
-                        </tr>)}
+                    {feedback.map(feedback => <Row feedback={feedback}/>)}
                     </tbody>
                 </table>
             </div>

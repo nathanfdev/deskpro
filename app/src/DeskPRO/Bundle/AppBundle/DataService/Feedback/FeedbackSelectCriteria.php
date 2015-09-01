@@ -135,7 +135,8 @@ class FeedbackSelectCriteria
             'status',
             ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
         );
-        $resolver->setAllowedValues('sort', ['date_created', 'total_rating', 'num_ratings']);
+        $resolver->setAllowedValues('sort',
+            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']);
         $resolver->setAllowedValues('order', ['Asc', 'Desc']);
     }
 }

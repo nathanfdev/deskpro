@@ -38,12 +38,33 @@ export class FeedbackApp extends React.Component {
         $(event.target).closest('a').addClass('active');
     }
 
+    sortTable(param, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const {dispatch, query, filters} = this.props;
+        let elem = $(event.target),
+            th = elem.closest('th'),
+            siblings = th.siblings('th'),
+            caret = th.find('i.fa');
+        th.data('order') === 'Asc' ? th.data('order', 'Desc') : th.data('order', 'Asc');
+        siblings.find('i.fa').remove();
+        siblings.data('order', '');
+        if (caret.length > 0) {
+            caret.toggleClass('fa-caret-down').toggleClass('fa-caret-up');
+        }
+        else {
+            th.append('<i class="fa fa-caret-up"/>')
+        }
+        let order = th.data('order');
+        dispatch(actions.setSort(param, th.data('order')));
+        dispatch(actions.loadFeedbackList(query, {sort: param, order: order}, filters));
+    }
+
     render() {
-        //console.log(this.props);
         return (
             <AppContainer thisAppId="feedback">
                 <NavContainer {...this.props} choiceClick={this.choiceClick.bind(this)}/>
-                <ListContainer {...this.props} />
+                <ListContainer {...this.props} sortTable={this.sortTable.bind(this)}/>
             </AppContainer>
         );
     }

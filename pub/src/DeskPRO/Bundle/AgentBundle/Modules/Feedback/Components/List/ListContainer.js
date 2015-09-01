@@ -11,7 +11,7 @@ import { TableView} from './TableView';
 export class ListContainer extends React.Component {
 
     render() {
-        const { feedback, view } = this.props;
+        const { feedback, view, sortTable } = this.props;
         let itemKey = 0;
 
         return (
@@ -24,7 +24,7 @@ export class ListContainer extends React.Component {
                         {view === 'list' ?
                             feedback.map(item =>
                                     <FeedbackCard key={itemKey++} feedback={item}/>
-                            ) : <TableView feedback={feedback}/>}
+                            ) : <TableView feedback={feedback} sortTable={sortTable.bind(this)}/>}
                     </Section>
                 </SectionsPane>
             </ListFrame>

@@ -127,14 +127,12 @@ export default class FeedbackList extends Reducer {
         const next = {...prev};
         next.filters.alias = payload.filter;
         next.filters.value = payload.value;
-
         return next;
     }
 
     resetFilterValue(prev) {
         const next = {...prev};
         next.filters.value = '';
-
         return next;
     }
 
@@ -142,6 +140,12 @@ export default class FeedbackList extends Reducer {
         const next = {...prev};
         next.filters = payload;
 
+        return next;
+    }
+
+    setSort(prev, {payload}) {
+        const next = {...prev};
+        next.sort = payload;
         return next;
     }
 
@@ -162,6 +166,7 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.setFilterValue, this.setFilterValue)
             .r(FeedbackListActions.resetFilterValue, this.resetFilterValue)
             .r(FeedbackListActions.resetFilters, this.resetFilters)
+            .r(FeedbackListActions.setSort, this.setSort)
             .r(FeedbackListActions.loadFeedbackList, this.getList);
     }
 
