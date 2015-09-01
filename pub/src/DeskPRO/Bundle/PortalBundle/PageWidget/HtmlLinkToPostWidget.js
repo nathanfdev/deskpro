@@ -1,7 +1,5 @@
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import FeedbackForm from "DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackForm"
-import FeedbackFilter from "DeskPRO/Bundle/PortalBundle/React/FeedbackFilter"
-import React from "react"
+import $ from "jquery"
 
 export default class HtmlLinkToPostWidget extends PageWidget {
   renderWidget() {
