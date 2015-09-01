@@ -148,7 +148,6 @@ class ProfileController extends AbstractController
     {
         $person = $this->getUser();
 
-
         //
         // PROFILE
         //
@@ -167,10 +166,43 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_user_profile');
         }
 
+        //
+        // PASSWORD
+        //
+        $password_form = $this->createForm('person_change_password', $person, array(
+            'settings' => $this->getBrandContainer()->getSettings(),
+        ));
+        $password_form->handleRequest($request);
+        if ($password_form->isValid()) {
+            $this->getEm()->flush();
+            $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
+
+            return $this->redirectToRoute('portal_user_profile');
+        }
 
         //
-        // EMAILS (person must be considered "email validated" to even attempt email manipulation)
+        // BREADCRUMBS
         //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
+
+
+        return $this->renderThemeView(
+            'Theme:Portal:User/profile.html.twig', array(
+                'person' => $person,
+                'profile_form' => $profile_form->createView(),
+                'password_form' => $password_form->createView(),
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->profile(),
+            )
+        );
+    }
+    /**
+     * @Route("/profile/emails", name="portal_user_profile_emails")
+     * @Security("is_granted('EDIT_PROFILE', user)")
+     */
+    public function editEmailsAction(Request $request)
+    {
+        $person = $this->getUser();
 
         // find emails awaiting validation
         $validating = $this->getEmailDataService()->getValidatingEmails($person);
@@ -185,7 +217,7 @@ class ProfileController extends AbstractController
                     $this->getEm()->flush();
                     $this->addFlash('success', $this->phrase('portal.flashes.user_changed_primary_email'));
 
-                    return $this->redirectToRoute('portal_user_profile');
+                    return $this->redirectToRoute('portal_user_profile_emails');
                 }
             }
 
@@ -204,7 +236,7 @@ class ProfileController extends AbstractController
                             )
                         );
 
-                        return $this->redirectToRoute('portal_user_profile');
+                        return $this->redirectToRoute('portal_user_profile_emails');
                     }
                 }
             }
@@ -253,31 +285,16 @@ class ProfileController extends AbstractController
                 $this->getEm()->flush();
                 $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
 
-                return $this->redirectToRoute('portal_user_profile');
+                return $this->redirectToRoute('portal_user_profile_emails');
             }
         } else {
             $verify_url = $this->get('person.portal_validator')->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $person->getPrimaryEmail());
         }
 
-
-        //
-        // PASSWORD
-        //
-        $password_form = $this->createForm('person_change_password', $person, array(
-            'settings' => $this->getBrandContainer()->getSettings(),
-        ));
-        $password_form->handleRequest($request);
-        if ($password_form->isValid()) {
-            $this->getEm()->flush();
-            $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
-
-            return $this->redirectToRoute('portal_user_profile');
-        }
-
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfileEmails();
 
         // make links for validating emails
         $validating_ui = array();
@@ -295,14 +312,12 @@ class ProfileController extends AbstractController
 
 
         return $this->renderThemeView(
-            'Theme:Portal:User/profile.html.twig', array(
+            'Theme:Portal:User/profile-emails.html.twig', array(
                 'person' => $person,
                 'verify_url' => $verify_url,
-                'profile_form' => $profile_form->createView(),
-                'password_form' => $password_form->createView(),
                 'emails_form' => $emails_form ? $emails_form->createView() : null,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->profile(),
+                'page_title' => $this->createPageTitle()->profileEmails(),
                 'validating_emails' => $validating_ui
             )
         );

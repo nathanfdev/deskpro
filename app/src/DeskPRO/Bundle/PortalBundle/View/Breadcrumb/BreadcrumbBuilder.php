@@ -191,6 +191,16 @@ class BreadcrumbBuilder
         return $this;
     }
 
+    public function addEditEmails()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_user_profile_emails'),
+            Breadcrumbs::PROFILE_EMAILS,
+            array('phrase' => 'portal.general.nav-emails')
+        );
+        return $this;
+    }
+
     public function addRegistration()
     {
         $this->b->add(

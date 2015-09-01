@@ -34,6 +34,7 @@
     'portal.general.nav-feedback'           => 'Feedback',
     'portal.general.nav-feedback-desc'           => 'Custom suggestions',
     'portal.general.nav-profile'            => 'Profile',
+    'portal.general.nav-emails'            => 'Emails',
     'portal.general.nav-newticket'          => 'Contact Us',
     'portal.general.nav-newticket-desc'          => 'We\'re here to help',
     'portal.general.nav-tickets'            => 'Tickets',

@@ -115,6 +115,16 @@ class PageTitleGenerator
         return (string)$builder;
     }
 
+    public function profileEmails()
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $builder->prependSection($this->phrase('portal.account.section-title-profile'));
+        $builder->prependSection($this->phrase('portal.account.section-title-emails'));
+
+        return (string)$builder;
+    }
+
     public function register()
     {
         $builder = $this->createHelpdeskTitleBuilder();

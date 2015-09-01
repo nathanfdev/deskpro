@@ -337,6 +337,17 @@ button, .button, input[type="submit"] {
     width: 100%;
   }
 
+  &.button-small {
+    padding: 0.5em 1em;
+  }
+
+  &.button-plain {
+    border-bottom: 0;
+    background: none;
+    color: $text-color;
+    text-shadow: none;
+  }
+
   &.cancel {
     border-bottom: 1px solid $page-background;
     background: none;
@@ -463,7 +474,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
   }
 
   padding: $form-padding-vertical $form-padding-horizontal;
-  border: 0;
+  border: 1px solid $text-faded;
   background: $form-input;
   font-weight: 300;
 
@@ -487,7 +498,7 @@ textarea {
   min-height: 70px;
   width: 100%;
   outline: none;
-  border: 0;
+  border: 1px solid $text-faded;
   font-size: 14px;
 }
 
