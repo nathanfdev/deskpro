@@ -87,7 +87,8 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'list',
             'urgency',
             'linked_items',
-            'date_done'
+            'date_done',
+            'display_order',
         ];
     }
 
