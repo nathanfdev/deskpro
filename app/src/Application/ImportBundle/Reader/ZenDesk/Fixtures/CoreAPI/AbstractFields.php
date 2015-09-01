@@ -27,52 +27,68 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
-use Zendesk\API\ResponseException;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\FixtureDeleteInterface;
+use DateTime;
 
 /**
- * ZenDesk ticket fields fixtures
+ * ZenDesk custom fields fixtures
  *
- * Class TicketFields
+ * Class AbstractFields
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
-final class TicketFields extends AbstractFields
+abstract class AbstractFields extends AbstractFixture implements FixtureDeleteInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
-        return 'ticket_field';
+        $params = $this->createParams($num);
+
+        $this->logger->info('Request params:');
+        $this->logger->info(json_encode($params));
+
+        $response = $this->getClient()->create($params);
+
+        $this->logger->info('Field created successfully');
+        $this->logger->debug(json_encode($response));
     }
 
     /**
-     * {@inheritdoc}
+     * @param int $num
+     * @return array
      */
-    public function delete()
+    protected function createParams($num)
     {
-        $fields = $this->getClient()->findAll();
-        foreach ($fields->ticket_fields as $field) {
-            try {
-                if ( ! $field->removable) {
-                    $this->logInfo('Ticket field is not removable');
-                    $this->logger->info(json_encode($field));
+        $types  = array('text', 'checkbox', 'date', 'integer', 'decimal', 'regexp', 'tagger');
+        $type   = $types[rand(0, count($types) - 1)];
 
-                    continue;
-                }
+        $params = array(
+            'type'        => $type,
+            'title'       => 'Field ' . $num,
+            'description' => 'Field description ' . $num,
+            'required'    => $this->getRandomBool(),
+        );
 
-                $this->getClient()->delete(array('id' => $field->id));
-                $this->logInfo(sprintf('Ticket field `%s` deleted successfully', $field->title));
-            } catch (ResponseException $e) {
-                $this->handleResponseException($this->getEntityType());
+        if ($type === 'tagger') {
+            for ($i = 0; $i < 5; $i++) {
+                $offset = $num + $i;
+                $params['custom_field_options'][] = array(
+                    'name'  => 'Option ' . $offset,
+                    'value' => 'value_' . $offset,
+                );
             }
         }
+        if ($type === 'regexp') {
+            $params['regexp_for_validation'] = '.*';
+        }
+
+        return $params;
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    protected function getClient()
-    {
-        return $this->client->ticketFields();
-    }
+    protected abstract function getClient();
 }

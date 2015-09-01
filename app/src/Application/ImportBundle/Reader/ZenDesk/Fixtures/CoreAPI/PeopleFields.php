@@ -26,23 +26,22 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
-
 use Zendesk\API\ResponseException;
 
 /**
- * ZenDesk ticket fields fixtures
+ * ZenDesk people fields fixtures
  *
- * Class TicketFields
+ * Class PeopleFields
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
-final class TicketFields extends AbstractFields
+final class PeopleFields extends AbstractFields
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return 'ticket_field';
+        return 'person_field';
     }
 
     /**
@@ -51,17 +50,10 @@ final class TicketFields extends AbstractFields
     public function delete()
     {
         $fields = $this->getClient()->findAll();
-        foreach ($fields->ticket_fields as $field) {
+        foreach ($fields->user_fields as $field) {
             try {
-                if ( ! $field->removable) {
-                    $this->logInfo('Ticket field is not removable');
-                    $this->logger->info(json_encode($field));
-
-                    continue;
-                }
-
                 $this->getClient()->delete(array('id' => $field->id));
-                $this->logInfo(sprintf('Ticket field `%s` deleted successfully', $field->title));
+                $this->logInfo(sprintf('User field `%s` deleted successfully', $field->title));
             } catch (ResponseException $e) {
                 $this->handleResponseException($this->getEntityType());
             }
@@ -71,8 +63,19 @@ final class TicketFields extends AbstractFields
     /**
      * {@inheritdoc}
      */
+    protected function createParams($num)
+    {
+        $params = parent::createParams($num);
+        $params['key'] = 'user_field_' . $num;
+
+        return $params;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getClient()
     {
-        return $this->client->ticketFields();
+        return $this->client->userFields();
     }
 }
