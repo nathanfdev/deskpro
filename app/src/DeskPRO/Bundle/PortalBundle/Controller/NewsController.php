@@ -184,7 +184,7 @@ class NewsController extends AbstractController
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")
      */
-    public function viewAction(Request $request, News $post)
+    public function viewAction(Request $request, News $post, $visitor_id)
     {
         //
         // COMMENT FORM
@@ -211,7 +211,11 @@ class NewsController extends AbstractController
         //
         // RATINGS
         //
-        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser())) {
+            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
+            //       we should consider showing this via a client-side JS request instead.
+            $rating = $this->getRatingsHelper()->findVisitorRating($post, $visitor_id);
+        }
 
         //
         // SUBSCRIPTIONS

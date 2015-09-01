@@ -183,7 +183,7 @@ class DownloadsController extends AbstractController
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
      * @PageHttpCache(content="file")
      */
-    public function viewAction(Request $request, Download $file)
+    public function viewAction(Request $request, Download $file, $visitor_id)
     {
         // TODO: is there ever an instance that there would NOT be a blob associated with a download entity??
         if (!$file->getBlob()) {
@@ -215,7 +215,11 @@ class DownloadsController extends AbstractController
         //
         // RATING
         //
-        $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser())) {
+            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
+            //       we should consider showing this via a client-side JS request instead.
+            $rating = $this->getRatingsHelper()->findVisitorRating($file, $visitor_id);
+        }
 
         //
         // SUBSCRIPTION

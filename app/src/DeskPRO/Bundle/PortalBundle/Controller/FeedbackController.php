@@ -332,6 +332,8 @@ class FeedbackController extends AbstractController
         // RATING
         //
         if (!$rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser())) {
+            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
+            //       we should consider showing this via a client-side JS request instead.
             $rating = $this->getRatingsHelper()->findVisitorRating($item, $visitor_id);
         }
 
