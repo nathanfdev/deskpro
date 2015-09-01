@@ -102,6 +102,10 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
     {
         $generated = $this->router->generate($name, $parameters, $referenceType);
 
+        if (false !== strpos($generated, 'index.php//')) {
+            $generated = str_replace('index.php//', 'index.php/', $generated);
+        }
+
         if (in_array($name, self::$generating_ignored_routes)) {
             return $generated;
         }

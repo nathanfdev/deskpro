@@ -146,6 +146,16 @@ class PortalController extends AbstractController
         return $this->redirectToRoute('portal_home');
     }
 
+    public function removeTrailingSlashAction(Request $request)
+    {
+        $pathInfo = $request->getPathInfo();
+        $requestUri = $request->getRequestUri();
+
+        $url = str_replace($pathInfo, rtrim($pathInfo, ' /'), $requestUri);
+
+        return $this->redirect($url, 301);
+    }
+
     /**
      * @return \DeskPRO\Bundle\PortalBundle\Person\PersonValidator
      */
