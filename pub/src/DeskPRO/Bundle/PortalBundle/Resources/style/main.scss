@@ -275,6 +275,11 @@ section {
   margin-right: 0;
 }
 
+.divide-left {
+  padding-left: 20px;
+  border-left: 1px dashed $divider-color;
+}
+
 .container, .row {
   @include row();
 }
@@ -474,7 +479,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
   }
 
   padding: $form-padding-vertical $form-padding-horizontal;
-  border: 1px solid $text-faded;
+  border: 0;
   background: $form-input;
   font-weight: 300;
 

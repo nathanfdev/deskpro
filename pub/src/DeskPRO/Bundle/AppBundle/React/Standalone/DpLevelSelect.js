@@ -68,7 +68,8 @@ export class LevelSelectActionStore extends FormActionStore {
 //######################################################################################################################
 
 export class LevelSelect extends React.Component {
-  init() {
+  constructor(props) {
+    super(props);
     this.actionStore = this.props.actionStore;
     this.updateOptions();
 

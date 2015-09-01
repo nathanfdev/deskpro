@@ -38,15 +38,10 @@
                 </nav>
             </div>
         </div>
-        <div class="column-full">
-            <div>
-                {{ form_start(profile_form) }}
+        <div class="column-half">
+                {{ form_start(profile_form, { attr: { class: 'form-ticket' } }) }}
                 {{ form_errors(profile_form) }}
-                <div class="column-half">
-                    <div class="bucket">
                 {{ form_row(profile_form.first_name) }}
-                        </div>
-                    </div>
                 {{ form_row(profile_form.last_name) }}
                 {% if profile_form.language_id is defined %}
                     {{ form_row(profile_form.language_id) }}
@@ -62,13 +57,10 @@
                 {{ form_rest(profile_form) }}
                 <button type="submit">{{ phrase('portal.account.profile-btn-save') }}</button>
                 {{ form_end(profile_form) }}
-            </div>
         </div>
 
-        <div class="column-full">
-            <div>
-                <h1>{{ phrase('portal.account.change-password') }}</h1>
-                {{ form_start(password_form) }}
+        <div class="column-half divide-left omega">
+                {{ form_start(password_form, { attr: { class: 'form-ticket' } }) }}
                 {{ form_errors(password_form) }}
                 {{ form_widget(password_form) }}
                 <button type="submit">{{ phrase('portal.account.change-password-btn') }}</button>
