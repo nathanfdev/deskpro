@@ -16,10 +16,16 @@ const TaskFilterHover = React.createClass({
 
   render: function() {
     const filter = this.props.taskFilter.taskFilter;
-    const radioOptions = [
+    const doneOptions = [
       {value: 'all', label: <span>All</span>},
       {value: 'done', label: <span>Done</span>},
       {value: 'undone', label: <span>Not Done</span>}
+    ];
+
+    const attachmentOptions = [
+      {value: 'all', label: <span>Any</span>},
+      {value: 'has', label: <span>Has Attachments</span>},
+      {value: 'none', label: <span>No Attachments</span>}
     ];
 
     let departments = [];
@@ -76,7 +82,7 @@ const TaskFilterHover = React.createClass({
                   layout="horizontal"
                   name="done"
                   type="inline"
-                  options={radioOptions}
+                  options={doneOptions}
                   value={filter && filter.done ? filter.done : 'all'}
                 />
               </div>
@@ -133,6 +139,18 @@ const TaskFilterHover = React.createClass({
                   value={filter && filter.labels ? filter.labels : []}
                   multiple
                   /> : ''}
+              </div>
+            </div>
+            <div className="sidebar-hover-content-box">
+              <h2>Attachments</h2>
+              <div className="sidebar-hover-checkbox-collection inline-radio">
+                <FRC.RadioGroupDeskPRO
+                  layout="horizontal"
+                  name="has_attachments"
+                  type="inline"
+                  options={attachmentOptions}
+                  value={filter && filter.has_attachments ? filter.has_attachments : 'all'}
+                  />
               </div>
             </div>
             <div className="sidebar-hover-content-box">

@@ -191,8 +191,8 @@ export const loadFilter = createAction(
       filterElements.lists = filter.lists;
     }
 
-    if (typeof filter.has_attachments !== 'undefined' && filter.has_attachments !== null) {
-      filterElements.attachments = filter.attachments ? true : false;
+    if (typeof filter.has_attachments !== 'undefined' && filter.has_attachments !== 'all') {
+      filterElements.attachments = (filter.has_attachments === 'has') ? 'not_null' : 'null';
     }
 
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);
