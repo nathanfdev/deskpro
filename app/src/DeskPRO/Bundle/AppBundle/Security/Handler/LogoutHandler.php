@@ -54,6 +54,7 @@ class LogoutHandler implements LogoutHandlerInterface
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($request->get('_dp_impersonate_exit')) {
+            $request->getSession()->remove('is_impersonating');
             return; // pass this param to avoid a full logout (only log out of portal)
         }
 
