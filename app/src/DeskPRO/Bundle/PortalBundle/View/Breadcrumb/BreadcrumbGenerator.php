@@ -277,12 +277,12 @@ class BreadcrumbGenerator
 
     public function buildProfile()
     {
-        return $this->createBuilder()->addProfile()->done();
+        return $this->createBuilder()->addYourAccount()->addProfile()->done();
     }
 
     public function buildProfileEmails()
     {
-        return $this->createBuilder()->addProfile()->addEditEmails()->done();
+        return $this->createBuilder()->addYourAccount()->addEditEmails()->done();
     }
 
     public function buildLogin()

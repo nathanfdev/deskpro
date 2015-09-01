@@ -110,6 +110,7 @@ class PageTitleGenerator
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
+        $builder->prependSection($this->phrase('portal.account.section-title-your-account'));
         $builder->prependSection($this->phrase('portal.account.section-title-profile'));
 
         return (string)$builder;
@@ -119,7 +120,7 @@ class PageTitleGenerator
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
-        $builder->prependSection($this->phrase('portal.account.section-title-profile'));
+        $builder->prependSection($this->phrase('portal.account.section-title-your-account'));
         $builder->prependSection($this->phrase('portal.account.section-title-emails'));
 
         return (string)$builder;

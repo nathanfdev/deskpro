@@ -181,6 +181,16 @@ class BreadcrumbBuilder
     # Profile / Registration
     #####################################################################################################################
 
+    public function addYourAccount()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_user_profile'),
+            Breadcrumbs::PROFILE,
+            array('phrase' => 'portal.general.nav-your-account')
+        );
+        return $this;
+    }
+
     public function addProfile()
     {
         $this->b->add(

@@ -8,7 +8,7 @@
         <div class="column-full">
             <div>
                 <header class="section-header">
-                    <h1>{{ phrase('portal.account.section-title-your-profile') }}</h1>
+                    <h1>{{ phrase('portal.account.section-title-your-account') }}</h1>
                 </header>
             </div>
         </div>
@@ -16,7 +16,7 @@
             <div>
                 <nav class="tabs secondary-tabs">
                     <ul>
-                        <li class="tab-active">
+                        <li class="tab-active active">
                             <a href="{{ path('portal_user_profile') }}">
                                 <div>
                                     <span class="title">
@@ -40,8 +40,6 @@
         </div>
         <div class="column-full">
             <div>
-
-                <h1>{{ phrase('portal.account.section-title-profile') }}</h1>
                 {{ form_start(profile_form) }}
                 {{ form_errors(profile_form) }}
                 <div class="column-half">

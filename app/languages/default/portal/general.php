@@ -33,6 +33,7 @@
     'portal.general.nav-downloads-desc'          => 'Browse our downloads',
     'portal.general.nav-feedback'           => 'Feedback',
     'portal.general.nav-feedback-desc'           => 'Custom suggestions',
+    'portal.general.nav-your-account'            => 'Your Account',
     'portal.general.nav-profile'            => 'Profile',
     'portal.general.nav-emails'            => 'Emails',
     'portal.general.nav-newticket'          => 'Contact Us',

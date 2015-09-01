@@ -8,7 +8,7 @@
         <div class="column-full">
             <div>
                 <header class="section-header">
-                    <h1>{{ phrase('portal.account.section-title-your-profile') }}</h1>
+                    <h1>{{ phrase('portal.account.section-title-your-account') }}</h1>
                 </header>
             </div>
         </div>
@@ -25,7 +25,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="tab-active">
+                        <li class="tab-active active">
                             <a href="{{ path('portal_user_profile_emails') }}">
                                 <div>
                                     <span class="title">
@@ -40,44 +40,61 @@
         </div>
 
         <div class="column-full">
-            <div>
-                <h1>{{ phrase('portal.account.email-managment') }}</h1>
-                {% if validating_emails %}
-                    <div class="alerts">
-                            {% for email,resend_link in validating_emails %}
-                                <div class="alert">
-                                    <strong>{{ email }}</strong>
-                                    {{ phrase('portal.account.emails_are_awaiting_validation') }}
-                                    <a class="button button-plain button-small" href="{{ resend_link }}">{{ phrase('portal.account.resend_email') }}</a>
-                                </div>
-                            {% endfor %}
-                    </div>
-                {% endif %}
-
-                {% if person.isEmailValidated() %}
-                    {{ form_start(emails_form) }}
-                    {{ form_errors(emails_form) }}
-                    {% for email_form in emails_form.emails %}
-                        <div style="display: block; padding-top: 5px; padding-bottom: 5px;">
-                            {{ form_errors(email_form.email) }}
-                            {{ form_widget(email_form.email) }}
-                            {% if email_form.vars.data.isPrimary %}
-                                <strong>{{ phrase('portal.account.email-primary-indicator') }}</strong>
-                            {% elseif email_form.vars.data.id %}
-
-                                <a class="button button-secondary button-small" href="{{ path('portal_user_profile_emails', { new_primary: email_form.vars.data.id }) }}">{{ phrase('portal.account.email-btn-make-primary') }}</a>
-                                <a class="button button-small cancel" href="{{ path('portal_user_profile_emails', { remove_email: email_form.vars.data.id }) }}">{{ phrase('portal.account.email-btn-remove') }}</a>
-                            {% endif %}
+            {% if validating_emails %}
+                <div class="alerts">
+                    {% for email,resend_link in validating_emails %}
+                        <div class="alert">
+                            <a class="button button-plain button-small"
+                               href="{{ resend_link }}">{{ phrase('portal.account.resend_email') }}</a>
+                            <strong>{{ email }}</strong>
+                            {{ phrase('portal.account.emails_are_awaiting_validation') }}
                         </div>
                     {% endfor %}
-                    <button type="submit">{{ phrase('portal.account.email-btn-update') }}</button>
-                    {{ form_rest(emails_form) }}
-                    {{ form_end(emails_form) }}
-                {% else %}
-                    {{ phrase('portal.account.email-primary-needs-validation', { email: person.primary_email.email, verify_url: verify_url }) }}
-                {% endif %}
-            </div>
-        </div>
+                </div>
+            {% endif %}
 
+            {% if person.isEmailValidated() %}
+                {{ form_start(add_email_form) }}
+                <table>
+                    {% for email in person.emails %}
+                        <tr>
+                            <td>{{ email.email }}</td>
+                            {% if email.isPrimary %}
+                                <td colspan="2">
+                                    <strong>{{ phrase('portal.account.email-primary-indicator') }}</strong>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a class="button button-secondary button-small"
+                                       href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}">
+                                        {{ phrase('portal.account.email-btn-make-primary') }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="button button-small cancel"
+                                       href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}">
+                                        {{ phrase('portal.account.email-btn-remove') }}
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>
+                            {{ form_errors(add_email_form) }}
+                            {{ form_widget(add_email_form.email) }}
+                        </td>
+                        <td>
+                            <button class="button button-small"
+                                    type="submit">{{ phrase('portal.account.email-btn-add') }}</button>
+                        </td>
+                    </tr>
+                </table>
+                {{ form_rest(add_email_form) }}
+                {{ form_end(add_email_form) }}
+            {% else %}
+                {{ phrase('portal.account.email-primary-needs-validation', { email: person.primary_email.email, verify_url: verify_url }) }}
+            {% endif %}
+        </div>
     </div>
 {% endblock inner_content %}
