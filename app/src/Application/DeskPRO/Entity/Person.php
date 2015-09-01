@@ -779,6 +779,16 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * Is agent.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->can_admin;
+    }
+
+    /**
      * @param bool $yesno
      *
      * @return $this

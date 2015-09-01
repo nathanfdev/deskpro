@@ -69,6 +69,12 @@ class PasswordController extends AbstractController
             $email = $data['email'];
 
             if ($person = $this->getPersonDataService()->getPersonForEmail($email)) {
+
+                if ($person->isAgent() || $person->isAdmin()) {
+                    // redirect to the /agent forgot password functionality
+                    return $this->redirectToRoute('agent_login', array('forgot' => $email));
+                }
+
                 if (!$person->password) {
                     // TODO: this is copied from old portal, and we need to verify it works, moving on for now
                     $associations = $this->getRepo('DeskPRO:PersonUsersourceAssoc')

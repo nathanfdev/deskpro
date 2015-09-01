@@ -63,7 +63,7 @@ class PortalEmailSender
                 'reset_url' => $this->getRouter()->generate(
                     'portal_reset_password_process',
                     array(
-                        'password_reset_code' => $person->getPasswordResetCode(),
+                        'code' => $person->getPasswordResetCode(),
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 )
@@ -81,7 +81,7 @@ class PortalEmailSender
                 'reset_url' => $this->getRouter()->generate(
                     'portal_set_password_process',
                     array(
-                        'password_reset_code' => $person->getPasswordResetCode(),
+                        'code' => $person->getPasswordResetCode(),
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 )
