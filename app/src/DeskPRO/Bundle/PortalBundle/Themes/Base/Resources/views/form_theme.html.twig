@@ -81,6 +81,12 @@
     {{- block('form_widget_simple') -}}
 {%- endblock email_widget %}
 
+{%- block button_widget -%}
+    <div class="bucket form-widget">
+        {{ parent() }}
+    </div>
+{%- endblock button_widget -%}
+
 {# A Checkbox #}
 {% block checkbox_widget -%}
     <input{% if add_margin is defined %} style="margin-left: 20px;"{% endif %} type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
@@ -122,13 +128,13 @@
         {{ form_widget(form.upload) }}
     {% else %}
         <div
-            class="attach-row"
-            data-blob-id="{{ form.vars.data.blob.id }}"
-            data-blob-auth="{{ form.vars.data.blob.authcode }}"
-            data-blob-filename="{{ form.vars.data.blob.filename }}"
-            data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
-            {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
-        >
+                class="attach-row"
+                data-blob-id="{{ form.vars.data.blob.id }}"
+                data-blob-auth="{{ form.vars.data.blob.authcode }}"
+                data-blob-filename="{{ form.vars.data.blob.filename }}"
+                data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
+                {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
+                >
             <a href="{{ form.vars.data.blob.downloadUrl }}">
                 {% if form.vars.data.blob.is_image %}
                     <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
@@ -142,6 +148,8 @@
 {% endblock ticket_message_attachment_widget %}
 
 {% block ticket_message_attachment_collection_widget %}
+<div class="bucket">
+    <div class="form-widget">
     {% if prototype is defined %}
         {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
     {% endif %}
@@ -162,6 +170,8 @@
             </div>
         </div>
     </div>
+    </div>
+</div>
 {% endblock ticket_message_attachment_collection_widget %}
 
 
@@ -254,19 +264,20 @@
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}
-        {% if attr.options is defined %}
-            <script type="text/javascript">
-                var RecaptchaOptions =
-                {{ attr.options|json_encode|raw }}
-            </script>
-        {% endif %}
-        <script src="{{ form.vars.url_challenge }}" type="text/javascript"></script>
-        <noscript>
-            <iframe src="{{ form.vars.url_noscript }}" height="300" width="500"></iframe>
-            <br/>
-            <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-            <input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-        </noscript>
+        <div class="bucket form-widget">
+            {% if attr.options is defined %}
+                <script type="text/javascript">
+                    var RecaptchaOptions =
+                    {{ attr.options|json_encode|raw }}
+                </script>
+            {% endif %}
+            <script src="{{ form.vars.url_challenge }}" type="text/javascript"></script>
+            <noscript>
+                <iframe src="{{ form.vars.url_noscript }}" height="300" width="500"></iframe>
+                <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+                <input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+            </noscript>
+        </div>
     {% endspaceless %}
 {% endblock deskpro_captcha_widget %}
 

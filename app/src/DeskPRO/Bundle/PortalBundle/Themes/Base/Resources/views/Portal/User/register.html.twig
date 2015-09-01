@@ -11,9 +11,13 @@
         </header>
     </div>
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_rest(form) }}
-    <button type="submit">{{ phrase('portal.account.register-btn') }}</button>
-    {{ form_end(form) }}
+    <div class="form-ticket">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_rest(form) }}
+        <div class="form-widget bucket">
+            <button type="submit">{{ phrase('portal.account.register-btn') }}</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
 {% endblock inner_content %}
