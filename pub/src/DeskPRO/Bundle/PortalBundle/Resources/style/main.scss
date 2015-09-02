@@ -1686,10 +1686,12 @@ form {
 // Live results
 .live-results-container {
   position: absolute;
-  top: 56px;
+  top: 60px;
+  z-index: 999;
 }
 
 .search-box-results {
+  width: 585px;
   display: block;
   background: darken($form-input, 2.5%);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

@@ -65,7 +65,7 @@ class SearchController extends AbstractController
         $results = array();
         $total = 0;
         $cur_page = $request->get('page', 1);
-        $per_page = 10;
+        $per_page = 2;
 
         ////////////////////////////////////////////////////////////////////////
         // search types
@@ -126,6 +126,16 @@ class SearchController extends AbstractController
         }
 
         $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
+
+        if ($request->isXmlHttpRequest()) {
+            $serialized_results = $this->get('portal_search_serializer')->serializeArray($results);
+            return $this->makeJsonResponse(
+                array(
+                    'results' => $serialized_results,
+                    'pageinfo'   => $pageinfo,
+                )
+            );
+        }
 
         $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
         $pagination->setMaxPerPage((int)$pageinfo['per_page']);
