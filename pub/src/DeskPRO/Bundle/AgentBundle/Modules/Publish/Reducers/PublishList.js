@@ -4,11 +4,21 @@ import * as actions from '../Actions/publishListActions';
 export default class PublishList extends Reducer {
   getInitialState() {
     return {
+
+      // view mode (table or list)
       view: 'table',
-      content: 'articles', // articles, news, downloads, todo
+
+      // which list is displayed
+      content: 'articles',
+
+      // lists
       articles: [],
       news: [],
-      downloads: []
+      downloads: [],
+      draftArticles: [],
+      pendingArticles: [],
+      commentsToValidate: [],
+      commentsToReview: []
     };
   }
 

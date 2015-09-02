@@ -48,15 +48,31 @@ export class NavContainer extends React.Component {
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
     const setMine = (isMine) => this.setMine(isMine).bind(this);
 
+    const { dispatch, lists } = this.props;
     const onClick = {
       articles: (group) => {
-        this.props.dispatch(listActions.load('articles', this.props.lists.articles.grouped_by, group));
+        dispatch(listActions.load('articles', lists.articles.grouped_by, group));
       },
       news: (group) => {
-        this.props.dispatch(listActions.load('news', this.props.lists.news.grouped_by, group));
+        dispatch(listActions.load('news', lists.news.grouped_by, group));
       },
       downloads: (group) => {
-        this.props.dispatch(listActions.load('downloads', this.props.lists.downloads.grouped_by, group));
+        dispatch(listActions.load('downloads', lists.downloads.grouped_by, group));
+      },
+      draftArticles: () => {
+        dispatch(listActions.loadDraftArticles(lists.todo.articles.mine));
+      },
+      pendingArticles: () => {
+        dispatch(listActions.loadPendingArticles(lists.todo.articles.mine));
+      },
+      commentsToValidate: (group) => {
+        dispatch(listActions.loadCommentsToValidate('period_created', group));
+      },
+      allCommentsToValidate: () => {
+        dispatch(listActions.loadCommentsToValidate());
+      },
+      commentsToReview: () => {
+        dispatch(listActions.loadCommentsToReview());
       }
     };
 

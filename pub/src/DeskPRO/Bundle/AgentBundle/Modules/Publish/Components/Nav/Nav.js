@@ -94,18 +94,25 @@ export class Nav extends React.Component {
                   </SectionHeader>
 
                   <ul>
-                    <ListItem label="Draft Articles" count={lists.todo.articles.draft} />
-                    <ListItem label="Pending Articles" count={lists.todo.articles.pending} />
+                    <ListItem label="Draft Articles" count={lists.todo.articles.draft} onClick={onClick.draftArticles} />
+                    <ListItem label="Pending Articles" count={lists.todo.articles.pending} onClick={onClick.pendingArticles} />
                   </ul>
                 </Section>
                 <Section>
                   <SectionHeader>Comments</SectionHeader>
 
                   <ul>
-                    <ListItem label="Comments to validate" count={lists.todo.comments.validate.count}>
-                      <NestedList items={lists.todo.comments.validate.nested} groups={labels.commentsToValidate} depth="2" />
+                    <ListItem label="Comments to validate"
+                              count={lists.todo.comments.validate.count}
+                              onClick={onClick.allCommentsToValidate}>
+                      <NestedList
+                        depth="2"
+                        items={lists.todo.comments.validate.nested}
+                        groups={labels.commentsToValidate}
+                        onClick={onClick.commentsToValidate}
+                      />
                     </ListItem>
-                    <ListItem label="Comments to review" count={lists.todo.comments.review} />
+                    <ListItem label="Comments to review" count={lists.todo.comments.review} onClick={onClick.commentsToReview} />
                   </ul>
                 </Section>
                 <Section>

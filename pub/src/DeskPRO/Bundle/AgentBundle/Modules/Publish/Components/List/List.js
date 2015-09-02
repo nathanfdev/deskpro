@@ -37,6 +37,10 @@ export class List extends React.Component {
   }
 
   renderElements(view, elements) {
+    if (!elements.length) {
+      return 'No data to display'
+    }
+
     switch (view) {
       case 'list':
         return this.renderListView(elements);
@@ -60,7 +64,7 @@ export class List extends React.Component {
 
   renderTableView(elements) {
     let key = 0;
-    
+
     return (
       <div>
         <h1>Table View</h1>

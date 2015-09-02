@@ -9,11 +9,20 @@ export class ListContainer extends React.Component {
   render() {
     switch (this.props.content) {
       case 'articles':
-        return (<List elements={this.props.articles} view={this.props.view} toggleView={this.toggleView.bind(this)} />);
       case 'news':
-        return (<List elements={this.props.news} view={this.props.view} toggleView={this.toggleView.bind(this)} />);
       case 'downloads':
-        return (<List elements={this.props.downloads} view={this.props.view} toggleView={this.toggleView.bind(this)} />);
+      case 'draftArticles':
+      case 'pendingArticles':
+      case 'commentsToValidate':
+      case 'commentsToReview':
+        return (
+          <List
+            elements={this.props[this.props.content]}
+            view={this.props.view}
+            toggleView={this.toggleView.bind(this)}
+          />
+        );
+
       default:
         throw `Unknown list ${this.props.content}`;
     }

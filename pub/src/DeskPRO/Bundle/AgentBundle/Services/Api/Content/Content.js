@@ -1,13 +1,13 @@
 import DpApi from '../../DpApi';
+import { compileParams } from '../../ApiHelpers';
 
 /**
  * @param target
- * @param groupBy
- * @param group
+ * @param filters
  * @return Promise
  */
-export function load(target, groupBy, group) {
-  return DpApi.sendGet('DP_API/' + validateTarget(target) + '?' + groupBy + '=' + group);
+export function load(target, filters) {
+  return DpApi.sendGet('DP_API/' + validateTarget(target) + '?' + compileParams(filters));
 }
 
 /**
@@ -35,17 +35,6 @@ export function loadDraftsCount(target, author) {
   return DpApi.sendGet(
     'DP_API/' + validateTarget(target) + '/counts?status=hidden&hidden_status=draft'
     + (author ? '&author=' + author : '')
-  );
-}
-
-/**
- * @param assignee
- * @return Promise
- */
-export function loadPendingCount(assignee) {
-  return DpApi.sendGet(
-    'DP_API/article_pending_create/counts'
-    + (assignee ? '?assigned_person=' + assignee : '')
   );
 }
 

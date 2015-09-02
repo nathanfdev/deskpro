@@ -1,5 +1,6 @@
 import { createAction } from 'Ampliflux/actions';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
+import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
 import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 
@@ -25,7 +26,7 @@ export const loadDraftsCount = createAction(
 
 export const loadPendingCount = createAction(
   'PUBLISH_NAV_LOAD_PENDING_COUNT',
-  (trigger, mine) => Content.loadPendingCount(mine ? 'me' : null).then(
+  (trigger, mine) => ArticlePendingCreates.loadCount(mine ? 'me' : null).then(
     promise => trigger(promise.getData().data.count)
   )
 );

@@ -17,12 +17,13 @@ class BaseList extends React.Component {
 
 export class ListItem extends BaseList {
   render() {
-    const {count, label} = this.props;
+    const {count, label } = this.props;
+    const onClick = this.props.onClick ? this.props.onClick : () => {};
 
     return (
       <li>
         {this.renderCount(count)}
-        <a href="#" className="item">{label}</a>
+        <a href="#" className="item" onClick={onClick}>{label}</a>
 
         {this.props.children}
       </li>
