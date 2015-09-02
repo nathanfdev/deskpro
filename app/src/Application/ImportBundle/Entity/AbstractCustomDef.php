@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  * Class CustomDef
  * @package Application\ImportBundle\Entity
  */
-final class CustomDef extends AbstractEntity
+abstract class AbstractCustomDef extends AbstractEntity
 {
     /**
      * @var int
@@ -70,14 +70,6 @@ final class CustomDef extends AbstractEntity
      * @var array
      */
     private $options = array();
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return self::TYPE_CUSTOM_DEF;
-    }
 
     /**
      * @return int
