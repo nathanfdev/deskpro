@@ -136,6 +136,23 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getPeopleFields()
+    {
+        $fields = array();
+        $result = $this->adapter->doRequest(Request\Request::createCoreAPI('PersonField', 'findAll'));
+
+        if ($result) {
+            foreach ($result->user_fields as $field) {
+                $fields[] = $this->toArray($field);
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getOrganizationById($id)
     {
         $result = $this->adapter->doRequest(Request\Request::createCoreAPI('Organization', 'find', array(
@@ -205,6 +222,23 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
         }
 
         return $comments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTicketFields()
+    {
+        $fields = array();
+        $result = $this->adapter->doRequest(Request\Request::createCoreAPI('TicketField', 'findAll'));
+
+        if ($result) {
+            foreach ($result->ticket_fields as $field) {
+                $fields[] = $this->toArray($field);
+            }
+        }
+
+        return $fields;
     }
 
     /**

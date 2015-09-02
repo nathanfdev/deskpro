@@ -83,6 +83,14 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getPeopleByIds(array $ids);
 
     /**
+     * Returns user fields collection
+     *
+     * @return array
+     * @throws RetryAfterException
+     */
+    public function getPeopleFields();
+
+    /**
      * Returns an organization by id
      *
      * @param int $id
@@ -111,14 +119,6 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getTickets(DateTime $start_time = null);
 
     /**
-     * Returns a collection of ticket comments
-     *
-     * @param int $id
-     * @return array
-     */
-    public function getTicketComments($id);
-
-    /**
      * Returns a batch end time of the tickets collection
      *
      * @param DateTime $start_time
@@ -127,6 +127,22 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @throws RetryAfterException
      */
     public function getTicketsEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a collection of ticket comments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getTicketComments($id);
+
+    /**
+     * Returns ticket fields collection
+     *
+     * @return array
+     * @throws RetryAfterException
+     */
+    public function getTicketFields();
 
     /**
      * Returns a batch count of articles
