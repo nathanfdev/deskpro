@@ -79,7 +79,6 @@ $level-10: #ac2020;
       padding: 0 5px;
       position: relative;
       z-index: 10;
-      width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -93,353 +92,359 @@ $level-10: #ac2020;
   }
 }
 
-  // Main card structure
-  .card {
-    background: #fff;
-    border: 1px solid #d5d5d5;
-    border-radius: 2px;
-    margin: 5px;
-    margin-left: 10px;
-    padding: 5px 5px 5px 10px;
+// Main card structure
+.card {
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  margin: 5px;
+  margin-left: 10px;
+  padding: 5px 5px 5px 10px;
+  position: relative;
+  transition: border 0.5s ease;
+  cursor: pointer;
+
+  // Card hover changes
+  &:hover {
+    border: 1px solid #4681b2;
+    h1 { color: #4681b2; }
+    .card-status-bar { transition: all 0.5s ease; opacity: 0; }
+  }
+
+  .card-line { margin-bottom: 3px; }// Generic rows for cards
+
+  input {
+    padding: 2px;
+  }
+
+  // Card title
+  h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 0.95em;
+    display: inline-block;
+    width: 200px;
+    vertical-align: middle;
+    white-space: nowrap;// Cut off too long text
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .inline-form {
+    display: inline-block;
+  }
+
+  // A box to the left of the title with stuff (star icon, feedback etc)
+  .line-box {
+    display: inline-block;
+    vertical-align: middle;
+    width: 18px;
+    text-align: center;
     position: relative;
-    transition: border 0.5s ease;
-    cursor: pointer;
+  }
 
-    // Card hover changes
-    &:hover {
-      border: 1px solid #4681b2;
-      h1 { color: #4681b2; }
-      .card-status-bar { transition: all 0.5s ease; opacity: 0; }
-    }
+  // Usually inside .line-box
+  .fa-star {
+    font-size: 0.8em;
+    top: 1px;
+    color: #62ad8c;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .fa-star.grey { color: #cecece; }
 
-    .card-line { margin-bottom: 3px; }// Generic rows for cards
+  // The checkbox on the card
+  .card-checkbox {
+    position: absolute;
+    top: 2px;
+    left: -8px;
 
-    input {
-      padding: 2px;
-    }
-
-    // Card title
-    h1 {
-      margin: 0;
-      padding: 0;
-      font-size: 0.95em;
-      display: inline-block;
-      width: 200px;
-      vertical-align: middle;
-      white-space: nowrap;// Cut off too long text
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .inline-form {
-      display: inline-block;
-    }
-
-    // A box to the left of the title with stuff (star icon, feedback etc)
-    .line-box {
-      display: inline-block;
-      vertical-align: middle;
-      width: 18px;
-      text-align: center;
-      position: relative;
-    }
-
-    // Usually inside .line-box
-    .fa-star {
-      font-size: 0.8em;
-      top: 1px;
-      color: #62ad8c;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    .fa-star.grey { color: #cecece; }
-
-    // The checkbox on the card
-    .card-checkbox {
-      position: absolute;
-      top: 2px;
-      left: -8px;
-
-      span {
-        width: 15px;
-        height: 15px;
-        display: inline-block;
-        border: 1px solid #e2e5e8;
-        border-radius: 2px;
-        background: #fff;
-        color: #62ad8c;
-        font-size: 9px;
-        margin-top: 5px;
-
-        i {
-          opacity: 1;
-          font-size: 9px;
-          color: #62ad8c;
-        }
-      }
-    }
-
-    .card-checkbox-large {
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      z-index: 499;
-
-      .checkbox {
-        width: 40px;
-        height: 40px;
-        background: #ffffff;
-        border: 1px solid #d5d5d5;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-
-        i {
-          margin-top: 7px;
-          font-size: 1.5em;
-          color: #e9e9e9;
-        }
-      }
-
-      .checkbox.checked {
-          * { opacity: 1; }
-          background: #62ad8c;
-          border: 1px solid #62ad8c;
-          i {
-            color: #fff;
-          }
-      }
-
-
-    }
-
-
-    // Status icon under the checkbox
-    .card-status {
-      position: absolute;
-      top: 28px;
-      left: -8px;
+    span {
       width: 15px;
       height: 15px;
-      background: #9d9d9d;
-      color: #fff;
-      font-weight: bold;
-      font-size: 9px;
-      text-align: center;
+      display: inline-block;
+      border: 1px solid #e2e5e8;
       border-radius: 2px;
-      padding-top: 2px;
-    }
+      background: #fff;
+      color: #62ad8c;
+      font-size: 9px;
+      margin-top: 5px;
 
-    .card-status
-
-    // Container for labels on title
-    .ticket-label-box {
-      display: inline-block;
-      vertical-align: top;
-      margin-left: 5px;
-      position: relative;
-      top: 2px;
-    }
-
-    // inherits from tickets.scss
-    .ticket-label {
-      line-height: 1em;
-      padding: 4px 5px;
-    }
-
-
-    // If we need the first line of text from a ticket
-    .ticket-intro {
-      background: #f8f8f8;
-      border: 1px solid #e8e8e8;
-      margin-top: 6px;
-      padding-top: 3px;
-      padding-bottom: 1px;
-    }
-
-    // Top right corner holder for avatars etc
-    .top-right-box {
-      float: right;
-      margin-top: 1px;
-
-      .chat-avatar, .ticket-department {  margin-left: 3px; }
-
-      .text {// if we need a title next to an icon
-        font-size: 0.85em;
-        color: #bfbfbf;
-        display: inline-block;
-        vertical-align: middle;
+      i {
+        opacity: 1;
+        font-size: 9px;
+        color: #62ad8c;
       }
-    }
-
-    // Sla content or last action time
-    .ticket-timer {
-      float: right;
-      margin-top: 4px;
-    }
-
-    .chat-avatar {// Usual sizing overwrites on chat avatars
-      width: 16px;
-      height: 16px;
-      margin: 0px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    // If we need assigned to, created time etc on the last line
-    .ticket-extras {
-      .chat-avatar {
-        margin-left: 3px;
-        margin-right: 3px;
-        position: relative;
-        top: -2px;
-      }
-    }
-
-    // Generic department avatar
-    .ticket-department {
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      vertical-align: middle;
-      margin: 0;
-    }
-    // Someone's details
-    .person {
-      display: inline-block;
-      vertical-align: middle;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .agent {// Usually in .person
-      color: #898989;
-      margin-right: 3px;
-      font-size: 0.9em;
-    }
-
-    .email {// Usually in .person
-      color: #bfbfbf;
-      font-size: 0.9em;
-    }
-
-    .due-editor {
-      display: block;
-      font-size: 11px;
-
-      input.due-date {
-        width: 160px;
-        font-size: 11px;
-        display: inline-block;
-      }
-
-      button.due-button {
-        display: inline-block;
-        padding: 3px;
-        font-size: 11px;
-        color: #868686;
-        border: 1px solid #868686;
-        background-color: #fff;
-      }
-    }
-
-    .due-date-field {
-      width: 0;
-      border: none;
-      background-color: #fff;
-      color: #fff;
-    }
-
-    .overdue, .overdue i {
-      color: #ff5228;
-    }
-
-    .assignment {
-      float: right;
     }
   }
+
+  .card-checkbox-large {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    z-index: 499;
+
+    .checkbox {
+      width: 40px;
+      height: 40px;
+      background: #ffffff;
+      border: 1px solid #d5d5d5;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+      i {
+        margin-top: 7px;
+        font-size: 1.5em;
+        color: #e9e9e9;
+      }
+    }
+
+    .checkbox.checked {
+        * { opacity: 1; }
+        background: #62ad8c;
+        border: 1px solid #62ad8c;
+        i {
+          color: #fff;
+        }
+    }
+
+
+  }
+
+
+  // Status icon under the checkbox
+  .card-status {
+    position: absolute;
+    top: 28px;
+    left: -8px;
+    width: 15px;
+    height: 15px;
+    background: #9d9d9d;
+    color: #fff;
+    font-weight: bold;
+    font-size: 9px;
+    text-align: center;
+    border-radius: 2px;
+    padding-top: 2px;
+  }
+
+  .card-status
+
+  // Container for labels on title
+  .ticket-label-box {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 5px;
+    position: relative;
+    top: 2px;
+  }
+
+  // inherits from tickets.scss
+  .ticket-label {
+    line-height: 1em;
+    padding: 4px 5px;
+  }
+
+
+  // If we need the first line of text from a ticket
+  .ticket-intro {
+    background: #f8f8f8;
+    border: 1px solid #e8e8e8;
+    margin-top: 6px;
+    padding-top: 3px;
+    padding-bottom: 1px;
+  }
+
+  // Top right corner holder for avatars etc
+  .top-right-box {
+    float: right;
+    margin-top: 1px;
+
+    .chat-avatar, .ticket-department {  margin-left: 3px; }
+
+    .text {// if we need a title next to an icon
+      font-size: 0.85em;
+      color: #bfbfbf;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  // Sla content or last action time
+  .ticket-timer {
+    float: right;
+    margin-top: 4px;
+  }
+
+  .chat-avatar {// Usual sizing overwrites on chat avatars
+    width: 16px;
+    height: 16px;
+    margin: 0px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  // If we need assigned to, created time etc on the last line
+  .ticket-extras {
+    .chat-avatar {
+      margin-left: 3px;
+      margin-right: 3px;
+      position: relative;
+      top: -2px;
+    }
+  }
+
+  // Generic department avatar
+  .ticket-department {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+  }
+  // Someone's details
+  .person {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agent {// Usually in .person
+    color: #898989;
+    margin-right: 3px;
+    font-size: 0.9em;
+  }
+
+  .email {// Usually in .person
+    color: #bfbfbf;
+    font-size: 0.9em;
+  }
+
+  .due-editor {
+    display: block;
+    font-size: 11px;
+
+    input.due-date {
+      width: 160px;
+      font-size: 11px;
+      display: inline-block;
+    }
+
+    button.due-button {
+      display: inline-block;
+      padding: 3px;
+      font-size: 11px;
+      color: #868686;
+      border: 1px solid #868686;
+      background-color: #fff;
+    }
+  }
+
+  .due-date-field {
+    width: 0;
+    border: none;
+    background-color: #fff;
+    color: #fff;
+  }
+
+  .overdue, .overdue i {
+    color: #ff5228;
+  }
+
+  .assignment {
+    float: right;
+  }
+}
 
 
 // Ticket Specific
 
 
 // Feedback specific
-  .line-box.card-feedback-mark {// This overwrites .line-box
-    background: #f2f2f3;
-    border-radius: 2px;
-    width: 34px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    color: #62ad8c;
-    margin-right: 2px;
-    line-height: 1em;
+.line-box.card-feedback-mark {// This overwrites .line-box
+  background: #f2f2f3;
+  border-radius: 2px;
+  width: 34px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  color: #62ad8c;
+  margin-right: 2px;
+  line-height: 1em;
 
-    .fa {
-      font-size: 12px;
-      top: 0;
-      left: 1px;
-    }
-
-    .feedback-count {
-      margin-left: 3px;
-      font-size: 12px;
-      font-weight: bold;
-    }
+  .fa {
+    font-size: 12px;
+    top: 0;
+    left: 1px;
   }
+
+  .feedback-count {
+    margin-left: 3px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
 
 
 
 // Task Specific
-  // Line of task info (due/label/linekd items etc)
-  .task-properties {
-    font-size: 0.85em;
-    color: #868686;
-    margin-top: 6px;
+// Line of task info (due/label/linekd items etc)
+.task-properties {
+  font-size: 0.85em;
+  color: #868686;
+  margin-top: 6px;
 
-    i {
-      color: #c7c7c7;
-      margin-right: 3px;
-    }
-
-    .disc {
-      background: #dbdbdb;
-      margin: 0px 6px;
-    }
-
-    a { color: inherit; }
-
-    > div {
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 1em;
-    }
+  i {
+    color: #c7c7c7;
+    margin-right: 3px;
   }
-  // Right side task properties
-  .task-extras {
-    font-size: 0.85em;
+
+  .disc {
+    background: #dbdbdb;
+    margin: 0px 6px;
+  }
+
+  a { color: inherit; }
+
+  > div {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1em;
+  }
+}
+// Right side task properties
+.task-extras {
+  font-size: 0.85em;
+  font-weight: bold;
+  float: right;
+  margin-top: 2px;
+  color: #868686;
+
+  .disc {
+    background: #c7c7c7;
+  }
+
+  > div {
+    display: inline-block;
     font-weight: bold;
-    float: right;
-    margin-top: 2px;
-    color: #868686;
-
-    .disc {
-      background: #c7c7c7;
-    }
-
-    > div {
-      display: inline-block;
-      font-weight: bold;
-      font-size: 0.9em;
-    }
-
-    i {
-      margin-left: 3px;
-      color: #c7c7c7;
-    }
-
-    .subtask-count {
-      display: inline;
-    }
+    font-size: 0.9em;
   }
+
+  i {
+    margin-left: 3px;
+    color: #c7c7c7;
+  }
+
+  .subtask-count {
+    display: inline;
+  }
+}
+
+.task-condensed-details {
+  .ticket-timer {
+    font-weight: normal;
+  }
+}
 
 
 // Tasks
@@ -554,6 +559,7 @@ $level-10: #ac2020;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
   transition: all 0.25s ease-in-out;
   width: 208px;
+  left: 0 !important;
 
   .anytime-picker__header {
     background-color: #fff;

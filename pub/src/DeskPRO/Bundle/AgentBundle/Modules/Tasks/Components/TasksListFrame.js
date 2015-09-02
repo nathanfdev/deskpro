@@ -9,6 +9,7 @@ import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
 import TaskControls from "../Components/TaskControls";
 import TaskCardGroup from "../Components/TaskCardGroup";
+import TaskCardCondensedGroup from "../Components/TaskCardCondensedGroup";
 import KanbanColumn from "../Components/KanbanColumn";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
@@ -18,7 +19,12 @@ import * as AppActions from "../../Application/Actions/AppActions";
   taskFrameList: state.taskFrameList,
   taskListList: state.taskListList,
   projectList: state.projectList,
-  taskFilter: state.taskFilter
+  taskFilter: state.taskFilter,
+  labelList: state.labelList,
+  agentList: state.agentList,
+  teamList: state.teamList,
+  departmentList: state.departmentList,
+  dp_window: state.dp_window
 }))
 export default class TasksListFrame extends React.Component {
   constructor(props) {
@@ -26,7 +32,8 @@ export default class TasksListFrame extends React.Component {
 
     this.state = {
       actionable: [],
-      kanban: false,
+      view: 'list',
+      changeView: false,
       filter: {}
     };
     this.intl = IntlMixin;
@@ -119,11 +126,8 @@ export default class TasksListFrame extends React.Component {
 
   toggleView()
   {
-    // @TODO: Make this do more than just toggle between kanban and list
-    // Nananana-nananana, nananana-nananana KANBANNNN!
-    this.props.dispatch(AppActions.toggleKanban());
     this.setState({
-      kanban: !this.state.kanban
+      changeView: !this.state.changeView
     });
   }
 
@@ -131,16 +135,22 @@ export default class TasksListFrame extends React.Component {
     this.props.dispatch(TaskActions.setFilter(filter));
   }
 
+  setView(view) {
+    this.props.dispatch(AppActions.toggleView(view));
+    this.setState({
+      view: view,
+      changeView: false
+    });
+  }
+
   render() {
-    const {taskFrameList, projectList, taskFilter} = this.props;
+    const {taskFrameList, projectList, taskFilter, labelList, agentList, teamList, departmentList} = this.props;
 
     const _this = this;
     let linked_items = {};
     let lists = [];
+    let labels = [];
     let tickets = {};
-
-    // Temp projectId for the sake of development
-    const projectId = "63";
 
     // Attach IDs to the projects
     if (projectList.projectList && typeof projectList.projectList.forEach === 'function') {
@@ -157,18 +167,18 @@ export default class TasksListFrame extends React.Component {
     }
 
     // Attach assignments
-    if (taskFrameList.taskFrameAgents && typeof taskFrameList.taskFrameAgents.forEach === 'function') {
-      taskFrameList.taskFrameAgents.forEach((agent) => {
+    if (agentList.agentList && typeof agentList.agentList.forEach === 'function') {
+      agentList.agentList.forEach((agent) => {
         this.agents[agent.id.toString()] = agent;
       });
     }
-    if (taskFrameList.taskFrameTeams && typeof taskFrameList.taskFrameTeams.forEach === 'function') {
-      taskFrameList.taskFrameTeams.forEach((team) => {
+    if (teamList.teamList && typeof teamList.teamList.forEach === 'function') {
+      teamList.teamList.forEach((team) => {
         this.teams[team.id.toString()] = team;
       });
     }
-    if (taskFrameList.taskFrameDepartments && typeof taskFrameList.taskFrameDepartments.forEach === 'function') {
-      taskFrameList.taskFrameDepartments.forEach((department) => {
+    if (departmentList.departmentList && typeof departmentList.departmentList.forEach === 'function') {
+      departmentList.departmentList.forEach((department) => {
         this.departments[department.id.toString()] = department;
       });
     }
@@ -186,14 +196,22 @@ export default class TasksListFrame extends React.Component {
       });
     }
 
+    if (labelList.labelList && typeof labelList.labelCharacters.forEach === 'function') {
+      labelList.labelCharacters.forEach((character) => {
+        labelList.labelList[character].forEach((label) => {
+          labels[label.id.toString()] = label;
+        });
+      });
+    }
+
     const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
 
     // Temporary hack
-    const columnField = "list";
+    const columnField = "assignee";
 
     const rawGroupings = grouping.getRawGroupings(columnField);
 
-    const sectionClass = this.state.kanban ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
+    const sectionClass = this.state.view !== 'list' ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
 
     let tasks = [];
 
@@ -231,8 +249,10 @@ export default class TasksListFrame extends React.Component {
                         teams={this.teams}
                         departments={this.departments}
                         projects={this.projects}
+                        labels={labels}
                         applyFilter={this.applyFilter.bind(this)}
-                        taskFilter={taskFilter} />
+                        taskFilter={taskFilter}
+                        windowProps={this.props.dp_window} />
 
           <span className="ticket-controls-bulk-editing">
             <a href="#">
@@ -277,7 +297,16 @@ export default class TasksListFrame extends React.Component {
           </span>
         </div>
 
-        {this.state.kanban ?
+        {this.state.changeView ?
+        <div>
+          <ul>
+            <li><a href="#" onClick={this.setView.bind(this, 'list')}>List</a></li>
+            <li><a href="#" onClick={this.setView.bind(this, 'kanban')}>Kanban</a></li>
+            <li><a href="#" onClick={this.setView.bind(this, 'condensed')}>Condensed</a></li>
+          </ul>
+        </div> : ''}
+
+        {this.state.view === 'kanban' ?
           <div className="kanban-columns">
             {rawGroupings ? rawGroupings.map((grouping) => {
               return <KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
@@ -286,27 +315,48 @@ export default class TasksListFrame extends React.Component {
                                   updateField={grouping.updateField} updateValue={grouping.updateValue} />
               }) : '' }
             </div>
-          :
-          <div>
-            <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
-              <FRC.Input name="title" type="text" />
-              <button type="submit" value="Save" className="button">Add</button>
-            </Formsy.Form>
+          : (this.state.view === 'condensed') ?
+            <div>
+              <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
+                <FRC.Input name="title" type="text" />
+                <button type="submit" value="Save" className="button">Add</button>
+              </Formsy.Form>
 
-            {rawGroupings ? rawGroupings.map((grouping) => {
+              {rawGroupings ? rawGroupings.map((grouping) => {
 
-              return <TaskCardGroup tasks={tasks[grouping.key]} key={grouping.id} columnField={columnField}
-                                    source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
-                                    updateField={grouping.updateField} updateValue={grouping.updateValue}
-                                    teams={this.teams} projects={this.projects} linked_items={linked_items}
-                                    departments={this.departments} agents={this.agents} tickets={tickets}
-                                    toggleDone={this.toggleDone.bind(this)} editTask={_this.editTask.bind(_this)}
-                                    updateMassActions={_this.updateMassActions.bind(_this)}
-                                    actionable={_this.state.actionable}
-                                    divider={grouping.title}/>
+                return <TaskCardCondensedGroup tasks={tasks[grouping.key]} key={grouping.id} columnField={columnField}
+                                      source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
+                                      updateField={grouping.updateField} updateValue={grouping.updateValue}
+                                      teams={this.teams} projects={this.projects} linked_items={linked_items}
+                                      departments={this.departments} agents={this.agents} tickets={tickets}
+                                      toggleDone={this.toggleDone.bind(this)} editTask={_this.editTask.bind(_this)}
+                                      updateMassActions={_this.updateMassActions.bind(_this)}
+                                      actionable={_this.state.actionable}
+                                      divider={grouping.title}/>
               }) : '' }
 
-          </div>
+            </div>
+          :
+            <div>
+              <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
+                <FRC.Input name="title" type="text" />
+                <button type="submit" value="Save" className="button">Add</button>
+              </Formsy.Form>
+
+              {rawGroupings ? rawGroupings.map((grouping) => {
+
+                return <TaskCardGroup tasks={tasks[grouping.key]} key={grouping.id} columnField={columnField}
+                                      source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
+                                      updateField={grouping.updateField} updateValue={grouping.updateValue}
+                                      teams={this.teams} projects={this.projects} linked_items={linked_items}
+                                      departments={this.departments} agents={this.agents} tickets={tickets}
+                                      toggleDone={this.toggleDone.bind(this)} editTask={_this.editTask.bind(_this)}
+                                      updateMassActions={_this.updateMassActions.bind(_this)}
+                                      actionable={_this.state.actionable}
+                                      divider={grouping.title}/>
+                }) : '' }
+
+            </div>
         }
       </div>
     </section>

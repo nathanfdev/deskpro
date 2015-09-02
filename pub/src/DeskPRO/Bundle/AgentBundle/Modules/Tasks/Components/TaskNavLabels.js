@@ -17,7 +17,7 @@ export default class TasksNavLabels extends React.Component {
           return (<li key={object}>
             <span className="labelCharacter">{object}</span>
             {labelList.labelList[object] ? labelList.labelList[object].map(function(label) {
-              return <a href="#" className="item-label" key={label.id} onClick={_this.props.switchTaskList.bind(_this, 'tasks?label=' + encodeURIComponent(label.label))}>{label.label}</a>
+              return <a href="#" className="item-label" key={label.id}  onClick={_this.props.filterTasks.bind(_this, {labels: [label.label]})}>{label.label}</a>
             }): ''}
           </li>)
 

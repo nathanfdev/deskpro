@@ -199,6 +199,12 @@ class Task extends NotifyPropertyChangeEntity
     protected $date_done;
 
     /**
+     * @var int
+     * @ORM\Column(type="integer")
+     */
+    protected $display_order = 1;
+
+    /**
      * @param Person $creator
      */
     public function __construct(Person $creator)
@@ -370,6 +376,14 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
      * @param string $title
      */
     public function setTitle($title)
@@ -482,6 +496,14 @@ class Task extends NotifyPropertyChangeEntity
     public function setDateDone(\DateTime $date_done)
     {
         $this->setModelField('date_done', $date_done);
+    }
+
+    /**
+     * @param int $display_order
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->setModelField('display_order', $display_order);
     }
 
     /**

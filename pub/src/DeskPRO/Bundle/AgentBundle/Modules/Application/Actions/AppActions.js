@@ -15,7 +15,7 @@ export const expandNav = createAction(ActionTypes.EXPAND_NAV);
 export const expandSwitcher = createAction(ActionTypes.EXPAND_SWITCHER);
 export const collapseSwitcher = createAction(ActionTypes.COLLAPSE_SWITCHER);
 
-export const toggleKanban = createAction(ActionTypes.TOGGLE_KANBAN);
+export const toggleView = createAction(ActionTypes.TOGGLE_VIEW);
 
 export function transitionTo(pathname, query = null, state = null) {
   return dispatch => {

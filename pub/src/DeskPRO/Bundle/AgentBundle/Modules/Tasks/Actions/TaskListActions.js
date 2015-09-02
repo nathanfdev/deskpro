@@ -71,7 +71,7 @@ export const loadUnassignedTasks = createAction(
 export const loadAgents = createAction(
   "TASKS_LOAD_AGENTS",
   (trigger) => {
-    Tasks.loadAgents({not_me: 1, is_done: false}).then(
+    Tasks.loadAgents().then(
       (value) => trigger(value.getData())
     );
   }
@@ -177,6 +177,26 @@ export const loadFilter = createAction(
 
     if (filter.departments && filter.departments.length > 0) {
       filterElements.assigned_department = filter.departments;
+    }
+
+    if (filter.creator) {
+      filterElements.creator = filter.creator;
+    }
+
+    if (filter.labels && filter.labels.length > 0) {
+      filterElements.labels = filter.labels;
+    }
+
+    if (filter.lists && filter.lists.length > 0) {
+      filterElements.lists = filter.lists;
+    }
+
+    if (typeof filter.has_attachments !== 'undefined' && filter.has_attachments !== 'all') {
+      filterElements.attachments = (filter.has_attachments === 'has') ? 'not_null' : 'null';
+    }
+
+    if (filter.created_before) {
+      filterElements.created_before = filter.created_before;
     }
 
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);
