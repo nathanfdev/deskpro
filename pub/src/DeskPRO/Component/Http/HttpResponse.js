@@ -104,6 +104,6 @@ export default class HttpResponse {
    */
   isErrorResponse() {
     let c = this.getResponseCode();
-    return !c || !(c > 200 && c < 300);
+    return !c || !(c >= 200 && c < 300);
   }
 }
