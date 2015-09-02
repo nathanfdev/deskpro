@@ -131,4 +131,18 @@ class Request
 
         throw new \RuntimeException(sprintf('Unable to parse ZD request `%s`', $helper_string));
     }
+
+    /**
+     * Create CoreAPI request object
+     *
+     * @param string $entity_type
+     * @param string $method
+     * @param array  $params
+     *
+     * @return Request
+     */
+    public static function createCoreAPI($entity_type, $method, array $params = array())
+    {
+        return new Request('CoreAPI', $entity_type, $method, $params);
+    }
 }

@@ -27,57 +27,39 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
-use DateTime;
-use Zendesk\API\Client;
+use Application\ImportBundle\Reader\ZenDesk\Request\Request;
 
 /**
- * ZenDesk people fixtures
- *
- * Class People
+ * Class TicketFieldsLoader
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
+ *
+ * todo handle system fields (not removable)
  */
-final class People extends AbstractFixture
+class TicketFieldsLoader extends AbstractFieldsLoader
 {
     /**
-     * @var PeopleFieldsLoader
+     * {@inheritdoc}
      */
-    private $people_fields_loader;
+    public function load()
+    {
+        $response = $this->request_adapter->doRequest(Request::createCoreAPI('TicketField', 'findAll'));
+        $this->fields = $this->toArray($response->ticket_fields);
+    }
 
     /**
-     * Constructor
+     * Returns random fields values
      *
-     * @param Client             $client
-     * @param PeopleFieldsLoader $people_fields_loader
+     * @return array
      */
-    public function __construct(Client $client, PeopleFieldsLoader $people_fields_loader)
+    public function getRandomFieldsValues()
     {
-        parent::__construct($client);
-        $this->people_fields_loader = $people_fields_loader;
-    }
+        $fields = $this->getRandomFields();
+        $values = array();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_PERSON;
-    }
+        foreach ($fields as $field) {
+            $values[$field['id']] = $this->getRandomFieldValue($field);
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
-    {
-        $params = array(
-            'name'        => 'Fake name ' . $num,
-            'email'       => 'fake_email_' . $num . '@domain.com',
-            'role'        => 'end-user',
-            'verified'    => true,
-            'user_fields' => $this->people_fields_loader->getRandomFieldsValues(),
-        );
-
-        $this->client->users()->create($params);
+        return $values;
     }
 }

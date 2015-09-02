@@ -27,57 +27,85 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
 use DateTime;
-use Zendesk\API\Client;
 
 /**
- * ZenDesk people fixtures
- *
- * Class People
+ * Class AbstractFieldsLoader
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
-final class People extends AbstractFixture
+abstract class AbstractFieldsLoader extends AbstractFixtureLoader
 {
     /**
-     * @var PeopleFieldsLoader
+     * @var array
      */
-    private $people_fields_loader;
+    protected $fields;
 
     /**
-     * Constructor
+     * @return array
+     */
+    public function getRandomFields()
+    {
+        if (null === $this->fields) {
+            $this->load();
+        }
+        if (empty($this->fields))  {
+            throw new \RuntimeException('No fields');
+        }
+
+        $fields = $this->fields;
+        $random = array();
+
+        for ($i = 0; $i < 5; $i++) {
+            if (empty($fields)) {
+                break;
+            }
+
+            $random = array_merge($random, array_splice($fields, rand(0, count($fields) - 1), 1));
+        }
+
+        return $random;
+    }
+
+    /**
+     * Returns random value by field type
      *
-     * @param Client             $client
-     * @param PeopleFieldsLoader $people_fields_loader
+     * @param array $field
+     * @return mixed
      */
-    public function __construct(Client $client, PeopleFieldsLoader $people_fields_loader)
+    protected function getRandomFieldValue(array $field)
     {
-        parent::__construct($client);
-        $this->people_fields_loader = $people_fields_loader;
-    }
+        switch ($field['type']) {
+            case 'checkbox':
+                return $this->getRandomBool();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_PERSON;
-    }
+            case 'date':
+                return $this->getRandomDateTime(new DateTime('-1 year'), new DateTime())->format('c');
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
-    {
-        $params = array(
-            'name'        => 'Fake name ' . $num,
-            'email'       => 'fake_email_' . $num . '@domain.com',
-            'role'        => 'end-user',
-            'verified'    => true,
-            'user_fields' => $this->people_fields_loader->getRandomFieldsValues(),
-        );
+            case 'decimal':
+                return rand(0, 1000) / 10;
 
-        $this->client->users()->create($params);
+            case 'dropdown':
+                $options = $field['custom_field_options'];
+                if ( ! empty($options)) {
+                    return $options[rand(0, count($options) - 1)]['value'];
+                }
+
+                break;
+
+            case 'integer':
+                return rand(0, 100);
+
+            case 'regexp':
+                return 'some string';
+
+            case 'text':
+                return 'some string';
+
+            case 'textarea':
+                return 'some text';
+        }
+
+        return null;
     }
 }

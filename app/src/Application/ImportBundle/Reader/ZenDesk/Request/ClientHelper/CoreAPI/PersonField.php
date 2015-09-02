@@ -25,59 +25,37 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
-use DateTime;
-use Zendesk\API\Client;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperCreateInterface;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
 
 /**
- * ZenDesk people fixtures
+ * ZenDesk person fields request client helper
  *
- * Class People
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
+ * Class PersonField
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-final class People extends AbstractFixture
+final class PersonField extends AbstractHelper implements ClientHelperCreateInterface, ClientHelperFindAllInterface
 {
     /**
-     * @var PeopleFieldsLoader
-     */
-    private $people_fields_loader;
-
-    /**
-     * Constructor
+     * {@inheritdoc}
      *
-     * @param Client             $client
-     * @param PeopleFieldsLoader $people_fields_loader
+     * @see https://developer.zendesk.com/rest_api/docs/core/user_fields#create-user-fields
      */
-    public function __construct(Client $client, PeopleFieldsLoader $people_fields_loader)
+    public function create(array $params = array())
     {
-        parent::__construct($client);
-        $this->people_fields_loader = $people_fields_loader;
+        return $this->client->userFields()->create($params);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/core/user_fields#list-user-fields
      */
-    public function getEntityType()
+    public function findAll(array $params = array())
     {
-        return Entity\EntityInterface::TYPE_PERSON;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
-    {
-        $params = array(
-            'name'        => 'Fake name ' . $num,
-            'email'       => 'fake_email_' . $num . '@domain.com',
-            'role'        => 'end-user',
-            'verified'    => true,
-            'user_fields' => $this->people_fields_loader->getRandomFieldsValues(),
-        );
-
-        $this->client->users()->create($params);
+        return $this->client->userFields()->findAll();
     }
 }

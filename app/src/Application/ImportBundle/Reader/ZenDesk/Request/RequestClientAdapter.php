@@ -108,7 +108,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
 
             $helper = new $helper($this->client);
             if ( ! $helper instanceof ClientHelperInterface) {
-                trigger_error('Helper is not instance of ClientHelperInterface');
+                trigger_error('Helper is not instance of ClientHelperInterface', E_ERROR);
             }
 
             $response = $helper->{$request->getMethod()}($request->getParams());

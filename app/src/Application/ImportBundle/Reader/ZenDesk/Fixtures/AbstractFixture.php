@@ -101,7 +101,7 @@ abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureI
         ));
 
         $debug = $this->client->getDebug();
-        $this->logWarning($debug->lastRequestHeaders);
+        $this->logWarning($debug);
 
         if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
             sleep(60);
