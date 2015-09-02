@@ -129,11 +129,11 @@ class ProcessEmailGateways extends AbstractJob
             }
 
             $runner->setAccounts(array($account));
-            $runner->execute(180);
+            $runner->execute(300);
 
         } else {
             $runner->loadAccountsFromDb(false);
-            $runner->execute(180);
+            $runner->execute(300);
         }
 
         // The PHP time limit would've been set above while processing messages,
