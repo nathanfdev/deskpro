@@ -1,6 +1,7 @@
 import React from "react"
 import FilterControls from "./Controls/FilterControls"
-import Http from "DeskPRO/Component/Http/Http"
+import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
+import PortalUrlCorrector from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlCorrector";
 import FilterModel from "./FilterModel"
 import FilterOptions from "./FilterOptions"
 import ResultsPartial from "./ResultsPartial"
@@ -46,10 +47,14 @@ export default class FeedbackFilter extends React.Component {
       doSpin: true,
       partial: ''
     }, () => {
-      let http = new Http($.ajax);
+      // we have to know the actual URL to put in the history.pushState, so
+      // we call in and use PortalUrlCorrector directly...
       let url = filter_model.createUrl();
+      let config = {url:url};
+      PortalUrlCorrector.request(config);
+      url = config.url;
 
-      http.sendGet(url).then(r => {
+      PortalHttp.sendGet(url).then(r => {
         let state = {
           filter: filter_model,
           partial: r.getData(),

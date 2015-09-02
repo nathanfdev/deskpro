@@ -60,7 +60,7 @@ export default class FilterModel {
   }
 
   createUrl() {
-    let url = window.DESKPRO_BASE_URL + 'feedback/browse/';
+    let url = 'DP_URL/feedback/browse/';
 
     url += this.status;
 
