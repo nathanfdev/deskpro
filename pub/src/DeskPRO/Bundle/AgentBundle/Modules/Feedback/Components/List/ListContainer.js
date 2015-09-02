@@ -1,10 +1,11 @@
 import React from 'react';
 import { SectionsPane, Section, SectionHeader }
     from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { ListFrame, ControlBar, ListTableViewSwitcher }
+import { ListFrame, ControlBar, ListTableViewSwitcher, TableView }
     from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { FeedbackCard} from './FeedbackCard';
-import { TableView} from './TableView';
+import { TableHeader} from './TableHeader';
+import { TableBody} from './TableBody';
 import { OrderBy} from './OrderBy';
 import { FilterBy} from './FilterBy';
 import { connect } from 'redux/react';
@@ -31,7 +32,12 @@ export class ListContainer extends React.Component {
                         {viewMode === 'list' ?
                             feedback.map(item =>
                                     <FeedbackCard key={itemKey++} feedback={item}/>
-                            ) : <TableView feedback={feedback} sortTable={sortTable.bind(this)}/>}
+                            ) :
+                            <TableView>
+                                <TableHeader sortTable={sortTable.bind(this)}/>
+                                <TableBody feedback={feedback}/>
+                            </TableView>
+                        }
                     </Section>
                 </SectionsPane>
             </ListFrame>

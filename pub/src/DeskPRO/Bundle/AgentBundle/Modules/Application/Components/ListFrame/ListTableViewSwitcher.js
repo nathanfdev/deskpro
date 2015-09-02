@@ -1,3 +1,6 @@
+/**
+ * Component to toggle view between the two modes: List and Table
+ */
 import React from 'react';
 import * as actions from '../../Actions/ControlBarActions'
 import $ from "jquery";
