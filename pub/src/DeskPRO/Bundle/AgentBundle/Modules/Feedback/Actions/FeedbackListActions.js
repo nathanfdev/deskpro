@@ -100,8 +100,8 @@ export const changeQueryState = createAction(
     }
 );
 
-export const switchView = createAction(
-    "FEEDBACK_SWITCH_VIEW",
+export const switchViewMode = createAction(
+    "FEEDBACK_SWITCH_VIEW_MODE",
     (trigger) => {
         trigger();
     }
@@ -132,4 +132,10 @@ export const resetFilters = createAction(
     "FEEDBACK_RESET_FILTERS",
     (trigger, filterAlias, filterName) => {
         trigger({alias: filterAlias, name: filterName, value: ''});
+    });
+
+export const setSort = createAction(
+    "FEEDBACK_SET_SORT",
+    (trigger, param, order) => {
+        trigger({sort: param, order: order});
     });

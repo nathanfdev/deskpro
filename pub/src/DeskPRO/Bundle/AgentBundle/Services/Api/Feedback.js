@@ -130,9 +130,10 @@ export function getList(query, sort, filters) {
     let params = [];
     params.push(compileParams(query));
     params.push(compileParams(sort));
-    if (filters.value.length > 0) {
-        params.push(filters.alias + '=' + filters.value);
+    if (filters.value && filters.value.length > 0) {
+        params.push(filters.alias + '=' + filters.value.replace(/\s/g, "%20"));
     }
+    //console.log('DP_API/feedback/?' + params.join('&'));
     return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
 }
 /**

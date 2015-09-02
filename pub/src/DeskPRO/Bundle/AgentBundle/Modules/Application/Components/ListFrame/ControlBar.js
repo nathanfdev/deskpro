@@ -1,16 +1,8 @@
 import React from 'react';
-import { OrderBy } from './OrderBy';
-import { View } from './View';
-import { FilterBy } from './FilterBy';
+import { connect } from 'redux/react';
 
 export class ControlBar extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        const {view, sort, sortName, filters, query} = this.props;
         return (
             <div className="tickets-control-bar">
 
@@ -24,11 +16,11 @@ export class ControlBar extends React.Component {
                 </div>
 
                 <span className="ticket-controls-default">
-                    <OrderBy sort={sort} sortName={sortName}/>
-                    <FilterBy filters={filters} query={query} />
-                    <View view={view}/>
-                </span>
+                    {this.props.children}
+                    </span>
             </div>
         );
     }
 }
+
+

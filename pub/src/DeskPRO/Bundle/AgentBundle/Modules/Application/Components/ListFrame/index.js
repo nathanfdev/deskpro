@@ -1,3 +1,6 @@
 import { ListFrame } from './frame';
+import { ControlBar } from './ControlBar';
+import { ListTableViewSwitcher } from './ListTableViewSwitcher';
+import { TableView } from './TableView';
 
-export default {ListFrame};
+export default {ListFrame, ControlBar, ListTableViewSwitcher, TableView};
