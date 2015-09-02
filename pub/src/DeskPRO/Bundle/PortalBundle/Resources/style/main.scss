@@ -610,11 +610,69 @@ textarea {
   display: none;
 }
 
+// Hide 'add attachments' submit button when js-capable
+.with-dpui #ticket_reply_more_attachments {
+  display: none;
+}
+
 .attach-file {
   // Grab the same styles as the logged in user button
   @extend .user-logged-in;
 
+  div {
+    // revert the "div" mods on .user-logged-in
+    position: initial;
+    padding: 0;
+    border: 0;
+    background: inherit;
+    color: inherit;
+    line-height: inherit;
+    font-size: inherit;
+  }
+
+  div.frame {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 1px;
+    background: $text-color-lighter;
+    color: $grey;
+    font-size: 0.9em;
+    line-height: 1em;
+    margin-right: 5px;
+    text-align: center;
+    span {
+      color: #ffffff;
+      display: block;
+      white-space: nowrap;
+    }
+    .caption {
+      margin-top: 10px;
+      display: block;
+      clear: both;
+    }
+    img {
+      margin: auto;
+      margin-bottom: 10px;
+      text-align: center;
+      display: block;
+      clear: both;
+    }
+  }
+
+  div.previews {
+    display: block;
+  }
+
+  span {
+    color: $text-color-lighter;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
+  color: $text-color;
+  text-decoration: none;
   margin-bottom: 0;
+  cursor: pointer;
 }
 
 .remove-attachement {

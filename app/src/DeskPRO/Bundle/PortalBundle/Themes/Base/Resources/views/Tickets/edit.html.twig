@@ -9,7 +9,9 @@
         <strong>{{ phrase('portal.tickets.switched-department-rerender') }}</strong>
     {% endif %}
 
-    {% show ticket_form %}
+    <div id="edit_ticket_page">
+        {% show ticket_form %}
+    </div>
 
     <a href="{{ portal_path(ticket) }}">{{ phrase('portal.tickets.cancel-ticket-edit') }}</a>
 {% endblock inner_content %}
