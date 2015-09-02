@@ -6,7 +6,8 @@ var gulp                  = require('gulp'),
     runSeq                = require('run-sequence'),
     path                  = require("path"),
     ExtractTextPlugin     = require("extract-text-webpack-plugin"),
-    fs                    = require("fs");
+    fs                    = require("fs"),
+    WebpackNotifierPlugin = require('webpack-notifier');
 
 //######################################################################################################################
 //# Util
@@ -124,9 +125,11 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       new ExtractTextPlugin("./DeskPRO/Bundle/Build/Resources/style/[name].css", {allChunks: true}),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      })
+      }),
+      new WebpackNotifierPlugin({title:'DeskPRO Dev Server'})
     ]
   };
+
 
   if (mode == 'all' || mode == 'portal') {
     config.entry['DeskPRO_PortalBundle']       = ["./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle"];
