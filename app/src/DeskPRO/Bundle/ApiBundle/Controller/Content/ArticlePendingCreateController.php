@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\View\View;
@@ -43,11 +44,13 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
- * Class ArticlePendingCreateCountsController
+ * Class ArticlePendingCreateController
  */
-class ArticlePendingCreateCountsController extends BaseController
+class ArticlePendingCreateController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -62,28 +65,11 @@ class ArticlePendingCreateCountsController extends BaseController
      */
     public function getTotalCountAction(Request $request)
     {
-
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('COUNT(apc)')
             ->from(ArticlePendingCreate::class, 'apc');
-
-        // handle the only allowed filter "assigned_person"
-        $params = $request->query->all();
-        if (array_key_exists('assigned_person', $params)) {
-            $assignee = $params['assigned_person'] === 'me'
-                      ? $this->getUser()
-                      : $this->findOr404(Person::class, $params['assigned_person']);
-            $qb
-                ->where('apc.assigned_person = :assignee')
-                ->setParameters(compact('assignee'));
-            unset($params['assigned_person']);
-        }
-
-        // throw Bad Request if there are any filers except "assigned_person"
-        if (!empty($params)) {
-            throw new BadRequestHttpException('Unknown parameters: ' . join(', ', array_keys($params)));
-        }
+        $this->applyFilters($qb, $request->query->all());
 
         $total = $qb->getQuery()->getSingleScalarResult();
         $count = Count::fromValue($total);
@@ -92,5 +78,63 @@ class ArticlePendingCreateCountsController extends BaseController
             $this->createRepresentation($count),
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get ArticlePendingCreate entities list",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Assigned person not found"
+     *      }
+     * )
+     * @Get("/article_pending_creates", name="api_article_pending_creates")
+     */
+    public function listAction(Request $request)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('apc')
+            ->from(ArticlePendingCreate::class, 'apc');
+
+        $params = array_diff_assoc($request->query->all(), ['page' => null, 'count' => null]);
+        $this->applyFilters($qb, $params);
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return View::create(
+            $this->dataSerialize($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $params
+     */
+    private function applyFilters(QueryBuilder $qb, array $params)
+    {
+        // handle the only allowed filter "assigned_person"
+        if (array_key_exists('assigned_person', $params)) {
+            $assignee = $params['assigned_person'] === 'me'
+                ? $this->getUser()
+                : $this->findOr404(Person::class, $params['assigned_person']);
+
+            $alias = $qb->getRootAliases()[0];
+            $qb
+                ->where($alias . '.assigned_person = :assignee')
+                ->setParameters(compact('assignee'));
+            unset($params['assigned_person']);
+        }
+
+        // throw Bad Request if there are any filers except "assigned_person"
+        if (!empty($params)) {
+            throw new BadRequestHttpException('Unknown parameters: ' . join(', ', array_keys($params)));
+        }
     }
 }
