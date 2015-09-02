@@ -10,6 +10,7 @@ import TaskCard from "../Components/TaskCard";
 import TaskControls from "../Components/TaskControls";
 import TaskCardGroup from "../Components/TaskCardGroup";
 import TaskCardCondensedGroup from "../Components/TaskCardCondensedGroup";
+import TaskOrderHover from "../Components/TaskOrderHover";
 import KanbanColumn from "../Components/KanbanColumn";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
@@ -34,6 +35,8 @@ export default class TasksListFrame extends React.Component {
       actionable: [],
       view: 'list',
       changeView: false,
+      order: 'due',
+      direction: 'asc',
       filter: {}
     };
     this.intl = IntlMixin;
@@ -132,15 +135,39 @@ export default class TasksListFrame extends React.Component {
   }
 
   applyFilter(filter) {
-    this.props.dispatch(TaskActions.setFilter(filter));
+    this.setState({
+      filter: filter
+    });
+
+    let query = filter;
+
+    query.order_by = this.state.order;
+    query.sort = this.state.direction;
+
+    this.props.dispatch(TaskActions.setFilter(query));
   }
 
   setView(view) {
     this.props.dispatch(AppActions.toggleView(view));
+
     this.setState({
       view: view,
       changeView: false
     });
+  }
+
+  setSortOrder(model) {
+    this.setState({
+      order: model.order,
+      direction: model.direction
+    });
+
+    let query = this.state.filter;
+
+    query.order_by = model.order;
+    query.sort = model.direction;
+
+    this.props.dispatch(TaskActions.setFilter(query));
   }
 
   render() {
@@ -207,9 +234,11 @@ export default class TasksListFrame extends React.Component {
     const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
 
     // Temporary hack
-    const columnField = "assignee";
+    const columnField = this.state.order;
 
-    const rawGroupings = grouping.getRawGroupings(columnField);
+    const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
+
+
 
     const sectionClass = this.state.view !== 'list' ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
 
@@ -231,90 +260,94 @@ export default class TasksListFrame extends React.Component {
 
     return (
       <section className={sectionClass}>
-      <div className="ticket-list">
+        <div className="ticket-list">
 
-        <div className="tickets-control-bar">
+          <div className="tickets-control-bar">
 
-          <div className="bulk-edit-control">
-            <a href="#" onClick={this.toggleAllMassActions.bind(this)}>
-              <span className="checkbox">{this.state.actionable.length > 0 ? <i className="fa fa-check" /> : ''}</span>
-            </a>
-            <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}>
-              <span>{this.state.actionable.length}</span>
+            <div className="bulk-edit-control">
+              <a href="#" onClick={this.toggleAllMassActions.bind(this)}>
+                <span className="checkbox">{this.state.actionable.length > 0 ? <i className="fa fa-check" /> : ''}</span>
+              </a>
+              <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}>
+                <span>{this.state.actionable.length}</span>
+              </span>
+            </div>
+
+            <TaskControls toggleView={this.toggleView.bind(this)}
+                          agents={this.agents}
+                          teams={this.teams}
+                          departments={this.departments}
+                          projects={this.projects}
+                          labels={labels}
+                          applyFilter={this.applyFilter.bind(this)}
+                          taskFilter={taskFilter}
+                          windowProps={this.props.dp_window}
+                          order={this.state.order}
+                          direction={this.state.direction}
+                          setSortOrder={this.setSortOrder.bind(this)}
+                          />
+
+            <span className="ticket-controls-bulk-editing">
+              <a href="#">
+                <span>Assign</span>
+                <hr />
+                <i className="fa fa-caret-down" />
+              </a>
+
+              <a href="#">
+                <span>Statuses</span>
+                <hr />
+                <i className="fa fa-caret-down" />
+              </a>
+
+              <a href="#">
+                <span>Macros</span>
+                <hr />
+                <i className="fa fa-caret-down" />
+              </a>
+
+              <a href="#">
+                <span><i className="fa fa-reply" /></span>
+                <hr />
+                <i className="fa fa-caret-down" />
+              </a>
+
+              <a href="#">
+                <span><i className="fa fa-asterisk" /></span>
+                <hr />
+                <i className="fa fa-caret-down" />
+              </a>
+
+              <hr />
+
+              <a href="#" className="active">
+                <span>GO</span>
+              </a>
+
+              <a href="#" className="cancel" onClick={this.hideMassActionControls.bind(this)}>
+                <span>Cancel</span>
+              </a>
             </span>
           </div>
 
-          <TaskControls toggleView={this.toggleView.bind(this)}
-                        agents={this.agents}
-                        teams={this.teams}
-                        departments={this.departments}
-                        projects={this.projects}
-                        labels={labels}
-                        applyFilter={this.applyFilter.bind(this)}
-                        taskFilter={taskFilter}
-                        windowProps={this.props.dp_window} />
+          {this.state.changeView ?
+          <div>
+            <ul>
+              <li><a href="#" onClick={this.setView.bind(this, 'list')}>List</a></li>
+              <li><a href="#" onClick={this.setView.bind(this, 'kanban')}>Kanban</a></li>
+              <li><a href="#" onClick={this.setView.bind(this, 'condensed')}>Condensed</a></li>
+            </ul>
+          </div> : ''}
 
-          <span className="ticket-controls-bulk-editing">
-            <a href="#">
-              <span>Assign</span>
-              <hr />
-              <i className="fa fa-caret-down" />
-            </a>
-
-            <a href="#">
-              <span>Statuses</span>
-              <hr />
-              <i className="fa fa-caret-down" />
-            </a>
-
-            <a href="#">
-              <span>Macros</span>
-              <hr />
-              <i className="fa fa-caret-down" />
-            </a>
-
-            <a href="#">
-              <span><i className="fa fa-reply" /></span>
-              <hr />
-              <i className="fa fa-caret-down" />
-            </a>
-
-            <a href="#">
-              <span><i className="fa fa-asterisk" /></span>
-              <hr />
-              <i className="fa fa-caret-down" />
-            </a>
-
-            <hr />
-
-            <a href="#" className="active">
-              <span>GO</span>
-            </a>
-
-            <a href="#" className="cancel" onClick={this.hideMassActionControls.bind(this)}>
-              <span>Cancel</span>
-            </a>
-          </span>
-        </div>
-
-        {this.state.changeView ?
-        <div>
-          <ul>
-            <li><a href="#" onClick={this.setView.bind(this, 'list')}>List</a></li>
-            <li><a href="#" onClick={this.setView.bind(this, 'kanban')}>Kanban</a></li>
-            <li><a href="#" onClick={this.setView.bind(this, 'condensed')}>Condensed</a></li>
-          </ul>
-        </div> : ''}
-
-        {this.state.view === 'kanban' ?
-          <div className="kanban-columns">
-            {rawGroupings ? rawGroupings.map((grouping) => {
-              return <KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
-                                  tasks={tasks[grouping.key]} key={grouping.id} taskList={grouping}
-                                  dispatch={_this.props.dispatch.bind(_this)} columnField={columnField}
-                                  updateField={grouping.updateField} updateValue={grouping.updateValue} />
-              }) : '' }
-            </div>
+          {this.state.view === 'kanban' ?
+            <div className="kanban-columns">
+              {rawGroupings ? rawGroupings.map((grouping) => {
+                return <KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams} departments={this.departments}
+                                    tasks={tasks[grouping.key]} key={grouping.id} taskList={grouping}
+                                    dispatch={_this.props.dispatch.bind(_this)} columnField={columnField}
+                                    updateField={grouping.updateField} updateValue={grouping.updateValue} />
+                }) : '' }
+              </div>
           : (this.state.view === 'condensed') ?
             <div>
               <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
@@ -357,9 +390,9 @@ export default class TasksListFrame extends React.Component {
                 }) : '' }
 
             </div>
-        }
-      </div>
-    </section>
+          }
+        </div>
+      </section>
     );
   }
 }

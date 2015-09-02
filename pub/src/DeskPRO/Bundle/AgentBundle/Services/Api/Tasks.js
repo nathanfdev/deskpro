@@ -7,9 +7,6 @@ import DpApi from "../DpApi";
  * @return Promise
  */
 export function loadAddress(address, params = {}) {
-  // Temporary hard-coded groupings
-  params.order_by = 'ticket';
-
   if (params !== {}) {
     if (address.indexOf('?') === -1) {
       address = address + '?' + compileParams(params);
@@ -126,6 +123,19 @@ export function createTask(data) {
  * @return Promise
  */
 export function editTask(taskId, data) {
+  // Clean-up
+  // The API supports multiple assignment, but the UI doesn't yet
+  if (data.departments && data.departments.length > 0) {
+    data.teams = [];
+    data.agents = [];
+  } else if (data.teams && data.teams.length > 0) {
+    data.departments = [];
+    data.agents = [];
+  } else if (data.agents && data.agents.length > 0 || data.agents === false) {    // Allows un-assign
+    data.departments = [];
+    data.teams = [];
+  }
+
   return DpApi.sendPut('DP_API/tasks/' + taskId, data);
 }
 

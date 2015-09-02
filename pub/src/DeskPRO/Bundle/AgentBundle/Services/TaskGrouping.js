@@ -28,9 +28,9 @@ export default class TaskGrouping {
       { key: 'day', title: 'Today', value: Moment().startOf('day').utc().format() },
       { key: 'tomorrow', title: 'Yesterday', value: Moment().startOf('day').subtract(1, 'd').utc().format() },
       { key: 'week', title: 'This Week', value: Moment().startOf('week').utc().format() },
-      { key: 'nextweek', title: 'Last Week', value: Moment().startOf('week').subtract(7, 'd').utc().format() },
+      { key: 'lastweek', title: 'Last Week', value: Moment().startOf('week').subtract(7, 'd').utc().format() },
       { key: 'month', title: 'This Month', value: Moment().startOf('month').utc().format() },
-      { key: 'nextmonth', title: 'Last Month', value: Moment().startOf('month').subtract(1, 'M').utc().format() },
+      { key: 'lastmonth', title: 'Last Month', value: Moment().startOf('month').subtract(1, 'M').utc().format() },
       { key: 'year', title: 'This Year', value: Moment().startOf('year').utc().format() },
       { key: 'forever', title: 'Older', value: false }
     ];
@@ -48,31 +48,31 @@ export default class TaskGrouping {
 
     switch(grouping) {
       case 'due':
-        results = this.getDueDividers(object);
+        results = this.getDueDivider(object);
         break;
       case 'created':
-        results = this.getCreatedDividers(object);
+        results = this.getCreatedDivider(object);
         break;
       case 'assignee':
-        results = this.getAssigneeDividers(object);
+        results = this.getAssigneeDivider(object);
         break;
       case 'project':
-        results = this.getProjectDividers(object);
+        results = this.getProjectDivider(object);
         break;
       case 'list':
-        results = this.getListDividers(object);
+        results = this.getListDivider(object);
         break;
       case 'creator':
-        results = this.getCreatorDividers(object);
+        results = this.getCreatorDivider(object);
         break;
       case 'done':
-        results = this.getDoneDateDividers(object);
+        results = this.getDoneDateDivider(object);
         break;
       case 'labels':
-        results = this.getLabelDividers(object);
+        results = this.getLabelDivider(object);
         break;
       case 'ticket':
-        results = this.getTicketDividers(object);
+        results = this.getTicketDivider(object);
         break;
       default:
         return false;
@@ -130,11 +130,13 @@ export default class TaskGrouping {
    * Get the details of the groupings according to the type to group by
    * Returns and array of objects, each object containing ID, a title, a field to update, and a value to update with
    * @param type
+   * @param direction
    * @returns {Array}
    */
-  getRawGroupings(type)
+  getRawGroupings(type, direction)
   {
     let returnGroups = [];
+    let reverse = 'desc';
     switch (type) {
       case 'list':
         this.lists.forEach((listObject) => {
@@ -145,6 +147,14 @@ export default class TaskGrouping {
             updateValue: listObject.id,
             key: 'list_' + listObject.id
           });
+        });
+
+        returnGroups.sort((a, b) => {
+          if (a.title === b.title) {
+            return 0;
+          }
+
+          return a.title > b.title ? 1 : -1;
         });
 
         returnGroups.push({
@@ -165,6 +175,13 @@ export default class TaskGrouping {
             key: 'project_' + project.id
           });
         });
+        returnGroups.sort((a, b) => {
+          if (a.title === b.title) {
+            return 0;
+          }
+
+          return a.title > b.title ? 1 : -1;
+        });
         break;
       case 'due':
         this.futureDates.forEach((date) => {
@@ -183,8 +200,8 @@ export default class TaskGrouping {
           returnGroups.push({
             id: date.key,
             title: date.title,
-            updateField: 'date_due',
-            updateValue: date.value,
+            updateField: null,
+            updateValue: null,
             key: date.key
           });
         });
@@ -218,7 +235,7 @@ export default class TaskGrouping {
           })
         });
 
-        returnGroups.push({
+        returnGroups.unshift({
           id: 'none',
           title: 'Unassigned',
           updateField: 'agents',
@@ -226,6 +243,10 @@ export default class TaskGrouping {
           key: 'none'
         });
         break;
+    }
+
+    if (reverse === direction) {
+      returnGroups.reverse();
     }
 
     return returnGroups;
