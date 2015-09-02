@@ -445,12 +445,61 @@ $level-10: #ac2020;
   }
 }
 
-.task-condensed-details {
-  .ticket-timer {
-    font-weight: normal;
+.condensed-task-list {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+
+  th {
+    padding: 5px;
+    text-align: left;
+    color: #999;
+  }
+
+  td {
+    padding: 5px;
+    color: #868686;
+    border-top: 1px solid #E0E0E0;
+    border-left: 1px solid #E0E0E0;
+
+    .checkbox {
+      width: 15px;
+      height: 15px;
+      display: inline-block;
+      border: 1px solid #e2e5e8;
+      border-radius: 2px;
+      background: #fff;
+      color: #e1e1e3;
+      font-size: 9px;
+      margin-right: 5px;
+      vertical-align: 2px;
+
+      i {
+        color: #62ad8c;
+
+        &.selected {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .divider {
+    color: #868686;
+
+    td {
+      border: 1px solid #F8F8F8;
+    }
+
+    span {
+      background-color: #F8F8F8;
+      padding: 3px 5px;
+      margin-left: 10px;
+      position: relative;
+      z-index: 10;
+    }
   }
 }
-
 
 // Tasks
   // For tasks, we turn it into a button/action

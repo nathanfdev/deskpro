@@ -350,24 +350,33 @@ export default class TasksListFrame extends React.Component {
               </div>
           : (this.state.view === 'condensed') ?
             <div>
+              <table cellSpacing="0" className="condensed-task-list">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Project</th>
+                    <th>Due</th>
+                    <th>Assignee</th>
+                  </tr>
+                </thead>
+                {rawGroupings ? rawGroupings.map((grouping) => {
+                  if (tasks[grouping.key]) {
+                    return <TaskCardCondensedGroup tasks={tasks[grouping.key]} key={grouping.id} columnField={columnField}
+                                                   source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
+                                                   updateField={grouping.updateField} updateValue={grouping.updateValue}
+                                                   teams={this.teams} projects={this.projects} linked_items={linked_items}
+                                                   departments={this.departments} agents={this.agents} tickets={tickets}
+                                                   toggleDone={this.toggleDone.bind(this)} editTask={_this.editTask.bind(_this)}
+                                                   updateMassActions={_this.updateMassActions.bind(_this)}
+                                                   actionable={_this.state.actionable}
+                                                   divider={grouping.title}/>
+                  }
+                }) : '' }
+              </table>
               <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
                 <FRC.Input name="title" type="text" />
                 <button type="submit" value="Save" className="button">Add</button>
               </Formsy.Form>
-
-              {rawGroupings ? rawGroupings.map((grouping) => {
-
-                return <TaskCardCondensedGroup tasks={tasks[grouping.key]} key={grouping.id} columnField={columnField}
-                                      source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
-                                      updateField={grouping.updateField} updateValue={grouping.updateValue}
-                                      teams={this.teams} projects={this.projects} linked_items={linked_items}
-                                      departments={this.departments} agents={this.agents} tickets={tickets}
-                                      toggleDone={this.toggleDone.bind(this)} editTask={_this.editTask.bind(_this)}
-                                      updateMassActions={_this.updateMassActions.bind(_this)}
-                                      actionable={_this.state.actionable}
-                                      divider={grouping.title}/>
-              }) : '' }
-
             </div>
           :
             <div>
@@ -377,7 +386,6 @@ export default class TasksListFrame extends React.Component {
               </Formsy.Form>
 
               {rawGroupings ? rawGroupings.map((grouping) => {
-
                 return <TaskCardGroup tasks={tasks[grouping.key]} key={grouping.id} columnField={columnField}
                                       source={taskFrameList.taskFrameSource} dispatch={_this.props.dispatch.bind(_this)}
                                       updateField={grouping.updateField} updateValue={grouping.updateValue}

@@ -202,41 +202,26 @@ const TaskCondensedCard = React.createClass({
       assignee = this.props.departments[task.departments[0]].title;
     }
 
-    const ticketClass = task.is_done ? "ticket done" : "ticket";
+    const taskClass = task.is_done ? "ticket done" : "ticket";
 
     const dueField = "due-" + task.id;
     const dueButton = "due-button-" + task.id;
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<div key={task.id} className={ticketClass} style={this.getStyles(this.props)}>
-      <div className="bulk-editing"></div>
+    console.log(selected);
 
-      <div className="ticket-title">
-        <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
-          {doneButton}
+    return connectDragSource(<tr key={task.id} className={taskClass}>
+      <td>
+        <span className="checkbox" onClick={this.toggleMassAction}>
+          <i className={selected ? "fa fa-check selected" : "fa fa-check"} />
         </span>
         <a href="#">{task.title}</a>
-      </div>
-
-      {assignee ? <div className="agent">
-        <span style={{backgroundImage: "url(./img/avatar.jpg)"}} className="chat-avatar"></span>
-        <span className="agent-name">{assignee}</span>
-      </div> : '' }
-
-      <div className="ticket-details task-condensed-details">
-        <div className={overdue ? "overdue ticket-timer" : "ticket-timer"} ref={dueButton} >
-
-          <i className="fa fa-calendar-o" /> Due: {task.date_due ? Moment(task.date_due).format('DD/MM/YY')
-          : 'N/A' }
-          <input type="hidden" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
-        </div>
-
-        {task.project && projects[task.project] ? <div className="ticket-timer">
-            <i className="fa fa-book"/>{projects[task.project].title}
-          </div> : ''}
-      </div>
-    </div>);
+      </td>
+      <td>{task.project && projects[task.project] ? projects[task.project].title : ''}</td>
+      <td>{task.date_due ? Moment(task.date_due).format('DD/MM/YY') : '' }</td>
+      <td>{assignee}</td>
+    </tr>);
   }
 });
 
