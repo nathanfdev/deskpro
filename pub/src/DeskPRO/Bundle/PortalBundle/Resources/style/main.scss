@@ -675,6 +675,11 @@ textarea {
   cursor: pointer;
 }
 
+.attach-file-active {
+  @extend .attach-file;
+  border: 1px solid black;
+}
+
 .remove-attachement {
   margin-left: 10px;
   color: inherit;

@@ -26,6 +26,7 @@ export default class DropzoneUpload extends React.Component {
         multiple={false}
         onDrop={this.onDrop.bind(this)}
         className="attach-file"
+        activeClassName="attach-file-active"
         inputName={this.props.inputName}
         >
         <i className="fa fa-link"></i>
