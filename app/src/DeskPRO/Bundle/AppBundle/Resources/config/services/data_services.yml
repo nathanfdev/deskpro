@@ -112,8 +112,8 @@ services:
       class: DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService
       arguments: [@doctrine.orm.default_entity_manager, @data.categories]
 
-  data.comment_counts:
-      class: DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentCountsDataService
+  data.comments:
+      class: DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService
       arguments: [@doctrine.orm.default_entity_manager]
 
   data.categories:

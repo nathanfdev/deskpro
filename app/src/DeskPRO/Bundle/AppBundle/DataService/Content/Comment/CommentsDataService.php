@@ -34,11 +34,14 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
- * Class CommentCountsDataService
+ * Class CommentsDataService
  */
-class CommentCountsDataService
+class CommentsDataService
 {
     /**
      * @var EntityManager
@@ -63,9 +66,9 @@ class CommentCountsDataService
     public function countComments($class, GroupedCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(c) as value')
-           ->from($class, 'c');
+        $qb
+            ->select('count(c) as value')
+            ->from($class, 'c');
         $criteria->applyFilters($qb);
 
         if ($criteria->hasGroupBy()) {
@@ -83,5 +86,27 @@ class CommentCountsDataService
         }
 
         return $count;
+    }
+
+    /**
+     * @param string $class
+     * @param Criteria $criteria
+     * @param int $page
+     * @param int $count
+     * @return Pagerfanta
+     */
+    public function selectComments($class, Criteria $criteria, $page, $count)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from($class, 'c');
+        $criteria->applyFilters($qb);
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setCurrentPage($page);
+        $pager->setMaxPerPage($count);
+
+        return $pager;
     }
 }
