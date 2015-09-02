@@ -50,7 +50,7 @@ class PeopleLoader extends AbstractFixtureLoader
     public function load()
     {
         $initial_time = new DateTime('-2 years');
-        $response     = $this->request_adapter->doRequest(Request::createFromString('CoreAPI\Person::incrementalExport', array(
+        $response     = $this->request_adapter->doRequest(Request::createCoreAPI('Person', 'incrementalExport', array(
             'start_time' => $initial_time->getTimestamp(),
         )));
 

@@ -50,7 +50,7 @@ class CategoryLoader extends AbstractFixtureLoader
      */
     public function load()
     {
-        $response = $this->request_adapter->doRequest(Request::createFromString('HelpCenter\Category::findAll'));
+        $response = $this->request_adapter->doRequest(Request::createHelpCenter('Category', 'findAll'));
         $this->categories = new ArrayCollection($this->toArray($response->categories));
     }
 

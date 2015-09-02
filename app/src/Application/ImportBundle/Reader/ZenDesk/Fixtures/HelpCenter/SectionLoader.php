@@ -47,7 +47,7 @@ class SectionLoader extends AbstractFixtureLoader
      */
     public function load()
     {
-        $response = $this->request_adapter->doRequest(Request::createFromString('HelpCenter\Section::findAll'));
+        $response = $this->request_adapter->doRequest(Request::createHelpCenter('Section', 'findAll'));
         $this->sections = new ArrayCollection($this->toArray($response->sections));
     }
 

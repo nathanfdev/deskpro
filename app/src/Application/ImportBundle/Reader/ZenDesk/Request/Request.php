@@ -145,4 +145,18 @@ class Request
     {
         return new Request('CoreAPI', $entity_type, $method, $params);
     }
+
+    /**
+     * Create help center request object
+     *
+     * @param string $entity_type
+     * @param string $method
+     * @param array  $params
+     *
+     * @return Request
+     */
+    public static function createHelpCenter($entity_type, $method, array $params = array())
+    {
+        return new Request('HelpCenter', $entity_type, $method, $params);
+    }
 }
