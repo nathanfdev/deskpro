@@ -78,6 +78,7 @@ final class People extends AbstractFixture
             'user_fields' => $this->people_fields_loader->getRandomFieldsValues(),
         );
 
-        $this->client->users()->create($params);
+        $response = $this->client->users()->create($params);
+        $this->logger->debug(json_encode($response));
     }
 }

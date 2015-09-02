@@ -105,7 +105,7 @@ final class Tickets extends AbstractFixture
 
         $response = $this->client->tickets()->create($params);
         $this->logger->info('Ticket created successfully');
-        $this->logger->debug(json_encode($response->ticket));
+        $this->logger->debug(json_encode($response));
 
         for ($i = 1; $i <= 100; $i++) {
             try {
