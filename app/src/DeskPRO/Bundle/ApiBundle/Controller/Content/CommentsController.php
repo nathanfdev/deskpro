@@ -41,6 +41,7 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\DownloadComment;
@@ -48,9 +49,9 @@ use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class CommentCountsController
+ * Class CommentsController
  */
-class CommentCountsController extends BaseController
+class CommentsController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -69,8 +70,8 @@ class CommentCountsController extends BaseController
      */
     public function getCommentCountsAction($type, Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentCountsDataService $dataService */
-        $dataService = $this->get('data.comment_counts');
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
+        $dataService = $this->get('data.comments');
 
         $params = $request->query->all();
         $this->validateParentConsistency($type, $params);
@@ -80,15 +81,48 @@ class CommentCountsController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $typeToClass = [
-            'article'  => ArticleComment::class,
-            'news'     => NewsComment::class,
-            'download' => DownloadComment::class,
-        ];
-        $count = $dataService->countComments($typeToClass[$type], $criteria);
+        $count = $dataService->countComments($this->getClass($type), $criteria);
 
         return View::create(
             $this->createRepresentation($count),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get articles, news, downloads comments list",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get(
+     *     "/{type}_comments",
+     *     name="api_content_comments",
+     *     requirements={
+     *         "type"="article|news|download"
+     *     }
+     * )
+     */
+    public function listCommentsAction($type, Request $request)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
+        $dataService = $this->get('data.comments');
+
+        $params = array_diff_assoc($request->query->all(), ['page' => null, 'count' => null]);
+        $this->validateParentConsistency($type, $params);
+        try {
+            $criteria = CommentsSelectCriteria::fromParameters($params, new OptionsResolver());
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+        $pager = $dataService->selectComments($this->getClass($type), $criteria, $page, $count);
+
+        return View::create(
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -132,5 +166,20 @@ class CommentCountsController extends BaseController
                 throw new BadRequestHttpException("$parentParam filter is not allowed when selecting $type comments.");
             }
         }
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    private function getClass($type)
+    {
+        $typeToClass = [
+            'article'  => ArticleComment::class,
+            'news'     => NewsComment::class,
+            'download' => DownloadComment::class,
+        ];
+
+        return $typeToClass[$type];
     }
 }

@@ -4,8 +4,9 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, Section
        from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 export class Nav extends React.Component {
+
   render() {
-    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine } = this.props;
+    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick } = this.props;
     const mine = lists.todo.articles.mine;
 
     return (
@@ -46,7 +47,7 @@ export class Nav extends React.Component {
                     Knowledgebase
                   </SectionGroupedHeader>
 
-                  <NestedList items={lists.articles.nested} groups={labels.articles} />
+                  <NestedList items={lists.articles.nested} groups={labels.articles} onClick={onClick.articles} />
                 </Section>
               </SectionsPane>
 
@@ -64,7 +65,7 @@ export class Nav extends React.Component {
                     News
                   </SectionGroupedHeader>
 
-                  <NestedList items={lists.news.nested} groups={labels.news} />
+                  <NestedList items={lists.news.nested} groups={labels.news} onClick={onClick.news} />
                 </Section>
               </SectionsPane>
             </Tab>
@@ -76,7 +77,7 @@ export class Nav extends React.Component {
                     Downloads
                   </SectionGroupedHeader>
 
-                  <NestedList items={lists.downloads.nested} groups={labels.downloads} />
+                  <NestedList items={lists.downloads.nested} groups={labels.downloads} onClick={onClick.downloads} />
                 </Section>
               </SectionsPane>
             </Tab>
@@ -93,18 +94,25 @@ export class Nav extends React.Component {
                   </SectionHeader>
 
                   <ul>
-                    <ListItem label="Draft Articles" count={lists.todo.articles.draft} />
-                    <ListItem label="Pending Articles" count={lists.todo.articles.pending} />
+                    <ListItem label="Draft Articles" count={lists.todo.articles.draft} onClick={onClick.draftArticles} />
+                    <ListItem label="Pending Articles" count={lists.todo.articles.pending} onClick={onClick.pendingArticles} />
                   </ul>
                 </Section>
                 <Section>
                   <SectionHeader>Comments</SectionHeader>
 
                   <ul>
-                    <ListItem label="Comments to validate" count={lists.todo.comments.validate.count}>
-                      <NestedList items={lists.todo.comments.validate.nested} groups={labels.commentsToValidate} depth="2" />
+                    <ListItem label="Comments to validate"
+                              count={lists.todo.comments.validate.count}
+                              onClick={onClick.allCommentsToValidate}>
+                      <NestedList
+                        depth="2"
+                        items={lists.todo.comments.validate.nested}
+                        groups={labels.commentsToValidate}
+                        onClick={onClick.commentsToValidate}
+                      />
                     </ListItem>
-                    <ListItem label="Comments to review" count={lists.todo.comments.review} />
+                    <ListItem label="Comments to review" count={lists.todo.comments.review} onClick={onClick.commentsToReview} />
                   </ul>
                 </Section>
                 <Section>

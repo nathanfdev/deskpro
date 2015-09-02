@@ -1,4 +1,5 @@
 import DpApi from "../DpApi";
+import { compileParams } from '../ApiHelpers';
 
 /**
  * Load a generic API endpoint. Only use when you need to get the address from the action
@@ -141,22 +142,4 @@ export function getList(query, sort, filters) {
  */
 export function getFilterValues(filterName) {
     return DpApi.sendGet('DP_API/feedback/filter?name=' + filterName);
-}
-
-/**
- * Compile parameters into a URL string
- * @param params
- * @returns {string}
- */
-function compileParams(params) {
-    let compiled = [];
-
-    for (let key of Object.keys(params)) {
-        var str = String(params[key]);
-        if ('null' !== str) {
-            compiled.push(key + '=' + str.replace(/\s/g, "%20"));
-        }
-    }
-
-    return compiled.join('&');
 }

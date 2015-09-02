@@ -17,12 +17,13 @@ class BaseList extends React.Component {
 
 export class ListItem extends BaseList {
   render() {
-    const {count, label} = this.props;
+    const {count, label } = this.props;
+    const onClick = this.props.onClick ? this.props.onClick : () => {};
 
     return (
       <li>
         {this.renderCount(count)}
-        <a href="#" className="item">{label}</a>
+        <a href="#" className="item" onClick={onClick}>{label}</a>
 
         {this.props.children}
       </li>
@@ -112,6 +113,11 @@ export class NestedList extends BaseList {
         expanded.splice(i, 1);
       } else {
         expanded.push(group);
+
+        // perform onClick when expanding a list item
+        if (this.props.onClick) {
+          this.props.onClick(group);
+        }
       }
 
       this.setState({expanded});

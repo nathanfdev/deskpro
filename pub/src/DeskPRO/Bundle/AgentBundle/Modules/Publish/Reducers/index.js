@@ -1,2 +1,3 @@
+import PublishList from './PublishList';
 import PublishNav from './PublishNav';
-export default {PublishNav,};
+export default {PublishList,PublishNav,};

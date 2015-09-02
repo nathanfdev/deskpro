@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'redux/react';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import * as actions from '../../Actions/publishNavActions'
+import * as listActions from '../../Actions/publishListActions'
 import { Nav } from './Nav';
 
 @connect(state => {
@@ -47,6 +48,34 @@ export class NavContainer extends React.Component {
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
     const setMine = (isMine) => this.setMine(isMine).bind(this);
 
+    const { dispatch, lists } = this.props;
+    const onClick = {
+      articles: (group) => {
+        dispatch(listActions.load('articles', lists.articles.grouped_by, group));
+      },
+      news: (group) => {
+        dispatch(listActions.load('news', lists.news.grouped_by, group));
+      },
+      downloads: (group) => {
+        dispatch(listActions.load('downloads', lists.downloads.grouped_by, group));
+      },
+      draftArticles: () => {
+        dispatch(listActions.loadDraftArticles(lists.todo.articles.mine));
+      },
+      pendingArticles: () => {
+        dispatch(listActions.loadPendingArticles(lists.todo.articles.mine));
+      },
+      commentsToValidate: (group) => {
+        dispatch(listActions.loadCommentsToValidate('period_created', group));
+      },
+      allCommentsToValidate: () => {
+        dispatch(listActions.loadCommentsToValidate());
+      },
+      commentsToReview: () => {
+        dispatch(listActions.loadCommentsToReview());
+      }
+    };
+
     return (
       <Nav
         lists={this.props.lists}
@@ -55,6 +84,7 @@ export class NavContainer extends React.Component {
         onGroupingChange={onGroupingChange}
         toggleGroupingVisibility={toggleGroupingVisibility}
         setMine={setMine}
+        onClick={onClick}
       />
     );
   }

@@ -119,14 +119,7 @@ class ContentController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService $dataService */
         $dataService = $this->get('data.content');
 
-        $params = $request->query->all();
-        if (array_key_exists('page', $params)) {
-            unset($params['page']);
-        }
-        if (array_key_exists('count', $params)) {
-            unset($params['count']);
-        }
-
+        $params = array_diff_assoc($request->query->all(), ['count' => null, 'page' => null]);
         try {
             $criteria = $type === 'articles'
                       ? ArticlesSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
