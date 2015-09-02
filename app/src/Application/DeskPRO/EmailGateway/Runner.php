@@ -211,7 +211,30 @@ class Runner
         $this->logger->logDebug("Time limit: " . $time_limit);
 
         if ($this->accounts) {
-            foreach ($this->accounts as $account) {
+
+            $accounts = $this->accounts;
+            if (!is_array($accounts) && $accounts instanceof \Traversable) {
+                $accounts = iterator_to_array($accounts);
+            }
+            if (is_array($accounts)) {
+                $accounts = array_values($accounts);
+
+                // Sorting the accounts so that the oldest accounts are checked first
+                // this round. This prevents some accounts from being 'skipped'
+                // if checking is particularly slow (ie due to "Breaking, out of time" below)
+                usort($accounts, function($a, $b) {
+                   $ad = Util::coalesce($a->date_last_incoming, $a->date_read_start, 0);
+                   $bd = Util::coalesce($b->date_last_incoming, $b->date_read_start, 0);
+
+                   if ($ad == $bd) {
+                     return 0;
+                   }
+
+                   return $ad < $bd ? -1 : 1;
+                });
+            }
+
+            foreach ($accounts as $account) {
 
                 // only tickets supported at the moment
                 if ($account->account_type != 'tickets') {
@@ -628,6 +651,13 @@ class Runner
         $this->logger->log("Start processing {$account['address']} {$account['account_type']}", 'info');
         $start_time = microtime(true);
 
+        $account->date_read_start = new \DateTime();
+        App::$container->getDb()->update(
+            'email_accounts',
+            array('date_read_start' => $account->date_read_start->format('Y-m-d H:i:s')),
+            array('id' => $account->id)
+        );
+
         /** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
         $fetcher = $this->createFetcher($account);
         $fetcher->setLogger($this->logger);
@@ -792,6 +822,13 @@ class Runner
                 }
             }
         }
+
+        $account->date_last_incoming = new \DateTime();
+        App::$container->getDb()->update(
+            'email_accounts',
+            array('date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s')),
+            array('id' => $account->id)
+        );
 
         $fetcher->close();
 
