@@ -223,8 +223,8 @@ class Runner
                 // this round. This prevents some accounts from being 'skipped'
                 // if checking is particularly slow (ie due to "Breaking, out of time" below)
                 usort($accounts, function($a, $b) {
-                   $ad = Util::coalesce($a->date_last_incoming, $a->date_read_start, 0);
-                   $bd = Util::coalesce($b->date_last_incoming, $b->date_read_start, 0);
+                   $ad = Util::coalesce($a->date_last_incoming, $a->date_read_start, new \DateTime('-7 days'));
+                   $bd = Util::coalesce($b->date_last_incoming, $b->date_read_start, new \DateTime('-7 days'));
 
                    if ($ad == $bd) {
                      return 0;
