@@ -100,8 +100,8 @@ export const changeQueryState = createAction(
     }
 );
 
-export const switchView = createAction(
-    "FEEDBACK_SWITCH_VIEW",
+export const switchViewMode = createAction(
+    "FEEDBACK_SWITCH_VIEW_MODE",
     (trigger) => {
         trigger();
     }

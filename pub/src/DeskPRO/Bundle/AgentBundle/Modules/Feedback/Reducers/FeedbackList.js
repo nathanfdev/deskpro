@@ -1,11 +1,10 @@
-import * as FeedbackListActions from "../Actions/FeedbackListActions.js";
-import * as peopleActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Actions/PeopleActions';
+import * as FeedbackListActions from "../Actions/FeedbackListActions";
 import { Reducer } from "Ampliflux/reducers";
 
 export default class FeedbackList extends Reducer {
     getInitialState() {
         return {
-            view: 'table',
+            //viewMode: 'table',
             query: {awaiting_validation: 1},
             filters: {
                 name: 'type',
@@ -109,9 +108,9 @@ export default class FeedbackList extends Reducer {
         return next;
     }
 
-    switchView(prev) {
+    switchViewMode(prev) {
         const next = {...prev};
-        next.view = prev.view === 'list' ? 'table' : 'list';
+        next.viewMode = prev.viewMode === 'list' ? 'table' : 'list';
         return next;
     }
 
@@ -161,7 +160,7 @@ export default class FeedbackList extends Reducer {
             .r(FeedbackListActions.feedbackClosedStatus, this.closed)
             .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
             .r(FeedbackListActions.changeQueryState, this.changeQuery)
-            .r(FeedbackListActions.switchView, this.switchView)
+            .r(FeedbackListActions.switchViewMode, this.switchViewMode)
             .r(FeedbackListActions.getFilterValues, this.getFilterValues)
             .r(FeedbackListActions.setFilterValue, this.setFilterValue)
             .r(FeedbackListActions.resetFilterValue, this.resetFilterValue)

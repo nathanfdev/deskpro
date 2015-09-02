@@ -1,12 +1,8 @@
 import React from 'react';
-import { connect } from 'redux/react';
-import * as actions from '../../Actions/FeedbackListActions'
+import * as actions from '../../Actions/ControlBarActions'
 import $ from "jquery";
 
-@connect(state => state.FeedbackList)
-
-export class View extends React.Component {
-
+export class ListTableViewSwitcher extends React.Component {
     changeView(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -14,7 +10,6 @@ export class View extends React.Component {
         $('div.dropdown-choice').hide();
         dispatch(actions.switchViewMode());
     }
-
 
     render() {
         return (

@@ -12,4 +12,5 @@ export default keyMirror({
   COLLAPSE_SWITCHER: null,
   EXPAND_SWITCHER: null,
   TOGGLE_VIEW: null,
+  SWITCH_VIEW_MODE: null
 });

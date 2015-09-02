@@ -83,14 +83,12 @@ class FeedbackSelectCriteria
                     break;
                 case 'category':
                     $qb
-                        ->innerJoin("$alias.category", 'cat')
-                        ->andWhere('cat.title = :title')
-                        ->setParameter('title', $value);
+                        ->andWhere('category.title = :category_title')
+                        ->setParameter('category_title', $value);
                     break;
                 case 'status_category':
                     $qb
-                        ->innerJoin("$alias.status_category", 'statCat')
-                        ->andWhere('statCat.title = :title')
+                        ->andWhere('statusCategory.title = :title')
                         ->setParameter('title', $value);
                     break;
                 case 'label':

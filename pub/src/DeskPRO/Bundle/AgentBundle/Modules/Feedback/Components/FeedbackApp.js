@@ -5,7 +5,6 @@ import { ListContainer } from './List/ListContainer';
 import * as actions from '../Actions/FeedbackListActions'
 import { connect } from 'redux/react';
 import $ from "jquery";
-import reducer from '../Reducers/index';
 
 @connect(state => state.FeedbackList)
 
@@ -26,7 +25,6 @@ export class FeedbackApp extends React.Component {
         dispatch(actions.loadFeedbackList(query, sort, filters));
         dispatch(actions.getFilterValues(filters.alias));
     }
-
 
     choiceClick(params, event) {
         event.preventDefault();
