@@ -50,7 +50,7 @@ class DbErrorLogger extends Logger
     public function logItem(\Orb\Log\LogItem $log_item)
     {
         if (!App::getDb()->isTransactionActive()) {
-            parent::logItem($log_item);
+            DbErrorLoggerQueue::getInstance()->addBatchFlush($this, $log_item);
         } else {
             DbErrorLoggerQueue::getInstance()->add($this, $log_item);
         }

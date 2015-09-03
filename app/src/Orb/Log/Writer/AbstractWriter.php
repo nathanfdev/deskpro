@@ -46,6 +46,12 @@ abstract class AbstractWriter
      */
     protected $_filter_chain = null;
 
+    function __destruct()
+    {
+        $this->shutdown();
+    }
+
+
     /**
      * Get the filter chain instance
      *
@@ -122,6 +128,14 @@ abstract class AbstractWriter
      * @return void
      */
     public function shutdown()
+    {
+        $this->flush();
+    }
+
+    /**
+     * Can be called manually to flush any cached entries
+     */
+    public function flush()
     {
 
     }
