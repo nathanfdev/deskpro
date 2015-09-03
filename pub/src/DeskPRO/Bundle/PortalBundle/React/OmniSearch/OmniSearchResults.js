@@ -19,6 +19,15 @@ class ResultRow extends React.Component {
     })
   }
   render() {
+    const type = this.props.result.type;
+    let icon;
+    switch (type) {
+      case 'download':
+        icon = (<i className="fa fa-download"></i>);
+        break;
+      default:
+        icon = (<i className="fa fa-file-text-o"></i>);
+    }
     return (
       <li>
         <a
@@ -27,11 +36,9 @@ class ResultRow extends React.Component {
           onMouseOut={this.onBlur.bind(this)}
           className={(this.state.focused ? 'focus' : '') + (this.props.alt ? ' alt' : '')}
           >
-          <i className="fa fa-file-text-o"></i>
-          {/**  add a switch here to change icon based on this.props.result.type */}
-          {/** <i className="fa fa-download"></i>  */}
+          {icon}
           <span className="text-tag">
-            {this.props.result.type.toUpperCase()}
+            {type.toUpperCase()}
           </span>
           {this.props.result.object.name}
         </a>

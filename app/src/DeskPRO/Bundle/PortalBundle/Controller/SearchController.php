@@ -65,7 +65,7 @@ class SearchController extends AbstractController
         $results = array();
         $total = 0;
         $cur_page = $request->get('page', 1);
-        $per_page = 2;
+        $per_page = 10;
 
         ////////////////////////////////////////////////////////////////////////
         // search types
