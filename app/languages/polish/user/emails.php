@@ -19,7 +19,7 @@
 	'user.emails.feedback_validate-email'                                  => 'Potwierdź swój adres email, klikając na następujący link:',
 	'user.emails.feedback_votes'                                           => 'Twoja opinia obecnie ma <strong>1</strong> głos. Zobacz Twoją opinię online:|Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:',
 	'user.emails.greeting'                                                 => 'Szanowny(a) {{to_name}},',
-	'user.emails.kb-explain'                                               => 'Otrzymałeś tą wiadomość, ponieważ subskrybujesz naszą bazę wiedzy na <a href="{{ deskpro_url }}">{{ deskpro_url }}</a>.<br />Jeśli nie chcesz otrzymywać tych maili, <a href="{{ unsubscribe_url }}">kliknij tutaj. </a>',
+	'user.emails.kb-explain'                                               => 'Otrzymałeś tą wiadomość, ponieważ subskrybujesz naszą bazę wiedzy na <a href="{{ deskpro_url }}">{{ deskpro_url }}</a>.<br />Jeśli nie chcesz otrzymywać tych maili, <a href="{{ unsubscribe_url }}">Kliknij tutaj. </a>',
 	'user.emails.kb-new-articles'                                          => '1 Nowy artykuł | {{count}} Nowych artykułów',
 	'user.emails.kb-updated-articles'                                      => '1 Zaktualizowany artykuł | {{count}} zaktualizowanych artykułów',
 	'user.emails.label_view-online'                                        => 'Zobacz online',
