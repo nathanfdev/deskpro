@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a5d566bc27cc3c44e752e1b5dd67bd7f",
+    "hash": "d1d84e0b143b7a1bfe60b85f26c4c8f4",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -361,6 +361,51 @@
             "time": "2014-07-08 01:27:22"
         },
         {
+            "name": "defuse/php-encryption",
+            "version": "v1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/defuse/php-encryption.git",
+                "reference": "b87737b2eec06b13f025cabea847338fa203d1b4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/defuse/php-encryption/zipball/b87737b2eec06b13f025cabea847338fa203d1b4",
+                "reference": "b87737b2eec06b13f025cabea847338fa203d1b4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mcrypt": "*",
+                "ext-openssl": "*",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Crypto.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Hornby",
+                    "email": "havoc@defuse.ca"
+                }
+            ],
+            "description": "Secure PHP Encryption Library",
+            "keywords": [
+                "aes",
+                "cipher",
+                "encryption",
+                "mcrypt",
+                "security"
+            ],
+            "time": "2015-03-14 20:27:45"
+        },
+        {
             "name": "deskpro/deskpro-api-php",
             "version": "dev-master",
             "source": {
@@ -370,7 +415,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/34556a56352f2a046467ee42a0981d96210b468d",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/87f46480b4563be774f9d080ef0c5d9bd5931e7c",
                 "reference": "34556a56352f2a046467ee42a0981d96210b468d",
                 "shasum": ""
             },
@@ -972,7 +1017,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/c5ff0542772102ddd4e2fbe173e9ad40ad67c22f",
+                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/817c2d233fde0fe85cb7e4d25d43fbfcd028aef8",
                 "reference": "c5ff0542772102ddd4e2fbe173e9ad40ad67c22f",
                 "shasum": ""
             },
@@ -1150,7 +1195,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/98092aa3d6d5e5401796d69895d1caf49ec8971f",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/4e85ba638acf62e1afe735f94b0c51aa971f8773",
                 "reference": "98092aa3d6d5e5401796d69895d1caf49ec8971f",
                 "shasum": ""
             },
@@ -1560,7 +1605,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/5a45392687ec828c1f93f1904afb1ea7e0267fba",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/75dcab214079e15a68b892bd97d31381f002d4df",
                 "reference": "5a45392687ec828c1f93f1904afb1ea7e0267fba",
                 "shasum": ""
             },
@@ -2382,7 +2427,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/8eeb263a5325d88c896a8549e702d7d8456b6299",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/b1f7fbef9eac877db835a545193ed775bf8e5048",
                 "reference": "8eeb263a5325d88c896a8549e702d7d8456b6299",
                 "shasum": ""
             },
@@ -3852,7 +3897,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/d4a0a555ac9180ed138f6de042e7618b731613b5",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/6915c788cfe2dccb06510ace03019b82f63edd12",
                 "reference": "d4a0a555ac9180ed138f6de042e7618b731613b5",
                 "shasum": ""
             },
@@ -4140,7 +4185,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/93b904dcdf88ab3a4d195679229943ffc766a0d1",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/79597cdb3ec898f1e2b50aaf52d0f93a9fd07c37",
                 "reference": "93b904dcdf88ab3a4d195679229943ffc766a0d1",
                 "shasum": ""
             },
