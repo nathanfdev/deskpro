@@ -559,15 +559,17 @@ class TicketController extends AbstractController
         ));
     }
 
-    protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false)
+    protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false, $per_page = null)
     {
-        if ($filter) {
-            // 50 when filtered because entries are "loose"
-            $per_page = 50;
-        } else {
-            // Only 10 when not filtered because entries are grouped,
-            // so 10 is typically more like 50
-            $per_page = 10;
+        if (!$per_page) {
+            if ($filter) {
+                // 50 when filtered because entries are "loose"
+                $per_page = 50;
+            } else {
+                // Only 10 when not filtered because entries are grouped,
+                // so 10 is typically more like 50
+                $per_page = 10;
+            }
         }
 
         $options = array();
@@ -4494,6 +4496,72 @@ class TicketController extends AbstractController
 
         $d = new TicketLogsData($ticket);
         file_put_contents($tmpdir . '/ticket-log.json', json_encode($d->getData()));
+
+        $info = $this->_getTicketLogsBlockInfo($ticket, 1, null, 999999, 999999);
+        $css = <<<'CSS'
+<style>
+body {
+	font-family: Helvetica, Verdana, Arial, sans-serif;
+	line-height: 125%;
+	font-size: 10pt;
+}
+
+.section-subnav {
+	background: #ccc;
+	padding: 30px;
+	margin-bottom: 15px;
+}
+
+.section-subnav ul {
+	margin: 0;
+	padding: 0;
+}
+
+.section-subnav li {
+	display: inline;
+	margin-right: 10px;
+}
+
+.section-subnav li em {
+	font-style: normal;
+}
+
+.dp-is-loading {
+	display: none;
+}
+
+.log-batch {
+	border: 1px solid #ddd;
+	margin-bottom: 10px;
+}
+
+.type-action_starter {
+	background: #eee;
+}
+
+.log-row {
+	padding: 10px;
+	border-top: 1px solid #eee;
+}
+
+.log-row .info {
+	float: right;
+}
+
+time {
+	float: right;
+}
+
+.expand-set {
+	display: block !important;
+	margin-left: 15px;
+	font-size: 90%;
+}
+</style>
+CSS;
+
+        file_put_contents($tmpdir . '/ticket-log.html', $css . $info['rendered']);
+        unset($info);
 
         foreach ($ticket->messages as $message) {
             $data = $message->toApiData();
