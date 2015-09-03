@@ -633,14 +633,20 @@ class ServerController extends AbstractController implements ProtectedController
      */
     private function getEncStatus()
     {
-        $is_able           = extension_loaded('openssl');
         $key_file          = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'encryption-key.bin';
         $has_key_file      = file_exists($key_file) && is_readable($key_file);
         $is_enabled        = $this->container->getSetting('core.use_encryption');
         $can_disable_file  = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'can-disable-encryption.txt';
         $can_disable       = is_file($can_disable_file);
 
-        if ($is_able) {
+        if (!extension_loaded('openssl')) {
+            $is_able = false;
+            $is_able_error = "Missing the OpenSSL PHP extension.";
+        } elseif (!extension_loaded('mcrypt')) {
+            $is_able = false;
+            $is_able_error = "Missing the mcrypt PHP extension.";
+        } else {
+            $is_able = true;
             $is_able_error = null;
             try {
                 $key = \Crypto::CreateNewRandomKey();
@@ -648,8 +654,6 @@ class ServerController extends AbstractController implements ProtectedController
                 $is_able_error = 'The server was unable to use crypto: ' . Util::getBaseClassname($e) . ' ' . $e->getMessage();
                 $is_able = false;
             }
-        } else {
-            $is_able_error = 'Missing OpenSSL extension';
         }
 
         return array(

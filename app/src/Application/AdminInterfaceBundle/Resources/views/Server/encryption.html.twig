@@ -41,7 +41,9 @@
         </div>
         <div class="form-group" ng-if="!status.is_able">
           <p>
-            Your server is not capable of DeskPRO's encryption features. The most common cause of this is a missing <a href="http://php.net/manual/en/book.openssl.php">OpenSSL extension</a>. Make sure that is installed and enabeled.
+            Your server is not capable of DeskPRO's encryption features. The most common cause of this is a missing <a href="http://php.net/manual/en/book.openssl.php">OpenSSL extension</a>
+            or <a href="http://php.net/manual/en/book.mcrypt.php">mcrypt extension</a>
+            . Make sure that these are installed and enabeled.
           </p>
           <p>
             Here is the raw error code returned from the server:
