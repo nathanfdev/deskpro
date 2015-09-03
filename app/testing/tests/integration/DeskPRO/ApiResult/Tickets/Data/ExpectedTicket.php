@@ -160,6 +160,7 @@ return array(
             'primary_team' => null,
             'labels' =>
                 array(),
+            'problems' => array(),
             'display_name' => 'Admin Admin',
             'primary_email' =>
                 array(
