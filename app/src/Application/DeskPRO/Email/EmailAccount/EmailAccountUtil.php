@@ -29,33 +29,44 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Email\EmailAccount;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
-use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
+use Application\DeskPRO\Encryption\DpEnc;
 
-class EmailAccountManagerService
+class EmailAccountUtil
 {
-    public static function create(DeskproContainer $container)
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function decryptIncomingAccount(AccountConfigInterface $acc, DpEnc $enc)
     {
-        $repos           = new EmailAccountRepository($container->getEm());
-        $tr_factory      = $container->get('email.raw_transport_factory');
-        $fetcher_factory = new FetcherStorageFactory();
+        $new_acc = clone $acc;
 
-        $manager = new EmailAccountManager($repos, $tr_factory, $fetcher_factory, $container->get('dp_enc'));
-
-        $default_addr = $container->getSetting('core.default_from_email');
-        $account = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
-        if ($account) {
-            $manager->setDefaultOutAccount($account);
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpDecrypt($acc->password);
         }
 
-        return $manager;
+        return $new_acc;
+    }
+
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function decryptOutgoingAccount(AccountConfigInterface $acc, DpEnc $enc)
+    {
+        $new_acc = clone $acc;
+
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpDecrypt($acc->password);
+        }
+
+        return $new_acc;
     }
 }
