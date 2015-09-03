@@ -89,7 +89,7 @@ class KbController extends AbstractController
         $article_revisions = $article->getRevisions();
 
         $related_finder = new RelatedContentFinder($this->person, $article);
-        $related_content = $related_finder->getRelatedEntities();
+        $related_content = $related_finder->getRelatedEntities(true);
 
         $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
         $content = $article->content;
