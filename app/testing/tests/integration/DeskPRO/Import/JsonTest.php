@@ -85,6 +85,12 @@ class JsonTest extends \DpIntegrationTestCase
     public function runBefore()
     {
         $this->helper->enableFreshDatabaseSet('FreshDb');
+
+        $this->helper->loadFixtures('Import/CustomDefTicket');
+        $this->helper->loadFixtures('Import/CustomDefPerson');
+        $this->helper->loadFixtures('Import/CustomDefFeedback');
+        $this->helper->loadFixtures('Import/CustomDefArticle');
+        $this->helper->loadFixtures('Import/CustomDefOrganization');
         $this->helper->loadFixtures('Import/Person');
         $this->helper->loadFixtures('Import/Organization');
         $this->helper->loadFixtures('Import/Ticket');
@@ -271,7 +277,46 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbData()
     {
-        // Checking for people
+        $this->checkDbArticleData();
+        $this->checkDbPeopleData();
+        $this->checkDbTicketsData();
+        $this->checkDbFeedbackData();
+        $this->checkDbOrganizationData();
+        $this->checkDbBlobData();
+    }
+
+    private function checkDbArticleData()
+    {
+        $this->assertCount(2, $this->article_repository->findAll());
+
+        /** @var Entity\Article $article */
+        $article = $this->article_repository->findOneBy(array('id' => 2));
+        $this->assertNotNull($article);
+
+        $this->assertEquals('Article 1', $article->getRealTitle());
+        $this->assertEquals('Content 1', $article->getContentPlain());
+        $this->assertEquals('2-slug-article-1', $article->getUrlSlug());
+        $this->assertEquals('published', $article->getStatusCode());
+        $this->assertEquals(new \DateTime('2015-01-15 00:00:00'), $article->getDateCreated());
+        $this->assertNull($article->getDatePublished());
+        $this->assertNull($article->getDateEnd());
+
+        $labels = array();
+        foreach ($article->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('Label 1', 'Label 2', 'Label 3',), $labels);
+        $this->assertCount(1, $article->getCustomData());
+
+        /** @var Entity\CustomDataArticle $custom_data */
+        $custom_data = $article->getCustomData()->first();
+        $this->assertEquals(2, $custom_data->getArticleId());
+        $this->assertEquals(1, $custom_data->getData());
+    }
+
+    private function checkDbPeopleData()
+    {
         $this->assertCount(2, $this->person_repository->findAll());
 
         /** @var Entity\Person $person */
@@ -282,8 +327,10 @@ class JsonTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('label1', 'label2'), $labels);
+    }
 
-        // Checking for tickets
+    private function checkDbTicketsData()
+    {
         $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(0, $this->ticket_attachment_repository->findAll());
 
@@ -297,12 +344,16 @@ class JsonTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('label1', 'label2'), $labels);
+    }
 
-        // Checking for feedback
+    private function checkDbFeedbackData()
+    {
         $this->assertCount(2, $this->feedback_repository->findAll());
         $this->assertCount(1, $this->feedback_attachment_repository->findAll());
+    }
 
-        // Checking for organizations
+    private function checkDbOrganizationData()
+    {
         $this->assertCount(1, $this->organization_repository->findAll());
 
         /** @var Entity\Organization $organization */
@@ -324,8 +375,10 @@ class JsonTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('label1', 'label2'), $labels);
+    }
 
-        // Checking for blob
+    private function checkDbBlobData()
+    {
         $this->assertCount(2, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'feedback.csv')));

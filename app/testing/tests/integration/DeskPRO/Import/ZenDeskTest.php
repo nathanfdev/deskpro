@@ -103,10 +103,18 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Read 2 tickets', $output);
+        $this->assertContains('Read 3 tickets', $output);
+        $this->assertContains('[ZDTicket #3] Skipping exception with ticket: Unable to get submitter email by id #3', $output);
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
+        $this->assertContains('[ZDTicketComment #3] Skipping exception with ticket message: Comment without author_id, skipping', $output);
+        $this->assertContains('[ZDTicketComment #4] Skipping exception with ticket message: Unable to get comment author, skipping', $output);
+        $this->assertContains('[ZDTicketCommentAttachment #2] Skipping exception with ticket message attachment: Inline attachment, skipping', $output);
+        $this->assertContains('[ZDTicketCommentAttachment #3] Skipping exception with ticket message attachment: Unable to download attachment', $output);
+
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
-        $this->assertContains('Read 2 people', $output);
+        $this->assertContains('[ZDTicket #3] Reading comments', $output);
+        $this->assertContains('Read 3 people', $output);
+        $this->assertContains('[ZDPerson #3] Skipping exception with person: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
     }
 
@@ -197,6 +205,19 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'custom_fields'   => (object)array(),
                         'tags'            => (object)array('label 1', 'label 3'),
                     ),
+                    (object)array(
+                        'id'              => 3,
+                        'submitter_id'    => 3,
+                        'assignee_id'     => 4,
+                        'subject'         => 'Ticket 3',
+                        'description'     => 'Ticket description 3',
+                        'status'          => 'open',
+                        'priority'        => 'low',
+                        'organization_id' => 1,
+                        'created_at'      => $date2->format('Y-m-d H:i:s'),
+                        'custom_fields'   => (object)array(),
+                        'tags'            => (object)array('label 1', 'label 3'),
+                    ),
                 ),
                 'end_time' => $now->getTimestamp(),
             ))
@@ -208,7 +229,27 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'body'        => 'Reply #1',
                         'public'      => true,
                         'created_at'  => $date3->format('Y-m-d H:i:s'),
-                        'attachments' => array(),
+                        'attachments' => array(
+                            (object)array(
+                                'id'           => 1,
+                                'file_name'    => 'file 1',
+                                'content_type' => 'image/png',
+                                'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
+                            ),
+                            (object)array(
+                                'id'           => 2,
+                                'file_name'    => 'file 1',
+                                'content_type' => 'image/png',
+                                'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
+                                'inline'       => true,
+                            ),
+                            (object)array(
+                                'id'           => 3,
+                                'file_name'    => 'file 3',
+                                'content_type' => 'image/png',
+                                'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/nologo.png',
+                            ),
+                        ),
                     ),
                     (object)array(
                         'id'          => 2,
@@ -218,7 +259,26 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'created_at'  => $date4->format('Y-m-d H:i:s'),
                         'attachments' => array(),
                     ),
+                    (object)array(
+                        'id'          => 3,
+                        'author_id'   => null,
+                        'body'        => 'Reply #3',
+                        'public'      => true,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                        'attachments' => array(),
+                    ),
+                    (object)array(
+                        'id'          => 4,
+                        'author_id'   => 3,
+                        'body'        => 'Reply #4',
+                        'public'      => true,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                        'attachments' => array(),
+                    ),
                 ),
+            ))
+            ->addTicketCommentsFindAllResponse((object)array(
+                'comments' => array(),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
@@ -241,6 +301,16 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'email'           => 'person2@domain.tld',
                         'time_zone'       => 'Moscow',
                         'role'            => 'agent',
+                        'created_at'      => $date2->format('Y-m-d H:i:s'),
+                        'user_fields'     => array(),
+                        'organization_id' => 1,
+                    ),
+                    (object)array(
+                        'id'              => 3,
+                        'name'            => 'Person 3',
+                        'email'           => null,
+                        'time_zone'       => 'Moscow',
+                        'role'            => 'end-user',
                         'created_at'      => $date2->format('Y-m-d H:i:s'),
                         'user_fields'     => array(),
                         'organization_id' => 1,

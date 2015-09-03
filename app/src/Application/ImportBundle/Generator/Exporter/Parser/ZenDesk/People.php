@@ -28,6 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
@@ -73,7 +77,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function getCount()
     {
-        // We could read data from ZD reader twice because of ZD reader cache support
+        // We can read data from ZD reader twice because of ZD reader cache support
         return count($this->getPeople());
     }
 
@@ -87,23 +91,19 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
         $collection = new Entity\Collection();
         $collection->setExpectedCount(count($people));
 
-        foreach ($people as $num => $person) {
+        foreach ($people as $num => $data) {
             $this->advanceProgressBar();
-            $pid = @$person['id'] ?: '?';
 
             try {
-                $entity = $this->exportPerson($person);
-                if ($entity) {
-                    $collection->attach($entity);
+                $entity = $this->exportPerson($data);
+                $collection->attach($entity);
 
-                } else {
-                    $this->logDebugInfo(sprintf("[ZDUser #%s] Invalid user entity", $pid), $person);
-                    $this->logWarning(sprintf('[ZDUser #%s] Invalid user record found (Skipping): Could not create entity', $pid));
-                }
-
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDPerson', $this->getEntityType(), 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDPerson', $this->getEntityType(), 'id', $e);
             } catch (\Exception $e) {
-                $this->logDebugException(sprintf("[ZDUser #%s] Exception with user", $pid), $e, $person);
-                $this->logWarning(sprintf('[ZDUser #%s] Invalid user record found (Skipping): %s', $pid, $e->getMessage()));
+                $this->logUnknownException('ZDPerson', $this->getEntityType(), 'id', $e, $data);
             }
         }
 
@@ -113,56 +113,64 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     /**
      * Returns a person entity
      *
-     * @param array $person
+     * @param array $data
      *
      * @return Entity\Person
      * @throws \RuntimeException
      */
-    private function exportPerson(array $person)
+    private function exportPerson(array $data)
     {
-        if ($this->isPersonValid($person)) {
-            $date_created = new DateTime($person['created_at']);
-            $timezone     = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
+        $formatted = $this->formatter->format($data, array(
+            'id'              => TransformerInterface::TYPE_STRING,
+            'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'person_',
+                'ref'    => 'id',
+            )),
+            'name'            => TransformerInterface::TYPE_STRING,
+            'email'           => TransformerInterface::TYPE_STRING,
+            'time_zone'       => TransformerInterface::TYPE_STRING,
+            'role'            => TransformerInterface::TYPE_STRING,
+            'created_at'      => TransformerInterface::TYPE_DATE,
+            'user_fields'     => TransformerInterface::TYPE_ARRAY,
+            'organization_id' => TransformerInterface::TYPE_STRING,
+        ));
 
-            if ( ! $person['email']) {
-                $this->logError(sprintf('Person #%s without email, skipping', $person['id']));
-                return null;
-            }
-
-            $entity = new Entity\Person();
-            $entity
-                ->setRawData($person)
-                ->setDestination($this->formatDestination('person_', $person['id']))
-                ->setOid($person['id'])
-                ->addEmail($person['email'])
-                ->setName($person['name'])
-                ->setTimezone($timezone)
-                ->setOrganization($this->getOrganizationName($person['organization_id']))
-                ->setDateCreated($date_created);
-
-            switch ($person['role']) {
-                case self::ROLE_ADMIN:
-                    $entity->setAsAgent(true)->setAsAdmin(true);
-                    break;
-
-                case self::ROLE_AGENT:
-                    $entity->setAsAgent(true);
-                    break;
-
-                case self::ROLE_END_USER:
-                    $entity->setAsUser(true);
-                    break;
-            }
-
-            return $entity;
+        if ( ! $formatted['email']) {
+            throw new SkippingException('Person without email, skipping', $formatted);
         }
 
-        return null;
+        $entity = new Entity\Person();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->addEmail($formatted['email'])
+            ->setName($formatted['name'])
+            ->setTimezone(new DateTimeZone(TimeZoneMapper::getTimeZoneName($formatted['time_zone'])))
+            ->setOrganization($this->getOrganizationName($formatted['organization_id']))
+            ->setDateCreated($formatted['created_at'])
+        ;
+
+        switch ($data['role']) {
+            case self::ROLE_ADMIN:
+                $entity->setAsAgent(true)->setAsAdmin(true);
+                break;
+
+            case self::ROLE_AGENT:
+                $entity->setAsAgent(true);
+                break;
+
+            case self::ROLE_END_USER:
+                $entity->setAsUser(true);
+                break;
+        }
+
+        return $entity;
     }
 
     /**
      * Returns a collection of people to be exported
-     * Gets a collection of people from the storage if it's defined or uses the ZenDesk reader
+     * Gets a collection of people from cache or uses the ZenDesk reader
      *
      * @return array
      */
@@ -204,28 +212,5 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
         $this->logDebugTimeEnd('getPeople', "Done reading people batch");
 
         return $people;
-    }
-
-    /**
-     * Check if person has all required columns
-     *
-     * @param array $person
-     * @return bool
-     */
-    private function isPersonValid(array $person)
-    {
-        $columns = array(
-            'id',
-            'name',
-            'email',
-            'time_zone',
-            'role',
-            'created_at',
-            'user_fields',
-            'organization_id',
-        );
-
-        return $this->hasRequiredColumns($person, $columns)
-            && $this->isArrayColumn($person, 'user_fields');
     }
 }

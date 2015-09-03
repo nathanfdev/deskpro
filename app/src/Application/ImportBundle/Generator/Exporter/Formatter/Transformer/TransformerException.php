@@ -25,15 +25,67 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
 /**
- * If raw data column does not exist
- *
- * Class NoColumnException
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class TransformerException
+ * @package Application\ImportBundle\Generator\Exporter\Formatter\Transformer
  */
-final class NoColumnException extends \Exception
+final class TransformerException extends \RuntimeException
 {
+    /**
+     * @var string
+     */
+    private $transformer_type;
 
+    /**
+     * @var array
+     */
+    private $entity;
+
+    /**
+     * @var string
+     */
+    private $property;
+
+    /**
+     * Constructor
+     *
+     * @param string $message
+     * @param string $transformer_type
+     * @param array  $entity
+     * @param string $property
+     */
+    public function __construct($message, $transformer_type, array $entity, $property)
+    {
+        parent::__construct($message);
+
+        $this->transformer_type = $transformer_type;
+        $this->entity           = $entity;
+        $this->property         = $property;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransformerType()
+    {
+        return $this->transformer_type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
 }

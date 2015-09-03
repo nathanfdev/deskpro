@@ -187,10 +187,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Entity `person_6` parsed successfully!', $output);
         $this->assertContains('Entity `article_1` parsed successfully!', $output);
         $this->assertContains('Entity `article_2` parsed successfully!', $output);
-        $this->assertContains('Entity `download_0` parsed successfully!', $output);
+        $this->assertContains('Entity `download_num_0` parsed successfully!', $output);
         $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
-        $this->assertContains('Entity `news_0` parsed successfully!', $output);
-        $this->assertContains('Entity `news_1` parsed successfully!', $output);
+        $this->assertContains('Entity `news_num_0` parsed successfully!', $output);
+        $this->assertContains('Entity `news_num_1` parsed successfully!', $output);
         $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
@@ -288,10 +288,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->seeFileFound('1/tickets/ticket_145.json');
         $this->helper->seeInThisFile('Another Ticket');
 
-        $this->helper->seeFileFound('1/news/news_0.json');
+        $this->helper->seeFileFound('1/news/news_num_0.json');
         $this->helper->seeInThisFile('News Title 1');
 
-        $this->helper->seeFileFound('1/downloads/download_0.json');
+        $this->helper->seeFileFound('1/downloads/download_num_0.json');
         $this->helper->seeInThisFile('Download 1');
 
         $this->helper->seeFileFound('1/organizations/organization_some_organization.json');
@@ -320,17 +320,34 @@ class CsvTest extends \DpIntegrationTestCase
 
     private function checkDbData()
     {
-        // Checking for news
-        $this->assertCount(3, $this->news_repository->findAll());
+        $this->checkDbArticleData();
+        $this->checkDbPeopleData();
+        $this->checkDbTicketsData();
+        $this->checkDbFeedbackData();
+        $this->checkDbOrganizationData();
+        $this->checkDbBlobData();
+        $this->checkDbNewsData();
+    }
 
-        // Checking for people
+    private function checkDbNewsData()
+    {
+        $this->assertCount(3, $this->news_repository->findAll());
+    }
+
+    private function checkDbPeopleData()
+    {
         $this->assertCount(8, $this->person_repository->findAll());
         $this->assertCount(2, $this->custom_data_person_repository->findAll());
 
         $person = $this->person_repository->findOneByEmail('joe.smith@example.com');
         $this->assertNotNull($person);
 
+        $this->assertEquals('Joe Smith', $person->getDisplayName());
+        $this->assertTrue($person->isAgent());
+
         $contact_data1 = $person->getContactData('mobile');
+        $this->assertNotEmpty($contact_data1);
+
         $contact = $contact_data1[0];
 
         $this->assertEquals('some comment', $contact->getComment());
@@ -338,7 +355,13 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals('1234567', $contact->getField2());
         $this->assertEquals('phone', $contact->getField3());
 
-        // Checking for tickets
+        $person = $this->person_repository->findOneByEmail('angry.customer@example.com');
+        $this->assertEquals('Angry Customer', $person->getDisplayName());
+        $this->assertFalse($person->isAgent());
+    }
+
+    private function checkDbTicketsData()
+    {
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
             'subject' => 'How to submit a ticket',
         )));
@@ -348,39 +371,73 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(1, $this->ticket_attachment_repository->findAll());
         $this->assertCount(4, $this->custom_data_ticket_repository->findAll());
+    }
 
-        // Checking for feedback
+    private function checkDbFeedbackData()
+    {
         $this->assertEquals(2, $this->feedback_repository->countAll());
         $this->assertEquals(1, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(2, $this->custom_data_feedback_repository->countAll());
+    }
 
-        // Checking for articles
+    private function checkDbArticleData()
+    {
         $this->assertEquals(3, $this->article_repository->countAll());
         $this->assertEquals(2, $this->custom_data_article_repository->countAll());
 
-        // Checking for organizations
+        /** @var Entity\Article $article */
+        $article = $this->article_repository->findOneBy(array('title' => 'Article 1'));
+        $this->assertNotNull($article);
+
+        $this->assertEquals('some@email.tld', $article->getPerson()->getPrimaryEmail()->getEmail());
+        $this->assertEquals('Content 1', $article->getContentPlain());
+        $this->assertEquals('published', $article->getStatusCode());
+        $this->assertEquals('Category 1', $article->getPrimaryCategory());
+    }
+
+    private function checkDbOrganizationData()
+    {
         $this->assertEquals(1, $this->organization_repository->countAll());
 
         /** @var Entity\Organization $organization */
         $organization = $this->organization_repository->findOneBy(array('name' => 'Some Organization'));
         $this->assertNotNull($organization);
 
-        $contact_data1 = $organization->getContactData('fax');
+        $contact_data1 = $organization->getContactData('phone');
+        $this->assertCount(1, $contact_data1);
+
         $contact = $contact_data1[0];
         $this->assertEquals('some comment', $contact->getComment());
         $this->assertEquals('+7', $contact->getField1());
         $this->assertEquals('1234567', $contact->getField2());
         $this->assertEquals('phone', $contact->getField3());
 
-        $this->assertEquals(4, $this->custom_data_organization_repository->countAll());
+        $contact_data2 = $organization->getContactData('fax');
+        $this->assertCount(1, $contact_data2);
 
-        // Checking for blob
+        $contact = $contact_data2[0];
+        $this->assertEquals('', $contact->getComment());
+        $this->assertEquals('US', $contact->getField1());
+        $this->assertEquals('+12025550156', $contact->getField2());
+        $this->assertEquals('landline-or-mobile', $contact->getField3());
+
+        $contact_data3 = $organization->getContactData('mobile');
+        $this->assertCount(0, $contact_data3);
+
+        $this->assertEquals(4, $this->custom_data_organization_repository->countAll());
+    }
+
+    private function checkDbBlobData()
+    {
         $this->assertCount(4, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'tickets.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'organizations.csv')));
     }
-    
+
+    /**
+     * @param CommandTester $command_tester
+     */
     private function checkDbWriterOutput(CommandTester $command_tester)
     {
         $output = $command_tester->getDisplay();
@@ -401,6 +458,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Persisted News #2', $output);
     }
 
+    /**
+     * @param string $file
+     */
     private function overrideDpRootPath($file)
     {
         $dp_root = str_replace('/app', '/', DP_ROOT);

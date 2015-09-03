@@ -25,15 +25,49 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\Generator\Exporter\Formatter;
+
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * If raw data column is not array
- *
- * Class NotArrayException
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class Formatter
+ * @package Application\ImportBundle\Generator\Exporter\Formatter
  */
-final class NotArrayException extends \Exception
+class Formatter implements FormatterInterface
 {
+    /**
+     * @var Transformer\Collection
+     */
+    private $transformers;
 
+    /**
+     * Constructor
+     *
+     * @param Transformer\Collection $transformers
+     */
+    public function __construct(Transformer\Collection $transformers)
+    {
+        $this->transformers = $transformers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function format(array $entity, array $configuration)
+    {
+        $transformed = $entity;
+        foreach ($configuration as $property => $transformer_type) {
+            if ($transformer_type instanceof TransformerConfiguration) {
+                $transformer = $this->transformers->getByType($transformer_type->getTransformerType());
+                $transformed[$property] = $transformer->transform($transformed, $entity, $property, $transformer_type->getOptions());
+
+            } else {
+                $transformer = $this->transformers->getByType($transformer_type);
+                $transformed[$property] = $transformer->transform($transformed, $entity, $property);
+            }
+        }
+
+        return $transformed;
+    }
 }

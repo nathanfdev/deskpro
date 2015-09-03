@@ -40,7 +40,7 @@ final class Csv extends AbstractExporter
     /**
      * {@inheritdoc}
      */
-    static public function getType()
+    public static function getType()
     {
         return self::TYPE_CSV;
     }

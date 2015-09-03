@@ -55,12 +55,4 @@ abstract class BaseReader implements ReaderInterface
     {
         return $this->config;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isReady()
-    {
-        return false;
-    }
 }

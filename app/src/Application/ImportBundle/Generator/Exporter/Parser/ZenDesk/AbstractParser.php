@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Exception;
 use DateTime;
@@ -50,13 +51,20 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $end_time;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface $reader
+     * @param FormatterInterface     $formatter
      */
-    public function __construct(ZenDeskReaderInterface $reader)
+    public function __construct(ZenDeskReaderInterface $reader, FormatterInterface $formatter)
     {
-        $this->reader = $reader;
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
     }
 
     /**

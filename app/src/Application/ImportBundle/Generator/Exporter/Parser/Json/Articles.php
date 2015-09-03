@@ -27,11 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use DateTime;
 
 /**
  * Articles json file parser
@@ -63,31 +63,21 @@ final class Articles extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $articles = $this->reader->getData($this->getArticleReaderConfig());
+        $articles   = $this->reader->getData($this->getArticleReaderConfig());
 
-        foreach ($articles as $num => $article) {
+        foreach ($articles as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportArticle($article);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid article record `%d` found (Skipping)', $num));
-                }
+                $entity = $this->exportArticle($data);
 
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid article record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid article record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+            } catch (TransformerException $e) {
+                $this->logTransformerException('JSONArticle', $this->getEntityType(), 'oid', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('JSONArticle', $this->getEntityType(), 'oid', $e, $data);
             }
         }
 
@@ -97,52 +87,75 @@ final class Articles extends AbstractParser
     /**
      * Returns an article entity
      *
-     * @param array $article
+     * @param array $data
      * @return Entity\Article|null
      */
-    private function exportArticle(array $article)
+    private function exportArticle(array $data)
     {
-        if ($this->isArticleValid($article)) {
-            $entity = new Entity\Article();
-            $entity
-                ->setDestination($this->formatDestination('article_', $article['oid']))
-                ->setOid($article['oid'])
-                ->setPersonEmail($article['person'])
-                ->setTitle($article['title'])
-                ->setContent($article['content'])
-                ->setSlug($article['slug'])
-                ->setLanguage($article['language'])
-                ->setEndAction($article['end_action'])
-                ->setViewCount($article['view_count'])
-                ->setTotalRating($article['total_rating'])
-                ->setNumComments($article['num_comments'])
-                ->setNumRatings($article['num_ratings'])
-                ->setStatus($article['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']));
+        $formatted = $this->formatter->format($data, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_',
+                'ref'    => 'oid',
+            )),
+            'person'         => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'slug'           => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'end_action'     => TransformerInterface::TYPE_STRING,
+            'total_rating'   => TransformerInterface::TYPE_STRING,
+            'num_comments'   => TransformerInterface::TYPE_INT,
+            'num_ratings'    => TransformerInterface::TYPE_INT,
+            'view_count'     => TransformerInterface::TYPE_INT,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
+            'date_end' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
+            'categories'     => TransformerInterface::TYPE_ARRAY,
+            'labels'         => TransformerInterface::TYPE_ARRAY,
+            'custom_fields'  => TransformerInterface::TYPE_ARRAY,
+        ));
 
-            if ($article['date_published']) {
-                $entity->setDatePublished(new DateTime($article['date_published']));
-            }
-            if ($article['date_end']) {
-                $entity->setDateEnd(new DateTime($article['date_end']));
-            }
-            foreach ($article['categories'] as $category) {
-                $entity->addCategory($category);
-            }
-            foreach ($article['labels'] as $label) {
-                $entity->addLabel($label);
-            }
+        $entity = new Entity\Article();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['oid'])
+            ->setPersonEmail($formatted['person'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setLanguage($formatted['language'])
+            ->setEndAction($formatted['end_action'])
+            ->setViewCount($formatted['view_count'])
+            ->setTotalRating($formatted['total_rating'])
+            ->setNumComments($formatted['num_comments'])
+            ->setNumRatings($formatted['num_ratings'])
+            ->setStatus($formatted['status'])
+            ->setDateCreated($formatted['date_created'])
+            ->setDatePublished($formatted['date_published'])
+            ->setDateEnd($formatted['date_end'])
+        ;
 
-            $custom_fields = $this->exportCustomFields($article['custom_fields']);
-            foreach ($custom_fields as $custom_field) {
-                /** @var Entity\CustomField $custom_field */
-                $entity->addCustomField($custom_field);
-            }
-
-            return $entity;
+        foreach ($formatted['categories'] as $category) {
+            $entity->addCategory($category);
+        }
+        foreach ($formatted['labels'] as $label) {
+            $entity->addLabel($label);
         }
 
-        return null;
+        $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
+        foreach ($custom_fields as $custom_field) {
+            /** @var Entity\CustomField $custom_field */
+            $entity->addCustomField($custom_field);
+        }
+
+        return $entity;
     }
 
     /**
@@ -153,41 +166,5 @@ final class Articles extends AbstractParser
     private function getArticleReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_PATH);
-    }
-
-    /**
-     * Check if article has all required columns
-     *
-     * @param array $article
-     * @return bool
-     * @throws NotArrayException
-     */
-    private function isArticleValid(array $article)
-    {
-        $columns = array(
-            'oid',
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'end_action',
-            'total_rating',
-            'num_comments',
-            'num_ratings',
-            'view_count',
-            'status',
-            'date_created',
-            'date_published',
-            'date_end',
-            'categories',
-            'labels',
-            'custom_fields',
-        );
-
-        return $this->hasRequiredColumns($article, $columns)
-            && $this->isArrayColumn($article, 'categories')
-            && $this->isArrayColumn($article, 'labels')
-            && $this->isArrayColumn($article, 'custom_fields');
     }
 }

@@ -28,8 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * People csv file parser
@@ -68,41 +69,42 @@ final class People extends AbstractParser
         $contact_data  = $this->exportPersonContactData();
         $custom_fields = $this->exportPersonCustomFields();
 
-        foreach ($people as $num => $person) {
+        foreach ($people as $num => $data) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportPerson($person);
-                if ($entity) {
-                    foreach ($contact_data as $contact) {
-                        /** @var Entity\ContactData $contact */
-                        if ($entity->getDestination() === $contact->getDestination()) {
-                            $entity->addContact($contact);
-                        }
-                    }
-                    foreach ($custom_fields as $custom_field_entity) {
-                        /** @var Entity\CustomField $custom_field_entity */
-                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                            $entity->addCustomField($custom_field_entity);
-                        }
-                    }
+                $entity = $this->exportPerson($num, $data);
 
-                    $inline_custom_fields = $this->exportInlineCustomFields($entity->getDestination(), $person);
-                    foreach ($inline_custom_fields as $custom_field_entity) {
+                foreach ($contact_data as $contact) {
+                    /** @var Entity\ContactData $contact */
+                    if ($entity->getDestination() === $contact->getDestination()) {
+                        $entity->addContact($contact);
+                    }
+                }
+                foreach ($custom_fields as $custom_field_entity) {
+                    /** @var Entity\CustomField $custom_field_entity */
+                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
                         $entity->addCustomField($custom_field_entity);
                     }
-
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid person record `%d` found (Skipping)', $num));
                 }
 
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid person record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+                $inline_contact_data = $this->getInlineContactDataParser()->export($data, $entity->getDestination());
+                foreach ($inline_contact_data as $contact) {
+                    $entity->addContact($contact);
+                }
+
+                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
+                foreach ($inline_custom_fields as $custom_field_entity) {
+                    $entity->addCustomField($custom_field_entity);
+                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logTransformerException('CSVPerson', $this->getEntityType(), 'email', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('CSVPerson', $this->getEntityType(), 'email', $e, $data);
             }
         }
 
@@ -112,28 +114,40 @@ final class People extends AbstractParser
     /**
      * Returns a person entity
      *
+     * @param int   $num
      * @param array $person
+     *
      * @return Entity\Person|null
      */
-    private function exportPerson(array $person)
+    private function exportPerson($num, array $person)
     {
-        if ($this->isPersonValid($person)) {
-            $person_id = $this->getPersonId($person);
-            $entity    = new Entity\Person();
-            $entity
-                ->setRawData($person)
-                ->setDestination($this->formatDestination(self::PERSON_PREFIX, $person_id))
-                ->setOid($person_id)
-                ->setAsAgent($this->isAgent($person))
-                ->setName($person['name'])
-                ->setDateCreated(new DateTime())
-                ->addEmail($person['email'])
-            ;
+        $formatted = $this->formatter->format($person, array(
+            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => self::PERSON_PREFIX,
+                'ref'    => array('original#id', 'email'),
+            )),
+            'name'         => TransformerInterface::TYPE_STRING,
+            'email'        => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+            'is_agent'     => TransformerInterface::TYPE_BOOLEAN,
+        ));
 
-            return $entity;
-        }
+        $entity = new Entity\Person();
+        $entity
+            ->setRawData($person)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setAsUser(true)
+            ->setAsAgent($formatted['is_agent'])
+            ->setName($formatted['name'])
+            ->setDateCreated($formatted['date_created'])
+            ->addEmail($formatted['email'])
+        ;
 
-        return null;
+        return $entity;
     }
 
     /**
@@ -144,7 +158,9 @@ final class People extends AbstractParser
     private function exportPersonCustomFields()
     {
         $config = $this->getReaderConfig(self::FILE_PEOPLE_CUSTOM_FIELDS);
-        return $this->exportCustomFields($config, self::PERSON_PREFIX, 'person_id');
+        $data   = $this->getReaderData($config);
+
+        return $this->getMultipleCustomFieldsParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
 
     /**
@@ -155,23 +171,9 @@ final class People extends AbstractParser
     private function exportPersonContactData()
     {
         $config = $this->getReaderConfig(self::FILE_PEOPLE_CONTACT_DATA);
-        return $this->exportContactData($config, self::PERSON_PREFIX, 'person_id');
-    }
+        $data   = $this->getReaderData($config);
 
-    /**
-     * Check if person has all required columns
-     *
-     * @param array $person
-     * @return bool
-     */
-    private function isPersonValid(array $person)
-    {
-        $columns = array(
-            'name',
-            'email',
-        );
-
-        return $this->hasRequiredColumns($person, $columns);
+        return $this->getMultipleContactDataParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
 
     /**
@@ -182,27 +184,5 @@ final class People extends AbstractParser
     private function getPersonReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_PEOPLE);
-    }
-
-    /**
-     * Check if person is agent
-     *
-     * @param array $person
-     * @return bool
-     */
-    private function isAgent(array $person)
-    {
-        return isset($person['is_agent']) && $this->isBooleanTrue($person['is_agent']);
-    }
-
-    /**
-     * Person id could be get from id or email column
-     *
-     * @param array $person
-     * @return int|string
-     */
-    private function getPersonId(array $person)
-    {
-        return isset($person['id']) ? $person['id'] : $person['email'];
     }
 }

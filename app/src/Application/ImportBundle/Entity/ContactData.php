@@ -115,7 +115,7 @@ class ContactData extends AbstractEntity
      */
     public function getType()
     {
-        return self::TYPE_ORGANIZATION_CONTACT_DATA;
+        return self::TYPE_CONTACT_DATA;
     }
 
     /**
