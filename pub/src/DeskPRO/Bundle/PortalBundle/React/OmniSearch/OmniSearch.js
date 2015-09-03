@@ -67,6 +67,17 @@ class Pagination extends React.Component {
   }
 }
 
+class SearchType extends React.Component {
+  toggle() {
+    this.props.toggleType(this.props.type);
+  }
+  render() {
+    return (
+      <li><a onClick={this.toggle.bind(this)}>{this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a></li>
+    );
+  }
+}
+
 export default class OmniSearch extends React.Component {
   constructor(props) {
     super(props);
@@ -79,7 +90,13 @@ export default class OmniSearch extends React.Component {
           curpage: 1
         }
       },
-      search_query: null
+      search_query: null,
+      types: [
+        {type: 'download', name: 'Downloads', active: true},
+        {type: 'article', name: 'Articles', active: true},
+        {type: 'news', name: 'News', active: true},
+        {type: 'feedback', name: 'Feedback', active: true}
+      ]
     };
   }
   componentDidMount() {
@@ -121,6 +138,18 @@ export default class OmniSearch extends React.Component {
   changePage(page) {
     this.doSearch({page: page});
   }
+  toggleType(type) {
+    let types = _.map(this.state.types, (t) => {
+      if (t.type === type) {
+        t.active = !t.active;
+      }
+      return t;
+    });
+    this.setState({
+      types
+    });
+    this.doSearch({types: _.map(_.filter(types, (type) => { return type.active; }), (type) => { return type.type; }).join(',')});
+  }
 	render() {
     let data = this.state.data;
     let total = _.parseInt(data.pageinfo.total_results);
@@ -132,13 +161,9 @@ export default class OmniSearch extends React.Component {
               <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}}
                    src={ window.DESKPRO_BASE_URL + '/web/spinner.gif' }/>
               <ul className="result-filter">
-                <li><a href="#"><i className="fa fa-check"></i> Downloads</a></li>
-
-                <li><a href="#"><i className="fa fa-check"></i> Articles</a></li>
-
-                <li><a href="#"><i className="fa fa-check"></i> News</a></li>
-
-                <li><a href="#"><i className="fa fa-check"></i> Feedback</a></li>
+                {_.map(this.state.types, (type) => {
+                  return (<SearchType key={type.type} name={type.name} active={type.active} type={type.type} toggleType={this.toggleType.bind(this)} />);
+                })}
               </ul>
             </header>
             <OmniSearchResults total={total} results={data.results} />
