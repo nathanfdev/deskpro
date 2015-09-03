@@ -37,9 +37,4 @@ interface ReaderInterface
      * @return BaseConfig
      */
     public function getConfig();
-
-    /**
-     * @return bool
-     */
-    public function isReady();
 }

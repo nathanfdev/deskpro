@@ -123,6 +123,7 @@ define([
   'Admin/Server/Ctrl/ServerTaskQueue',
   'Admin/Server/Ctrl/ServerCronList',
   'Admin/Server/Ctrl/ServerCronLogs',
+  'Admin/Server/Ctrl/ServerEnc',
   'Admin/Server/Ctrl/ServerFileUploads',
   'Admin/Server/Ctrl/ServerFileCheck',
   'Admin/Server/Ctrl/ImportersList',

@@ -41,6 +41,7 @@ use Application\DeskPRO\Form\Captcha\Recaptcha;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
+use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\Person;
@@ -467,7 +468,11 @@ HTML;
         $identity = $result->getIdentity();
 
         $person = $identity['person'];
-        $person->language = $this->container->getTranslator()->getLanguage();
+
+        $lang = $this->container->getTranslator()->getLanguage();
+        if ($lang->getId() && !($lang instanceof SystemLanguage)) {
+            $person->language = $lang;
+        }
 
         if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
             $this->session->set('account_disabled', $person->id);

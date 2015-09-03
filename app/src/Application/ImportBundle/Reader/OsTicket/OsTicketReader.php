@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Reader\OsTicket;
 
 use Application\ImportBundle\Reader\BaseReader;
-use Pdo;
+use PDO;
 
 /**
  * Os ticket reader
@@ -86,10 +86,15 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
      */
     private $ticket_priorities_loaded = false;
 
-
+    /**
+     * Constructor
+     *
+     * @param OsTicketConfig $config
+     */
     public function __construct(OsTicketConfig $config)
     {
         parent::__construct($config);
+
         $this->connection_wrapper = new LazyConnectionWrapper(
             sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost()),
             $config->getUser(),
@@ -433,14 +438,5 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     private function getConnection()
     {
         return $this->connection_wrapper->getConnection();
-    }
-
-    /**
-     * @return bool
-     * @throws OsTicketReaderException
-     */
-    public function isReady()
-    {
-        return null !== $this->getUsersCount();
     }
 }

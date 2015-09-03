@@ -35,19 +35,21 @@ namespace Application\ImportBundle\Entity;
  */
 interface EntityInterface
 {
-    const TYPE_PERSON                    = 'person';
-    const TYPE_TICKET                    = 'ticket';
-    const TYPE_TICKET_MESSAGE            = 'ticket_message';
-    const TYPE_TICKET_PRIORITY           = 'ticket_priority';
-    const TYPE_BLOB                      = 'blob';
-    const TYPE_ATTACHMENT                = 'attachment';
-    const TYPE_CUSTOM_FIELD              = 'custom_field';
-    const TYPE_DOWNLOAD                  = 'download';
-    const TYPE_NEWS                      = 'news';
-    const TYPE_ARTICLE                   = 'article';
-    const TYPE_FEEDBACK                  = 'feedback';
-    const TYPE_ORGANIZATION              = 'organization';
-    const TYPE_ORGANIZATION_CONTACT_DATA = 'organization_contact_data';
+    const TYPE_PERSON          = 'person';
+    const TYPE_TICKET          = 'ticket';
+    const TYPE_TICKET_MESSAGE  = 'ticket_message';
+    const TYPE_TICKET_PRIORITY = 'ticket_priority';
+    const TYPE_BLOB            = 'blob';
+    const TYPE_ATTACHMENT      = 'attachment';
+    const TYPE_CUSTOM_FIELD    = 'custom_field';
+    const TYPE_DOWNLOAD        = 'download';
+    const TYPE_NEWS            = 'news';
+    const TYPE_ARTICLE         = 'article';
+    const TYPE_ARTICLE_COMMENT = 'article_comment';
+    const TYPE_FEEDBACK        = 'feedback';
+    const TYPE_ORGANIZATION    = 'organization';
+    const TYPE_CONTACT_DATA    = 'contact_data';
+    const TYPE_OBJECT_LANG     = 'object_lang';
 
     /**
      * @return array
@@ -58,6 +60,17 @@ interface EntityInterface
      * @param array $raw_data
      */
     public function setRawData($raw_data);
+
+    /**
+     * @return string
+     */
+    public function getImportMapKey();
+
+    /**
+     * @param string $import_map_key
+     * @return $this
+     */
+    public function setImportMapKey($import_map_key);
 
     /**
      * Get entity type

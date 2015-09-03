@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO person importer
@@ -49,12 +48,14 @@ final class Person extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Person $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Person) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $this->records = new DoctrineEntitiesCollection();
 
         if ($entity->isAgent()) {
             $this->logAlert(sprintf('Importing agent `%s`', $entity->getFirstEmail()));
@@ -123,7 +124,7 @@ final class Person extends AbstractImporter
             }
         }
 
-        $this->records->add($person);
+        $this->records->setPrimaryEntity($person);
         return $this->records;
     }
 
@@ -178,7 +179,7 @@ final class Person extends AbstractImporter
                 ->setIsValidated(true)
             ;
 
-            $this->records->add($email);
+            $this->records->addRelatedEntity($email);
             $this->logInfo(sprintf('Creating new person email `%s`', $email->getEmail()));
         }
 

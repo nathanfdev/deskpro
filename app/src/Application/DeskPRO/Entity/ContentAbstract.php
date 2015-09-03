@@ -216,6 +216,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
      * @param Language $language
      * @return $this
      */
@@ -538,6 +546,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
      * @param DateTime $date_created
      * @return $this
      */
@@ -545,6 +561,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('date_created', $date_created);
         return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDatePublished()
+    {
+        return $this->date_published;
     }
 
     /**

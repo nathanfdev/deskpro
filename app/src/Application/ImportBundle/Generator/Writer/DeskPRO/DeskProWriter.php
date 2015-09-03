@@ -31,6 +31,7 @@ use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
+use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\ImporterInterface;
@@ -58,6 +59,11 @@ final class DeskProWriter extends AbstractWriter
     private $entity_manager;
 
     /**
+     * @var OidMapper
+     */
+    private $oid_mapper;
+
+    /**
      * @var EntityWatcher
      */
     private $entity_watcher;
@@ -67,12 +73,14 @@ final class DeskProWriter extends AbstractWriter
      *
      * @param Importer\Collection $importers
      * @param ObjectManager       $entity_manager
+     * @param OidMapper           $oid_mapper
      * @param EntityWatcher       $entity_watcher
      */
-    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager, EntityWatcher $entity_watcher)
+    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager,  OidMapper $oid_mapper, EntityWatcher $entity_watcher)
     {
         $this->importers      = $importers;
         $this->entity_manager = $entity_manager;
+        $this->oid_mapper     = $oid_mapper;
         $this->entity_watcher = $entity_watcher;
     }
 
@@ -102,12 +110,24 @@ final class DeskProWriter extends AbstractWriter
         $importers = $this->getImporters($entity);
         foreach ($importers as $importer) {
             try {
+                $entity_id = null;
+                if ($entity->getImportMapKey()) {
+                    $entity_id = $this->oid_mapper->findRefByOldId($entity->getImportMapKey(), $entity->getOid());
+
+                    if ($entity_id) {
+                        $this->logDebug(sprintf(
+                            'Found existing mapping for `%s`, oid = %s, id = %d',
+                            $entity->getImportMapKey(), $entity->getOid(), $entity_id
+                        ));
+                    }
+                }
+
                 if ($importer instanceof SkipDuplicateInterface) {
                     $importer->checkAlreadyExists($entity);
                 }
 
                 /** @var ImporterInterface $importer */
-                $records = $importer->getDoctrineEntities($entity);
+                $records = $importer->getDoctrineEntities($entity, $entity_id);
                 foreach ($records as $record) {
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
@@ -125,6 +145,11 @@ final class DeskProWriter extends AbstractWriter
                         Util::getBaseClassname($record),
                         method_exists($record, 'getId') ? $record->getId() : '_'
                     ));
+                }
+
+                $primary_record = $records->getPrimaryEntity();
+                if ($entity->getImportMapKey() && $primary_record && method_exists($primary_record, 'getId') && null === $entity_id) {
+                    $this->oid_mapper->saveMapping($entity->getImportMapKey(), $entity->getOid(), $primary_record->getId());
                 }
 
             } catch (Importer\Mapper\MapperException $e) {

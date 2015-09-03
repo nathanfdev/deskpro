@@ -55,6 +55,7 @@ use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -3952,6 +3953,14 @@ class TicketController extends AbstractController
             // Validate based on department...
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+
+            // agent newticket form has a quick create-user form
+            // which doesnt include custom fields at the moment so
+            // remove them from validator so we can still create the ticket
+            $layout = $layout->filter(function(LayoutField $f) {
+                return $f->getFieldType() != 'user_field';
+            });
+
             $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
             $newticket->billing_fields = $this->request->request->get('billing_fields', array());

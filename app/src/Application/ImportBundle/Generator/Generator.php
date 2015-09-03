@@ -31,7 +31,8 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
-use Symfony\Component\Validator\Validator as SymfonyValidator;
+use DeskPRO\Kernel\KernelErrorHandler;
+use Symfony\Component\Validator\ValidatorInterface as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
@@ -63,15 +64,15 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Constructor
      *
      * @param Exporter\ExporterInterface $exporter
-     * @param Writer\WriterInterface     $writer
      * @param SymfonyValidator           $validator
      * @param GeneratorConfig            $config
+     * @param Writer\WriterInterface     $writer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
-        Writer\WriterInterface     $writer = null,
         SymfonyValidator           $validator,
-        GeneratorConfig            $config
+        GeneratorConfig            $config,
+        Writer\WriterInterface     $writer = null
     ) {
         $this->config     = $config;
         $this->exporter   = $exporter;
@@ -91,14 +92,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     /**
      * {@inheritdoc}
      */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getTotalRecordsCount()
     {
         $count    = 0;
@@ -109,6 +102,14 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         }
 
         return $count;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isReady()
+    {
+        return $this->getTotalRecordsCount() > 0;
     }
 
     /**
@@ -142,7 +143,29 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                     $exceptions = $this->validateExportingCollection($type, $entities);
 
                     if (count($exceptions) > 0) {
-                        throw new GeneratorException($exceptions);
+                        /** @var ValidatorExceptionInterface[] $exceptions */
+                        foreach ($exceptions as $exception) {
+                            // Removing broken entities
+                            $collection->detach($exception->getEntity());
+
+                            /** @var Validator\ValidatorConstraintException $exception */
+                            $this->logAlert(sprintf(
+                                "Validator failure for %s on record #%s: %s",
+
+                                get_class($exception->getEntity()),
+                                $exception->getEntity()->getOid(),
+                                $exception->getErrors())
+                            );
+
+                            $this->logInfo(json_encode($exception->getEntity()->toArray()));
+
+                            $raw_data = $exception->getEntity()->getRawData();
+                            if ($raw_data) {
+                                foreach (explode("\n", KernelErrorHandler::varToString($raw_data, 2)) as $line) {
+                                    $this->logInfo($line);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -338,10 +361,5 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         }
 
         return $_types;
-    }
-
-    public function isReady()
-    {
-        return $this->getExporter()->isReady();
     }
 }

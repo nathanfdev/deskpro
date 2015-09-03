@@ -3860,6 +3860,26 @@ $collection->create('api_server_autoupdate_status', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_server_enc_status', array(
+    'path'        => '/server/encryption/status',
+    'controller'  => 'ApiBundle:Server:encryptionStatus',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_server_enc_enable', array(
+    'path'        => '/server/encryption/enable',
+    'controller'  => 'ApiBundle:Server:enableEncryption',
+    'defaults'    => array(),
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_server_enc_disable', array(
+    'path'        => '/server/encryption/disable',
+    'controller'  => 'ApiBundle:Server:disableEncryption',
+    'defaults'    => array(),
+    'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Server Error Logs
 ########################################################################################################################

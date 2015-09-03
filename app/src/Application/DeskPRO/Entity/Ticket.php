@@ -564,6 +564,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public $_is_new = false;
 
+    /**
+     * @var array
+     */
+    protected $api_data = array();
+
+    /**
+     * @var string|null
+     */
+    protected $api_data_hash = null;
+
     public function __construct()
     {
         $this->_original_id  = null;
@@ -3016,6 +3026,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
+        $hash = $this->getStateChangeRecorder()->getStateVersion() . (int) $primary . (int) $deep;
+        if ($hash === $this->api_data_hash) {
+            return $this->api_data;
+        }
+        $this->api_data_hash = $hash;
+
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
@@ -3053,7 +3069,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
         $field_manager->addApiData($this, $data);
 
-        return $data;
+        return $this->api_data = $data;
     }
 
     /**

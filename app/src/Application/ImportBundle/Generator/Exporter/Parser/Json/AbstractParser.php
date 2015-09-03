@@ -27,9 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\ContactData\ContactDataFactory;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Application\ImportBundle\Entity;
@@ -49,13 +48,22 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor
      *
      * @param JsonReaderInterface $reader
+     * @param FormatterInterface  $formatter
+     * @param ParserHelperSet     $helpers
      */
-    public function __construct(JsonReaderInterface $reader)
+    public function __construct(JsonReaderInterface $reader, FormatterInterface $formatter, ParserHelperSet $helpers)
     {
-        $this->reader = $reader;
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
+        $this->helpers   = $helpers;
     }
 
     /**
@@ -73,237 +81,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns a collection of contact data entities
-     *
-     * @param array $contact_data
-     * @return Entity\Collection
-     */
-    protected function exportContactData(array $contact_data)
-    {
-        $collection = new Entity\Collection();
-        foreach ($contact_data as $num => $contact) {
-            try {
-                $entity = $this->exportContact($contact);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid contact data record found (Skipping): %d', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
-            } catch (NotArrayException $e) {
-                $this->logError(sprintf(
-                    'Invalid contact data record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a contact data entity
-     *
-     * @param array $contact
-     * @return Entity\ContactData|null
-     *
-     */
-    protected function exportContact(array $contact)
-    {
-        if ($this->isContactValid($contact)) {
-            $handler = ContactDataFactory::getHandler($contact['contact_type']);
-            $entity  = $handler->toEntity($contact);
-            $entity
-                ->setOid($contact['oid'])
-                ->setDestination($this->formatDestination('contact_data_', $contact['oid']))
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if contact data has all required columns
-     *
-     * @param array $contact
-     * @return bool
-     */
-    protected function isContactValid(array $contact)
-    {
-        $columns = array(
-            'oid',
-            'contact_type',
-            'comment',
-        );
-
-        return $this->hasRequiredColumns($contact, $columns);
-    }
-
-    /**
-     * Exports custom fields
-     *
-     * @param array $custom_fields
-     * @return Entity\Collection
-     */
-    protected function exportCustomFields(array $custom_fields)
-    {
-        $collection = new Entity\Collection();
-        foreach ($custom_fields as $num => $custom_field) {
-            try {
-                $entity = $this->exportCustomField($custom_field);
-                if ($entity) {
-                    $collection->attach($entity);
-                } else {
-                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid custom field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a custom field entity
-     *
-     * @param array $custom_field
-     * @return Entity\CustomField|null
-     */
-    protected function exportCustomField(array $custom_field)
-    {
-        if ($this->isCustomFieldValid($custom_field)) {
-            $entity = new Entity\CustomField();
-            $entity
-                ->setDestination($this->formatDestination('custom_field_', $custom_field['oid']))
-                ->setOid($custom_field['oid'])
-                ->setKey($custom_field['key'])
-                ->setValue($custom_field['value']);
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns an attachment entity
-     *
-     * @param array $attachment
-     * @return Entity\Attachment|null
-     */
-    protected function exportAttachment(array $attachment)
-    {
-        if ($this->isAttachmentValid($attachment)) {
-            /** @var Entity\Attachment $entity */
-            $entity = $this->exportBlob($attachment, new Entity\Attachment());
-            $entity
-                ->setPersonEmail($attachment['person'])
-                ->setAsInline($attachment['is_inline'])
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if an attachment has all required columns
-     *
-     * @param array $attachment
-     * @return bool
-     */
-    protected function isAttachmentValid(array $attachment)
-    {
-        $columns = array(
-            'person',
-            'is_inline',
-        );
-
-        return $this->isBlobValid($attachment)
-            && $this->hasRequiredColumns($attachment, $columns);
-    }
-
-    /**
-     * Returns a blob entity
-     *
-     * @param array|null       $blob
-     * @param Entity\Blob|null $entity
-     *
-     * @return Entity\Blob|null
-     */
-    protected function exportBlob(array $blob = null, Entity\Blob $entity = null)
-    {
-        if ($this->isBlobValid($blob)) {
-            $entity = $entity ? : new Entity\Blob();
-            $entity
-                ->setDestination($this->formatDestination('attachment_', $blob['oid']))
-                ->setOid($blob['oid'])
-                ->setBlobData($blob['blob_data'])
-                ->setBlobUrl($blob['blob_url'])
-                ->setBlobPath($blob['blob_path'])
-                ->setFileName($blob['file_name'])
-                ->setContentType($blob['content_type'])
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if a blob has all required columns
-     *
-     * @param array|null $blob
-     * @return bool
-     */
-    protected function isBlobValid(array $blob = null)
-    {
-        $columns = array(
-            'oid',
-            'blob_data',
-            'blob_url',
-            'blob_path',
-            'file_name',
-            'content_type',
-        );
-
-        return $this->hasRequiredColumns($blob, $columns);
-    }
-
-    /**
-     * Check if custom field has all required columns
-     *
-     * @param array $custom_field
-     * @return bool
-     */
-    protected function isCustomFieldValid(array $custom_field)
-    {
-        $columns = array(
-            'oid',
-            'key',
-            'value',
-        );
-
-        return $this->hasRequiredColumns($custom_field, $columns);
-    }
-
-    /**
      * Returns batch config
      *
      * @return BatchConfig
@@ -316,5 +93,45 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         throw new Exception('Batch config is not defined');
+    }
+
+    /**
+     * @return Helper\Blob
+     */
+    protected function getBlobParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_BLOB);
+    }
+
+    /**
+     * @return Helper\Attachment
+     */
+    protected function getAttachmentParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
+    }
+
+    /**
+     * @return Helper\CustomFields
+     */
+    protected function getCustomFieldsParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CUSTOM_FIELD);
+    }
+
+    /**
+     * @return Helper\ContactData
+     */
+    protected function getContactDataParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CONTACT_DATA);
+    }
+
+    /**
+     * @return Helper\Translations
+     */
+    protected function getTranslationsParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_OBJECT_LANG);
     }
 }

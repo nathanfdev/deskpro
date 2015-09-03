@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO organization importer
@@ -66,14 +65,15 @@ final class Organization extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Organization) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
-        $organization = $this->findOrCreateOrganization($entity->getName());
+        $this->records = new DoctrineEntitiesCollection();
+        $organization  = $this->findOrCreateOrganization($entity->getName());
         $organization
             ->setImportance($entity->getImportance())
             ->setDateCreated($entity->getDateCreated())
@@ -95,6 +95,7 @@ final class Organization extends AbstractImporter
             }
         }
 
+        $this->records->setPrimaryEntity($organization);
         return $this->records;
     }
 

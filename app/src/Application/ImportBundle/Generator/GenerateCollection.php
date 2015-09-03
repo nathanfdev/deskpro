@@ -40,7 +40,7 @@ use Application\ImportBundle\AbstractCollection;
 final class GenerateCollection extends AbstractCollection
 {
     /**
-     * Add a entity collection
+     * Add an entity collection
      *
      * @param string            $type
      * @param Entity\Collection $entities
@@ -55,6 +55,22 @@ final class GenerateCollection extends AbstractCollection
             $collection->merge($entities);
         } else {
             $this->collection[$type] = $entities;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove an entity collection
+     *
+     * @param Entity\EntityInterface $entity
+     * @return $this
+     */
+    public function detach(Entity\EntityInterface $entity)
+    {
+        foreach ($this->collection as $type => $type_collection) {
+            /** @var Entity\Collection $type_collection */
+            $type_collection->detach($entity);
         }
 
         return $this;

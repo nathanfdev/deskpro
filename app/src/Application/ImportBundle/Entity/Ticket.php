@@ -332,7 +332,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      * @param DateTime $date_archived
      * @return $this
      */
-    public function setDateArchived(DateTime $date_archived)
+    public function setDateArchived(DateTime $date_archived = null)
     {
         $this->date_archived = $date_archived;
         return $this;
@@ -350,7 +350,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      * @param DateTime $date_resolved
      * @return $this
      */
-    public function setDateResolved(DateTime $date_resolved)
+    public function setDateResolved(DateTime $date_resolved = null)
     {
         $this->date_resolved = $date_resolved;
         return $this;
@@ -625,42 +625,32 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             throw new \Exception('Date created is not set up');
         }
 
-        $messages = array();
-        foreach ($this->messages as $message) {
-            /** @var TicketMessage $message */
-            $messages[] = $message->toArray();
-        }
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
         return array(
-            'oid'           => $this->oid,
-            'ref'           => $this->ref,
-            'department'    => $this->department,
-            'person'        => $this->person_email,
-            'agent'         => $this->agent_email,
-            'agent_team'    => $this->agent_team,
-            'status'        => $this->status,
-            'date_created'  => $this->date_created->format('Y-m-d H:i:s'),
-            'date_resolved' => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
-            'date_archived' => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
-            'subject'       => $this->subject,
-            'priority'      => $this->priority ? $this->priority->toArray() : null,
-            'language'      => $this->language,
-            'category'      => $this->category,
-            'workflow'      => $this->workflow,
-            'product'       => $this->product,
-            'organization'  => $this->organization,
-            'is_hold'       => $this->is_hold,
-            'urgency'       => $this->urgency,
-            'participants'  => $this->participants,
-            'labels'        => $this->labels,
-            'messages'      => $messages,
-            'custom_fields' => $custom_fields,
-            'log_message'   => $this->log_message,
+            'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
+            'ref'            => $this->ref,
+            'department'     => $this->department,
+            'person'         => $this->person_email,
+            'agent'          => $this->agent_email,
+            'agent_team'     => $this->agent_team,
+            'status'         => $this->status,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_resolved'  => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
+            'date_archived'  => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
+            'subject'        => $this->subject,
+            'priority'       => $this->priority ? $this->priority->toArray() : null,
+            'language'       => $this->language,
+            'category'       => $this->category,
+            'workflow'       => $this->workflow,
+            'product'        => $this->product,
+            'organization'   => $this->organization,
+            'is_hold'        => $this->is_hold,
+            'urgency'        => $this->urgency,
+            'participants'   => $this->participants,
+            'labels'         => $this->labels,
+            'messages'       => $this->messages->entitiesToArray(),
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
+            'log_message'    => $this->log_message,
         );
     }
 

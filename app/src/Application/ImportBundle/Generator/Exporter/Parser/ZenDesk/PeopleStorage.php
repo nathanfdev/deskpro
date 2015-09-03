@@ -74,6 +74,13 @@ class PeopleStorage implements PeopleStorageInterface
         $this->ignore_ids = array_unique(array_merge($this->ignore_ids, $ignore_ids));
         return $this;
     }
+    /**
+     * {@inheritdoc}
+     */
+    public function getPerson($id)
+    {
+        return isset($this->people[$id]) ? $this->people[$id] : null;
+    }
 
     /**
      * {@inheritdoc}

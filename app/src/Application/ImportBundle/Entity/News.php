@@ -128,6 +128,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
 
         return array(
             'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
             'language'       => $this->language,
             'slug'           => $this->slug,
