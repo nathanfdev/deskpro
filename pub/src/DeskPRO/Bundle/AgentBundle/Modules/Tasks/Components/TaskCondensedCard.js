@@ -209,8 +209,6 @@ const TaskCondensedCard = React.createClass({
 
     const overdue = Moment(task.date_due).isBefore();
 
-    console.log(selected);
-
     return connectDragSource(<tr key={task.id} className={taskClass}>
       <td>
         <span className="checkbox" onClick={this.toggleMassAction}>

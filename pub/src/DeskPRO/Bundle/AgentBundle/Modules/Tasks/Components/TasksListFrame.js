@@ -9,6 +9,7 @@ import FRC from "../../../../../Component/FormComponents/main.js";
 import TaskCard from "../Components/TaskCard";
 import TaskControls from "../Components/TaskControls";
 import TaskCardGroup from "../Components/TaskCardGroup";
+import TaskCalendar from "../Components/TaskCalendar";
 import TaskCardCondensedGroup from "../Components/TaskCardCondensedGroup";
 import TaskOrderHover from "../Components/TaskOrderHover";
 import KanbanColumn from "../Components/KanbanColumn";
@@ -37,7 +38,8 @@ export default class TasksListFrame extends React.Component {
       changeView: false,
       order: 'due',
       direction: 'asc',
-      filter: {}
+      filter: {},
+      moment: new Moment()
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
@@ -168,6 +170,22 @@ export default class TasksListFrame extends React.Component {
     query.sort = model.direction;
 
     this.props.dispatch(TaskActions.setFilter(query));
+  }
+
+  nextMonth() {
+    let moment = this.state.moment.add(1, 'months');
+
+    this.setState({
+        moment: moment
+    });
+  }
+
+  prevMonth() {
+    let moment = this.state.moment.subtract(1, 'months');
+
+    this.setState({
+        moment: moment
+    });
   }
 
   render() {
@@ -336,6 +354,7 @@ export default class TasksListFrame extends React.Component {
               <li><a href="#" onClick={this.setView.bind(this, 'list')}>List</a></li>
               <li><a href="#" onClick={this.setView.bind(this, 'kanban')}>Kanban</a></li>
               <li><a href="#" onClick={this.setView.bind(this, 'condensed')}>Condensed</a></li>
+              <li><a href="#" onClick={this.setView.bind(this, 'calendar')}>Calendar</a></li>
             </ul>
           </div> : ''}
 
@@ -378,6 +397,11 @@ export default class TasksListFrame extends React.Component {
                 <button type="submit" value="Save" className="button">Add</button>
               </Formsy.Form>
             </div>
+          : (this.state.view === 'calendar') ?
+            <TaskCalendar tasks={taskFrameList.taskFrameList}
+                          moment={this.state.moment}
+                          nextMonth={this.nextMonth.bind(this)}
+                          prevMonth={this.prevMonth.bind(this)}/>
           :
             <div>
               <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
