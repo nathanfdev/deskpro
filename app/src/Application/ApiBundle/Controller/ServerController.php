@@ -34,6 +34,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
+use Application\DeskPRO\Encryption\DpEnc;
 use Application\DeskPRO\Encryption\StandardEncFactory;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
@@ -675,7 +677,7 @@ class ServerController extends AbstractController implements ProtectedController
         }
 
         if (file_exists($status['key_file'])) {
-            @rename($status['key_file'], $status['key_file'].'old-' . time());
+            @rename($status['key_file'], $status['key_file'].'.old-' . time());
         }
 
         if (!@file_put_contents($status['key_file'], $key)) {
@@ -684,7 +686,26 @@ class ServerController extends AbstractController implements ProtectedController
 
         @chmod($status['key_file'], 0444);
 
+        $enc = new DpEnc(true, $status['key_file']);
+
+        $accounts = $this->em->getRepository('DeskPRO:EmailAccount')->findAll();
+
+        $this->db->beginTransaction();
+
         $this->container->getSettingsHandler()->setSetting('core.use_encryption', true);
+        foreach ($accounts as $acc) {
+            if ($acc->incoming_account) {
+                $acc->incoming_account = EmailAccountUtil::encryptIncomingAccount($acc->incoming_account, $enc);
+            }
+            if ($acc->outgoing_account) {
+                $acc->outgoing_account = EmailAccountUtil::encryptOutgoingAccount($acc->outgoing_account, $enc);
+            }
+            $this->em->persist($acc);
+        }
+
+        $this->em->flush();
+
+        $this->db->commit();
 
         return $this->createApiResponse(array('success' => true));
     }
@@ -701,7 +722,26 @@ class ServerController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('cannot_disable', 'Missing the file that indicates that encryption can be disabled (data/can-disable-encryption.txt)');
         }
 
+        $enc = new DpEnc(true, $status['key_file']);
+
+        $accounts = $this->em->getRepository('DeskPRO:EmailAccount')->findAll();
+
+        $this->db->beginTransaction();
+
         $this->container->getSettingsHandler()->setSetting('core.use_encryption', false);
+        foreach ($accounts as $acc) {
+            if ($acc->incoming_account) {
+                $acc->incoming_account = EmailAccountUtil::decryptOutgoingAccount($acc->incoming_account, $enc);
+            }
+            if ($acc->outgoing_account) {
+                $acc->outgoing_account = EmailAccountUtil::decryptOutgoingAccount($acc->outgoing_account, $enc);
+            }
+            $this->em->persist($acc);
+        }
+
+        $this->em->flush();
+
+        $this->db->commit();
 
         return $this->createApiResponse(array('success' => true));
     }

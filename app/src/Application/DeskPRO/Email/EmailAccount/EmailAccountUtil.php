@@ -69,4 +69,36 @@ class EmailAccountUtil
 
         return $new_acc;
     }
+
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function encryptIncomingAccount(AccountConfigInterface $acc, DpEnc $enc)
+    {
+        $new_acc = clone $acc;
+
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpEncrypt($acc->password);
+        }
+
+        return $new_acc;
+    }
+
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function encryptOutgoingAccount(AccountConfigInterface $acc, DpEnc $enc)
+    {
+        $new_acc = clone $acc;
+
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpEncrypt($acc->password);
+        }
+
+        return $new_acc;
+    }
 }
