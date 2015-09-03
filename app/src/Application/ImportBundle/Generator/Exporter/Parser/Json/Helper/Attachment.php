@@ -51,7 +51,7 @@ class Attachment extends AbstractParserFormatterHelper
      * Returns a collection of attachments entities
      *
      * @param array $attachments
-     * @return Entity\Collection
+     * @return Entity\Attachment[]
      */
     public function exportAttachments(array $attachments)
     {

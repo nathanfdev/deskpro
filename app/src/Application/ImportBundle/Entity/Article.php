@@ -56,6 +56,11 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $date_end;
 
     /**
+     * @var DateTime
+     */
+    private $date_updated;
+
+    /**
      * @var array
      */
     private $categories = array();
@@ -66,9 +71,24 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $labels = array();
 
     /**
-     * @var Collection
+     * @var CustomField[]
      */
     private $custom_fields;
+
+    /**
+     * @var Attachment[]
+     */
+    private $attachments;
+
+    /**
+     * @var ArticleComment[]
+     */
+    private $comments;
+
+    /**
+     * @var ObjectLang[]
+     */
+    private $translations;
 
     /**
      * Constructor
@@ -76,6 +96,9 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function __construct()
     {
         $this->custom_fields = new Collection();
+        $this->attachments   = new Collection();
+        $this->comments      = new Collection();
+        $this->translations  = new Collection();
     }
 
     /**
@@ -179,6 +202,24 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->date_updated = $date_updated;
+        return $this;
+    }
+
+    /**
      * Returns article categories
      *
      * @return array
@@ -238,20 +279,86 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     /**
      * {@inheritdoc}
      */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addAttachment(Attachment $attachment)
+    {
+        $this->attachments->attach($attachment);
+        return $this;
+    }
+
+    /**
+     * Returns article comments
+     *
+     * @return ArticleComment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Add an article comment
+     *
+     * @param ArticleComment $comment
+     * @return $this
+     */
+    public function addComment(ArticleComment $comment)
+    {
+        $this->comments->attach($comment);
+        return $this;
+    }
+
+    /**
+     * Returns article translations
+     *
+     * @return ObjectLang[]
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * Returns article translations grouped by language
+     *
+     * @return ObjectLang[]
+     */
+    public function getUniqueTranslations()
+    {
+        return ObjectLang::getUniqueCollection($this->translations);
+    }
+
+    /**
+     * Add an article property translation
+     *
+     * @param ObjectLang $translation
+     * @return $this
+     */
+    public function addTranslation(ObjectLang $translation)
+    {
+        $this->translations->attach($translation);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function toArray()
     {
         if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
         return array(
             'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
             'title'          => $this->title,
             'content'        => $this->content,
@@ -264,11 +371,15 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'view_count'     => $this->view_count,
             'status'         => $this->status,
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_updated'   => $this->date_updated ? $this->date_updated->format('Y-m-d H:i:s') : null,
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
             'date_end'       => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
             'categories'     => $this->categories,
             'labels'         => $this->labels,
-            'custom_fields'  => $custom_fields,
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
+            'attachments'    => $this->attachments->entitiesToArray(),
+            'comments'       => $this->comments->entitiesToArray(),
+            'translations'   => $this->translations->entitiesToArray(),
         );
     }
 
@@ -278,5 +389,9 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('person_email', new Constraints\NotBlank())
+        ;
     }
 }

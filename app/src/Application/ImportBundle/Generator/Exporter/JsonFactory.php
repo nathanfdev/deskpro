@@ -63,6 +63,7 @@ class JsonFactory extends AbstractFactory
             ->attach(new Parser\Json\Helper\Blob($formatter))
             ->attach(new Parser\Json\Helper\ContactData($formatter))
             ->attach(new Parser\Json\Helper\CustomFields($formatter))
+            ->attach(new Parser\Json\Helper\Translations($formatter))
         ;
 
         $parsers = new Parser\Collection();

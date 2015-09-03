@@ -25,21 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Zendesk\API\Client;
+use Zendesk\API\MissingParametersException;
 
 /**
- * Attach people storage interface
+ * ZenDesk article attachments request client helper
  *
- * Interface PeopleStorageAwareInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class ArticleAttachmentsFindAll
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
+ *
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/article_attachments#list-article-attachments
  */
-interface PeopleStorageAwareInterface
+final class ArticleAttachmentsFindAll extends AbstractHelper
 {
     /**
-     * Attach a people storage
-     *
-     * @param PeopleStorageInterface $storage
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setPeopleStorage(PeopleStorageInterface $storage);
+    public function request(Client $client)
+    {
+        if ( ! isset($this->params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
+
+        return $this->doGetRequest($client, sprintf('help_center/articles/%d/attachments.json', $this->params['id']));
+    }
 }

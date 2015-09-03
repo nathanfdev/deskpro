@@ -72,7 +72,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getPeopleCount(DateTime $start_time = null)
     {
-        $result = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $result = $this->adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -85,7 +85,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function getPeople(DateTime $start_time = null)
     {
         $people = array();
-        $result = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $result = $this->adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -103,7 +103,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getPeopleEndTime(DateTime $start_time = null)
     {
-        $request = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $request = $this->adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -119,7 +119,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
         $chunk_ids = array_chunk($ids, 100);
 
         foreach ($chunk_ids as $chunk_ids_batch) {
-            $result = $this->adapter->doPeopleFindRequest(array('id' => $chunk_ids_batch));
+            $result = $this->adapter->doRequest('CoreAPI\PeopleFind', array('id' => $chunk_ids_batch));
 
             if (is_array($result->users)) {
                 foreach ($result->users as $person) {
@@ -136,10 +136,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getOrganizationById($id)
     {
-        $result = $this->adapter->doOrganizationFindRequest(array(
-            'id' => $id,
-        ));
-
+        $result = $this->adapter->doRequest('CoreAPI\OrganizationFind', array('id' => $id));
         return $this->toArray($result->organization);
     }
 
@@ -148,7 +145,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getTicketsCount(DateTime $start_time = null)
     {
-        $result = $this->adapter->doTicketsIncrementalExportRequest(array(
+        $result = $this->adapter->doRequest('CoreAPI\TicketsIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -161,7 +158,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function getTickets(DateTime $start_time = null)
     {
         $tickets = array();
-        $result  = $this->adapter->doTicketsIncrementalExportRequest(array(
+        $result  = $this->adapter->doRequest('CoreAPI\TicketsIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -180,9 +177,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function getTicketComments($id)
     {
         $comments = array();
-        $result   = $this->adapter->doTicketCommentsFindAllRequest(array(
-            'ticket_id' => $id,
-        ));
+        $result   = $this->adapter->doRequest('CoreAPI\TicketCommentsFindAll', array('ticket_id' => $id));
 
         if ($result) {
             foreach ($result->comments as $comment) {
@@ -198,7 +193,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getTicketsEndTime(DateTime $start_time = null)
     {
-        $request = $this->adapter->doTicketsIncrementalExportRequest(array(
+        $request = $this->adapter->doRequest('CoreAPI\TicketsIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -206,14 +201,129 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticleCategory($section_id)
+    {
+        $response_sections = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+        $response_sections = $this->toArray($response_sections->sections);
+
+        $sections = array();
+        foreach ($response_sections as $section) {
+            $sections[$section['id']] = $section;
+        }
+
+        if (isset($sections[$section_id])) {
+            return $sections[$section_id];
+        } else {
+            $response_section = $this->adapter->doRequest('HelpCenter\SectionFind', array('id' => $section_id));
+            return $this->toArray($response_section->section);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesCount(DateTime $start_time = null)
+    {
+        $result = $this->adapter->doRequest('HelpCenter\ArticleIncrementalExport', array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $result ? $result->count : 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticles(DateTime $start_time = null)
+    {
+        $articles = array();
+        $result  = $this->adapter->doRequest('HelpCenter\ArticleIncrementalExport', array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        if ($result) {
+            foreach ($result->articles as $article) {
+                $articles[] = $this->toArray($article);
+            }
+        }
+
+        return $articles;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesEndTime(DateTime $start_time = null)
+    {
+        $request = $this->adapter->doRequest('HelpCenter\ArticleIncrementalExport', array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $this->getIncrementalEndDateTime($request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticleComments($id)
+    {
+        $comments = array();
+        $result   = $this->adapter->doRequest('HelpCenter\ArticleCommentsFindAll', array('id' => $id));
+
+        if ($result) {
+            foreach ($result->comments as $comment) {
+                $comments[] = $this->toArray($comment);
+            }
+        }
+
+        return $comments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticleAttachments($id)
+    {
+        $attachments = array();
+        $result      = $this->adapter->doRequest('HelpCenter\ArticleAttachmentsFindAll', array('id' => $id));
+
+        if ($result) {
+            foreach ($result->article_attachments as $attachment) {
+                $attachments[] = $this->toArray($attachment);
+            }
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticleTranslations($id)
+    {
+        $translations = array();
+        $result       = $this->adapter->doRequest('HelpCenter\ArticleTranslationsFindAll', array('id' => $id));
+
+        if ($result) {
+            foreach ($result->translations as $translation) {
+                $translations[] = $this->toArray($translation);
+            }
+        }
+
+        return $translations;
+    }
+
+    /**
      * Converts stdClass to array
      *
-     * @param \stdClass $object
+     * @param mixed $object
      * @return array
      */
-    private function toArray(\stdClass $object)
+    private function toArray($object)
     {
-        return @json_decode(json_encode($object), true);
+        return json_decode(json_encode($object), true);
     }
 
     /**

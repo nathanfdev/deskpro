@@ -25,27 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\PeopleIncrementalExport;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 use DateTime;
-use Exception;
 
 /**
  * ZenDesk tickets fixtures
  *
  * Class Tickets
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
-final class Tickets extends AbstractFixture implements FixturePrepareInterface
+final class Tickets extends AbstractFixture
 {
     /**
-     * @var array
+     * @var PeopleLoader
      */
-    private $people_ids = array();
+    private $people_loader;
+
+    /**
+     * Constructor
+     *
+     * @param Client       $client
+     * @param PeopleLoader $people_loader
+     */
+    public function __construct(Client $client, PeopleLoader $people_loader)
+    {
+        parent::__construct($client);
+        $this->people_loader = $people_loader;
+    }
 
     /**
      * {@inheritdoc}
@@ -58,27 +69,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     /**
      * {@inheritdoc}
      */
-    public function prepare(DateTime $initial_time, DateTime $end_time)
-    {
-        $people_incremental = new PeopleIncrementalExport(array(
-            'start_time' => $initial_time->getTimestamp(),
-        ));
-
-        try {
-            $people = $people_incremental->request($this->client);
-            foreach($people->users as $person) {
-                $this->people_ids[] = $person->id;
-            }
-
-        } catch (ResponseException $e) {
-            $this->handleResponseException();
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
+    protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         $types      = array('problem', 'incident', 'question', 'task');
         $priorities = array('urgent', 'high', 'normal', 'low');
@@ -86,18 +77,17 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
 
         $type   = $types[rand(0, count($types) - 1)];
         $params = array(
-            'subject' => 'Fake ticket ' . $prefix,
+            'subject' => 'Fake ticket ' . $num,
             'comment' => array(
                 'type'       => 'Comment',
                 'body'       => 'Thanks for your help!',
                 'public'     => true,
-                'created_at' => $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d\TH:i:s\Z'),
             ),
             'type'         => $type,
             'priority'     => $priorities[rand(0, count($priorities) - 1)],
             'status'       => $statuses[rand(0, count($statuses) - 1)],
-            'requester_id' => $this->getRandomPersonId(),
-            'submitter_id' => $this->getRandomPersonId(),
+            'requester_id' => $this->people_loader->getRandomPersonId(),
+            'submitter_id' => $this->people_loader->getRandomPersonId(),
         );
 
         if ($type === 'task') {
@@ -113,10 +103,9 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
                 $comment = $this->client->tickets()->update(array(
                     'id'      => $response->ticket->id,
                     'comment' => array(
-                        'type'       => 'Comment',
-                        'body'       => 'Reply #' . $i,
-                        'public'     => true,
-                        'created_at' => $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d\TH:i:s\Z'),
+                        'type'   => 'Comment',
+                        'body'   => 'Reply #' . $i,
+                        'public' => true,
                     ),
                 ));
 
@@ -124,59 +113,8 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
                 $this->logger->debug(json_encode($comment));
 
             } catch (ResponseException $e) {
-                $this->handleResponseException();
+                $this->handleResponseException('ticket_comment');
             }
-        }
-    }
-
-    /**
-     * Returns a random datetime
-     *
-     * @param DateTime $initial_time
-     * @param DateTime $end_time
-     *
-     * @return DateTime
-     */
-    private function getRandomDateTime(DateTime $initial_time, DateTime $end_time)
-    {
-        $time = new DateTime();
-        $time->setTimestamp(rand($initial_time->getTimestamp(), $end_time->getTimestamp()));
-
-        return $time;
-    }
-
-    /**
-     * Returns a random person id
-     *
-     * @return int
-     * @throws Exception
-     */
-    private function getRandomPersonId()
-    {
-        if (empty($this->people_ids)) {
-            throw new Exception('No person found');
-        }
-
-        return $this->people_ids[rand(0, count($this->people_ids) - 1)];
-    }
-
-    /**
-     * Shows error output to log
-     */
-    private function handleResponseException()
-    {
-        $this->logWarning(sprintf(
-            'Unable to export %s, code `%s`, headers:',
-
-            $this->getEntityType(),
-            $this->client->getDebug()->lastResponseCode
-        ));
-
-        $debug = $this->client->getDebug();
-        $this->logWarning($debug->lastRequestHeaders);
-
-        if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
-            sleep(60);
         }
     }
 }

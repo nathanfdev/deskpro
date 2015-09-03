@@ -53,9 +53,7 @@ interface BatchParserInterface
      * Check if config has all required columns
      *
      * @param array $config
-     *
      * @return bool
-     * @throws \Application\ImportBundle\Generator\Exporter\Parser\NoColumnException
      */
     public function validate(array $config);
 

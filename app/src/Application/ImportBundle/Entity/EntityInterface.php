@@ -45,9 +45,11 @@ interface EntityInterface
     const TYPE_DOWNLOAD        = 'download';
     const TYPE_NEWS            = 'news';
     const TYPE_ARTICLE         = 'article';
+    const TYPE_ARTICLE_COMMENT = 'article_comment';
     const TYPE_FEEDBACK        = 'feedback';
     const TYPE_ORGANIZATION    = 'organization';
     const TYPE_CONTACT_DATA    = 'contact_data';
+    const TYPE_OBJECT_LANG     = 'object_lang';
 
     /**
      * @return array
@@ -58,6 +60,17 @@ interface EntityInterface
      * @param array $raw_data
      */
     public function setRawData($raw_data);
+
+    /**
+     * @return string
+     */
+    public function getImportMapKey();
+
+    /**
+     * @param string $import_map_key
+     * @return $this
+     */
+    public function setImportMapKey($import_map_key);
 
     /**
      * Get entity type

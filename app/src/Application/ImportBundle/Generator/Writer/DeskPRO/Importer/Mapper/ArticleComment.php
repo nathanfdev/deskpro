@@ -25,13 +25,74 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
+
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Class ValidatorException
- * @package Application\ImportBundle\Generator\Validator
+ * Class ArticleComment
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class ValidatorException extends \Exception implements ValidatorExceptionInterface
+final class ArticleComment implements MapperInterface
 {
+    /**
+     * @var EntityRepository\ArticleComment
+     */
+    private $repository;
 
+    /**
+     * @var ObjectManager
+     */
+    private $object_manager;
+
+    /**
+     * Constructor
+     *
+     * @param EntityRepository\ArticleComment $repository
+     * @param ObjectManager                   $object_manager
+     */
+    public function __construct(EntityRepository\ArticleComment $repository, ObjectManager $object_manager)
+    {
+        $this->repository     = $repository;
+        $this->object_manager = $object_manager;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_ARTICLE_COMMENT;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        /** @var Entity\ArticleComment $record */
+        $record = $this->repository->findOneBy($criteria);
+        if ( ! $record && $throw_exception) {
+            throw new MapperException('Article comment not found', $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Removes all article comments
+     *
+     * @param int $article_id
+     */
+    public function resetComments($article_id)
+    {
+        $comments = $this->repository->findBy(array('article' => $article_id));
+        foreach ($comments as $comment) {
+            $this->object_manager->remove($comment);
+        }
+
+        $this->object_manager->flush();
+    }
 }

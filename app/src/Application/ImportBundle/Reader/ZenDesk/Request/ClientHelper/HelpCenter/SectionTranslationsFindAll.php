@@ -25,27 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
+use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk tickets incremental export request client helper
+ * ZenDesk HelpCenter section translations request client helper
  *
- * Class TicketsIncremental
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
+ * Class SectionTranslations
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
+ *
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/translations#list-translations
  */
-final class TicketsIncrementalExport extends AbstractIncrementalExportHelper
+final class SectionTranslationsFindAll extends AbstractHelper
 {
     /**
      * {@inheritdoc}
      */
     public function request(Client $client)
     {
-        $result = $this->incrementalExport($client, 'tickets', array(
-            'start_time' => $this->params['start_time'],
-        ));
+        if ( ! isset($this->params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
 
-        return $result;
+        return $this->doGetRequest($client, sprintf('help_center/sections/%d/translations.json', $this->params['id']));
     }
 }

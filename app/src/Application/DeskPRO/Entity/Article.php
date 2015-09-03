@@ -160,6 +160,24 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->setModelField('date_updated', $date_updated);
+        return $this;
+    }
+
+    /**
      * @param $end_action
      * @return $this
      */
@@ -169,18 +187,19 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * Set entity status
+     *
+     * @param string $status
+     * @return $this
+     */
     public function setStatus($status)
     {
         if ($status == 'approve') {
             $status = self::STATUS_PUBLISHED;
         }
 
-        if ($status == self::STATUS_PUBLISHED) {
-            $this->setModelField('status', self::STATUS_PUBLISHED);
-            $this->setModelField('hidden_status', null);
-        } else {
-            $this->setModelField('status', $status);
-        }
+        parent::setStatus($status);
 
         return $this;
     }
@@ -229,6 +248,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this->custom_data;
     }
 
+    /**
+     * Add custom data
+     *
+     * @param CustomDataArticle $data
+     */
     public function addCustomData(CustomDataArticle $data)
     {
         $this->custom_data->add($data);
@@ -249,6 +273,23 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
         $this->custom_data->clear();
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
+        return $this;
+    }
+
+    /**
+     * Reset custom data
+     *
+     * @return $this
+     */
+    public function resetCategories()
+    {
+        foreach ($this->categories as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->categories->clear();
+        $this->_onPropertyChanged('categories', null, $this->categories);
 
         return $this;
     }
@@ -323,6 +364,23 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         foreach ($this->categories as $c) {
             return $c;
         }
+    }
+
+    /**
+     * Reset attachments
+     *
+     * @return $this
+     */
+    public function resetAttachments()
+    {
+        foreach ($this->attachments as $data) {
+            App::getOrm()->remove($data);
+        }
+
+        $this->attachments->clear();
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+
+        return $this;
     }
 
     public function addAttachment(ArticleAttachment $attach)

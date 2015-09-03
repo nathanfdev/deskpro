@@ -1,5 +1,6 @@
 {
   "oid": "Some Organization",
+  "import_map_key": null,
   "name": "Some Organization",
   "picture": null,
   "importance": 5,

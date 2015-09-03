@@ -25,77 +25,82 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
- * Class ImportMap
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class ObjectLang
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-class TicketsMapper
+final class ObjectLang implements MapperInterface
 {
     /**
-     * @var EntityRepository\ImportMap
+     * @var ObjectRepository
      */
     private $repository;
 
     /**
-     * @var ObjectManager
+     * @var EntityManager
      */
-    private $entity_manager;
+    private $manager;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\ImportMap $repository
-     * @param ObjectManager              $entity_manager
+     * @param ObjectRepository $repository
+     * @param EntityManager    $manager
      */
-    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager)
+    public function __construct(ObjectRepository $repository, EntityManager $manager)
     {
-        $this->repository     = $repository;
-        $this->entity_manager = $entity_manager;
+        $this->repository = $repository;
+        $this->manager    = $manager;
     }
 
     /**
-     * Find a ZenDesk ticket mapping
-     *
-     * @param int $id
-     * @return string|null
+     * {@inheritdoc}
      */
-    public function findRefByOldId($id)
+    public function getType()
     {
-        /** @var Entity\ImportMap $mapping */
-        $mapping = $this->repository->findOneBy(array(
-            'old_id'   => $id,
-            'typename' => Entity\ImportMap::TYPE_ZENDESK_TICKET,
-        ));
-
-        return $mapping ? $mapping->getNewId() : null;
+        return self::TYPE_OBJECT_LANG;
     }
 
     /**
-     * Saves a ZenDesk ticket mapping
-     *
-     * @param int $old_id
-     * @param int $ref
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function saveMapping($old_id, $ref)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
-        $entity = new Entity\ImportMap();
-        $entity
-            ->setTypename(Entity\ImportMap::TYPE_ZENDESK_TICKET)
-            ->setOldId($old_id)
-            ->setNewId($ref)
+        $record = $this->repository->findOneBy($criteria);
+        if ( ! $record && $throw_exception) {
+            throw new MapperException('Object lang not found', $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns object translations
+     *
+     * @param string $ref_type
+     * @param int    $ref_id
+     *
+     * @return ObjectLang[]
+     */
+    public function removeBy($ref_type, $ref_id)
+    {
+        $qb = $this->manager->createQueryBuilder();
+        $qb
+            ->delete()
+            ->from('DeskPRO:ObjectLang', 'o')
+            ->andWhere($qb->expr()->eq('o.ref_type', ':ref_type'))
+            ->andWhere($qb->expr()->eq('o.ref_id', ':ref_id'))
+            ->setParameter('ref_type', $ref_type)
+            ->setParameter('ref_id', $ref_id)
         ;
 
-        $this->entity_manager->persist($entity);
-        $this->entity_manager->flush();
-
-        return $this;
+        $query = $qb->getQuery();
+        $query->execute();
     }
 }

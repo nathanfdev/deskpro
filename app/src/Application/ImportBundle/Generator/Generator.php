@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Symfony\Component\Validator\ValidatorInterface as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
@@ -142,7 +143,29 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                     $exceptions = $this->validateExportingCollection($type, $entities);
 
                     if (count($exceptions) > 0) {
-                        throw new GeneratorException($exceptions);
+                        /** @var ValidatorExceptionInterface[] $exceptions */
+                        foreach ($exceptions as $exception) {
+                            // Removing broken entities
+                            $collection->detach($exception->getEntity());
+
+                            /** @var Validator\ValidatorConstraintException $exception */
+                            $this->logAlert(sprintf(
+                                "Validator failure for %s on record #%s: %s",
+
+                                get_class($exception->getEntity()),
+                                $exception->getEntity()->getOid(),
+                                $exception->getErrors())
+                            );
+
+                            $this->logInfo(json_encode($exception->getEntity()->toArray()));
+
+                            $raw_data = $exception->getEntity()->getRawData();
+                            if ($raw_data) {
+                                foreach (explode("\n", KernelErrorHandler::varToString($raw_data, 2)) as $line) {
+                                    $this->logInfo($line);
+                                }
+                            }
+                        }
                     }
                 }
             }

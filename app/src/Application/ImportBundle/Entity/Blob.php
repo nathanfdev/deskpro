@@ -27,184 +27,19 @@
 
 namespace Application\ImportBundle\Entity;
 
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints;
-
 /**
  * Exporting blob entity
  *
  * Class Blob
  * @package Application\ImportBundle\Entity
  */
-class Blob extends AbstractEntity
+final class Blob extends AbstractBlob
 {
-    /**
-     * @var string
-     */
-    protected $blob_data;
-
-    /**
-     * @var string
-     */
-    protected $blob_url;
-
-    /**
-     * @var string
-     */
-    protected $blob_path;
-
-    /**
-     * @var string
-     */
-    protected $file_name;
-
-    /**
-     * @var string
-     */
-    protected $content_type;
-
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_BLOB;
-    }
-
-    /**
-     * Blob data
-     *
-     * @return string
-     */
-    public function getBlobData()
-    {
-        return $this->blob_data;
-    }
-
-    /**
-     * Set blob data
-     *
-     * @param string $blob_data
-     * @return $this
-     */
-    public function setBlobData($blob_data)
-    {
-        $this->blob_data = $blob_data;
-        return $this;
-    }
-
-    /**
-     * Blob url
-     *
-     * @return string
-     */
-    public function getBlobUrl()
-    {
-        return $this->blob_url;
-    }
-
-    /**
-     * Set a blob url
-     *
-     * @param string $blob_url
-     * @return $this
-     */
-    public function setBlobUrl($blob_url)
-    {
-        $this->blob_url = $blob_url;
-        return $this;
-    }
-
-    /**
-     * Blob path
-     *
-     * @return string
-     */
-    public function getBlobPath()
-    {
-        return $this->blob_path;
-    }
-
-    /**
-     * Set a blob path
-     *
-     * @param string $blob_path
-     * @return $this
-     */
-    public function setBlobPath($blob_path)
-    {
-        $this->blob_path = $blob_path;
-        return $this;
-    }
-
-    /**
-     * File name
-     *
-     * @return string
-     */
-    public function getFileName()
-    {
-        return $this->file_name;
-    }
-
-    /**
-     * Set file name
-     *
-     * @param string $file_name
-     * @return $this
-     */
-    public function setFileName($file_name)
-    {
-        $this->file_name = $file_name;
-        return $this;
-    }
-
-    /**
-     * Content type
-     *
-     * @return string
-     */
-    public function getContentType()
-    {
-        return $this->content_type;
-    }
-
-    /**
-     * Set content type
-     *
-     * @param string $content_type
-     * @return $this
-     */
-    public function setContentType($content_type)
-    {
-        $this->content_type = $content_type;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray()
-    {
-        return array(
-            'oid'          => $this->oid,
-            'blob_data'    => $this->blob_data,
-            'blob_url'     => $this->blob_url,
-            'blob_path'    => $this->blob_path,
-            'file_name'    => $this->file_name,
-            'content_type' => $this->content_type,
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        AbstractEntity::loadValidatorMetadata($metadata);
-
-        $metadata
-            ->addPropertyConstraint('file_name', new Constraints\NotBlank())
-            ->addPropertyConstraint('content_type', new Constraints\NotBlank());
     }
 }

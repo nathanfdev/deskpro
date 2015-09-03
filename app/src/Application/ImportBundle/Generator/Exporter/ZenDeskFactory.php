@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\TicketsMapper;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
@@ -54,42 +54,35 @@ class ZenDeskFactory extends AbstractFactory
             throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
         }
 
+        $http_client = new Client();
+
         /** @var ZenDeskReaderFactoryInterface $reader_factory */
         $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
+        /** @var FormatterInterface $formatter */
+        $formatter = $container->get('deskpro.import.formatter');
 
         $reader  = $reader_factory->createReader($config);
         $storage = new Parser\ZenDesk\PeopleStorage();
 
-        /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
+        $helpers = new ParserHelperSet();
+        $helpers
+            ->attach(new Parser\ZenDesk\Helper\Attachment($formatter, $http_client))
+            ->attach(new Parser\ZenDesk\Helper\Translations($formatter))
+        ;
 
-        // People parser
-        $people = new Parser\ZenDesk\People($reader, $formatter);
-        $people->setPeopleStorage($storage);
-
-        // Tickets parser
-        $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader);
-        $ticket_people->setPeopleStorage($storage);
-
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $container->get('doctrine');
-        /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
-        $entity_manager = $container->get('doctrine.orm.entity_manager');
-        /** @var EntityRepository\ImportMap $import_map_repository */
-        $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
-
-        $tickets_mapper = new TicketsMapper($import_map_repository, $entity_manager);
+        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $storage);
+        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $storage);
 
         // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\ZenDesk\Downloads($reader, $formatter))
-            ->attach(new Parser\ZenDesk\Feedback($reader, $formatter))
-            ->attach(new Parser\ZenDesk\Articles($reader, $formatter))
-            ->attach(new Parser\ZenDesk\News($reader, $formatter))
-            ->attach($people)
-            ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $ticket_people, $tickets_mapper, new Client()))
-            ->attach(new Parser\ZenDesk\Organizations($reader, $formatter))
+            ->attach(new Parser\ZenDesk\Downloads($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
+            ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
+            ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people))
+            ->attach(new Parser\ZenDesk\Organizations($reader, $formatter, $helpers))
         ;
 
         return new ZenDesk($parsers, $reader);

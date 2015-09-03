@@ -34,6 +34,8 @@ IMPORT BUNDLE
     - [Exporter #4. ZenDesk](#exporter-4-zendesk)
         * [ZenDesk Configuration](#zendesk-configuration)
         * [ZenDesk Fixtures](#zendesk-fixtures)
+            - [ZenDesk Fixtures Core API](#zendesk-fixtures-core-api)
+            - [ZenDesk Fixtures Help Center](#zendesk-fixtures-help-center)
         * [ZenDesk Batch.json](#zendesk-batchjson)
 
 ## Commands
@@ -663,7 +665,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ```json
 {
-  "oid": 1,
+  "oid": "1",
+  "import_map_key": "zd_article",
   "person": "user@example.com",
   "title": "Article 1",
   "content": "Content 1",
@@ -677,10 +680,54 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "status": "published",
   "date_created": "2015-01-15 00:00:00",
   "date_published": null,
+  "date_updated": null,
   "date_end": null,
   "categories": ["Category 1"],
-  "labels": ["Label 1"],
-  "custom_fields": []
+  "labels": ["Label 1", "Label 2", "Label 3"],
+  "custom_fields": [
+    {
+      "oid": "1",
+      "key": "Multiple-select box field",
+      "value": "Choice 1 > Choice 2"
+    }
+  ],
+  "attachments": [
+    {
+      "oid": 0,
+      "person": "user@example.com",
+      "blob_data": null,
+      "blob_url": "",
+      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/example\/csv\/articles.csv",
+      "file_name": "articles.csv",
+      "content_type": "csv",
+      "is_inline": false
+    }
+  ],
+  "comments": [
+    {
+      "oid": 0,
+      "person_email": "user@example.com",
+      "content": "Comment 1",
+      "status": "validating",
+      "is_reviewed": false,
+      "validating": "",
+      "date_created": "2015-01-15 00:00:00"
+    }
+  ],
+  "translations": [
+    {
+      "oid": "0",
+      "language": "es_ES",
+      "property": "title",
+      "value": "Article 1 (es_ES)"
+    },
+    {
+      "oid": "1",
+      "language": "es_ES",
+      "property": "content",
+      "value": "Content 1 (es_ES)"
+    }
+  ]
 }
 ```
 
@@ -806,7 +853,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ```json
 {
-  "oid": 1,
+  "oid": "1",
+  "import_map_key": "zd_ticket",
   "ref": "A4G7I8Y1RV",
   "department": null,
   "person": "user@example.com",
@@ -977,9 +1025,45 @@ $DP_CONFIG['zendesk_import'] = array(
 
 ##### ZenDesk Fixtures
 
+
+###### ZenDesk Fixtures Core API
+
+Create fake users:
+
 ```bash
-php cmd.php dpdev:import:fixtures person --offset=1000
-php cmd.php dpdev:import:fixtures ticket --offset=1000
+php cmd.php dpdev:import:fixtures --type=person
+```
+
+Create fake tickets:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=ticket
+```
+
+###### ZenDesk Fixtures Help Center
+
+Create fake help center categories:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=category
+```
+
+Create fake help center sections (sub categories):
+
+```bash
+php cmd.php dpdev:import:fixtures --type=section
+```
+
+Create fake articles (includes comments, attachments and translations):
+
+```bash
+php cmd.php dpdev:import:fixtures --type=article
+```
+
+You can clear all category related data just by removing category, every section and all articles in the category will also be deleted:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=category -d
 ```
 
 ##### ZenDesk Batch.json
@@ -990,6 +1074,7 @@ php cmd.php dpdev:import:fixtures ticket --offset=1000
   "date_created": "2015-07-30 06:09:01",
   "people_end_time": "2015-06-30 08:00:01",
   "tickets_end_time": "2015-07-30 06:09:01",
+  "articles_end_time":"2015-07-30 07:09:01",
   "retry_after_time": "2015-07-30 06:11:01",
   "has_remaining": true
 }

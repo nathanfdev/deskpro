@@ -147,6 +147,11 @@ final class Tickets extends AbstractParser
             ->setDateCreated($formatted['date_created'])
         ;
 
+        // Set import key if it's real oid only
+        if (strpos($entity->getOid(), 'num_') !== 0) {
+            $entity->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_TICKET);
+        }
+
         return $entity;
     }
 

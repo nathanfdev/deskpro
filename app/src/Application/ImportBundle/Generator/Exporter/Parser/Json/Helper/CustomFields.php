@@ -51,7 +51,7 @@ class CustomFields extends AbstractParserFormatterHelper
      * Exports custom fields
      *
      * @param array $custom_fields
-     * @return Entity\Collection
+     * @return Entity\CustomField[]
      */
     public function export(array $custom_fields)
     {

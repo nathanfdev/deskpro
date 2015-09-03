@@ -223,6 +223,10 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     public function setAsAdmin($is_admin)
     {
         $this->is_admin = (bool)$is_admin;
+        if ($this->is_admin) {
+            $this->is_agent = true;
+        }
+
         return $this;
     }
 
@@ -510,6 +514,22 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
+     * Checking for person's organization info
+     *
+     * @return bool
+     */
+    public function isOrganizationValid()
+    {
+        if ($this->getOrganizationPosition()) {
+            if ( ! $this->getOrganization()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Returns person emails
      *
      * @return array
@@ -633,20 +653,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             throw new \Exception('Date created is not set up');
         }
 
-        $contact_data = array();
-        foreach ($this->contact_data as $contact) {
-            /** @var ContactData $contact */
-            $contact_data[] = $contact->toArray();
-        }
-
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
         return array(
             'oid'                   => $this->oid,
+            'import_map_key'        => $this->import_map_key,
             'is_agent'              => $this->is_agent,
             'is_user'               => $this->is_user,
             'is_admin'              => $this->is_admin,
@@ -664,8 +673,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             'emails'                => $this->emails,
             'labels'                => $this->labels,
             'user_groups'           => $this->user_groups,
-            'contact_data'          => $contact_data,
-            'custom_fields'         => $custom_fields,
+            'contact_data'          => $this->contact_data->entitiesToArray(),
+            'custom_fields'         => $this->custom_fields->entitiesToArray(),
         );
     }
 
@@ -690,6 +699,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             )))
 
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
-            ->addGetterConstraint('firstEmail', new Constraints\Email());
+            ->addGetterConstraint('firstEmail', new Constraints\Email())
+            ->addGetterConstraint('organizationValid', new Constraints\True())
+        ;
     }
 }

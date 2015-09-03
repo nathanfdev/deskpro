@@ -28,11 +28,14 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use DateTimeZone;
 
@@ -44,7 +47,7 @@ use DateTimeZone;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class People extends AbstractParser implements PeopleStorageAwareInterface
+final class People extends AbstractParser
 {
     const ROLE_END_USER = 'end-user';
     const ROLE_AGENT    = 'agent';
@@ -56,20 +59,29 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     private $people_storage;
 
     /**
-     * {@inheritdoc}
+     * Constructor
+     *
+     * @param ZenDeskReaderInterface $reader
+     * @param FormatterInterface     $formatter
+     * @param ParserHelperSet        $helpers
+     * @param PeopleStorage          $people_storage
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_PERSON;
+    public function __construct(
+        ZenDeskReaderInterface $reader,
+        FormatterInterface     $formatter,
+        ParserHelperSet        $helpers,
+        PeopleStorage          $people_storage
+    ) {
+        parent::__construct($reader, $formatter, $helpers);
+        $this->people_storage = $people_storage;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setPeopleStorage(PeopleStorageInterface $storage)
+    public function getEntityType()
     {
-        $this->people_storage = $storage;
-        return $this;
+        return Entity\EntityInterface::TYPE_PERSON;
     }
 
     /**
@@ -178,10 +190,8 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     {
         $this->logDebugTimeStart('getPeople', "Reading people batch");
 
-        $people = array();
-        if ($this->people_storage) {
-            $people = $this->people_storage->getPeople();
-        }
+        $people = $this->people_storage->getPeople();
+
         if (empty($people)) {
             if ($this->getBatchConfig()->getPeopleEndTime() < new DateTime('-5 minutes')) {
                 if ($this->getBatchConfig()->getPeopleEndTime()) {

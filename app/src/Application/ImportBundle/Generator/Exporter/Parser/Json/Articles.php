@@ -94,6 +94,7 @@ final class Articles extends AbstractParser
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'article_',
                 'ref'    => 'oid',
@@ -113,18 +114,25 @@ final class Articles extends AbstractParser
             'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
                 'null' => true,
             )),
+            'date_updated' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
             'date_end' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
                 'null' => true,
             )),
             'categories'     => TransformerInterface::TYPE_ARRAY,
             'labels'         => TransformerInterface::TYPE_ARRAY,
             'custom_fields'  => TransformerInterface::TYPE_ARRAY,
+            'comments'       => TransformerInterface::TYPE_ARRAY,
+            'attachments'    => TransformerInterface::TYPE_ARRAY,
+            'translations'   => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity = new Entity\Article();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
+            ->setImportMapKey($formatted['import_map_key'])
             ->setOid($formatted['oid'])
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])
@@ -138,6 +146,7 @@ final class Articles extends AbstractParser
             ->setNumRatings($formatted['num_ratings'])
             ->setStatus($formatted['status'])
             ->setDateCreated($formatted['date_created'])
+            ->setDateUpdated($formatted['date_updated'])
             ->setDatePublished($formatted['date_published'])
             ->setDateEnd($formatted['date_end'])
         ;
@@ -151,9 +160,87 @@ final class Articles extends AbstractParser
 
         $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
         foreach ($custom_fields as $custom_field) {
-            /** @var Entity\CustomField $custom_field */
             $entity->addCustomField($custom_field);
         }
+
+        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
+        foreach ($attachments as $attachment) {
+            $entity->addAttachment($attachment);
+        }
+
+        $comments = $this->exportComments($formatted['comments']);
+        foreach ($comments as $comment) {
+            $entity->addComment($comment);
+        }
+
+        $translations = $this->getTranslationsParser()->export($formatted['translations']);
+        foreach ($translations as $translation) {
+            $entity->addTranslation($translation);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * Returns a collection of article comment messages
+     *
+     * @param array $comments
+     * @return Entity\ArticleComment[]
+     */
+    private function exportComments(array $comments)
+    {
+        $collection = new Entity\Collection();
+        foreach ($comments as $num => $data) {
+            try {
+                $entity = $this->exportComment($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logTransformerException('JSONArticleComment', 'ticket message', 'oid', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('JSONArticleComment', 'ticket message', 'oid', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an article comment entity
+     *
+     * @param array $data
+     * @return Entity\ArticleComment
+     */
+    private function exportComment(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_comment_',
+                'ref'    => 'oid',
+            )),
+            'person_email' => TransformerInterface::TYPE_STRING,
+            'content'      => TransformerInterface::TYPE_STRING,
+            'status'       => TransformerInterface::TYPE_STRING,
+            'is_reviewed'  => TransformerInterface::TYPE_BOOLEAN,
+            'validating'   => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+        ));
+
+        $entity = new Entity\ArticleComment();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setPersonEmail($formatted['person_email'])
+            ->setContent($formatted['content'])
+            ->setStatus($formatted['status'])
+            ->setAsReviewed($formatted['is_reviewed'])
+            ->setValidating($formatted['validating'])
+            ->setDateCreated($formatted['date_created'])
+        ;
 
         return $entity;
     }

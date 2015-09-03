@@ -80,6 +80,11 @@ class JsonTest extends \DpIntegrationTestCase
     private $blob_repository;
 
     /**
+     * @var \Doctrine\ORM\EntityRepository
+     */
+    private $object_lang_repository;
+
+    /**
      * {@inheritdoc}
      */
     public function runBefore()
@@ -94,6 +99,8 @@ class JsonTest extends \DpIntegrationTestCase
         $this->helper->loadFixtures('Import/Person');
         $this->helper->loadFixtures('Import/Organization');
         $this->helper->loadFixtures('Import/Ticket');
+        $this->helper->loadFixtures('Import/Languages');
+        $this->helper->loadFixtures('Import/Article');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
@@ -108,6 +115,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
         $this->organization_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
         $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
+        $this->object_lang_repository         = $entity_manager->getRepository('Application\DeskPRO\Entity\ObjectLang');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
@@ -128,6 +136,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->overrideDpRootPath('/1/downloads/download1.json');
         $this->overrideDpRootPath('/1/feedback/feedback1.json');
+        $this->overrideDpRootPath('/1/articles/article1.json');
     }
 
     public function testCheck()
@@ -159,6 +168,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->checkDbEmpty();
         $this->checkJsonEmpty();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testExport()
@@ -178,6 +188,7 @@ class JsonTest extends \DpIntegrationTestCase
 
         $this->checkDbEmpty();
         $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testImport()
@@ -198,6 +209,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonEmpty();
+        $this->checkNoErrors($command_tester);
     }
 
     public function testImportBatch()
@@ -219,6 +231,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
     }
 
     private function checkJsonEmpty()
@@ -253,11 +266,17 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkJsonFile('/1/organization_some_organization.json', '1/organization_some_organization.json');
     }
 
-    private function checkJsonFile($input, $output)
+    /**
+     * Checking that source and generated json files are equal
+     *
+     * @param string $input_file_path
+     * @param string $output_file_path
+     */
+    private function checkJsonFile($input_file_path, $output_file_path)
     {
         $this->assertEquals(
-            json_decode(file_get_contents($this->input_path . $input)),
-            json_decode(file_get_contents($output))
+            json_decode(file_get_contents($this->input_path . $input_file_path)),
+            json_decode(file_get_contents($output_file_path))
         );
     }
 
@@ -265,9 +284,9 @@ class JsonTest extends \DpIntegrationTestCase
     {
         $this->assertEquals(1, $this->ticket_repository->countAll());
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
-        $this->assertEquals(2, $this->person_repository->countAll());
+        $this->assertEquals(3, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
-        $this->assertEquals(1, $this->article_repository->countAll());
+        $this->assertEquals(2, $this->article_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
@@ -300,6 +319,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals(new \DateTime('2015-01-15 00:00:00'), $article->getDateCreated());
         $this->assertNull($article->getDatePublished());
         $this->assertNull($article->getDateEnd());
+        $this->assertNull($article->getDateUpdated());
 
         $labels = array();
         foreach ($article->getLabels() as $label) {
@@ -313,11 +333,21 @@ class JsonTest extends \DpIntegrationTestCase
         $custom_data = $article->getCustomData()->first();
         $this->assertEquals(2, $custom_data->getArticleId());
         $this->assertEquals(1, $custom_data->getData());
+
+        /** @var Entity\ObjectLang[] $object_langs */
+        $object_langs = $this->object_lang_repository->findBy(array('ref_type' => 'articles', 'ref_id' => $article->getId()));
+        $this->assertCount(2, $object_langs);
+
+        $object_lang_1 = $object_langs[0];
+        $this->assertEquals('Article 1 (es_ES)', $object_lang_1->getValue());
+
+        $object_lang_2 = $object_langs[1];
+        $this->assertEquals('Content 1 (es_ES)', $object_lang_2->getValue());
     }
 
     private function checkDbPeopleData()
     {
-        $this->assertCount(2, $this->person_repository->findAll());
+        $this->assertCount(3, $this->person_repository->findAll());
 
         /** @var Entity\Person $person */
         $person = $this->person_repository->findOneBy(array('name' => 'Sergey'));
@@ -379,17 +409,22 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbBlobData()
     {
-        $this->assertCount(2, $this->blob_repository->findBy(array('content_type' => 'csv')));
+        $this->assertCount(3, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'feedback.csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'articles.csv')));
     }
 
+    /**
+     * @param CommandTester $command_tester
+     */
     private function checkDbWriterOutput(CommandTester $command_tester)
     {
         $output = $command_tester->getDisplay();
 
         // Checking for people
         $this->assertContains('Persisted Person #2', $output);
+        $this->assertContains('Persisted Person #3', $output);
 
         // Checking for tickets
         $this->assertContains('Creating new ticket with ref', $output);
@@ -416,6 +451,20 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertContains('Persisted Feedback #2', $output);
     }
 
+    /**
+     * @param CommandTester $command_tester
+     */
+    private function checkNoErrors(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertNotContains('ERROR', $output);
+        $this->assertNotContains('CRITICAL', $output);
+    }
+
+    /**
+     * @param string $file
+     */
     private function overrideDpRootPath($file)
     {
         $dp_root = str_replace('/app', '/', DP_ROOT);

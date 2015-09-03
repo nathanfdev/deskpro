@@ -25,24 +25,36 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
+
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
 use Zendesk\API\Client;
+use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk ticket comments request client helper
+ * ZenDesk HelpCenter section create request client helper
  *
- * Class TicketCommentsFindAll
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
+ * Class SectionCreate
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
+ *
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/sections#create-section
  */
-final class TicketCommentsFindAll extends AbstractHelper
+final class SectionCreate extends AbstractHelper
 {
     /**
      * {@inheritdoc}
      */
     public function request(Client $client)
     {
-        return $client->tickets()->comments()->findAll(array(
-            'ticket_id' => $this->params['ticket_id'],
-        ));
+        if ( ! isset($this->params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
+
+        $category_id = $this->params['id'];
+        $params      = $this->params;
+
+        unset($params['id']);
+
+        return $this->doPostRequest($client, sprintf('help_center/categories/%d/sections.json', $category_id), $params);
     }
 }

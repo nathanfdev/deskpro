@@ -25,39 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
-use Application\ImportBundle\Entity;
-use DateTime;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Zendesk\API\Client;
+use Zendesk\API\MissingParametersException;
 
 /**
- * ZenDesk people fixtures
+ * ZenDesk HelpCenter section find request client helper
  *
- * Class People
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
+ * Class SectionFind
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
+ *
+ * @see https://developer.zendesk.com/rest_api/docs/help_center/sections#show-section
  */
-final class People extends AbstractFixture
+final class SectionFind extends AbstractHelper
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function request(Client $client)
     {
-        return Entity\EntityInterface::TYPE_PERSON;
-    }
+        if ( ! isset($this->params['id'])) {
+            throw new MissingParametersException(__METHOD__, array('id'));
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function createItem($prefix, DateTime $initial_time, DateTime $end_time)
-    {
-        $params = array(
-            'name'       => 'Fake name ' . $prefix,
-            'email'      => 'fake_email_' . $prefix . '@domain.com',
-            'role'       => 'end-user',
-            'verified'   => true,
-        );
-
-        $this->client->users()->create($params);
+        return $this->doGetRequest($client, sprintf('help_center/sections/%d.json', $this->params['id']));
     }
 }

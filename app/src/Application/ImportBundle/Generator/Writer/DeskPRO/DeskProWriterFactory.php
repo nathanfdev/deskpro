@@ -28,12 +28,15 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
+use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
-use Exception;
+use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Generator DeskPRO writer factory
@@ -48,9 +51,13 @@ class DeskProWriterFactory extends AbstractFactory
      */
     public function createWriter()
     {
+        if ( ! $this->container instanceof DeskproContainer) {
+            throw new \RuntimeException('Unable to create writer, container is not instance of DeskproContainer');
+        }
+
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $this->container->get('doctrine');
-        /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
+        /** @var EntityManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
 
         /** @var EntityRepository\Article $article_repository */
@@ -59,6 +66,8 @@ class DeskProWriterFactory extends AbstractFactory
         $article_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ArticleCategory');
         /** @var EntityRepository\LabelArticle $article_label_repository */
         $article_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelArticle');
+        /** @var EntityRepository\ArticleComment $article_comment_repository */
+        $article_comment_repository = $doctrine->getRepository('DeskPRO:ArticleComment');
         /** @var EntityRepository\CustomDefPerson $custom_def_person_repository */
         $custom_def_person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
@@ -115,18 +124,17 @@ class DeskProWriterFactory extends AbstractFactory
         $ticket_workflow_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketWorkflow');
         /** @var EntityRepository\Usergroup $user_group_repository */
         $user_group_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Usergroup');
+        /** @var ObjectRepository $object_lang_repository */
+        $object_lang_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ObjectLang');
 
-        if ($this->container instanceof DeskproContainer) {
-            $email_account_manager = $this->container->getEmailAccountManager();
-        } else {
-            throw new Exception('Unable to get the email account manager');
-        }
+        $email_account_manager  = $this->container->getEmailAccountManager();
 
         $mappers = new Importer\Mapper\Collection();
         $mappers
             ->attach(new Importer\Mapper\Article($article_repository))
             ->attach(new Importer\Mapper\ArticleCategory($article_category_repository))
             ->attach(new Importer\Mapper\ArticleLabel($article_label_repository))
+            ->attach(new Importer\Mapper\ArticleComment($article_comment_repository, $entity_manager))
             ->attach(new Importer\Mapper\CustomDefPerson($custom_def_person_repository))
             ->attach(new Importer\Mapper\CustomDefTicket($custom_def_ticket_repository))
             ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository))
@@ -158,17 +166,18 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\UserGroup($user_group_repository))
             ->attach(new Importer\Mapper\BlobData())
             ->attach(new Importer\Mapper\EmailAccount($email_account_manager))
+            ->attach(new Importer\Mapper\ObjectLang($object_lang_repository, $entity_manager))
         ;
 
-        /** @var DeskproBlobStorage $blob_storage */
-        if ($this->container instanceof DeskproContainer) {
-            $blob_storage = $this->container->getBlobStorage();
-            $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
+        $blob_storage = $this->container->getBlobStorage();
+        $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
 
-            $ticket_manager = $this->container->getTicketManager();
-        } else {
-            throw new Exception('Unable to get the blob storage');
-        }
+        $ticket_manager = $this->container->getTicketManager();
+
+        /** @var EntityRepository\ImportMap $import_map_repository */
+        $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
+
+        $oid_mapper = new OidMapper($import_map_repository, $entity_manager);
 
         $importers = new Importer\Collection();
         $importers
@@ -176,8 +185,9 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\DownloadLabel($mappers))
             ->attach(new Importer\Feedback($mappers, $blob_adapter))
             ->attach(new Importer\FeedbackLabel($mappers))
-            ->attach(new Importer\Article($mappers))
+            ->attach(new Importer\Article($mappers, $blob_adapter))
             ->attach(new Importer\ArticleLabel($mappers))
+            ->attach(new Importer\ArticleTranslation($mappers))
             ->attach(new Importer\News($mappers))
             ->attach(new Importer\NewsLabel($mappers))
             ->attach(new Importer\Person($mappers))
@@ -191,6 +201,6 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var EntityWatcher $entity_watcher */
         $entity_watcher = $this->container->get('deskpro.search.entity_listener');
 
-        return new DeskProWriter($importers, $entity_manager, $entity_watcher);
+        return new DeskProWriter($importers, $entity_manager, $oid_mapper, $entity_watcher);
     }
 }

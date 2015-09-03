@@ -5,6 +5,8 @@ namespace DpIntegrationTests\DeskPRO\Import;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
+use Application\ImportBundle\Command\ImportBatchCommand;
+use Application\ImportBundle\Command\ImportCommand;
 use Application\ImportBundle\Reader\ZenDesk\Request\JsonMockAdapter;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderMockFactory;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -64,12 +66,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
         $this->ticket_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
 
         $this->output_path = dp_get_data_dir() . '/import/zendesk/export';
-        if ( ! is_dir($this->output_path)) {
+        if (!is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
 
@@ -108,14 +110,16 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
         $this->assertContains('[ZDTicketComment #3] Skipping exception with ticket message: Comment without author_id, skipping', $output);
         $this->assertContains('[ZDTicketComment #4] Skipping exception with ticket message: Unable to get comment author, skipping', $output);
-        $this->assertContains('[ZDTicketCommentAttachment #2] Skipping exception with ticket message attachment: Inline attachment, skipping', $output);
-        $this->assertContains('[ZDTicketCommentAttachment #3] Skipping exception with ticket message attachment: Unable to download attachment', $output);
+        $this->assertContains('[ZDAttachment #2] Skipping exception with attachment: Inline attachment, skipping', $output);
+        $this->assertContains('[ZDAttachment #3] Skipping exception with attachment: Unable to download attachment', $output);
 
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
         $this->assertContains('[ZDTicket #3] Reading comments', $output);
         $this->assertContains('Read 3 people', $output);
         $this->assertContains('[ZDPerson #3] Skipping exception with person: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
+
+        $this->checkNoErrors($command_tester);
     }
 
     public function testExport()
@@ -135,6 +139,45 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->checkDbEmpty();
         $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
+    }
+
+    public function testImport()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportCommand());
+
+        $command = $application->find('dp:import:run');
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
+            'command'   => $command->getName(),
+            'script'    => 'zendesk',
+            '--verbose' => true,
+            '--batch'   => true,
+        ));
+
+        $this->checkJsonEmpty();
+        $this->checkNoErrors($command_tester);
+    }
+
+    public function testImportBatch()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportBatchCommand());
+
+        $command = $application->find('dp:import:batch');
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'zendesk',
+            '--output-path' => $this->output_path,
+            '--verbose'     => true,
+            '--batch'       => true,
+        ));
+
+        $this->checkDbWriterOutput($command_tester);
+        $this->checkJsonData();
+        $this->checkNoErrors($command_tester);
     }
 
     private function checkJsonEmpty()
@@ -147,17 +190,28 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $this->helper->seeFileFound('output.batch.json');
 
+        // Checking for people
         $this->helper->seeFileFound('1/people/person_1.json');
         $this->helper->seeInThisFile('Person 1');
 
         $this->helper->seeFileFound('1/people/person_2.json');
         $this->helper->seeInThisFile('Person 2');
 
+        // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
         $this->helper->seeInThisFile('Ticket 1');
 
         $this->helper->seeFileFound('1/tickets/ticket_2.json');
         $this->helper->seeInThisFile('Ticket 2');
+
+        // Checking for articles
+        $this->helper->seeFileFound('1/articles/article_1.json');
+
+        $this->helper->dontSeeInThisFile('Title (es_ES)');
+        $this->helper->dontSeeInThisFile('Content (es_ES)');
+
+        $this->helper->seeInThisFile('Title (de)');
+        $this->helper->seeInThisFile('Content (de)');
     }
 
     private function checkDbEmpty()
@@ -173,12 +227,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $date2 = new \DateTime('-5 months');
         $date3 = new \DateTime('-2 months');
         $date4 = new \DateTime('-1 months');
-        $now   = new \DateTime();
+        $now = new \DateTime();
 
 
         $this->adapter
             ->addTicketsIncrementalExportResponse((object)array(
-                'tickets' => array(
+                'tickets'  => array(
                     (object)array(
                         'id'              => 1,
                         'submitter_id'    => 1,
@@ -278,10 +332,148 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 ),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
-                'comments' => array(),
+                'comments' => array(
+                    (object)array(
+                        'id'          => 1,
+                        'body'        => 'Comment 1',
+                        'author_id'   => 1,
+                        'created_at'  => $date2->format('Y-m-d H:i:s'),
+                    ),
+                    (object)array(
+                        'id'          => 2,
+                        'body'        => 'Comment 1',
+                        'author_id'   => 3,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                    ),
+                ),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
+            ))
+            ->addArticlesIncrementalExportResponse((object)array(
+                'articles' => array(
+                    (object)array(
+                        'id'          => 1,
+                        'author_id'   => 1,
+                        'section_id'  => 1,
+                        'title'       => 'Article 1',
+                        'body'        => 'Article content',
+                        'created_at'  => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'  => $date2->format('Y-m-d H:i:s'),
+                        'vote_sum'    => 10,
+                        'vote_count'  => 5,
+                        'locale'      => 'en-us',
+                        'draft'       => false,
+                        'label_names' => array('Label 1', 'Label 2'),
+                    ),
+                    (object)array(
+                        'id'          => 2,
+                        'author_id'   => 1,
+                        'section_id'  => 1,
+                        'title'       => 'Article 2',
+                        'body'        => 'Article content',
+                        'created_at'  => $date2->format('Y-m-d H:i:s'),
+                        'updated_at'  => $date3->format('Y-m-d H:i:s'),
+                        'vote_sum'    => 10,
+                        'vote_count'  => 5,
+                        'locale'      => 'en-us',
+                        'draft'       => true,
+                        'label_names' => array('Label 1', 'Label 3'),
+                    ),
+                ),
+                'end_time' => $now->getTimestamp(),
+            ))
+            ->addArticleCommentsFindAllResponse((object)array(
+                'comments' => array(
+                    (object)array(
+                        'id'         => 1,
+                        'body'       => 'Comment 1',
+                        'author_id'  => 2,
+                        'created_at' => $date3->format('Y-m-d H:i:s'),
+                    ),
+                    (object)array(
+                        'id'         => 2,
+                        'body'       => 'Comment 2',
+                        'author_id'  => 3,
+                        'created_at' => $date4->format('Y-m-d H:i:s'),
+                    ),
+                )
+            ))
+            ->addArticleCommentsFindAllResponse((object)array(
+                'comments' => array(
+                    (object)array(
+                        'id'         => 3,
+                        'body'       => 'Comment 3',
+                        'author_id'  => 2,
+                        'created_at' => $date3->format('Y-m-d H:i:s'),
+                    ),
+                    (object)array(
+                        'id'         => 4,
+                        'body'       => 'Comment 4',
+                        'author_id'  => 3,
+                        'created_at' => $date4->format('Y-m-d H:i:s'),
+                    ),
+                )
+            ))
+            ->addArticleAttachmentsFindAllResponse((object)array(
+                'article_attachments' => array(
+                    (object)array(
+                        'id'           => 1,
+                        'file_name'    => 'file 1',
+                        'content_type' => 'image/png',
+                        'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
+                    ),
+                ),
+            ))
+            ->addArticleAttachmentsFindAllResponse((object)array(
+                'article_attachments' => array(
+                    (object)array(
+                        'id'           => 1,
+                        'file_name'    => 'file 1',
+                        'content_type' => 'image/png',
+                        'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
+                    ),
+                ),
+            ))
+            ->addArticleTranslationsFindAllResponse((object)array(
+                'translations' => array(
+                    (object)array(
+                        'id'     => '1',
+                        'locale' => 'es',
+                        'title'  => 'Title (es_ES)',
+                        'body'   => 'Content (es_ES)',
+                        'draft'  => true,
+                    ),
+                    (object)array(
+                        'id'     => '2',
+                        'locale' => 'de',
+                        'title'  => 'Title (de)',
+                        'body'   => 'Content (de)',
+                        'draft'  => false,
+                    ),
+                ),
+            ))
+            ->addArticleTranslationsFindAllResponse((object)array(
+                'translations' => array(),
+            ))
+            ->addArticleCategoriesFindAll((object)array(
+                'sections' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'name'            => 'Section 1',
+                        'description'     => 'Section description',
+                        'locale'          => 'en-gb',
+                        'source_locale'   => 'ru',
+                        'url'             => 'http://url.com/',
+                        'html_url'        => 'http://url.com/',
+                        'category_id'     => 1,
+                        'outdated'        => false,
+                        'position'        => 0,
+                        'translation_ids' => array(),
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
+                    )
+                ),
             ))
             ->addPeopleFindResponse((object)array(
                 'users' => array(
@@ -322,7 +514,27 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     'id'   => 1,
                     'name' => 'An organization name',
                 ),
-            ))
-        ;
+            ));
+    }
+
+    /**
+     * @param CommandTester $command_tester
+     */
+    private function checkDbWriterOutput(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertContains('Entity `organization` is not supported', $output);
+    }
+
+    /**
+     * @param CommandTester $command_tester
+     */
+    private function checkNoErrors(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertNotContains('ERROR', $output);
+        $this->assertNotContains('CRITICAL', $output);
     }
 }

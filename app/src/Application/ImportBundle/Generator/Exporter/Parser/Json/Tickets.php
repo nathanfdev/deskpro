@@ -93,44 +93,46 @@ final class Tickets extends AbstractParser
     private function exportTicket(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'oid'           => TransformerInterface::TYPE_STRING,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'ticket_',
                 'ref'    => 'oid',
             )),
-            'ref'           => TransformerInterface::TYPE_STRING,
-            'department'    => TransformerInterface::TYPE_STRING,
-            'person'        => TransformerInterface::TYPE_STRING,
-            'agent'         => TransformerInterface::TYPE_STRING,
-            'agent_team'    => TransformerInterface::TYPE_STRING,
-            'status'        => TransformerInterface::TYPE_STRING,
-            'date_created'  => TransformerInterface::TYPE_DATE,
-            'date_resolved' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+            'ref'            => TransformerInterface::TYPE_STRING,
+            'department'     => TransformerInterface::TYPE_STRING,
+            'person'         => TransformerInterface::TYPE_STRING,
+            'agent'          => TransformerInterface::TYPE_STRING,
+            'agent_team'     => TransformerInterface::TYPE_STRING,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_resolved'  => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
                 'null' => true,
             )),
-            'date_archived' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+            'date_archived'  => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
                 'null' => true,
             )),
-            'subject'       => TransformerInterface::TYPE_STRING,
-            'priority'      => TransformerInterface::TYPE_ARRAY,
-            'language'      => TransformerInterface::TYPE_STRING,
-            'category'      => TransformerInterface::TYPE_STRING,
-            'workflow'      => TransformerInterface::TYPE_STRING,
-            'product'       => TransformerInterface::TYPE_STRING,
-            'organization'  => TransformerInterface::TYPE_STRING,
-            'is_hold'       => TransformerInterface::TYPE_BOOLEAN,
-            'urgency'       => TransformerInterface::TYPE_INT,
-            'messages'      => TransformerInterface::TYPE_ARRAY,
-            'participants'  => TransformerInterface::TYPE_ARRAY,
-            'labels'        => TransformerInterface::TYPE_ARRAY,
-            'custom_fields' => TransformerInterface::TYPE_ARRAY,
-            'log_message'   => TransformerInterface::TYPE_STRING,
+            'subject'        => TransformerInterface::TYPE_STRING,
+            'priority'       => TransformerInterface::TYPE_ARRAY,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'workflow'       => TransformerInterface::TYPE_STRING,
+            'product'        => TransformerInterface::TYPE_STRING,
+            'organization'   => TransformerInterface::TYPE_STRING,
+            'is_hold'        => TransformerInterface::TYPE_BOOLEAN,
+            'urgency'        => TransformerInterface::TYPE_INT,
+            'messages'       => TransformerInterface::TYPE_ARRAY,
+            'participants'   => TransformerInterface::TYPE_ARRAY,
+            'labels'         => TransformerInterface::TYPE_ARRAY,
+            'custom_fields'  => TransformerInterface::TYPE_ARRAY,
+            'log_message'    => TransformerInterface::TYPE_STRING,
         ));
 
         $entity = new Entity\Ticket();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
+            ->setImportMapKey($formatted['import_map_key'])
             ->setDestination($formatted['destination'])
             ->setRef($formatted['ref'])
             ->setDepartment($formatted['department'])
@@ -162,12 +164,11 @@ final class Tickets extends AbstractParser
 
         $messages = $this->exportMessages($formatted['messages']);
         foreach ($messages as $message) {
-            /** @var Entity\TicketMessage $message */
             $entity->addMessage($message);
         }
+
         $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
         foreach ($custom_fields as $custom_field) {
-            /** @var Entity\CustomField $custom_field */
             $entity->addCustomField($custom_field);
         }
 
@@ -213,7 +214,7 @@ final class Tickets extends AbstractParser
      * Returns a collection of the ticket messages
      *
      * @param array $messages
-     * @return Entity\Collection
+     * @return Entity\TicketMessage[]
      */
     private function exportMessages(array $messages)
     {
@@ -226,9 +227,9 @@ final class Tickets extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTicket', 'ticket message', 'oid', $e);
+                $this->logTransformerException('JSONTicketMessage', 'ticket message', 'oid', $e);
             } catch (\Exception $e) {
-                $this->logUnknownException('JSONTicket', 'ticket message', 'oid', $e, $data);
+                $this->logUnknownException('JSONTicketMessage', 'ticket message', 'oid', $e, $data);
             }
         }
 
@@ -262,7 +263,6 @@ final class Tickets extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
-            ->setOid($formatted['oid'])
             ->setPersonEmail($formatted['person'])
             ->setMessageText($formatted['message_text'])
             ->setMessageHtml($formatted['message_html'])

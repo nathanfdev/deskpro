@@ -47,14 +47,32 @@ final class Articles extends AbstractConstraintValidator
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Article $entity
      */
     public function validate(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Article) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
         $errors = $this->validator->validate($entity);
         if (count($errors) > 0) {
             throw new ValidatorConstraintException($entity, $errors);
+        }
+
+        foreach ($entity->getComments() as $comment) {
+            /** @var Entity\ArticleComment $comment */
+            $errors = $this->validator->validate($comment);
+            if (count($errors) > 0) {
+                throw new ValidatorConstraintException($entity, $errors);
+            }
+        }
+
+        foreach ($entity->getAttachments() as $attachment) {
+            /** @var Entity\Attachment $attachment */
+            $errors = $this->validator->validate($attachment);
+            if (count($errors) > 0) {
+                throw new ValidatorConstraintException($entity, $errors);
+            }
         }
     }
 }

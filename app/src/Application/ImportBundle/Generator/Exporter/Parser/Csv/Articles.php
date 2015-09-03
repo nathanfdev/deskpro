@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
@@ -141,6 +142,11 @@ final class Articles extends AbstractParser
             ->setDateCreated($formatted['date_created'])
             ->setStatus($formatted['status'])
         ;
+
+        // Set import key if it's real oid only
+        if (strpos($entity->getOid(), 'num_') !== 0) {
+            $entity->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_ARTICLE);
+        }
 
         if ($formatted['label']) {
             $entity->addLabel($formatted['label']);

@@ -93,24 +93,26 @@ final class Organizations extends AbstractParser
     private function exportOrganization(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'oid'           => TransformerInterface::TYPE_STRING,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'organization_',
                 'ref'    => 'oid',
             )),
-            'name'          => TransformerInterface::TYPE_STRING,
-            'picture'       => TransformerInterface::TYPE_ARRAY,
-            'importance'    => TransformerInterface::TYPE_STRING,
-            'date_created'  => TransformerInterface::TYPE_DATE,
-            'contact_data'  => TransformerInterface::TYPE_ARRAY,
-            'custom_fields' => TransformerInterface::TYPE_ARRAY,
-            'labels'        => TransformerInterface::TYPE_ARRAY,
+            'name'           => TransformerInterface::TYPE_STRING,
+            'picture'        => TransformerInterface::TYPE_ARRAY,
+            'importance'     => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'contact_data'   => TransformerInterface::TYPE_ARRAY,
+            'custom_fields'  => TransformerInterface::TYPE_ARRAY,
+            'labels'         => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity = new Entity\Organization();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
+            ->setImportMapKey($formatted['import_map_key'])
             ->setDestination($formatted['destination'])
             ->setName($formatted['name'])
             ->setImportance($formatted['importance'])
@@ -128,7 +130,6 @@ final class Organizations extends AbstractParser
 
         $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
         foreach ($custom_fields as $custom_field) {
-            /** @var Entity\CustomField $custom_field */
             $entity->addCustomField($custom_field);
         }
 

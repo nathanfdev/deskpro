@@ -25,23 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
-
-use Zendesk\API\Client;
+namespace Application\ImportBundle\Entity;
 
 /**
- * ZenDesk organization find request client helper
- *
- * Class OrganizationFind
- * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
+ * Class UnexpectedException
+ * @package Application\ImportBundle\Entity
  */
-final class OrganizationFind extends AbstractHelper
+final class UnexpectedException extends \RuntimeException
 {
     /**
-     * {@inheritdoc}
+     * Unexpected entity type exception
+     *
+     * @param EntityInterface $entity
      */
-    public function request(Client $client)
+    public static function throwUnexpectedEntityTypeException(EntityInterface $entity)
     {
-        return $client->organizations()->find($this->params);
+        throw new self(sprintf('Unexpected entity type `%s`', $entity));
     }
 }

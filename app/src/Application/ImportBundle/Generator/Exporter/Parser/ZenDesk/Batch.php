@@ -63,6 +63,7 @@ final class Batch extends AbstractBatchParser
         $columns = array(
             'people_end_time',
             'tickets_end_time',
+            'articles_end_time',
             'retry_after_time',
         );
 
@@ -82,6 +83,9 @@ final class Batch extends AbstractBatchParser
         }
         if ($config['tickets_end_time']) {
             $batch_config->setTicketsEndTime(new DateTime($config['tickets_end_time']));
+        }
+        if ($config['articles_end_time']) {
+            $batch_config->setArticlesEndTime(new DateTime($config['articles_end_time']));
         }
         if ($config['retry_after_time']) {
             $batch_config->setRetryAfterTime(new DateTime($config['retry_after_time']));

@@ -78,14 +78,14 @@ abstract class AbstractBatchParser implements BatchParserInterface
      * @param boolean $throw_exception
      *
      * @return bool
-     * @throws NoColumnException
+     * @throws \RuntimeException
      */
     protected function hasRequiredColumns(array $config, array $columns, $throw_exception = true)
     {
         foreach ($columns as $column) {
             if (array_key_exists($column, $config) === false) {
                 if ($throw_exception) {
-                    throw new NoColumnException(sprintf('Column `%s` not found', $column));
+                    throw new \RuntimeException(sprintf('Column `%s` not found', $column));
                 }
 
                 return false;

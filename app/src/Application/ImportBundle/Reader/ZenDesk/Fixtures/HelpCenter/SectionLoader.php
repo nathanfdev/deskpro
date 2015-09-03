@@ -25,29 +25,45 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
+
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * ZenDesk tickets people storage interface
- *
- * Interface TicketPeopleStorageInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class SectionLoader
+ * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
  */
-interface TicketPeopleStorageInterface
+class SectionLoader extends AbstractFixtureLoader
 {
     /**
-     * Loads a collection of people by tickets
-     *
-     * @param array $tickets
-     * @return void
+     * @var ArrayCollection
      */
-    public function loadByTickets(array $tickets);
+    private $sections;
 
     /**
-     * Returns person email or null if it was not loaded
-     *
-     * @param int $id
-     * @return string|null
+     * {@inheritdoc}
      */
-    public function getPersonEmail($id);
+    public function load()
+    {
+        $response = $this->request_adapter->doRequest('HelpCenter\SectionsFindAll');
+        $this->sections = new ArrayCollection($this->toArray($response->sections));
+    }
+
+    /**
+     * Returns a random section id
+     *
+     * @return int
+     */
+    public function getRandomSectionId()
+    {
+        if (null === $this->sections) {
+            $this->load();
+        }
+        if (empty($this->sections))  {
+            throw new \RuntimeException('No sections');
+        }
+
+        return $this->sections[rand(0, count($this->sections) - 1)]['id'];
+    }
 }
