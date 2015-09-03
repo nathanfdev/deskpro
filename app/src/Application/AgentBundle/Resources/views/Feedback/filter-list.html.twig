@@ -70,7 +70,9 @@
 	{% include 'AgentBundle:Feedback:filter-massactions-bar.html.twig' %}
 
 	<section class="feedback-simple-list list-listing">
-		{% include 'AgentBundle:Feedback:filter-page.html.twig' %}
+		<div class="with-scrollbar">
+			{% include 'AgentBundle:Feedback:filter-page.html.twig' %}
+		</div>
 	</section>
 
 	{% if not feedback|length %}

@@ -32,7 +32,9 @@
 
 	{% if comments|length %}
 		<section class="comments-list list-listing">
-			{% include 'AgentBundle:Publish:list-comments-page.html.twig' %}
+			<div class="with-scrollbar">
+				{% include 'AgentBundle:Publish:list-comments-page.html.twig' %}
+			</div>
 		</section>
 	{% endif %}
 
