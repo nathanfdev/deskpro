@@ -12,7 +12,7 @@ class SearchType extends React.Component {
   }
   render() {
     return (
-      <li><a onClick={this.toggle.bind(this)}>{this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a></li>
+      <li><a className="omnisearch-type" onClick={this.toggle.bind(this)}>{this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a></li>
     );
   }
 }
