@@ -74,7 +74,9 @@ class CsvFactory extends AbstractFactory
             ->attach(new Parser\Csv\Articles($reader, $formatter, $helpers))
             ->attach(new Parser\Csv\News($reader, $formatter, $helpers))
             ->attach(new Parser\Csv\People($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\PeopleCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\Csv\Tickets($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\TicketCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\Csv\Organizations($reader, $formatter, $helpers))
         ;
 

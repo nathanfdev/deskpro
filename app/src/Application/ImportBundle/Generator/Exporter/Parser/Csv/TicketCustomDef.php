@@ -25,48 +25,37 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * OsTicket data exporter factory
- *
- * Class OsTicketFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class TicketCustomDef
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-class OsTicketFactory extends AbstractFactory
+final class TicketCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function getEntityType()
     {
-        if ( ! $config instanceof OsTicketConfig) {
-            throw new \RuntimeException('Config expected to be instance of OsTicketConfig');
-        }
+        return Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF;
+    }
 
-        $reader = OsTicketReaderFactory::createReader($config);
-        /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 0;
+    }
 
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader, $formatter))
-            ->attach(new Parser\OsTicket\Feedback($reader, $formatter))
-            ->attach(new Parser\OsTicket\Articles($reader, $formatter))
-            ->attach(new Parser\OsTicket\News($reader, $formatter))
-            ->attach(new Parser\OsTicket\People($reader, $formatter))
-            ->attach(new Parser\OsTicket\PeopleCustomDef($reader, $formatter))
-            ->attach(new Parser\OsTicket\Tickets($reader, $formatter))
-            ->attach(new Parser\OsTicket\TicketCustomDef($reader, $formatter))
-            ->attach(new Parser\OsTicket\Organizations($reader, $formatter))
-        ;
-
-        return new OsTicket($parsers, $reader);
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
     }
 }

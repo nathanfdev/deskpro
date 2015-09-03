@@ -25,38 +25,44 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Helper;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
-use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 
 /**
- * Class CustomDef
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Helper
+ * Class TicketFields
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class CustomDef extends AbstractParserFormatterHelper
+final class TicketCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_CUSTOM_DEF;
+        return Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF;
     }
 
     /**
-     * Exports custom field entities
-     *
-     * @param array $custom_def
-     * @return Entity\CustomDef[]
+     * {@inheritdoc}
      */
-    public function export(array $custom_def)
+    public function getCount()
+    {
+        // We can read data from ZD reader twice because of ZD reader cache support
+        return count($this->getFields());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
     {
         $collection = new Entity\Collection();
+        $custom_def = $this->getFields();
 
         foreach ($custom_def as $num => $data) {
             try {
@@ -66,9 +72,11 @@ class CustomDef extends AbstractParserFormatterHelper
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (SkippingException $e) {
-                $this->logSkippingException('ZDCustomDef', 'custom def', 'id', $e);
+                $this->logSkippingException('ZDTicketCustomDef', $this->getEntityType(), 'id', $e);
             } catch (TransformerException $e) {
-                $this->logTransformerException('ZDCustomDef', 'custom def', 'id', $e);
+                $this->logTransformerException('ZDTicketCustomDef', $this->getEntityType(), 'id', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('ZDTicketCustomDef', $this->getEntityType(), 'id', $e, $data);
             }
         }
 
@@ -77,14 +85,14 @@ class CustomDef extends AbstractParserFormatterHelper
 
     /**
      * @param array $data
-     * @return Entity\CustomDef
+     * @return Entity\PersonCustomDef
      */
     public function exportCustomDef(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_STRING,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'custom_def_',
+                'prefix' => 'ticket_custom_def_',
                 'ref'    => 'id',
             )),
             'title'       => TransformerInterface::TYPE_STRING,
@@ -92,7 +100,7 @@ class CustomDef extends AbstractParserFormatterHelper
             'required'    => TransformerInterface::TYPE_BOOLEAN,
         ));
 
-        $entity = new Entity\CustomDef();
+        $entity = new Entity\PersonCustomDef();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
@@ -102,5 +110,13 @@ class CustomDef extends AbstractParserFormatterHelper
         ;
 
         return $entity;
+    }
+
+    /**
+     * @return array
+     */
+    private function getFields()
+    {
+        return $this->reader->getTicketFields();
     }
 }

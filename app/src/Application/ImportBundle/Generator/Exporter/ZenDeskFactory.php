@@ -81,7 +81,9 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
             ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
+            ->attach(new Parser\ZenDesk\PeopleCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people))
+            ->attach(new Parser\ZenDesk\TicketCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Organizations($reader, $formatter, $helpers))
         ;
 

@@ -41,6 +41,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     private $responses = array();
 
     /**
+     * Stores a people fields response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addPeopleFieldsResponse($response)
+    {
+        $this->addResponse('CoreAPI\PersonField::findAll', $response);
+        return $this;
+    }
+
+    /**
      * Stores a people incremental export response
      *
      * @param string|array $response
@@ -73,6 +85,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     public function addOrganizationFindResponse($response)
     {
         $this->addResponse('CoreAPI\Organization::find', $response);
+        return $this;
+    }
+
+    /**
+     * Stores a ticket fields response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addTicketFieldsResponse($response)
+    {
+        $this->addResponse('CoreAPI\TicketField::findAll', $response);
         return $this;
     }
 
