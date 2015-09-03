@@ -2075,12 +2075,12 @@ $search-btn-height: $search-height - 24;
 
     .dropdown-content {
       position: absolute;
-      top: 70px;
-      left: 0px;
+      top: 60px;
+      left: 12px;
       border: 1px solid #d6d6d6;
       border-top: 3px solid #3062a7;
       background: #f9f9f9;
-      min-width: 270px;
+      min-width: 231px;
       z-index: 3999;
 
       ul {
