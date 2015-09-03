@@ -38,7 +38,10 @@ use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Log\DelegateLogger;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Log\Filter\CallbackFormatter;
+use Orb\Log\LogItem;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
@@ -289,10 +292,10 @@ class Runner
                 $this->logger->logDebug("--> Verifying ticket {$id}");
                 $t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($id));
                 if ($t) {
-                    $this->logger->logInfo("--> Ticket OKAY");
+                    $this->logger->logDebug("--> Ticket {$id} OKAY");
                     $check_result = true;
                 } else {
-                    $this->logger->logWarn("--> Ticket DOES NOT exist");
+                    $this->logger->logWarn("--> Ticket {$id} DOES NOT exist");
                     $check_result = false;
                 }
                 break;
@@ -301,10 +304,10 @@ class Runner
                 $this->logger->logDebug("--> Verifying ticket message {$id}");
                 $t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets_messages WHERE id = ?", array($id));
                 if ($t) {
-                    $this->logger->logInfo("--> Ticket message OKAY");
+                    $this->logger->logDebug("--> Ticket message {$id} OKAY");
                     $check_result = true;
                 } else {
-                    $this->logger->logWarn("--> Ticket message DOES NOT exist");
+                    $this->logger->logWarn("--> Ticket message {$id} DOES NOT exist");
                     $check_result = false;
                 }
                 break;
@@ -398,9 +401,16 @@ class Runner
             $this->logger->addWriter($this->log_messages);
         }
 
+        $source_logger = new DelegateLogger($this->logger);
+        $source_logger->enable();
+        $source_logger->addFilter(new CallbackFormatter(function(LogItem $item) {
+            $item['is_email_info'] = true;
+            return $item;
+        }));
+
         $is_in_trans = App::getDb()->isTransactionActive();
         if (!$is_in_trans) {
-            $this->logger->logDebug('Note: Not called within a transaction');
+            $source_logger->logDebug('Note: Not called within a transaction');
         }
 
         $this->log_messages->clear();
@@ -414,8 +424,8 @@ class Runner
 
         $source->exec_count++;
 
-        $this->logger->logDebug('Executing Source ' . $source->getId());
-        $this->logger->logDebug('Attempt: ' . $source->exec_count);
+        $source_logger->logDebug('Executing Source ' . $source->getId());
+        $source_logger->logDebug('Attempt: ' . $source->exec_count);
 
         // Attempt to detect if we should break due to memory
         $mem = memory_get_usage();
@@ -425,33 +435,33 @@ class Runner
             $min = max(10485760, $source->blob->filesize * 4);
             $room = $remain - $min;
 
-            $this->logger->logDebug(sprintf("Memory Used: %d    Memory Max: %d    Est Memory Required: %d    Est Memory After: %d", $mem, $avail, $min, $room));
+            $source_logger->logDebug(sprintf("Memory Used: %d    Memory Max: %d    Est Memory Required: %d    Est Memory After: %d", $mem, $avail, $min, $room));
 
             if ($remain < $min) {
-                $this->logger->log(sprintf("Detected that we are at the memory limit, quitting run"), 'debug');
+                $source_logger->log(sprintf("Detected that we are at the memory limit, quitting run"), 'debug');
                 throw new ProcessingException("Detected that we are at the memory limit", ProcessingException::MEMORY_LIMIT);
             }
         }
 
         // Mark as processing now
-        $this->logger->logDebug('Marking source as processing');
+        $source_logger->logDebug('Marking source as processing');
         $source->status = 'processing';
         App::getOrm()->persist($source);
         App::getOrm()->flush();
 
         $allow_retry = $this->enable_retry_scheduling;
-        $this->logger->logInfo("Retrying is " . ($allow_retry ? "on" : "off"));
+        $source_logger->logInfo("Retrying is " . ($allow_retry ? "on" : "off"));
         if ($allow_retry && $source->exec_count >= $this->max_retry_attempts) {
             $allow_retry = false;
-            $this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempts}");
+            $source_logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempts}");
         }
 
-        $this->logger->logDebug("Running processors");
+        $source_logger->logDebug("Running processors");
         $runner_exec = new RunnerExecSource(
             $source,
             $reader,
             $this->account_manager,
-            $this->logger
+            $source_logger
         );
         $runner_exec->setFromHeaders($this->getFromHeaders());
 
@@ -460,10 +470,10 @@ class Runner
         try {
             $result = $runner_exec->run();
             App::$container->getEm()->flush();
-            $this->logger->logDebug("--> Processors complete");
+            $source_logger->logDebug("--> Processors complete");
 
             if (!$is_in_trans && App::getDb()->isTransactionActive()) {
-                $this->logger->log("WARNING: Unclosed transaction!", 'info');
+                $source_logger->log("WARNING: Unclosed transaction!", 'info');
                 $e = new \RuntimeException("WARNING: Unclosed transaction");
                 KernelErrorHandler::logException($e, false, 'unclosed_trans_gateway');
                 while (App::getDb()->isTransactionActive()) {
@@ -472,7 +482,7 @@ class Runner
             }
         } catch (\Exception $e) {
             $message = substr($e->getMessage(), 0, 500);
-            $this->logger->logDebug("--> Processor exception: {$e->getCode()} " . $message);
+            $source_logger->logDebug("--> Processor exception: {$e->getCode()} " . $message);
             $result = array(
                 'status' => 'error',
                 'error_code' => 'server_error',
@@ -490,7 +500,7 @@ class Runner
                     KernelErrorHandler::logException($e, true);
                 }
             } else {
-                $this->logger->logWarn("Not trying again (allow_retry is false)");
+                $source_logger->logWarn("Not trying again (allow_retry is false)");
                 KernelErrorHandler::logException($e, true);
             }
 
@@ -519,7 +529,7 @@ class Runner
                 if ($allow_retry) {
                     $do_retry = true;
                 } else {
-                    $this->logger->logWarn("Not trying again (allow_retry is false)");
+                    $source_logger->logWarn("Not trying again (allow_retry is false)");
                 }
             }
         }
@@ -537,7 +547,7 @@ class Runner
                 $source->object_type = $result->created_object_type;
                 $source->object_id   = $result->created_object_id;
                 $source->object_info = $result->created_object_info;
-                $this->logger->logInfo("Status: COMPLETE {$source->error_code}");
+                $source_logger->logInfo("Status: COMPLETE {$source->error_code}");
                 break;
 
             case 'rejected':
@@ -545,7 +555,7 @@ class Runner
                 $source->status      = 'rejected';
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: array();
-                $this->logger->logError("Status: REJECTED {$source->error_code}");
+                $source_logger->logError("Status: REJECTED {$source->error_code}");
                 break;
 
             case 'error':
@@ -553,7 +563,7 @@ class Runner
                 $source->status      = 'error';
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: array();
-                $this->logger->logError("Status: ERROR {$source->error_code}");
+                $source_logger->logError("Status: ERROR {$source->error_code}");
                 break;
 
             default:
@@ -561,12 +571,12 @@ class Runner
                 $source->status      = 'error';
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: array();
-                $this->logger->logWarn("Unknown status type: {$result->status}");
+                $source_logger->logWarn("Unknown status type: {$result->status}");
                 break;
         }
 
         if ($do_retry) {
-            $this->logger->logInfo("Scheduling a retry -- status set to inserted");
+            $source_logger->logInfo("Scheduling a retry -- status set to inserted");
             $source->status = 'retry';
         }
 
@@ -579,14 +589,14 @@ class Runner
         }
 
         try {
-            $this->logger->logDebug("Saving log blob...");
+            $source_logger->logDebug("Saving log blob...");
             $log_blob_row = App::$container->getBlobStorage()->createBlobRowFromString(
                 $log_messages,
                 'email-process.log',
                 'plain/text',
                 array('tag' => 'logs.email_source_log')
             );
-            $this->logger->logInfo("Log blob {$log_blob_row['id']}");
+            $source_logger->logInfo("Log blob {$log_blob_row['id']}");
 
             $this->ensureSourceStatus($source, array('log_blob_id' => $log_blob_row['id']));
 
@@ -605,7 +615,7 @@ class Runner
         }
 
         if (!$saved_log) {
-            $this->logger->logDebug("Couldnt save log blob, saving to source info instead");
+            $source_logger->logDebug("Couldnt save log blob, saving to source info instead");
             $source->source_info = array_merge($source->source_info, array('log' => $log_messages));
             $this->ensureSourceStatus($source);
         }
@@ -620,7 +630,7 @@ class Runner
             $reader = null;
         }
 
-        $this->logger->logDebug("ALL DONE");
+        $source_logger->logDebug("ALL DONE");
 
         $this->log_messages->clear();
 

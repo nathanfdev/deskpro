@@ -127,7 +127,7 @@ class Logger
      */
     public function enable()
     {
-        $this->disabled = true;
+        $this->disabled = false;
         $this->default_disabled = false;
     }
 
