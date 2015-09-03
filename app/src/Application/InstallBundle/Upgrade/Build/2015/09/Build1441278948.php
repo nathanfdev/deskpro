@@ -34,13 +34,13 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1437822815 extends AbstractBuild
+class Build1441278948 extends AbstractBuild
 {
     public function run()
     {
         $this->out("Problem Entity");
 		$this->execMutateSql("CREATE TABLE problems (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, title VARCHAR(255) NOT NULL, created DATETIME NOT NULL, is_open TINYINT(1) NOT NULL, INDEX IDX_8E666245217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("CREATE TABLE problem2tickets (problem_id INT NOT NULL, ticket_id INT NOT NULL, INDEX IDX_F98AE8EDA0DCED86 (problem_id), INDEX IDX_F98AE8ED700047D2 (ticket_id), PRIMARY KEY(problem_id, ticket_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("CREATE TABLE problem2tickets (problem_id INT NOT NULL, ticket_id INT NOT NULL, INDEX IDX_F98AE8EDA0DCED86 (problem_id), INDEX IDX_F98AE8ED700047D2 (ticket_id), PRIMARY KEY(ticket_id, problem_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql("ALTER TABLE problems ADD CONSTRAINT FK_8E666245217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL");
 		$this->execMutateSql("ALTER TABLE problem2tickets ADD CONSTRAINT FK_F98AE8EDA0DCED86 FOREIGN KEY (problem_id) REFERENCES problems (id) ON DELETE CASCADE");
 		$this->execMutateSql("ALTER TABLE problem2tickets ADD CONSTRAINT FK_F98AE8ED700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
