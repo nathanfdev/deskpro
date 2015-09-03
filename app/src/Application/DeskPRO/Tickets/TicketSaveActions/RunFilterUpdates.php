@@ -92,8 +92,10 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         }
 
         if ($rows) {
+            $ts = microtime(true);
             $context->getLogger()->info(sprintf("[RunFilterUpdates] Inserting %d client_messages for %d agents in channels: %s", count($client_messages), count($agents), implode(', ', array_keys($channels))));
             $this->container->getDb()->batchInsert('client_messages', $rows);
+            $context->getLogger()->info(sprintf("[RunFilterUpdates] Done inserts in %.3fs", microtime(true) - $ts));
         } else {
             $context->getLogger()->info("[RunFilterUpdates] None (empty)");
         }

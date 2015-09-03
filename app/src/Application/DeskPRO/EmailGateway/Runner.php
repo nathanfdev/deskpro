@@ -399,9 +399,7 @@ class Runner
         }
 
         $is_in_trans = App::getDb()->isTransactionActive();
-        if ($is_in_trans) {
-            $this->logger->logWarn('Note: Called within a transaction');
-        } else {
+        if (!$is_in_trans) {
             $this->logger->logDebug('Note: Not called within a transaction');
         }
 
@@ -717,7 +715,9 @@ class Runner
                 $source = App::getOrm()->find('DeskPRO:EmailSource', $next_inserted_id);
             } else {
                 try {
+                    $ts = microtime(true);
                     $source = $fetcher->readNext();
+                    $this->logger->logDebug(sprintf("Read took %.3fs", microtime(true) - $ts));
                     if (!$source) {
                         $this->logger->logDebug("No more messages in inbox");
 
