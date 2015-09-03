@@ -15,6 +15,7 @@ define [
   'Admin/TicketTriggers/DataService/TriggersNew',
   'Admin/TicketTriggers/DataService/TriggersReply',
   'Admin/TicketTriggers/DataService/TriggersUpdate',
+  'Admin/TicketProblems/DataService/Problems'
   'Admin/TwitterAccounts/DataService/TwitterAccounts',
   'Admin/ApiKeys/DataService/ApiKeys',
   'Admin/Banning/DataService/Bans',
@@ -43,6 +44,7 @@ define [
   DataService_TriggersNew,
   DataService_TriggersReply,
   DataService_TriggersUpdate,
+  DataService_Problems
   DataService_TwitterAccounts,
   DataService_ApiKeys,
   DataService_Bans,

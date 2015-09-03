@@ -934,6 +934,48 @@ pageMeta.lang = {{ {
 	</div>
 </div>
 
+    {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.close') %}
+        <div class="close-problem-overlay overlay" style="display:none">
+            <div class="overlay-title">
+                <h4>{{ phrase('agent.problems.close_problem') }}</h4>
+            </div>
+
+            <div class="overlay-content">
+                {{ phrase('agent.problems.close_problem_prompt') }}
+            </div>
+
+            <div class="overlay-footer">
+                <div class="loading-off">
+                    <button class="save-trigger clean-white">{{ phrase('agent.problems.close_problem') }}</button>
+                </div>
+                <div class="loading-on" style="display:none">
+                    <span>{{ phrase('agent.general.saving') }}... <span class="flat-spinner"></span></span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+	{% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.reopen') %}
+	<div class="reopen-problem-overlay overlay" style="display:none">
+		<div class="overlay-title">
+			<h4>{{ phrase('agent.problems.reopen_problem') }}</h4>
+		</div>
+
+		<div class="overlay-content">
+			{{ phrase('agent.problems.reopen_problem_prompt') }}
+		</div>
+
+		<div class="overlay-footer">
+			<div class="loading-off">
+				<button class="save-trigger clean-white">{{ phrase('agent.problems.reopen_problem') }}</button>
+			</div>
+			<div class="loading-on" style="display:none">
+				<span>{{ phrase('agent.general.saving') }}... <span class="flat-spinner"></span></span>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+
 <div class="delete-message-overlay overlay" style="display:none">
 	<div class="overlay-title">
 		<h4>{{ phrase('agent.general.delete') }}</h4>

@@ -1127,6 +1127,15 @@ define(function() {
     target: "appbody@tickets"
   });
 
+
+  // Problems
+  routes.push({
+    id: 'tickets.problems',
+    url: '/problems',
+    templateName: 'TicketProblems/settings.html',
+    controller: 'Admin_TicketProblems_Ctrl_Settings',
+  });
+
   //##################################################################################################################
   // CRM
   //##################################################################################################################

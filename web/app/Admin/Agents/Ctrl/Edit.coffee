@@ -190,13 +190,14 @@ define [
 
       # todo this map should be loaded from server
       @ugEffectivePerms = {
-        ticket: {},
-        people: {},
-        org: {},
-        chat: {},
-        publish: {},
-        general: {},
+        ticket: {}
+        people: {}
+        org: {}
+        chat: {}
+        publish: {}
+        general: {}
         tasks: {}
+        problems: {}
       }
 
       @ugEffectiveDepPerms = {

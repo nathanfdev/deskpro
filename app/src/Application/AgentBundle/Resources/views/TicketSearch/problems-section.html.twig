@@ -1,0 +1,84 @@
+{% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
+
+    <section class="pane-section sla-section" id="problems-section">
+
+        <header>
+            <h1>
+                <span class="problems-filter-type">
+                    {{ phrase('agent.problems.title') }}
+                </span>
+            </h1>
+        </header>
+
+        <article>
+
+            <script type="text/html">
+                <li class="is-nav-item filter">
+                    <div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': '0000'}) }}">
+                        <h3></h3>
+
+                        <div class="float-side">
+                            <em class="counter list-counter">0</em>
+                        </div>
+                    </div>
+                </li>
+            </script>
+
+
+            <ul class="nav-list tickets_outline_problems">
+
+                <li class="no-data" {% if open_problems|length > 0 %}style="display: none;"{% endif %}>
+                    {{ phrase('agent.problems.no_problems_boss') }}
+                </li>
+
+                {% for p in open_problems %}
+                    {% set filter = problem_filters[p.id] %}
+                    <li class="is-nav-item filter filter-{{ filter.id }} nav-filter-{{ filter.id }}"
+                        data-filter-id="{{ filter.id }}"
+                        data-problem-id="{{ p.id }}"
+                            >
+
+                        <div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+                            <h3>{{ p.title }}</h3>
+
+                            <div class="float-side">
+                                <em class="counter list-counter" id="ticket_filter_{{ problem_filters[p.id] }}_count">0</em>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+
+
+
+                <li class="closed-problems-list" {% if 0 == closed_problems|length %}style="display: none;"{% endif %}>
+                    <div class="item-form">
+                        <div class="select-value-wrap">
+                            <div class="select-value">
+                                <label id="nav_closed_problem_label"></label>
+                                <i class="icon-caret-down"></i>
+                            </div>
+                            <select
+                                    class="closed_problems_select dpe_select invisible-trigger problems_select"
+                                    data-label-bound="#nav_closed_problem_label"
+                                    data-dropdown-css-class="invisible-trigger small filter-list"
+                                    data-select-width="165"
+                                    data-path="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': '0000'}) }}"
+                                    >
+                                <option value="">{{ phrase('agent.problems.closed_problems') }}</option>
+                                {% for p in closed_problems %}
+                                    {% set filter = problem_filters[p.id] %}
+                                    <option value="{{ filter.id }}" data-filter-id="{{ filter.id }}" data-problem-id="{{ p.id }}">
+                                        {{ p.title }}
+                                        (0)
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </article>
+    </section>
+{% endif %}

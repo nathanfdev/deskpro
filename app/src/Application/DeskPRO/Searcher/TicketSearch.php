@@ -69,7 +69,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_TICKET_FIELD              = 'ticket_field';
     const TERM_DATE_CREATED              = 'date_created';
     const TERM_DATE_RESOLVED             = 'date_resolved';
-    const TERM_DATE_ARCHIVED               = 'date_archived';
+    const TERM_DATE_ARCHIVED             = 'date_archived';
     const TERM_DATE_STATUS               = 'date_status';
     const TERM_DATE_LAST_USER_REPLY      = 'date_last_user_reply';
     const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
@@ -91,6 +91,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_SLA_STATUS                = 'sla_status';
     const TERM_SLA_COMPLETED             = 'sla_completed';
     const TERM_IP_ADDRESS                = 'ip_address';
+    const TERM_PROBLEMS                  = 'problems';
 
     /**
      * True to search in the non-search tables (aka all tickets not just active)
@@ -527,6 +528,9 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case 'time_created':
                     case 'time_last_user_reply':
+                        break;
+                    case self::TERM_PROBLEMS:
+                        $this->affected_fields[] = 'ticket.problems';
                         break;
                     case self::TERM_DAY_CREATED:
                         break;
@@ -2242,6 +2246,39 @@ class TicketSearch extends SearcherAbstract
                         $wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
                         break;
 
+                    case self::TERM_PROBLEMS:
+
+                        if (!$choice) {
+                            break;
+                        }
+
+                        $this->affected_fields[] = 'ticket.problems';
+
+                        $choices_in = array();
+                        foreach ($choice as $c) {
+                            $choices_in[] = (int) $c;
+                        }
+                        $choices_in = implode(',', $choices_in);
+
+                        switch ($op) {
+                            case self::OP_IS:
+                            case self::OP_CONTAINS:
+                                $joins[] = array(
+                                    'problem2tickets',
+                                    "JOIN problem2tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.problem_id IN ($choices_in))"
+                                );
+                                break;
+
+                            case self::OP_NOT:
+                            case self::OP_NOTCONTAINS:
+                                $joins[] = array(
+                                    'problem2tickets',
+                                    "JOIN problem2tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.problem_id NOT IN ($choices_in))"
+                                );
+                                break;
+                        }
+                        break;
+
                     default:
                         $e = new \InvalidArgumentException("Unknown term: $term");
                         \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
@@ -2626,6 +2663,35 @@ class TicketSearch extends SearcherAbstract
                         return !$exists;
                 }
                 break;
+
+            case self::TERM_PROBLEMS:
+                $choice_problems = array();
+                if (!empty($choice['problems'])) {
+                    if (!is_array($choice['problems'])) {
+                        $choice['problems'] = explode(',', $choice['problems']);
+                    }
+                    $choice_problems = $choice['problems'];
+                }
+
+                $has = false;
+                foreach ($ticket->problems as $p) {
+                    if (in_array($p->id, $choice_problems)) {
+                        $has = true;
+                        break;
+                    }
+                }
+
+                if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+                    if (!$has) {
+                        return false;
+                    }
+                } else {
+                    if ($has) {
+                        return false;
+                    }
+                }
+                break;
+
             default:
                 $terms = new TicketTerms(array(array(
                     'type' => $term,

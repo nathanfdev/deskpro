@@ -73,6 +73,11 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     protected $all_labels;
 
+    /*
+     * @var array
+     */
+    protected $all_problems;
+
     /**
      * @var array
      */
@@ -191,6 +196,36 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_labels;
     }
 
+    public function getAllProblems()
+    {
+        if ($this->all_problems !== null) {
+            return $this->all_problems;
+        }
+
+        if (!$this->ticket_count) {
+            $this->all_problems = array();
+
+            return $this->all_problems;
+        }
+
+        $ticket_ids = implode(',', $this->ticket_ids);
+
+        $this->all_problems = $this->db->fetchAllGrouped(
+            "
+            SELECT pt.ticket_id, p.id, p.title
+            FROM problem2tickets pt
+            JOIN problems p ON p.id = pt.problem_id
+            WHERE pt.ticket_id IN ($ticket_ids)
+        ",
+            array(),
+            'ticket_id',
+            null,
+            'title'
+        );
+
+        return $this->all_problems;
+    }
+
 
     /**
      * @return array
@@ -283,6 +318,13 @@ class TicketResultsDisplay implements PersonContextInterface
         $this->getAllLabels();
 
         return empty($this->all_labels[$ticket->id]) ? array() : $this->all_labels[$ticket->id];
+    }
+
+    public function getTicketProblems(Ticket $ticket)
+    {
+        $this->getAllProblems();
+
+        return empty($this->all_problems[$ticket->id]) ? array() : $this->all_problems[$ticket->id];
     }
 
 

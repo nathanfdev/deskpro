@@ -179,6 +179,19 @@
 						</span>
 					<% } %>
 
+                    <% if (field == 'problems') { %>
+                    <span class="prop-title">{{ phrase('agent.problems.problem') }}:</span>
+						<span class="prop-val">
+							<% if (ticket_display.problems) { %>
+								<% for (var problemIdx = 0; problemIdx < ticket_display.problems.length; problemIdx++) { %>
+									<span class="listing-tag" dp-label
+                                          dp-label-string="<%- ticket_display.problems[problemIdx] %>"
+                                          dp-label-type="tickets"><%- ticket_display.problems[problemIdx] %></span>
+								<% } %>
+							<% } %>
+						</span>
+                    <% } %>
+
 					<% if (field == 'organization') { %>
 						<span class="prop-title">{{ phrase('agent.general.organization') }}:</span>
 						<span class="prop-val">

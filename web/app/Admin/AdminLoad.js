@@ -101,6 +101,7 @@ define([
   'Admin/TicketTriggers/Ctrl/Edit',
   'Admin/TicketTriggers/Ctrl/List',
   'Admin/TicketUrgencies/Ctrl/List',
+  'Admin/TicketProblems/Ctrl/Settings',
   'Admin/FeedbackStatuses/Ctrl/List',
   'Admin/FeedbackStatuses/Ctrl/Edit',
   'Admin/FeedbackTypes/Ctrl/List',
