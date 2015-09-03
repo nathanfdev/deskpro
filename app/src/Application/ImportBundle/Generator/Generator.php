@@ -127,8 +127,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     public function generate()
     {
         try {
-
-
             $exporter     = $this->getExporter();
             $outputWriter = $this->getWriter();
             $collection   = new GenerateCollection();
@@ -141,31 +139,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                 $collection->attach($type, $exporter->exportByType($type));
             }
 
-                    if (count($exceptions) > 0) {
-                        /** @var ValidatorExceptionInterface[] $exceptions */
-                        foreach ($exceptions as $exception) {
-                            // Removing broken entities
-                            $collection->detach($exception->getEntity());
-
-                            /** @var Validator\ValidatorConstraintException $exception */
-                            $this->logAlert(sprintf(
-                                "Validator failure for %s on record #%s: %s",
-
-                                get_class($exception->getEntity()),
-                                $exception->getEntity()->getOid(),
-                                $exception->getErrors())
-                            );
-
-                            $this->logInfo(json_encode($exception->getEntity()->toArray()));
-
-                            $raw_data = $exception->getEntity()->getRawData();
-                            if ($raw_data) {
-                                foreach (explode("\n", KernelErrorHandler::varToString($raw_data, 2)) as $line) {
-                                    $this->logInfo($line);
-                                }
-                            }
-                        }
-
             if ($collection->hasEntities()) {
 
                 $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
@@ -177,7 +150,29 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                         $exceptions = $this->validateExportingCollection($type, $entities);
 
                         if (count($exceptions) > 0) {
-                            throw new GeneratorException($exceptions);
+                            /** @var ValidatorExceptionInterface[] $exceptions */
+                            foreach ($exceptions as $exception) {
+                                // Removing broken entities
+                                $collection->detach($exception->getEntity());
+
+                                /** @var Validator\ValidatorConstraintException $exception */
+                                $this->logAlert(sprintf(
+                                        "Validator failure for %s on record #%s: %s",
+
+                                        get_class($exception->getEntity()),
+                                        $exception->getEntity()->getOid(),
+                                        $exception->getErrors())
+                                );
+
+                                $this->logInfo(json_encode($exception->getEntity()->toArray()));
+
+                                $raw_data = $exception->getEntity()->getRawData();
+                                if ($raw_data) {
+                                    foreach (explode("\n", KernelErrorHandler::varToString($raw_data, 2)) as $line) {
+                                        $this->logInfo($line);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
