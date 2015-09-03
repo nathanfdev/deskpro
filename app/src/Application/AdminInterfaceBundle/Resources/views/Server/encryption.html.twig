@@ -41,7 +41,13 @@
         </div>
         <div class="form-group" ng-if="!status.is_able">
           <p>
-            Your server is not capable of DeskPRO's encryption features. You must install and enable the <a href="http://php.net/manual/en/book.openssl.php">OpenSSL extension</a>.
+            Your server is not capable of DeskPRO's encryption features. The most common cause of this is a missing <a href="http://php.net/manual/en/book.openssl.php">OpenSSL extension</a>. Make sure that is installed and enabeled.
+          </p>
+          <p>
+            Here is the raw error code returned from the server:
+          </p>
+          <p>
+            {{ ng_var('status.unable_error') }}
           </p>
         </div>
         <div class="form-group" ng-if="status.is_able">
@@ -131,6 +137,23 @@
         </div>
       </article>
     </div>
+
+    <article class="form-horizontal dp-form" ng-if="error_info">
+      <div class="panel panel-innertable">
+        <div class="form-group">
+          <div class="col-lg-12">
+            <div class="inner-group">
+              <p>
+                Your changes could not be saved. The server responded with the following error when trying to change your encryption settings:
+              </p>
+              <p style="color: #900">
+                {{ ng_var('error_info.error_message') }} (code: {{ ng_var('error_info.error_code') }})
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
 
   </section>
 

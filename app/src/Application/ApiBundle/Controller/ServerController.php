@@ -45,6 +45,7 @@ use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
 use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
+use Orb\Util\Util;
 
 class ServerController extends AbstractController implements ProtectedControllerInterface
 {
@@ -639,8 +640,21 @@ class ServerController extends AbstractController implements ProtectedController
         $can_disable_file  = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'can-disable-encryption.txt';
         $can_disable       = is_file($can_disable_file);
 
+        if ($is_able) {
+            $is_able_error = null;
+            try {
+                $key = \Crypto::CreateNewRandomKey();
+            } catch (\Exception $e) {
+                $is_able_error = 'The server was unable to use crypto: ' . Util::getBaseClassname($e) . ' ' . $e->getMessage();
+                $is_able = false;
+            }
+        } else {
+            $is_able_error = 'Missing OpenSSL extension';
+        }
+
         return array(
             'is_able'           => $is_able,
+            'unable_error'      => $is_able_error,
             'key_file'          => $key_file,
             'has_key_file'      => $has_key_file,
             'is_enabled'        => (bool)((int)$is_enabled),
@@ -673,7 +687,7 @@ class ServerController extends AbstractController implements ProtectedController
         try {
             $key = base64_encode(\Crypto::CreateNewRandomKey());
         } catch (\Exception $e) {
-            return $this->createApiErrorResponse('unable_perform', 'The server was unable to generate a secure key: ' . $e->getMessage());
+            return $this->createApiErrorResponse('unable_perform', 'The server was unable to generate a secure key: ' . Util::getBaseClassname($e) . ' ' . $e->getMessage());
         }
 
         if (file_exists($status['key_file'])) {

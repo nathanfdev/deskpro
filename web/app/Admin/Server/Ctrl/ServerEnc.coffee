@@ -20,24 +20,28 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     enable: ->
       @startSpinner('saving')
-      @$scope.error_code = null
+      @$scope.error_info = null
       @Api.sendPost('/server/encryption/enable').success((res) =>
         @loadStatus().then(=>
           @stopSpinner('saving', true)
         )
       ).error((info, code) =>
-        console.log(info)
+        @stopSpinner('saving', true)
+        if info.error_code
+          @$scope.error_info = info
       )
 
     disable: ->
       @startSpinner('saving')
-      @$scope.error_code = null
+      @$scope.error_info = null
       @Api.sendPost('/server/encryption/disable').success((res) =>
         @loadStatus().then(=>
           @stopSpinner('saving', true)
         )
       ).error((info, code) =>
-        console.log(info)
+        @stopSpinner('saving', true)
+        if info.error_code
+          @$scope.error_info = info
       )
 
     initialLoad: ->
