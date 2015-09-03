@@ -15,7 +15,7 @@ export class AppSwitcher extends React.Component {
 
     return (
       <li>
-        <Link to={`/index.php/agent/${appId}`}>
+        <Link to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`}>
           <i className={className}></i> <span className="title">{title}</span>
         </Link>
       </li>
