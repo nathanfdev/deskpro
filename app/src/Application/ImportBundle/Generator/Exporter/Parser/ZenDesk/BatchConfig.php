@@ -53,6 +53,11 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     /**
      * @var DateTime
      */
+    private $articles_end_time;
+
+    /**
+     * @var DateTime
+     */
     private $retry_after_time;
 
     /**
@@ -108,6 +113,28 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     }
 
     /**
+     * Returns articles end time
+     *
+     * @return DateTime
+     */
+    public function getArticlesEndTime()
+    {
+        return $this->articles_end_time;
+    }
+
+    /**
+     * Set articles end time
+     *
+     * @param DateTime $end_time
+     * @return $this
+     */
+    public function setArticlesEndTime(DateTime $end_time = null)
+    {
+        $this->articles_end_time = $end_time;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRetryAfterTime()
@@ -132,6 +159,7 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
         return array_merge(parent::toArray(), array(
             'people_end_time'   => $this->getDateFormatOrNull($this->people_end_time),
             'tickets_end_time'  => $this->getDateFormatOrNull($this->tickets_end_time),
+            'articles_end_time' => $this->getDateFormatOrNull($this->articles_end_time),
             'retry_after_time'  => $this->getDateFormatOrNull($this->retry_after_time),
         ));
     }

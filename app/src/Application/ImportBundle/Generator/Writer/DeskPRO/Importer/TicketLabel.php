@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO ticket labels importer
@@ -49,34 +48,27 @@ final class TicketLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Ticket $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
-
-        $oldEntity = $this->getTicketMapper()->findOneByRef($entity->getRef());
-        $type = 'ticket';
-        $newLabels = $entity->getLabels();
-
-        foreach ($oldEntity->labels as $labelEntity) {
-            if (false === $k = array_search($labelEntity->label, $newLabels)) {
-                $oldEntity->labels->removeElement($labelEntity);
-                $this->removeEntity($labelEntity);
-            } else {
-                unset($newLabels[$k]);
-            }
+        if ( ! $entity instanceof Entity\Ticket) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        foreach ($newLabels as $label) {
-            $oldEntity->addLabel($this->createLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for %s with oid `%d`',
-                $label, $type, $oldEntity->getId()
+        $this->records = new DoctrineEntitiesCollection();
+
+        $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
+        $ticket->resetLabels();
+
+        foreach ($entity->getLabels() as $label) {
+            $ticket->addLabel($this->createTicketLabel($label));
+            $this->logInfo(sprintf(
+                'Creating a new label `%s` for ticket with oid `%d`',
+                $label, $ticket->getId()
             ));
         }
 
+        $this->records->setPrimaryEntity($ticket);
         return $this->records;
     }
 
@@ -86,11 +78,11 @@ final class TicketLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelTicket
      */
-    private function createLabel($label)
+    private function createTicketLabel($label)
     {
         $entity = new DeskPROEntity\LabelTicket();
         $entity->setLabel($label);
-        $this->records->add($entity);
+
         return $entity;
     }
 }

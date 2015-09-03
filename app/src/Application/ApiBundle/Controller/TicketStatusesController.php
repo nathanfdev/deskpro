@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Orb\Util\Arrays;
 
@@ -163,8 +164,15 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      */
     public function saveArchivedSettingsAction()
     {
-        $this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
+        $enabled = $this->in->getBoolInt('enabled');
+        $this->settings->setSetting('core_tickets.use_archive', $enabled);
         $this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));
+
+        if (!$enabled) {
+            $this->em->getConnection()->executeQuery('
+                update tickets set status = :newstatus where status = :oldstatus
+            ', Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED);
+        }
 
         return $this->createSuccessResponse();
     }

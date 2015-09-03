@@ -33,7 +33,6 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\MapperInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Abstract DeskPRO importer
@@ -50,7 +49,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected $mappers;
 
     /**
-     * @var ArrayCollection
+     * @var DoctrineEntitiesCollection
      */
     protected $records;
 
@@ -114,22 +113,24 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      */
     protected function findOrCreateOrganization($title)
     {
-        if (!$title) return null;
         /** @var Mapper\Organization $mapper */
         $mapper       = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
+        $organization = null;
 
-        $organization = $mapper->findOneByTitle($title, false);
-        if ($organization) {
-            $this->logDebug(sprintf(
-                'Found existing organization `%d` with title `%s`',
-                $organization->getId(), $organization->getName()
-            ));
-        } else {
-            $organization = new DeskPROEntity\Organization();
-            $organization->setName($title);
+        if ($title) {
+            $organization = $mapper->findOneByTitle($title, false);
+            if ($organization) {
+                $this->logDebug(sprintf(
+                    'Found existing organization `%d` with title `%s`',
+                    $organization->getId(), $organization->getName()
+                ));
+            } else {
+                $organization = new DeskPROEntity\Organization();
+                $organization->setName($title);
 
-            $this->records->add($organization);
-            $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
+                $this->records->addRelatedEntity($organization);
+                $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
+            }
         }
 
         return $organization;
@@ -237,6 +238,22 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * Creates object lang
+     *
+     * @param Entity\ObjectLang $translation
+     * @param mixed             $record
+     *
+     * @throws Mapper\MapperException
+     */
+    protected function addObjectLang(Entity\ObjectLang $translation, $record)
+    {
+        $language    = $this->getLanguageMapper()->findOneByTitle($translation->getLanguage());
+        $object_lang = DeskPROEntity\ObjectLang::createObjectLang($language, $record, $translation->getProperty(), $translation->getValue());
+
+        $this->records->addRelatedEntity($object_lang);
+    }
+
+    /**
      * Returns the person mapper
      *
      * @return Mapper\Person
@@ -322,6 +339,17 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected function getOrganizationMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
+    }
+
+    /**
+     * Returns the object lang mapper
+     *
+     * @return Mapper\ObjectLang
+     * @throws \Exception
+     */
+    protected function getObjectLangMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_OBJECT_LANG);
     }
 
     /**

@@ -1,5 +1,6 @@
 {
-  "oid": 2,
+  "oid": "2",
+  "import_map_key": "zd_article",
   "person": "another@email.tld",
   "title": "Article 2",
   "content": "Content 2",
@@ -12,9 +13,13 @@
   "view_count": 0,
   "status": "published",
   "date_created": "2015-03-05 19:40:10",
-  "date_published": null,
-  "date_end": null,
-  "categories": ["Category 1"],
+  "date_updated": "2015-03-05 20:40:10",
+  "date_published": "2015-03-05 20:40:10",
+  "date_end": "2015-04-05 20:40:10",
+  "categories": [],
   "labels": ["Label 1"],
-  "custom_fields": []
+  "custom_fields": [],
+  "attachments": [],
+  "comments": [],
+  "translations": []
 }

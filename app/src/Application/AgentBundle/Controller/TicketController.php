@@ -50,10 +50,12 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -73,6 +75,8 @@ use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
@@ -362,6 +366,22 @@ class TicketController extends AbstractController
             $agents_with_perm[$agent->id] = $agent->PermissionsManager->TicketChecker->canView($ticket);
         }
 
+        $open_problems = array();
+        $incidents = 0;
+        if ($this->person->hasPerm('agent_problems.view')) {
+            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+                array('is_open' => true),
+                array('title' => 'asc')
+            );
+
+            if ($problem = $ticket->problems->first()) {
+                $rep = $this->em->getRepository('DeskPRO:Problem');
+                $problem_counts = $rep->getCountsForAgentInterface(array($problem), $this->person);
+                $incidents = (int) @$problem_counts[$problem->id];
+            }
+        }
+
+
         $vars = array(
             'agents'                     => $agents,
             'agents_with_perm'           => $agents_with_perm,
@@ -415,6 +435,8 @@ class TicketController extends AbstractController
 
             'addable_slas'               => $addable_slas,
             'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
+            'open_problems'              => $open_problems,
+            'incidents'                  => $incidents,
         );
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
@@ -537,15 +559,17 @@ class TicketController extends AbstractController
         ));
     }
 
-    protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false)
+    protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false, $per_page = null)
     {
-        if ($filter) {
-            // 50 when filtered because entries are "loose"
-            $per_page = 50;
-        } else {
-            // Only 10 when not filtered because entries are grouped,
-            // so 10 is typically more like 50
-            $per_page = 10;
+        if (!$per_page) {
+            if ($filter) {
+                // 50 when filtered because entries are "loose"
+                $per_page = 50;
+            } else {
+                // Only 10 when not filtered because entries are grouped,
+                // so 10 is typically more like 50
+                $per_page = 10;
+            }
         }
 
         $options = array();
@@ -2060,6 +2084,36 @@ class TicketController extends AbstractController
                         $org_field_manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
                         $this->em->persist($ticket->person->organization);
                     }
+
+                    if ($this->settings->get('core.problems.enabled')) {
+
+                        if (isset($actions['problem_id'])) {
+                            $id = (int)$actions['problem_id'];
+                            $title = @$actions['create_problem'];
+                            /** @var TicketChecker $checker */
+                            $checker = $this->person->PermissionsManager->TicketChecker;
+
+                            switch (true) {
+                                case $id > 0 && $checker->canAssociateProblem($ticket):
+                                    $problem = $this->em->find('DeskPRO:Problem', $actions['problem_id']);
+                                    $ticket->associateProblem($problem);
+                                    break;
+
+                                case 0 === $id && $checker->canDisassociateProblem($ticket):
+                                    $ticket->disassociateProblem();
+                                    break;
+
+                                case -1 === $id && $this->person->hasPerm('agent_problems.create') && $title:
+                                    $problem = new Problem();
+                                    $problem->creator = $this->person;
+                                    $problem->title = $title;
+                                    $this->em->persist($problem);
+                                    $this->em->flush($problem);
+                                    $ticket->associateProblem($problem);
+                                    break;
+                            }
+                        }
+                    }
                 }
 
                 $tm->saveTicket($ticket, $context);
@@ -2096,6 +2150,22 @@ class TicketController extends AbstractController
         $data['data']['reload'] = (($was_rtl && !$is_rtl) || (!$was_rtl && $is_rtl));
 
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+        $open_problems = array();
+        $incidents = 0;
+        if ($this->person->hasPerm('agent_problems.view')) {
+            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+                array('is_open' => true),
+                array('title' => 'asc')
+            );
+
+            if ($problem = $ticket->problems->first()) {
+                $rep = $this->em->getRepository('DeskPRO:Problem');
+                $problem_counts = $rep->getCountsForAgentInterface(array($problem), $this->person);
+                $incidents = (int) @$problem_counts[$problem->id];
+            }
+        }
+
         $data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
             'ticket'              => $ticket,
             'ticket_options'      => $ticket_options,
@@ -2103,6 +2173,8 @@ class TicketController extends AbstractController
             'custom_person_fields'=> $custom_person_fields,
             'custom_org_fields'   => $custom_org_fields,
             'new_custom_fields'   => $new_custom_fields->createView(),
+            'open_problems'       => $open_problems,
+            'incidents'           => $incidents,
         ));
 
         $client_messages = false;
@@ -3718,6 +3790,11 @@ class TicketController extends AbstractController
             $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
         }
 
+        $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+            array('is_open' => true),
+            array('title' => 'asc')
+        );
+
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
             'ticket'                 => $ticket,
             'message'                => $message,
@@ -3730,6 +3807,7 @@ class TicketController extends AbstractController
             'custom_fields'          => $custom_fields,
             'new_custom_fields'      => $new_custom_fields->createView(),
             'billing_fields' => $billing_fields,
+            'open_problems' => $open_problems,
         ));
     }
 
@@ -3877,6 +3955,14 @@ class TicketController extends AbstractController
             // Validate based on department...
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+
+            // agent newticket form has a quick create-user form
+            // which doesnt include custom fields at the moment so
+            // remove them from validator so we can still create the ticket
+            $layout = $layout->filter(function(LayoutField $f) {
+                return $f->getFieldType() != 'user_field';
+            });
+
             $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
             $newticket->billing_fields = $this->request->request->get('billing_fields', array());
@@ -4118,6 +4204,33 @@ class TicketController extends AbstractController
 
                     $this->em->persist($comment);
                     $this->em->flush();
+                }
+
+                if ($this->settings->get('core.problems.enabled')) {
+
+                    $id = (int)$request->get('problem_id');
+                    $title = $this->in->getString('problem_title'); // sanitize
+                    /** @var TicketChecker $checker */
+                    $checker = $this->person->PermissionsManager->TicketChecker;
+                    if ($checker->canAssociateProblem($ticket)) {
+                        if (-1 === $id && $title) {
+                            if ($this->person->hasPerm('agent_problems.create')) {
+                                $problem = new Problem();
+                                $problem->creator = $this->person;
+                                $problem->title = $title;
+                                $this->em->persist($problem);
+                                $this->em->flush($problem);
+                            }
+                        } else {
+                            if (!$problem = $this->em->find('DeskPRO:Problem', $id)) {
+                                // silent?
+                            }
+                        }
+
+                        if ($problem && $problem->is_open) {
+                            $ticket->associateProblem($problem);
+                        }
+                    }
                 }
 
                 $ticket->recomputeHash();
@@ -4384,6 +4497,72 @@ class TicketController extends AbstractController
         $d = new TicketLogsData($ticket);
         file_put_contents($tmpdir . '/ticket-log.json', json_encode($d->getData()));
 
+        $info = $this->_getTicketLogsBlockInfo($ticket, 1, null, 999999, 999999);
+        $css = <<<'CSS'
+<style>
+body {
+	font-family: Helvetica, Verdana, Arial, sans-serif;
+	line-height: 125%;
+	font-size: 10pt;
+}
+
+.section-subnav {
+	background: #ccc;
+	padding: 30px;
+	margin-bottom: 15px;
+}
+
+.section-subnav ul {
+	margin: 0;
+	padding: 0;
+}
+
+.section-subnav li {
+	display: inline;
+	margin-right: 10px;
+}
+
+.section-subnav li em {
+	font-style: normal;
+}
+
+.dp-is-loading {
+	display: none;
+}
+
+.log-batch {
+	border: 1px solid #ddd;
+	margin-bottom: 10px;
+}
+
+.type-action_starter {
+	background: #eee;
+}
+
+.log-row {
+	padding: 10px;
+	border-top: 1px solid #eee;
+}
+
+.log-row .info {
+	float: right;
+}
+
+time {
+	float: right;
+}
+
+.expand-set {
+	display: block !important;
+	margin-left: 15px;
+	font-size: 90%;
+}
+</style>
+CSS;
+
+        file_put_contents($tmpdir . '/ticket-log.html', $css . $info['rendered']);
+        unset($info);
+
         foreach ($ticket->messages as $message) {
             $data = $message->toApiData();
 
@@ -4629,5 +4808,73 @@ class TicketController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array('success' => true));
+    }
+
+    /**
+     * @param $ticket_id
+     * @return Response
+     */
+    public function closeProblemAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        if (!$problem = $ticket->problems->first()) {
+            throw new NotFoundHttpException;
+        }
+
+        if (!$this->person->hasPerm('agent_problems.close')) {
+            throw new AccessDeniedHttpException;
+        }
+
+        $problem['is_open'] = false;
+        $this->em->flush($problem);
+
+        $data = array();
+        if ($this->in->getUint('client_messages_since')) {
+            if ($client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+                $this->person,
+                $this->session,
+                $this->in->getUint('client_messages_since')
+            )
+            ) {
+                $data['client_messages'] = $client_messages;
+            }
+        }
+
+        return $this->createJsonResponse($data);
+    }
+
+    /**
+     * @param $ticket_id
+     * @return Response
+     */
+    public function reopenProblemAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        if (!$problem = $ticket->problems->first()) {
+            throw new NotFoundHttpException;
+        }
+
+        if (!$this->person->hasPerm('agent_problems.reopen')) {
+            throw new AccessDeniedHttpException;
+        }
+
+        $problem['is_open'] = true;
+        $this->em->flush($problem);
+
+        $data = array();
+        if ($this->in->getUint('client_messages_since')) {
+            if ($client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+                $this->person,
+                $this->session,
+                $this->in->getUint('client_messages_since')
+            )
+            ) {
+                $data['client_messages'] = $client_messages;
+            }
+        }
+
+        return $this->createJsonResponse($data);
     }
 }

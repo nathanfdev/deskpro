@@ -43,5 +43,5 @@ interface LoggerAwareInterface
      * @param LoggerInterface $logger
      * @return $this
      */
-    public function setLogger(LoggerInterface $logger);
+    public function setLogger(LoggerInterface $logger = null);
 }

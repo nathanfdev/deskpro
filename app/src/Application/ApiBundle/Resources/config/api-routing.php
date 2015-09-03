@@ -3860,6 +3860,26 @@ $collection->create('api_server_autoupdate_status', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_server_enc_status', array(
+    'path'        => '/server/encryption/status',
+    'controller'  => 'ApiBundle:Server:encryptionStatus',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_server_enc_enable', array(
+    'path'        => '/server/encryption/enable',
+    'controller'  => 'ApiBundle:Server:enableEncryption',
+    'defaults'    => array(),
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_server_enc_disable', array(
+    'path'        => '/server/encryption/disable',
+    'controller'  => 'ApiBundle:Server:disableEncryption',
+    'defaults'    => array(),
+    'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Server Error Logs
 ########################################################################################################################
@@ -4150,6 +4170,21 @@ $collection->create('api_tasks_settings_set', array(
     'methods'    => array('PUT'),
 ));
 
+########################################################################################################################
+# Problems
+########################################################################################################################
+
+$collection->create('api_problems_settings_get', array(
+    'path'       => '/problems/settings',
+    'controller' => 'ApiBundle:Problems:settings',
+    'methods'    => array('GET'),
+));
+
+$collection->create('api_problems_settings_set', array(
+    'path'       => '/problems/settings',
+    'controller' => 'ApiBundle:Problems:updateSettings',
+    'methods'    => array('PUT'),
+));
 ########################################################################################################################
 # CRM User Fields
 ########################################################################################################################

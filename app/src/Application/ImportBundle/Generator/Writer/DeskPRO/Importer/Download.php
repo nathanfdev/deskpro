@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO download importer
@@ -67,16 +66,18 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $entity
-     *
      * todo add referred objects
      * 'total_rating'   => $dval->total_rating,
      * 'num_comments'   => $dval->num_comments,
      * 'num_ratings'    => $dval->num_ratings,
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Download) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $this->records = new DoctrineEntitiesCollection();
 
         $download = new DeskPROEntity\Download();
         $download
@@ -93,7 +94,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setNumDownloads($entity->getNumDownloads())
         ;
 
-        $this->records->add($download);
+        $this->records->setPrimaryEntity($download);
         return $this->records;
     }
 
@@ -129,7 +130,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
                 $category = new DeskPROEntity\DownloadCategory();
                 $category->setRealTitle($title);
 
-                $this->records->add($category);
+                $this->records->addRelatedEntity($category);
                 $this->logInfo(sprintf('New download category creating `%s`', $category->getTitle()));
             }
         }

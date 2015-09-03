@@ -82,6 +82,23 @@ final class Collection extends AbstractCollection
     }
 
     /**
+     * Remove an entity
+     *
+     * @param EntityInterface $entity
+     * @return $this
+     */
+    public function detach(EntityInterface $entity)
+    {
+        $key = array_search($entity, $this->collection, true);
+
+        if ($key !== false) {
+            unset($this->collection[$key]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Merge another entity collection
      *
      * @param Collection $collection
@@ -97,5 +114,21 @@ final class Collection extends AbstractCollection
         }
 
         return $this;
+    }
+
+    /**
+     * Converts collection's entities to array
+     *
+     * @return array
+     */
+    public function entitiesToArray()
+    {
+        $entities = array();
+        foreach ($this->collection as $entity) {
+            /** @var EntityInterface $entity */
+            $entities[] = $entity->toArray();
+        }
+
+        return $entities;
     }
 }

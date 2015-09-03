@@ -2,7 +2,6 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
-use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Exception;
 
 /**
@@ -14,18 +13,24 @@ use Exception;
 class OsTicketReaderFactory
 {
     /**
-     * Create os ticket reader using deskpro config
+     * Create OsTicket reader using DeskPRO config
+     *
+     * @param OsTicketConfig $config
      *
      * @return OsTicketReader
      * @throws Exception
      */
     public static function createReader(OsTicketConfig $config)
     {
-        $config = $config ?: self::getDefaultConfig();
+        $config = $config ? : self::getDefaultConfig();
 
         return new OsTicketReader($config);
     }
 
+    /**
+     * @return \Application\ImportBundle\Reader\OsTicket\OsTicketConfig
+     * @throws Exception
+     */
     public static function getDefaultConfig()
     {
         $dp_config = dp_get_config('osticket_import');

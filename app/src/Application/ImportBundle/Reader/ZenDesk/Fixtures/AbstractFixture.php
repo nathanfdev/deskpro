@@ -27,9 +27,9 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
-use Psr\Log\LoggerInterface;
-use Zendesk\API\Client;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
+use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 
 /**
@@ -38,17 +38,12 @@ use Zendesk\API\ResponseException;
  * Class AbstractFixture
  * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
  */
-abstract class AbstractFixture implements FixtureInterface
+abstract class AbstractFixture extends AbstractFixtureHelper implements FixtureInterface
 {
     /**
      * @var Client
      */
     protected $client;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * Constructor
@@ -63,17 +58,10 @@ abstract class AbstractFixture implements FixtureInterface
     /**
      * {@inheritdoc}
      */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function create($offset, DateTime $initial_time, DateTime $end_time)
     {
+        $offset = (int)$offset;
+
         for ($i = $offset; $i < $offset + self::COUNT; $i++) {
             try {
                 $this->logInfo(sprintf('Importing fixture `%s_%d`', $this->getEntityType(), $i));
@@ -82,14 +70,7 @@ abstract class AbstractFixture implements FixtureInterface
                 $this->logInfo(sprintf('Fixture `%s_%d` imported successfully', $this->getEntityType(), $i));
 
             } catch (ResponseException $e) {
-                $this->logWarning(sprintf(
-                    'Unable to create %s, code `%s`, headers:',
-
-                    $this->getEntityType(),
-                    $this->client->getDebug()->lastResponseCode
-                ));
-
-                $this->logWarning($this->client->getDebug()->lastRequestHeaders);
+                $this->handleResponseException($this->getEntityType());
             }
         }
     }
@@ -97,35 +78,33 @@ abstract class AbstractFixture implements FixtureInterface
     /**
      * Create a fixture item
      *
-     * @param int      $prefix
+     * @param int      $num
      * @param DateTime $initial_time
      * @param DateTime $end_time
      *
      * @return void
      */
-    protected abstract function createItem($prefix, DateTime $initial_time, DateTime $end_time);
+    protected abstract function createItem($num, DateTime $initial_time, DateTime $end_time);
 
     /**
-     * Log info message if logger is defined
+     * Shows error output to log
      *
-     * @param string $message
+     * @param string $entity_type
      */
-    protected function logInfo($message)
+    protected function handleResponseException($entity_type)
     {
-        if ($this->logger) {
-            $this->logger->info($message);
-        }
-    }
+        $this->logWarning(sprintf(
+            'Bad response, entity type=`%s`, code=`%s`, headers:',
 
-    /**
-     * Log warning message if logger is defined
-     *
-     * @param string $message
-     */
-    protected function logWarning($message)
-    {
-        if ($this->logger) {
-            $this->logger->warning($message);
+            $entity_type,
+            $this->client->getDebug()->lastResponseCode
+        ));
+
+        $debug = $this->client->getDebug();
+        $this->logWarning($debug->lastRequestHeaders);
+
+        if ($debug->lastResponseCode == ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS) {
+            sleep(60);
         }
     }
 }

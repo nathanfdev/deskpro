@@ -225,20 +225,9 @@ final class Feedback extends AbstractContentEntity
             throw new \Exception('Date created is not set up');
         }
 
-        $attachments = array();
-        foreach ($this->attachments as $attachment) {
-            /** @var Attachment $attachment */
-            $attachments[] = $attachment->toArray();
-        }
-
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
         return array(
             'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
             'language'       => $this->language,
             'title'          => $this->title,
@@ -254,8 +243,8 @@ final class Feedback extends AbstractContentEntity
             'labels'         => $this->labels,
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
-            'attachments'    => $attachments,
-            'custom_fields'  => $custom_fields,
+            'attachments'    => $this->attachments->entitiesToArray(),
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
         );
     }
 

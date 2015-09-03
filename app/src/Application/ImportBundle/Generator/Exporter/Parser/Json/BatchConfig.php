@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchConfig;
-use DateTime;
 
 /**
  * Json batch configuration
@@ -45,18 +44,5 @@ final class BatchConfig extends AbstractBatchConfig
     public function getExporterType()
     {
         return ExporterInterface::TYPE_JSON;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray()
-    {
-        return array(
-            'id'            => $this->id,
-            'type'          => $this->getExporterType(),
-            'date_created'  => $this->date_created ? $this->date_created->format('Y-m-d H:i:s') : null,
-            'date_modified' => $this->date_modified ? $this->date_modified->format('Y-m-d H:i:s') : null,
-        );
     }
 }

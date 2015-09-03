@@ -112,7 +112,7 @@ class CustomDataPerson extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataPerson';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             array(

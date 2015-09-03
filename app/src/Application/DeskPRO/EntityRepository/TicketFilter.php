@@ -375,6 +375,8 @@ class TicketFilter extends AbstractEntityRepository
 
         if (is_int($var) OR ctype_digit($var)) {
             $ticket_filter_id = (int)$var;
+        } elseif (is_string($var)) {
+            return $this->findOneBy(array('sys_name' => $var));
         } elseif (\is_object($var)) {
             if ($var instanceof Entity\TicketFilter) {
                 return $var;

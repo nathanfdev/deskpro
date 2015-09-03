@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\ContactData;
 
 use Application\ImportBundle\Entity\ContactData;
+use Orb\Util\PhoneNumbers;
 
 /**
  * Abstract phone contact data helper
@@ -38,10 +39,34 @@ use Application\ImportBundle\Entity\ContactData;
 abstract class AbstractPhone extends AbstractContactData
 {
     /**
+     * Parses number to a contact data entity
+     *
+     * @param string $number
+     * @return array
+     */
+    public function parseNumberToEntity($number)
+    {
+        $contact = new ContactData();
+        $contact
+            ->setRawData($number)
+            ->setContactType($this->getType())
+            ->setField1(PhoneNumbers::getRegionForNumber($number))
+            ->setField2(PhoneNumbers::toE164Format($number))
+            ->setField3(PhoneNumbers::getType($number))
+        ;
+
+        return $contact;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toEntity(array $data)
     {
+        if (isset($data['number']) && ! isset($data['country_calling_code']) && ! isset($data['type'])) {
+            return $this->parseNumberToEntity($data['number']);
+        }
+
         $contact = parent::toEntity($data);
 
         $contact->setField1(isset($data['country_calling_code']) ? $data['country_calling_code'] : '');

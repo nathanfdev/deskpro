@@ -1127,6 +1127,15 @@ define(function() {
     target: "appbody@tickets"
   });
 
+
+  // Problems
+  routes.push({
+    id: 'tickets.problems',
+    url: '/problems',
+    templateName: 'TicketProblems/settings.html',
+    controller: 'Admin_TicketProblems_Ctrl_Settings',
+  });
+
   //##################################################################################################################
   // CRM
   //##################################################################################################################
@@ -2157,6 +2166,16 @@ define(function() {
     url: '/settings',
     templateName: 'Settings/server-settings.html',
     controller: 'Admin_Settings_Ctrl_ServerSettings'
+  });
+
+  //###
+  //# Encryption
+  //###
+  routes.push({
+    id: 'server.enc',
+    url: '/encryption',
+    templateName: 'Server/encryption.html',
+    controller: 'Admin_Server_Ctrl_ServerEnc'
   });
 
   //###

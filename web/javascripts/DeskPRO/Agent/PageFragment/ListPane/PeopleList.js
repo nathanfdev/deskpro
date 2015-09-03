@@ -21,7 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
-        this.fixed_fields = ['id', 'name_with_title'];
+		this.fixed_fields = ['id', 'name_with_title'];
 
 		self.$scope = DeskPRO_Window.$scope.$new();
 		self.$q = DeskPRO_Window.$q;
@@ -224,10 +224,13 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 		$scope.persons = this.meta.persons;
 		$scope.displayFields = this.meta.displayFields;
-        $scope.listType = 'list';
-        $scope.switchViewType = function() {
-            $scope.listType = 'list' === $scope.listType ? 'table' : 'list';
-        };
+		$scope.listType = 'list';
+		$scope.switchViewType = function() {
+				$scope.listType = 'list' === $scope.listType ? 'table' : 'list';
+				self.$timeout(function() {
+					window.DeskPRO_Window.layout.doResize();
+				});
+		};
 
 		$scope.isFieldDisplayable = function(person, field) {
 			switch (field) {

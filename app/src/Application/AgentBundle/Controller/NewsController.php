@@ -63,7 +63,7 @@ class NewsController extends AbstractController
         $news_comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 
         $related_finder = new RelatedContentFinder($this->person, $news);
-        $related_content = $related_finder->getRelatedEntities();
+        $related_content = $related_finder->getRelatedEntities(true);
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editnews', $this->person->id);
 

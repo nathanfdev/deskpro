@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
+use Application\DeskPRO\People\AgentPermissions\PersonDbLoader;
 
 /**
  * Scans the permtable template to extract the names of permissions so we can dynamically create
@@ -64,7 +65,7 @@ class AgentGroupPermScanner
         $unsafe = array();
 
         $set_perms = array();
-        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+        foreach (AgentPermissions::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 $set_perms[] = $real_name . '.' . $prop;

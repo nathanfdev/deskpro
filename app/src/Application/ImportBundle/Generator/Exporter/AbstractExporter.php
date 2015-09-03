@@ -31,7 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\ReaderInterface;
 use Exception;
 
 /**
@@ -47,15 +47,18 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     private $parsers;
 
+    /**
+     * @var ReaderInterface
+     */
     protected $reader;
 
     /**
      * Constructor
      *
      * @param Parser\Collection $parsers
-     * @param BaseReader        $reader
+     * @param ReaderInterface   $reader
      */
-    public function __construct(Parser\Collection $parsers, BaseReader $reader)
+    public function __construct(Parser\Collection $parsers, ReaderInterface $reader)
     {
         $this->parsers = $parsers;
         $this->reader  = $reader;
@@ -122,21 +125,19 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         return $parser;
     }
 
-    public function isReady()
-    {
-        return $this->reader->isReady();
-    }
-
-    static public function getOrderedTypes()
+    /**
+     * @return array
+     */
+    public static function getOrderedTypes()
     {
         return array(
             Entity\EntityInterface::TYPE_ORGANIZATION,
-            Entity\EntityInterface::TYPE_PERSON,
             Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,
             Entity\EntityInterface::TYPE_NEWS,
+            Entity\EntityInterface::TYPE_PERSON,
         );
     }
 

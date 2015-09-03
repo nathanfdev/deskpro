@@ -39,6 +39,7 @@ use Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PermissionValueInterface;
+use Application\DeskPRO\People\AgentPermissions\Value\ProblemsPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
@@ -80,6 +81,25 @@ class AgentPermissions
      */
     public $tasks;
 
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\ProblemsPermissions
+     */
+    public $problems;
+
+    /**
+     * @var array
+     */
+    public static $prefix_map = array(
+        'agent_tickets' => 'ticket',
+        'agent_people'  => 'people',
+        'agent_org'     => 'org',
+        'agent_chat'    => 'chat',
+        'agent_publish' => 'publish',
+        'agent_general' => 'general',
+        'agent_tasks'   => 'tasks',
+        'agent_problems' => 'problems',
+    );
+
     public function __construct()
     {
         $this->chat    = new ChatPermissions();
@@ -89,6 +109,7 @@ class AgentPermissions
         $this->publish = new PublishPermissions();
         $this->ticket  = new TicketPermissions();
         $this->tasks   = new TasksPermissions();
+        $this->problems = new ProblemsPermissions();
     }
 
     /**
@@ -103,6 +124,8 @@ class AgentPermissions
             $this->people,
             $this->publish,
             $this->ticket,
+            $this->tasks,
+            $this->problems,
         );
     }
 

@@ -56,10 +56,18 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
      */
     protected $_time_format;
 
-    public function __construct($format = self::DEFAULT_FORMAT, $time_format = self::DEFAULT_TIME_FORMAT)
+    /**
+     * @var bool
+     */
+    protected $_has_time = false;
+
+    public function __construct($format = null, $time_format = self::DEFAULT_TIME_FORMAT)
     {
         $this->_format = $format;
         $this->_time_format = $time_format;
+        if ($format === null || strpos($format, '%datetime%') !== false) {
+            $this->_has_time = true;
+        }
     }
 
     public function filter($log_item)
@@ -68,13 +76,18 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 
         $message_line = $this->_format;
 
-        foreach ($log_item as $k => $v) {
-            if ($v instanceof \DateTime) {
-                $v = $v->format($this->_time_format);
-            }
+        if ($this->_format === null) { // micro-opt for default format
+            $datetime = $log_item['datetime']->format($this->_time_format);
+            $message_line =  "[{$datetime} {$log_item['priority_name']}] {$log_item['message']}";
+        } else {
+            foreach ($log_item as $k => $v) {
+                if ($this->_has_time && $v instanceof \DateTime) {
+                    $v = $v->format($this->_time_format);
+                }
 
-            if (is_scalar($v)) {
-                $message_line = str_replace("%$k%", $v, $message_line);
+                if (is_scalar($v)) {
+                    $message_line = str_replace("%$k%", $v, $message_line);
+                }
             }
         }
 

@@ -1140,8 +1140,6 @@ define [
               if options.agent_ids
                 for aid in options.agent_ids
                   agent_ids[aid+""] = true
-              else
-                agent_ids['notify_list'] = true
 
               return {
                 template: options.template || '',

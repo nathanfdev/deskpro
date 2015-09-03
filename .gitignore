@@ -54,6 +54,9 @@ app/sys/Resources/agent-perm-names.php
 /data/log-analytics.sqlite
 /data/languages.cache
 /data/twitter.pid
+data/can-disable-encryption.txt
+data/encryption-key.bin
+data/encryption-key.bin.*
 /data/logs/*
 /data/logs/emails/*
 /data/debug/*

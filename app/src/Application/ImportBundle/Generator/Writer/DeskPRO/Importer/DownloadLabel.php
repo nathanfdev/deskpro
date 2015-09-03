@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO download labels importer
@@ -49,12 +48,14 @@ final class DownloadLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Download $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Download) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $this->records = new DoctrineEntitiesCollection();
 
         $oldEntity = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
         $type = 'download';
@@ -91,7 +92,7 @@ final class DownloadLabel extends AbstractImporter
         $entity = new DeskPROEntity\LabelDownload();
         $entity->setLabel($label);
 
-        $this->records->add($entity);
+        $this->records->addRelatedEntity($entity);
         return $entity;
     }
 }

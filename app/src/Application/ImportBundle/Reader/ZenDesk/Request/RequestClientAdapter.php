@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperInterface;
 use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Psr\Log\LoggerInterface;
@@ -79,41 +80,19 @@ final class RequestClientAdapter implements RequestAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function doPeopleIncrementalExportRequest(array $params = array())
+    public function doRequest($helper_class, array $params = array())
     {
-        return $this->doRequest(new ClientHelper\PeopleIncrementalExport($params));
-    }
+        $helper_class = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\' . $helper_class;
+        if ( ! class_exists($helper_class)) {
+            throw new \RuntimeException(sprintf('ZenDesk reader helper class `%s` not found', $helper_class));
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function doPeopleFindRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\PeopleFind($params));
-    }
+        $helper = new $helper_class($params);
+        if ( ! $helper instanceof ClientHelperInterface) {
+            throw new \RuntimeException('Helper is not instance of ClientHelperInterface');
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function doOrganizationFindRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\OrganizationFind($params));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketsIncrementalExportRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\TicketsIncrementalExport($params));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketCommentsFindAllRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\TicketCommentsFindAll($params));
+        return $this->doApiRequest($helper);
     }
 
     /**
@@ -127,7 +106,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
+    private function doApiRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);
@@ -223,7 +202,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
 
             sleep($timeout);
 
-            return $this->doRequest($request, $retry_attempt);
+            return $this->doApiRequest($request, $retry_attempt);
         }
 
         throw $exception;

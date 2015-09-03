@@ -55,8 +55,8 @@ class TicketSla extends AbstractEntityRepository
 
         $where_perm = array();
 
-        if ($person_context->getDisallowedDepartments()) {
-            $where_perm[] = "tickets.department_id NOT IN (" . implode(',', $person_context->getDisallowedDepartments()) . ")";
+        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', array())) {
+            $where_perm[] = "tickets.department_id NOT IN (".implode(',', $disallowed).")";
         }
 
         if (!$person_context->hasPerm('agent_tickets.view_unassigned')) {
@@ -66,8 +66,9 @@ class TicketSla extends AbstractEntityRepository
         if (!$person_context->hasPerm('agent_tickets.view_others')) {
             $part = array();
             $part[] = "tickets.agent_id = {$person_context['id']}";
-            if ($person_context->getAgentTeamIds()) {
-                $part[] = "tickets.agent_team_id IN (" . implode(',', $person_context->getAgentTeamIds()) . ")";
+
+            if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+                $part[] = "tickets.agent_team_id IN (".implode(',', $teams).")";
             }
 
             $where_perm[] = '(' . implode(' OR ', $part) . ')';
@@ -80,8 +81,8 @@ class TicketSla extends AbstractEntityRepository
         $where = '((' . implode(' AND ', $where_perm) . ') OR (';
 
         $where .= "tickets.agent_id = {$person_context['id']} OR ";
-        if ($person_context->getAgentTeamIds()) {
-            $where .= "tickets.agent_team_id IN (" . implode(',', $person_context->getAgentTeamIds()) . ") OR ";
+        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+            $where .= "tickets.agent_team_id IN (".implode(',', $teams).") OR ";
         }
 
         $where .= "tickets_participants_perm.person_id IS NOT NULL))";
@@ -92,8 +93,8 @@ class TicketSla extends AbstractEntityRepository
                 break;
 
             case 'team':
-                if ($person_context->getAgentTeamIds()) {
-                    $where .= " AND tickets.agent_team_id IN (" . implode(',', $person_context->getAgentTeamIds()) . ")";
+                if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+                    $where .= " AND tickets.agent_team_id IN (".implode(',', $teams).")";
                 } else {
                     $where .= " AND 0";
                 }

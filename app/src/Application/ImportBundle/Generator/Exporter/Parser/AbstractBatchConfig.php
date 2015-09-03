@@ -117,17 +117,21 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     }
 
     /**
+     * @param bool $remaining
+     * @return $this
+     */
+    public function setHasRemaining($remaining)
+    {
+        $this->has_remaining = (bool)$remaining;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getHasRemaining()
     {
         return $this->has_remaining;
-    }
-
-    public function setHasRemaining($remaining)
-    {
-        $this->has_remaining = (bool)$remaining;
-        return $this;
     }
 
     /**
@@ -136,11 +140,11 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     public function toArray()
     {
         return array(
-            'id'             => $this->id,
-            'type'           => $this->getExporterType(),
-            'date_created'   => $this->getDateFormatOrNull($this->date_created),
-            'date_modified'  => $this->getDateFormatOrNull($this->date_modified),
-            'has_remaining'  => $this->has_remaining,
+            'id'            => $this->id,
+            'type'          => $this->getExporterType(),
+            'date_created'  => $this->getDateFormatOrNull($this->date_created),
+            'date_modified' => $this->getDateFormatOrNull($this->date_modified),
+            'has_remaining' => $this->has_remaining,
         );
     }
 

@@ -27,8 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use Application\ImportBundle\ContactData\ContactDataFactory;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
@@ -68,13 +68,22 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor
      *
      * @param CsvReaderInterface $reader
+     * @param FormatterInterface $formatter
+     * @param ParserHelperSet    $helpers
      */
-    public function __construct(CsvReaderInterface $reader)
+    public function __construct(CsvReaderInterface $reader, FormatterInterface $formatter, ParserHelperSet $helpers)
     {
-        $this->reader = $reader;
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
+        $this->helpers   = $helpers;
     }
 
     /**
@@ -142,390 +151,50 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns a collection of attachments
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return Entity\Collection
+     * @return Helper\Blob\Blob
      */
-    protected function exportAttachments(CsvConfig $config, $destination_prefix, $ref_column)
+    protected function getBlobParser()
     {
-        $collection  = new Entity\Collection();
-        $attachments = $this->getReaderData($config);
-
-        foreach ($attachments as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf(
-                        'Attachment of entity `%s%s` parsed successfully!',
-                        $destination_prefix, $entity->getOid())
-                    );
-                } else {
-                    $this->logWarning(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_BLOB);
     }
 
     /**
-     * Returns an attachment entity
-     *
-     * @param int    $num
-     * @param string $destination_prefix
-     * @param array  $attachment
-     * @param string $ref_column
-     *
-     * @return Entity\Attachment|null
+     * @return Helper\Blob\Attachment
      */
-    protected function exportAttachment($num, $destination_prefix, array $attachment, $ref_column)
+    protected function getAttachmentParser()
     {
-        /** @var Entity\Attachment $entity */
-        $entity = $this->exportBlob($num, $destination_prefix, $attachment, $ref_column, new Entity\Attachment());
-        if ($entity && $this->isAttachmentValid($attachment, $ref_column)) {
-            $entity
-                ->setPersonEmail($attachment['person'])
-                ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
-
-            return $entity;
-        }
-
-        return null;
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
     }
 
     /**
-     * Check if an attachment has all required columns
-     *
-     * @param array  $attachment
-     * @param string $ref_column
-     *
-     * @return bool
+     * @return Helper\ContactData\MultipleContactData
      */
-    protected function isAttachmentValid(array $attachment, $ref_column)
+    protected function getMultipleContactDataParser()
     {
-        $columns = array(
-            'person',
-            'is_inline',
-        );
-
-        return $this->isBlobValid($attachment, $ref_column)
-            && $this->hasRequiredColumns($attachment, $columns);
+        return $this->helpers->get($this, 'multiple_' . Entity\EntityInterface::TYPE_CONTACT_DATA);
     }
 
     /**
-     * Returns a blob entity
-     *
-     * @param int              $num
-     * @param string           $destination_prefix
-     * @param array            $blob
-     * @param string           $ref_column
-     * @param Entity\Blob|null $entity
-     *
-     * @return Entity\Blob|null
+     * @return Helper\ContactData\Inline\InlineContactData
      */
-    protected function exportBlob($num, $destination_prefix, array $blob, $ref_column, Entity\Blob $entity = null)
+    protected function getInlineContactDataParser()
     {
-        if ($this->isBlobValid($blob, $ref_column)) {
-            $entity = $entity ? : new Entity\Blob();
-            $entity
-                ->setRawData($blob)
-                ->setDestination($this->formatDestination($destination_prefix, $blob[$ref_column]))
-                ->setOid($num)
-                ->setBlobUrl(@$blob['blob_url'])
-                ->setBlobPath(@$blob['blob_path'])
-                ->setFileName($blob['file_name'])
-                ->setContentType($blob['content_type'])
-            ;
-
-            return $entity;
-        }
-
-        return null;
+        return $this->helpers->get($this, 'inline_' . Entity\EntityInterface::TYPE_CONTACT_DATA);
     }
 
     /**
-     * Check if a blob has all required columns
-     *
-     * @param array  $blob
-     * @param string $ref_column
-     *
-     * @return bool
+     * @return Helper\CustomFields\MultipleCustomFields
      */
-    protected function isBlobValid(array $blob, $ref_column)
+    protected function getMultipleCustomFieldsParser()
     {
-        $columns = array(
-            $ref_column,
-            'file_name',
-            'content_type',
-        );
-
-        $blob_columns = array(
-            'blob_url',
-            'blob_path',
-        );
-
-        return $this->hasRequiredColumns($blob, $columns)
-            && $this->hasAnyRequiredColumn($blob, $blob_columns);
+        return $this->helpers->get($this, 'multiple_' . Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 
     /**
-     * Returns a collection of custom fields
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return Entity\Collection
+     * @return Helper\CustomFields\InlineCustomFields
      */
-    protected function exportCustomFields(CsvConfig $config, $destination_prefix, $ref_column)
+    protected function getInlineCustomFieldsParser()
     {
-        $collection    = new Entity\Collection();
-        $custom_fields = $this->getReaderData($config);
-
-        foreach ($custom_fields as $num => $custom_field) {
-            try {
-                $entity = $this->exportCustomField($num, $destination_prefix, $custom_field, $ref_column);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid custom field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns an attachment entity
-     *
-     * @param int    $num
-     * @param string $destination_prefix
-     * @param array  $custom_field
-     * @param string $ref_column
-     *
-     * @return Entity\CustomField|null
-     */
-    protected function exportCustomField($num, $destination_prefix, array $custom_field, $ref_column)
-    {
-        if ($this->isCustomFieldValid($custom_field, $ref_column)) {
-            $entity = new Entity\CustomField();
-            $entity
-                ->setRawData($custom_field)
-                ->setDestination($this->formatDestination($destination_prefix, $custom_field[$ref_column]))
-                ->setOid($num)
-                ->setKey($custom_field['field_name'])
-                ->setValue($custom_field['value'])
-            ;
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if a custom field has all required columns
-     *
-     * @param array  $custom_field
-     * @param string $ref_column
-     *
-     * @return bool
-     */
-    protected function isCustomFieldValid(array $custom_field, $ref_column)
-    {
-        $columns = array(
-            $ref_column,
-            'field_name',
-            'value',
-        );
-
-        return $this->hasRequiredColumns($custom_field, $columns);
-    }
-
-    /**
-     * Returns a collection of inline custom fields
-     *
-     * @param string $destination
-     * @param array  $entity
-     *
-     * @return Entity\Collection
-     */
-    protected function exportInlineCustomFields($destination, array $entity)
-    {
-        $collection    = new Entity\Collection();
-        $custom_fields = $this->parseInlineCustomFields($entity);
-
-        foreach ($custom_fields as $num => $custom_field) {
-            $entity = new Entity\CustomField();
-            $entity
-                ->setOid($custom_field['property'])
-                ->setDestination($destination)
-                ->setKey($custom_field['field_name'])
-                ->setValue($custom_field['value'])
-            ;
-
-            $collection->attach($entity);
-
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a collection of organization contact data entities
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return Entity\Collection
-     */
-    protected function exportContactData(CsvConfig $config, $destination_prefix, $ref_column)
-    {
-        $collection   = new Entity\Collection();
-        $contact_info = $this->exportContactDataFields($config, $destination_prefix, $ref_column);
-
-        foreach ($contact_info as $destination => $contacts) {
-            foreach ($contacts as $oid => $contact) {
-                try {
-                    if ($this->isContactValid($contact)) {
-                        $handler = ContactDataFactory::getHandler($contact['contact_type']);
-                        $entity  = $handler->toEntity($contact);
-                        $entity
-                            ->setOid($oid)
-                            ->setDestination($destination)
-                        ;
-
-                        $collection->attach($entity);
-                        $this->logInfo(sprintf('Entity `%s%s` parsed successfully!', $entity->getDestination()));
-                    } else {
-                        $this->logWarning(sprintf('Invalid contact record `%d` found (Skipping)', $destination));
-                    }
-
-                } catch (NoColumnException $e) {
-                    $this->logWarning(sprintf(
-                        'Invalid contact record `%d` found (Skipping): %s',
-                        $destination, $e->getMessage()
-                    ));
-                }
-
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Merges contact data fields to array
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return array
-     */
-    protected function exportContactDataFields(CsvConfig $config, $destination_prefix, $ref_column)
-    {
-        $contact_fields = $this->getReaderData($config);
-        $contact_info  = array();
-
-        foreach ($contact_fields as $num => $field) {
-            try {
-                if ($this->isContactFieldValid($field, $ref_column)) {
-                    $destination = $this->formatDestination($destination_prefix, $field[$ref_column]);
-                    $contact_info[$destination][$field['contact_id']][$field['field_name']] = $field['value'];
-
-                    $this->logInfo(sprintf('Contact field `%s` parsed successfully!', $destination));
-                } else {
-                    $this->logWarning(sprintf('Invalid contact field record `%d` found (Skipping)', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid contact field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $contact_info;
-    }
-
-    /**
-     * Check if contact data field has all required columns
-     *
-     * @param array  $contact
-     * @param string $ref_column
-     *
-     * @return bool
-     */
-    protected function isContactFieldValid(array $contact, $ref_column)
-    {
-        $columns = array(
-            $ref_column,
-            'contact_id',
-            'field_name',
-            'value',
-        );
-
-        return $this->hasRequiredColumns($contact, $columns);
-    }
-
-    /**
-     * Check if contact data has all required columns
-     *
-     * @param array $contact
-     * @return bool
-     */
-    protected function isContactValid(array $contact)
-    {
-        $columns = array(
-            'contact_type',
-        );
-
-        return $this->hasRequiredColumns($contact, $columns);
-    }
-
-    /**
-     * Parses inline custom fields from entity
-     *
-     * @param array $entity
-     * @return array
-     */
-    protected function parseInlineCustomFields(array $entity)
-    {
-        $properties    = array_keys($entity);
-        $custom_fields = array();
-
-        foreach ($properties as $property) {
-            if (preg_match('/^custom "([^"]+)"$/', $property, $matches)) {
-                $custom_fields[] = array(
-                    'property'   => $property,
-                    'field_name' => $matches[1],
-                    'value'      => $entity[$property],
-                );
-            }
-        }
-
-        return $custom_fields;
+        return $this->helpers->get($this, 'inline_' . Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 }

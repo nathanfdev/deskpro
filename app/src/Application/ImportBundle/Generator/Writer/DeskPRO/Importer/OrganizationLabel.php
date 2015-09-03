@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO organization label importer
@@ -49,33 +48,26 @@ final class OrganizationLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
-        $oldEntity  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
-        $type = 'organization';
-        $newLabels = $entity->getLabels();
-
-        foreach ($oldEntity->labels as $labelEntity) {
-            if (false === $k = array_search($labelEntity->label, $newLabels)) {
-                $oldEntity->labels->removeElement($labelEntity);
-                $this->removeEntity($labelEntity);
-            } else {
-                unset($newLabels[$k]);
-            }
+        if ( ! $entity instanceof Entity\Organization) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        foreach ($newLabels as $label) {
-            $oldEntity->addLabel($this->createLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for %s with oid `%d`',
-                $label, $type, $oldEntity->getId()
+        $this->records = new DoctrineEntitiesCollection();
+        $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
+        $organization->resetLabels();
+
+        foreach ($entity->getLabels() as $label) {
+            $organization->addLabel($this->createOrganizationLabel($label));
+            $this->logInfo(sprintf(
+                'Creating a new label `%s` for organization with oid `%d`',
+                $label, $organization->getId()
             ));
         }
 
+        $this->records->setPrimaryEntity($organization);
         return $this->records;
     }
 
@@ -85,11 +77,11 @@ final class OrganizationLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelOrganization
      */
-    private function createLabel($label)
+    private function createOrganizationLabel($label)
     {
         $entity = new DeskPROEntity\LabelOrganization();
         $entity->setLabel($label);
-        $this->records->add($entity);
+
         return $entity;
     }
 }
