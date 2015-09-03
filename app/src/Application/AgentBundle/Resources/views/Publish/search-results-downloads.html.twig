@@ -29,6 +29,8 @@
 	{% if results|length %}
 
 	<section class="feedback-simple-list list-listing">
+
+		<div class="with-scrollbar">
 		<section class="search-reuslts page-set" data-page="{{ page }}">
 		{% for download in results %}
 			<article class="download download-{{download.id}}">
@@ -45,6 +47,7 @@
 			</article>
 		{% endfor %}
 		</section>
+		</div>
 
 		{% if num_results %}
 			<footer class="results-nav">

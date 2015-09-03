@@ -2160,6 +2160,16 @@ define(function() {
   });
 
   //###
+  //# Encryption
+  //###
+  routes.push({
+    id: 'server.enc',
+    url: '/encryption',
+    templateName: 'Server/encryption.html',
+    controller: 'Admin_Server_Ctrl_ServerEnc'
+  });
+
+  //###
   //# Elastic Search
   //###
   routes.push({

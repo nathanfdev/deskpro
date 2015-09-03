@@ -35,7 +35,9 @@
 
 	{% if chat_ids|length %}
 		<section class="list-listing">
+			<div class="with-scrollbar">
 			{% include 'AgentBundle:UserChat:list-page.html.twig' %}
+			</div>
 		</section>
 
 		<footer class="results-nav">
