@@ -577,7 +577,7 @@ class TicketManager
             $logger->pushHandler($stream);
         }
 
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
+        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && empty($GLOBALS['DP_CRON_ID']) && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
             $stream = new StreamHandler('php://stdout');
             $logger->pushHandler($stream);
         }

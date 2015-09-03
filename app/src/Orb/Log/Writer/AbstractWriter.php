@@ -49,7 +49,7 @@ abstract class AbstractWriter
     /**
      * Get the filter chain instance
      *
-     * @return Orb\Filter\FilterChain
+     * @return \Orb\Filter\FilterChain
      */
     public function getFilterChain()
     {
