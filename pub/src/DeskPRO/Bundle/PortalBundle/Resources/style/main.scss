@@ -928,6 +928,14 @@ textarea {
       border: 1px solid $button-color;
       background: #f0f0e8;
     }
+    &.shorter {
+      width: 33%;
+    }
+    &.show-error {
+      border: 1px solid $red;
+      border-top-right-radius: 0;
+      background: #fff0ec;
+    }
   }
 
   input[type="text"], input[type="email"], input[type="password"], textarea {

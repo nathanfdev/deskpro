@@ -223,18 +223,4 @@ class SearchController extends AbstractController
             )
         );
     }
-
-    protected function makeJsonResponse(array $array)
-    {
-        $response = new JsonResponse(array('data' => $array));
-
-        // if its 5.4+ make the results pretty
-        if (constant('JSON_PRETTY_PRINT')) {
-            $options = $response->getEncodingOptions();
-            $options = $options | JSON_PRETTY_PRINT;
-            $response->setEncodingOptions($options);
-        }
-
-        return $response;
-    }
 }

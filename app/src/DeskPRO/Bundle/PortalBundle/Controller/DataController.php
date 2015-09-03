@@ -1,0 +1,76 @@
+<?php
+/**************************************************************************\
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\PortalBundle\Controller;
+
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * A very simple controller that the portal depends on for AJAX requests.
+ */
+class DataController extends AbstractController
+{
+    /**
+     * @Route("/portal-data/custom-per/{type}/{id}", requirements={"type":"per_user|per_org"})
+     * @Security("is_granted('ROLE_USER')")
+     * @PageHttpCache
+     */
+    public function saveFormCustomPerChoiceController(Request $request, $type, $id)
+    {
+        return $this->makeJsonResponse(
+            array(
+                'type' => $type,
+                'id' => $id
+            )
+        );
+    }
+
+    protected function ensureAjaxRequest(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw $this->createNotFoundException(
+                'ApiController is an ajax-only controller. You tried to access it directly.'
+            );
+        }
+    }
+}

@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\People\PersonGuest;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Application\DeskPRO\Entity\Person;
@@ -401,4 +402,20 @@ class AbstractController extends BaseController
     {
         return $this->get('language_manager')->phrase($phrase, $vars, $lang);
     }
+
+
+    protected function makeJsonResponse(array $array)
+    {
+        $response = new JsonResponse(array('data' => $array));
+
+        // if its 5.4+ make the results pretty
+        if (constant('JSON_PRETTY_PRINT')) {
+            $options = $response->getEncodingOptions();
+            $options = $options | JSON_PRETTY_PRINT;
+            $response->setEncodingOptions($options);
+        }
+
+        return $response;
+    }
+
 }
