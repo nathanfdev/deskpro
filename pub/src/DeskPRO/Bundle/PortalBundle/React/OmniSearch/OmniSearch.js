@@ -10,19 +10,17 @@ class PaginationLink extends React.Component {
     this.props.onClick(this.props.page);
   }
   render() {
-    return (<li><a onClick={this.onClick}>{this.props.text}</a></li>);
+    return (<li><a onClick={this.onClick.bind(this)}>{this.props.text}</a></li>);
   }
 }
 
 class Pagination extends React.Component {
   render() {
-    let current = this.props.currentPage;
-    let total = this.props.totalResults;
-    let per_page = this.props.perPageResults;
-    let onClick = this.props.pageClick;
-
-
-    let pages = Math.ceil(total / per_page);
+    const current = _.parseInt(this.props.currentPage);
+    const total = _.parseInt(this.props.totalResults);
+    const per_page = _.parseInt(this.props.perPageResults);
+    const onClick = this.props.pageClick;
+    const pages = Math.ceil(total / per_page);
 
     if (pages <= 1) {
       // don't show a pager if its the only page
@@ -39,10 +37,30 @@ class Pagination extends React.Component {
       prevLink = (<PaginationLink onClick={this.props.pageClick} page={current-1} text="Back"/>);
     }
 
+    let prevPaddings = [];
+    if (current > 1) {
+      prevPaddings.push((<PaginationLink key={'prev'+(current-1)} onClick={this.props.pageClick} page={current - 1} text={current - 1}/>));
+      if (current > 2) {
+
+        prevPaddings.unshift((<PaginationLink key={'prev'+(current-2)} onClick={this.props.pageClick} page={current - 2} text={current - 2}/>));
+      }
+    }
+
+    let nextPaddings = [];
+    if (current < pages) {
+      nextPaddings.push((<PaginationLink key={'next'+(current+1)} onClick={this.props.pageClick} page={current + 1} text={current + 1}/>));
+      if ((current + 1) < pages) {
+
+        nextPaddings.push((<PaginationLink key={'next'+(current+2)} onClick={this.props.pageClick} page={current + 2} text={current + 2}/>));
+      }
+    }
+
     return (
       <ul className="pagination">
         {prevLink}
+        {prevPaddings}
         <li className="active-page"><a href="#">{current}</a></li>
+        {nextPaddings}
         {nextLink}
       </ul>
     );
@@ -61,30 +79,47 @@ export default class OmniSearch extends React.Component {
           curpage: 1
         }
       },
-      last_query: null
-    }
+      search_query: null
+    };
   }
   componentDidMount() {
-    let throttleChanges = _.throttle(this.doSearch.bind(this), 250);
+    let throttleChanges = _.throttle((e) => {
+      this.doSearch({ q: e.target.value });
+    }, 250);
     this.state.$input.on('keyup', throttleChanges);
   }
-  doSearch(e) {
-    let search_query = { q: e.target.value };
+  doSearch(query_modifications) {
+    const last_query = this.state.search_query || {};
+    const search_query = {...last_query, ...query_modifications};
+    this.setState({
+      search_query
+    });
+
+    console.log("search query: %o", search_query);
+
+    if (!search_query.q || search_query.q.length < 3) {
+      // we need a query with a length of at least 3 for the server to do any real searching
+      // so don't do a HTTP request if we don't at least have that
+      return;
+    }
+
     this.setState({
       doSpin: true
     });
+
     PortalHttp.sendGet('/search', { data: search_query }).then((r) => {
+      console.log("response %o", r);
       if (!r.isError()) {
         this.setState({
           data: r.data.data,
-          search_query: search_query,
+          search_query,
           doSpin: false
         });
       }
     });
   }
   changePage(page) {
-    console.log('change to page ' + page);
+    this.doSearch({page: page});
   }
 	render() {
     let data = this.state.data;
