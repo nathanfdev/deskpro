@@ -84,6 +84,7 @@ class ChatCountCriteria extends ChatSelectCriteria
         parent::configureResolver($resolver, $data);
 
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
+        $resolver->remove('order_by');
         $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
     }
 }
