@@ -7,7 +7,7 @@ export class PublishApp extends React.Component {
 
   render() {
     return (
-      <AppContainer thisAppId="crm">
+      <AppContainer thisAppId="publish">
         <NavContainer />
         <ListContainer />
       </AppContainer>

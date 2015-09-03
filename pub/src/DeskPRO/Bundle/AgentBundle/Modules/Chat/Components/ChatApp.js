@@ -1,6 +1,7 @@
 import React from 'react';
 import AppContainer from 'DeskPRO/Component/AppContainer';
 import { NavContainer } from './Nav/NavContainer';
+import { ListContainer } from './List/ListContainer';
 
 export class ChatApp extends React.Component {
 
@@ -8,6 +9,7 @@ export class ChatApp extends React.Component {
     return (
       <AppContainer thisAppId="chat">
         <NavContainer />
+        <ListContainer />
       </AppContainer>
     );
   }

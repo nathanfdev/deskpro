@@ -5,7 +5,7 @@ import { ChatsListItem } from './ChatsListItem';
 
 export class Nav extends React.Component {
   render() {
-    const {lists, grouping, changeGrouping, toggleGroupingVisibility} = this.props;
+    const {lists, grouping, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick} = this.props;
 
     return (
       <NavFrame>
@@ -45,7 +45,14 @@ export class Nav extends React.Component {
 
               <ul>
                 {lists.my.items.map(item =>
-                   <ChatsListItem groupBy={lists.my.groupBy} group={item.group} count={item.count} key={item.group} />)}
+                   <ChatsListItem
+                     groupBy={lists.my.groupBy}
+                     group={item.group}
+                     count={item.count}
+                     key={item.group}
+                     onClick={onMyClick}
+                   />
+                )}
               </ul>
             </Section>
 
@@ -63,7 +70,14 @@ export class Nav extends React.Component {
 
               <ul>
                 {lists.all.items.map(item =>
-                   <ChatsListItem groupBy={lists.all.groupBy} group={item.group} count={item.count} key={item.group} />)}
+                   <ChatsListItem
+                     groupBy={lists.all.groupBy}
+                     group={item.group}
+                     count={item.count}
+                     key={item.group}
+                     onClick={onAllClick}
+                   />
+                )}
               </ul>
             </Section>
           </SectionsPane>
