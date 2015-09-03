@@ -24,7 +24,7 @@
     'agent.login.opera'                      => 'Opera',
     'agent.login.password_was_reset'         => 'Your password has been reset successfully.',
     'agent.login.remember_me'                => 'Remember Me',
-    'agent.login.reset-password-info'        => 'Enter your email address to receieve instructions on how to reset your password:',
+    'agent.login.reset-password-info'        => 'Enter your email address to receive instructions on how to reset your password:',
     'agent.login.reset-password-sent'        => 'We have sent a message to your email address with instructions on how to reset your password.',
     'agent.login.sent_pw_reset_instructions' => 'We sent instructions on how to reset your password to the email address you provided.',
     'agent.login.session_timeout'            => 'Your session has timed out, you must log in again.',

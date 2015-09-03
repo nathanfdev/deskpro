@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,38 +29,76 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\IncomingAccount;
+namespace Application\DeskPRO\Email\EmailAccount;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Application\DeskPRO\Encryption\DpEnc;
 
-class Pop3AccountType extends AbstractType
+class EmailAccountUtil
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function decryptIncomingAccount(AccountConfigInterface $acc, DpEnc $enc)
     {
-        $builder->add('user',        'text',     array('required' => false));
-        $builder->add('password',    'dp_enc_password', array('required' => false));
-        $builder->add('host',        'text',     array('required' => true));
-        $builder->add('port',        'text',     array('required' => true));
-        $builder->add('secure_mode', 'choice',   array(
-            'required'      => false,
-            'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
-            'empty_value'   => true,
-        ));
+        $new_acc = clone $acc;
+
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpDecrypt($acc->password);
+        }
+
+        return $new_acc;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function decryptOutgoingAccount(AccountConfigInterface $acc, DpEnc $enc)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\Pop3Config',
-        ));
+        $new_acc = clone $acc;
+
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpDecrypt($acc->password);
+        }
+
+        return $new_acc;
     }
 
-    public function getName()
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function encryptIncomingAccount(AccountConfigInterface $acc, DpEnc $enc)
     {
-        return 'in_pop3_account';
+        $new_acc = clone $acc;
+
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpEncrypt($acc->password);
+        }
+
+        return $new_acc;
+    }
+
+    /**
+     * @param AccountConfigInterface $acc
+     * @param DpEnc $enc
+     * @return AccountConfigInterface
+     */
+    public static function encryptOutgoingAccount(AccountConfigInterface $acc, DpEnc $enc)
+    {
+        $new_acc = clone $acc;
+
+        if (isset($acc->password)) {
+            $new_acc->password = $enc->dpEncrypt($acc->password);
+        }
+
+        return $new_acc;
     }
 }

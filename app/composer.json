@@ -43,7 +43,8 @@
     "react/event-loop": "0.4.*",
     "react/child-process": "0.4.*",
     "react/stream": "0.4.*",
-    "zendesk/zendesk_api_client_php": "1.2.*"
+    "zendesk/zendesk_api_client_php": "1.2.*",
+    "defuse/php-encryption": "^1.2"
   },
   "preferred-install": "dist"
 }

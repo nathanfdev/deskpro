@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -31,36 +31,62 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\IncomingAccount;
+namespace Application\DeskPRO\Encryption\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
+use Application\DeskPRO\Encryption\DpEnc;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class Pop3AccountType extends AbstractType
+class DpEncPasswordType extends PasswordType
 {
+    /**
+     * @var DpEnc
+     */
+    private $enc;
+
+    /**
+     * @param DpEnc $enc
+     */
+    public function __construct(DpEnc $enc)
+    {
+        $this->enc = $enc;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('user',        'text',     array('required' => false));
-        $builder->add('password',    'dp_enc_password', array('required' => false));
-        $builder->add('host',        'text',     array('required' => true));
-        $builder->add('port',        'text',     array('required' => true));
-        $builder->add('secure_mode', 'choice',   array(
-            'required'      => false,
-            'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
-            'empty_value'   => true,
+        parent::buildForm($builder, $options);
+
+        $enc = $this->enc;
+
+        $builder->addModelTransformer(new CallbackTransformer(
+            function ($modelData) use ($enc) {
+                return $enc->dpDecrypt($modelData);
+            },
+            function ($normData) use ($enc) {
+                return $enc->dpEncrypt($normData);
+            }
+        ));
+
+        // the form may already be encrypted
+        $builder->addViewTransformer(new CallbackTransformer(
+            function ($modelData) use ($enc) {
+                return $enc->dpDecrypt($modelData);
+            },
+            function ($normData) use ($enc) {
+                return $enc->dpDecrypt($normData);
+            }
         ));
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+
+    public function getParent()
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\Pop3Config',
-        ));
+        return 'password';
     }
 
     public function getName()
     {
-        return 'in_pop3_account';
+        return 'dp_enc_password';
     }
 }
