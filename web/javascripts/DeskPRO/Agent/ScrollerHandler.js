@@ -17,21 +17,6 @@ if (!window.DP_NO_JS_SCROLL) {
 			});
 
 			element = $(element);
-
-      if (pageObject) {
-        if (!element.children('.scrollbar').length) {
-          element.prepend('<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
-        }
-
-        if (!element.children('.scrollbar-viewport').length) {
-          element.append('<div class="scroll-viewport"><div class="scroll-content"></div></div>');
-        }
-
-        var $el = element.children(':not(.scrollbar, .scroll-viewport)');
-        $el.appendTo(element.find('.scroll-content:first'));
-        element.css('position', 'relative');
-      }
-
 			element.data('scroll_handler', this);
 			element.addClass('with-scroll-handler');
 
@@ -58,22 +43,24 @@ if (!window.DP_NO_JS_SCROLL) {
 			}
 
 			function updateSize() {
-				if (!pageObject) return;
+				if (!element) return;
 
 				// hardcoded update of list height
-				var sh = $('#dp_center').height() - 37
-          , hh = 0
-          , $headers = element.siblings('header:visible, footer:visible')
-          ;
+				var $content = $('.list-pane-content'),
+						sh = $('#dp_center').height() - 65,
+						hh = 0,
+						$listing = $('.list-listing:visible', $content);
 
-        if (!$headers.length) {
-          $headers = element.closest('.view-body').siblings('header:visible, footer:visible');
-        }
+				$listing.siblings('header:visible').each(function(){
+					hh += $(this).outerHeight(true);
+				});
 
-        $headers.each(function(){
-          hh += $(this).outerHeight(true);
-        });
-				element.height(sh - hh - 1);
+				if (!hh) {
+					$listing.closest('.view-body').siblings('header:visible').each(function(){
+						hh += $(this).outerHeight(true);
+					});
+				}
+				$listing.height(sh - hh - 1);
 
 				initScroll();
 				if (element.tinyscrollbar_update) {

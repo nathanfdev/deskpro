@@ -45,9 +45,7 @@
 	{% include 'AgentBundle:Downloads:filter-control-bar.html.twig' %}
 
 	<section class="downloads-simple-list list-listing no-check">
-		<div class="with-scrollbar">
-			{% include 'AgentBundle:Downloads:filter-page.html.twig' %}
-		</div>
+		{% include 'AgentBundle:Downloads:filter-page.html.twig' %}
 	</section>
 
 	{% if not results|length %}

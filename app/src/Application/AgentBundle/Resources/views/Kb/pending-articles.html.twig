@@ -53,9 +53,7 @@
 	{% include 'AgentBundle:Kb:pending-articles-massactions-bar.html.twig' %}
 
 	<section class="pending-articles-list list-listing">
-		<div class="with-scrollbar">
-			{% include 'AgentBundle:Kb:pending-articles-page.html.twig' %}
-		</div>
+		{% include 'AgentBundle:Kb:pending-articles-page.html.twig' %}
 	</section>
 
 	{% if not pending_articles|length %}

@@ -51,9 +51,7 @@
 	{% include 'AgentBundle:Kb:filter-massactions-bar.html.twig' %}
 
 	<section class="kb-simple-list list-listing">
-		<div class="with-scrollbar">
-			{% include 'AgentBundle:Kb:filter-page.html.twig' %}
-		</div>
+		{% include 'AgentBundle:Kb:filter-page.html.twig' %}
 	</section>
 
 	{% if not results|length %}

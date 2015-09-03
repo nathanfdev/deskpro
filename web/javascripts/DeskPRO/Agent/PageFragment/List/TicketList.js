@@ -1793,9 +1793,9 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 	},
 
 	updateUi: function() {
-    if (this.scrollerHandler) {
-      this.scrollerHandler.updateSize();
-    }
+		if (this.scrollerHandler) {
+			this.scrollerHandler.updateSize();
+		}
 	},
 
 	_resetWrapper: function() {
@@ -1820,12 +1820,12 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 
 		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
 		var scrollEl = $('.with-scrollbar', this.wrapper).first();
-    if (scrollEl.length) {
-			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(self.page, scrollEl, {
+		if (scrollEl.length) {
+			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
 				showEvent: 'show',
 				hideEvent: 'hide'
 			});
-    }
+		}
 	},
 
 	/**

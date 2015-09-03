@@ -45,9 +45,7 @@
 	{% include 'AgentBundle:News:filter-control-bar.html.twig' %}
 
 	<section class="news-simple-list list-listing no-check">
-		<div class="with-scrollbar">
-			{% include 'AgentBundle:News:filter-page.html.twig' %}
-		</div>
+		{% include 'AgentBundle:News:filter-page.html.twig' %}
 	</section>
 
 	{% if not results|length %}
