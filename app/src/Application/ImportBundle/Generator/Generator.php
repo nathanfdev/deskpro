@@ -64,7 +64,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     /**
      * @var ImportService
      */
-    protected $is;
+    protected $importer;
 
     /**
      * Constructor
@@ -73,19 +73,19 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * @param SymfonyValidator           $validator
      * @param GeneratorConfig            $config
      * @param Writer\WriterInterface     $writer
-     * @param ImportService              $is
+     * @param ImportService              $importer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
         SymfonyValidator           $validator,
         GeneratorConfig            $config,
         Writer\WriterInterface     $writer = null,
-        ImportService              $is
+        ImportService              $importer
     ) {
         $this->config     = $config;
         $this->exporter   = $exporter;
         $this->writer     = $writer;
-        $this->is         = $is;
+        $this->importer   = $importer;
         $this->validators = new Validator\Collection();
         $this->validators
             ->attach(new Validator\Download($validator))
@@ -131,7 +131,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             $outputWriter = $this->getWriter();
             $collection   = new GenerateCollection();
 
-            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
+            $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
 
             // Exports data to a collection of entities
             foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
@@ -141,7 +141,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
             if ($collection->hasEntities()) {
 
-                $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
+                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
 
                 // Validate the collection of entities
                 foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
@@ -157,11 +157,11 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
                                 /** @var Validator\ValidatorConstraintException $exception */
                                 $this->logAlert(sprintf(
-                                        "Validator failure for %s on record #%s: %s",
+                                    "Validator failure for %s on record #%s: %s",
 
-                                        get_class($exception->getEntity()),
-                                        $exception->getEntity()->getOid(),
-                                        $exception->getErrors())
+                                    get_class($exception->getEntity()),
+                                    $exception->getEntity()->getOid(),
+                                    $exception->getErrors())
                                 );
 
                                 $this->logInfo(json_encode($exception->getEntity()->toArray()));
@@ -177,7 +177,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                     }
                 }
 
-                $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_IMPORT);
+                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_IMPORT);
 
                 // Writes entities to a storage
                 $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
@@ -211,15 +211,15 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                 $outputWriter->writeBatchConfig();
 
                 if (!$updated->getHasRemaining()) {
-                    $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+                    $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
                 }
             } else {
-                $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
             }
 
 
         } catch (\Exception $e) {
-            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
+            $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
             throw $e;
         }
     }
