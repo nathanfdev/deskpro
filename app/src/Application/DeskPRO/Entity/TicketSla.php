@@ -104,6 +104,25 @@ class TicketSla extends DomainObject
     protected $sla;
 
 
+    public function setSlaStatus($s)
+    {
+        $old = $this->sla_status;
+        if ($s === $old) {
+            return;
+        }
+
+        $this->setModelField('sla_status', $s);
+
+        if ($this->ticket) {
+            $this->ticket->getStateChangeRecorder()->recordData('ticket_slas_status', array(
+                'sla'        => $this->sla,
+                'old_status' => $old,
+                'new_status' => $s
+            ));
+        }
+    }
+
+
     /**
      * @param bool           $value
      * @param \DateTime|null $date
