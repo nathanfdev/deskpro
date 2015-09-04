@@ -634,3 +634,98 @@ $em->getConnection()->executeUpdate("
         (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
     ;
 ");
+
+################################################################################
+# TEMPORARY TEST DATA: Blobs
+################################################################################
+$em->getConnection()->executeUpdate("
+    INSERT INTO `blobs`
+        (`id`, `original_blob_id`, `sys_name`, `storage_loc`, `storage_loc_pref`, `storage_loc_specific`, `save_path`, `file_url`, `filename`, `filesize`, `content_type`, `authcode`, `blob_hash`, `is_media_upload`, `title`, `dim_w`, `dim_h`, `date_created`, `is_temp`)
+    VALUES
+        (1, NULL, NULL, 'db', NULL, NULL, '1/1WCRRCQJQMCXWXMJ0', NULL, 'app_256.png', 55189, 'image/png', '1WCRRCQJQMCXWXMJ0', '9ace9725e1eddb81702043db2522374c', 0, '', 256, 256, '2015-07-07 11:11:47', 0);
+");
+
+
+################################################################################
+# TEMPORARY TEST DATA: Projects
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `task_projects`
+        (`id`, `title`)
+    VALUES
+        (1, 'Example Project')
+    ;
+
+    INSERT INTO `task_lists`
+        (`id`, `title`, `project_id`, `display_order`)
+    VALUES
+        (1, 'To Do', 1, 1),
+        (2, 'Doing', 1, 2),
+        (3, 'Done', 1, 3)
+    ;
+
+    INSERT INTO `task_members`
+        (`id`, `person_id`, `team_id`, `department_id`, `project_id`)
+    VALUES
+        (1, 1, NULL, NULL, 1),
+        (2, NULL, 1, NULL, 2),
+        (3, NULL, NULL, 1, 3)
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Tasks
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `tasks_new`
+        (`id`, `creator_person_id`, `project_id`, `list_id`, `title`, `percent_complete`, `date_created`, `task_type`, `date_due`, `date_event_start`, `date_event_end`, `visibility`, `urgency`, `is_done`, `date_done`, `display_order`)
+    VALUES
+        (1, 1, 1, 2, 'Test task 1', 0, '2015-09-04 15:30:00', 'task', '2015-09-29 04:12:25', NULL, NULL, 'private', 5, 0, NULL, 1),
+        (2, 1, 1, 1, 'Test task 2', 0, '2015-09-04 15:30:00', 'task', '2015-09-31 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 2),
+        (3, 1, 1, 3, 'Test task 3', 100, '2015-09-04 15:30:00', 'task', NULL, NULL, NULL, 'project', 5, 1, '2015-09-04 16:00:00', 3)
+    ;
+
+    INSERT INTO `task_labels`
+        (`id`, `task_id`, `label`)
+    VALUES
+        (1, 1, 'Example'),
+        (2, 1, 'Demo'),
+        (3, 2, 'Example')
+    ;
+
+    INSERT INTO `task_assignments`
+        (`id`, `task_id`, `person_id`, `team_id`, `department_id`)
+    VALUES
+        (1, 1, 1, NULL, NULL),
+        (2, 2, NULL, NULL, 1),
+        (3, 3, NULL, 1, NULL)
+    ;
+
+    INSERT INTO `task_subtask`
+        (`id`, `task_id`, `creator_id`, `title`, `is_done`, `date_created`, `display_order`, `date_completed`)
+    VALUES
+        (1, 1, 1, 'Example subtask', 0, '2015-09-04 15:45:00', 1, NULL)
+    ;
+
+    INSERT INTO `task_comments_new`
+        (`id`, `person_id`, `date_created`, `comment`, `task_id`)
+    VALUES
+        (1, 1, '2015-09-04 15:40:00', 'An example comment', 1)
+    ;
+
+    INSERT INTO `task_attachments`
+        (`id`, `task_id`, `task_comment_id`, `person_id`, `blob_id`, `date_created`)
+    VALUES
+        (1, 1, 1, 1, 1, '2015-09-04 15:30:00')
+    ;
+
+    INSERT INTO `task_links`
+        (`id`, `task_id`, `ticket_id`, `chat_id`, `article_id`)
+    VALUES
+        (1, 1, 1, NULL, NULL),
+        (2, 2, NULL, NULL, 1)
+    ;
+");
+

@@ -42,6 +42,14 @@
         }
       }
     }
+
+    &.non-month {
+      color: #ccc;
+
+      ul li a {
+        background-color: #999;
+      }
+    }
   }
 }
 
