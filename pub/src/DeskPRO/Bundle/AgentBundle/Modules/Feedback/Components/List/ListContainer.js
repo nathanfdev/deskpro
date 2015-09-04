@@ -6,6 +6,8 @@ import { TableHeader} from './TableHeader';
 import { TableBody} from './TableBody';
 import { OrderBy} from './OrderBy';
 import { FilterBy} from './FilterBy';
+
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { connect } from 'redux/react';
 
 @connect(state => state.control_bar)
@@ -13,18 +15,41 @@ import { connect } from 'redux/react';
 export class ListContainer extends React.Component {
 
     render() {
-        const { feedback, viewMode, sortTable, sort, sortName, filters, query } = this.props;
         let itemKey = 0;
+
+        const { feedback, viewMode, sortTable, sort, sortName, filters, query } = this.props;
+
+        const fields = [
+            {name: 'id', label: 'ID'},
+            {name: 'status', label: 'Status'},
+            {name: 'hidden_status', label: 'Hidden status'},
+            {name: 'status_category', label: 'Status category'},
+            {name: 'title', label: 'Status category'},
+            {name: 'author_name', label: 'Submitter'},
+            {name: 'language_id', label: 'Lang'},
+            {name: 'type', label: 'Type'},
+            {name: 'slug', label: 'Slug'},
+            {name: 'date_created', label: 'Created'},
+            {name: 'date_published', label: 'Published'},
+            {name: 'view_count', label: 'Views'},
+            {name: 'total_rating', label: 'Rating'},
+            {name: 'num_rating', label: 'Votes'},
+            {name: 'num_comments', label: 'Comments'},
+            {name: 'validating', label: 'Validating'},
+            {name: 'popularity', label: 'Popularity'},
+            {name: 'content', label: 'Content'},
+            {name: 'custom_category', label: 'Category'}
+        ];
 
         return (
             <ListFrame>
                 <ControlBar>
                     <OrderBy sort={sort} sortName={sortName}/>
                     <FilterBy filters={filters} query={query}/>
-                    <ListTableViewSwitcher {...this.props}/>
+                    <ListTableViewSwitcher fields={fields} {...this.props}/>
                 </ControlBar>
 
-                {viewMode === 'list' ?
+                {viewMode === constants.VIEW_MODE_LIST ?
                     feedback.map(item =>
                             <FeedbackCard key={itemKey++} feedback={item}/>
                     ) :

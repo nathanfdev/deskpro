@@ -4,6 +4,7 @@ import * as Tasks from "DeskPRO/Bundle/AgentBundle/Services/Api/Tasks";
 import * as People from "DeskPRO/Bundle/AgentBundle/Services/Api/People";
 import * as Departments from "DeskPRO/Bundle/AgentBundle/Services/Api/Departments";
 import * as AgentTeams from "DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams";
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export const loadTasks = createAction(
   "TASKS_LOAD_TASKS",
@@ -208,7 +209,7 @@ export const loadFilter = createAction(
     if (filter.sort) {
       filterElements.sort = filter.sort;
     } else {
-      filterElements.sort = 'asc';
+      filterElements.sort = constants.ORDER_ASC;
     }
 
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);

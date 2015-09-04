@@ -32,8 +32,8 @@ const TaskOrderHover = React.createClass({
     const order = this.props.order;
 
     const sortOptions = [
-      {value: 'asc', label: <span>Ascending</span>},
-      {value: 'desc', label: <span>Descending</span>}
+      {value: constants.ORDER_ASC, label: <span>Ascending</span>},
+      {value: constants.ORDER_DESC, label: <span>Descending</span>}
     ];
 
     const orderByOptions = [

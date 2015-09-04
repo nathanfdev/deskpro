@@ -1,5 +1,6 @@
 import ActionTypes from "../Actions/ActionTypes";
 import { Reducer } from "Ampliflux/reducers";
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export default class control_bar extends Reducer {
     getInitialState() {
@@ -10,7 +11,7 @@ export default class control_bar extends Reducer {
 
     switchViewMode(prev) {
         const next = {...prev};
-        next.viewMode = prev.viewMode === 'list' ? 'table' : 'list';
+        next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
         return next;
     }
 
