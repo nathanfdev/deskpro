@@ -3048,6 +3048,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
+        if (!empty($data['email_account'])) {
+            unset($data['email_account']['incoming_account']);
+            unset($data['email_account']['outgoing_account']);
+        }
+
         $data['total_user_waiting_real'] = $this->getRealTotalUserWaiting();
         $data['total_user_waiting_work'] = $this->getTotalUserWaitingWorkTime();
         $data['current_user_waiting'] = $this->getCurrentUserWaitingTime();
@@ -3989,6 +3994,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                 'nullable'             => true,
                 'onDelete'             => 'set null',
             )),
+            'dpApi'                => true
         ));
         $metadata->mapManyToOne(array(
             'fieldName'            => 'locked_by_agent',
