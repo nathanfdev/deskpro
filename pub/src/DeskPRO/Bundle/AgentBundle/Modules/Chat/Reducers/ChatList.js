@@ -1,6 +1,6 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/chatListActions';
-import * as constants from '../../../../Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export default class ChatList extends Reducer {
     getInitialState() {

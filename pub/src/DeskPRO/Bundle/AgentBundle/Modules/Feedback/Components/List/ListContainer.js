@@ -7,7 +7,7 @@ import { TableBody} from './TableBody';
 import { OrderBy} from './OrderBy';
 import { FilterBy} from './FilterBy';
 
-import * as constants from '../../../../Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { connect } from 'redux/react';
 
 @connect(state => state.control_bar)

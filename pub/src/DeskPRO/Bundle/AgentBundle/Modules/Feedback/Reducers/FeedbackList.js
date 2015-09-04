@@ -1,4 +1,4 @@
-import * as constants from '../../../../Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import * as FeedbackListActions from "../Actions/FeedbackListActions";
 import { Reducer } from "Ampliflux/reducers";
 
