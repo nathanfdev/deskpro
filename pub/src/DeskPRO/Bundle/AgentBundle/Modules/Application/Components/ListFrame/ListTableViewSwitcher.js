@@ -14,11 +14,22 @@ export class ListTableViewSwitcher extends React.Component {
         dispatch(actions.switchViewMode());
     }
 
+    showViewModeChoice(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var elem = $(event.target),
+            viewModeChoice = elem.closest('a.ticket-control-button').find('div.view-mode-choice');
+        $('div.dropdown-choice').hide();
+        viewModeChoice.show();
+    }
+
+
     render() {
         return (
             <a href="#" className="ticket-control-button">
                 <span className="title">View:</span>
-                <span className="focus" onClick={this.changeView.bind(this)}>{this.props.viewMode}</span>
+                <span className="focus" onClick={this.showViewModeChoice.bind(this)}>{this.props.viewMode}</span>
+                {this.props.children}
             </a>
         );
     }
