@@ -3,6 +3,7 @@ import AppContainer from "DeskPRO/Component/AppContainer";
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 import * as actions from '../Actions/FeedbackListActions'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
 
 import { connect } from 'redux/react';
@@ -10,60 +11,146 @@ import { connect } from 'redux/react';
 
 export class FeedbackApp extends React.Component {
 
-    constructor(props) {
-        super(props);
-        const { query, sort, filters, dispatch } = this.props;
-        dispatch(actions.feedbackToValidate());
-        dispatch(actions.commentsToReview());
-        dispatch(actions.feedbackLabels());
-        dispatch(actions.feedbackTypes());
-        dispatch(actions.feedbackCustomCategories());
-        dispatch(actions.feedbackNew());
-        dispatch(actions.feedbackActiveStatus());
-        dispatch(actions.feedbackClosedStatus());
-        dispatch(actions.feedbackHiddenStatus());
-        dispatch(actions.loadFeedbackList(query, sort, filters));
-        dispatch(actions.getFilterValues(filters.alias));
-    }
+  constructor(props) {
+    super(props);
+    const { query, sort, filters, dispatch } = this.props;
+    dispatch(actions.feedbackToValidate());
+    dispatch(actions.commentsToReview());
+    dispatch(actions.feedbackLabels());
+    dispatch(actions.feedbackTypes());
+    dispatch(actions.feedbackCustomCategories());
+    dispatch(actions.feedbackNew());
+    dispatch(actions.feedbackActiveStatus());
+    dispatch(actions.feedbackClosedStatus());
+    dispatch(actions.feedbackHiddenStatus());
+    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.getFilterValues(filters.alias));
+  }
 
-    choiceClick(params, event) {
-        event.preventDefault();
-        event.stopPropagation();
-        const {sort, dispatch, filters} = this.props;
-        dispatch(actions.changeQueryState(params));
-        dispatch(actions.loadFeedbackList(params, sort, filters));
-        $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
-        $(event.target).closest('a').addClass('active');
-    }
+  choiceClick(params, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {sort, dispatch, filters} = this.props;
+    dispatch(actions.changeQueryState(params));
+    dispatch(actions.loadFeedbackList(params, sort, filters));
+    $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
+    $(event.target).closest('a').addClass('active');
+  }
 
-    sortTable(param, event) {
-        event.preventDefault();
-        event.stopPropagation();
-        const {dispatch, query, filters} = this.props;
-        let elem = $(event.target),
-            th = elem.closest('th'),
-            siblings = th.siblings('th'),
-            caret = th.find('i.fa');
-        th.data('order') === 'Asc' ? th.data('order', 'Desc') : th.data('order', 'Asc');
-        siblings.find('i.fa').remove();
-        siblings.data('order', '');
-        if (caret.length > 0) {
-            caret.toggleClass('fa-caret-down').toggleClass('fa-caret-up');
-        }
-        else {
-            th.append('<i class="fa fa-caret-up"/>')
-        }
-        let order = th.data('order');
-        dispatch(actions.setSort(param, th.data('order')));
-        dispatch(actions.loadFeedbackList(query, {sort: param, order: order}, filters));
+  sortTable(param, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {dispatch, query, filters} = this.props;
+    let elem = $(event.target),
+      th = elem.closest('th'),
+      siblings = th.siblings('th'),
+      caret = th.find('i.fa');
+    th.data('order') === 'asc' ? th.data('order', 'desc') : th.data('order', 'asc');
+    siblings.find('i.fa').remove();
+    siblings.data('order', '');
+    if (caret.length > 0) {
+      caret.toggleClass('fa-caret-down').toggleClass('fa-caret-up');
     }
+    else {
+      th.append('<i class="fa fa-caret-up"/>')
+    }
+    let order = th.data('order');
+    dispatch(actions.setSort(param, th.data('order')));
+    dispatch(actions.loadFeedbackList(query, {sort: param, order: order}, filters));
+  }
 
-    render() {
-        return (
-            <AppContainer thisAppId="feedback">
-                <NavContainer {...this.props} choiceClick={this.choiceClick.bind(this)}/>
-                <ListContainer {...this.props} sortTable={this.sortTable.bind(this)}/>
-            </AppContainer>
-        );
+
+  switchView(event) {
+    event.stopPropagation();
+    const {dispatch} = this.props;
+    dispatch(actions.switchViewMode());
+  }
+
+  switchOrder(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {dispatch, sort, query, filters} = this.props;
+    var elem = $(event.target),
+      name = elem.text();
+    sort.sort = elem.data('field');
+    this.setState({sortName: name});
+    elem.closest('a.ticket-control-button').find('span.sort-name').text(name);
+    $('div.dropdown-choice').hide();
+    dispatch(actions.loadFeedbackList(query, sort, filters));
+  }
+
+
+  showOrderChoice(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    var elem = $(event.target),
+      filterChoice = elem.closest('a.ticket-control-button').find('div.focus-choice');
+    $('div.dropdown-choice').hide();
+    filterChoice.show();
+  }
+
+
+  switchSortDirection(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {dispatch, sort, query, filters} = this.props;
+    $('div.dropdown-choice').hide();
+    var elem = $(event.target);
+    if (sort.order === constants.ORDER_ASC) {
+      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
     }
+    else {
+      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
+    }
+    dispatch(actions.switchOrderDirection());
+    dispatch(actions.loadFeedbackList(query, sort, filters));
+  }
+
+
+  render() {
+
+    const sortOptions = [
+      {field: 'date_created', label: 'Date'},
+      {field: 'total_rating', label: 'Rating'},
+      {field: 'num_ratings', label: 'Number of votes'}
+    ];
+
+    const displayFields = [
+      {name: 'id', label: 'ID'},
+      {name: 'status', label: 'Status'},
+      {name: 'hidden_status', label: 'Hidden status'},
+      {name: 'status_category', label: 'Status category'},
+      {name: 'title', label: 'Status category'},
+      {name: 'author_name', label: 'Submitter'},
+      {name: 'language_id', label: 'Lang'},
+      {name: 'type', label: 'Type'},
+      {name: 'slug', label: 'Slug'},
+      {name: 'date_created', label: 'Created'},
+      {name: 'date_published', label: 'Published'},
+      {name: 'view_count', label: 'Views'},
+      {name: 'total_rating', label: 'Rating'},
+      {name: 'num_rating', label: 'Votes'},
+      {name: 'num_comments', label: 'Comments'},
+      {name: 'validating', label: 'Validating'},
+      {name: 'popularity', label: 'Popularity'},
+      {name: 'content', label: 'Content'},
+      {name: 'custom_category', label: 'Category'}
+    ];
+
+    return (
+      <AppContainer thisAppId="feedback">
+        <NavContainer {...this.props} choiceClick={this.choiceClick}/>
+        <ListContainer {...this.props}
+          sortTable={this.sortTable}
+          switchView={this.switchView}
+          switchOrder={this.switchOrder}
+          showOrderChoice={this.showOrderChoice}
+          switchSortDirection={this.switchSortDirection}
+          sortOptions={sortOptions}
+          displayFields={displayFields}
+          />
+      </AppContainer>
+    );
+  }
 }

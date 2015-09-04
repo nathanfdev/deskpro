@@ -1,11 +1,17 @@
 /**
  * Component to toggle view between the two modes: List and Table
  */
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
 
-export class ListTableViewSwitcher extends React.Component {
+export class ListTableViewSwitcher extends Component {
+
+  static propTypes = {
+    displayFields: PropTypes.array.isRequired,
+    viewMode: PropTypes.string.isRequired,
+    switchView: PropTypes.func.isRequired
+  };
 
   showViewModeChoice(event) {
     event.preventDefault();
@@ -18,20 +24,27 @@ export class ListTableViewSwitcher extends React.Component {
 
 
   render() {
-    const {viewMode, fields, changeView} = this.props;
+    const {viewMode, displayFields, switchView} = this.props;
     return (
       <div className="ticket-control-button">
         <span className="title">View:</span>
         <a href="#">
           <span className="focus" onClick={this.showViewModeChoice.bind(this)}>{viewMode}</span>
         </a>
-        <ListTableViewDropdown fields={fields} viewMode={viewMode} changeView={changeView.bind(this)}/>
+        <ListTableViewDropdown displayFields={displayFields} viewMode={viewMode} switchView={switchView.bind(this)}/>
       </div>
     );
   }
 }
 
-export class ListTableViewDropdown extends React.Component {
+export class ListTableViewDropdown extends Component {
+
+  static propTypes = {
+    displayFields: PropTypes.array.isRequired,
+    viewMode: PropTypes.string.isRequired,
+    switchView: PropTypes.func.isRequired
+  };
+
 
   closeDropdown(e) {
     event.preventDefault();
@@ -40,7 +53,7 @@ export class ListTableViewDropdown extends React.Component {
   }
 
   render() {
-    const {viewMode, fields, changeView} = this.props;
+    const {viewMode, displayFields, switchView} = this.props;
 
     return (
       <div className="view-mode-choice dropdown-choice" style={{width:'300px'}}>
@@ -52,27 +65,27 @@ export class ListTableViewDropdown extends React.Component {
         <div style={{width:'50%',float:'left'}}>
           <label>
             <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_LIST}
-                   onChange={changeView.bind(this)}>
+                   onChange={switchView.bind(this)}>
               List View
             </input>
           </label>
           <br/>
           <fieldset>
             <legend>Display fields</legend>
-            <DisplayFields fields={fields}/>
+            <DisplayFields displayFields={displayFields}/>
           </fieldset>
         </div>
         <div style={{width:'50%',float:'left'}}>
           <label>
             <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_TABLE}
-                   onChange={changeView.bind(this)}>
+                   onChange={switchView.bind(this)}>
               Table View
             </input>
           </label>
           <br/>
           <fieldset>
             <legend>Display fields</legend>
-            <DisplayFields fields={fields}/>
+            <DisplayFields displayFields={displayFields}/>
           </fieldset>
         </div>
         <button>Save fields</button>
@@ -81,12 +94,16 @@ export class ListTableViewDropdown extends React.Component {
   }
 }
 
-export class DisplayFields extends React.Component {
+export class DisplayFields extends Component {
+  static propTypes = {
+    displayFields: PropTypes.array.isRequired
+  };
+
   render() {
-    const {fields} = this.props;
+    const {displayFields} = this.props;
     return (
       <select multiple size="10">
-        {fields.map((field, index) =>
+        {displayFields.map((field, index) =>
           <option key={index}>{field.label}</option>)}
       </select>
     );

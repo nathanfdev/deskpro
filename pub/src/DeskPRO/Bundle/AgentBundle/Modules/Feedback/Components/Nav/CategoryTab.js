@@ -6,14 +6,13 @@ export class CategoryTab extends React.Component {
 
     render() {
         const { customCategories, onClick } = this.props;
-        let itemKey = 0;
 
         return (
             <ul>
-                {customCategories.map(item =>
-                        <div key={itemKey++}
+                {customCategories.map((item, index) =>
+                        <div key={index}
                              onClick={onClick.bind(this, {'custom_category':item.group})}>
-                            <ListItem key={itemKey++} count={item.count} label={item.group}/>
+                            <ListItem count={item.count} label={item.group}/>
                         </div>
                 )}
             </ul>
