@@ -678,13 +678,13 @@ $em->getConnection()->executeUpdate("
 # TEMPORARY TEST DATA: Tasks
 ################################################################################
 
-$em->getConnection()->execteUpdate("
+$em->getConnection()->executeUpdate("
     INSERT INTO `tasks_new`
         (`id`, `creator_person_id`, `project_id`, `list_id`, `title`, `percent_complete`, `date_created`, `task_type`, `date_due`, `date_event_start`, `date_event_end`, `visibility`, `urgency`, `is_done`, `date_done`, `display_order`)
     VALUES
         (1, 1, 1, 2, 'Test task 1', 0, '2015-09-04 15:30:00', 'task', '2015-09-29 04:12:25', NULL, NULL, 'private', 5, 0, NULL, 1),
-        (1, 1, 1, 1, 'Test task 2', 0, '2015-09-04 15:30:00', 'task', '2015-09-31 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 2),
-        (1, 1, 1, 3, 'Test task 3', 100, '2015-09-04 15:30:00', 'task', NULL, NULL, NULL, 'project', 5, 1, '2015-09-04 16:00:00', 3)
+        (2, 1, 1, 1, 'Test task 2', 0, '2015-09-04 15:30:00', 'task', '2015-09-31 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 2),
+        (3, 1, 1, 3, 'Test task 3', 100, '2015-09-04 15:30:00', 'task', NULL, NULL, NULL, 'project', 5, 1, '2015-09-04 16:00:00', 3)
     ;
 
     INSERT INTO `task_labels`
