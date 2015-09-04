@@ -118,100 +118,96 @@ if (!$IMPORT_INSTALL) {
 # Feedback
 ################################################################################
 
-##BEGIN:create_feedback.default##
-$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
-$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
-$em->persist($DEFAULT_IDEA_CAT);
-$em->flush();
+$em->getConnection()->executeUpdate("
+INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
+(1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
+(2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
+(3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
+");
 
-$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
-$em->persist($cat);
-$em->flush();
+$em->getConnection()->executeUpdate("
+INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
+(1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1);
+");
 
-$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
-$em->persist($cat);
-$em->flush();
+$em->getConnection()->executeUpdate("
+INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
+(1, 'active', 'Gathering Feedback', 0),
+(2, 'active', 'Planning', 0),
+(3, 'active', 'Started', 0),
+(4, 'active', 'Under Review', 0),
+(5, 'closed', 'Completed', 0),
+(6, 'closed', 'Duplicate', 0),
+(7, 'closed', 'Declined', 0);
+");
 
-// Statuses are done as part of FeedbackCatsStep so we can map id's
-if (!$IMPORT_INSTALL) {
-    // ensure gathering-feedback is always first, such that it's ID = 1
-    foreach (array('gathering-feedback', 'planning', 'started', 'under-review') as $t) {
-        $s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-        $s->status_type = 'active';
-        $s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-        $em->persist($s);
-    }
+$em->getConnection()->executeUpdate("
+INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`) VALUES
+(1, 5, 1, 1, NULL, 'validating', NULL, 0, 'example-suggestion', 'Example Suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-08-13 11:33:33', '2015-08-13 11:33:33'),
+(2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-08-01 00:00:00', NULL),
+(3, 1, 2, 1, NULL, NULL, NULL, 0, 'Test feedback 2', 'Slug to feedback 2', 'Content of test feedback 2', 0, 5, 0, 6, 'active', '2015-08-02 00:00:00', NULL),
+(4, 2, 3, 1, NULL, 'validating', NULL, 0, 'Test feedback 3', 'Slug to feedback 3', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-08-03 00:00:00', NULL),
+(5, 1, 1, 1, NULL, 'spam', NULL, 0, 'Test feedback 4', 'Slug to feedback 4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL),
+(6, 5, 1, 1, NULL, 'validating', NULL, 0, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-08-05 00:00:00', NULL),
+(7, 1, 2, 1, NULL, 'validating', NULL, 15, 'Test feedback 6', 'Slug to feedback 6', 'I''m trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (it''s the client''s wish, and I can''t change that.)', 0, 3, 0, 1, 'new', '2015-08-10 00:00:00', NULL);
+");
 
-    foreach (array('completed', 'duplicate', 'declined') as $t) {
-        $s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-        $s->status_type = 'closed';
-        $s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-        $em->persist($s);
-    }
-    $em->flush();
-}
-
-if (!$IMPORT_INSTALL) {
-    $DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
-    $DEFAULT_IDEA->person = $AGENT;
-    $DEFAULT_IDEA->title = $translate->phrase('user.defaults.feedback_example_title');
-    $DEFAULT_IDEA->content = $translate->phrase('user.defaults.feedback_example_content');
-    $DEFAULT_IDEA->status = 'new';
-    $DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
-    $em->persist($DEFAULT_IDEA);
-    $em->flush();
-}
+$em->getConnection()->executeUpdate("
+INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`) VALUES
+(1, 1, 1, NULL, 0, 'Windows'),
+(2, 2, 1, NULL, 0, 'Linux'),
+(3, 3, 1, NULL, 0, 'Linux'),
+(4, 4, 1, NULL, 0, 'Mac');
+");
 
 ################################################################################
 # Portal Blocks
 ################################################################################
 
 ##BEGIN:create_portal_block.news##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'portal';
-$b->type       = 'news';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'portal';
+$b->type = 'news';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.userinfo_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'userinfo';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'userinfo';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.kb_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'kb_cat_list';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'kb_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.feedback_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'feedback_cat_list';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'feedback_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.downloads_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'downloads_cat_list';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'downloads_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.staff_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'staff';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'staff';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
