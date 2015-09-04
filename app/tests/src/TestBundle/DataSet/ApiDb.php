@@ -630,6 +630,17 @@ class ApiDb extends AbstractDbSet
         ");
         // end of glossary test data
 
+        // ArticlePendingCreate test data ------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `article_pending_create`
+                (`person_id`, `ticket_id`, `ticket_message_id`, `comment`, `date_created`, `assigned_person_id`)
+            VALUES
+                (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
+                (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
+            ;
+        ");
+        // end of ArticlePendingCreate
+
         $count++;
 
         return $count;

@@ -1,4 +1,4 @@
-@counts @chat-nav
+@counts
 Feature: Comment counts endpoints (/article_comments/counts, /news_comments/counts, /download_comments/counts)
   To retrieve counts of DeskPRO comments
   As a developer

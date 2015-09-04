@@ -18,6 +18,30 @@ Feature: /user_chats endpoint search (GET)
     And the JSON node "meta.pagination.total" should be equal to 5
     And the JSON node "data[0].subject" should be equal to "Test chat 1"
 
+  Scenario: I search for chats sorting them by date_created in DESC order
+    When I send a GET request to "/api/v2/user_chats?sort=date_created&order=desc"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "meta.pagination.count" should be equal to 5
+    And the JSON node "data[0].subject" should be equal to "Test chat 5"
+    And the JSON node "data[4].subject" should be equal to "Test chat 1"
+
+  Scenario: I search for chats sorting them by date_created in ASC order
+    When I send a GET request to "/api/v2/user_chats?sort=date_created&order=asc"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "meta.pagination.count" should be equal to 5
+    And the JSON node "data[0].subject" should be equal to "Test chat 1"
+    And the JSON node "data[4].subject" should be equal to "Test chat 5"
+
+  Scenario: I search for chats sorting them by agent in DESC order
+    When I send a GET request to "/api/v2/user_chats?sort=agent&order=desc"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "meta.pagination.count" should be equal to 5
+    And the JSON node "data[0].agent" should be equal to "2"
+    And the JSON node "data[4].agent" should be equal to "1"
+
   Scenario: I search for chats specifying date_created
     When I send a GET request to "/api/v2/user_chats?date_created=2015-08-01:2015-08-04"
     Then the response should be in JSON

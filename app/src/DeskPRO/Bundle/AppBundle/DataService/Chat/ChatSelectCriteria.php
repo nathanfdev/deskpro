@@ -48,7 +48,14 @@ class ChatSelectCriteria extends GroupedCriteria
     {
         $alias = $qb->getRootAliases()[0];
 
-        foreach ($this->filters as $field => $value) {
+        if (array_key_exists('sort', $this->filters)) {
+            $sort = $this->filters['sort'];
+            $order = array_key_exists('order', $this->filters) ? $this->filters['order'] : 'DESC';
+            $qb->orderBy("$alias.$sort", $order);
+        }
+
+        $filters = array_diff_assoc($this->filters, ['sort' => null, 'order' => null]);
+        foreach ($filters as $field => $value) {
             switch ($field) {
                 case 'date_created':
                     list($from, $to) = explode(':', $value);
@@ -82,7 +89,10 @@ class ChatSelectCriteria extends GroupedCriteria
         /** @var \Application\DeskPRO\Entity\Person $me */
         list($me) = $data;
 
-        $resolver->setDefined(['agent', 'department', 'date_created', 'date_period']);
+        $resolver->setDefined(['sort', 'order', 'agent', 'department', 'date_created', 'date_period']);
+
+        $resolver->setAllowedValues('sort', ['agent', 'department', 'date_created']);
+        $resolver->setAllowedValues('order', ['asc', 'desc']);
 
         $resolver->setNormalizer('agent', function($options, $value) use ($me) {
             return $value === 'me' ? $me->getId() : $value;

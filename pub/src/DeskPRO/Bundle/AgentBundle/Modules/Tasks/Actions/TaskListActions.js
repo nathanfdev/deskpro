@@ -199,6 +199,18 @@ export const loadFilter = createAction(
       filterElements.created_before = filter.created_before;
     }
 
+    if (filter.order_by) {
+      filterElements.order_by = filter.order_by;
+    } else {
+      filterElements.order_by = 'due';
+    }
+
+    if (filter.sort) {
+      filterElements.sort = filter.sort;
+    } else {
+      filterElements.sort = 'asc';
+    }
+
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);
 
     trigger(null, loadTaskList(compiled));

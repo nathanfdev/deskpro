@@ -3,7 +3,7 @@
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and Comment Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -31,63 +31,84 @@
  * @package DeskPRO
  */
 
-namespace DpTest\Bundle\AppBundle\DataService\Comment;
+namespace DpTest\Bundle\AppBundle\DataService\Content;
 
 use Prophecy\Argument;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use DpTest\DeskProTestCase;
-use Pagerfanta\Pagerfanta;
-use Application\DeskPRO\Entity\ArticleComment;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 
 /**
- * Class CommentCountsDataServiceTest
+ * Class CommentsCountCriteriaTest
  */
-class CommentCountsDataServiceTest extends DeskProTestCase
+class CommentsCountCriteriaTest extends DeskProTestCase
 {
+    static $dummyProperParams = [
+        'status'         => 'validating',
+        'article'        => '1',
+        'is_reviewed'    => '0',
+        'period_created' => 'ever',
+        'group_by'       => 'status'
+    ];
+
     /**
      * @test
      */
-    function it_should_be_instantiable()
+    function it_should_be_constructable_with_empty_params()
     {
-        $this->assertInstanceOf(CommentsDataService::class, $this->instance());
+        $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance([]));
     }
 
     /**
      * @test
      */
-    function it_should_return_Count_instance_with_group_by_indication()
+    function it_should_be_constructable_with_only_group_by()
     {
-        $criteria = CommentsCountCriteria::fromParameters(['group_by' => 'status'], new OptionsResolver());
-
-        $result = $this->instance()->countComments(ArticleComment::class, $criteria);
-
-        $this->assertInstanceOf(Count::class, $result);
-        $this->assertEquals($result->getGroupedBy(), 'status');
+        $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance(['group_by' => 'status']));
     }
 
     /**
      * @test
      */
-    function it_should_return_Pagerfanta_instance_when_selecting_comments()
+    function it_should_be_constructable_with_proper_parameters()
     {
-        /** @var CommentsSelectCriteria $criteria */
-        $criteria = $this->prophesize(CommentsSelectCriteria::class)->reveal();
-        $result = $this->instance()->selectComments(ArticleComment::class, $criteria, 1, 10);
-        $this->assertInstanceOf(Pagerfanta::class, $result);
+        $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance(self::$dummyProperParams));
     }
 
     /**
-     * @return CommentsDataService
+     * @test
      */
-    private function instance($em = null)
+    function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
     {
-        /** @var \Doctrine\ORM\EntityManagerInterface $em */
-        $em or $em = $this->mockQueryBuildingEntityManager()->reveal();
+        $qb = $this->mockQueryBuilder();
+        $qb->groupBy(Argument::any())->shouldBeCalled();
+        $this->instance(self::$dummyProperParams)->applyGroupBy($qb->reveal());
+    }
 
-        return new CommentsDataService($em);
+    /**
+     * @test
+     */
+    function it_should_apply_given_parameters_to_the_passed_QueryBuilder()
+    {
+        $qb = $this->mockQueryBuilder();
+
+        // expectations when applying self::$dummyProperParams
+        $qb->setParameter('status',         'validating')->shouldBeCalled();
+        $qb->setParameter('article',        '1')->shouldBeCalled();
+        $qb->setParameter('is_reviewed',    '0')->shouldBeCalled();
+        $qb->setParameter('period_created', 'ever')->shouldBeCalled();
+
+        /** @var \Doctrine\ORM\QueryBuilder $qb */
+        $qb = $qb->reveal();
+        $this->instance(self::$dummyProperParams)->applyFilters($qb);
+    }
+
+    /**
+     * @param array $parameters
+     * @return CommentsCountCriteria
+     */
+    private function instance(array $parameters)
+    {
+        return CommentsCountCriteria::fromParameters(
+                   $parameters, new \Symfony\Component\OptionsResolver\OptionsResolver());
     }
 }

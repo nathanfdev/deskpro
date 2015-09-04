@@ -26,65 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
-
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 /**
- * Class ChatCountCriteria
+ * Class DownloadCommentTransformer
  */
-class ChatCountCriteria extends ChatSelectCriteria
+class DownloadCommentTransformer extends ArticleCommentTransformer
 {
-    /**
-     * @param QueryBuilder $qb
-     */
-    public function applyGroupBy(QueryBuilder $qb)
-    {
-        $this->ensureGroupBy();
-
-        $alias = $qb->getRootAliases()[0];
-        switch ($this->group_by) {
-            case 'date_created':
-                $qb->addSelect("DATE($alias.date_created) as group_name");
-                break;
-
-            case 'date_period':
-                $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                $qb->addSelect("$datePeriodsDql as group_name");
-
-                // select hidden group_order to use in ORDER BY
-                $qb->addSelect(
-                    "FIELD($datePeriodsDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever')
-                     as HIDDEN group_order");
-                $qb->orderBy('group_order');
-
-                break;
-
-            case 'agent':
-            case 'department':
-                $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
-                break;
-        }
-
-        $qb->groupBy('group_name');
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     * @param array $data
-     */
-    public static function configureResolver(OptionsResolver $resolver, array $data = [])
-    {
-        parent::configureResolver($resolver, $data);
-
-        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->remove('order_by');
-        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
-    }
 }

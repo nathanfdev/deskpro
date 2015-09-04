@@ -1,9 +1,18 @@
 import React from 'react';
 import { connect } from 'redux/react';
 import * as actions from '../../Actions/chatNavActions'
+import * as listActions from '../../Actions/chatListActions'
 import { Nav } from './Nav';
 
+/**
+ * Todo: Unlike vanilla Redux, Ampliflux's createAction has no access to the state, thus we need to select needed data
+ *       in components, pass it through components hierarchy and pass as parameters to action creators
+ *
+ * Todo: Make possible to access state in actionCreate. Remove sort & order from this component.
+ */
 @connect(state => ({
+  sort: state.ChatList.sort,
+  order: state.ChatList.order,
   lists: state.ChatNav.lists,
   grouping: {
     my: {
@@ -32,14 +41,18 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const {lists, grouping} = this.props;
+    const { lists, grouping, sort, order } = this.props;
     const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
+    const onMyClick = (filters) => { this.props.dispatch(listActions.load({...filters, agent: 'me', sort, order})) };
+    const onAllClick = (filters) => { this.props.dispatch(listActions.load({...filters, sort, order})) };
 
     return (
       <Nav
         lists={lists}
         grouping={grouping}
+        onMyClick={onMyClick}
+        onAllClick={onAllClick}
         changeGrouping={changeGrouping}
         toggleGroupingVisibility={toggleGroupingVisibility} />
     );

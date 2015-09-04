@@ -1,5 +1,6 @@
 import React from "react";
 import TaskFilterHover from "../Components/TaskFilterHover";
+import TaskOrderHover from "../Components/TaskOrderHover";
 import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
 
 export default class TaskControls extends React.Component {
@@ -7,13 +8,20 @@ export default class TaskControls extends React.Component {
     super(props);
 
     this.state = {
-      showWindow: false
+      showWindow: false,
+      changeOrder: false,
     };
   }
 
   toggleWindow() {
     this.setState({
       showWindow: !this.state.showWindow
+    });
+  }
+
+  toggleShowOrder() {
+    this.setState({
+      changeOrder: !this.state.changeOrder
     });
   }
 
@@ -28,14 +36,30 @@ export default class TaskControls extends React.Component {
     });
   }
 
+  closeOrder() {
+    this.setState({
+      changeOrder: false
+    });
+  }
+
   render() {
     const taskView = this.props.windowProps.taskView;
     return <span className="ticket-controls-default">
-      <a href="#" className="ticket-control-button">
+      <a href="#" className="ticket-control-button" onClick={this.toggleShowOrder.bind(this)}>
         <span className="title">Order by:</span>
-        <span className="focus">Date</span>
-        <span className="down">Asc <i className="fa fa-caret-down" /></span>
+        <span className="focus">{ this.props.order.charAt(0).toUpperCase() + this.props.order.slice(1) }</span>
+        <span className="down">{ this.props.direction.charAt(0).toUpperCase() + this.props.direction.slice(1) } <i className="fa fa-caret-down" /></span>
       </a>
+
+      <ComponentRootWrapper open={this.state.changeOrder}>
+        <TaskOrderHover
+          position={this.state.position}
+          applyOrder={this.props.setSortOrder.bind(this)}
+          closeWindow={this.closeOrder.bind(this)}
+          order={this.props.order}
+          direction={this.props.direction}
+          />
+      </ComponentRootWrapper>
 
       <a href="#" className="ticket-control-button" onClick={this.toggleWindow.bind(this)}>
         <span className="title">Filter by:</span>

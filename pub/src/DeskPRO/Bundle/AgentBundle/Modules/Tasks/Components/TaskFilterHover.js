@@ -55,10 +55,6 @@ const TaskFilterHover = React.createClass({
           filterDates: dates
         });
 
-        console.log('setting state');
-
-        //React.findDOMNode(this.refs[field + '-value']).setValue(updated);
-
         picker.updateInput();
       });
 

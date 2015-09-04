@@ -24,11 +24,14 @@ const listTarget = {
   }
 };
 
+@DropTarget(DragTypes.TASK, listTarget, collect)
 export default class TaskCardGroup extends React.Component {
   render() {
     const _this = this;
 
-    return <div>
+    const columnClass = this.props.isOver ? 'list-group-hover' : '';
+
+    return this.props.connectDropTarget(<div className={columnClass}>
       { this.props.divider && this.props.tasks && this.props.tasks.length > 0 ?
         <div className="divider"><hr/><h1><span>{this.props.divider}</span></h1></div> : '' }
       { this.props.tasks ? this.props.tasks.map((object) => {
@@ -41,6 +44,6 @@ export default class TaskCardGroup extends React.Component {
                     selected={_this.props.actionable.indexOf(object.id) !== -1} tickets={this.props.tickets} />
         </span>
       }) : '' }
-    </div>
+    </div>)
   }
 }
