@@ -297,7 +297,7 @@
 		{% if log.details.sla_status != 'ok' or log.details.is_completed %}
 			({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}{{ phrase('agent.general.requirements_complete') }}{% endif %})
 		{% endif %}
-	{% elseif log.action_type == 'ticket_sla_removed' %}
+	{% elseif log.action_type == 'ticket_sla_removed' %}m
 		{{ phrase('agent.tickets.log_sla_removed') }}: <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.title }}</span>
 		{% if log.details.sla_status != 'ok' or log.details.is_completed %}
 			({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}{{ phrase('agent.general.requirements_complete') }}{% endif %})
