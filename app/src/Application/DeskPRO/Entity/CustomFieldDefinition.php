@@ -179,6 +179,27 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $this->is_agent_field  = false;
     }
 
+    public function spawnChild($title)
+    {
+        $new = new CustomFieldDefinition();
+        $new->parent = $this;
+        $new->title = $title;
+        $new->form_type = $this->form_type;
+        $new->owner_class = $this->owner_class;
+        $new->context_class = $this->context_class;
+        $new->is_enabled = $this->is_enabled;
+        $new->is_user_enabled = $this->is_user_enabled;
+        $new->is_agent_field = $this->is_agent_field;
+        $new->app = $this->app;
+
+        return $new;
+    }
+
+    public function addChild(CustomFieldDefinition $child)
+    {
+        $this->children->add($child);
+    }
+
     public function isForOrganization()
     {
         return $this->context_class == 'Application\DeskPRO\Entity\Organization';

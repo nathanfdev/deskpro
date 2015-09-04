@@ -63,7 +63,7 @@ export default class NewTicketForm extends PageWidget {
     this.dynForm = new DynamicForm({
       formEl: $formEl,
       tplEl:  $tplEl,
-      alwaysFields: ['user_email', 'subject', 'message', 'submit'],
+      alwaysFields: ['user_email', 'subject', 'message', 'submit', 'last_department_id'],
       fieldFilter: (fields, currentFields, dynForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {
           console.error("DESKPRO_TICKET_DISPLAY is not defined");

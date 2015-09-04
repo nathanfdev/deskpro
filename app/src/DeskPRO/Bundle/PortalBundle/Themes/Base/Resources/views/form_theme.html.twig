@@ -128,8 +128,8 @@
         data-allow-edit="{{ data.definition.options['allow_edit'] ? "true" : "false" }}"
         data-multiple="{{ data.definition.options['multiple'] ? "true" : "false" }}"
         data-expanded="{{ data.definition.options['expanded'] ? "true" : "false" }}"
+        data-input-name="{{ form.vars.full_name }}"
         >
-        {{ dump(data.definition.options) }}
         {% set no_dp_title = true %}
         <div class="form-widget">
             {{ block('form_widget') }}

@@ -88,18 +88,20 @@ class FormFieldManager
             $constraints[] = new NotBlank(array('message' => 'This value is required'));
         }
 
+        $options = array(
+            'required'     => $field->isRequired($agent_interface),
+            'expanded'     => $field->isExpanded(),
+            'multiple'     => $field->isMultiple(),
+            'custom_field' => $field,
+            'label'        => false,
+            'constraints'  => $constraints,
+            'help'         => $field->getDescription()
+        );
+
         return array(
             'data',
             'deskpro_contextual_per_field_choice',
-            array(
-                'required' => $field->isRequired($agent_interface),
-                'expanded' => $field->isExpanded(),
-                'multiple' => $field->isMultiple(),
-                'custom_field' => $field,
-                'label' => false,
-                'constraints' => $constraints,
-                'help' => $field->getDescription()
-            )
+            $options
         );
     }
 

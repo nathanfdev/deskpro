@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
 use DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList\HierarchyChoiceList;
 use DeskPRO\Component\Hierarchy\Hierarchy as BaseHierarchy;
 use DeskPRO\Component\Hierarchy\HierarchyFormatterInterface;
+use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -149,8 +150,20 @@ class Hierarchy extends BaseHierarchy
     public function getFirstSelectable()
     {
         foreach ($this->root_nodes as $node) {
-            return $node->getData();
+            return $this->findSelectable($node)->getData(); // find the first leaf of the first root node
         }
+    }
+
+    public function findSelectable(BaseNode $node)
+    {
+        if ($node->isLeaf()) {
+            return $node;
+        }
+
+        $children = $node->getChildren();
+        $first_child = $children[0];
+
+        return $this->findSelectable($first_child);
     }
 
     /**

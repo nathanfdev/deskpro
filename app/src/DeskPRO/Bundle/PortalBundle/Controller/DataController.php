@@ -38,7 +38,9 @@ use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -57,10 +59,40 @@ class DataController extends AbstractController
      */
     public function saveFormCustomPerChoiceController(Request $request, $type, $id)
     {
+        /**
+         * NOTE: $type will always be "per_user" because we don't allow the ability
+         *       for admins to let a user change organization related choices from portal.
+         *       In the case that we do in the future: edit form_theme.html.twig to allow
+         *       us to know here if its a user or org field in $type, then deal with accordingly
+         *       here. No heavy JS needs to change.
+         */
+        if ($type !== 'per_user') {
+            throw $this->createNotFoundException('this type is not allowed');
+        }
+        $type_context = 'Application\DeskPRO\Entity\Person';
+
+        if (!$new_title = $request->request->get('new_field')) {
+            throw new InvalidArgumentException('please provide "new_field"');
+        }
+
+        // get the definition
+        $custom_per_manager = $this->get('tickets.custom_per_field_manager');
+        $context = new CustomFieldContext(
+            'Application\DeskPRO\Entity\Ticket',
+            $type_context
+        );
+        $def = $custom_per_manager->getCustomPerFieldDefinition($id, $context);
+
+        // add a new option
+        $new_choice = $custom_per_manager->createNewOption($def, $new_title, $this->getUser()->getId());
+        $this->persistAndFlushEntity($new_choice);
+
         return $this->makeJsonResponse(
             array(
-                'type' => $type,
-                'id' => $id
+                'new' => array(
+                    'id' => $new_choice->id,
+                    'title'=> $new_choice->getTitle()
+                )
             )
         );
     }
