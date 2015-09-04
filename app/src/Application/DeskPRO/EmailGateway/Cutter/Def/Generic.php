@@ -246,7 +246,7 @@ class Generic implements ForwardDef, QuoteDef
 
         if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
             $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
-        } elseif (preg_match('#(<|\[|\()(.*?)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
+        } elseif (preg_match('#(<|\[|\()(\S*)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
             $forward_data['fwd_from_email'] = $m[2] . '@' . $m[3];
         } elseif (preg_match('#[\w]+:\s*?(.*?)@([a-zA-Z0-9\.\-_]+)#i', $from_str, $m)) {
             $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
