@@ -51,7 +51,7 @@ class TasksListFrame extends React.Component {
         this.projects = [];
 
         // Temp project ID
-        props.dispatch(TaskActions.loadLists(63));
+        props.dispatch(TaskActions.loadLists(1));
     }
 
     toggleDone(object, reload) {
@@ -250,11 +250,9 @@ class TasksListFrame extends React.Component {
 
         const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
 
-        // Temporary hack
         const columnField = this.state.order;
 
         const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
-
 
         const sectionClass = this.state.view !== 'list' ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
 

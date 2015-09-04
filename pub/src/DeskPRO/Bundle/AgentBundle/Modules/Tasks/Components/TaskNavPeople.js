@@ -8,7 +8,7 @@ export default class TasksNavPeople extends React.Component {
         let _this = this;
 
         return (<section className="sidebar-list tasks-nav-people">
-                <div className="list-sidebar-title">People</div>
+                <div className="list-sidebar-title">Agents</div>
                 <ul>{agentList.agentList ? agentList.agentList.map(function(object) {
                     return <li key={object.id}>
                         <div className="list-counter-bucket">
@@ -16,8 +16,11 @@ export default class TasksNavPeople extends React.Component {
                                onclick="showFilterOptions(this); return false;">{object.assigned_tasks.length}</a>
                         </div>
                         <a href="#" className="item" onmouseover="toggleCountBucket(this);" onClick={_this.props.filterTasks.bind(_this, {agents: [object.id]})}>
-                                        <span className="list-icon"><span
-                                            style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}} className="avatar"/></span>
+                          {object.picture_blob ?
+                                        <span className="list-icon">
+                                          <span
+                                            style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}} className="avatar"/>
+                                        </span> : '' }
                             {object.name}
                         </a>
                     </li>;
