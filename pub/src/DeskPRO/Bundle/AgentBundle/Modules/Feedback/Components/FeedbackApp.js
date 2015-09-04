@@ -3,9 +3,9 @@ import AppContainer from "DeskPRO/Component/AppContainer";
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 import * as actions from '../Actions/FeedbackListActions'
-import { connect } from 'redux/react';
 import $ from "jquery";
 
+import { connect } from 'redux/react';
 @connect(state => state.FeedbackList)
 
 export class FeedbackApp extends React.Component {

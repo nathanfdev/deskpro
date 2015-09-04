@@ -7,8 +7,7 @@ import { TableBody} from './TableBody';
 import { OrderBy} from './OrderBy';
 import { FilterBy} from './FilterBy';
 
-import $ from "jquery";
-import * as actions from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ControlBarActions';
+import * as constants from '../../../../Constants/Constants'
 import { connect } from 'redux/react';
 
 @connect(state => state.control_bar)
@@ -50,7 +49,7 @@ export class ListContainer extends React.Component {
                     <ListTableViewSwitcher fields={fields} {...this.props}/>
                 </ControlBar>
 
-                {viewMode === 'list' ?
+                {viewMode === constants.VIEW_MODE_LIST ?
                     feedback.map(item =>
                             <FeedbackCard key={itemKey++} feedback={item}/>
                     ) :

@@ -1,5 +1,6 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/publishListActions';
+import * as constants from '../../../../Constants/Constants'
 
 export default class PublishList extends Reducer {
   getInitialState() {
@@ -42,6 +43,6 @@ export default class PublishList extends Reducer {
   }
 
   viewToggled(prev) {
-    return {...prev, view: prev.view === 'table' ? 'list' : 'table'};
+    return {...prev, view: prev.view === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST};
   }
 }

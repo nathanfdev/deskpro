@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import * as actions from '../../Actions/ControlBarActions'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
 
 export class ListTableViewSwitcher extends React.Component {
@@ -56,7 +57,7 @@ export class ListTableViewDropdown extends React.Component {
                 </div>
                 <div style={{width:'50%',float:'left'}}>
                     <label>
-                        <input name="view-mode" type="radio" defaultChecked={viewMode === 'list'}
+                        <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_LIST}
                                onChange={changeView.bind(this)}>
                             List View
                         </input>
@@ -69,7 +70,7 @@ export class ListTableViewDropdown extends React.Component {
                 </div>
                 <div style={{width:'50%',float:'left'}}>
                     <label>
-                        <input name="view-mode" type="radio" defaultChecked={viewMode === 'table'}
+                        <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_TABLE}
                                onChange={changeView.bind(this)}>
                             Table View
                         </input>

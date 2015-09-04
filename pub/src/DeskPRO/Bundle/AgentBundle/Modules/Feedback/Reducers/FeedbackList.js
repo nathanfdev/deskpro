@@ -1,3 +1,4 @@
+import * as constants from '../../../../Constants/Constants'
 import * as FeedbackListActions from "../Actions/FeedbackListActions";
 import { Reducer } from "Ampliflux/reducers";
 
@@ -110,7 +111,7 @@ export default class FeedbackList extends Reducer {
 
     switchViewMode(prev) {
         const next = {...prev};
-        next.viewMode = prev.viewMode === 'list' ? 'table' : 'list';
+        next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
         return next;
     }
 
