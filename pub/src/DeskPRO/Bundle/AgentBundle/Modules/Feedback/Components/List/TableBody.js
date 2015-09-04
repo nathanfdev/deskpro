@@ -7,7 +7,7 @@ export class TableBody extends React.Component {
         const {feedback} = this.props;
         return (
             <tbody>
-            {feedback.map(feedback => <Row feedback={feedback}/>)}
+            {feedback.map((feedback, index) => <Row key={index} feedback={feedback}/>)}
             </tbody>
         );
     }
