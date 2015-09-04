@@ -1,6 +1,4 @@
 import React from 'react';
-import { SectionsPane, Section, SectionHeader }
-    from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 import { ListFrame, ControlBar, ListTableViewSwitcher, TableView }
     from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { FeedbackCard} from './FeedbackCard';
@@ -20,26 +18,21 @@ export class ListContainer extends React.Component {
 
         return (
             <ListFrame>
-                <SectionsPane>
-                    <Section>
-                        <ControlBar {...this.props}>
-                            <OrderBy sort={sort} sortName={sortName}/>
-                            <FilterBy filters={filters} query={query}/>
-                            <ListTableViewSwitcher {...this.props}/>
-                        </ControlBar>
-                    </Section>
-                    <Section>
-                        {viewMode === 'list' ?
-                            feedback.map(item =>
-                                    <FeedbackCard key={itemKey++} feedback={item}/>
-                            ) :
-                            <TableView>
-                                <TableHeader sortTable={sortTable.bind(this)}/>
-                                <TableBody feedback={feedback}/>
-                            </TableView>
-                        }
-                    </Section>
-                </SectionsPane>
+                <ControlBar>
+                    <OrderBy sort={sort} sortName={sortName}/>
+                    <FilterBy filters={filters} query={query}/>
+                    <ListTableViewSwitcher {...this.props}/>
+                </ControlBar>
+
+                {viewMode === 'list' ?
+                    feedback.map(item =>
+                            <FeedbackCard key={itemKey++} feedback={item}/>
+                    ) :
+                    <TableView>
+                        <TableHeader sortTable={sortTable.bind(this)}/>
+                        <TableBody feedback={feedback}/>
+                    </TableView>
+                }
             </ListFrame>
         );
     }
