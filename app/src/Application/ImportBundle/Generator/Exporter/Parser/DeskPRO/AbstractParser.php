@@ -32,6 +32,9 @@ use Exception;
 
 /**
  * Abstract DeskPRO parser
+ *
+ * Class AbstractParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {

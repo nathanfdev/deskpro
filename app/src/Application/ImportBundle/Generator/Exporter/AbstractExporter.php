@@ -141,6 +141,9 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         );
     }
 
+    /**
+     * @return array
+     */
     public function getAllowedTypes()
     {
         return $this->getOrderedTypes();

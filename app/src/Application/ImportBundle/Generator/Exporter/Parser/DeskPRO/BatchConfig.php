@@ -31,7 +31,10 @@ use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchSizeConfig;
 
 /**
- * OsTicket batch configuration
+ * DeskPRO batch configuration
+ *
+ * Class BatchConfig
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
 class BatchConfig extends AbstractBatchSizeConfig
 {

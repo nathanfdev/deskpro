@@ -139,8 +139,15 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                 $collection->attach($type, $exporter->exportByType($type));
             }
 
-            if ($collection->hasEntities()) {
+            // Writes batch config (even no entities to write to support "retry-after" timeout)
+            // Writes batch config before validation to skip broken batches
 
+            if ($exporter instanceof Exporter\ExporterBatchInterface) {
+                $outputWriter->setBatchConfig($exporter->getUpdatedBatchConfig());
+                $outputWriter->writeBatchConfig();
+            }
+
+            if ($collection->hasEntities()) {
                 $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
 
                 // Validate the collection of entities
@@ -202,21 +209,14 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                 $this->progress_bar->advance($collection->getSkippedCount() * 2);
             }
 
-            // Writes batch config (even no entities to write to support "retry-after" timeout)
-            // Writes batch config before validation to skip broken batches
-
             if ($exporter instanceof Exporter\ExporterBatchInterface) {
-                $updated = $exporter->getUpdatedBatchConfig();
-                $outputWriter->setBatchConfig($updated);
-                $outputWriter->writeBatchConfig();
-
-                if (!$updated->getHasRemaining()) {
+                if ( ! $exporter->getUpdatedBatchConfig()->getHasRemaining()) {
                     $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
                 }
+
             } else {
                 $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
             }
-
 
         } catch (\Exception $e) {
             $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
@@ -373,6 +373,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Returns a list of ordered entity types
      * Writers and exporters need different entities foreach order
      *
+     * // todo remove allowed types?
+     *
      * @param array $types
      * @return array
      * @throws Exception
@@ -383,8 +385,9 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             throw new Exception('Generator configuration is not defined');
         }
 
-        $_types = array();
+        $_types  = array();
         $allowed = $this->getExporter()->getAllowedTypes();
+
         foreach ($types as $type) {
             if (in_array($type, $allowed)) {
                 $_types[] = $type;

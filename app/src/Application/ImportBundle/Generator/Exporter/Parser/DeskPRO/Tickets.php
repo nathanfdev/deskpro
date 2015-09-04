@@ -29,11 +29,13 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Orb\Util\Strings;
 
 /**
  * DeskPRO tickets parser
+ *
+ * Class Tickets
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
 class Tickets extends AbstractParser
 {
@@ -44,9 +46,12 @@ class Tickets extends AbstractParser
 
     protected $start_ticket_id;
 
+    /**
+     * @param int $id
+     */
     public function setStartTicketId($id)
     {
-        $this->start_ticket_id = (int) $id;
+        $this->start_ticket_id = (int)$id;
     }
 
     /**
@@ -151,7 +156,6 @@ class Tickets extends AbstractParser
         }
 
         foreach ($ticket->messages as $num => $message) {
-            /** @var Entity\TicketMessage $message */
             $entity->addMessage($this->exportMessage($num, $message));
         }
 
@@ -188,7 +192,6 @@ class Tickets extends AbstractParser
         ;
 
         foreach ($message->attachments as $num => $attachment) {
-            /** @var Entity\Attachment $attachment */
             $entity->addAttachment($this->exportAttachment($num, $attachment));
         }
 

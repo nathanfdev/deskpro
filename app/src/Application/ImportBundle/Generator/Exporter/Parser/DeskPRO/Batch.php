@@ -30,6 +30,10 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchSizeParser;
 
+/**
+ * Class Batch
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
+ */
 class Batch extends AbstractBatchSizeParser
 {
     /**

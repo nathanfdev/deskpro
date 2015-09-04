@@ -33,6 +33,9 @@ use Exception;
 
 /**
  * Exporter from DeskPRO service
+ *
+ * Class DeskPRO
+ * @package Application\ImportBundle\Generator\Exporter
  */
 class DeskPRO extends AbstractExporter implements ExporterBatchInterface
 {
@@ -116,6 +119,9 @@ class DeskPRO extends AbstractExporter implements ExporterBatchInterface
         throw new Exception('Batch config is not defined');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAllowedTypes()
     {
         return array(
