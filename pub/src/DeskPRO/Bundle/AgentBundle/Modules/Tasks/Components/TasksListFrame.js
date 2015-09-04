@@ -16,7 +16,7 @@ import KanbanColumn from "../Components/KanbanColumn";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
 import * as AppActions from "../../Application/Actions/AppActions";
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as constants from '../../../Constants/Constants';
 
 @connect(state => ({
     taskFrameList: state.taskFrameList,
@@ -406,10 +406,11 @@ class TasksListFrame extends React.Component {
                             </Formsy.Form>
                         </div>
                         : (this.state.view === 'calendar') ?
-                        <TaskCalendar tasks={taskFrameList.taskFrameList}
-                                      moment={this.state.moment}
-                                      nextMonth={this.nextMonth.bind(this)}
-                                      prevMonth={this.prevMonth.bind(this)}/>
+                          <TaskCalendar tasks={taskFrameList.taskFrameList}
+                                        moment={this.state.moment}
+                                        nextMonth={this.nextMonth.bind(this)}
+                                        prevMonth={this.prevMonth.bind(this)}
+                                        dispatch={_this.props.dispatch.bind(_this)}/>
                         :
                         <div>
                             <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
