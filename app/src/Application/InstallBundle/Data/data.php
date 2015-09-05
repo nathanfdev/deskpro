@@ -114,26 +114,6 @@ if (!$IMPORT_INSTALL) {
     $em->flush();
 }
 
-################################################################################
-# Feedback
-################################################################################
-
-##BEGIN:create_feedback.default##
-$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
-$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
-$em->persist($DEFAULT_IDEA_CAT);
-$em->flush();
-
-$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
-$em->persist($cat);
-$em->flush();
-
-$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
-$em->persist($cat);
-$em->flush();
-
 // Statuses are done as part of FeedbackCatsStep so we can map id's
 if (!$IMPORT_INSTALL) {
     // ensure gathering-feedback is always first, such that it's ID = 1
@@ -153,6 +133,17 @@ if (!$IMPORT_INSTALL) {
     $em->flush();
 }
 
+
+################################################################################
+# Feedback
+################################################################################
+
+##BEGIN:create_feedback.default##
+$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
+$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
+$em->persist($DEFAULT_IDEA_CAT);
+$em->flush();
+
 if (!$IMPORT_INSTALL) {
     $DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
     $DEFAULT_IDEA->person = $AGENT;
@@ -163,58 +154,6 @@ if (!$IMPORT_INSTALL) {
     $em->persist($DEFAULT_IDEA);
     $em->flush();
 }
-
-################################################################################
-# Portal Blocks
-################################################################################
-
-##BEGIN:create_portal_block.news##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'portal';
-$b->type       = 'news';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.userinfo_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'userinfo';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.kb_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'kb_cat_list';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.feedback_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'feedback_cat_list';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.downloads_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'downloads_cat_list';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.staff_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'staff';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
 
 ################################################################################
 # Agent Teams
@@ -372,3 +311,272 @@ $em->getConnection()->executeUpdate("
         ($ugid, NULL, '1', 'agent_general.signature'),
         ($ugid, NULL, '1', 'agent_general.signature_rte')
 ");
+
+################################################################################
+# More Feedback
+################################################################################
+
+$FEEDBACK_FEATURE = new \Application\DeskPRO\Entity\FeedbackCategory();
+$FEEDBACK_FEATURE['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
+$FEEDBACK_FEATURE->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($FEEDBACK_FEATURE);
+$em->flush();
+
+$FEEDBACK_BUG = new \Application\DeskPRO\Entity\FeedbackCategory();
+$FEEDBACK_BUG['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
+$FEEDBACK_BUG->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($FEEDBACK_BUG);
+$em->flush();
+
+
+########################################################
+# TEMP DATA
+########################################################
+
+$faker = \Faker\Factory::create();
+
+// the content publisher agent guy
+$publisher = new \Application\DeskPRO\Entity\Person();
+$publisher->name = 'Corporate Content';
+$publisher->can_agent = true;
+$publisher->is_agent = true;
+$publisher->addEmailAddressString('content@publisher.com');
+
+$em->persist($publisher);
+$em->flush($publisher);
+
+
+// a regular dude
+$person = new \Application\DeskPRO\Entity\Person();
+$person->name = 'Joe Kool';
+$person->addEmailAddressString('joe@kool.com');
+$person->setPassword('deskpro');
+
+$em->persist($person);
+$em->flush($person);
+
+//////////////////////////////////////////////////////////////
+// articles
+//////////////////////////////////////////////////////////////
+
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac->title = 'Germany Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; $i++) {
+    $a = new \Application\DeskPRO\Entity\Article;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategories(array($ac));
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac->title = 'Finland Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; $i++) {
+    $a = new \Application\DeskPRO\Entity\Article;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategories(array($ac, $em->getRepository('DeskPRO:ArticleCategory')->find(1)));
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac->title = 'Japan Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; $i++) {
+    $a = new \Application\DeskPRO\Entity\Article;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategories(array($ac));
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+//////////////////////////////////////////////////////////////
+// news
+//////////////////////////////////////////////////////////////
+
+$ac = new \Application\DeskPRO\Entity\NewsCategory();
+$ac->title = 'Canada Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; $i++) {
+    $a = new \Application\DeskPRO\Entity\News;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac = new \Application\DeskPRO\Entity\NewsCategory();
+$ac->title = 'U.S. Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; $i++) {
+    $a = new \Application\DeskPRO\Entity\News;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac = $em->getRepository('DeskPRO:NewsCategory')->find(1);
+
+for ($i = 0; $i < 15; $i++) {
+    $a = new \Application\DeskPRO\Entity\News;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+//////////////////////////////////////////////////////////////
+// downloads
+//////////////////////////////////////////////////////////////
+
+function make_blob(\Doctrine\ORM\EntityManager $em)
+{
+    $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
+
+    $blob = $storage->createBlobRecordFromFile(
+        realpath(__DIR__ . '/../../../../../web/images/dp-logo-130.png'),
+        'dp-logo-130.png',
+        'image/png'
+    )
+        ;
+
+    $blob->authcode = rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18);
+
+    return $blob;
+}
+
+$ac = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac->title = 'Canada Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; $i++) {
+    $blob = make_blob($em);
+    $a = new \Application\DeskPRO\Entity\Download;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $a->setBlob($blob);
+    $em->persist($a);
+}
+
+$ac = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac->title = 'U.S. Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; $i++) {
+    $blob = make_blob($em);
+    $a = new \Application\DeskPRO\Entity\Download();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $a->setBlob($blob);
+    $em->persist($a);
+}
+
+$ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
+
+for ($i = 0; $i < 15; $i++) {
+    $blob = make_blob($em);
+    $a = new \Application\DeskPRO\Entity\Download;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000) . "<br><br>" . $faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $a->setBlob($blob);
+    $em->persist($a);
+}
+
+//////////////////////////////////////////////////////////////
+// feedback
+//////////////////////////////////////////////////////////////
+
+function rand_fb_status_pair(\Doctrine\ORM\EntityManager $em) {
+    $array = array();
+
+    $opts = array(
+        \Application\DeskPRO\Entity\Feedback::STATUS_ACTIVE,
+        \Application\DeskPRO\Entity\Feedback::STATUS_CLOSED
+    );
+    $array['status'] = $opts[rand(0, (count($opts) - 1))];
+
+    $scs = $em->getRepository('DeskPRO:FeedbackStatusCategory')->findBy(array(
+        'status_type' => $array['status'],
+    ));
+
+    $array['status_category'] = $scs[rand(0, (count($scs) - 1))];
+
+    return $array;
+}
+
+for ($i = 0; $i < 30; $i++) {
+    $a = new \Application\DeskPRO\Entity\Feedback();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(750) . "<br><br>" . $faker->text(1000));
+    $a->setCategory($DEFAULT_IDEA_CAT);
+    $fbinfo = rand_fb_status_pair($em);
+    $a->setStatus($fbinfo['status']);
+    $a->setStatusCategory($fbinfo['status_category']);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+for ($i = 0; $i < 30; $i++) {
+    $a = new \Application\DeskPRO\Entity\Feedback();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(750) . "<br><br>" . $faker->text(1000));
+    $a->setCategory($FEEDBACK_BUG);
+    $fbinfo = rand_fb_status_pair($em);
+    $a->setStatus($fbinfo['status']);
+    $a->setStatusCategory($fbinfo['status_category']);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
+
+for ($i = 0; $i < 30; $i++) {
+    $a = new \Application\DeskPRO\Entity\Feedback;
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(750) . "<br><br>" . $faker->text(1000));
+    $a->setCategory($FEEDBACK_FEATURE);
+    $fbinfo = rand_fb_status_pair($em);
+    $a->setStatus($fbinfo['status']);
+    $a->setStatusCategory($fbinfo['status_category']);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+
+$em->flush();
