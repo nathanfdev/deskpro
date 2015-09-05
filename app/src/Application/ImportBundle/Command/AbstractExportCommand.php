@@ -36,7 +36,7 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
-use Application\ImportBundle\Reader\DeskPRO\Factory as DeskPROReaderFactory;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -390,8 +390,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $input->setOption('output-path', $configData['temp'] . '/out/');
 
             $readerConfig = $is->getReaderConfig($input->getArgument('script'));
+            $logfile      = $importer->getData('logfile');
 
-            if ($logfile = $importer->getData('logfile')) {
+            if ($logfile) {
                 $config->setLogPath($logfile);
             }
         }

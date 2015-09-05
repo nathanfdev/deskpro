@@ -106,7 +106,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $count    = 0;
         $exporter = $this->getExporter();
 
-        foreach ($exporter->getAllowedTypes() as $record_type) {
+        foreach ($this->getRequiredExportersOrderedEntityTypes() as $record_type) {
             $count += $exporter->getCountByType($record_type);
         }
 
@@ -224,7 +224,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $exporter   = $this->getExporter();
         $exceptions = new ExceptionCollection();
 
-        foreach ($exporter->getAllowedTypes() as $type) {
+        foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
             $this->exporterLogHeader($type);
 
             $collection = $exporter->exportByType($type);
@@ -365,8 +365,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Returns a list of ordered entity types
      * Writers and exporters need different entities foreach order
      *
-     * // todo remove allowed types?
-     *
      * @param array $types
      * @return array
      * @throws Exception
@@ -377,15 +375,13 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             throw new Exception('Generator configuration is not defined');
         }
 
-        $_types  = array();
-        $allowed = $this->getExporter()->getAllowedTypes();
-
+        $allowed_types = array();
         foreach ($types as $type) {
-            if (in_array($type, $allowed)) {
-                $_types[] = $type;
+            if ($this->config->hasEntityType($type)) {
+                $allowed_types[] = $type;
             }
         }
 
-        return $_types;
+        return $allowed_types;
     }
 }

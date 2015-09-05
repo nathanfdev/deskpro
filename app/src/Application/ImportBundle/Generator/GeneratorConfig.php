@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
@@ -50,8 +51,6 @@ class GeneratorConfig
      */
     private $exporter_type;
 
-    protected $exporter_factory_class;
-
     /**
      * @var BatchConfigInterface
      */
@@ -61,11 +60,6 @@ class GeneratorConfig
      * @var string
      */
     private $writer_type;
-
-    /**
-     * @var array
-     */
-    private $entity_types = array();
 
     /**
      * @var string
@@ -306,7 +300,15 @@ class GeneratorConfig
      */
     public function getEntityTypes()
     {
-        return $this->entity_types;
+        return array(
+            Entity\EntityInterface::TYPE_ORGANIZATION,
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
     }
 
     /**
@@ -317,19 +319,7 @@ class GeneratorConfig
      */
     public function hasEntityType($type)
     {
-        return in_array($type, $this->entity_types, true);
-    }
-
-    /**
-     * Add an entity type to be affected
-     *
-     * @param string $record_type
-     * @return $this
-     */
-    public function addEntityType($record_type)
-    {
-        $this->entity_types[] = $record_type;
-        return $this;
+        return in_array($type, $this->getEntityTypes(), true);
     }
 
     /**

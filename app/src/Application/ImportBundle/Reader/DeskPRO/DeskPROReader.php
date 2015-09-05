@@ -33,7 +33,11 @@ use Application\DeskPRO\ORM\EntityManager;
 use Doctrine\DBAL\DriverManager;
 use Application\ImportBundle\Reader\BaseReader;
 
-class Reader extends BaseReader
+/**
+ * Class DeskPROReader
+ * @package Application\ImportBundle\Reader\DeskPRO
+ */
+class DeskPROReader extends BaseReader
 {
     /**
      * @var DeskproContainer
@@ -45,7 +49,15 @@ class Reader extends BaseReader
      */
     protected $em;
 
-
+    /**
+     * Constructor
+     *
+     * @param Config          $config
+     * @param DeskproContainer $container
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\ORMException
+     */
     public function __construct(Config $config, DeskproContainer $container)
     {
         parent::__construct($config);
@@ -108,6 +120,10 @@ class Reader extends BaseReader
         return $this->em->getRepository('DeskPRO:Ticket')->matching($criteria);
     }
 
+    /**
+     * @param Blob $blob
+     * @return null|string
+     */
     public function getBlobData(Blob $blob)
     {
         return $this->c->getBlobStorage()->copyBlobRecordToString($blob);

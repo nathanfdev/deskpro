@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Reader\DeskPRO\Reader;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
 use Exception;
 
 /**
@@ -41,7 +41,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     const MAX_BATCH_SIZE = 1000;
 
     /**
-     * @var Reader
+     * @var DeskPROReader
      */
     protected $reader;
 
@@ -53,9 +53,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Constructor
      *
-     * @param Reader $reader
+     * @param DeskPROReader $reader
      */
-    public function __construct(Reader $reader)
+    public function __construct(DeskPROReader $reader)
     {
         $this->reader = $reader;
     }

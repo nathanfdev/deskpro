@@ -118,15 +118,4 @@ class DeskPRO extends AbstractExporter implements ExporterBatchInterface
 
         throw new Exception('Batch config is not defined');
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAllowedTypes()
-    {
-        return array(
-            Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_TICKET,
-        );
-    }
 }

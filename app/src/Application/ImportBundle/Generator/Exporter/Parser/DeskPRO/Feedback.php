@@ -25,41 +25,40 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
- * DeskPRO data exporter factory
+ * Class Feedback
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  *
- * Class DeskPROFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * todo implement
  */
-class DeskPROFactory extends AbstractFactory
+final class Feedback extends AbstractParser implements NotSupportedInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function getEntityType()
     {
-        $reader = DeskPROReaderFactory::createReader($config, $container);
+        return Entity\EntityInterface::TYPE_FEEDBACK;
+    }
 
-        $tickets = new Parser\DeskPRO\Tickets($reader);
-        $tickets->setStartTicketId($config->getStartTicketId());
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 0;
+    }
 
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\DeskPRO\People($reader))
-            ->attach($tickets)
-            ->attach(new Parser\DeskPRO\Articles($reader))
-            ->attach(new Parser\DeskPRO\Downloads($reader))
-            ->attach(new Parser\DeskPRO\Feedback($reader))
-            ->attach(new Parser\DeskPRO\News($reader))
-            ->attach(new Parser\DeskPRO\Organizations($reader))
-        ;
-
-        return new DeskPRO($parsers, $reader);
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
     }
 }

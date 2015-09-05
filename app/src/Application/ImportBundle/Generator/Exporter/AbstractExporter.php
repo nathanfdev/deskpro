@@ -140,12 +140,4 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
             Entity\EntityInterface::TYPE_PERSON,
         );
     }
-
-    /**
-     * @return array
-     */
-    public function getAllowedTypes()
-    {
-        return $this->getOrderedTypes();
-    }
 }

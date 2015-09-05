@@ -6,21 +6,30 @@ use Symfony\Component\DependencyInjection\Container;
 
 /**
  * DeskPRO reader factory
+ *
+ * Class DeskPROReaderFactory
+ * @package Application\ImportBundle\Reader\DeskPRO
  */
-class Factory
+class DeskPROReaderFactory
 {
     /**
      * Create os ticket reader using deskpro config
      *
-     * @return Reader
-     * @throws Exception
+     * @param Config    $config
+     * @param Container $container
+     *
+     * @return DeskPROReader
      */
     public static function createReader(Config $config, Container $container)
     {
         $config = $config ?: self::getDefaultConfig();
-        return new Reader($config, $container);
+        return new DeskPROReader($config, $container);
     }
 
+    /**
+     * @return Config
+     * @throws \Exception
+     */
     public static function getDefaultConfig()
     {
         $dp_config = dp_get_config('deskpro_import');
