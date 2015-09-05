@@ -371,7 +371,7 @@ class GeneratorConfig
      */
     public function setInputPath($input_path)
     {
-        $this->input_path = $input_path;
+        $this->input_path = $input_path ? (rtrim($input_path, '/') . '/') : null;
         return $this;
     }
 
