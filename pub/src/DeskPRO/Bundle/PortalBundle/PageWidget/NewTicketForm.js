@@ -55,15 +55,35 @@ export default class NewTicketForm extends PageWidget {
 
   renderWidget() {
     let $formEl       = this.$element.find('.dp_ticket_form');
+    let formName     = $formEl.find('form').attr('name');
     let $tplEl        = this.$element.find('.js_form_tpl');
     let ticketReader  = new TicketValueReader($formEl);
     let allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
     let updateHitter;
+    let updateLastDepId;
+
+    updateLastDepId = () => {
+      let dep_id = ticketReader.getDepartmentId();
+
+      let $ldp = $formEl.find("[data-field='last_department_id']");
+      if ($ldp.length) {
+        if($ldp.find('input').length) {
+          $ldp.find('input').val(dep_id);
+        } else {
+          $ldp.val(dep_id); // on first page load this is the case
+        }
+      } else {
+        $formEl.find('form').append('<input data-field="last_department_id" type="hidden" name="' + formName + '[last_department_id]" value="' + dep_id + '" />');
+      }
+    };
 
     this.dynForm = new DynamicForm({
       formEl: $formEl,
       tplEl:  $tplEl,
-      alwaysFields: ['user_email', 'subject', 'message', 'submit', 'last_department_id'],
+      alwaysFields: ['department', 'user_email', 'subject', 'message', 'submit', 'last_department_id'],
+      onInit: () => {
+        updateLastDepId();
+      },
       fieldFilter: (fields, currentFields, dynForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {
           console.error("DESKPRO_TICKET_DISPLAY is not defined");
@@ -84,6 +104,7 @@ export default class NewTicketForm extends PageWidget {
       },
       onFieldsUpdated: () => {
         this.runWidgets($formEl);
+        updateLastDepId();
       }
     });
 
