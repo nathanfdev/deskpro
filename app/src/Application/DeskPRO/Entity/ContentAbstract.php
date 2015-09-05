@@ -638,4 +638,21 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->date_created;
     }
+
+    /**
+     * @return string
+     */
+    public function getContentDesc()
+    {
+        $content = $this->content;
+        $content = Strings::html2Text($content);
+        $content = str_replace("\n", ' ', $content);
+        $content = preg_replace('# {2,}#', ' ', $content);
+
+        if (strlen($content) > 120) {
+            $content = substr($content, 0, 120) . '...';
+        }
+
+        return $content;
+    }
 }

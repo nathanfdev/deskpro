@@ -94,6 +94,25 @@ class ArticleCategory extends CategoryAbstract
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->usergroups = new ArrayCollection();
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getUserGroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Usergroup $usergroup
+     */
+    public function addUsergroup(Usergroup $usergroup)
+    {
+        if (!$this->usergroups->contains($usergroup)) {
+            $this->usergroups->add($usergroup);
+        }
     }
 
     ############################################################################

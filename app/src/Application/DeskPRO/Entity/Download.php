@@ -311,22 +311,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getContentDesc()
-    {
-        $content = $this->content;
-        $content = Strings::html2Text($content);
-        $content = str_replace("\n", ' ', $content);
-        $content = preg_replace('# {2,}#', ' ', $content);
-
-        if (strlen($content) > 120) {
-            $content = substr($content, 0, 120) . '...';
-        }
-
-        return $content;
-    }
 
     public function _invalidatePageCache()
     {
