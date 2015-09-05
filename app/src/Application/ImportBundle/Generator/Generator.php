@@ -139,7 +139,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                 $collection->attach($type, $exporter->exportByType($type));
             }
 
-            // Writes batch config (even no entities to write to support "retry-after" timeout)
+            // Writes batch config (even no entities to support "retry-after" timeout)
             // Writes batch config before validation to skip broken batches
 
             if ($exporter instanceof Exporter\ExporterBatchInterface) {
