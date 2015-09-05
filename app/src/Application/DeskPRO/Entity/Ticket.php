@@ -588,7 +588,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->attachments   = new ArrayCollection();
         $this->charges       = new ArrayCollection();
         $this->ticket_slas   = new ArrayCollection();
-        $this->problems = new ArrayCollection();
+        $this->problems      = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');

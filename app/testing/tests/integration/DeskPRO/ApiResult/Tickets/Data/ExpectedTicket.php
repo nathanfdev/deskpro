@@ -209,17 +209,13 @@ return array(
             'date_validated_ts_ms' => 1396525872000,
         ),
     'person_email_validating' => NULL,
-    'agent' => NULL,
-    'agent_team' => NULL,
-    'organization' => NULL,
-    'custom_data' =>
-        array(),
-    'participants' =>
-        array(),
-    'charges' =>
-        array(),
-    'ticket_slas' =>
-        array(),
-    'labels' =>
-        array()
+    'agent'        => null,
+    'agent_team'   => null,
+    'organization' => null,
+    'custom_data'  => array(),
+    'participants' => array(),
+    'charges'      => array(),
+    'ticket_slas'  => array(),
+    'labels'       => array(),
+    'problems'     => array(),
 );
