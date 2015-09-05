@@ -35,7 +35,7 @@ use Application\ImportBundle\Generator\ImporterProgressBar;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
-use Application\ImportBundle\Reader\DeskPRO\Config as DeskPROReaderConfig;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Orb\Util\Strings;
 
@@ -174,7 +174,7 @@ class Import
 
     /**
      * @param $id
-     * @return CsvConfig|DeskPROReaderConfig|OsTicketConfig|ZenDeskConfig|null
+     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
      * @throws \Exception
      */
     public function getReaderConfig($id)
@@ -194,7 +194,7 @@ class Import
                 $readerConfig = OsTicketConfig::fromArray($config);
                 break;
             case ExporterInterface::TYPE_DESKPRO:
-                $readerConfig = DeskPROReaderConfig::fromArray($config);
+                $readerConfig = DeskPROConfig::fromArray($config);
                 break;
             default:
                 throw new \Exception(sprintf('Unknown importer "%s"', $id));

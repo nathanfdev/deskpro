@@ -25,14 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
-
 namespace Application\ImportBundle\Reader\DeskPRO;
-
 
 use Application\ImportBundle\Reader\BaseConfig;
 
-class Config extends BaseConfig
+/**
+ * Class DeskPROConfig
+ * @package Application\ImportBundle\Reader\DeskPRO
+ */
+class DeskPROConfig extends BaseConfig
 {
     protected $host;
 
@@ -44,6 +45,15 @@ class Config extends BaseConfig
 
     protected $start_ticket_id;
 
+    /**
+     * Constructor
+     *
+     * @param string $host
+     * @param string $db
+     * @param string $user
+     * @param string $password
+     * @param int    $start_ticket_id
+     */
     public function __construct($host, $db, $user, $password, $start_ticket_id = 0)
     {
         $this->host = $host;
@@ -85,12 +95,19 @@ class Config extends BaseConfig
         return $this->password;
     }
 
+    /**
+     * @return int
+     */
     public function getStartTicketId()
     {
         return $this->start_ticket_id;
     }
 
-    static public function fromArray(array $data)
+    /**
+     * @param array $data
+     * @return DeskPROConfig
+     */
+    public static function fromArray(array $data)
     {
         return new self(
             $data['host'],

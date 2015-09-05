@@ -2,6 +2,7 @@
 
 namespace Application\ImportBundle\Reader\DeskPRO;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
@@ -15,19 +16,19 @@ class DeskPROReaderFactory
     /**
      * Create os ticket reader using deskpro config
      *
-     * @param Config    $config
-     * @param Container $container
+     * @param DeskPROConfig    $config
+     * @param DeskproContainer $container
      *
      * @return DeskPROReader
      */
-    public static function createReader(Config $config, Container $container)
+    public static function createReader(DeskPROConfig $config, DeskproContainer $container)
     {
-        $config = $config ?: self::getDefaultConfig();
+        $config = $config ? : self::getDefaultConfig();
         return new DeskPROReader($config, $container);
     }
 
     /**
-     * @return Config
+     * @return DeskPROConfig
      * @throws \Exception
      */
     public static function getDefaultConfig()
@@ -37,7 +38,7 @@ class DeskPROReaderFactory
             throw new \Exception('DeskPRO import config is not defined');
         }
 
-        return new Config(
+        return new DeskPROConfig(
             $dp_config['db_host'],
             $dp_config['db_name'],
             $dp_config['db_username'],

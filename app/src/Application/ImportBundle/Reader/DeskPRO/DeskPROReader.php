@@ -52,13 +52,13 @@ class DeskPROReader extends BaseReader
     /**
      * Constructor
      *
-     * @param Config          $config
+     * @param DeskPROConfig          $config
      * @param DeskproContainer $container
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
      */
-    public function __construct(Config $config, DeskproContainer $container)
+    public function __construct(DeskPROConfig $config, DeskproContainer $container)
     {
         parent::__construct($config);
         $this->c = $container;
@@ -66,11 +66,11 @@ class DeskPROReader extends BaseReader
         $em = $container->getEm();
         $this->em = $em->create(
             DriverManager::getConnection(array(
-                'dbname' => $config->getDatabase(),
-                'user' => $config->getUser(),
+                'dbname'   => $config->getDatabase(),
+                'user'     => $config->getUser(),
                 'password' => $config->getPassword(),
-                'host' => $config->getHost(),
-                'driver' => 'pdo_mysql',
+                'host'     => $config->getHost(),
+                'driver'   => 'pdo_mysql',
             )),
             $em->getConfiguration()
         );
@@ -127,14 +127,5 @@ class DeskPROReader extends BaseReader
     public function getBlobData(Blob $blob)
     {
         return $this->c->getBlobStorage()->copyBlobRecordToString($blob);
-    }
-
-    /**
-     * @return bool
-     * @throws OsTicketReaderException
-     */
-    public function isReady()
-    {
-        return null !== $this->getUsersCount();
     }
 }
