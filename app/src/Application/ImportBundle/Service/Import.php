@@ -25,10 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
-
 namespace Application\ImportBundle\Service;
-
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\DataStore;
@@ -41,12 +38,16 @@ use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\DeskPRO\Config as DeskPROReaderConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Orb\Util\Strings;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class Import
+ * @package Application\ImportBundle\Service
+ */
 class Import
 {
     static public $allowed = array(
         ExporterInterface::TYPE_CSV,
+        ExporterInterface::TYPE_JSON,
         ExporterInterface::TYPE_OS_TICKET,
         ExporterInterface::TYPE_ZENDESK,
 //        ExporterInterface::TYPE_DESKPRO,
@@ -74,6 +75,11 @@ class Import
      */
     protected $rep;
 
+    /**
+     * Constructor
+     *
+     * @param DeskproContainer $container
+     */
     public function __construct(DeskproContainer $container)
     {
         $this->c = $container;
@@ -111,19 +117,23 @@ class Import
     }
 
     /**
-     * get importer by id
-     * @param $id
+     * Get importer by id
+     *
+     * @param string $id
+     *
      * @return DataStore
+     * @throws \RuntimeException
      */
     public function getImporter($id)
     {
-        if (!in_array($id, self::$allowed)) {
-            throw new NotFoundHttpException;
+        if ( ! in_array($id, self::$allowed)) {
+            throw new \RuntimeException(sprintf('Importer `%s` is not supported', $id));
         }
 
         $name = 'importers.' . $id;
+        $importer = $this->rep->getByName($name);
 
-        if ($importer = $this->rep->getByName($name)) {
+        if ($importer) {
            return $importer;
         }
 
@@ -304,6 +314,9 @@ class Import
         return $config;
     }
 
+    /**
+     * @param DataStore $importer
+     */
     public function cleanup(DataStore $importer)
     {
         $readerConfigData = $importer->getData('config');
