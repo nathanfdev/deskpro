@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,35 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Dpql
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Dpql\Placeholder;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Dpql;
-
-/**
- * Place holder for the 24 hours, based on the current person's time zone.
- */
-class Past24Hours extends AbstractDateRange
+class Build1441367828 extends AbstractBuild
 {
-    /**
-     * Gets the date range components (printable, start, end).
-     *
-     * @return string[int]
-     */
-    protected function _getDateRange()
+    public function run()
     {
-        $tz = App::getCurrentPerson()->getTimezone();
-        $date = new \DateTime('now', new \DateTimeZone($tz));
-
-        $now = $date->format('Y-m-d H:i:s');
-        $today = $date->format('Y-m-d');
-
-        $date->modify('-1 day');
-        $beginning = $date->format('Y-m-d H:i:s');
-
-        return array("$beginning to $today", "$beginning", $now);
+        $this->out("Correct department newticket triggers not applying to fwd'd tickets");
+        $this->container->getDb()->executeUpdate("
+            UPDATE ticket_triggers
+            SET by_agent_mode = 'api,email,web'
+            WHERE
+              department_id IS NOT NULL
+              AND event_trigger = 'newticket'
+        ");
     }
 }

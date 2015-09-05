@@ -569,26 +569,25 @@ class Person extends DomainObject implements HighlightableModelInterface
         if (class_exists('Application\\DeskPRO\\App', false)) {
             try {
                 $this->setTimezone(App::$container->getSetting('core.default_timezone'));
-            } catch (\Exception $e) {
-            };
+            } catch (\Exception $e) {};
         }
         if (!$this->timezone) {
             $this->setModelField('timezone', 'UTC');
         }
 
-        $this->emails = new ArrayCollection();
-        $this->usergroups = new ArrayCollection();
-        $this->twitter_accounts = new ArrayCollection();
-        $this->twitter_users = new ArrayCollection();
-        $this->usersource_assoc = new ArrayCollection();
-        $this->contact_data = new ArrayCollection();
-        $this->custom_data = new ArrayCollection();
-        $this->preferences = new ArrayCollection();
-        $this->labels = new ArrayCollection();
-        $this->phone_numbers = new ArrayCollection();
+        $this->emails                 = new ArrayCollection();
+        $this->usergroups             = new ArrayCollection();
+        $this->twitter_accounts       = new ArrayCollection();
+        $this->twitter_users          = new ArrayCollection();
+        $this->usersource_assoc       = new ArrayCollection();
+        $this->contact_data           = new ArrayCollection();
+        $this->custom_data            = new ArrayCollection();
+        $this->preferences            = new ArrayCollection();
+        $this->labels                 = new ArrayCollection();
+        $this->phone_numbers          = new ArrayCollection();
         $this->department_permissions = new ArrayCollection();
-        $this->teams = new ArrayCollection();
-        $this->notes = new ArrayCollection();
+        $this->teams                  = new ArrayCollection();
+        $this->notes                  = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -3549,6 +3548,7 @@ class Person extends DomainObject implements HighlightableModelInterface
                 'fieldName' => 'usersource_assoc',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc',
                 'mappedBy' => 'person',
+                'cascade' => array('persist', 'remove')
             )
         );
         $metadata->mapOneToMany(

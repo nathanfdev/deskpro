@@ -174,11 +174,19 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
                 $save_field  = $change_field;
             }
 
+            if ($save_field === 'password') {
+                $old_v = '********';
+                $new_v = '********';
+            } else {
+                $old_v = $this->_formatDataValue($old);
+                $new_v = $this->_formatDataValue($new);
+            }
+
             $this->audit_manager->recordChange(
                 $save_obj,
                 $save_field,
-                $this->_formatDataValue($old),
-                $this->_formatDataValue($new)
+                $old_v,
+                $new_v
             );
         }
     }

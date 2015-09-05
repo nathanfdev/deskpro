@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\Entity\Usersource;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
@@ -110,6 +111,32 @@ class UsersourceTester
      * @throws \RuntimeException
      */
     public function test($username, $password)
+    {
+        if ($this->has_run) {
+            throw new \RuntimeException("Test has already been run");
+        }
+
+        try {
+            return $this->doTest($username, $password);
+        } catch (\Exception $e) {
+            $log = 'There was an error while performing your test (' . get_class($e) . ')';
+            $log .= "\n\n";
+            $log .= $e->getMessage();
+            $log .= "\n\n";
+            $log .= KernelErrorHandler::formatBacktrace($e->getTrace(), true);
+            $this->log = $log;
+            $this->is_valid = false;
+            return false;
+        }
+    }
+
+    /**
+     * @param  string            $username
+     * @param  string            $password
+     * @return bool
+     * @throws \RuntimeException
+     */
+    private function doTest($username, $password)
     {
         if ($this->has_run) {
             throw new \RuntimeException("Test has already been run");

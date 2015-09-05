@@ -75,7 +75,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
             $ugs = $this->em->createQuery("
                 SELECT ug
                 FROM DeskPRO:Usergroup ug
-                WHERE ug.is_agent_group = false AND ug.is_enabled = true
+                WHERE ug.is_agent_group = false
                 ORDER BY ug.title ASC
             ")->execute();
 

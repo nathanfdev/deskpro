@@ -35,6 +35,7 @@ namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
 
 class Purger implements PersonContextInterface
 {
@@ -117,6 +118,14 @@ class Purger implements PersonContextInterface
         $ticket_ids = $this->db->fetchAllCol("
             SELECT id FROM tickets WHERE person_id = ?
         ", array($this->person->getId()));
+
+        #------------------------------
+        # Attachments
+        #------------------------------
+
+        foreach ($ticket_ids as $ticket_id) {
+            TicketUtil::deleteTicketAttachments($ticket_id, $this->db);
+        }
 
         #------------------------------
         # Insert delete logs
