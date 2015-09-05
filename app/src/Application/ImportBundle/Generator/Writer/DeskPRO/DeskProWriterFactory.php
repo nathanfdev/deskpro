@@ -57,18 +57,18 @@ class DeskProWriterFactory extends AbstractFactory
 
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $this->container->get('doctrine');
-    
         /** @var EntityManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
+
         // recreate isolated entity manager to prevent unnecessary inserts and clears
         $params = $entity_manager->getConnection()->getParams();
         $params = array_intersect_key($params, array(
-            'driver' => 1,
-            'host' => 1,
-            'user' => 1,
+            'driver'   => 1,
+            'host'     => 1,
+            'user'     => 1,
             'password' => 1,
-            'port' => 1,
-            'dbname' => 1,
+            'port'     => 1,
+            'dbname'   => 1,
         ));
         $entity_manager = $entity_manager->create(
             $params,
@@ -88,13 +88,9 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
         $custom_def_ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
         /** @var EntityRepository\CustomDefFeedback $custom_def_feedback_repository */
-        $custom_def_feedback_repository = $entity_manager->getRepository(
-            'Application\DeskPRO\Entity\CustomDefFeedback'
-        );
+        $custom_def_feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefFeedback');
         /** @var EntityRepository\CustomDefOrganization $custom_def_organization_repository */
-        $custom_def_organization_repository = $entity_manager->getRepository(
-            'Application\DeskPRO\Entity\CustomDefOrganization'
-        );
+        $custom_def_organization_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefOrganization');
         /** @var EntityRepository\CustomDefArticle $custom_def_article_repository */
         $custom_def_article_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefArticle');
         /** @var EntityRepository\Department $departmentRepository */
@@ -188,7 +184,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\ObjectLang($object_lang_repository, $entity_manager))
         ;
 
-        $blob_storage = $this->container->getBlobStorage();
+        $blob_storage = new DeskproBlobStorage($entity_manager);
         $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
 
         $ticket_manager = $this->container->getTicketManager();
