@@ -3300,7 +3300,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             'date_feedback_rating'         => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
             'date_created'                 => $this->date_created->format('Y-m-d H:i:s'),
             'date_resolved'                => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
-            'date_archived'                  => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
+            'date_archived'                => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
             'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
             'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
             'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
