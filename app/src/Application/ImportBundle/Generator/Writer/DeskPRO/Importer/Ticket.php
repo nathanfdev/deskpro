@@ -133,6 +133,7 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($ticket);
+
         return $this->records;
     }
 
@@ -227,11 +228,15 @@ final class Ticket extends AbstractImporter
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
         $email = $entity->getPersonEmail() ? : $person_email;
+        $blob  = $this->blob_adapter->createByBlob($entity);
+
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByBlob($entity))
+            ->setBlob($blob)
         ;
+
+        $this->records->addRelatedEntity($blob);
 
         return $attachment;
     }
