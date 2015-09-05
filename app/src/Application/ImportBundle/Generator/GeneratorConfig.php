@@ -394,7 +394,7 @@ class GeneratorConfig
      */
     public function setOutputPath($output_path)
     {
-        $this->output_path = rtrim($output_path, '/') . '/';
+        $this->output_path = $output_path ? (rtrim($output_path, '/') . '/') : null;
         return $this;
     }
 
