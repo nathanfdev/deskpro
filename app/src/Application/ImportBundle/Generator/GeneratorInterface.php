@@ -50,15 +50,9 @@ interface GeneratorInterface extends GeneratorConfigAwareInterface
     public function getTotalRecordsCount();
 
     /**
-     * Returns true if there is something to import
-     * Test connection, file availability, etc
-     *
-     * @return bool
-     */
-    public function isReady();
-
-    /**
      * Generates and writes a collection of entities
+     *
+     * @return void
      */
     public function generate();
 

@@ -44,6 +44,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+/**
+ * Class ImportersController
+ * @package Application\ApiBundle\Controller
+ */
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -165,16 +169,17 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function testAction($id, Request $request)
     {
+        $is       = $this->is();
+        $importer = $is->getImporter($id);
+
         try {
-            $is = $this->is();
-            $importer = $is->getImporter($id);
             $config = $is->createGeneratorConfig($importer);
 
             /** @var Generator $generator */
             $this->container->set('deskpro.import.config', $config);
             $generator = $this->container->get('deskpro.import.generator');
 
-            $res = $this->createJsonResponse(array('result' => $generator->isReady()));
+            $res = $this->createJsonResponse(array('result' => $generator->getTotalRecordsCount() > 0));
         } catch (\Exception $e) {
             $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
         }

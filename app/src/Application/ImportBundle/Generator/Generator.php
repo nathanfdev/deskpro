@@ -116,14 +116,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     /**
      * {@inheritdoc}
      */
-    public function isReady()
-    {
-        return $this->getTotalRecordsCount() > 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function generate()
     {
         try {
