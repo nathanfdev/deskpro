@@ -243,12 +243,9 @@ class Organization extends DomainObject implements HighlightableModelInterface
      */
     public function addContactData(OrganizationContactData $contact_data)
     {
-        $em = App::getOrm();
-
         $this['contact_data']->add($contact_data);
-
         $contact_data['organization'] = $this;
-        $em->persist($contact_data);
+
         $this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
     }
 

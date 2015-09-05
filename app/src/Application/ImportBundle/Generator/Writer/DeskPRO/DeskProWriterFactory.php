@@ -55,8 +55,6 @@ class DeskProWriterFactory extends AbstractFactory
             throw new \RuntimeException('Unable to create writer, container is not instance of DeskproContainer');
         }
 
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
         /** @var EntityManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
 
@@ -70,7 +68,8 @@ class DeskProWriterFactory extends AbstractFactory
             'port'     => 1,
             'dbname'   => 1,
         ));
-        $entity_manager = $entity_manager->create(
+
+        $entity_manager = $entity_manager::create(
             $params,
             $entity_manager->getConfiguration()
         );
@@ -82,7 +81,7 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var EntityRepository\LabelArticle $article_label_repository */
         $article_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelArticle');
         /** @var EntityRepository\ArticleComment $article_comment_repository */
-        $article_comment_repository = $doctrine->getRepository('DeskPRO:ArticleComment');
+        $article_comment_repository = $entity_manager->getRepository('DeskPRO:ArticleComment');
         /** @var EntityRepository\CustomDefPerson $custom_def_person_repository */
         $custom_def_person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
@@ -141,8 +140,10 @@ class DeskProWriterFactory extends AbstractFactory
         $user_group_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Usergroup');
         /** @var ObjectRepository $object_lang_repository */
         $object_lang_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\ObjectLang');
+        /** @var EntityRepository\ImportMap $import_map_repository */
+        $import_map_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\ImportMap');
 
-        $email_account_manager  = $this->container->getEmailAccountManager();
+        $email_account_manager = $this->container->getEmailAccountManager();
 
         $mappers = new Importer\Mapper\Collection();
         $mappers
@@ -188,11 +189,7 @@ class DeskProWriterFactory extends AbstractFactory
         $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
 
         $ticket_manager = $this->container->getTicketManager();
-
-        /** @var EntityRepository\ImportMap $import_map_repository */
-        $import_map_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ImportMap');
-
-        $oid_mapper = new OidMapper($import_map_repository, $entity_manager);
+        $oid_mapper     = new OidMapper($import_map_repository, $entity_manager);
 
         $importers = new Importer\Collection();
         $importers
