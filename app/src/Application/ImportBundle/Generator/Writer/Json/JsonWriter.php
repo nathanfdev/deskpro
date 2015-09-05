@@ -124,7 +124,7 @@ final class JsonWriter extends AbstractWriter
             ? $this->batch_config->getId()
             : 1;
 
-        return $this->config->getOutputPath() . $id;
+        return $this->config->getOutputPath() . $id . '/';
     }
 
     /**

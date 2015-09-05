@@ -197,7 +197,7 @@ class GeneratorConfig
     /**
      * Returns exporter batch config
      *
-     * @return AbstractBatchConfig
+     * @return BatchConfigInterface
      */
     public function getExporterBatchConfig()
     {
@@ -394,7 +394,7 @@ class GeneratorConfig
      */
     public function setOutputPath($output_path)
     {
-        $this->output_path = $output_path;
+        $this->output_path = rtrim($output_path, '/') . '/';
         return $this;
     }
 
