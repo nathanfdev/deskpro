@@ -265,13 +265,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 
@@ -282,10 +276,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
      */
     public function resetCategories()
     {
-        foreach ($this->categories as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->categories->clear();
         $this->_onPropertyChanged('categories', null, $this->categories);
 
@@ -371,10 +361,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
      */
     public function resetAttachments()
     {
-        foreach ($this->attachments as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->attachments->clear();
         $this->_onPropertyChanged('attachments', null, $this->attachments);
 
