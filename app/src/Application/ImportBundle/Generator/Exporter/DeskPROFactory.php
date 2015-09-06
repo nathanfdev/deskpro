@@ -53,13 +53,10 @@ class DeskPROFactory extends AbstractFactory
         /** @var DeskproContainer $container */
         $reader  = DeskPROReaderFactory::createReader($config, $container);
 
-        $tickets = new Parser\DeskPRO\Tickets($reader);
-        $tickets->setStartTicketId($config->getStartTicketId());
-
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\DeskPRO\People($reader))
-            ->attach($tickets)
+            ->attach(new Parser\DeskPRO\Tickets($reader, $config->getStartTicketId()))
             ->attach(new Parser\DeskPRO\Articles($reader))
             ->attach(new Parser\DeskPRO\Downloads($reader))
             ->attach(new Parser\DeskPRO\Feedback($reader))

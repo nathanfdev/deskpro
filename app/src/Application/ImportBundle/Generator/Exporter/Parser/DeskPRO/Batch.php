@@ -34,7 +34,7 @@ use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchSizeParser;
  * Class Batch
  * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
-class Batch extends AbstractBatchSizeParser
+final class Batch extends AbstractBatchSizeParser
 {
     /**
      * {@inheritdoc}

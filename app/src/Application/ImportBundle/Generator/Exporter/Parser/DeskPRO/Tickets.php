@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
 use Orb\Util\Strings;
 
 /**
@@ -37,21 +38,23 @@ use Orb\Util\Strings;
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
-class Tickets extends AbstractParser
+final class Tickets extends AbstractParser
 {
     /**
      * @var int
      */
     private $tickets_min_id;
 
-    protected $start_ticket_id;
-
     /**
-     * @param int $id
+     * Constructor
+     *
+     * @param DeskPROReader $reader
+     * @param int           $min_id
      */
-    public function setStartTicketId($id)
+    public function __construct(DeskPROReader $reader, $min_id = 0)
     {
-        $this->start_ticket_id = (int)$id;
+        parent::__construct($reader);
+        $this->tickets_min_id = (int)$min_id;
     }
 
     /**
@@ -69,10 +72,7 @@ class Tickets extends AbstractParser
      */
     public function getCurrentTicketsMinId()
     {
-        return max(
-            $this->tickets_min_id ?: $this->getBatchConfig()->getTicketsMinId(),
-            $this->start_ticket_id
-        );
+        return max($this->tickets_min_id, $this->getBatchConfig()->getTicketsMinId());
     }
 
     /**

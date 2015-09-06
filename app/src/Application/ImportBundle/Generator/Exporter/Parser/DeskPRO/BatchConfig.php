@@ -36,7 +36,7 @@ use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchSizeConfig;
  * Class BatchConfig
  * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
-class BatchConfig extends AbstractBatchSizeConfig
+final class BatchConfig extends AbstractBatchSizeConfig
 {
     /**
      * @var int
