@@ -31,19 +31,19 @@ namespace Application\ImportBundle\Reader;
  * Class BaseReader
  * @package Application\ImportBundle\Reader
  */
-abstract class BaseReader implements ReaderInterface
+abstract class AbstractReader implements ReaderInterface
 {
     /**
-     * @var BaseConfig
+     * @var ReaderConfigInterface
      */
     protected $config;
 
     /**
      * Constructor
      *
-     * @param BaseConfig $config
+     * @param ReaderConfigInterface $config
      */
-    public function __construct(BaseConfig $config)
+    public function __construct(ReaderConfigInterface $config)
     {
         $this->config = $config;
     }

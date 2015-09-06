@@ -60,6 +60,6 @@ class GeneratorFactory
             }
         }
 
-        return new Generator($exporter, $validator, $config, $writer);
+        return new Generator($exporter, $validator, $config, $writer, $container->get('deskpro.import'));
     }
 }

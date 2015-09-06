@@ -90,7 +90,6 @@ final class Ticket extends AbstractImporter
             ->setSubject($entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
-            ->setLanguageId($this->findLanguageId($entity->getLanguage()))
             ->setDepartment($this->findOrCreateTicketDepartment($entity->getDepartment()))
             ->setPriority($this->findOrCreateTicketPriority($entity->getPriority()))
             ->setCategory($this->findOrCreateTicketCategory($entity->getCategory()))
@@ -104,10 +103,14 @@ final class Ticket extends AbstractImporter
             ->resetCustomData()
         ;
 
+        if ($entity->getLanguage()) {
+            $ticket['language'] = $this->findLanguage($entity->getLanguage());
+        }
+
         if ($entity->getAgentEmail()) {
             $agent = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
             if ($agent && $agent->isAgent()) {
-                $ticket->setAgentId($agent->getId());
+                $ticket['agent'] = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
             } else {
                 $this->logWarning(sprintf(
                     'Unable to set ticket agent, user `%s` is not agent',
@@ -115,7 +118,7 @@ final class Ticket extends AbstractImporter
                 ));
             }
         }
-
+        
         foreach ($entity->getMessages() as $message) {
             $ticket->addMessage($this->createTicketMessage($message, $ticket));
         }
@@ -130,6 +133,7 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($ticket);
+
         return $this->records;
     }
 
@@ -224,11 +228,15 @@ final class Ticket extends AbstractImporter
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
         $email = $entity->getPersonEmail() ? : $person_email;
+        $blob  = $this->blob_adapter->createByBlob($entity);
+
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByBlob($entity))
+            ->setBlob($blob)
         ;
+
+        $this->records->addRelatedEntity($blob);
 
         return $attachment;
     }

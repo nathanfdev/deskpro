@@ -113,7 +113,9 @@ final class People extends AbstractParser
     {
         $collection = new Entity\Collection();
 
-        while ($batch = $this->reader->findStaff($this->getReaderBatchSize(), $this->getCurrentStaffMinId())) {
+        do {
+            $batch = $this->reader->findStaff($this->getReaderBatchSize(), $this->getCurrentStaffMinId());
+
             foreach ($batch as $num => $data) {
                 $this->advanceProgressBar();
 
@@ -135,7 +137,8 @@ final class People extends AbstractParser
             }
 
             $this->entities_loaded += count($batch);
-        }
+
+        } while (count($batch) > 0);
 
         return $collection;
     }
@@ -190,7 +193,9 @@ final class People extends AbstractParser
     {
         $collection = new Entity\Collection();
 
-        while ($batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId())) {
+        do {
+            $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+
             foreach ($batch as $num => $data) {
                 $this->advanceProgressBar();
 
@@ -212,7 +217,8 @@ final class People extends AbstractParser
             }
 
             $this->entities_loaded += count($batch);
-        }
+
+        } while (count($batch) > 0);
 
         return $collection;
     }

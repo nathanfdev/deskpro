@@ -25,67 +25,58 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
+
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
- * People reader storage interface
- *
- * Interface PeopleStorageInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class AbstractParserPeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-interface PeopleStorageInterface
+abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterface
 {
     /**
-     * Set users collection
-     *
-     * @param array $people
-     * @return $this
+     * @var ReaderInterface
      */
-    public function setPeople(array $people);
+    protected $reader;
 
     /**
-     * Add users collection
-     *
-     * @param array $people
-     * @return $this
+     * @var PeopleStorage
      */
-    public function addPeople(array $people);
+    protected $storage;
 
     /**
-     * Add deleted user ids
+     * Constructor
      *
-     * @param array $ignore_ids
-     * @return mixed
+     * @param ReaderInterface        $reader
+     * @param PeopleStorageInterface $storage
      */
-    public function addIgnoreIds(array $ignore_ids);
+    public function __construct(ReaderInterface $reader, PeopleStorageInterface $storage)
+    {
+        $this->reader  = $reader;
+        $this->storage = $storage;
+    }
 
     /**
-     * Get stored users collection
+     * {@inheritdoc}
+     */
+    public function loadBy(array $data)
+    {
+        $this->loadByIds($this->getPeopleIds($data));
+    }
+
+    /**
+     * Returns people from reader by ids
      *
+     * @param array $ids
+     */
+    protected abstract function loadByIds($ids);
+
+    /**
+     * Returns all unique people ids
+     *
+     * @param array $data
      * @return array
      */
-    public function getPeople();
-
-    /**
-     * Returns person or null if it was not loaded
-     *
-     * @param int $id
-     * @return array|null
-     */
-    public function getPerson($id);
-
-    /**
-     * Returns all contained people ids
-     *
-     * @return int[]
-     */
-    public function getPeopleIds();
-
-    /**
-     * Returns the list of ids that not found in the storage
-     *
-     * @param int[] $request_ids
-     * @return int[]
-     */
-    public function getNotContainsIds(array $request_ids);
+    protected abstract function getPeopleIds(array $data);
 }

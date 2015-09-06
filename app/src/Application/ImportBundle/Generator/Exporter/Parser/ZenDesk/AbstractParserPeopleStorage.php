@@ -32,39 +32,11 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 /**
  * Class AbstractParserPeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ *
+ * @property ZenDeskReaderInterface $reader
  */
-abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterface
+abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
 {
-    /**
-     * @var ZenDeskReaderInterface
-     */
-    private $reader;
-
-    /**
-     * @var PeopleStorage
-     */
-    private $storage;
-
-    /**
-     * Constructor
-     *
-     * @param ZenDeskReaderInterface $reader
-     * @param PeopleStorageInterface $storage
-     */
-    public function __construct(ZenDeskReaderInterface $reader, PeopleStorageInterface $storage)
-    {
-        $this->reader  = $reader;
-        $this->storage = $storage;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadBy(array $data)
-    {
-        $this->loadByIds($this->getPeopleIds($data));
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -79,7 +51,7 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
      *
      * @param array $ids
      */
-    private function loadByIds($ids)
+    protected function loadByIds($ids)
     {
         $request_ids = $this->storage ? $this->storage->getNotContainsIds($ids) : $ids;
         $result      = $this->reader->getPeopleByIds($request_ids);
@@ -92,12 +64,4 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
         $this->storage->addIgnoreIds($request_ids);
         $this->storage->addPeople($people);
     }
-
-    /**
-     * Returns all unique people ids of the found ZenDesk tickets
-     *
-     * @param array $data
-     * @return array
-     */
-    protected abstract function getPeopleIds(array $data);
 }

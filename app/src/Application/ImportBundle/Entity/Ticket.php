@@ -314,7 +314,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      * @param DateTime $date_created
      * @return $this
      */
-    public function setDateCreated(DateTime $date_created)
+    public function setDateCreated(DateTime $date_created = null)
     {
         $this->date_created = $date_created;
         return $this;

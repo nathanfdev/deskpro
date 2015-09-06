@@ -34,6 +34,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\LocaleMapper;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;

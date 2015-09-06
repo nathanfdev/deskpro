@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\AbstractReader;
 use Zendesk\API;
 use DateTime;
 
@@ -41,7 +41,7 @@ use DateTime;
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
+class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
 {
     /**
      * @var Request\RequestAdapterInterface

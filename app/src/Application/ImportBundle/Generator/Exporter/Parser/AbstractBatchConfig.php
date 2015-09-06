@@ -55,7 +55,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     /**
      * @var bool
      */
-    private $has_remaining = false;
+    protected $has_remaining = false;
 
     /**
      * Constructor

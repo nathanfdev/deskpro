@@ -25,29 +25,67 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
- * ZenDesk parser people storage interface
+ * People reader storage interface
  *
- * Interface ParserPeopleStorageInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Interface PeopleStorageInterface
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-interface ParserPeopleStorageInterface
+interface PeopleStorageInterface
 {
     /**
-     * Loads a collection of people by parser data
+     * Set users collection
      *
-     * @param array $data
-     * @return void
+     * @param array $people
+     * @return $this
      */
-    public function loadBy(array $data);
+    public function setPeople(array $people);
 
     /**
-     * Returns person email or null if it was not loaded
+     * Add users collection
+     *
+     * @param array $people
+     * @return $this
+     */
+    public function addPeople(array $people);
+
+    /**
+     * Add deleted user ids
+     *
+     * @param array $ignore_ids
+     * @return mixed
+     */
+    public function addIgnoreIds(array $ignore_ids);
+
+    /**
+     * Get stored users collection
+     *
+     * @return array
+     */
+    public function getPeople();
+
+    /**
+     * Returns person or null if it was not loaded
      *
      * @param int $id
-     * @return string|null
+     * @return array|null
      */
-    public function getPersonEmail($id);
+    public function getPerson($id);
+
+    /**
+     * Returns all contained people ids
+     *
+     * @return int[]
+     */
+    public function getPeopleIds();
+
+    /**
+     * Returns the list of ids that not found in the storage
+     *
+     * @param int[] $request_ids
+     * @return int[]
+     */
+    public function getNotContainsIds(array $request_ids);
 }

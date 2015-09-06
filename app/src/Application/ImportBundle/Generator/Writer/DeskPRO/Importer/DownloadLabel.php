@@ -57,14 +57,24 @@ final class DownloadLabel extends AbstractImporter
 
         $this->records = new DoctrineEntitiesCollection();
 
-        $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
-        $download->resetLabels();
+        $oldEntity = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
+        $type = 'download';
+        $newLabels = $entity->getLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $download->addLabel($this->createDownloadLabel($label));
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for download with oid `%d`',
-                $label, $download->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
@@ -77,7 +87,7 @@ final class DownloadLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelDownload
      */
-    private function createDownloadLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelDownload();
         $entity->setLabel($label);

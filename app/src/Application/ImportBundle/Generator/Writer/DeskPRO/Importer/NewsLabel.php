@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 
@@ -57,14 +58,24 @@ final class NewsLabel extends AbstractImporter
 
         $this->records = new DoctrineEntitiesCollection();
 
-        $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
-        $news->resetLabels();
+        $oldEntity = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
+        $type = 'news';
+        $newLabels = $entity->getLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $news->addLabel($this->createNewsLabel($label));
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for news with oid `%d`',
-                $label, $news->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
@@ -77,7 +88,7 @@ final class NewsLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelNews
      */
-    private function createNewsLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelNews();
         $entity->setLabel($label);

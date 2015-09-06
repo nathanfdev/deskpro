@@ -37,6 +37,7 @@ IMPORT BUNDLE
             - [ZenDesk Fixtures Core API](#zendesk-fixtures-core-api)
             - [ZenDesk Fixtures Help Center](#zendesk-fixtures-help-center)
         * [ZenDesk Batch.json](#zendesk-batchjson)
+    - [Exporter #5. DeskPRO](#exporter-5-deskpro)
 
 ## Commands
 
@@ -1078,4 +1079,18 @@ php cmd.php dpdev:import:fixtures --type=category -d
   "retry_after_time": "2015-07-30 06:11:01",
   "has_remaining": true
 }
+```
+
+#### Exporter #5. DeskPRO
+
+Add `zendesk_import` configuration to `config.php`
+
+```php
+$DP_CONFIG['deskpro_import'] = array(
+    'db_host'         => 'host',
+    'db_name'         => 'dbname',
+    'db_username'     => 'dbuser',
+    'db_password'     => 'dbpassword',
+    'start_ticket_id' => 0,
+);
 ```

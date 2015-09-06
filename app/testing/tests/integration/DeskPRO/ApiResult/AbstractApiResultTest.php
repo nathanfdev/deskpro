@@ -1,5 +1,6 @@
 <?php
-namespace DpUnitTests\DeskPRO\ApiResult;
+
+namespace DpIntegrationTests\DeskPRO\ApiResult;
 
 abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 {

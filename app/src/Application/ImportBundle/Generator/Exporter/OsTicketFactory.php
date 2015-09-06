@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,7 +44,7 @@ class OsTicketFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
     {
         if ( ! $config instanceof OsTicketConfig) {
             throw new \RuntimeException('Config expected to be instance of OsTicketConfig');
@@ -65,6 +65,6 @@ class OsTicketFactory extends AbstractFactory
             ->attach(new Parser\OsTicket\Organizations($reader, $formatter))
         ;
 
-        return new Osticket($parsers, $reader);
+        return new OsTicket($parsers, $reader);
     }
 }

@@ -81,7 +81,9 @@ final class Tickets extends AbstractParser
         $this->entities_loaded = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId())) {
+        do {
+            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+
             foreach ($batch as $num => $data) {
                 $this->advanceProgressBar();
 
@@ -103,7 +105,8 @@ final class Tickets extends AbstractParser
             }
 
             $this->entities_loaded += count($batch);
-        }
+
+        } while (count($batch) > 0);
 
         return $collection;
     }

@@ -108,6 +108,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
         }
 
         $this->records->setPrimaryEntity($feedback);
+
         return $this->records;
     }
 
@@ -162,13 +163,17 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
         $email = $entity->getPersonEmail() ? : $person_email;
+        $blob  = $this->blob_adapter->createByBlob($entity);
+
         $attachment = new DeskPROEntity\FeedbackAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByBlob($entity))
+            ->setBlob($blob)
         ;
 
         $this->records->addRelatedEntity($attachment);
+        $this->records->addRelatedEntity($blob);
+
         return $attachment;
     }
 

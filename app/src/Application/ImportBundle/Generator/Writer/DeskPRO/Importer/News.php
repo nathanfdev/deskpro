@@ -73,7 +73,6 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
             ->setViewsCount($entity->getViewCount())
-            ->resetLabels()
         ;
 
         $this->records->setPrimaryEntity($news);

@@ -243,29 +243,20 @@ class Organization extends DomainObject implements HighlightableModelInterface
      */
     public function addContactData(OrganizationContactData $contact_data)
     {
-        $em = App::getOrm();
-
         $this['contact_data']->add($contact_data);
-
         $contact_data['organization'] = $this;
-        $em->persist($contact_data);
+
         $this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
     }
 
     /**
      * Reset contact data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetContactData()
     {
-        foreach ($this->contact_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->contact_data->clear();
-        $this->_onPropertyChanged('contact_data', null, $this->contact_data);
-
         return $this;
     }
 
@@ -354,18 +345,12 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 
@@ -526,12 +511,10 @@ class Organization extends DomainObject implements HighlightableModelInterface
     public function resetLabels()
     {
         foreach ($this->labels as $data) {
-            App::getOrm()->remove($data);
+            $this->labels->removeElement($data);
         }
 
-        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
-
         return $this;
     }
 

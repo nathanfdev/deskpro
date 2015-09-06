@@ -588,7 +588,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->attachments   = new ArrayCollection();
         $this->charges       = new ArrayCollection();
         $this->ticket_slas   = new ArrayCollection();
-        $this->problems = new ArrayCollection();
+        $this->problems      = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
@@ -952,18 +952,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset the participants collection
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetParticipants()
     {
-        foreach ($this->participants as $participant) {
-            App::getOrm()->remove($participant);
-        }
-
         $this->participants->clear();
-        $this->_onPropertyChanged('participants', null, $this->participants);
-
         return $this;
     }
 
@@ -1370,18 +1364,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset the message collection
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetMessages()
     {
-        foreach ($this->messages as $message) {
-            App::getOrm()->remove($message);
-        }
-
         $this->messages->clear();
-        $this->_onPropertyChanged('messages', null, $this->messages);
-
         return $this;
     }
 
@@ -1602,18 +1590,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 
@@ -1692,13 +1674,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        foreach ($this->labels as $label) {
-            App::getOrm()->remove($label);
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
         }
 
-        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
-
         return $this;
     }
 
@@ -3071,7 +3051,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $data['access_code_email_header_token'] = 'PTAC-' . $this->getAccessCode();
 
         // Render custom fields to text values
-        $field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
+        $field_manager = App::getContainer()->getTicketFieldManager();
         $field_manager->addApiData($this, $data);
 
         return $this->api_data = $data;
@@ -3320,7 +3300,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             'date_feedback_rating'         => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
             'date_created'                 => $this->date_created->format('Y-m-d H:i:s'),
             'date_resolved'                => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
-            'date_archived'                  => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
+            'date_archived'                => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
             'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
             'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
             'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
@@ -3798,6 +3778,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'language',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Language',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'language_id',
                 'referencedColumnName' => 'id',
@@ -3809,6 +3790,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'department',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Department',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'department_id',
                 'referencedColumnName' => 'id',
@@ -3864,6 +3846,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'person',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'person_id',
                 'referencedColumnName' => 'id',
@@ -3920,6 +3903,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'organization',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Organization',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'organization_id',
                 'referencedColumnName' => 'id',

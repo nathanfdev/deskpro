@@ -2222,17 +2222,17 @@ define(function() {
   //# Imports
   //###
   routes.push({
-    id:           'server.importers',
+    id:           'apps.importers',
     url:          '/importers',
-    templateName: 'Server/importers-list.html',
-    controller:   'Admin_Server_Ctrl_ImportersList'
+    templateName: 'Apps/importers-list.html',
+    controller:   'Admin_Apps_Ctrl_ImportersList'
   });
 
   routes.push({
-    id:           'server.importers.view',
+    id:           'apps.importers.view',
     url:          '/{id}',
-    templateName: 'Server/importers-view.html',
-    controller:   'Admin_Server_Ctrl_ImportersView'
+    templateName: 'Apps/importers-view.html',
+    controller:   'Admin_Apps_Ctrl_ImportersView'
   });
 
   //###

@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\AbstractReader;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Finder\SplFileInfo;
@@ -39,7 +39,7 @@ use Exception;
  * Class JsonReader
  * @package Application\ImportBundle\Reader\Json
  */
-class JsonReader extends BaseReader implements JsonReaderInterface
+class JsonReader extends AbstractReader implements JsonReaderInterface
 {
     /**
      * Constructor

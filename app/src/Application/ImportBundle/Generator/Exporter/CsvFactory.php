@@ -29,7 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReader;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
@@ -46,7 +46,7 @@ class CsvFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
     {
         if ( ! $config instanceof CsvConfig) {
             throw new \RuntimeException('Config expected to be instance of CsvConfig');

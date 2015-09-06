@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 
 /**
  * Json data parser configuration
@@ -35,7 +35,7 @@ use Application\ImportBundle\Reader\BaseConfig;
  * Class JsonConfig
  * @package Application\ImportBundle\Reader\Json
  */
-class JsonConfig extends BaseConfig
+class JsonConfig implements ReaderConfigInterface
 {
     /**
      * @var string
@@ -93,8 +93,11 @@ class JsonConfig extends BaseConfig
         return $this;
     }
 
-    static public function fromArray(array $data)
+    /**
+     * {@inheritdoc}
+     */
+    public static function fromArray(array $data)
     {
-
+        // todo implement?
     }
 }

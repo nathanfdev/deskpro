@@ -71,7 +71,6 @@ final class Person extends AbstractImporter
             ->setCanAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin())
             ->setDateCreated($entity->getDateCreated())
-            ->setLanguageId($this->findLanguageId($entity->getLanguage()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
             ->setOrganizationPosition($entity->getOrganizationPosition())
             ->resetEmails()
@@ -80,6 +79,10 @@ final class Person extends AbstractImporter
             ->resetContactData()
             ->resetCustomData()
         ;
+
+        if ($entity->getLanguage()) {
+            $person['language'] = $this->findLanguage($entity->getLanguage());
+        }
 
         if ($entity->isAgent() && ! in_array('agent_all_safe_perms', $entity->getUserGroups(), true)) {
             $entity->addUserGroup('agent_all_safe_perms');
@@ -100,8 +103,8 @@ final class Person extends AbstractImporter
         foreach ($entity->getEmails() as $num => $email) {
             if ($this->getEmailAccountMapper()->findOneByEmail($email, false)) {
                 $this->logWarning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
-            } else {
-                $person->addEmailAddress($this->findOrCreatePersonEmail($email));
+            } elseif(!$person->hasEmailAddress($email)) {
+                $person->addEmailAddressString($email);
                 $this->logDebug(sprintf(
                     $num ? 'Set email `%s`' : 'Set primary email `%s`',
                     $entity->getFirstEmail()
@@ -156,34 +159,6 @@ final class Person extends AbstractImporter
         }
 
         return $person;
-    }
-
-    /**
-     * Returns a person email entity
-     *
-     * @param string $email_string
-     * @return DeskPROEntity\PersonEmail
-     */
-    private function findOrCreatePersonEmail($email_string)
-    {
-        $email = $this->getPersonEmailMapper()->findOneByEmail($email_string, false);
-        if ($email) {
-            $this->logDebug(sprintf(
-                'Found existing person email, id=`%d` with email `%s`',
-                $email->getId(), $email->getEmail()
-            ));
-        } else {
-            $email = new DeskPROEntity\PersonEmail();
-            $email
-                ->setEmail($email_string)
-                ->setIsValidated(true)
-            ;
-
-            $this->records->addRelatedEntity($email);
-            $this->logInfo(sprintf('Creating new person email `%s`', $email->getEmail()));
-        }
-
-        return $email;
     }
 
     /**
