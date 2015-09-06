@@ -145,7 +145,8 @@ class Tickets extends AbstractParser
             ->setProduct($ticket->product ? $ticket->product['title'] : null)
         ;
 
-        if ($priority = $ticket->priority) {
+        $priority = $ticket->priority;
+        if ($priority) {
             $tp = new Entity\TicketPriority();
             $tp
                 ->setTitle($priority['title'])
@@ -206,7 +207,7 @@ class Tickets extends AbstractParser
     private function exportAttachment($num, DeskPROEntity\TicketAttachment $attachment)
     {
         $entity = new Entity\Attachment();
-        $blob = $attachment->blob;
+        $blob = $attachment->getBlob();
         $entity
             ->setDestination('attachment_' . $num)
             ->setOid($num)
