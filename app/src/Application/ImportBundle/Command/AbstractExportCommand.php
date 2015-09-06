@@ -610,7 +610,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Make sure PHP we have passes requirements
+     * Make sure we have passes requirements
      *
      * @return bool|string
      */
