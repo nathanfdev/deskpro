@@ -109,6 +109,17 @@ class DeskPROReader extends AbstractReader
             ->setMaxResults($limit)
         ;
 
+        return $this->findUsersByCriteria($criteria);
+    }
+
+    /**
+     * Returns a collection of people by criteria
+     *
+     * @param Criteria $criteria
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function findUsersByCriteria(Criteria $criteria)
+    {
         /** @var EntityRepository\Person $person_repository */
         $person_repository = $this->em->getRepository('DeskPRO:Person');
 

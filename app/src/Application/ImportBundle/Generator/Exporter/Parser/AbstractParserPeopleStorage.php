@@ -25,25 +25,44 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * Class AbstractParserPeopleStorage
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
- *
- * @property ZenDeskReaderInterface $reader
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
+abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterface
 {
+    /**
+     * @var ReaderInterface
+     */
+    protected $reader;
+
+    /**
+     * @var PeopleStorage
+     */
+    protected $storage;
+
+    /**
+     * Constructor
+     *
+     * @param ReaderInterface        $reader
+     * @param PeopleStorageInterface $storage
+     */
+    public function __construct(ReaderInterface $reader, PeopleStorageInterface $storage)
+    {
+        $this->reader  = $reader;
+        $this->storage = $storage;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function getPersonEmail($id)
+    public function loadBy(array $data)
     {
-        $person = $this->storage->getPerson($id);
-        return isset($person['email']) ? $person['email'] : null;
+        $this->loadByIds($this->getPeopleIds($data));
     }
 
     /**
@@ -51,17 +70,13 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
      *
      * @param array $ids
      */
-    protected function loadByIds($ids)
-    {
-        $request_ids = $this->storage ? $this->storage->getNotContainsIds($ids) : $ids;
-        $result      = $this->reader->getPeopleByIds($request_ids);
+    protected abstract function loadByIds($ids);
 
-        $people = array();
-        foreach ($result as $person) {
-            $people[$person['id']] = $person;
-        }
-
-        $this->storage->addIgnoreIds($request_ids);
-        $this->storage->addPeople($people);
-    }
+    /**
+     * Returns all unique people ids
+     *
+     * @param array $data
+     * @return array
+     */
+    protected abstract function getPeopleIds(array $data);
 }

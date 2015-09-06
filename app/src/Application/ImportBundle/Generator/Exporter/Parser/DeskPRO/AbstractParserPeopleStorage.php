@@ -25,15 +25,16 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Class AbstractParserPeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  *
- * @property ZenDeskReaderInterface $reader
+ * @property DeskPROReader $reader
  */
 abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
 {
@@ -54,9 +55,13 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
     protected function loadByIds($ids)
     {
         $request_ids = $this->storage ? $this->storage->getNotContainsIds($ids) : $ids;
-        $result      = $this->reader->getPeopleByIds($request_ids);
 
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->in('id', $ids));
+
+        $result = $this->reader->findUsersByCriteria($criteria);
         $people = array();
+
         foreach ($result as $person) {
             $people[$person['id']] = $person;
         }
