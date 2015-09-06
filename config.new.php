@@ -454,3 +454,20 @@ $DP_CONFIG['db_read']['host'] = '';
 $DP_CONFIG['db_read']['user'] = '';
 $DP_CONFIG['db_read']['password'] = '';
 $DP_CONFIG['db_read']['dbname'] = '';
+
+
+
+
+
+
+
+// Temp
+$DP_CONFIG['SETTINGS'] = array(
+	'portal.http_cache_etags'         => false,
+	'portal.http_cache_last_modified' => false,
+	'portal.smaxage_guest_page'       => 0,
+	'portal.smaxage_guest_tag'        => 0,
+	'portal.smaxage_user_page'        => 0,
+	'portal.smaxage_user_tag'         => 0,
+	'portal.per_page_content'         => 3
+);
