@@ -4,6 +4,7 @@ return array(
     'id' => 1,
     'sent_to_address' => '',
     'email_account_address' => '',
+    'email_account' => null,
     'creation_system' => 'web.person',
     'creation_system_option' => '',
     'ticket_hash' => '561b59a759d44542e3cfd3484d44dd3d7693043a',
