@@ -77,6 +77,7 @@ class ImportCommand extends AbstractGenerateCommand
             switch ($config->getExporterType()) {
                 case Generator\Exporter\ExporterInterface::TYPE_ZENDESK:
                 case Generator\Exporter\ExporterInterface::TYPE_OS_TICKET:
+                case Generator\Exporter\ExporterInterface::TYPE_DESKPRO:
                     throw new RuntimeException(sprintf(
                         'Output path must be specified for batch exporter `%s`',
                         $config->getExporterType()
