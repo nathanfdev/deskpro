@@ -23,7 +23,6 @@ class DeskPROReaderFactory
      */
     public static function createReader(DeskPROConfig $config, DeskproContainer $container)
     {
-        $config = $config ? : self::getDefaultConfig();
         return new DeskPROReader($config, $container);
     }
 
