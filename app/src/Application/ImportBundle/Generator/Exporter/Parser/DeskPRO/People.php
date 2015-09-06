@@ -84,15 +84,15 @@ final class People extends AbstractParser
                 $this->advanceProgressBar();
 
                 $entity = $this->exportUser($person);
-                $this->users_min_id = $person['id'];
                 $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                $this->users_min_id = $person->getId();
             }
 
             $this->entities_loaded += count($batch);
 
-        } while ($batch->count());
+        } while (count($batch) > 0);
 
         return $collection;
     }
@@ -106,15 +106,15 @@ final class People extends AbstractParser
         $entity = new Entity\Person();
         $entity
             ->setRawData($person->toArray())
-            ->setDestination('user_' . $person['id'])
-            ->setOid($person['id'])
+            ->setDestination('user_' . $person->getId())
+            ->setOid($person->getId())
 
             ->setName($person->getDisplayName())
             ->setFirstName($person['first_name'])
             ->setLastName($person['last_name'])
-            ->setAsAgent((bool) $person['is_agent'])
-            ->setAsUser(!$person['is_agent'])
-            ->setAsAdmin((bool) $person['can_admin'])
+            ->setAsAgent((bool)$person['is_agent'])
+            ->setAsUser( ! $person['is_agent'])
+            ->setAsAdmin((bool)$person['can_admin'])
 
             ->setOrganization($person->organization['name'])
             ->setOrganizationPosition($person['organization_position'])

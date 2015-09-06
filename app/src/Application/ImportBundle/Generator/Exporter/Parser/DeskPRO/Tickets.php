@@ -99,13 +99,14 @@ final class Tickets extends AbstractParser
 
                 $entity = $this->exportTicket($ticket);
                 $collection->attach($entity);
+
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                $this->tickets_min_id = $ticket['id'];
+                $this->tickets_min_id = $ticket->getId();
             }
 
             $this->entities_loaded += count($batch);
 
-        } while ($batch->count());
+        } while (count($batch) > 0);
 
         return $collection;
     }
@@ -123,7 +124,7 @@ final class Tickets extends AbstractParser
             ->setOid($ticket->getId())
             ->setRef($ticket->getRef())
 
-            ->setDepartment($ticket->department['title'])
+            ->setDepartment($ticket->department->getRealTitle())
             ->setPersonEmail($ticket->person ? $ticket->person->getPrimaryEmail()->email : null)
             ->setAgentEmail($ticket->agent ? $ticket->agent->getPrimaryEmail()->email : null)
             ->setAgentTeam($ticket->agent_team['name'])
@@ -133,14 +134,14 @@ final class Tickets extends AbstractParser
             ->setDateCreated($ticket['date_created'])
             ->setDateResolved($ticket['date_resolved'])
             ->setDateArchived($ticket['date_archived'])
-            ->setSubject($ticket['subject'])
+            ->setSubject($ticket->getSubject())
             ->setLanguage($ticket->language ? $ticket->language['title'] : null)
             ->setAsHold($ticket['is_hold'])
             ->setUrgency($ticket['urgency'])
 
-            ->setCategory($ticket->category ? $ticket->category['title'] : null)
-            ->setWorkflow($ticket->workflow ? $ticket->workflow['title'] : null)
-            ->setProduct($ticket->product ? $ticket->product['title'] : null)
+            ->setCategory($ticket->category ? $ticket->category->getRealTitle() : null)
+            ->setWorkflow($ticket->workflow ? $ticket->workflow->getRealTitle() : null)
+            ->setProduct($ticket->product ? $ticket->product->getRealTitle() : null)
         ;
 
         $priority = $ticket->priority;

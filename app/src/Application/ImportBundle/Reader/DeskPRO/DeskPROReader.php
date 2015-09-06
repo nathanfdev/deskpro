@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Reader\DeskPRO;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\ORM\EntityManager;
 use Doctrine\Common\Collections\Criteria;
@@ -56,9 +56,6 @@ class DeskPROReader extends AbstractReader
      *
      * @param DeskPROConfig    $config
      * @param DeskproContainer $container
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\ORM\ORMException
      */
     public function __construct(DeskPROConfig $config, DeskproContainer $container)
     {
@@ -97,7 +94,12 @@ class DeskPROReader extends AbstractReader
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a collection of people
+     *
+     * @param int $limit
+     * @param int $min_id
+     *
+     * @return Entity\Person[]
      */
     public function findUsers($limit, $min_id = 0)
     {
@@ -114,7 +116,12 @@ class DeskPROReader extends AbstractReader
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a collection of tickets
+     *
+     * @param int $limit
+     * @param int $min_id
+     *
+     * @return Entity\Ticket[]
      */
     public function findTickets($limit, $min_id = 0)
     {
@@ -131,10 +138,10 @@ class DeskPROReader extends AbstractReader
     }
 
     /**
-     * @param Blob $blob
+     * @param Entity\Blob $blob
      * @return null|string
      */
-    public function getBlobData(Blob $blob)
+    public function getBlobData(Entity\Blob $blob)
     {
         return $this->container->getBlobStorage()->copyBlobRecordToString($blob);
     }
