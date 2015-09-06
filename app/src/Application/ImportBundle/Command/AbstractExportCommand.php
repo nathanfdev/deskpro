@@ -135,6 +135,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('batch')) {
+
+            // todo rewrite this
+            // todo pid file will never been removed on interrupt signal
+
             $pid_file = dp_get_data_dir() . '/importer.pid';
             if (file_exists($pid_file)) {
                 throw new \Exception('Import/Export already in process');
