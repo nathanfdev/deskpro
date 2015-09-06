@@ -78,7 +78,6 @@ $files = array(
 
     'Application\\DeskPRO\\Settings\\Settings',
 
-    'Application\\DeskPRO\\Templating\\Asset\\UrlPackage',
     'Application\\DeskPRO\\Templating\\GlobalVariables',
 
     'Application\\DeskPRO\\Translate\\Loader\\DbLoader',
