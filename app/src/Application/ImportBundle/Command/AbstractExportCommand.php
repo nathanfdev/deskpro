@@ -134,21 +134,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$input->getOption('batch')) {
-
-            // todo rewrite this
-            // todo pid file will never been removed on interrupt signal
-
-            $pid_file = dp_get_data_dir() . '/importer.pid';
-            if (file_exists($pid_file)) {
-                throw new \Exception('Import/Export already in process');
-            }
-
-            $onShutdown = function()use($pid_file){ unlink($pid_file); };
-            register_shutdown_function($onShutdown);
-            file_put_contents($pid_file, getmypid());
-        }
-
         if ($input->getOption('config-from-db')) {
             /** @var ImportService $is */
             $is = $this->getContainer()->get('deskpro.import');
@@ -171,8 +156,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ));
         }
 
-
-
         $GLOBALS['DP_IS_IMPORTING'] = true;
         $GLOBALS['DP_NOSQL_LOG'] = true;
 
@@ -182,17 +165,31 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $em = App::getOrm();
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
-        $ret = null;
         if ($input->getOption('batch')) {
-            $ret = $this->executeBatchRun($input, $output);
+            $pid = dp_get_data_dir() . '/importer.pid';
+            $fh  = @fopen($pid, 'a');
+
+            if ( ! $fh) {
+                throw new \RuntimeException(sprintf('Unable to create lock file: %s', $pid));
+            }
+            if ( ! @flock($fh, LOCK_EX | LOCK_NB)) {
+                $output->writeln('Another instance is running...');
+                return 0;
+            }
+
+            $exit_code = $this->executeBatchRun($input, $output);
+
+            @flock($fh, LOCK_UN);
+            @fclose($fh);
+
         } else {
-            $ret = $this->executeUnattendedRun($input, $output);
+            $exit_code = $this->executeUnattendedRun($input, $output);
         }
 
         unset($GLOBALS['DP_IS_IMPORTING']);
         $GLOBALS['DP_NOSQL_LOG'] = false;
 
-        return $ret;
+        return $exit_code;
     }
 
     /**
