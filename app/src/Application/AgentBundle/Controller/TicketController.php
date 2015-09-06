@@ -3795,11 +3795,21 @@ class TicketController extends AbstractController
             array('title' => 'asc')
         );
 
+        $agent_map = array();
+        foreach ($agents AS $agent) {
+            $agent_map[$agent->getId()] = array(
+                'name' => $agent->getDisplayName(),
+                'picture_url' => $agent->getPictureUrl(20)
+            );
+        }
+        unset($agent_map[$this->person->getId()]);
+
         return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
             'ticket'                 => $ticket,
             'message'                => $message,
             'attachments'            => isset($attachments) ? $attachments : null,
             'agents'                 => $agents,
+            'agent_map'              => $agent_map,
             'agent_signature'        => $this->person->getSignature(),
             'agent_signature_html'   => $this->person->getSignatureHtml(),
             'agent_teams'            => $agent_teams,
