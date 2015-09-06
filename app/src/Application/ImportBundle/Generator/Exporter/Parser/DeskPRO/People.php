@@ -105,6 +105,7 @@ class People extends AbstractParser
     {
         $entity = new Entity\Person();
         $entity
+            ->setRawData($person->toArray())
             ->setDestination('user_' . $person['id'])
             ->setOid($person['id'])
 

@@ -92,7 +92,6 @@ class Tickets extends AbstractParser
         $collection = new Entity\Collection();
 
         do {
-
             $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
 
             foreach ($batch as $num => $ticket) {
@@ -117,10 +116,9 @@ class Tickets extends AbstractParser
      */
     private function exportTicket(DeskPROEntity\Ticket $ticket)
     {
-
         $entity = new Entity\Ticket();
-
         $entity
+            ->setRawData($ticket->toArray())
             ->setDestination('ticket_' . $ticket['id'])
             ->setOid($ticket['id'])
             ->setRef($ticket['id'])
@@ -147,13 +145,16 @@ class Tickets extends AbstractParser
 
         $priority = $ticket->priority;
         if ($priority) {
-            $tp = new Entity\TicketPriority();
-            $tp
+            $ticket_priority = new Entity\TicketPriority();
+            $ticket_priority
+                ->setOid($priority['id'])
+                ->setDestination('priority_' . $priority['id'])
                 ->setTitle($priority['title'])
                 ->setValue($priority['priority'])
                 ->setDestination('priority')
             ;
-            $entity->setPriority($tp);
+
+            $entity->setPriority($ticket_priority);
         }
 
         foreach ($ticket->messages as $num => $message) {
@@ -184,6 +185,7 @@ class Tickets extends AbstractParser
     {
         $entity = new Entity\TicketMessage();
         $entity
+            ->setRawData($message->toArray())
             ->setDestination('message_' . $num)
             ->setOid($num)
             ->setPersonEmail($message->person->getPrimaryEmail()->email)
