@@ -109,6 +109,11 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
             ->setId($updated_config->getId() + 1)
             ->setDateModified(new DateTime())
             ->setRetryAfterTime($this->retry_date)
+            ->setHasRemaining(
+                $tickets_parser->getCount() > 1 ||
+                $people_parser->getCount()  > 1 ||
+                $article_parser->getCount() > 1
+            );
         ;
 
         if ($tickets_parser->getCurrentEndTime()) {
@@ -119,12 +124,6 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
         }
         if ($article_parser->getCurrentEndTime()) {
             $updated_config->setArticlesEndTime($article_parser->getCurrentEndTime());
-        }
-
-        if ($tickets_parser->getCount() > 1 || $people_parser->getCount() > 1 || $article_parser->getCount() > 1) {
-            $updated_config->setHasRemaining(true);
-        } else {
-            $updated_config->setHasRemaining(false);
         }
 
         return $updated_config;
