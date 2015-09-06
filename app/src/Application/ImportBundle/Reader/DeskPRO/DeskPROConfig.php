@@ -27,22 +27,37 @@
 
 namespace Application\ImportBundle\Reader\DeskPRO;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 
 /**
  * Class DeskPROConfig
  * @package Application\ImportBundle\Reader\DeskPRO
  */
-class DeskPROConfig extends BaseConfig
+class DeskPROConfig implements ReaderConfigInterface
 {
+    /**
+     * @var string
+     */
     protected $host;
 
+    /**
+     * @var string
+     */
     protected $database;
 
+    /**
+     * @var string
+     */
     protected $user;
 
+    /**
+     * @var string
+     */
     protected $password;
 
+    /**
+     * @var int
+     */
     protected $start_ticket_id;
 
     /**
@@ -56,10 +71,10 @@ class DeskPROConfig extends BaseConfig
      */
     public function __construct($host, $db, $user, $password, $start_ticket_id = 0)
     {
-        $this->host = $host;
-        $this->database = $db;
-        $this->user = $user;
-        $this->password = $password;
+        $this->host            = $host;
+        $this->database        = $db;
+        $this->user            = $user;
+        $this->password        = $password;
         $this->start_ticket_id = (int) $start_ticket_id;
     }
 
@@ -104,8 +119,7 @@ class DeskPROConfig extends BaseConfig
     }
 
     /**
-     * @param array $data
-     * @return DeskPROConfig
+     * {@inheritdoc}
      */
     public static function fromArray(array $data)
     {

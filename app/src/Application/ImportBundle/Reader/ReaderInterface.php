@@ -34,7 +34,7 @@ namespace Application\ImportBundle\Reader;
 interface ReaderInterface
 {
     /**
-     * @return BaseConfig
+     * @return ReaderConfigInterface
      */
     public function getConfig();
 }

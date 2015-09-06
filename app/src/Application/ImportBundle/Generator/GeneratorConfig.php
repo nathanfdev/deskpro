@@ -31,7 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Generator\Exporter\AbstractFactory as AbstractExporterFactory;
 use Application\ImportBundle\Generator\Writer\AbstractFactory as AbstractWriterFactory;
 use Exception;
@@ -92,7 +92,7 @@ class GeneratorConfig
     private $silent = false;
 
     /**
-     * @var BaseConfig
+     * @var ReaderConfigInterface
      */
     protected $reader_config;
 
@@ -535,7 +535,7 @@ class GeneratorConfig
     }
 
     /**
-     * @return BaseConfig
+     * @return ReaderConfigInterface
      */
     public function getReaderConfig()
     {
@@ -543,10 +543,10 @@ class GeneratorConfig
     }
 
     /**
-     * @param BaseConfig $reader_config
+     * @param ReaderConfigInterface $reader_config
      * @return $this
      */
-    public function setReaderConfig(BaseConfig $reader_config)
+    public function setReaderConfig(ReaderConfigInterface $reader_config)
     {
         $this->reader_config = $reader_config;
         return $this;

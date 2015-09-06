@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\AbstractReader;
 use PDO;
 
 /**
@@ -59,7 +59,7 @@ use PDO;
  * Class OsTicketReader
  * @package Application\ImportBundle\Reader\OsTicket
  */
-class OsTicketReader extends BaseReader implements OsTicketReaderInterface
+class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
 {
     /**
      * @var ConnectionWrapperInterface

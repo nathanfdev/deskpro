@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,7 +44,7 @@ class DeskPROFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
     {
         if ( ! $config instanceof DeskPROConfig) {
             throw new \RuntimeException('Config expected to be instance of DeskPROConfig');

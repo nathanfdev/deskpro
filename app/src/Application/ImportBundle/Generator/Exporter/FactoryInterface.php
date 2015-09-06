@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -41,10 +41,10 @@ interface FactoryInterface
     /**
      * Creates an exporter instance
      *
-     * @param ContainerInterface $container
-     * @param BaseConfig          $config
+     * @param ContainerInterface    $container
+     * @param ReaderConfigInterface $config
      *
      * @return ExporterInterface
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config);
+    static public function createExporter(ContainerInterface $container, ReaderConfigInterface $config);
 }

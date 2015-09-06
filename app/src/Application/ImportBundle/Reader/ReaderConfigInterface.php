@@ -25,14 +25,21 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-
 namespace Application\ImportBundle\Reader;
 
-
-abstract class BaseConfig
+/**
+ * Importer reader configuration interface
+ *
+ * Interface BaseConfig
+ * @package Application\ImportBundle\Reader
+ */
+interface ReaderConfigInterface
 {
-    static public function fromArray(array $data)
-    {
-        throw new \Exception('Not implemented');
-    }
+    /**
+     * Creates configuration object from array
+     *
+     * @param array $data
+     * @return ReaderConfigInterface
+     */
+    public static function fromArray(array $data);
 }

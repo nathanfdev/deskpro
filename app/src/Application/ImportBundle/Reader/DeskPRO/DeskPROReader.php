@@ -29,20 +29,22 @@ namespace Application\ImportBundle\Reader\DeskPRO;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\DriverManager;
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\AbstractReader;
 
 /**
  * Class DeskPROReader
  * @package Application\ImportBundle\Reader\DeskPRO
  */
-class DeskPROReader extends BaseReader
+class DeskPROReader extends AbstractReader
 {
     /**
      * @var DeskproContainer
      */
-    protected $c;
+    protected $container;
 
     /**
      * @var EntityManager
@@ -52,7 +54,7 @@ class DeskPROReader extends BaseReader
     /**
      * Constructor
      *
-     * @param DeskPROConfig          $config
+     * @param DeskPROConfig    $config
      * @param DeskproContainer $container
      *
      * @throws \Doctrine\DBAL\DBALException
@@ -61,7 +63,7 @@ class DeskPROReader extends BaseReader
     public function __construct(DeskPROConfig $config, DeskproContainer $container)
     {
         parent::__construct($config);
-        $this->c = $container;
+        $this->container = $container;
 
         $em = $container->getEm();
         $this->em = $em->create(
@@ -99,12 +101,16 @@ class DeskPROReader extends BaseReader
      */
     public function findUsers($limit, $min_id = 0)
     {
-        $criteria = new \Doctrine\Common\Collections\Criteria();
+        $criteria = new Criteria();
         $criteria
             ->where($criteria->expr()->gt('id', $min_id))
             ->setMaxResults($limit)
         ;
-        return $this->em->getRepository('DeskPRO:Person')->matching($criteria);
+
+        /** @var EntityRepository\Person $person_repository */
+        $person_repository = $this->em->getRepository('DeskPRO:Person');
+
+        return $person_repository->matching($criteria);
     }
 
     /**
@@ -112,12 +118,16 @@ class DeskPROReader extends BaseReader
      */
     public function findTickets($limit, $min_id = 0)
     {
-        $criteria = new \Doctrine\Common\Collections\Criteria();
+        $criteria = new Criteria();
         $criteria
             ->where($criteria->expr()->gt('id', $min_id))
             ->setMaxResults($limit)
         ;
-        return $this->em->getRepository('DeskPRO:Ticket')->matching($criteria);
+
+        /** @var EntityRepository\Ticket $ticket_repository */
+        $ticket_repository = $this->em->getRepository('DeskPRO:Ticket');
+
+        return $ticket_repository->matching($criteria);
     }
 
     /**
@@ -126,6 +136,6 @@ class DeskPROReader extends BaseReader
      */
     public function getBlobData(Blob $blob)
     {
-        return $this->c->getBlobStorage()->copyBlobRecordToString($blob);
+        return $this->container->getBlobStorage()->copyBlobRecordToString($blob);
     }
 }
