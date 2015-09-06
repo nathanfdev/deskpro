@@ -119,9 +119,9 @@ class Tickets extends AbstractParser
         $entity = new Entity\Ticket();
         $entity
             ->setRawData($ticket->toArray())
-            ->setDestination('ticket_' . $ticket['id'])
-            ->setOid($ticket['id'])
-            ->setRef($ticket['id'])
+            ->setDestination('ticket_' . $ticket->getId())
+            ->setOid($ticket->getId())
+            ->setRef($ticket->getRef())
 
             ->setDepartment($ticket->department['title'])
             ->setPersonEmail($ticket->person ? $ticket->person->getPrimaryEmail()->email : null)
@@ -129,7 +129,7 @@ class Tickets extends AbstractParser
             ->setAgentTeam($ticket->agent_team['name'])
             ->setOrganization($ticket->organization ? $ticket->organization['name'] : null)
 
-            ->setStatus($ticket['status'])
+            ->setStatus($ticket->getStatusCode())
             ->setDateCreated($ticket['date_created'])
             ->setDateResolved($ticket['date_resolved'])
             ->setDateArchived($ticket['date_archived'])
@@ -147,24 +147,21 @@ class Tickets extends AbstractParser
         if ($priority) {
             $ticket_priority = new Entity\TicketPriority();
             $ticket_priority
-                ->setOid($priority['id'])
-                ->setDestination('priority_' . $priority['id'])
-                ->setTitle($priority['title'])
+                ->setOid($priority->getId())
+                ->setDestination('priority_' . $priority->getId())
+                ->setTitle($priority->getRealTitle())
                 ->setValue($priority['priority'])
-                ->setDestination('priority')
             ;
 
             $entity->setPriority($ticket_priority);
         }
 
         foreach ($ticket->messages as $num => $message) {
-            $entity->addMessage($this->exportMessage($num, $message));
+            $entity->addMessage($this->exportMessage($message));
         }
-
         foreach ($ticket->labels as $label) {
             $entity->addLabel($label['label']);
         }
-
         foreach ($ticket->participants as $participant) {
             /** @var $participant DeskPROEntity\Person */
             $entity->addParticipant($participant->getPrimaryEmail()->email);
@@ -177,42 +174,40 @@ class Tickets extends AbstractParser
     }
 
     /**
-     * @param $num
      * @param DeskPROEntity\TicketMessage $message
      * @return Entity\TicketMessage
      */
-    private function exportMessage($num, DeskPROEntity\TicketMessage $message)
+    private function exportMessage(DeskPROEntity\TicketMessage $message)
     {
         $entity = new Entity\TicketMessage();
         $entity
             ->setRawData($message->toArray())
-            ->setDestination('message_' . $num)
-            ->setOid($num)
+            ->setDestination('message_' . $message->getId())
+            ->setOid($message->getId())
             ->setPersonEmail($message->person->getPrimaryEmail()->email)
             ->setDateCreated($message['date_created'])
             ->setMessageHtml($message['message'])
-            ->setAsNote((bool) $message['is_agent_note'])
+            ->setAsNote((bool)$message['is_agent_note'])
         ;
 
         foreach ($message->attachments as $num => $attachment) {
-            $entity->addAttachment($this->exportAttachment($num, $attachment));
+            $entity->addAttachment($this->exportAttachment($attachment));
         }
 
         return $entity;
     }
 
     /**
-     * @param $num
      * @param DeskPROEntity\TicketAttachment $attachment
      * @return Entity\Attachment
      */
-    private function exportAttachment($num, DeskPROEntity\TicketAttachment $attachment)
+    private function exportAttachment(DeskPROEntity\TicketAttachment $attachment)
     {
+        $blob   = $attachment->getBlob();
         $entity = new Entity\Attachment();
-        $blob = $attachment->getBlob();
         $entity
-            ->setDestination('attachment_' . $num)
-            ->setOid($num)
+            ->setDestination('attachment_' . $attachment->getId())
+            ->setOid($attachment->getId())
             ->setBlobData(base64_encode($this->reader->getBlobData($blob)))
             ->setFileName($blob['filename'])
             ->setContentType($blob['content_type'])
