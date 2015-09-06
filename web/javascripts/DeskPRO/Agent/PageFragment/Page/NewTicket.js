@@ -450,7 +450,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       if ($(this).data('is-note')) {
 
-        self._is_note = true;
+        self.isNote = true;
         emailCheckboxState = $input.prop('checked');
         replyAsState = self.getEl('reply_as_type').data('type');
         self.removeSignature();
@@ -460,7 +460,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       } else {
 
-        self._is_note = false;
+        self.isNote = false;
         $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
         self.addSignature();
@@ -480,7 +480,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
   addSignature: function() {
 
-    if (this._is_note) return;
+    if (this.isNote) return;
 
     var textarea = this.textarea
       , api = this.textarea.data('redactor')
@@ -1407,6 +1407,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					}
 				}
 			});
+
+      this._initAgentNotifier(textarea);
+
 		} else {
 			var sig = this.getEl('signature_value').val();
 			if (sig) {
@@ -1424,6 +1427,30 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}, 250);
 			});
 		}
+	},
+
+	_initAgentNotifier: function(textarea) {
+		var self = this;
+		DeskPRO_Window.initAgentNotifierForRte(
+			this,
+			textarea,
+			this.meta.agentMap ? this.meta.agentMap : false,
+			false,
+			function(agentId) {
+				agentId = parseInt(agentId);
+        // todo perm check for new ticket?
+				//if (
+				//	!self.meta.agents_with_perm[agentId]
+				//	&& parseInt(self.getEl('value_form').find('.agent_id').val()) != agentId
+				//	&& !self.getEl('followers_list').find('.agent-' + agentId)[0]
+				//) {
+				//	DeskPRO_Window.showAlert("That agent does not have permission to view this ticket. Add them as a follower before trying to mention them.");
+				//	return false;
+				//}
+
+				return true;
+			}
+		);
 	},
 
 	loadSnippetsViewer: function() {
