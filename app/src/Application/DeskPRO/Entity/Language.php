@@ -39,11 +39,7 @@ use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-// This class_exists check is needed because when doing a schema check,
-// doctrine will try to load this source file. But the Language class
-// is compiled in to bootstrap.php so we'd end up with a dupe error
-if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
-    /**
+/**
  * A language groups phrases and defines a locale code.
  */
 class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
@@ -204,4 +200,3 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }
-} // end class_exists
