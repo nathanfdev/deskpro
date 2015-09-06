@@ -62,7 +62,7 @@ class ZenDeskFactory extends AbstractFactory
         $formatter = $container->get('deskpro.import.formatter');
 
         $reader  = $reader_factory->createReader($config);
-        $storage = new Parser\ZenDesk\PeopleStorage();
+        $storage = new Parser\PeopleStorage();
 
         $helpers = new ParserHelperSet();
         $helpers

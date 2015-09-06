@@ -25,13 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
  * People reader storage interface
  *
  * Interface PeopleStorageInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
 interface PeopleStorageInterface
 {

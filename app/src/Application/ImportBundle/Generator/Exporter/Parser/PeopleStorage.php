@@ -25,29 +25,93 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
- * ZenDesk parser people storage interface
+ * People reader storage to avoid multiple external api requests
  *
- * Interface ParserPeopleStorageInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class PeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-interface ParserPeopleStorageInterface
+class PeopleStorage implements PeopleStorageInterface
 {
     /**
-     * Loads a collection of people by parser data
-     *
-     * @param array $data
-     * @return void
+     * @var array
      */
-    public function loadBy(array $data);
+    private $people = array();
 
     /**
-     * Returns person email or null if it was not loaded
-     *
-     * @param int $id
-     * @return string|null
+     * @var array
      */
-    public function getPersonEmail($id);
+    private $ignore_ids = array();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPeople(array $people)
+    {
+        $this->people = array();
+        $this->addPeople($people);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addPeople(array $people)
+    {
+        foreach ($people as $person) {
+            $this->people[$person['id']] = $person;
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addIgnoreIds(array $ignore_ids)
+    {
+        $this->ignore_ids = array_unique(array_merge($this->ignore_ids, $ignore_ids));
+        return $this;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function getPerson($id)
+    {
+        return isset($this->people[$id]) ? $this->people[$id] : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeople()
+    {
+        return $this->people;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeopleIds()
+    {
+        return array_keys($this->people);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNotContainsIds(array $request_ids)
+    {
+        $not_exist_ids = array();
+        $exist_ids     = $this->getPeopleIds();
+
+        foreach ($request_ids as $id) {
+            if ( ! in_array($id, $exist_ids) && ! in_array($id, $this->ignore_ids)) {
+                $not_exist_ids[] = $id;
+            }
+        }
+
+        return $not_exist_ids;
+    }
 }

@@ -27,6 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\PeopleStorage;
+use Application\ImportBundle\Generator\Exporter\Parser\PeopleStorageInterface;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
