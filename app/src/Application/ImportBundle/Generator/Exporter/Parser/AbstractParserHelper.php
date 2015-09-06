@@ -67,8 +67,8 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
         $oid  = isset($data[$ref_column]) ? $data[$ref_column] : '?';
 
         $this->logWarning(sprintf(
-            '[%s #%s] Unable to transform `%s`.`%s` property to %s (Skipping): %s',
-            $prefix, $oid, $entity_type, $e->getMessage()
+            '[%s #%s] Unable to transform `%s`.`%s` property to `%s` (Skipping): %s',
+            $prefix, $oid, $entity_type, $e->getProperty(), $e->getTransformerType(), $e->getMessage()
         ));
         $this->logWarning(json_encode($data));
     }
