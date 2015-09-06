@@ -45,12 +45,12 @@ use Orb\Util\Strings;
  */
 class Import
 {
-    static public $allowed = array(
+    public static $allowed = array(
         ExporterInterface::TYPE_CSV,
         ExporterInterface::TYPE_JSON,
         ExporterInterface::TYPE_OS_TICKET,
         ExporterInterface::TYPE_ZENDESK,
-//        ExporterInterface::TYPE_DESKPRO,
+        ExporterInterface::TYPE_DESKPRO,
     );
 
     const STATUS_PENDING     = 'pending';
@@ -142,15 +142,15 @@ class Import
         $importer->setData('id', $id);
 
         switch ($id) {
-            case 'csv':
+            case ExporterInterface::TYPE_CSV:
                 $title = 'CSV';
                 $desc  = 'Import from CSV (comma-separated values) files.';
                 break;
-            case 'osticket':
+            case ExporterInterface::TYPE_OS_TICKET:
                 $title = 'osTicket';
                 $desc  = 'Import from an osTicket database.';
                 break;
-            case 'zendesk':
+            case ExporterInterface::TYPE_ZENDESK:
                 $title = 'ZenDesk';
                 $desc  = 'Import from a ZenDesk helpdesk.';
                 break;
