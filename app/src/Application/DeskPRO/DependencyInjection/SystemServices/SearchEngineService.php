@@ -40,17 +40,17 @@ class SearchEngineService
 {
     public static function create(DeskproContainer $container)
     {
-        if ($container->getSetting('elastica.enabled')) {
-            $user_search = new SearchEngine\Elastic\UserSearch(
-                $container->get('fos_elastica.index.deskpro'),
-                new SearchEngine\Elastic\ElasticaResultsTransformer($container->getEm())
-            );
-        } else {
+        //if ($container->getSetting('elastica.enabled')) {
+        //    $user_search = new SearchEngine\Elastic\UserSearch(
+        //        $container->get('fos_elastica.index.deskpro'),
+        //        new SearchEngine\Elastic\ElasticaResultsTransformer($container->getEm())
+        //    );
+        //} else {
             $user_search = new SearchEngine\Mysql\UserSearch(
                 $container->getDbRead('search.searcher.content'),
                 new SearchEngine\Mysql\MysqlResultsTransformer($container->getEm())
             );
-        }
+        //}
 
         $se = new SearchEngine\SearchEngine($user_search);
 
