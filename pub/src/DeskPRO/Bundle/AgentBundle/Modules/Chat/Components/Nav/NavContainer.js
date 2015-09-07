@@ -12,6 +12,7 @@ import { Nav } from './Nav';
  */
 @connect(state => ({
   sort: state.ChatList.sort,
+  query: state.ChatList.query,
   order: state.ChatList.order,
   lists: state.ChatNav.lists,
   grouping: {
@@ -19,7 +20,7 @@ import { Nav } from './Nav';
       visible: state.ChatNav.lists.my.isGroupingControlVisible,
       options: [
         {value: 'date_period', label: 'Date Created'},
-        {value: 'department', label: 'Department'},
+        {value: 'department', label: 'Department'}
       ]
     },
     all: {
@@ -27,7 +28,7 @@ import { Nav } from './Nav';
       options: [
         {value: 'agent', label: 'Agent'},
         {value: 'department', label: 'Department'},
-        {value: 'date_period', label: 'Date Created'},
+        {value: 'date_period', label: 'Date Created'}
       ]
     }
   }
@@ -44,8 +45,12 @@ export class NavContainer extends React.Component {
     const { lists, grouping, sort, order } = this.props;
     const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
-    const onMyClick = (filters) => { this.props.dispatch(listActions.load({...filters, agent: 'me', sort, order})) };
-    const onAllClick = (filters) => { this.props.dispatch(listActions.load({...filters, sort, order})) };
+    const onMyClick = (filters) => {
+      this.props.dispatch(listActions.load({...filters, agent: 'me', sort: sort, order: order}))
+    };
+    const onAllClick = (filters) => {
+      this.props.dispatch(listActions.load({...filters, sort: sort, order: order}))
+    };
 
     return (
       <Nav
@@ -54,19 +59,19 @@ export class NavContainer extends React.Component {
         onMyClick={onMyClick}
         onAllClick={onAllClick}
         changeGrouping={changeGrouping}
-        toggleGroupingVisibility={toggleGroupingVisibility} />
+        toggleGroupingVisibility={toggleGroupingVisibility}/>
     );
   }
 
   toggleGroupingVisibility(listName) {
-    return function(e) {
+    return function (e) {
       e.preventDefault();
       this.props.dispatch(actions.toggleListGroupingVisibility(listName));
     }
   }
 
   changeGrouping(listName) {
-    return function(e) {
+    return function (e) {
       const options = e.target.options;
       for (let i = 0; i < options.length; i++) {
         if (options[i].selected) {

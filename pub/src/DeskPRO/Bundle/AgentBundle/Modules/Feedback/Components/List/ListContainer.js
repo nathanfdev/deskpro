@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrame, ControlBar, ListTableViewSwitcher, OrderBy, TableView }
+import { ListFrame, ControlBar, ListTableViewSwitcher, OrderBy, TableView, TableBody }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
-import { FeedbackCard} from './FeedbackCard';
-import { TableHeader} from './TableHeader';
-import { TableBody} from './TableBody';
-import { FilterBy} from './FilterBy';
+import { FeedbackCard } from './FeedbackCard';
+import { TableHeader } from './TableHeader';
+import { FilterBy } from './FilterBy';
+import { Row } from './Row';
 
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
@@ -15,7 +15,9 @@ export class ListContainer extends Component {
     feedback: PropTypes.array.isRequired,
     sortOptions: PropTypes.array.isRequired,
     displayFields: PropTypes.array.isRequired,
-    sort: PropTypes.object.isRequired,
+    sort: PropTypes.string.isRequired,
+    sortName: PropTypes.string.isRequired,
+    order: PropTypes.string.isRequired,
     filters: PropTypes.object.isRequired,
     query: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired,
@@ -28,15 +30,14 @@ export class ListContainer extends Component {
 
   render() {
     const {
-      feedback, viewMode, sortTable, sort, filters, query, sortOptions, displayFields,
+      feedback, viewMode, sortTable, sort, sortName, order, filters, query, sortOptions, displayFields,
       toggleView, toggleOrder, showSortChoice, toggleSort
       } = this.props;
-
 
     return (
       <ListFrame>
         <ControlBar>
-          <OrderBy sort={sort} sortOptions={sortOptions}
+          <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
                    toggleOrder={toggleOrder.bind(this)}
                    showSortChoice={showSortChoice.bind(this)}
                    toggleSort={toggleSort.bind(this)}
@@ -51,7 +52,9 @@ export class ListContainer extends Component {
           ) :
           <TableView>
             <TableHeader sortTable={sortTable.bind(this)}/>
-            <TableBody feedback={feedback}/>
+            <TableBody>
+              {feedback.map((feedback, index) => <Row key={index} feedback={feedback}/>)}
+            </TableBody>
           </TableView>
         }
       </ListFrame>

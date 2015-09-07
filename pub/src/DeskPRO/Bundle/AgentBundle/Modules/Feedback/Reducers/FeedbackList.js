@@ -13,11 +13,9 @@ export default class FeedbackList extends Reducer {
         value: ''
       },
       filterValues: [/* string */],
-      sort: {
-        sort: 'date_created',
-        name: 'Date',
-        order: constants.ORDER_DESC
-      },
+      sort: 'date_created', /* Order By ... */
+      sortName: 'Date', /* Label for Order By... */
+      order: constants.ORDER_DESC, /* Asc, Desc */
       sortOptions: [
         {field: 'date_created', label: 'Date'},
         {field: 'total_rating', label: 'Rating'},
@@ -123,7 +121,7 @@ export default class FeedbackList extends Reducer {
 
   orderChanged(prev) {
     const next = {...prev};
-    next.sort.order = prev.sort.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
     return next;
   }
 
@@ -157,8 +155,8 @@ export default class FeedbackList extends Reducer {
 
   setSort(prev, {payload}) {
     const next = {...prev};
-    next.sort.sort = payload.sort;
-    next.sort.order = payload.order;
+    next.sort = payload.sort;
+    next.order = payload.order;
     return next;
   }
 

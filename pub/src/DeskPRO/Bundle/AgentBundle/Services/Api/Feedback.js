@@ -126,15 +126,15 @@ export function getHidden() {
  * Get list of filtered feedback
  * @return Promise
  */
-export function getList(query, sort, filters) {
+export function getList(query, sort, order, filters) {
   let params = [];
   params.push(compileParams(query));
-  params.push('sort=' + sort.sort);
-  params.push('order=' + sort.order);
+  params.push('sort=' + sort);
+  params.push('order=' + order);
   if (filters.value && filters.value.length > 0) {
     params.push(filters.alias + '=' + filters.value.replace(/\s/g, "%20"));
   }
-  //console.log('DP_API/feedback/?' + params.join('&'));
+  console.log('DP_API/feedback/?' + params.join('&'));
   return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
 }
 /**

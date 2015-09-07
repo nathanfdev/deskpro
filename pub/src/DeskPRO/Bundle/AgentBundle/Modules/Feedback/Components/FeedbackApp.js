@@ -13,7 +13,7 @@ export class FeedbackApp extends React.Component {
 
   constructor(props) {
     super(props);
-    const { query, sort, filters, dispatch } = this.props;
+    const { query, sort, order, filters, dispatch } = this.props;
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());
@@ -23,7 +23,7 @@ export class FeedbackApp extends React.Component {
     dispatch(actions.feedbackActiveStatus());
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.loadFeedbackList(query, sort, order, filters));
     dispatch(actions.getFilterValues(filters.alias));
   }
 
@@ -56,7 +56,7 @@ export class FeedbackApp extends React.Component {
     }
     let order = th.data('order');
     dispatch(actions.setSort(param, th.data('order')));
-    dispatch(actions.loadFeedbackList(query, {sort: param, name: sort.name, order: order}, filters));
+    dispatch(actions.loadFeedbackList(query, param, order, filters));
   }
 
 
@@ -81,32 +81,35 @@ export class FeedbackApp extends React.Component {
   toggleSort(event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch, sort, query, filters} = this.props;
+    const {dispatch, order, query, filters} = this.props;
     var elem = $(event.target),
       name = elem.text(),
-      table = elem.closest('div.feedback-list').find('table');
+      table = elem.closest('div.feedback-list').find('table'),
+      newSort = elem.data('field');
     table.find('i.fa').remove();
-    sort.sort = elem.data('field');
+    this.setState({sort: newSort});
     elem.closest('a.ticket-control-button').find('span.sort-name').text(name);
     $('div.dropdown-choice').hide();
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.loadFeedbackList(query, newSort, order, filters));
   }
 
   /** Change sort order (ASC, DESC)*/
   toggleOrder(event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch, sort, query, filters} = this.props;
+    const {dispatch, sort, order, query, filters} = this.props;
     $('div.dropdown-choice').hide();
-    var elem = $(event.target);
-    if (sort.order === constants.ORDER_ASC) {
+    let elem = $(event.target),
+      newOrder = constants.ORDER_ASC;
+    if (order === newOrder) {
+      newOrder = constants.ORDER_DESC;
       elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
     }
     else {
       elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
     }
     dispatch(actions.toggleOrder());
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.loadFeedbackList(query, sort, newOrder, filters));
   }
 
 

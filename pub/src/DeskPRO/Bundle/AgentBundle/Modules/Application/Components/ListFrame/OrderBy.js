@@ -6,22 +6,25 @@ export class OrderBy extends Component {
 
   static propTypes = {
     sortOptions: PropTypes.array.isRequired,
-    sort: PropTypes.object.isRequired,
+    sort: PropTypes.string.isRequired,
+    sortName: PropTypes.string.isRequired,
+    order: PropTypes.string.isRequired,
     showSortChoice: PropTypes.func.isRequired,
     toggleSort: PropTypes.func.isRequired,
     toggleOrder: PropTypes.func.isRequired
   };
 
   render() {
-    const {sort,  showSortChoice, toggleSort, sortOptions, toggleOrder} = this.props;
+    const { sortName, order, showSortChoice, toggleSort, sortOptions, toggleOrder} = this.props;
+
     return (
       <a href="#" className="ticket-control-button">
         <span className="title">Order by:</span>
                 <span className="multi" onClick={showSortChoice.bind(this)}>
-                    <span className="sort-name">{sort.name}</span>
+                    <span className="sort-name">{sortName}</span>
                     <span className="multi-down"><i className="fa fa-caret-down"/></span>
                 </span>
-        <OrderSwitcher sort={sort} toggleOrder={toggleOrder.bind(this)}/>
+        <OrderSwitcher order={order} toggleOrder={toggleOrder.bind(this)}/>
         <OrderByDropdown sortOptions={sortOptions} toggleSort={toggleSort.bind(this)}/>
       </a>
     );
@@ -31,18 +34,19 @@ export class OrderBy extends Component {
 export class OrderSwitcher extends React.Component {
 
   static propTypes = {
-    sort: PropTypes.object.isRequired,
+    order: PropTypes.string.isRequired,
     toggleOrder: PropTypes.func.isRequired
   };
 
   render() {
-    const {sort, toggleOrder} = this.props;
+    const {order, toggleOrder} = this.props;
+
     return (
       <span>
         <span onClick={toggleOrder.bind(this)}>
-          {sort.order.charAt(0).toUpperCase() + sort.order.slice(1)}
+          {order.charAt(0).toUpperCase() + order.slice(1)}
         </span>
-        <i className={sort.order === constants.ORDER_DESC ? "fa fa-caret-down" : "fa fa-caret-up" }/>
+        <i className={order === constants.ORDER_DESC ? "fa fa-caret-down" : "fa fa-caret-up" }/>
       </span>
     );
   }

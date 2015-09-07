@@ -1,20 +1,22 @@
 import React from 'react';
 import { SectionsPane, Section, SectionHeader }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { ListFrame, ControlBar, OrderBy, ListTableViewSwitcher  }
+import { ListFrame, ControlBar, OrderBy, ListTableViewSwitcher, TableView, TableBody  }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { TableHeader } from './TableHeader';
+import { Row } from './Row';
 
 export class List extends React.Component {
   render() {
     const {
-      elements, viewMode, sort, sortOptions, displayFields,
+      elements, viewMode, sort, sortName, order, sortOptions, displayFields,
       toggleView, toggleOrder, showSortChoice, toggleSort
       } = this.props;
 
     return (
       <ListFrame>
         <ControlBar>
-          <OrderBy sort={sort} sortOptions={sortOptions}
+          <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
                    toggleSort={toggleSort.bind(this)}
                    showSortChoice={showSortChoice.bind(this)}
                    toggleOrder={toggleOrder.bind(this)}
@@ -22,7 +24,7 @@ export class List extends React.Component {
           <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
         </ControlBar>
 
-          {this.renderElements(viewMode, elements)}
+        {this.renderElements(viewMode, elements)}
 
       </ListFrame>
     );
@@ -44,23 +46,27 @@ export class List extends React.Component {
   }
 
   renderListView(elements) {
-    let key = 0;
-
+    console.log('Elements:', elements);
     return (
       <div>
         <h1>List View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>List item: {e}</div>)}
+        {elements.map((e, index) => <div key={index} style={{marginTop:'20px'}}>List item: {e}</div>)}
       </div>
     );
   }
 
   renderTableView(elements) {
-    let key = 0;
+    console.log('Elements:', elements);
 
     return (
       <div>
         <h1>Table View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>Table row: {e}</div>)}
+        <TableView>
+          <TableHeader/>
+          <TableBody>
+            {elements.map((element, index) => <Row key={index} element={element}/>)}
+          </TableBody>
+        </TableView>
       </div>
     );
   }

@@ -5,13 +5,11 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 export default class ChatList extends Reducer {
   getInitialState() {
     return {
-
+      query: {agent: 'me'},
       // list sorting options
-      sort: {
-        sort: 'date_created',
-        name: 'Date',
-        order: constants.ORDER_DESC
-      },
+      sort: 'date_created',
+      sortName: 'Date',
+      order: constants.ORDER_DESC,
       sortOptions: [
         {field: 'date_created', label: 'Date'},
         {field: 'total_rating', label: 'Agent'},
@@ -36,7 +34,7 @@ export default class ChatList extends Reducer {
   }
 
   listLoaded(prev, {payload}) {
-    return {...prev, chats: payload};
+    return {...prev, elements: payload};
   }
 
   sortChanged(prev, {payload}) {
@@ -45,7 +43,7 @@ export default class ChatList extends Reducer {
 
   orderChanged(prev) {
     const next = {...prev};
-    next.sort.order = prev.sort.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
     return next;
   }
 

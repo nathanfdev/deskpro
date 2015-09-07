@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'redux/react';
 
 export class Row extends React.Component {
 

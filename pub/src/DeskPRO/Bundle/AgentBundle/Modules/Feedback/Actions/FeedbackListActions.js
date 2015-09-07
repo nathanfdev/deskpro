@@ -86,8 +86,8 @@ export const feedbackHiddenStatus = createAction(
 
 export const loadFeedbackList = createAction(
   "FEEDBACK_LIST",
-  (trigger, query, filters, sort) => {
-    Feedback.getList(query, filters, sort).then(
+  (trigger, query, filters, sort, order) => {
+    Feedback.getList(query, filters, sort, order).then(
       (value) => trigger(value.getData())
     )
   }

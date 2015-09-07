@@ -32,16 +32,17 @@ export class ListContainer extends React.Component {
   toggleOrder(e) {
     e.preventDefault();
     $('div.dropdown-choice').hide();
-    const {dispatch, sort} = this.props;
-    var elem = $(event.target);
-    if (sort.order === constants.ORDER_ASC) {
+    const {dispatch, sort, order, query} = this.props;
+    let elem = $(event.target),
+      filters = {query, sort: sort, order: order};
+    if (order === constants.ORDER_ASC) {
       elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
     }
     else {
       elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
     }
     dispatch(actions.toggleOrder());
-    dispatch(actions.load({}));
+    dispatch(actions.load(filters));
   }
 
   toggleSort(sort) {
