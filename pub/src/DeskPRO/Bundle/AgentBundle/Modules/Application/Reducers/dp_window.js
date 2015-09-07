@@ -23,7 +23,8 @@ export default class dp_window extends Reducer {
     setActiveApp(state, action) {
         return {
             ...state,
-            activeAppId: action.payload
+            activeAppId: action.payload,
+            expandedSwitcher: false
         };
     }
 

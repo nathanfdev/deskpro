@@ -19,7 +19,7 @@ $window-header-height: 44px;
 $app-switcher-width: 55px;
 $app-switcher-expanded-width: 150px;
 $nav-frame-width: 220px;
-$nav-collapsed-width: 10px;
+$nav-collapsed-width: 15px;
 
 $list-frame-width: 450px;
 $tab-frame-width: 100%;
@@ -99,7 +99,6 @@ $kanban-frame-width: 800px;
     top: $window-header-height;
     left: $app-switcher-width;
     bottom: 0;
-    width: $nav-frame-width;
     z-index: 100;
     overflow-y: auto;
 
@@ -185,5 +184,14 @@ $kanban-frame-width: 800px;
   display: none;
   &.app-active {
     display: block;
+  }
+
+  &.collapsed-nav {
+    .dp-list-frame {
+      left: $app-switcher-width + $nav-collapsed-width;
+    }
+    .dp-tab-frame {
+      left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
+    }
   }
 }

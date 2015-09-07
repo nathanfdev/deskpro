@@ -2,10 +2,12 @@ import React from "react";
 import { connect } from 'redux/react';
 
 import * as TaskActions from "../Actions/TaskListActions";
+import * as AppActions from "../../Application/Actions/AppActions";
 import TaskNavGroups from "../Components/TaskNavGroups";
 import TaskNavProjects from "../Components/TaskNavProjects";
 import TaskNavPeople from "../Components/TaskNavPeople";
 import TaskNavLabels from "../Components/TaskNavLabels";
+import { NavFrameHeader } from "../../Application/Components/NavFrame/index";
 import $ from "jquery";
 
 @connect(state => ({
@@ -16,7 +18,8 @@ import $ from "jquery";
   teamList:state.teamList,
   departmentList:state.departmentList,
   user: state.user,
-  createdProject: state.createdProject
+  createdProject: state.createdProject,
+  dp_window: state.dp_window
 }))
 export default class TasksNavFrame extends React.Component {
   constructor(props) {
@@ -44,15 +47,21 @@ export default class TasksNavFrame extends React.Component {
   }
 
   render() {
-    const { taskList, projectList, agentList, labelList, departmentList, teamList, createdProject } = this.props;
+    const { taskList, projectList, agentList, labelList, departmentList,
+            teamList, createdProject, dp_window, dispatch } = this.props;
+
+    const className = dp_window.collapseNav ? "sidebar-wrapper sidebar-collapsed" : "sidebar-wrapper";
+    const expandNav = () => dispatch(AppActions.expandNav());
 
     return (
       <section className="task-nav-frame dp-nav-frame">
-        <div className="sidebar-wrapper" id="sidebar-wrapper">
-          <a className="collapse-button" href="#" onclick="resizePanels('hide_filters');"><i
-            className="fa fa-angle-right"/></a>
+        <div className={className} id="sidebar-wrapper">
+          <a className="collapse-button" href="#"
+            onClick={expandNav}>
+            <i className="fa fa-angle-right"/>
+          </a>
 
-          <span className="collapse-controls" onclick="resizePanels('hide_filters');">
+          <span className="collapse-controls" onClick={expandNav}>
             <span className="disc"/>
             <span className="disc"/>
             <i className="fa fa-caret-right"/>
@@ -61,16 +70,7 @@ export default class TasksNavFrame extends React.Component {
           </span>
           <aside className="sidebar has-tabs" id="sidebar">
 
-            <div className="sidebar-title">
-              <span className="sidebar-type-icon">
-                <i className="fa fa-check-square-o"/>
-                <span className="help"><i className="fa fa-question"/></span>
-              </span>
-
-              <h1>Tasks</h1>
-              <hr/>
-              <a href="#" className="slider-control"></a>
-            </div>
+            <NavFrameHeader dispatch={this.props.dispatch.bind(this)} icon="fa-check-square-o">Tasks</NavFrameHeader>
 
             <div className="sidebar-list sidebar-list-filters">
               <TaskNavGroups taskList={taskList} filterTasks={this.filterTasks.bind(this)} />

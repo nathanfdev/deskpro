@@ -22,20 +22,14 @@ export class AppSwitcher extends React.Component {
     this.props.dispatch(AppActions.collapseSwitcher());
   }
 
-  clickHandler() {
-    this.props.dispatch(AppActions.collapseSwitcher());
-    this.props.dispatch(AppActions.setActiveApp(appId));
-  }
-
   renderAppIcon(appId, title, iconClass) {
     const { dp_window, dispatch } = this.props;
+    const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const className = 'fa ' + iconClass;
 
     return (
       <li>
-        <Link activeClassName="active"
-          to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`}
-          onClick={this.clickHandler.bind(this)}>
+        <Link activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`} onClick={clickHandler}>
           <i className={className}></i> <span className="title">{title}</span>
         </Link>
       </li>

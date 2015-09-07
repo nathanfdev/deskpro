@@ -1,4 +1,5 @@
 import React from 'react';
+import * as AppActions from "../../Actions/AppActions";
 
 export class NavFrame extends React.Component {
     render() {
@@ -43,6 +44,7 @@ export class NavFrame extends React.Component {
 export class NavFrameHeader extends React.Component {
     render() {
         const iconClass = 'fa ' + this.props.icon;
+        const collapse = () => this.props.dispatch(AppActions.collapseNav());
 
         return (
             <div className="sidebar-title">
@@ -55,7 +57,7 @@ export class NavFrameHeader extends React.Component {
 
                 <h1>{this.props.children}</h1>
                 <hr />
-                <a href="#" className="slider-control"></a>
+                <a href="#" className="slider-control" onClick={collapse} />
             </div>
         );
     }
