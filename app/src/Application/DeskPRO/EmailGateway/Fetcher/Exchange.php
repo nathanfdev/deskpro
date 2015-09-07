@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\EmailGateway\Storage;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 
 /**
  * Fetches mail from an exchange server
