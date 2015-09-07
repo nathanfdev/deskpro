@@ -19,32 +19,30 @@ export class ListContainer extends Component {
     filters: PropTypes.object.isRequired,
     query: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired,
-    sortName: PropTypes.string.isRequired,
     sortTable: PropTypes.func.isRequired,
-    switchView: PropTypes.func.isRequired,
-    showOrderChoice: PropTypes.func.isRequired,
-    switchSortDirection: PropTypes.func.isRequired,
-    switchOrder: PropTypes.func.isRequired
+    showSortChoice: PropTypes.func.isRequired,
+    toggleOrder: PropTypes.func.isRequired,
+    toggleSort: PropTypes.func.isRequired,
+    toggleView: PropTypes.func.isRequired
   };
 
   render() {
-
     const {
-      feedback, viewMode, sortTable, sort, sortName, filters, query, sortOptions, displayFields,
-      switchView, switchOrder, showOrderChoice, switchSortDirection
+      feedback, viewMode, sortTable, sort, filters, query, sortOptions, displayFields,
+      toggleView, toggleOrder, showSortChoice, toggleSort
       } = this.props;
 
 
     return (
       <ListFrame>
         <ControlBar>
-          <OrderBy sort={sort} sortName={sortName} sortOptions={sortOptions}
-                   switchOrder={switchOrder.bind(this)}
-                   showOrderChoice={showOrderChoice.bind(this)}
-                   switchSortDirection={switchSortDirection.bind(this)}
+          <OrderBy sort={sort} sortOptions={sortOptions}
+                   toggleOrder={toggleOrder.bind(this)}
+                   showSortChoice={showSortChoice.bind(this)}
+                   toggleSort={toggleSort.bind(this)}
             />
           <FilterBy filters={filters} query={query}/>
-          <ListTableViewSwitcher displayFields={displayFields} switchView={switchView.bind(this)} {...this.props}/>
+          <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
         </ControlBar>
 
         {viewMode === constants.VIEW_MODE_LIST ?

@@ -5,7 +5,7 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
   getInitialState() {
     return {
-      viewMode: 'table',
+      viewMode: constants.VIEW_MODE_TABLE,
       query: {awaiting_validation: 1},
       filters: {
         name: 'type',
@@ -15,9 +15,14 @@ export default class FeedbackList extends Reducer {
       filterValues: [/* string */],
       sort: {
         sort: 'date_created',
+        name: 'Date',
         order: constants.ORDER_DESC
       },
-      sortName: 'Date',
+      sortOptions: [
+        {field: 'date_created', label: 'Date'},
+        {field: 'total_rating', label: 'Rating'},
+        {field: 'num_ratings', label: 'Number of votes'}
+      ],
       toValidateCount: 0,
       commentsToReviewCount: 0,
       labels: [/* string */],
@@ -103,19 +108,20 @@ export default class FeedbackList extends Reducer {
     return next;
   }
 
-  changeQuery(prev, {payload}) {
+  queryChanged(prev, {payload}) {
     const next = {...prev};
     next.query = payload;
     return next;
   }
 
-  switchViewMode(prev) {
+  viewModeChanged(prev) {
     const next = {...prev};
     next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
     return next;
   }
 
-  switchOrderDirection(prev) {
+
+  orderChanged(prev) {
     const next = {...prev};
     next.sort.order = prev.sort.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
     return next;
@@ -151,7 +157,8 @@ export default class FeedbackList extends Reducer {
 
   setSort(prev, {payload}) {
     const next = {...prev};
-    next.sort = payload;
+    next.sort.sort = payload.sort;
+    next.sort.order = payload.order;
     return next;
   }
 
@@ -166,9 +173,9 @@ export default class FeedbackList extends Reducer {
       .r(FeedbackListActions.feedbackActiveStatus, this.active)
       .r(FeedbackListActions.feedbackClosedStatus, this.closed)
       .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
-      .r(FeedbackListActions.changeQueryState, this.changeQuery)
-      .r(FeedbackListActions.switchViewMode, this.switchViewMode)
-      .r(FeedbackListActions.switchOrderDirection, this.switchOrderDirection)
+      .r(FeedbackListActions.changeQueryState, this.queryChanged)
+      .r(FeedbackListActions.toggleViewMode, this.viewModeChanged)
+      .r(FeedbackListActions.toggleOrder, this.orderChanged)
       .r(FeedbackListActions.getFilterValues, this.getFilterValues)
       .r(FeedbackListActions.setFilterValue, this.setFilterValue)
       .r(FeedbackListActions.resetFilterValue, this.resetFilterValue)
