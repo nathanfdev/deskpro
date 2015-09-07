@@ -9,7 +9,13 @@ describe('createAction', () => {
     expect(creator).toEqual(jasmine.any(Function));
   });
 
-  describe('action type auto generation', () => {
+  it('should allow to specify action type', () => {
+    const creator = createAction('SAMPLE_ACTION');
+    expect(creator.actionType).toEqual('SAMPLE_ACTION');
+  });
+
+  describe('action type ID auto generation', () => {
+
     it('should generate action type when providing a single function argument', () => {
       const creator = createAction(function() {});
       expect(creator.actionType).toEqual(jasmine.any(String));
@@ -20,10 +26,6 @@ describe('createAction', () => {
       const creator = createAction();
       expect(creator.actionType).toEqual(jasmine.any(String));
     });
-  });
 
-  it('should allow to specify action type', () => {
-    const creator = createAction('SAMPLE_ACTION');
-    expect(creator.actionType).toEqual('SAMPLE_ACTION');
   });
 });
