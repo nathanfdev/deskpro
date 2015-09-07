@@ -146,7 +146,7 @@ $kanban-frame-width: 800px;
     background: #f8f8f8;
     border-right: 1px solid darken(#f8f8f8, 10%);
     height: auto;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     transition: all 0.25s ease;
 
