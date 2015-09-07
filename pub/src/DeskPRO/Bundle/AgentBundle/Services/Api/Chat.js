@@ -15,5 +15,5 @@ export function loadCounts(groupBy, agent) {
  * @return Promise
  */
 export function load(filters) {
-  return DpApi.sendGet('DP_API/user_chats?' + compileParams(filters));
+  return DpApi.sendGet('DP_API/user_chats' + (filters ? '?' + compileParams(filters) : ''));
 }
