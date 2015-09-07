@@ -47,7 +47,10 @@ export default class AgentApp {
       ampMiddleware.loggerMiddleware,
       ampMiddleware.promiseMiddleware
     );
-    const makeStore  = middleware(compose(devTools(), createStore));
+    const makeStore  = compose(
+        middleware,
+        devTools()
+    )(createStore);
     const store      = makeStore(reducer);
 
     var intlData = {

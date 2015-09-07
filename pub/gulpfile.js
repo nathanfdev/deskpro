@@ -1,6 +1,8 @@
 var gulp                  = require('gulp'),
     gutil                 = require('gulp-util'),
     webpack               = require("webpack"),
+    express               = require('express'),
+    cors                  = require('cors'),
     WebpackDevServer      = require("webpack-dev-server"),
     del                   = require('del'),
     runSeq                = require('run-sequence'),
@@ -234,8 +236,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
 
     if (config.entry['DeskPRO_AgentBundle']) {
-      config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/only-dev-server');
-      config.entry['DeskPRO_AgentBundle'].unshift('webpack-dev-server/client?http://localhost:9666');
+      config.entry['DeskPRO_AgentBundle'].unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
   }
 
@@ -263,8 +264,10 @@ function runWebpackBundle(config, callback)
  */
 function startWebpackServer(config)
 {
+  var app = express();
   var compiler = webpack(config);
-  return new WebpackDevServer(compiler, {
+
+  app.use(require('webpack-dev-middleware')(compiler, {
     publicPath: config.output.publicPath,
     hot: true,
     historyApiFallback: true,
@@ -279,10 +282,19 @@ function startWebpackServer(config)
       assets: false,
       version: false
     }
-  }).listen(9666, "localhost", function(err) {
+  }));
+
+  app.use(require('webpack-hot-middleware')(compiler));
+
+  app.use(cors());
+
+  app.listen(9666, 'localhost', function (err) {
     if(err) throw new gutil.PluginError("webpack-dev-server", err);
+
     gutil.log("[webpack-dev-server]", "http://localhost:9666/");
     gutil.log("[webpack-dev-server]", "In your config.php, add this line: ");
     gutil.log("[webpack-dev-server]", "$DP_CONFIG['pub_asset_urls'] = array('pub/build' => 'http://localhost:9666/pub/build/');");
   });
+
+  return app;
 }
