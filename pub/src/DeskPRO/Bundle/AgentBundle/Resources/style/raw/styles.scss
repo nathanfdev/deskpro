@@ -49,6 +49,7 @@ a { color: $link-color; }
   @import 'sidebar-flags';
   @import 'sidebar-collapsed';
   @import 'sidebar-apps';
+@import 'control-bar'; // Filters, order by and so on in ListFrame
 
 @import 'top-bar';//Basic structure, logo
   @import 'top-bar-search-form';// Search form (look in live-search.scss for the live results)
@@ -86,9 +87,12 @@ a { color: $link-color; }
   @import 'ticket-events';
   @import 'ticket-editing';
   @import 'cards';
-//
-//@import 'ticket';
-//  @import 'ticket-view';
+  @import 'kanban';
+  @import 'task-calendar';
+
+@import 'ticket';
+  @import 'ticket-view';
+  @import 'tickets-table-view';
 
 //@import 'right-panel';//
 //  @import 'main-panel';// Container with sidebar for right side view (ticket or other)
@@ -163,6 +167,7 @@ $content-width: $app-width + $sidebar-width;
 .sidebar-wrapper {
   float: left;
   width: $sidebar-width;
+  height: 100%;
   background: #cecece;
   border-right: 1px solid #e2e4e5;
   position: relative;

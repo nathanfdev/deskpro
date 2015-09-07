@@ -4,6 +4,7 @@ import * as Tasks from "DeskPRO/Bundle/AgentBundle/Services/Api/Tasks";
 import * as People from "DeskPRO/Bundle/AgentBundle/Services/Api/People";
 import * as Departments from "DeskPRO/Bundle/AgentBundle/Services/Api/Departments";
 import * as AgentTeams from "DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams";
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export const loadTasks = createAction(
   "TASKS_LOAD_TASKS",
@@ -71,7 +72,7 @@ export const loadUnassignedTasks = createAction(
 export const loadAgents = createAction(
   "TASKS_LOAD_AGENTS",
   (trigger) => {
-    Tasks.loadAgents({not_me: 1, is_done: false}).then(
+    Tasks.loadAgents().then(
       (value) => trigger(value.getData())
     );
   }
@@ -104,6 +105,23 @@ export const loadDepartments = createAction(
   }
 );
 
+export const loadLists = createAction(
+  "TASKS_LOAD_LISTS",
+  (trigger, data) => {
+    Tasks.loadLists(data).then(
+      (value) => trigger(value.getData())
+    );
+  }
+);
+
+export const setFilter = createAction(
+  "TASKS_SET_FILTER",
+  (trigger, data) => {
+    trigger(null, loadFilter(data));
+    trigger(data);
+  }
+);
+
 export const failedProject = createAction("TASKS_POST_PROJECT_FAIL");
 export const createProject = createAction(
   "TASKS_POST_PROJECT",
@@ -132,6 +150,71 @@ export const editProject = createAction(
         trigger(value.xhr.responseJSON, failedProject);
       }
     );
+  }
+);
+
+export const loadFilter = createAction(
+  "TASKS_LOAD_FILTER",
+  (trigger, data)=> {
+    // Make sure we don't accidentally break the filter details
+    const filter = data;
+    let filterElements = {};
+
+    if (filter.done && filter.done !== 'all') {
+      filterElements.is_done = (filter.done === 'done');
+    }
+
+    if (filter.projects && filter.projects.length > 0) {
+      filterElements.project = filter.projects;
+    }
+
+    if (filter.agents && filter.agents.length > 0) {
+      filterElements.assigned = filter.agents;
+    }
+
+    if (filter.teams && filter.teams.length > 0) {
+      filterElements.assigned_team = filter.teams;
+    }
+
+    if (filter.departments && filter.departments.length > 0) {
+      filterElements.assigned_department = filter.departments;
+    }
+
+    if (filter.creator) {
+      filterElements.creator = filter.creator;
+    }
+
+    if (filter.labels && filter.labels.length > 0) {
+      filterElements.labels = filter.labels;
+    }
+
+    if (filter.lists && filter.lists.length > 0) {
+      filterElements.lists = filter.lists;
+    }
+
+    if (typeof filter.has_attachments !== 'undefined' && filter.has_attachments !== 'all') {
+      filterElements.attachments = (filter.has_attachments === 'has') ? 'not_null' : 'null';
+    }
+
+    if (filter.created_before) {
+      filterElements.created_before = filter.created_before;
+    }
+
+    if (filter.order_by) {
+      filterElements.order_by = filter.order_by;
+    } else {
+      filterElements.order_by = 'due';
+    }
+
+    if (filter.sort) {
+      filterElements.sort = filter.sort;
+    } else {
+      filterElements.sort = constants.ORDER_ASC;
+    }
+
+    const compiled = 'tasks?' + Tasks.compileParams(filterElements);
+
+    trigger(null, loadTaskList(compiled));
   }
 );
 
@@ -198,8 +281,19 @@ export const loadTaskList = createAction(
 
           result['source'] = data;
 
-          trigger(result);
-        })
+        }).then(() => {
+          let linked_tickets = [];
+          result['linked_items'].forEach((value) => {
+            if (value.ticket) {
+              linked_tickets.push(value.ticket);
+            }
+          });
+
+          Tasks.loadLinkedTickets({ids: linked_tickets.join(',')}).then((data) => {
+            result['tickets'] = data.getData().data;
+            trigger(result);
+          });
+        });
       }
     );
   }

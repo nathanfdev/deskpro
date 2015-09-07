@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Glossary.
@@ -49,6 +50,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     * @Assert\NotBlank
      */
     protected $definition;
 
@@ -68,6 +70,20 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->words    = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * @param array|\ArrayAccess $words
+     */
+    public function setWords($words)
+    {
+        /** @var GlossaryWord[] $words */
+        if (is_array($words) || $words instanceof \ArrayAccess) {
+            foreach ($words as $word) {
+                $this->words->add($word);
+                $word->setDefinition($this);
+            }
+        }
     }
 
     public function addWord($word)

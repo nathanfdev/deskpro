@@ -47,7 +47,7 @@
                  {% for ticket in tickets_pager %}
                      <tr class="item-row">
                          <td>
-                             <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
+                             <a href="{{ portal_path(ticket) }}">
                                  <span class="status-tag">{{ ticket_status(ticket) }}</span>
                                  <span class="focus">[{{ ticket.department }}]</span>
                                  {{ ticket.subject }}
@@ -56,7 +56,7 @@
 
                          <td class="info-block">
                              {% set last_message = ticket.messages|last %}
-                             <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
+                             <a href="{{ portal_path(ticket) }}">
                                  <img src="{{ avatar_url(last_message.person) }}" class="avatar">
                                  <span class="person">{{ last_message.person.display_name_user }}</span>
                                  <span class="date">{{ ticket.last_activity_date|date }}</span>

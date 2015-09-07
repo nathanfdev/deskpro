@@ -34,7 +34,12 @@ gulp.task('prod', ['clean', 'priv:start-prod'], function (cb) {
 });
 
 gulp.task('dev', function (cb) {
-  runSeq(['bundle:dev-server'], cb);
+  // prefer to use one at a time, build speed is faster
+  // and you can still just open up two terminal winodws if you need both
+  console.log("Use:");
+  console.log("\tdev:agent    -  For the agent interface");
+  console.log("\tdev:portal   -  For the portal");
+  cb();
 });
 
 gulp.task('dev:agent', function (cb) {
@@ -96,6 +101,20 @@ gulp.task('bundle:dev-server:portal', function(callback) {
  * @returns {Object}
  */
 function getWebpackConfig(mode, isDevServer, isProd) {
+  var node_modules_dir = path.join(__dirname, 'node_modules');
+
+  // - This is a collection of [alias, file]
+  // that we use to bypass compilation
+  // - These libs come with pre-compiled dist versions,
+  // so by using those, we save time in our own compile (up to about 1.5s saved)
+  var deps = [
+    ['immutable$', 'immutable/dist/immutable.min.js'],
+    ['jquery$', 'jquery/dist/jquery.min.js'],
+    ['moment$', 'moment/min/moment.min.js'],
+    ['react$', 'react/dist/react.min.js'],
+    ['react-intl$', 'react-intl/dist/react-intl.min.js']
+  ];
+
   var config = {
     cache: true,
     entry: {},
@@ -110,7 +129,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         path.join(__dirname, "src"),
         path.join(__dirname, "src/DeskPRO/Component"),
         path.join(__dirname, "built-tools"),
-      ]
+      ],
+      alias: {}
     },
     resolveLoader: {
       modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules", "build-tools"]
@@ -128,10 +148,15 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       ],
       loaders: [
         {
+          test: /react\.min\.js/,
+          loader: "expose?React"
+        },
+        {
           test: /\.js$/,
           include: [
             path.resolve(__dirname, "src/DeskPRO")
-          ]
+          ],
+          loader: "babel-loader?stage=0"
         },
         {
           test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
@@ -155,7 +180,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             { "publicPath": "./" }
           )
         }
-      ]
+      ],
+      noParse: []
     },
     plugins: [
       new ExtractTextPlugin("[name].css"),
@@ -164,6 +190,14 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       })
     ]
   };
+
+  if (false) {
+    deps.forEach(function (dep) {
+      var depPath = path.resolve(node_modules_dir, dep[1]);
+      config.resolve.alias[dep[0]] = depPath;
+      config.module.noParse.push(depPath);
+    });
+  }
 
   if (mode == 'all' || mode == 'portal') {
     config.entry['DeskPRO_PortalBundle']       = ["./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle"];

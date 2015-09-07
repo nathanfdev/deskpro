@@ -15,10 +15,10 @@
         {% endif %}
 
         <div class="rate-article">
-            <a href="{{ path('portal_news_post_vote_up', { slug: post.slug }) }}" class="rate-up">
+            <a href="{{ portal_path(post, 'vote_up') }}" class="rate-up">
                 {{ phrase('portal.general.rate-page-positive') }} <span>:)</span>
             </a>
-            <a href="{{ path('portal_news_post_vote_down', { slug: post.slug }) }}" class="rate-down">
+            <a href="{{ portal_path(post, 'vote_down') }}" class="rate-down">
                 <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
             </a>
         </div>

@@ -31,7 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
-use Application\ImportBundle\Entity\Person;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -95,6 +95,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
             new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
+            new \Twig_SimpleFunction('has_permission', array($this, 'hasPermission')),
             new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
             new \Twig_SimpleFunction('date', array($this, 'date'))
         );
@@ -112,6 +113,20 @@ class PortalSupportExtension extends \Twig_Extension
         );
 
         return $filters;
+    }
+
+    public function hasPermission($permission_to_check)
+    {
+        $permission_manager = $this->container->get('portal_permissions_manager');
+
+        $person = $this->getPerson();
+        if ($person instanceof Person) {
+            $bag = $permission_manager->getPermissionsBagForPerson($person);
+        } else {
+            $bag = $permission_manager->getPermissionsBagForGuest();
+        }
+
+        return $bag->hasPermission($permission_to_check);
     }
 
     public function urlFull($route_name, $vars = array())
@@ -250,7 +265,7 @@ class PortalSupportExtension extends \Twig_Extension
 
         switch ($page) {
             case 'home':
-                return $route === 'portal_index';
+                return $route === 'portal_home';
             case 'kb':
                 return preg_match('#^portal_kb#', $route);
             case 'news':

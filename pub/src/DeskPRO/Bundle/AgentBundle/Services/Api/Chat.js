@@ -1,16 +1,19 @@
-import DpApi from "../DpApi";
+import DpApi from '../DpApi';
+import { compileParams } from '../ApiHelpers';
 
 /**
  * @param groupBy
+ * @param agent
  * @return Promise
  */
-export function loadMyChatConversationsCounts(groupBy) {
-  return DpApi.sendGet('DP_API/user_chats/counts?agent=me&group_by=' + groupBy);
+export function loadCounts(groupBy, agent) {
+  return DpApi.sendGet('DP_API/user_chats/counts?group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
 }
 
 /**
+ * @param filters
  * @return Promise
  */
-export function loadAllChatConversationsCounts(groupBy) {
-  return DpApi.sendGet('DP_API/user_chats/counts?group_by=' + groupBy);
+export function load(filters) {
+  return DpApi.sendGet('DP_API/user_chats?' + compileParams(filters));
 }

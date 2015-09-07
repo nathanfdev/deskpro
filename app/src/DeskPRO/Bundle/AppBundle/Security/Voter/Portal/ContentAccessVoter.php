@@ -67,17 +67,25 @@ class ContentAccessVoter extends AbstractVoter
     protected function isGranted($attribute, $object, $user = null)
     {
         // $object is the content entity here (or content category) ie Article, ArticleCategory, etc.
+        $permissions_bag = $this->getPermissionsBag($user);
+
         switch ($attribute) {
-            case static::DOWNLOAD_DOWNLOAD:
-            case static::VIEW_DOWNLOAD:
-            case static::VIEW_DOWNLOAD_CATEGORY:
-            case static::VIEW_ARTICLE:
-            case static::VIEW_ARTICLE_CATEGORY:
-            case static::VIEW_NEWS:
-            case static::VIEW_NEWS_CATEGORY:
             case static::VIEW_FEEDBACK:
-                // TODO: each of these need some security logic, $object is the entity bing asserted upon
-                return true;
+                return $permissions_bag->hasContentCategoryAccess($object);
+            case static::DOWNLOAD_DOWNLOAD:
+                return $permissions_bag->hasContentCategoryAccess($object);
+            case static::VIEW_DOWNLOAD:
+                return $permissions_bag->hasContentCategoryAccess($object);
+            case static::VIEW_DOWNLOAD_CATEGORY:
+                return $permissions_bag->hasContentCategoryAccess($object);
+            case static::VIEW_ARTICLE:
+                return $permissions_bag->hasContentCategoryAccess($object);
+            case static::VIEW_ARTICLE_CATEGORY:
+                return $permissions_bag->hasContentCategoryAccess($object);
+            case static::VIEW_NEWS:
+                return $permissions_bag->hasContentCategoryAccess($object);
+            case static::VIEW_NEWS_CATEGORY:
+                return $permissions_bag->hasContentCategoryAccess($object);
         }
 
         return false;

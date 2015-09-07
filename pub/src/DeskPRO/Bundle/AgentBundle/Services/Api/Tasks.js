@@ -7,8 +7,12 @@ import DpApi from "../DpApi";
  * @return Promise
  */
 export function loadAddress(address, params = {}) {
-  if (params.length > 0) {
-    address = address + '?' + compileParams(params);
+  if (params !== {}) {
+    if (address.indexOf('?') === -1) {
+      address = address + '?' + compileParams(params);
+    } else {
+      address = address + '&' + compileParams(params);
+    }
   }
 
   return DpApi.sendGet('DP_API/' + address);
@@ -119,6 +123,19 @@ export function createTask(data) {
  * @return Promise
  */
 export function editTask(taskId, data) {
+  // Clean-up
+  // The API supports multiple assignment, but the UI doesn't yet
+  if (data.departments && data.departments.length > 0) {
+    data.teams = [];
+    data.agents = [];
+  } else if (data.teams && data.teams.length > 0) {
+    data.departments = [];
+    data.agents = [];
+  } else if (data.agents && data.agents.length > 0 || data.agents === false) {    // Allows un-assign
+    data.departments = [];
+    data.teams = [];
+  }
+
   return DpApi.sendPut('DP_API/tasks/' + taskId, data);
 }
 
@@ -131,12 +148,24 @@ export function loadLinks(params = {}) {
   return DpApi.sendGet('DP_API/task_links?' + compileParams(params));
 }
 
+export function loadLinkedTickets(params = {}) {
+  return DpApi.sendGet('DP_API/tickets?' + compileParams(params));
+}
+
+/**
+ * List all lists for a project
+ * @param projectId
+ */
+export function loadLists(projectId) {
+  return DpApi.sendGet('DP_API/projects/' + projectId + '/lists');
+}
+
 /**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}
  */
-function compileParams(params) {
+export function compileParams(params) {
   let compiled = [];
 
   for (let key of Object.keys(params)) {

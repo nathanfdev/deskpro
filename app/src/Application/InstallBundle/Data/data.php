@@ -7,14 +7,13 @@
 ################################################################################
 
 ##BEGIN:locale.language##
-$l = new \Application\DeskPRO\Entity\Language();
-$l['title'] = $translate->phrase('user.defaults.language_english');
-$l['locale'] = 'en_US';
-$l['sys_name'] = 'default';
-$l['flag_image'] = 'us.png';
-$l['lang_code'] = 'eng';
-$em->persist($l);
-$em->flush();
+$em->getConnection()->executeUpdate("
+    INSERT INTO `languages`
+        (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`, `has_agent`, `has_admin`)
+    VALUES
+        (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1)
+    ;
+");
 
 ################################################################################
 # Departments
@@ -118,100 +117,96 @@ if (!$IMPORT_INSTALL) {
 # Feedback
 ################################################################################
 
-##BEGIN:create_feedback.default##
-$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
-$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
-$em->persist($DEFAULT_IDEA_CAT);
-$em->flush();
+$em->getConnection()->executeUpdate("
+INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
+(1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
+(2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
+(3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
+");
 
-$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
-$em->persist($cat);
-$em->flush();
+$em->getConnection()->executeUpdate("
+INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
+(1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1);
+");
 
-$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
-$em->persist($cat);
-$em->flush();
+$em->getConnection()->executeUpdate("
+INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
+(1, 'active', 'Gathering Feedback', 0),
+(2, 'active', 'Planning', 0),
+(3, 'active', 'Started', 0),
+(4, 'active', 'Under Review', 0),
+(5, 'closed', 'Completed', 0),
+(6, 'closed', 'Duplicate', 0),
+(7, 'closed', 'Declined', 0);
+");
 
-// Statuses are done as part of FeedbackCatsStep so we can map id's
-if (!$IMPORT_INSTALL) {
-    // ensure gathering-feedback is always first, such that it's ID = 1
-    foreach (array('gathering-feedback', 'planning', 'started', 'under-review') as $t) {
-        $s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-        $s->status_type = 'active';
-        $s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-        $em->persist($s);
-    }
+$em->getConnection()->executeUpdate("
+INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`) VALUES
+(1, 5, 1, 1, NULL, 'validating', NULL, 0, 'example-suggestion', 'Example Suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-08-13 11:33:33', '2015-08-13 11:33:33'),
+(2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-08-01 00:00:00', NULL),
+(3, 1, 2, 1, NULL, NULL, NULL, 0, 'Test feedback 2', 'Slug to feedback 2', 'Content of test feedback 2', 0, 5, 0, 6, 'active', '2015-08-02 00:00:00', NULL),
+(4, 2, 3, 1, NULL, 'validating', NULL, 0, 'Test feedback 3', 'Slug to feedback 3', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-08-03 00:00:00', NULL),
+(5, 1, 1, 1, NULL, 'spam', NULL, 0, 'Test feedback 4', 'Slug to feedback 4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL),
+(6, 5, 1, 1, NULL, 'validating', NULL, 0, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-08-05 00:00:00', NULL),
+(7, 1, 2, 1, NULL, 'validating', NULL, 15, 'Test feedback 6', 'Slug to feedback 6', 'I''m trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (it''s the client''s wish, and I can''t change that.)', 0, 3, 0, 1, 'new', '2015-08-10 00:00:00', NULL);
+");
 
-    foreach (array('completed', 'duplicate', 'declined') as $t) {
-        $s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-        $s->status_type = 'closed';
-        $s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-        $em->persist($s);
-    }
-    $em->flush();
-}
-
-if (!$IMPORT_INSTALL) {
-    $DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
-    $DEFAULT_IDEA->person = $AGENT;
-    $DEFAULT_IDEA->title = $translate->phrase('user.defaults.feedback_example_title');
-    $DEFAULT_IDEA->content = $translate->phrase('user.defaults.feedback_example_content');
-    $DEFAULT_IDEA->status = 'new';
-    $DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
-    $em->persist($DEFAULT_IDEA);
-    $em->flush();
-}
+$em->getConnection()->executeUpdate("
+INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`) VALUES
+(1, 1, 1, NULL, 0, 'Windows'),
+(2, 2, 1, NULL, 0, 'Linux'),
+(3, 3, 1, NULL, 0, 'Linux'),
+(4, 4, 1, NULL, 0, 'Mac');
+");
 
 ################################################################################
 # Portal Blocks
 ################################################################################
 
 ##BEGIN:create_portal_block.news##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'portal';
-$b->type       = 'news';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'portal';
+$b->type = 'news';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.userinfo_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'userinfo';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'userinfo';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.kb_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'kb_cat_list';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'kb_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.feedback_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'feedback_cat_list';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'feedback_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.downloads_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'downloads_cat_list';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'downloads_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.staff_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'staff';
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'staff';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
@@ -372,3 +367,398 @@ $em->getConnection()->executeUpdate("
         ($ugid, NULL, '1', 'agent_general.signature'),
         ($ugid, NULL, '1', 'agent_general.signature_rte')
 ");
+
+################################################################################
+# TEMPORARY TEST DATA: People
+################################################################################
+
+function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
+{
+    $user = new \Application\DeskPRO\Entity\Person();
+    $user->first_name = $fname;
+    $user->last_name = $lname;
+    $user->setEmail($email, true);
+    $user->setPassword($pass);
+    $user->is_user = true;
+    $user->is_confirmed = true;
+    $user->is_deleted = $is_deleted;
+
+    if ($agent || $admin) {
+        $user->is_agent_confirmed = true;
+        $user->is_agent = true;
+        $user->can_agent = true;
+    }
+
+    if ($admin) {
+        $user->can_admin = true;
+        $user->can_billing = true;
+        $user->can_reports = true;
+    }
+
+    return $user;
+}
+
+$em->persist(create_user('John', 'Doe', 'john@doe.lo', '11111111', true, true));
+$em->persist(create_user('Jane', 'Doe', 'jane@doe.lo', '11111111', true, false));
+$em->persist(create_user('Jack', 'Doe', 'jack@doe.lo', '11111111', false, false));
+$em->persist(create_user('Friedrich', 'Doe', 'fred@doe.lo', '11111111', true, false, true));
+$em->flush();
+
+################################################################################
+# TEMPORARY TEST DATA: Organizations
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `organizations`
+        (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
+    VALUES
+        (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
+        (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00')
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Groups
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `usergroups`
+        (`title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
+    VALUES
+        ('Group 1', 'test', 0, 'g1', 1),
+        ('Group 2 (disabled)', 'test', 0, 'g2', 0),
+        ('Group 3', 'test', 0, 'g3', 1),
+        ('Group 4', 'test', 0, 'g4', 1)
+    ;
+
+    INSERT INTO `person2usergroups`
+        (`person_id`, `usergroup_id`)
+    VALUES
+        (1, 1),
+        (1, 2),
+        (2, 2),
+        (2, 3),
+        (3, 3),
+        (4, 4)
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Chats
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `chat_conversations`
+        (`department_id`, `agent_id`, `subject`, `status`, `person_name`, `person_email`, `rating_comment`,
+         `is_agent`, `is_window`, `date_created`, `should_send_transcript`, `total_to_ended`, `ended_by`)
+
+    VALUES
+
+        (1, 1, 'Test chat 1', 'test', 'test', 'test', '', 1, 1, '2010-08-01 10:19:00', 1, 1, 'test'),
+        (1, 1, 'Test chat 2', 'test', 'test', 'test', '', 1, 1, '2011-08-02 10:19:00', 1, 1, 'test'),
+        (1, 2, 'Test chat 3', 'test', 'test', 'test', '', 1, 1, '2015-08-03 10:19:00', 1, 1, 'test'),
+        (2, 2, 'Test chat 4', 'test', 'test', 'test', '', 1, 1, '2015-08-04 10:19:00', 1, 1, 'test'),
+        (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Articles, News, Downloads and their Categories
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `articles`
+        (`id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
+         `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
+    VALUES
+        (2, 1, '2', 'Test Article #2', 'Test Article #2', 0, 0, 0, 0, 'published', NULL, '2011-08-03 00:00:00', NULL, NULL),
+        (3, 2, '3', 'Test Article #3', 'Test Article #3', 0, 0, 0, 0, 'published', NULL, '2011-08-05 00:00:00', NULL, '2012-08-10 00:00:00'),
+        (4, 2, '4', 'Test Article #4', 'Test Article #4', 0, 0, 0, 0, 'archived', NULL, '2011-08-04 00:00:00', NULL, '2012-08-06 00:00:00'),
+        (5, 2, '5', 'Test Article #5', 'Test Article #5', 0, 0, 0, 0, 'hidden', 'draft', '2011-08-11 00:00:00', NULL, NULL),
+        (6, 3, '6', 'Test Article #6', 'Test Article #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00'),
+        (7, 3, '7', 'Test Article #7', 'Test Article #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL),
+        (8, 1, '8', 'Test Article #8', 'Test Article #8', 0, 0, 0, 0, 'published', NULL, '2011-08-02 00:00:00', NULL, '2012-03-03 00:00:00')
+    ;
+
+    INSERT INTO `article_categories`
+        (`id`, `parent_id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, `display_order`, `depth`)
+    VALUES
+        (1, NULL, 1, 1, NULL, 'Test Category #1', '1', 1, 1),
+        (2, NULL, 0, 0, NULL, 'Test Category #2', '2', 2, 1),
+        (3, 1, 1, 1, NULL, 'Test Category #3', '3', 1, 1),
+        (4, 1, 1, 1, NULL, 'Test Category #4', '4', 1, 1),
+        (5, 2, 1, 1, NULL, 'Test Category #5', '5', 1, 1),
+        (6, 2, 1, 1, NULL, 'Test Category #6', '6', 1, 1),
+        (7, 3, 1, 1, NULL, 'Test Category #7', '7', 1, 1),
+        (8, 3, 1, 1, NULL, 'Test Category #8', '8', 1, 1),
+        (9, 7, 1, 1, NULL, 'Test Category #9', '9', 1, 1),
+        (10, 7, 1, 1, NULL, 'Test Category #10', '10', 1, 1),
+        (11, 7, 1, 1, NULL, 'Test Category #11', '11', 1, 1)
+    ;
+
+    INSERT INTO `article_to_categories`
+        (`article_id`, `category_id`)
+    VALUES
+        (2, 1),
+        (3, 1),
+        (3, 2),
+        (4, 2),
+        (5, 1),
+        (5, 2),
+        (6, 1),
+        (7, 1),
+        (8, 1),
+        (8, 9)
+    ;
+
+    INSERT INTO `news_categories`
+        (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
+    VALUES
+        (1, NULL, 'Test Category #1', '1', 1, 1),
+        (2, NULL, 'Test Category #2', '2', 2, 1),
+        (3, 1, 'Test Category #3', '3', 2, 1),
+        (4, 1, 'Test Category #4', '4', 2, 1),
+        (5, 2, 'Test Category #5', '5', 2, 1),
+        (6, 2, 'Test Category #6', '6', 2, 1),
+        (7, 3, 'Test Category #7', '7', 2, 1),
+        (8, 3, 'Test Category #8', '8', 2, 1),
+        (9, 7, 'Test Category #9', '9', 2, 1),
+        (10, 7, 'Test Category #10', '10', 2, 1),
+        (11, 7, 'Test Category #11', '11', 2, 1)
+    ;
+
+    INSERT INTO `news`
+        (`id`, `category_id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
+         `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
+    VALUES
+        (1, 1, 1, '1', 'Test News #1', 'Test News #1', 0, 0, 0, 0, 'published', NULL, '2011-08-02 00:00:00', NULL, '2012-03-03 00:00:00'),
+        (2, 1, 1, '2', 'Test News #2', 'Test News #2', 0, 0, 0, 0, 'published', NULL, '2011-08-03 00:00:00', NULL, NULL),
+        (3, 1, 2, '3', 'Test News #3', 'Test News #3', 0, 0, 0, 0, 'published', NULL, '2011-08-05 00:00:00', NULL, '2012-08-10 00:00:00'),
+        (4, 1, 2, '4', 'Test News #4', 'Test News #4', 0, 0, 0, 0, 'archived', NULL, '2011-08-04 00:00:00', NULL, '2012-08-06 00:00:00'),
+        (5, 1, 2, '5', 'Test News #5', 'Test News #5', 0, 0, 0, 0, 'hidden', 'draft', '2011-08-11 00:00:00', NULL, NULL),
+        (6, 1, 3, '6', 'Test News #6', 'Test News #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00'),
+        (7, 2, 3, '7', 'Test News #7', 'Test News #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL),
+        (8, 9, 3, '8', 'Test News #8', 'Test News #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00')
+    ;
+
+    INSERT INTO `download_categories`
+        (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
+    VALUES
+        (1, NULL, 'Test Category #1', '1', 1, 1),
+        (2, NULL, 'Test Category #2', '2', 2, 1),
+        (3, 1, 'Test Category #3', '3', 2, 1),
+        (4, 1, 'Test Category #4', '4', 2, 1),
+        (5, 2, 'Test Category #5', '5', 2, 1),
+        (6, 2, 'Test Category #6', '6', 2, 1),
+        (7, 3, 'Test Category #7', '7', 2, 1),
+        (8, 3, 'Test Category #8', '8', 2, 1),
+        (9, 7, 'Test Category #9', '9', 2, 1),
+        (10, 7, 'Test Category #10', '10', 2, 1),
+        (11, 7, 'Test Category #11', '11', 2, 1)
+    ;
+
+    INSERT INTO `downloads`
+        (`id`, `category_id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
+         `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`, `num_downloads`)
+    VALUES
+        (1, 1, 1, '1', 'Test Download #1', 'Test Download #1', 0, 0, 0, 0, 'published', NULL, '2011-08-02 00:00:00', NULL, '2012-03-03 00:00:00', 0),
+        (2, 1, 1, '2', 'Test Download #2', 'Test Download #2', 0, 0, 0, 0, 'published', NULL, '2011-08-03 00:00:00', NULL, NULL, 0),
+        (3, 1, 2, '3', 'Test Download #3', 'Test Download #3', 0, 0, 0, 0, 'published', NULL, '2011-08-05 00:00:00', NULL, '2012-08-10 00:00:00', 0),
+        (4, 1, 2, '4', 'Test Download #4', 'Test Download #4', 0, 0, 0, 0, 'archived', NULL, '2011-08-04 00:00:00', NULL, '2012-08-06 00:00:00', 0),
+        (5, 1, 2, '5', 'Test Download #5', 'Test Download #5', 0, 0, 0, 0, 'hidden', 'draft', '2011-08-11 00:00:00', NULL, NULL, 0),
+        (6, 1, 3, '6', 'Test Download #6', 'Test Download #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00', 0),
+        (7, 2, 3, '7', 'Test Download #7', 'Test Download #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL, 0),
+        (8, 9, 3, '8', 'Test Download #8', 'Test Download #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00', 0)
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Glossary
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `glossary_word_definitions`
+        (`id`, `definition`)
+    VALUES
+        (1, 'Definition Text')
+    ;
+
+
+    INSERT INTO `glossary_words`
+        (`id`, `definition_id`, `word`)
+    VALUES
+        (1, 1, 'Word 1'),
+        (2, 1, 'Word 2')
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: ArticlePendingCreate
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `article_pending_create`
+        (`person_id`, `ticket_id`, `ticket_message_id`, `comment`, `date_created`, `assigned_person_id`)
+    VALUES
+        (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
+        (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Comments
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `article_comments`
+        (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+    VALUES
+        (1, 1, 1, '', NULL, NULL, NULL, 'Article comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+        (2, 1, 2, '', NULL, NULL, NULL, 'Article comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+        (3, 2, 3, '', NULL, NULL, NULL, 'Article comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+    ;
+
+    INSERT INTO `news_comments`
+        (`id`, `news_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+    VALUES
+        (1, 1, 1, '', NULL, NULL, NULL, 'News comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+        (2, 1, 2, '', NULL, NULL, NULL, 'News comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+        (3, 2, 3, '', NULL, NULL, NULL, 'News comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+    ;
+
+    INSERT INTO `download_comments`
+        (`id`, `download_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+    VALUES
+        (1, 1, 1, '', NULL, NULL, NULL, 'Download comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+        (2, 1, 2, '', NULL, NULL, NULL, 'Download comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+        (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Blobs
+################################################################################
+$em->getConnection()->executeUpdate("
+    INSERT INTO `blobs`
+        (`id`, `original_blob_id`, `sys_name`, `storage_loc`, `storage_loc_pref`, `storage_loc_specific`, `save_path`, `file_url`, `filename`, `filesize`, `content_type`, `authcode`, `blob_hash`, `is_media_upload`, `title`, `dim_w`, `dim_h`, `date_created`, `is_temp`)
+    VALUES
+        (1, NULL, NULL, 'db', NULL, NULL, '1/1WCRRCQJQMCXWXMJ0', NULL, 'app_256.png', 55189, 'image/png', '1WCRRCQJQMCXWXMJ0', '9ace9725e1eddb81702043db2522374c', 0, '', 256, 256, '2015-07-07 11:11:47', 0);
+");
+
+
+################################################################################
+# TEMPORARY TEST DATA: Projects
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `task_projects`
+        (`id`, `title`)
+    VALUES
+        (1, 'Example Project'),
+        (2, 'Example Project 2'),
+        (3, 'Example Project 3'),
+        (4, 'Example Project 4'),
+        (5, 'Example Project 5'),
+        (6, 'Example Project 6'),
+        (7, 'Example Project 7')
+    ;
+
+    INSERT INTO `task_lists`
+        (`id`, `title`, `project_id`, `display_order`)
+    VALUES
+        (1, 'To Do', 1, 1),
+        (2, 'Doing', 1, 2),
+        (3, 'Done', 1, 3)
+    ;
+
+    INSERT INTO `task_members`
+        (`id`, `person_id`, `team_id`, `department_id`, `project_id`)
+    VALUES
+        (1, 1, NULL, NULL, 1),
+        (2, NULL, 1, NULL, 2),
+        (3, NULL, NULL, 1, 3)
+    ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Tasks
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `tasks_new`
+        (`id`, `creator_person_id`, `project_id`, `list_id`, `title`, `percent_complete`, `date_created`, `task_type`, `date_due`, `date_event_start`, `date_event_end`, `visibility`, `urgency`, `is_done`, `date_done`, `display_order`)
+    VALUES
+        (1, 1, 1, 2, 'Test task 1', 0, '2015-09-04 15:30:00', 'task', '2015-09-29 04:12:25', NULL, NULL, 'private', 5, 0, NULL, 1),
+        (2, 1, 1, 1, 'Test task 2', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 2),
+        (3, 1, 1, 3, 'Test task 3', 100, '2015-09-04 15:30:00', 'task', NULL, NULL, NULL, 'project', 5, 1, '2015-09-04 16:00:00', 3),
+        (4, 1, 1, 1, 'Test task 4', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 4),
+        (5, 1, 1, 1, 'Test task 5', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 5),
+        (6, 1, 2, 1, 'Test task 6', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 6),
+        (7, 1, 2, 1, 'Test task 7', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 7),
+        (8, 1, 2, 1, 'Test task 8', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 8),
+        (9, 1, 2, 1, 'Test task 9', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 9),
+        (10, 1, 3, 1, 'Test task 10', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 10),
+        (11, 1, 3, 1, 'Test task 11', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 11),
+        (12, 1, 4, 1, 'Test task 12', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 12),
+        (13, 1, 4, 1, 'Test task 13', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 13),
+        (14, 1, 5, 1, 'Test task 14', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 14),
+        (15, 1, 5, 1, 'Test task 15', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 15),
+        (16, 1, 5, 1, 'Test task 16', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 16),
+        (17, 1, 5, 1, 'Test task 17', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 17),
+        (18, 1, 5, 1, 'Test task 18', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 18),
+        (19, 1, 5, 1, 'Test task 19', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 19),
+        (20, 1, 5, 1, 'Test task 20', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 20),
+        (21, 1, 5, 1, 'Test task 21', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 21),
+        (22, 1, 5, 1, 'Test task 22', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 22),
+        (23, 1, 5, 1, 'Test task 23', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 23),
+        (24, 1, 5, 1, 'Test task 24', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 24),
+        (25, 1, 5, 1, 'Test task 25', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 25),
+        (26, 1, 5, 1, 'Test task 26', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 26),
+        (27, 1, 5, 1, 'Test task 27', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 27),
+        (28, 1, 6, 1, 'Test task 28', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 28),
+        (29, 1, 6, 1, 'Test task 29', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 29),
+        (30, 1, 6, 1, 'Test task 30', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 30)
+    ;
+
+    INSERT INTO `task_labels`
+        (`id`, `task_id`, `label`)
+    VALUES
+        (1, 1, 'Example'),
+        (2, 1, 'Demo'),
+        (3, 2, 'Example')
+    ;
+
+    INSERT INTO `task_assignments`
+        (`id`, `task_id`, `person_id`, `team_id`, `department_id`)
+    VALUES
+        (1, 1, 1, NULL, NULL),
+        (2, 2, NULL, NULL, 1),
+        (3, 3, NULL, 1, NULL)
+    ;
+
+    INSERT INTO `task_subtask`
+        (`id`, `task_id`, `creator_id`, `title`, `is_done`, `date_created`, `display_order`, `date_completed`)
+    VALUES
+        (1, 1, 1, 'Example subtask', 0, '2015-09-04 15:45:00', 1, NULL)
+    ;
+
+    INSERT INTO `task_comments_new`
+        (`id`, `person_id`, `date_created`, `comment`, `task_id`)
+    VALUES
+        (1, 1, '2015-09-04 15:40:00', 'An example comment', 1)
+    ;
+
+    INSERT INTO `task_attachments`
+        (`id`, `task_id`, `task_comment_id`, `person_id`, `blob_id`, `date_created`)
+    VALUES
+        (1, 1, 1, 1, 1, '2015-09-04 15:30:00')
+    ;
+
+    INSERT INTO `task_links`
+        (`id`, `task_id`, `ticket_id`, `chat_id`, `article_id`)
+    VALUES
+        (1, 1, 1, NULL, NULL),
+        (2, 2, NULL, NULL, 1)
+    ;
+");
+

@@ -36,7 +36,6 @@ namespace DpTest\Bundle\AppBundle\DataService\Chat;
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
 
 /**
@@ -101,20 +100,17 @@ class ChatSelectCriteriaTest extends DeskProTestCase
      */
     function it_should_parse_and_apply_given_parameters_to_the_passed_QueryBuilder()
     {
-        $qb_prophecy = $this->prophesize(QueryBuilder::class);
-        $qb_prophecy->getRootAliases()->willReturn(['alias']);
-        $qb_prophecy->expr()->willReturn(new Expr());
-        $qb_prophecy->andWhere(Argument::any())->willReturn();
+        $qb = $this->mockQueryBuilder();
 
         // expectations when applying self::$dummyProperParams
-        $qb_prophecy->setParameter('from',        '2013-01-01')->shouldBeCalled();
-        $qb_prophecy->setParameter('to',          '2015-01-01')->shouldBeCalled();
-        $qb_prophecy->setParameter('agent',       1)->shouldBeCalled();
-        $qb_prophecy->setParameter('department',  1)->shouldBeCalled();
-        $qb_prophecy->setParameter('date_period', 'this_month')->shouldBeCalled();
+        $qb->setParameter('from',        '2013-01-01')->shouldBeCalled();
+        $qb->setParameter('to',          '2015-01-01')->shouldBeCalled();
+        $qb->setParameter('agent',       1)->shouldBeCalled();
+        $qb->setParameter('department',  1)->shouldBeCalled();
+        $qb->setParameter('date_period', 'this_month')->shouldBeCalled();
 
         /** @var QueryBuilder $qb */
-        $qb = $qb_prophecy->reveal();
+        $qb = $qb->reveal();
         $this->instance(self::$dummyProperParams)->applyFilters($qb);
     }
 
@@ -127,6 +123,6 @@ class ChatSelectCriteriaTest extends DeskProTestCase
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
 
-        return ChatSelectCriteria::fromParameters($parameters, $resolver, $me);
+        return ChatSelectCriteria::fromParameters($parameters, $resolver, [$me]);
     }
 }

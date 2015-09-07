@@ -29,6 +29,7 @@ function handleBundle(appName, bundlePath, readReducers) {
   var hierarchy  = {};
   var importLines = [];
   var exportLines = [];
+  var legacyModules = {};
 
   if (!readReducers) {
     readReducers = [];
@@ -37,6 +38,10 @@ function handleBundle(appName, bundlePath, readReducers) {
   glob.sync("**/Modules/*/", { cwd: bundlePath, root: bundlePath }).forEach(function(d) {
     var modulePath = bundlePath + '/' + d;
     var moduleName = path.basename(modulePath);
+
+    if (fs.existsSync(modulePath + 'Reducers/legacy_reducers.txt')) {
+      legacyModules[moduleName] = true;
+    }
 
     glob.sync("Reducers/**/*.js", { cwd: modulePath, root: modulePath }).forEach(function(f) {
       var filePath    = modulePath + f;
@@ -47,11 +52,18 @@ function handleBundle(appName, bundlePath, readReducers) {
 
       readReducers.push(filePath);
 
-      if (fileName.indexOf('.spec.') !== -1) {
+      if (fileName.indexOf('.spec.') !== -1 || fileName === 'index.js') {
         return false;
       }
 
       var names = [moduleName];
+
+      // Legacy modules have all their reducers in root level
+      if (legacyModules[moduleName]) {
+        names.pop();
+        names.push("ROOT");
+      }
+
       rPath.forEach(function(p) {
         names.push(p);
       });
@@ -75,9 +87,13 @@ function handleBundle(appName, bundlePath, readReducers) {
 
     _.forOwn(o, function(v, k) {
       if (_.isPlainObject(v)) {
-        exportLines.push(indent + "\"" + k + "\": {\n");
-        iter(v, depth+1);
-        exportLines.push(indent + "},\n");
+        if (k === "ROOT") {
+          iter(v, depth);
+        } else {
+          exportLines.push(indent + "\"" + k + "\": {\n");
+          iter(v, depth + 1);
+          exportLines.push(indent + "},\n");
+        }
       } else {
         var keyPart = indent + "\"" + k + "\":";
         exportLines.push(sprintf("%-57s %s,\n", keyPart, v));

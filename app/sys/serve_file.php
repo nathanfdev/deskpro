@@ -147,7 +147,7 @@ class FilestorageLoader extends LoaderAbstract
                 $this->userCssAction();
 
             // Public assets
-            } elseif (preg_match('#^/brand-([0-9]+)/(.*?)$#', $pathinfo, $m)) {
+            } elseif (preg_match('#^/brand\-([0-9]+)/(.*?)$#', $pathinfo, $m)) {
                 $this->userPublicAsset($m[1], trim($m[2], '/'));
 
             // sitemap.xml
@@ -228,7 +228,7 @@ class FilestorageLoader extends LoaderAbstract
 
     public function userPublicAsset($brand_id, $path)
     {
-        if ($path == 'DeskPRO_PortalBundle_style.css') {
+        if ($path == 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css') {
             $path = DP_WEB_ROOT.'/pub/build/DeskPRO_PortalBundle_style.css';
             $src = file_get_contents($path);
             $size = strlen($src);

@@ -65,7 +65,6 @@ class TicketSlasController extends BaseController
     public function getForTicketAction($ticket_id)
     {
         $service = $this->get('data.ticket_slas');
-        // var_dump($service->loadForTicket($ticket_id));
 
         return View::create(
             $this->DataSerialize($service->loadForTicket($ticket_id)),

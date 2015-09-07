@@ -361,6 +361,10 @@
     height: 24px;
   }
 
+  &.tabs-4 li {
+    width: 24%;
+  }
+
   a {
     display: block;
     height: 24px;
@@ -499,6 +503,14 @@
       background: #c7c8c9;
       z-index: 99;
       opacity: 0.5;
+    }
+
+    &.depth-1,
+    &.depth-2,
+    &.depth-3,
+    &.depth-4,
+    &.depth-5 {
+      padding-left: 10px;
     }
   }
 
@@ -672,6 +684,10 @@ a.item.urgent {
       top: 1px;
       left: -1px;
       color: #333;
+    }
+
+    &.edit-icon {
+      padding: 3px 1px;
     }
   }
 

@@ -110,6 +110,14 @@ class TaskType extends AbstractType
                 )
             )
             ->add(
+                'list',
+                'entity',
+                array(
+                    'class' => 'App:TaskList',
+                    'property' => 'title',
+                )
+            )
+            ->add(
                 'labels',
                 'collection',
                 array(
@@ -123,51 +131,51 @@ class TaskType extends AbstractType
                         'description' => 'the task labels',
                     ),
                 )
-//            )
-//            ->add(
-//                'departments',
-//                'collection',
-//                array(
-//                    'type' => 'department',
-//                    'allow_add' => true,
-//                    'allow_delete' => true,
-//                    'delete_empty' => true,
-//                    'options' => array(
-//                        'task' => $options['task'],
-//                        'required' => false,
-//                        'description' => 'task assignees which are departments',
-//                    ),
-//                )
-//            )
-//            ->add(
-//                'teams',
-//                'collection',
-//                array(
-//                    'type' => 'agent_team',
-//                    'allow_add' => true,
-//                    'allow_delete' => true,
-//                    'delete_empty' => true,
-//                    'options' => array(
-//                        'task' => $options['task'],
-//                        'required' => false,
-//                        'description' => 'task assignees which are teams',
-//                    ),
-//                )
-//            )
-//            ->add(
-//                'agents',
-//                'collection',
-//                array(
-//                    'type' => 'person',
-//                    'allow_add' => true,
-//                    'allow_delete' => true,
-//                    'delete_empty' => true,
-//                    'options' => array(
-//                        'task' => $options['task'],
-//                        'required' => false,
-//                        'description' => 'task assignees which are people',
-//                    ),
-//                )
+            )
+            ->add(
+                'departments',
+                'collection',
+                array(
+                    'type' => 'task_department',
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'delete_empty' => true,
+                    'options' => array(
+                        'task' => $options['task'],
+                        'required' => false,
+                        'description' => 'task assignees which are departments',
+                    ),
+                )
+            )
+            ->add(
+                'teams',
+                'collection',
+                array(
+                    'type' => 'task_agent_team',
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'delete_empty' => true,
+                    'options' => array(
+                        'task' => $options['task'],
+                        'required' => false,
+                        'description' => 'task assignees which are teams',
+                    ),
+                )
+            )
+            ->add(
+                'agents',
+                'collection',
+                array(
+                    'type' => 'task_person',
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'delete_empty' => true,
+                    'options' => array(
+                        'task' => $options['task'],
+                        'required' => false,
+                        'description' => 'task assignees which are people',
+                    ),
+                )
             );
     }
 

@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
@@ -45,16 +46,17 @@ class ProfileController extends AbstractController
 {
     /**
      * @Route("/register", name="portal_user_registration")
+     * @Route("/register", name="user_register")
      * @PageHttpCache()
      */
     public function registerAction(Request $request)
     {
         if ($this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('portal_index');
+            return $this->redirectToRoute('portal_home');
         }
 
         if (!$this->getBrandSetting('core.reg_enabled')) {
-            return $this->redirectToRoute('portal_index');
+            return $this->redirectToRoute('portal_home');
         }
 
         // Registration "intercept": to implement a registration intercept, don't use this
@@ -73,22 +75,22 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted()) {
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
-                if ($person = $this->get('data.person')->getPersonForEmail($email)) {
-                    if ($person->isUser()) {
+                if ($person_check = $this->get('data.person')->getPersonForEmail($email)) {
+                    if ($person_check->isUser()) {
                         // this is an error, a registered user cannot register again
                        $form->get('primary_email')->addError(new FormError($this->phrase('portal.account.registration-email-already-exists')));
                     } else {
                         // contact, they should now get a "set password" email and a redirection
                         // set the reset code
                         $random = new UriSafeTokenGenerator();
-                        $person->setPasswordResetCode($random->generateToken());
-                        $person->setDatePasswordResetRequested(new \DateTime());
-                        $this->persistAndFlushEntity($person);
+                        $person_check->setPasswordResetCode($random->generateToken());
+                        $person_check->setDatePasswordResetRequested(new \DateTime());
+                        $this->persistAndFlushEntity($person_check);
 
-                        $this->get('portal_email_sender')->sendPasswordSetLink($person);
+                        $this->get('portal_email_sender')->sendPasswordSetLink($person_check);
 
                         return $this->redirectToRoute('portal_user_register_set_password', array(
-                            'email' => $person->getPrimaryEmailAddress()
+                            'email' => $person_check->getPrimaryEmailAddress()
                         ));
                     }
                 }
@@ -99,7 +101,7 @@ class ProfileController extends AbstractController
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
             $this->getEmailSender()->sendWelcomeEmail($person);
-            if ($this->getBrandSetting('core.email_validation')) {
+            if (!$this->getBrandSetting('core.email_validation')) {
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
             } else {
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
@@ -139,6 +141,7 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/profile", name="portal_user_profile")
+     * @Route("/profile", name="user_profile")
      * @Security("is_granted('EDIT_PROFILE', user)")
      */
     public function editAction(Request $request)
@@ -168,6 +171,10 @@ class ProfileController extends AbstractController
         //
         // EMAILS (person must be considered "email validated" to even attempt email manipulation)
         //
+
+        // find emails awaiting validation
+        $validating = $this->getEmailDataService()->getValidatingEmails($person);
+
         $emails_form = null;
         $verify_url = null;
         if ($person->isEmailValidated()) {
@@ -210,7 +217,39 @@ class ProfileController extends AbstractController
                 )
             );
             $emails_form->handleRequest($request);
+
+            // quick and dirty custom validation to make sure a new email is not already validating
+            // on another account
+            foreach ($person->getEmails() as $email) {
+                if (!$email->getId()) {
+                    if ($this->getRepo('DeskPRO:PersonEmailValidating')->getEmail($email->getEmail())) {
+                        // this email validating already exists!
+                        $emails_form->addError(
+                            new FormError(
+                                'The email "' . $email->getEmail() . ' is already awaiting validation.'
+                            )
+                        );
+                    }
+                }
+            }
+
             if ($emails_form->isValid()) {
+
+                // filter out any NEW emails and change them to PersonEmailValidating
+                foreach ($person->getEmails() as $email) {
+                    // if new
+                    if (!$email->getId()) {
+                        $person->removeEmail($email);
+                        $this->getEm()->remove($email);
+                        $validating_email = new PersonEmailValidating();
+                        $validating_email->setEmail($email->getEmail());
+                        $validating_email->setPerson($email->getPerson());
+                        $validating[] = $validating_email; // add to the UI
+                        $this->getEm()->persist($validating_email);
+                    }
+                }
+
+
                 $this->getEm()->flush();
                 $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
 
@@ -235,11 +274,25 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_user_profile');
         }
 
-
         //
         // BREADCRUMBS
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
+
+        // make links for validating emails
+        $validating_ui = array();
+        if ($validating) {
+            $person_validator = $this->get('person.portal_validator');
+            foreach ($validating as $validating_email) {
+                $validating_ui[$validating_email->getEmail()] = $person_validator->getResendLink(
+                    PersonValidator::TYPE_EMAIL,
+                    $validating_email,
+                    null,
+                    true
+                );
+            }
+        }
+
 
         return $this->renderThemeView(
             'Theme:Portal:User/profile.html.twig', array(
@@ -249,7 +302,8 @@ class ProfileController extends AbstractController
                 'password_form' => $password_form->createView(),
                 'emails_form' => $emails_form ? $emails_form->createView() : null,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->profile()
+                'page_title' => $this->createPageTitle()->profile(),
+                'validating_emails' => $validating_ui
             )
         );
     }

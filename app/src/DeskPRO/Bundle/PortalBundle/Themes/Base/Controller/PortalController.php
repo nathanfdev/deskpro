@@ -77,15 +77,6 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="sidebar", esi=true)
-     * @TagHttpCache()
-     */
-    public function sidebarAction(TagRequest $tag_request)
-    {
-        return $this->renderThemeView('Theme:Portal:sidebar.html.twig');
-    }
-
-    /**
      * @Tag(name="sidebar", esi=true, always_guest_inline=true)
      */
     public function userSidebarAction(TagRequest $tag_request)

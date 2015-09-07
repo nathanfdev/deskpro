@@ -19,7 +19,7 @@ import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
   LabelsList: state.Tickets.LabelsList,
   StarsCounts: state.Tickets.StarsCounts,
   Translations: state.Translations,
-  dp_window: state.Application.dp_window,
+  dp_window: state.dp_window,
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {

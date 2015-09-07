@@ -77,6 +77,22 @@ class LabelDef extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    /**
      * Get the name of the entity used to store label associations for this type.
      *
      * @return string

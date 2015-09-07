@@ -31,8 +31,10 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -58,6 +60,12 @@ class PersonEmailType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'        => 'Application\\DeskPRO\\Entity\\PersonEmail',
             'email_label'       => 'Email',
+            'email_exists_error_message' => 'This email already exists in the system.',
+            'constraints' => function (Options $options) {
+                return array(
+                    new UniqueEntity(array('fields' => 'email', 'message' => $options['email_exists_error_message'], 'errorPath' => 'email'))
+                );
+            },
             'email_constraints' => array(
                 new NotBlank(array('message' => 'Please provide us with your email')),
                 new Email(array('message'    => 'This email adddress is not valid')),

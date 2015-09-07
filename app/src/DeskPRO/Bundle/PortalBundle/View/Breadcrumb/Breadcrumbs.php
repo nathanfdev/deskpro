@@ -63,17 +63,16 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
     private $breadcrumbs;
 
     /**
-     * @param string  $route
+     * @param string  $url
      * @param array   $route_params
      * @param string  $type
      * @param mixed   $var
      * @return $this
      */
-    public function add($route, array $route_params = null, $type, $var = null)
+    public function add($url, $type, $var = null)
     {
         $this->breadcrumbs[] = array(
-            'route'        => $route,
-            'route_params' => $route_params ?: array(),
+            'url' => $url,
             'type'         => $type,
             'phrase'       => is_array($var) && isset($var['phrase']) ? $var['phrase'] : null,
             'var'          => $var,
@@ -83,17 +82,16 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param string  $route
+     * @param string  $url
      * @param array   $route_params
      * @param string  $type
      * @param mixed   $var
      * @return $this
      */
-    public function prepend($route, array $route_params = null, $type, $var = null)
+    public function prepend($url, $type, $var = null)
     {
         array_unshift($this->breadcrumbs, array(
-            'route'        => $route,
-            'route_params' => $route_params ?: array(),
+            'url'        => $url,
             'type'         => $type,
             'phrase'       => is_array($var) && isset($var['phrase']) ? $var['phrase'] : null,
             'var'          => $var,

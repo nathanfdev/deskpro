@@ -39,6 +39,8 @@ use Prophecy\PhpUnit\ProphecyTestCase;
 
 abstract class DeskProTestCase extends ProphecyTestCase
 {
+    use \DpTestSrc\TestBundle\MockHelpers\DbalMocksHelper;
+
     /**
      * Stub creation helper
      *
@@ -48,5 +50,18 @@ abstract class DeskProTestCase extends ProphecyTestCase
     protected function stub($type)
     {
         return $this->prophesize($type)->reveal();
+    }
+
+    /**
+     * @param mixed $value
+     * @param array $array
+     * @return array
+     */
+    protected function removeFromArray($value, array $array)
+    {
+        $this->assertContains($value, $array);
+        unset($array[array_search($value, $array)]);
+
+        return $array;
     }
 }

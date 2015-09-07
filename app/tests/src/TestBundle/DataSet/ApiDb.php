@@ -33,6 +33,10 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Ticket;
@@ -90,6 +94,16 @@ class ApiDb extends AbstractDbSet
             UserDetailsRepo::USER_PASS,
             false,
             false
+        );
+
+        $deletedAgent = $this->addUser(
+            UserDetailsRepo::DELETED_AGENT_FIRST_NAME,
+            UserDetailsRepo::DELETED_AGENT_LAST_NAME,
+            UserDetailsRepo::DELETED_AGENT_EMAIL,
+            UserDetailsRepo::DELETED_AGENT_PASS,
+            true,
+            false,
+            true
         );
 
 
@@ -253,24 +267,25 @@ class ApiDb extends AbstractDbSet
         $agent1 = $em->find('DeskPRO:Person', 1);
         $agent2 = $em->find('DeskPRO:Person', 2);
 
-		$ticket1 = new Ticket();
+// Tickets
+        $ticket1 = new Ticket();
         $ticket1->disableAutoTicketProcess();
-		$ticket1->setPersonId(3);
+        $ticket1->setPersonId(3);
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
-		$em->persist($ticket1);
+        $em->persist($ticket1);
         $ticket2 = new Ticket();
         $ticket2->disableAutoTicketProcess();
-		$ticket2->setPersonId(3);
+        $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
-		$em->persist($ticket2);
+        $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
-		$ticket3->setPersonId(3);
+        $ticket3->setPersonId(3);
         $ticket3->agent = $agent1;
         $ticket3->setDepartmentId(2);
-		$em->persist($ticket3);
+        $em->persist($ticket3);
         $em->flush();
 
         // Add a blue flag on the first ticket.
@@ -287,6 +302,81 @@ class ApiDb extends AbstractDbSet
         $em->persist($ticket3);
         $em->flush();
 
+// Feedback
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback_categories`
+                (`title`,`slug`)
+
+            VALUES
+
+                ('Test feedback category 1', '1'),
+                ('Test feedback category 2', '2'),
+                ('Test feedback category 3', '3'),
+                ('Test feedback category 4', '4'),
+                ('Test feedback category 5', '5'),
+                ('Test feedback category 6', '6')
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback_status_categories` (`status_type`, `title`, `display_order`)
+            VALUES
+              ('active', 'Gathering Feedback', 0),
+              ('active', 'Planning', 0),
+              ('active', 'Started', 0),
+              ('active', 'Under Review', 0),
+              ('closed', 'Completed', 0),
+              ('closed', 'Duplicate', 0),
+              ('closed', 'Declined', 0);
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback`
+                (`status_category_id`,`category_id`,`title`, `slug`, `content`,`status`, `hidden_status`)
+
+            VALUES
+                (1, 1, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 'hidden', 'deleted'),
+                (1, 2, 'Test feedback 2', 'Slug to feedback 2', 'Content of test feedback 2', 'active', 'validating'),
+                (1, 3, 'Test feedback 3', 'Slug to feedback 3', 'Content of test feedback 3', 'active', 'validating'),
+                (1, 1, 'Test feedback 4', 'Slug to feedback 4', 'Content of test feedback 4', 'hidden', 'spam'),
+                (5, 1, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 'closed', 'validating'),
+                (1, 2, 'Test feedback 6', 'Slug to feedback 6', 'Content of test feedback 6', 'new', 'validating')
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `feedback_comments`
+                (`feedback_id`,`content`, `status`, `is_reviewed`)
+
+            VALUES
+                (1, 'Feedback 1 comment 1', 'validating', 0),
+                (2, 'Feedback 2 comment 2', 'validating', 0),
+                (3, 'Feedback 3 comment 3', 'validating', 0),
+                (1, 'Feedback 1 comment 4', 'visible', 0),
+                (2, 'Feedback 2 comment 5', 'visible', 1),
+                (6, 'Feedback 6 comment 6', 'visible', 0)
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `custom_def_feedback`
+            (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
+            VALUES
+              (1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1)
+            ;
+        ");
+
+        $this->getDb()->exec("
+            INSERT INTO `custom_data_feedback`
+            (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`)
+            VALUES
+              (1, 1, 1, NULL, 0, 'Windows'),
+              (2, 2, 1, NULL, 0, 'Linux'),
+              (3, 1, 1, NULL, 0, 'Linux'),
+              (4, 1, 1, NULL, 0, 'Mac')
+            ;
+        ");
 
         // "/user_chats" endpoint test data ----------------------------------------------------------------------------
         $this->getDb()->exec("
@@ -303,7 +393,253 @@ class ApiDb extends AbstractDbSet
                 (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
             ;
         ");
-        // end of "/user_chats" endpoint test data ---------------------------------------------------------------------
+        // end of "/user_chats" endpoint test data
+
+
+        // Labels endpoints test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `label_defs`
+                (`label_type`, `label`, `color`, `total`)
+            VALUES
+                ('feedback', 'foo', 'red', 0),
+                ('feedback', 'bar', 'white', 0),
+                ('feedback', 'foobar', 'red', 0),
+                ('feedback', 'barfoo', 'white', 0),
+                ('organization', 'organization label #1', 'red', 42),
+                ('person', 'person label #1', 'white', 1),
+                ('person', 'person label #2', 'red', 3)
+            ;
+        ");
+        // end of labels endpoints
+
+        // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `usergroups`
+                (`id`, `title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
+            VALUES
+                (1, 'Group 1', 'test', 0, 'g1', 1),
+                (2, 'Group 2 (disabled)', 'test', 0, 'g2', 0),
+                (3, 'Group 3', 'test', 0, 'g3', 1),
+                (4, 'Group 4', 'test', 0, 'g4', 1)
+            ;
+
+            INSERT INTO `person2usergroups`
+                (`person_id`, `usergroup_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 2),
+                (1, 3),
+                (2, 3),
+                (3, 3),
+                (4, 4)
+            ;
+        ");
+        // end of "/user_groups"
+
+        // "/organizations" endpoint and its' children test data -------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `organizations`
+                (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
+            VALUES
+                (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
+                (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
+        ");
+        // end of "/organizations"
+
+        // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `agent_teams`
+                (`avatar_blob_id`, `name`)
+            VALUES
+                (NULL, 'Support Managers'),
+                (NULL, '1st Level Support')
+            ;
+
+            INSERT INTO `agent_team_members`
+                (`team_id`, `person_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 3),
+                (2, 4)
+            ;
+        ");
+        // end of "/organizations"
+
+        // Default language --------------------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `languages`
+                (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
+                 `has_agent`, `has_admin`)
+            VALUES
+                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
+        ");
+
+        // Content (articles, news, downloads) test data ---------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `articles`
+                (`id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
+                 `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
+            VALUES
+                (2, 1, '2', 'Test Article #2', 'Test Article #2', 0, 0, 0, 0, 'published', NULL, '2011-08-03 00:00:00', NULL, NULL),
+                (3, 2, '3', 'Test Article #3', 'Test Article #3', 0, 0, 0, 0, 'published', NULL, '2011-08-05 00:00:00', NULL, '2012-08-10 00:00:00'),
+                (4, 2, '4', 'Test Article #4', 'Test Article #4', 0, 0, 0, 0, 'archived', NULL, '2011-08-04 00:00:00', NULL, '2012-08-06 00:00:00'),
+                (5, 2, '5', 'Test Article #5', 'Test Article #5', 0, 0, 0, 0, 'hidden', 'draft', '2011-08-11 00:00:00', NULL, NULL),
+                (6, 3, '6', 'Test Article #6', 'Test Article #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00'),
+                (7, 3, '7', 'Test Article #7', 'Test Article #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL),
+                (8, 1, '8', 'Test Article #8', 'Test Article #8', 0, 0, 0, 0, 'published', NULL, '2011-08-02 00:00:00', NULL, '2012-03-03 00:00:00')
+            ;
+
+            INSERT INTO `article_categories`
+                (`id`, `parent_id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, `display_order`, `depth`)
+            VALUES
+                (1, NULL, 1, 1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, NULL, 0, 0, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 1, 1, NULL, 'Test Category #3', '3', 1, 1),
+                (4, 1, 1, 1, NULL, 'Test Category #4', '4', 1, 1),
+                (5, 2, 1, 1, NULL, 'Test Category #5', '5', 1, 1),
+                (6, 2, 1, 1, NULL, 'Test Category #6', '6', 1, 1),
+                (7, 3, 1, 1, NULL, 'Test Category #7', '7', 1, 1),
+                (8, 3, 1, 1, NULL, 'Test Category #8', '8', 1, 1),
+                (9, 7, 1, 1, NULL, 'Test Category #9', '9', 1, 1),
+                (10, 7, 1, 1, NULL, 'Test Category #10', '10', 1, 1),
+                (11, 7, 1, 1, NULL, 'Test Category #11', '11', 1, 1)
+            ;
+
+            INSERT INTO `article_to_categories`
+                (`article_id`, `category_id`)
+            VALUES
+                (2, 1),
+                (3, 1),
+                (3, 2),
+                (4, 2),
+                (5, 1),
+                (5, 2),
+                (6, 1),
+                (7, 1),
+                (8, 1),
+                (8, 9)
+            ;
+
+            INSERT INTO `news_categories`
+                (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
+            VALUES
+                (1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 'Test Category #3', '3', 2, 1),
+                (4, 1, 'Test Category #4', '4', 2, 1),
+                (5, 2, 'Test Category #5', '5', 2, 1),
+                (6, 2, 'Test Category #6', '6', 2, 1),
+                (7, 3, 'Test Category #7', '7', 2, 1),
+                (8, 3, 'Test Category #8', '8', 2, 1),
+                (9, 7, 'Test Category #9', '9', 2, 1),
+                (10, 7, 'Test Category #10', '10', 2, 1),
+                (11, 7, 'Test Category #11', '11', 2, 1)
+            ;
+
+            INSERT INTO `news`
+                (`id`, `category_id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
+                 `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
+            VALUES
+                (1, 1, 1, '1', 'Test News #1', 'Test News #1', 0, 0, 0, 0, 'published', NULL, '2011-08-02 00:00:00', NULL, '2012-03-03 00:00:00'),
+                (2, 1, 1, '2', 'Test News #2', 'Test News #2', 0, 0, 0, 0, 'published', NULL, '2011-08-03 00:00:00', NULL, NULL),
+                (3, 1, 2, '3', 'Test News #3', 'Test News #3', 0, 0, 0, 0, 'published', NULL, '2011-08-05 00:00:00', NULL, '2012-08-10 00:00:00'),
+                (4, 1, 2, '4', 'Test News #4', 'Test News #4', 0, 0, 0, 0, 'archived', NULL, '2011-08-04 00:00:00', NULL, '2012-08-06 00:00:00'),
+                (5, 1, 2, '5', 'Test News #5', 'Test News #5', 0, 0, 0, 0, 'hidden', 'draft', '2011-08-11 00:00:00', NULL, NULL),
+                (6, 1, 3, '6', 'Test News #6', 'Test News #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00'),
+                (7, 2, 3, '7', 'Test News #7', 'Test News #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL),
+                (8, 9, 3, '8', 'Test News #8', 'Test News #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00')
+            ;
+
+            INSERT INTO `download_categories`
+                (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
+            VALUES
+                (1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 'Test Category #3', '3', 2, 1),
+                (4, 1, 'Test Category #4', '4', 2, 1),
+                (5, 2, 'Test Category #5', '5', 2, 1),
+                (6, 2, 'Test Category #6', '6', 2, 1),
+                (7, 3, 'Test Category #7', '7', 2, 1),
+                (8, 3, 'Test Category #8', '8', 2, 1),
+                (9, 7, 'Test Category #9', '9', 2, 1),
+                (10, 7, 'Test Category #10', '10', 2, 1),
+                (11, 7, 'Test Category #11', '11', 2, 1)
+            ;
+
+            INSERT INTO `downloads`
+                (`id`, `category_id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
+                 `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`, `num_downloads`)
+            VALUES
+                (1, 1, 1, '1', 'Test Download #1', 'Test Download #1', 0, 0, 0, 0, 'published', NULL, '2011-08-02 00:00:00', NULL, '2012-03-03 00:00:00', 0),
+                (2, 1, 1, '2', 'Test Download #2', 'Test Download #2', 0, 0, 0, 0, 'published', NULL, '2011-08-03 00:00:00', NULL, NULL, 0),
+                (3, 1, 2, '3', 'Test Download #3', 'Test Download #3', 0, 0, 0, 0, 'published', NULL, '2011-08-05 00:00:00', NULL, '2012-08-10 00:00:00', 0),
+                (4, 1, 2, '4', 'Test Download #4', 'Test Download #4', 0, 0, 0, 0, 'archived', NULL, '2011-08-04 00:00:00', NULL, '2012-08-06 00:00:00', 0),
+                (5, 1, 2, '5', 'Test Download #5', 'Test Download #5', 0, 0, 0, 0, 'hidden', 'draft', '2011-08-11 00:00:00', NULL, NULL, 0),
+                (6, 1, 3, '6', 'Test Download #6', 'Test Download #6', 0, 0, 0, 0, 'published', NULL, '2011-08-12 00:00:00', NULL, '2012-08-13 00:00:00', 0),
+                (7, 2, 3, '7', 'Test Download #7', 'Test Download #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL, 0),
+                (8, 9, 3, '8', 'Test Download #8', 'Test Download #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00', 0)
+            ;
+        ");
+        // end of content test data
+
+        // Comments test data ------------------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `article_comments`
+                (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+            VALUES
+                (1, 1, 1, '', NULL, NULL, NULL, 'Article comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+                (2, 1, 2, '', NULL, NULL, NULL, 'Article comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'Article comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+            ;
+
+            INSERT INTO `news_comments`
+                (`id`, `news_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+            VALUES
+                (1, 1, 1, '', NULL, NULL, NULL, 'News comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+                (2, 1, 2, '', NULL, NULL, NULL, 'News comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'News comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+            ;
+
+            INSERT INTO `download_comments`
+                (`id`, `download_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+            VALUES
+                (1, 1, 1, '', NULL, NULL, NULL, 'Download comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
+                (2, 1, 2, '', NULL, NULL, NULL, 'Download comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+            ;
+        ");
+        // end of comments test data
+
+        // Glossary test data ------------------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `glossary_word_definitions`
+                (`id`, `definition`)
+            VALUES
+                (1, 'Definition Text')
+            ;
+
+
+            INSERT INTO `glossary_words`
+                (`id`, `definition_id`, `word`)
+            VALUES
+                (1, 1, 'Word 1'),
+                (2, 1, 'Word 2')
+            ;
+        ");
+        // end of glossary test data
+
+        // ArticlePendingCreate test data ------------------------------------------------------------------------------
+        $this->getDb()->exec("
+            INSERT INTO `article_pending_create`
+                (`person_id`, `ticket_id`, `ticket_message_id`, `comment`, `date_created`, `assigned_person_id`)
+            VALUES
+                (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
+                (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
+            ;
+        ");
+        // end of ArticlePendingCreate
 
         $count++;
 

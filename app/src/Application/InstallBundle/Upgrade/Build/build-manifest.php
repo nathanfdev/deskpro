@@ -1926,7 +1926,22 @@
 
 	1438108403 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1438108403.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/tickner/src/deskpro/deskpro-agent/app/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1438108403'
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1438108403'
+	),
+
+	1439990483 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1439990483.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1439990483'
+	),
+
+	1439992701 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1439992701.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1439992701'
+	),
+
+	1440766882 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1440766882.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/Sergey/Sites/deskpro.lo/app/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1440766882'
 	),
 
 );

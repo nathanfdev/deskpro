@@ -39,6 +39,8 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Ticket;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 
 class BreadcrumbBuilder
 {
@@ -46,13 +48,22 @@ class BreadcrumbBuilder
      * @var Breadcrumbs
      */
     private $b;
+    /**
+     * @var ObjectRouter
+     */
+    private $object_router;
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $url_generator;
 
-    public function __construct()
+    public function __construct(ObjectRouter $object_router, UrlGeneratorInterface $url_generator)
     {
+        $this->object_router = $object_router;
+        $this->url_generator = $url_generator;
         $this->b = new Breadcrumbs();
         $this->b->add(
-            'portal_index',
-            null,
+            $this->url_generator->generate('portal_home'),
             Breadcrumbs::PORTAL,
             array('phrase' => 'portal.general.nav-portal')
         );
@@ -65,8 +76,7 @@ class BreadcrumbBuilder
     public function addKb()
     {
         $this->b->add(
-            'portal_kb',
-            null,
+            $this->url_generator->generate('portal_kb'),
             Breadcrumbs::KB,
             array('phrase' => 'portal.general.nav-kb')
         );
@@ -76,8 +86,7 @@ class BreadcrumbBuilder
     public function addKbCat(ArticleCategory $cat)
     {
         $this->b->add(
-            'portal_kb_browse',
-            array('slug' => $cat->getSlug()),
+            $this->object_router->getPortalPath($cat),
             Breadcrumbs::KB_CAT,
             $cat
         );
@@ -88,8 +97,7 @@ class BreadcrumbBuilder
     public function addKbView(Article $a)
     {
         $this->b->add(
-            'portal_kb_view',
-            array('slug' => $a->getSlug()),
+            $this->object_router->getPortalPath($a),
             Breadcrumbs::KB_VIEW,
             $a
         );
@@ -104,8 +112,7 @@ class BreadcrumbBuilder
     public function addNews()
     {
         $this->b->add(
-            'portal_news',
-            null,
+            $this->url_generator->generate('portal_news'),
             Breadcrumbs::NEWS,
             array('phrase' => 'portal.general.nav-news')
         );
@@ -115,8 +122,7 @@ class BreadcrumbBuilder
     public function addNewsCat(NewsCategory $cat)
     {
         $this->b->add(
-            'portal_news_browse',
-            array('slug' => $cat->getSlug()),
+            $this->object_router->getPortalPath($cat),
             Breadcrumbs::NEWS_CAT,
             $cat
         );
@@ -127,8 +133,7 @@ class BreadcrumbBuilder
     public function addNewsView(News $a)
     {
         $this->b->add(
-            'portal_news_view',
-            array('slug' => $a->getSlug()),
+            $this->object_router->getPortalPath($a),
             Breadcrumbs::NEWS_VIEW,
             $a
         );
@@ -143,8 +148,7 @@ class BreadcrumbBuilder
     public function addDownloads()
     {
         $this->b->add(
-            'portal_downloads',
-            null,
+            $this->url_generator->generate('portal_downloads'),
             Breadcrumbs::DOWNLOADS,
             array('phrase' => 'portal.general.nav-downloads')
         );
@@ -154,8 +158,7 @@ class BreadcrumbBuilder
     public function addDownloadCat(DownloadCategory $cat)
     {
         $this->b->add(
-            'portal_downloads_browse',
-            array('slug' => $cat->getSlug()),
+            $this->object_router->getPortalPath($cat),
             Breadcrumbs::DOWNLOADS_CAT,
             $cat
         );
@@ -166,8 +169,7 @@ class BreadcrumbBuilder
     public function addDownloadView(Download $a)
     {
         $this->b->add(
-            'portal_downloads_view',
-            array('slug' => $a->getSlug()),
+            $this->object_router->getPortalPath($a),
             Breadcrumbs::DOWNLOADS_VIEW,
             $a
         );
@@ -182,8 +184,7 @@ class BreadcrumbBuilder
     public function addProfile()
     {
         $this->b->add(
-            'portal_user_profile',
-            null,
+            $this->url_generator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
             array('phrase' => 'portal.general.nav-profile')
         );
@@ -193,8 +194,7 @@ class BreadcrumbBuilder
     public function addRegistration()
     {
         $this->b->add(
-            'portal_user_registration',
-            null,
+            $this->url_generator->generate('portal_user_registration'),
             Breadcrumbs::REGISTER,
             array('phrase' => 'portal.general.nav-register')
         );
@@ -205,8 +205,7 @@ class BreadcrumbBuilder
     public function addLogin()
     {
         $this->b->add(
-            'portal_login',
-            null,
+            $this->url_generator->generate('portal_login'),
             Breadcrumbs::LOGIN,
             array('phrase' => 'portal.general.nav-login')
         );
@@ -217,8 +216,7 @@ class BreadcrumbBuilder
     public function addPasswordReset()
     {
         $this->b->add(
-            'portal_reset_password',
-            null,
+            $this->url_generator->generate('portal_reset_password'),
             Breadcrumbs::PASSWORD_RESET,
             array('phrase' => 'portal.general.nav-reset-password')
         );
@@ -229,8 +227,7 @@ class BreadcrumbBuilder
     public function addPasswordSet()
     {
         $this->b->add(
-            'portal_set_password',
-            null,
+            $this->url_generator->generate('portal_set_password'),
             Breadcrumbs::PASSWORD_SET,
             array('phrase' => 'portal.general.nav-set-password')
         );
@@ -245,8 +242,7 @@ class BreadcrumbBuilder
     public function addFeedback()
     {
         $this->b->add(
-            'portal_feedback',
-            null,
+            $this->url_generator->generate('portal_feedback'),
             Breadcrumbs::FEEDBACK,
             array('phrase' => 'portal.general.nav-feedback')
         );
@@ -256,8 +252,7 @@ class BreadcrumbBuilder
     public function addFeedbackView(Feedback $a)
     {
         $this->b->add(
-            'portal_feedback_view',
-            array('slug' => $a->getSlug()),
+            $this->object_router->getPortalPath($a),
             Breadcrumbs::FEEDBACK_VIEW,
             $a
         );
@@ -273,8 +268,7 @@ class BreadcrumbBuilder
     public function addNewTicket()
     {
         $this->b->add(
-            'portal_new_ticket',
-            null,
+            $this->url_generator->generate('portal_new_ticket'),
             Breadcrumbs::TICKETS_NEW,
             array('phrase' => 'portal.general.nav-newticket')
         );
@@ -285,8 +279,7 @@ class BreadcrumbBuilder
     public function addTicketList()
     {
         $this->b->add(
-            'portal_tickets',
-            null,
+            $this->url_generator->generate('portal_tickets'),
             Breadcrumbs::TICKETS,
             array('phrase' => 'portal.general.nav-tickets')
         );
@@ -297,8 +290,7 @@ class BreadcrumbBuilder
     public function addTicketView(Ticket $t)
     {
         $this->b->add(
-            'portal_tickets_view',
-            array('id' => $t->getId()),
+            $this->object_router->getPortalPath($t),
             Breadcrumbs::TICKETS_VIEW,
             $t
         );

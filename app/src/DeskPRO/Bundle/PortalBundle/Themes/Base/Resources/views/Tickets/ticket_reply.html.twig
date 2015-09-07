@@ -13,20 +13,36 @@
     }
 </style>
 
+{% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
+    <div class="item reply">
+        <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
 
-<div class="item reply">
-  <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
+        <a href="{{ portal_path(ticket, 'unresolve') }}" class="button">
+            {{ phrase('portal.tickets.mark-unresolved') }}
+        </a>
+    </div>
+{% endif %}
 
-  <a href="#" class="button button-reply">{{ phrase('portal.tickets.add-reply') }}</a>
-  <a href="#" class="button button-resolved">{{ phrase('portal.tickets.mark-resolved') }}</a>
+{% if not ticket.resolved %}
+    <div class="item reply">
+      <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
 
-  <div class="reply-form">
-    {{ form_errors(form) }}
-    {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
-    {{ form_widget(form.ticket_message) }}
-    {{ form_widget(form.attachments) }}
-    {{ form_widget(form.more_attachments) }}
-    {{ form_rest(form) }}
-    {{ form_end(form) }}
-  </div>
-</div>
+      <a href="#" class="button button-reply">
+          {{ phrase('portal.tickets.add-reply') }}
+      </a>
+
+      <a href="{{ portal_path(ticket, 'resolve') }}" class="button button-resolved">
+          {{ phrase('portal.tickets.mark-resolved') }}
+      </a>
+
+      <div class="reply-form">
+        {{ form_errors(form) }}
+        {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+        {{ form_widget(form.ticket_message) }}
+        {{ form_widget(form.attachments) }}
+        {{ form_widget(form.more_attachments) }}
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+      </div>
+    </div>
+{% endif %}

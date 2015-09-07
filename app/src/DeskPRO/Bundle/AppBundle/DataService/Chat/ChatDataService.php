@@ -32,12 +32,12 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Doctrine\ORM\Query\QueryException;
+use Doctrine\ORM\NoResultException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 
 /**
  * Class ChatDataService
@@ -60,12 +60,12 @@ class ChatDataService
     }
 
     /**
-     * @param ChatSelectCriteria $criteria
+     * @param Criteria $criteria
      * @param int $page
      * @param int $count
      * @return Pagerfanta
      */
-    public function selectChats(ChatSelectCriteria $criteria, $page, $count)
+    public function selectChats(Criteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -81,19 +81,19 @@ class ChatDataService
     }
 
     /**
-     * @param ChatCountCriteria $criteria
+     * @param GroupedCriteria $criteria
      * @return Count
      */
-    public function countChats(ChatCountCriteria $criteria)
+    public function countChats(GroupedCriteria $criteria)
     {
-        return $criteria->isGrouped() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
+        return $criteria->hasGroupBy() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
     }
 
     /**
-     * @param ChatCountCriteria $criteria
+     * @param GroupedCriteria $criteria
      * @return Count
      */
-    private function countFlat(ChatCountCriteria $criteria)
+    private function countFlat(GroupedCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -103,18 +103,18 @@ class ChatDataService
 
         try {
             $count = $qb->getQuery()->getSingleScalarResult();
-        } catch (QueryException $e) {
+        } catch (NoResultException $e) {
             $count = 0;
         }
 
-        return new Count($count);
+        return Count::fromValue($count);
     }
 
     /**
-     * @param ChatCountCriteria $criteria
+     * @param GroupedCriteria $criteria
      * @return Count
      */
-    private function countGrouped(ChatCountCriteria $criteria)
+    private function countGrouped(GroupedCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -125,13 +125,12 @@ class ChatDataService
 
         $result = $qb->getQuery()->getArrayResult();
 
-        $count = 0;
-        $nested = new CountsGroup($criteria->getGroupBy());
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
-            $count += $group['value'];
-            $nested->add(new GroupedCount($group['group_name'], $group['value']));
+            $count->add($group['value']);
+            $count->addNested($group['value'], $group['group_name']);
         }
 
-        return new Count($count, $nested);
+        return $count;
     }
 }

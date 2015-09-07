@@ -446,6 +446,7 @@ class TicketType extends AbstractType
 
         $form_context->getForm()->add($field->getId(), 'deskpro_department', array(
             'person' => $form_context->getPerson(),
+            'ticket' => $form_context->getTicket()
         ));
     }
 

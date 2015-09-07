@@ -1,0 +1,140 @@
+<?php
+/**************************************************************************\
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
+
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\View\View;
+use FOS\RestBundle\Controller\Annotations\Get;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ArticlePendingCreate;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
+
+/**
+ * Class ArticlePendingCreateController
+ */
+class ArticlePendingCreateController extends BaseController
+{
+    /**
+     * @ApiDoc(
+     *      description="Get ArticlePendingCreate total count",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Assigned person not found"
+     *      }
+     * )
+     * @Get("/article_pending_create/counts", name="api_article_pending_create_counts")
+     */
+    public function getTotalCountAction(Request $request)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('COUNT(apc)')
+            ->from(ArticlePendingCreate::class, 'apc');
+        $this->applyFilters($qb, $request->query->all());
+
+        $total = $qb->getQuery()->getSingleScalarResult();
+        $count = Count::fromValue($total);
+
+        return View::create(
+            $this->createRepresentation($count),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get ArticlePendingCreate entities list",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Assigned person not found"
+     *      }
+     * )
+     * @Get("/article_pending_creates", name="api_article_pending_creates")
+     */
+    public function listAction(Request $request)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('apc')
+            ->from(ArticlePendingCreate::class, 'apc');
+
+        $params = array_diff_assoc($request->query->all(), ['page' => null, 'count' => null]);
+        $this->applyFilters($qb, $params);
+
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return View::create(
+            $this->dataSerialize($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $params
+     */
+    private function applyFilters(QueryBuilder $qb, array $params)
+    {
+        // handle the only allowed filter "assigned_person"
+        if (array_key_exists('assigned_person', $params)) {
+            $assignee = $params['assigned_person'] === 'me'
+                ? $this->getUser()
+                : $this->findOr404(Person::class, $params['assigned_person']);
+
+            $alias = $qb->getRootAliases()[0];
+            $qb
+                ->where($alias . '.assigned_person = :assignee')
+                ->setParameters(compact('assignee'));
+            unset($params['assigned_person']);
+        }
+
+        // throw Bad Request if there are any filers except "assigned_person"
+        if (!empty($params)) {
+            throw new BadRequestHttpException('Unknown parameters: ' . join(', ', array_keys($params)));
+        }
+    }
+}

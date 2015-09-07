@@ -18,7 +18,7 @@ Feature: Generate URLs
       | default |
       | french  |
     And default is the active language
-    When I generate a url for "portal_index"
+    When I generate a url for "portal_home"
     Then the generated url should be "/en"
 
   Scenario: I generate a url when viewing a default language page
@@ -48,7 +48,7 @@ Feature: Generate URLs
     Given the following languages are enabled:
       | default |
     Given the active mode is admin
-    When I generate a url for "portal_index"
+    When I generate a url for "portal_home"
     Then the generated url should be "/admin-mode"
 
   Scenario: I generate a url when mode is admin
@@ -64,7 +64,7 @@ Feature: Generate URLs
       | french  |
     Given the active mode is admin
     And default is the active language
-    When I generate a url for "portal_index"
+    When I generate a url for "portal_home"
     Then the generated url should be "/admin-mode/en"
 
   Scenario: I generate a url when mode is admin AND default multi-language portal
@@ -93,8 +93,8 @@ Feature: Generate URLs
     And french is the active language
     When I generate urls for:
       | route                 | params                              |
-      | agent_interface       |                                     |
-      | admin_interface       |                                     |
+      | agent                 |                                     |
+      | admin                 |                                     |
       | serve_blob            | blob_auth_id=foo&filename=bar       |
       | serve_default_picture | s=foo                               |
       | serve_blob_sizefit    | blob_auth_id=foo&filename=bar&s=goo |

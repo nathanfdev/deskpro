@@ -3,15 +3,18 @@ import React from "react";
 import { connect } from 'react-redux';
 
 import Header from "./Header";
-import AppSwitcher from "./AppSwitcher";
+import { AppSwitcher } from "./AppSwitcher";
 import TabFrame from "./TabFrame";
 
 import TicketsApp from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/TicketsApp";
 import TasksApp from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TasksApp";
+import {FeedbackApp} from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Components/FeedbackApp";
 
 import { routingStarted } from "../Actions/AppActions";
 
-@connect(state => state)
+@connect(state => ({
+  ...state
+}))
 export default class DpApp extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +30,7 @@ export default class DpApp extends React.Component {
 
         {this.props.children}
 
-        <TabFrame />
+        <TabFrame {...this.props} />
       </div>
     );
   }

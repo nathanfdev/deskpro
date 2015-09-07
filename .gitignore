@@ -114,3 +114,4 @@ serve.sh
 /app/tests/config.test.php
 !/app/tests/coverage/cov/.gitkeep
 demodata/
+npm-debug.log

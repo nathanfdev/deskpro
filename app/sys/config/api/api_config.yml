@@ -9,6 +9,7 @@ parameters:
   fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
   hateoas.serializer.json_hal.class: DeskPRO\Bundle\ApiBundle\Serializer\HateoasJsonApiSerializer
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
+  file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
 
 api:
     data_serializer:
@@ -162,3 +163,4 @@ doctrine:
 
              string_functions:
                  field: DoctrineExtensions\Query\Mysql\Field
+                 group_concat: DoctrineExtensions\Query\Mysql\GroupConcat

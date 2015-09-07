@@ -47,7 +47,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/tickets",
  * 	description="Operations about Tickets",
  * 	basePath="/api"
@@ -67,181 +67,181 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a new Ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of person to create ticket for.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_email",
      *				description="If no person_id is given, the ticket is created for a person with this email. If no person is found with this email, one is created.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_name",
      *				description="If a person is being created, use this as their name.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     * 			@SWG\Parameter(
+     * 			SWG\Parameter(
      *				name="overwrite_person_name",
      *				description="Set person_name even if the person already exists. This will overwrite a persons name with the one provided in person_name.",
      *				paramType="query",
      *				required=false,
      *				type="boolean	"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_organization",
      *				description="If a person is being created, user this as their organization. If no organization is found with this name, one is created.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_organization_position",
      *				description="If a person is being created and they belong to an organization, select this as their position.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="subject",
      *				description="Subject of the ticket.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message",
      *				description="First message of the ticket.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message_as_agent",
      *				description="If true, the message is considered to be written by the API agent rather than the ticket owner. Defaults to false.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message_is_html",
      *				description="If true, the message parameter is treated as HTML.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="agent_id",
      *				description="Agent assigned to the ticket. Defaults to unassigned.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="agent_team_id",
      *				description="Agent team the ticket belongs to.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach[]",
      *				description="If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter.",
      *				paramType="form",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach_id[]",
      *				description="The ID of an already uploaded file to include with the ticket.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="Category the ticket is in.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="department_id",
      *				description="Department the ticket is in. If not specified, uses the default ticket department.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="field[]",
      *				description="Value for the specified field.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Label to apply to the ticket.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="language_id",
      *				description="Language the ticket is in.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="priority_id",
      *				description="Priority of the ticket.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="product_id",
      *				description="Product the ticket relates to.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved. Defaults to awaiting_agent.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="sla_id[]",
      *				description="Adds the SLA to the ticket. Can only add SLAs that agents may manually add.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="urgency",
      *				description="Urgency of the ticket (1-10).",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="workflow_id",
      *				description="Workflow for the ticket.",
      *				paramType="query",
@@ -475,15 +475,15 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a Ticket by Ticket ID.",
      * 		notes="Information about the ticket by Ticket ID.",
      *		type="Ticket",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
@@ -491,7 +491,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -575,111 +575,111 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of person to create ticket for.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="subject",
      *				description="A new subject for the ticket.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="agent_id",
      *				description="Agent assigned to the ticket. Defaults to unassigned.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="agent_team_id",
      *				description="Agent team the ticket belongs to.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach[]",
      *				description="If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter.",
      *				paramType="form",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="Category the ticket is in.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="department_id",
      *				description="Department the ticket is in. If not specified, uses the default ticket department.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="field[]",
      *				description="Value for the specified field.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="language_id",
      *				description="Language the ticket is in.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="priority_id",
      *				description="Priority of the ticket.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="product_id",
      *				description="Product the ticket relates to.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved. Defaults to awaiting_agent.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="urgency",
      *				description="Urgency of the ticket (1-10).",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="workflow_id",
      *				description="Workflow for the ticket.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="flag",
      *				description="Sets the color of the flag for the this ticket for the API user. Use none to remove the flag.",
      *				paramType="query",
@@ -773,13 +773,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="DELETEs a Ticket by Ticket ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be deleted.",
      *				paramType="path",
@@ -787,7 +787,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -830,13 +830,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/undelete",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Undeletes a Ticket by Ticket ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be undeleted.",
      *				paramType="path",
@@ -844,7 +844,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -867,13 +867,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/logs",
-     * 	@SWG\Operation(
+     * SWG\Api(
+     * 	path="/tickets/{ticket_id}/log",
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets all logs in a Ticket by Ticket ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
@@ -881,7 +881,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -904,13 +904,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/messages",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets all messages in a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
@@ -918,7 +918,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -930,13 +930,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/messages/{message_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the specific message",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
@@ -944,7 +944,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -966,13 +966,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/messages/{message_id}/details",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a specific message's details",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
@@ -980,7 +980,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1017,69 +1017,69 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/messages",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Replies to a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message",
      *				description="Message reply text.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach[]",
      *				description="If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach_id[]",
      *				description="The ID of an already uploaded file to include with the ticket.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="is_note",
      *				description="If true, sets the reply as a note, rather than a public reply. Defaults to false.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message_as_agent",
      *				description="If true, the message is considered to be written by the API agent rather than the ticket owner. Defaults to false.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message_is_html",
      *				description="If true, the message parameter is treated as HTML.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="suppress_user_notify",
      *				description="If true, suppresses user notification of the reply. Defaults to false.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="Message author",
      *				paramType="query",
@@ -1087,7 +1087,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1253,13 +1253,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/claim",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Assigns a ticket to the API user",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
@@ -1267,7 +1267,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1283,27 +1283,27 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/split",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary=" Splits messages from a ticket into a new one.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message_ids[]",
      *				description="ID of a message to split. Specify this parameter multiple times to split multiple messages.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="subject",
      *				description="subject of the new ticket",
      *				paramType="query",
@@ -1311,7 +1311,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1343,20 +1343,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/merge/{merge_ticket_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Merges the two tickets",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be merged with.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="merge_ticket_id",
      *				description="ID of the Ticket that needs to be merged.",
      *				paramType="path",
@@ -1364,7 +1364,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1388,27 +1388,27 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/link/{link_ticket_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Links two tickets",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be linked with.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="link_ticket_id",
      *				description="ID of the Ticket that needs to be linked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="is_parent",
      *				description="Make the second the parent ticket",
      *				paramType="path",
@@ -1416,7 +1416,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="boolean"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1434,13 +1434,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/spam",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Marks a ticket as spam.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be marked spam.",
      *				paramType="path",
@@ -1448,7 +1448,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1481,13 +1481,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/unspam",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Removes spam indicator from a ticket",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be unspamed.",
      *				paramType="path",
@@ -1495,7 +1495,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1518,13 +1518,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/lock",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Locks a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be locked",
      *				paramType="path",
@@ -1532,7 +1532,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1552,13 +1552,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/unlock",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="unLocks a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be unlocked",
      *				paramType="path",
@@ -1566,7 +1566,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1584,13 +1584,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/tasks",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the tasks for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched for Tasks",
      *				paramType="path",
@@ -1598,7 +1598,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1612,13 +1612,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/tasks",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Create a task for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket where the task needs to be created.",
      *				paramType="path",
@@ -1626,7 +1626,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1659,13 +1659,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets billing charges for a Ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
@@ -1673,7 +1673,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1700,34 +1700,34 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Gets billing charges for a Ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="time",
      *				description="Time in seconds to bill. Required if there is no amount.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="amount",
      *				description="Amount (in admin-specified currency) to bill. Required if there is no time.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment",
      *				description="Comment or reason for the charge.",
      *				paramType="query",
@@ -1735,7 +1735,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1769,20 +1769,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges/{charge_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a charge exists for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="charge_id",
      *				description="ID of the Charge that needs to be checked.",
      *				paramType="path",
@@ -1790,7 +1790,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1811,20 +1811,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges/{charge_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a charge for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the Ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="charge_id",
      *				description="ID of the Charge that needs to be deleted.",
      *				paramType="path",
@@ -1832,7 +1832,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1853,13 +1853,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/slas",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a list of automatically applied SLAs for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
@@ -1867,7 +1867,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1881,20 +1881,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/slas",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds an SLA to the automatically applied SLAs for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="sla_id",
      *				description="ID of SLA to add.",
      *				paramType="query",
@@ -1902,7 +1902,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1930,20 +1930,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/slas/{sla_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a ticket SLA exists for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="sla_id",
      *				description="ID of the SLA that needs to be checked.",
      *				paramType="path",
@@ -1951,7 +1951,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -1972,20 +1972,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/slas/{sla_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a ticket SLA for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="sla_id",
      *				description="ID of the SLA that needs to be deleted.",
      *				paramType="path",
@@ -1993,7 +1993,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2018,13 +2018,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/participants",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the participants in a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
@@ -2032,7 +2032,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2044,27 +2044,27 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/participants",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a participant to a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person to add to the ticket.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="email",
      *				description="Email address of the person to add to the ticket. If no person can be found with this email, one will be created.",
      *				paramType="query",
@@ -2072,7 +2072,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2142,20 +2142,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/participants/{participant_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a person is participating in a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="participant_id",
      *				description="ID of the Person that needs to be checked.",
      *				paramType="path",
@@ -2163,7 +2163,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2190,20 +2190,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/participants/{participant_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a participant from a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="participant_id",
      *				description="ID of the Person that needs to be removed.",
      *				paramType="path",
@@ -2211,7 +2211,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2249,13 +2249,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the labels for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
@@ -2263,7 +2263,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2275,20 +2275,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a label to a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to add.",
      *				paramType="query",
@@ -2296,7 +2296,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2320,20 +2320,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if the ticket has the label.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="label to check",
      *				paramType="path",
@@ -2341,7 +2341,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2357,20 +2357,20 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/{ticket_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a label from a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of the ticket that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="label that needs to deleted.",
      *				paramType="path",
@@ -2378,7 +2378,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     *		SWG\ResponseMessage(code=404, message="Ticket not found")
      * 	)
      * )
      */
@@ -2394,9 +2394,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/fields",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available custom ticket fields."
      * 	)
@@ -2411,9 +2411,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/departments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available ticket departments."
      * 	)
@@ -2433,9 +2433,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/products",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available ticket products."
      * 	)
@@ -2449,9 +2449,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/categories",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available ticket categories."
      * 	)
@@ -2465,9 +2465,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/priorities",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available ticket priorities."
      * 	)
@@ -2485,9 +2485,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/workflows",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available ticket workflows."
      * 	)
@@ -2505,9 +2505,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/slas",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available ticket SLAs."
      * 	)
@@ -2521,13 +2521,13 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/slas/{sla_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets an SLA.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="sla_id",
      *				description="ID of the SLA that needs to be searched.",
      *				paramType="path",
@@ -2535,7 +2535,7 @@ class TicketController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
+     *		SWG\ResponseMessage(code=404, message="There is no SLA with ID")
      * 	)
      * )
      */

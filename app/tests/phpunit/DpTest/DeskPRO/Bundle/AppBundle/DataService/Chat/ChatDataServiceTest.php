@@ -35,15 +35,11 @@ namespace DpTest\Bundle\AppBundle\DataService\Chat;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery as Query;
 use Pagerfanta\Pagerfanta;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 
 /**
  * Class ChatDataServiceTest
@@ -83,29 +79,29 @@ class ChatDataServiceTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_return_Count_instance_with_nested_CountsGroup_when_counting_criteria_has_grouped_by_option()
+    function it_should_return_Count_instance_with_group_by_indication_when_counting_criteria_has_group_by_option()
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
-        $criteria = ChatCountCriteria::fromParameters(['group_by' => 'date_created'], $resolver, $me);
+        $criteria = ChatCountCriteria::fromParameters(['group_by' => 'date_created'], $resolver, [$me]);
 
         $result = $this->instance()->countChats($criteria);
 
-        $this->assertInstanceOf(CountsGroup::class, $result->getNested());
+        $this->assertEquals($result->getGroupedBy(), 'date_created');
     }
 
     /**
      * @test
      */
-    function it_should_return_Count_instance_without_nested_CountsGroup_when_counting_criteria_has_no_grouped_by_option()
+    function it_should_return_Count_instance_without_group_by_indication_when_counting_criteria_has_no_group_by_option()
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
-        $criteria = ChatCountCriteria::fromParameters([], $resolver, $me);
+        $criteria = ChatCountCriteria::fromParameters([], $resolver, [$me]);
 
         $result = $this->instance()->countChats($criteria);
 
-        $this->assertNull($result->getNested());
+        $this->assertNull($result->getGroupedBy());
     }
 
     /**
@@ -113,28 +109,8 @@ class ChatDataServiceTest extends DeskProTestCase
      */
     private function instance()
     {
-        $query_prophecy = $this->prophesize(Query::class);
-        $qb_prophecy = $this->prophesize(QueryBuilder::class);
-        $em_prophecy = $this->prophesize(EntityManager::class);
-
-        // describe Query double
-        $query_prophecy->getArrayResult()->willReturn([]);
-        $query_prophecy->getSingleScalarResult()->willReturn(1);
-        $query = $query_prophecy->reveal();
-
-        // describe QueryBuilder double
-        $qb_prophecy->getQuery()->willReturn($query);
-        $qb_prophecy->from(Argument::any(), Argument::any())->willReturn($qb_prophecy->reveal());
-        $qb_prophecy->select(Argument::any())->willReturn($qb_prophecy->reveal());
-        $qb_prophecy->getRootAliases()->willReturn(['alias']);
-        $qb_prophecy->addSelect(Argument::any())->willReturn($qb_prophecy->reveal());
-        $qb_prophecy->groupBy(Argument::any())->willReturn($qb_prophecy->reveal());
-
-        // describe EntityManager double
-        $em_prophecy->createQueryBuilder()->willReturn($qb_prophecy->reveal());
-
-        /** @var EntityManager $em */
-        $em = $em_prophecy->reveal();
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em = $this->mockQueryBuildingEntityManager()->reveal();
 
         return new ChatDataService($em);
     }

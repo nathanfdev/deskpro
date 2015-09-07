@@ -61,7 +61,7 @@ class TicketsVoterSpec extends ObjectBehavior
         TokenInterface $token,
         Ticket $ticket
     ) {
-        $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLES, $token, $ticket);
+        $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLE, $token, $ticket);
     }
 
     public function it_denies_list_view_if_not_logged_in(

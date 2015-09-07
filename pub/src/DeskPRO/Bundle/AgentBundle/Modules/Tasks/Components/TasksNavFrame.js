@@ -9,14 +9,14 @@ import TaskNavLabels from "../Components/TaskNavLabels";
 import $ from "jquery";
 
 @connect(state => ({
-  taskList: state.Tasks.taskList,
-  projectList: state.Tasks.projectList,
-  agentList:state.Tasks.agentList,
-  labelList:state.Tasks.labelList,
-  teamList:state.Tasks.teamList,
-  departmentList:state.Tasks.departmentList,
-  user: state.Tasks.user,
-  createdProject: state.Tasks.createdProject
+  taskList: state.taskList,
+  projectList: state.projectList,
+  agentList:state.agentList,
+  labelList:state.labelList,
+  teamList:state.teamList,
+  departmentList:state.departmentList,
+  user: state.user,
+  createdProject: state.createdProject
 }))
 export default class TasksNavFrame extends React.Component {
   constructor(props) {
@@ -37,8 +37,8 @@ export default class TasksNavFrame extends React.Component {
     dispatch(TaskActions.loadLabels());
   }
 
-  switchTaskList(identifier, event) {
-    this.props.dispatch(TaskActions.loadTaskList(identifier));
+  filterTasks(filter, event) {
+    this.props.dispatch(TaskActions.setFilter(filter));
     $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
     $(event.target).closest('a').addClass('active');
   }
@@ -73,13 +73,19 @@ export default class TasksNavFrame extends React.Component {
             </div>
 
             <div className="sidebar-list sidebar-list-filters">
-              <TaskNavGroups taskList={taskList} switchTaskList={this.switchTaskList.bind(this)} />
+              <TaskNavGroups taskList={taskList} filterTasks={this.filterTasks.bind(this)} />
 
-              <TaskNavProjects projectList={projectList} agentList={agentList} teamList={teamList} departmentList={departmentList} createdProject={createdProject} switchTaskList={this.switchTaskList.bind(this)} />
+              <TaskNavProjects projectList={projectList}
+                               agentList={agentList}
+                               teamList={teamList}
+                               departmentList={departmentList}
+                               createdProject={createdProject}
+                               filterTasks={this.filterTasks.bind(this)}
+                />
 
-              <TaskNavPeople agentList={agentList} switchTaskList={this.switchTaskList.bind(this)} />
+              <TaskNavPeople agentList={agentList} filterTasks={this.filterTasks.bind(this)} />
 
-              <TaskNavLabels labelList={labelList} switchTaskList={this.switchTaskList.bind(this)} />
+              <TaskNavLabels labelList={labelList} filterTasks={this.filterTasks.bind(this)} />
             </div>
           </aside>
         </div>

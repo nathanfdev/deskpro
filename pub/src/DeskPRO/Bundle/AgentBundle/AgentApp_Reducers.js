@@ -1,20 +1,24 @@
-import Application_dp_window                              from "./Modules/Application/Reducers/dp_window.js";
-import Application_index                                  from "./Modules/Application/Reducers/index.js";
-import Application_routing                                from "./Modules/Application/Reducers/routing.js";
-import Application_user                                   from "./Modules/Application/Reducers/user.js";
-import Chat_ChatConversationsNavFrame                     from "./Modules/Chat/Reducers/ChatConversationsNavFrame.js";
-import Chat_index                                         from "./Modules/Chat/Reducers/index.js";
-import Tasks_agentList                                    from "./Modules/Tasks/Reducers/agentList.js";
-import Tasks_createdProject                               from "./Modules/Tasks/Reducers/createdProject.js";
-import Tasks_departmentList                               from "./Modules/Tasks/Reducers/departmentList.js";
-import Tasks_labelList                                    from "./Modules/Tasks/Reducers/labelList.js";
-import Tasks_projectCreate                                from "./Modules/Tasks/Reducers/projectCreate.js";
-import Tasks_projectList                                  from "./Modules/Tasks/Reducers/projectList.js";
-import Tasks_taskCreate                                   from "./Modules/Tasks/Reducers/taskCreate.js";
-import Tasks_taskFrameList                                from "./Modules/Tasks/Reducers/taskFrameList.js";
-import Tasks_taskList                                     from "./Modules/Tasks/Reducers/taskList.js";
-import Tasks_teamList                                     from "./Modules/Tasks/Reducers/teamList.js";
-import Test_foo_bar                                       from "./Modules/Test/Reducers/foo/bar.js";
+import ROOT_dp_window                                     from "./Modules/Application/Reducers/dp_window.js";
+import ROOT_routing                                       from "./Modules/Application/Reducers/routing.js";
+import ROOT_user                                          from "./Modules/Application/Reducers/user.js";
+import ROOT_CrmNav                                        from "./Modules/CRM/Reducers/CrmNav.js";
+import ROOT_ChatList                                      from "./Modules/Chat/Reducers/ChatList.js";
+import ROOT_ChatNav                                       from "./Modules/Chat/Reducers/ChatNav.js";
+import ROOT_FeedbackList                                  from "./Modules/Feedback/Reducers/FeedbackList.js";
+import ROOT_PublishList                                   from "./Modules/Publish/Reducers/PublishList.js";
+import ROOT_PublishNav                                    from "./Modules/Publish/Reducers/PublishNav.js";
+import ROOT_agentList                                     from "./Modules/Tasks/Reducers/agentList.js";
+import ROOT_createdProject                                from "./Modules/Tasks/Reducers/createdProject.js";
+import ROOT_departmentList                                from "./Modules/Tasks/Reducers/departmentList.js";
+import ROOT_labelList                                     from "./Modules/Tasks/Reducers/labelList.js";
+import ROOT_projectCreate                                 from "./Modules/Tasks/Reducers/projectCreate.js";
+import ROOT_projectList                                   from "./Modules/Tasks/Reducers/projectList.js";
+import ROOT_taskCreate                                    from "./Modules/Tasks/Reducers/taskCreate.js";
+import ROOT_taskFilter                                    from "./Modules/Tasks/Reducers/taskFilter.js";
+import ROOT_taskFrameList                                 from "./Modules/Tasks/Reducers/taskFrameList.js";
+import ROOT_taskList                                      from "./Modules/Tasks/Reducers/taskList.js";
+import ROOT_taskListList                                  from "./Modules/Tasks/Reducers/taskListList.js";
+import ROOT_teamList                                      from "./Modules/Tasks/Reducers/teamList.js";
 import Test_test                                          from "./Modules/Test/Reducers/test.js";
 import Tickets_AgentTeams                                 from "./Modules/Tickets/Reducers/AgentTeams.js";
 import Tickets_FilterSetFilterGroups                      from "./Modules/Tickets/Reducers/FilterSetFilterGroups.js";
@@ -30,32 +34,28 @@ import Tickets_departments                                from "./Modules/Ticket
 import Tickets_people                                     from "./Modules/Tickets/Reducers/people.js";
 
 export default {
-  "Application": {
-    "dp_window":                                          Application_dp_window,
-    "index":                                              Application_index,
-    "routing":                                            Application_routing,
-    "user":                                               Application_user,
-  },
-  "Chat": {
-    "ChatConversationsNavFrame":                          Chat_ChatConversationsNavFrame,
-    "index":                                              Chat_index,
-  },
-  "Tasks": {
-    "agentList":                                          Tasks_agentList,
-    "createdProject":                                     Tasks_createdProject,
-    "departmentList":                                     Tasks_departmentList,
-    "labelList":                                          Tasks_labelList,
-    "projectCreate":                                      Tasks_projectCreate,
-    "projectList":                                        Tasks_projectList,
-    "taskCreate":                                         Tasks_taskCreate,
-    "taskFrameList":                                      Tasks_taskFrameList,
-    "taskList":                                           Tasks_taskList,
-    "teamList":                                           Tasks_teamList,
-  },
+  "dp_window":                                            ROOT_dp_window,
+  "routing":                                              ROOT_routing,
+  "user":                                                 ROOT_user,
+  "CrmNav":                                               ROOT_CrmNav,
+  "ChatList":                                             ROOT_ChatList,
+  "ChatNav":                                              ROOT_ChatNav,
+  "FeedbackList":                                         ROOT_FeedbackList,
+  "PublishList":                                          ROOT_PublishList,
+  "PublishNav":                                           ROOT_PublishNav,
+  "agentList":                                            ROOT_agentList,
+  "createdProject":                                       ROOT_createdProject,
+  "departmentList":                                       ROOT_departmentList,
+  "labelList":                                            ROOT_labelList,
+  "projectCreate":                                        ROOT_projectCreate,
+  "projectList":                                          ROOT_projectList,
+  "taskCreate":                                           ROOT_taskCreate,
+  "taskFilter":                                           ROOT_taskFilter,
+  "taskFrameList":                                        ROOT_taskFrameList,
+  "taskList":                                             ROOT_taskList,
+  "taskListList":                                         ROOT_taskListList,
+  "teamList":                                             ROOT_teamList,
   "Test": {
-    "foo": {
-      "bar":                                              Test_foo_bar,
-    },
     "test":                                               Test_test,
   },
   "Tickets": {

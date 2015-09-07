@@ -1,0 +1,53 @@
+import DpApi from '../../DpApi';
+import { compileParams } from '../../ApiHelpers';
+
+/**
+ * @param target
+ * @param filters
+ * @return Promise
+ */
+export function load(target, filters) {
+  return DpApi.sendGet('DP_API/' + validateTarget(target) + '?' + compileParams(filters));
+}
+
+/**
+ * @param target
+ * @param groupBy
+ * @return Promise
+ */
+export function loadCounts(target, groupBy) {
+  return DpApi.sendGet('DP_API/' + validateTarget(target) + '/counts?group_by=' + groupBy);
+}
+
+/**
+ * @return Promise
+ */
+export function loadCategories() {
+  return DpApi.sendGet('DP_API/content_categories');
+}
+
+/**
+ * @param target
+ * @param author
+ * @return Promise
+ */
+export function loadDraftsCount(target, author) {
+  return DpApi.sendGet(
+    'DP_API/' + validateTarget(target) + '/counts?status=hidden&hidden_status=draft'
+    + (author ? '&author=' + author : '')
+  );
+}
+
+/**
+ * Validates and returns target content
+ *
+ * @param target
+ * @return {*}
+ */
+export function validateTarget(target) {
+  if (['articles', 'news', 'downloads'].indexOf(target) === -1) {
+    throw 'Unknown content type ' + target;
+  }
+
+  return target;
+}

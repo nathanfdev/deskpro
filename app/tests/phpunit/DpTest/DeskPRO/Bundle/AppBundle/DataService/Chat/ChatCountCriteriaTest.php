@@ -93,16 +93,13 @@ class ChatCountCriteriaTest extends DeskProTestCase
      */
     function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
     {
-        $qb_prophecy = $this->prophesize(QueryBuilder::class);
-        $qb_prophecy->getRootAliases()->willReturn(['alias']);
-        $qb_prophecy->addSelect(Argument::any())->willReturn();
-        $qb_prophecy->leftJoin(Argument::any(), Argument::any())->willReturn();
+        $qb = $this->mockQueryBuilder();
 
         // expectations when applying self::$dummyProperParams
-        $qb_prophecy->groupBy(Argument::any())->shouldBeCalled();
+        $qb->groupBy(Argument::any())->shouldBeCalled();
 
         /** @var QueryBuilder $qb */
-        $qb = $qb_prophecy->reveal();
+        $qb = $qb->reveal();
         $this->instance(self::$dummyProperParams)->applyGroupBy($qb);
     }
 
@@ -115,6 +112,6 @@ class ChatCountCriteriaTest extends DeskProTestCase
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me = new \Application\DeskPRO\Entity\Person();
 
-        return ChatCountCriteria::fromParameters($parameters, $resolver, $me);
+        return ChatCountCriteria::fromParameters($parameters, $resolver, [$me]);
     }
 }

@@ -6,7 +6,7 @@
 {% if verify_url is null %}
     {{ phrase('user.emails.register-welcome') }}<br/>
     {% if portal_url is not defined %}
-        {% set portal_url = url_full('portal_index') %}
+        {% set portal_url = url_full('portal_home') %}
     {% endif %}
     <a href="{{ portal_url }}">{{ portal_url }}</a>
 {% else %}

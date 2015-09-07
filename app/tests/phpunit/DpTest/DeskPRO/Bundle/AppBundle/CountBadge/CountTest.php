@@ -35,7 +35,6 @@ namespace DpTest\Bundle\AppBundle\CountBadge;
 
 use DpTest\DeskProTestCase;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
 
 /**
  * Class CountTest
@@ -45,19 +44,55 @@ class CountTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_be_instantiable_with_value()
+    function it_should_be_constructable_from_grouped_by()
     {
-        $count = new Count(42);
-        $this->assertEquals(42, $count->getCount());
+        $count = Count::fromGroupedBy('test_grouped_by');
+        $this->assertEquals('test_grouped_by', $count->getGroupedBy());
     }
 
     /**
      * @test
      */
-    function it_should_be_instantiable_with_value_and_nested_counts()
+    function it_should_be_constructable_from_count_value()
     {
-        $group = new CountsGroup('grouped_by', []);
-        $count = new Count(42, $group);
-        $this->assertSame($count->getNested(), $group);
+        $count = Count::fromValue(13);
+        $this->assertEquals(13, $count->getCount());
+    }
+
+    /**
+     * @test
+     */
+    function it_should_create_and_add_nested_counts()
+    {
+        $count = Count::fromValue(42);
+
+        $count->addNested(1, 1);
+        $count->addNested(2, 2);
+
+        $this->assertCount(2, $count->getNested());
+    }
+
+    /**
+     * @test
+     */
+    function it_should_add_nested_Count_instances()
+    {
+        $count = Count::fromValue(42);
+
+        $count->addNestedInstance(Count::fromValue(1));
+        $count->addNestedInstance(Count::fromValue(2));
+
+        $this->assertCount(2, $count->getNested());
+    }
+
+    /**
+     * @test
+     */
+    function it_should_increase_its_value()
+    {
+        $count = Count::fromValue(0);
+        $count->add(3);
+        $count->add(5);
+        $this->assertEquals(3 + 5, $count->getCount());
     }
 }

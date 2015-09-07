@@ -8,7 +8,7 @@ import * as LabelActions from "../Actions/LabelsListActions";
 import FilterGroupingOptions from "./SidebarHover/FilterGroupingOptions";
 
 @connect(state => ({
-  SidebarHover: state.Application.SidebarHover,
+  SidebarHover: state.SidebarHover,
 }))
 export default class TicketsSidebarHoverFrame extends React.Component {
   render() {

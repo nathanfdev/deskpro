@@ -37,7 +37,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\People\Helpers\Agent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
@@ -83,6 +82,12 @@ class TaskProject extends NotifyPropertyChangeEntity
     protected $members;
 
     /**
+     * @var TaskList[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="TaskList", mappedBy="project", cascade={"persist"})
+     */
+    protected $lists;
+
+    /**
      * Construct
      */
     public function __construct()
@@ -123,6 +128,17 @@ class TaskProject extends NotifyPropertyChangeEntity
         return $this->members;
     }
 
+    /**
+     * @return TaskList[]|ArrayCollection
+     */
+    public function getLists()
+    {
+        return $this->lists;
+    }
+
+    /**
+     * @return Department[]|ArrayCollection
+     */
     public function getDepartments()
     {
         $departments = [];
@@ -137,32 +153,38 @@ class TaskProject extends NotifyPropertyChangeEntity
         return new ArrayCollection($departments);
     }
 
+    /**
+     * @return AgentTeam[]|ArrayCollection
+     */
     public function getTeams()
     {
-        $departments = [];
+        $teams = [];
         if (!empty($this->members)) {
             foreach ($this->members as $member) {
                 if (!empty($member->getTeam())) {
-                    $departments[] = $member->getTeam();
+                    $teams[] = $member->getTeam();
                 }
             }
         }
 
-        return new ArrayCollection($departments);
+        return new ArrayCollection($teams);
     }
 
+    /**
+     * @return Person[]|ArrayCollection
+     */
     public function getAgents()
     {
-        $departments = [];
+        $people = [];
         if (!empty($this->members)) {
             foreach ($this->members as $member) {
                 if (!empty($member->getPerson())) {
-                    $departments[] = $member->getPerson();
+                    $people[] = $member->getPerson();
                 }
             }
         }
 
-        return new ArrayCollection($departments);
+        return new ArrayCollection($people);
     }
 
     /**
@@ -272,5 +294,22 @@ class TaskProject extends NotifyPropertyChangeEntity
     public function removeMember(ProjectMember $member)
     {
         $this->members->removeElement($member);
+    }
+
+    /**
+     * @param TaskList $list
+     */
+    public function addList(TaskList $list)
+    {
+        $this->lists->add($list);
+        $this->setModelField('list', $list);
+    }
+
+    /**
+     * @param TaskList $list
+     */
+    public function removeList(TaskList $list)
+    {
+        $this->lists->removeElement($list);
     }
 }

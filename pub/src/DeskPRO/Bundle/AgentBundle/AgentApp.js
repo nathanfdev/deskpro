@@ -32,8 +32,7 @@ export default class AgentApp {
     const legacyReducerBuilder = function(r) {
       if (r.isAmplifluxReducer) {
         const rInst = new r();
-        const realR = rInst.compile();
-        return realR;
+        return rInst.compile();
       } else {
         return r;
       }

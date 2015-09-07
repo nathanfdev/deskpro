@@ -3,14 +3,6 @@ import TestActions from "../Actions/TestActions";
 import * as TaskActions from "../../Tasks/Actions/TaskListActions";
 import { connect } from "Ampliflux";
 
-
-@connect((dep) => {
-  dep.select(state => ({
-    departmentList: state.Tasks.departmentList
-  }));
-
-  dep.prop('departmentList.departmentList').initWithAction(TaskActions.loadDepartments);
-})
 export default class TasksListFrame extends React.Component {
   render() {
     if (!this.props.isLoaded) {

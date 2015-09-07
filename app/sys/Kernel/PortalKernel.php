@@ -39,10 +39,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Kernel;
 
-class PortalKernel extends Kernel
+class PortalKernel extends BaseKernel
 {
+    public function getName()
+    {
+        return 'portal';
+    }
+
     /**
      * Returns an array of bundles to register.
      *
@@ -63,6 +67,9 @@ class PortalKernel extends Kernel
 
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new \FOS\HttpCacheBundle\FOSHttpCacheBundle(),
+            new \FOS\ElasticaBundle\FOSElasticaBundle(),
+            new \FOS\RestBundle\FOSRestBundle(),
+            new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
@@ -243,11 +250,4 @@ class PortalKernel extends Kernel
 
         $cache->write($content, $container->getResources());
     }
-
-    public function getName()
-    {
-        return 'portal';
-    }
-
-
 }

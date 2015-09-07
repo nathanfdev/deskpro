@@ -1,33 +1,38 @@
-# Links to known existing URLs (admin, agent, file.php, etc)
-# these are duplicates from DpKernel's config
-admin_interface:
-    path: /admin
-agent_interface:
-    path: /agent
-serve_blob:
-    path: '/file.php/{blob_auth_id}/{filename}'
-
 # Annotations
 portal:
     resource: "@PortalBundle/Controller"
     type:     annotation
+
+# This is HTTP CACHE specific
+user_context_hash:
+    path: /_portal_user_hash
 
 # START security routes
 ########################################################################################################################
 # The following are caught by our security system, and therefore do not need to have default controllers set on them
 portal_logout:
     path: /logout
+user_logout: #B.C.
+    path: /logout
 
 portal_login_submit:
+    path: /login/authenticate-password
+user_login_authenticate_local: #B.C.
     path: /login/authenticate-password
 
 portal_login_authenticate:
     path: /login/authenticate/{usersource_id}
+user_login_authenticate: #B.C.
+    path: /login/authenticate/{usersource_id}
 
 portal_login_callback:
     path: /login/authenticate-callback/{usersource_id}
+user_login_callback: #B.C.
+    path: /login/authenticate-callback/{usersource_id}
 
 portal_login_usersource_sso:
+    path: /login/usersource-sso/{usersource_id}
+user_login_usersource_sso: #B.C.
     path: /login/usersource-sso/{usersource_id}
 
 # saml specific
@@ -43,6 +48,8 @@ user_saml_metadata:
 
 # impersonation route
 portal_agent_login:
+    path: /impersonate/agent-login/{code}
+user_login_agentlogin:
     path: /impersonate/agent-login/{code}
 ########################################################################################################################
 # END security routes

@@ -33,43 +33,14 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 
 /**
  * Class ChatSelectCriteria
  */
-class ChatSelectCriteria
+class ChatSelectCriteria extends GroupedCriteria
 {
-    /**
-     * @var array
-     */
-    protected $filters = [];
-
-    /**
-     * ChatCountCriteria constructor.
-     *
-     * @param array $filters
-     */
-    protected function __construct(array $filters)
-    {
-        $this->filters = $filters;
-    }
-
-
-    /**
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @param Person $me
-     * @return ChatSelectCriteria
-     */
-    public static function fromParameters(array $params, OptionsResolver $resolver, Person $me)
-    {
-        self::configureResolver($resolver, $me);
-        $filters = $resolver->resolve($params);
-
-        return new self($filters);
-    }
-
     /**
      * @param QueryBuilder $qb
      */
@@ -77,7 +48,14 @@ class ChatSelectCriteria
     {
         $alias = $qb->getRootAliases()[0];
 
-        foreach ($this->filters as $field => $value) {
+        if (array_key_exists('sort', $this->filters)) {
+            $sort = $this->filters['sort'];
+            $order = array_key_exists('order', $this->filters) ? $this->filters['order'] : 'DESC';
+            $qb->orderBy("$alias.$sort", $order);
+        }
+
+        $filters = array_diff_assoc($this->filters, ['sort' => null, 'order' => null]);
+        foreach ($filters as $field => $value) {
             switch ($field) {
                 case 'date_created':
                     list($from, $to) = explode(':', $value);
@@ -88,7 +66,7 @@ class ChatSelectCriteria
                     break;
 
                 case 'date_period':
-                    $datePeriodCaseWhen = $this->getDatePeriodCaseWhenDql($alias);
+                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
                     $qb->andWhere("$datePeriodCaseWhen = :date_period");
                     $qb->setParameter('date_period', $value);
                     break;
@@ -103,52 +81,18 @@ class ChatSelectCriteria
     }
 
     /**
-     * Get date_period CASE-WHEN DQL clause
-     *
-     * Handles the following groups:
-     *
-     * today
-     * yesterday
-     * this_week
-     * this_month
-     * last_month
-     * this_year
-     * ever
-     *
-     * @param string $alias
-     * @return string
-     */
-    protected function getDatePeriodCaseWhenDql($alias)
-    {
-        $today = date('Y-m-d', strtotime('today'));
-        $yesterday = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear = date('Y-01-01');
-
-        $target = "DATE($alias.date_created)";
-
-        $groupSelectDql = "(CASE
-            WHEN $target  = '$today' THEN 'today'
-            WHEN $target  = '$yesterday' THEN 'yesterday'
-            WHEN $target >= '$firstDayOfThisWeek' THEN 'this_week'
-            WHEN $target >= '$firstDayOfThisMonth' THEN 'this_month'
-            WHEN $target >= '$firstDayOfLastMonth' THEN 'last_month'
-            WHEN $target >= '$firstDayOfThisYear' THEN 'this_year'
-            ELSE 'ever'
-        END)";
-
-        return $groupSelectDql;
-    }
-
-    /**
      * @param OptionsResolver $resolver
-     * @param Person $me
+     * @param array $data
      */
-    protected static function configureResolver(OptionsResolver $resolver, Person $me)
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $resolver->setDefined(['agent', 'department', 'date_created', 'date_period']);
+        /** @var \Application\DeskPRO\Entity\Person $me */
+        list($me) = $data;
+
+        $resolver->setDefined(['sort', 'order', 'agent', 'department', 'date_created', 'date_period']);
+
+        $resolver->setAllowedValues('sort', ['agent', 'department', 'date_created']);
+        $resolver->setAllowedValues('order', ['asc', 'desc']);
 
         $resolver->setNormalizer('agent', function($options, $value) use ($me) {
             return $value === 'me' ? $me->getId() : $value;
@@ -162,8 +106,14 @@ class ChatSelectCriteria
         $resolver->setAllowedValues('date_created', function($value) {
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
         });
-        $resolver->setAllowedValues('date_period', [
-            'today', 'yesterday', 'this_week', 'this_month', 'last_month', 'this_year', 'ever'
-        ]);
+        $resolver->setAllowedValues('date_period', DatePeriods::$names);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function applyGroupBy(QueryBuilder $qb)
+    {
+        throw new \LogicException(__CLASS__ . ' extends GroupedCriteria to provide group_by to its child');
     }
 }

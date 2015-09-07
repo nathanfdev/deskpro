@@ -1,0 +1,106 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DpTest\Bundle\AppBundle\DataService\Content\ContentSelect;
+
+use Prophecy\Argument;
+use DpTest\DeskProTestCase;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
+
+/**
+ * Class CommentsSelectCriteriaTest
+ */
+class CommentsSelectCriteriaTest extends DeskProTestCase
+{
+    static $dummyProperParams = [
+        'status'         => 'validating',
+        'article'        => '1',
+        'is_reviewed'    => '0',
+        'period_created' => 'ever',
+    ];
+
+    /**
+     * @test
+     */
+    function it_should_be_constructable_with_empty_params()
+    {
+        $this->assertInstanceOf(CommentsSelectCriteria::class, $this->instance([]));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_be_constructable_with_proper_parameters()
+    {
+        $this->assertInstanceOf(CommentsSelectCriteria::class, $this->instance(self::$dummyProperParams));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_extend_CommentsCountCriteria()
+    {
+        $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance());
+    }
+
+    /**
+     * @test
+     */
+    function it_should_inherit_all_OptionsResolver_configurations_from_CommentsCountCriteria_except_group_by_option()
+    {
+        $data = [new \Application\DeskPRO\Entity\Person()];
+        CommentsCountCriteria::configureResolver($countOptionsResolver = new OptionsResolver(), $data);
+        CommentsSelectCriteria::configureResolver($selectOptionsResolver = new OptionsResolver(), $data);
+        $countOptions = $countOptionsResolver->getDefinedOptions();
+        $selectOptions = $selectOptionsResolver->getDefinedOptions();
+
+        $this->assertEquals(
+            array_values($selectOptions),
+            array_values($this->removeFromArray('group_by', $countOptions))
+        );
+    }
+
+    /**
+     * @param array $parameters
+     * @return CommentsSelectCriteria
+     */
+    private function instance(array $parameters = [])
+    {
+        return CommentsSelectCriteria::fromParameters(
+            $parameters,
+            new \Symfony\Component\OptionsResolver\OptionsResolver()
+        );
+    }
+}

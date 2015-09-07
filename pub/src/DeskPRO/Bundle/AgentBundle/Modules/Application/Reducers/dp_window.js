@@ -1,22 +1,77 @@
-import Immutable from "immutable";
-import * as AppActions from "../Actions/AppActions";
-import { createReducer } from "Ampliflux";
+import ActionTypes from "../Actions/ActionTypes";
+import { Reducer } from "Ampliflux/reducers";
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
-export default createReducer(r => {
-	r.initialState(Immutable.Map({
-		isLoaded: false,
-		collapsedNav: false,
-		expandedSwitcher: false,
-	}));
+export default class dp_window extends Reducer {
+    getInitialState() {
+        return {
+            isLoaded: false,
+            activeAppId: 'tickets',
+            collapsedNav: false,
+            expandedSwitcher: false,
+            taskView: constants.VIEW_MODE_LIST
+        };
+    }
 
-	r.handle(AppActions.setIsLoaded, () => {isLoaded : true});
+    appHasLoaded(state, action) {
+        return {
+            ...state,
+            isLoaded: true
+        };
+    }
 
-	r.handleAsync(AppActions.loadWindow, aa => {
-		aa.handleSuccess((state, data) => {
-			return {
-				...state,
-				isLoaded: true
-			}
-		})
-	});
-});
+    setActiveApp(state, action) {
+        return {
+            ...state,
+            activeAppId: action.payload
+        };
+    }
+
+    collapseNav(state, action) {
+        return {
+            ...state,
+            collapseNav: true
+        };
+    }
+
+    expandNav(state, action) {
+        return {
+            ...state,
+            collapseNav: false
+        };
+    }
+
+    expandSwitcher(state, action) {
+        return {
+            ...state,
+            expandedSwitcher: true
+        };
+    }
+
+    collapseSwitcher(state, action) {
+        return {
+            ...state,
+            expandedSwitcher: false
+        };
+    }
+
+    toggleView(state, action) {
+        const taskView = action.payload;
+
+        return {
+            ...state,
+            taskView: taskView
+        }
+    }
+
+    registerHandlers() {
+        this
+            .r(ActionTypes.APP_IS_LOADED, this.appHasLoaded)
+            .r(ActionTypes.SET_ACTIVE_APP, this.setActiveApp)
+            .r(ActionTypes.COLLAPSE_NAV, this.collapseNav)
+            .r(ActionTypes.EXPAND_NAV, this.expandNav)
+            .r(ActionTypes.EXPAND_SWITCHER, this.expandSwitcher)
+            .r(ActionTypes.COLLAPSE_SWITCHER, this.collapseSwitcher)
+            .r(ActionTypes.TOGGLE_VIEW, this.toggleView)
+    }
+}

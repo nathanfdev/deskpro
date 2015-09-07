@@ -4,16 +4,18 @@ import * as AppActions from "../Actions/AppActions";
 import { Link } from 'react-router';
 
 @connect(state => ({
-  dp_window: state.Application.dp_window
+  user: state.user,
+  dp_window: state.dp_window
 }))
-export default class AppSwitcher extends React.Component {
+export class AppSwitcher extends React.Component {
   renderAppIcon(appId, title, iconClass) {
     const { dp_window, dispatch } = this.props;
+    const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const className = 'fa ' + iconClass;
 
     return (
       <li>
-        <Link to={appId}>
+        <Link to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`}>
           <i className={className}></i> <span className="title">{title}</span>
         </Link>
       </li>
@@ -21,16 +23,16 @@ export default class AppSwitcher extends React.Component {
   }
 
   render() {
-      const { dp_window, dispatch } = this.props;
+    const { dp_window, dispatch } = this.props;
 
-      const my_classes = "dp-app-switcher" + (dp_window.get('expandedSwitcher') ? ' expanded' : '');
+    const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
 
     return (
     <nav className={my_classes}>
       <div className="app-bar">
         <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
-          {this.renderAppIcon('users', 'Users', 'fa-users')}
+          {this.renderAppIcon('crm', 'CRM', 'fa-users')}
           {this.renderAppIcon('chat', 'Chat', 'fa-comments-o')}
           {this.renderAppIcon('feedback', 'Feedback', 'fa-thumbs-up')}
           {this.renderAppIcon('publish', 'Publish', 'fa-edit')}

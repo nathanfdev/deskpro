@@ -33,6 +33,9 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -55,10 +58,24 @@ class DepartmentType extends AbstractType
                 /** @var \DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
                 $hierarchy_generator = $options['hierarchy_generator'];
 
-                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
+                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'], $options['ticket'])->getChoiceList();
             },
+            'ticket' => null // provide a ticket so the ticket's dep is always in the hierarchy list
         ));
 
-        $resolver->setRequired(array('person'));
+        $resolver->setRequired(
+            array(
+                'person'
+            )
+        );
+
+        $resolver->setAllowedTypes(
+            array(
+                'ticket' => array(
+                    'null',
+                    'Application\DeskPRO\Entity\Ticket'
+                )
+            )
+        );
     }
 }

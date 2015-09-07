@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver;
+use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PortalExtension extends \Twig_Extension
@@ -57,6 +59,11 @@ class PortalExtension extends \Twig_Extension
     private $container;
 
     /**
+     * @var TicketPublicIdResolver
+     */
+    private $ticket_public_id_resolver;
+
+    /**
      * @param ContainerInterface $continer
      */
     public function __construct(ContainerInterface $continer)
@@ -65,6 +72,7 @@ class PortalExtension extends \Twig_Extension
         $this->brand_stack       = $continer->get('brand_stack');
         $this->settings_resolver = $continer->get('settings_resolver');
         $this->avatar_resolver   = $continer->get('avatar_resolver');
+        $this->ticket_public_id_resolver = $continer->get('ticket.public_id_resolver');
     }
 
     /**
@@ -74,12 +82,31 @@ class PortalExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
+            new \Twig_SimpleFunction('ticket_public_id', array($this, 'getPublicTicketId')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('brand', array($this, 'getBrand')),
             new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
             new \Twig_SimpleFunction('render_message', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html')))
         );
+    }
+
+    public function getPublicTicketId($ticket)
+    {
+        if ($ticket instanceof TicketView) {
+            $ticket = $ticket->ticket;
+        }
+
+        if (!$ticket instanceof Entity\Ticket) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Twig function "ticket_public_id" requires a Ticket or TicketView, but "" given',
+                    is_object($ticket) ? get_class($ticket) : 'scalar'
+                )
+            );
+        }
+
+        return $this->ticket_public_id_resolver->findId($ticket);
     }
 
     /**

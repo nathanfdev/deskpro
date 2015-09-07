@@ -7,7 +7,7 @@
     {% if category_children|length > 0 %}
       {% for child in category_children %}
         <li class="{% if child is same as(category) %}active{% endif %}">
-          <a href="{{ path('portal_news_browse', { slug: child.slug }) }}">{{ child.title }}</a>
+          <a href="{{ portal_path(child) }}">{{ child.title }}</a>
         </li>
       {% endfor %}
     {% endif %}

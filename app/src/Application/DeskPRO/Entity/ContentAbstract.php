@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DateTime;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -163,6 +164,34 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $slug_history;
 
+    /**
+     * @return array
+     */
+    public static function getAllStatuses()
+    {
+        return [
+            self::STATUS_PUBLISHED,
+            self::STATUS_ARCHIVED,
+            self::STATUS_HIDDEN,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllHiddenStatuses()
+    {
+        return [
+            self::HIDDEN_STATUS_UNPUBLISHED,
+            self::HIDDEN_STATUS_VALIDATING,
+            self::HIDDEN_STATUS_USER_VALIDATING,
+            self::HIDDEN_STATUS_DELETED,
+            self::HIDDEN_STATUS_SPAM,
+            self::HIDDEN_STATUS_DRAFT,
+            self::HIDDEN_STATUS_TEMP,
+        ];
+    }
+
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
@@ -180,6 +209,51 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @deprecated use $this->get('object_router')->getPortalPath($this) instead
+     */
+    public function getPath()
+    {
+        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getPath()')
+        )
+        ;
+
+        return App::getObjectRouter()->getPortalPath($this);
+    }
+
+    /**
+     * @deprecated use $this->get('object_router')->getPortalUrl($this) instead
+     */
+    public function getLink()
+    {
+        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getLink()')
+        )
+        ;
+
+        return App::getObjectRouter()->getPortalUrl($this);
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated use $this->get('object_router')->getPortalUrl($this, 'permalink') instead
+     */
+    public function getPermalink($absolute = true)
+    {
+        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getPermalink()')
+        )
+        ;
+
+        if ($absolute) {
+            return App::getObjectRouter()->getPortalUrl($this, 'permalink');
+        }
+
+        return App::getObjectRouter()->getPortalPath($this, 'permalink');
     }
 
     public function setTitle($title)
@@ -366,11 +440,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $history;
     }
 
-    abstract public function getLink();
-
     abstract protected function addSlugHistory($old_slug);
-
-    abstract public function getPermalink();
 
     /**
      * Get an array of authors.
