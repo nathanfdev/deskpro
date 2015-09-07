@@ -1,12 +1,16 @@
 import React from 'react';
 import AppContainer from 'DeskPRO/Component/AppContainer';
 import { NavContainer } from './Nav/NavContainer';
+import { connect } from 'redux/react';
 
+@connect(state => ({
+  dp_window: state.dp_window
+}))
 export class CrmApp extends React.Component {
 
   render() {
     return (
-      <AppContainer thisAppId="crm">
+      <AppContainer thisAppId="crm" {...this.props}>
         <NavContainer />
       </AppContainer>
     );

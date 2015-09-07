@@ -15,7 +15,7 @@ export class AppSwitcher extends React.Component {
 
     return (
       <li>
-        <Link to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`}>
+        <Link activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`} onClick={clickHandler}>
           <i className={className}></i> <span className="title">{title}</span>
         </Link>
       </li>
@@ -23,9 +23,9 @@ export class AppSwitcher extends React.Component {
   }
 
   render() {
-      const { dp_window, dispatch } = this.props;
+    const { dp_window, dispatch } = this.props;
 
-      const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
+    const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
 
     return (
     <nav className={my_classes}>

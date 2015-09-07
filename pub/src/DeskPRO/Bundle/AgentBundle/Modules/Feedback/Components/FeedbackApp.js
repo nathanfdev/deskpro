@@ -8,7 +8,9 @@ import $ from "jquery";
 
 import { connect } from 'redux/react';
 @connect(state => state.FeedbackList)
-
+@connect(state => ({
+  dp_window: state.dp_window
+}))
 export class FeedbackApp extends React.Component {
 
   constructor(props) {
@@ -138,7 +140,7 @@ export class FeedbackApp extends React.Component {
     ];
 
     return (
-      <AppContainer thisAppId="feedback">
+      <AppContainer thisAppId="feedback" {...this.props}>
         <NavContainer {...this.props} choiceClick={this.choiceClick}/>
         <ListContainer {...this.props}
           sortTable={this.sortTable}

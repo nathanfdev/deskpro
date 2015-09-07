@@ -4,11 +4,20 @@ export default class TabFrame extends React.Component {
   render() {
       const { dp_window } = this.props;
 
-      const my_classes = "dp-tab-frame" + (dp_window.collapseNav ? ' expanded' : '')
-        + (dp_window.taskView !== 'list' ? ' kanban-shifted' : '');
+      let classes = ["dp-tab-frame"];
+
+      if (dp_window.expandedSwitcher) {
+        classes.push('expanded');
+      }
+
+      if (dp_window.taskView !== 'list') {
+        classes.push('kanban-shifted');
+      }
+
+      classes = classes.join(' ');
 
     return (
-      <section className={my_classes}>
+      <section className={classes}>
         <div className="blank-text">
           <p className="hero-icon">
             <i className="fa fa-file-o"></i>
