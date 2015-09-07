@@ -8,7 +8,7 @@ export const load = createAction(
   }
 );
 
-export const sort = createAction(
+export const toggleSort = createAction(
   'CHAT_LIST_SORT',
   (trigger, sort) => trigger(sort)
 );

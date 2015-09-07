@@ -86,8 +86,8 @@ export const feedbackHiddenStatus = createAction(
 
 export const loadFeedbackList = createAction(
   "FEEDBACK_LIST",
-  (trigger, query, filters, sort) => {
-    Feedback.getList(query, filters, sort).then(
+  (trigger, query, filters, sort, order) => {
+    Feedback.getList(query, filters, sort, order).then(
       (value) => trigger(value.getData())
     )
   }
@@ -100,15 +100,15 @@ export const changeQueryState = createAction(
   }
 );
 
-export const switchViewMode = createAction(
-  "FEEDBACK_SWITCH_VIEW_MODE",
+export const toggleViewMode = createAction(
+  "FEEDBACK_TOGGLE_VIEW_MODE",
   (trigger) => {
     trigger();
   }
 );
 
-export const switchOrderDirection = createAction(
-  "FEEDBACK_SWITCH_ORDER_DIRECTION",
+export const toggleOrder = createAction(
+  "FEEDBACK_TOGGLE_ORDER",
   (trigger) => {
     trigger();
   }

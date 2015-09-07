@@ -28,7 +28,7 @@ export class FilterBy extends React.Component {
   filterChosen(event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch,query, sort, filters} = this.props;
+    const {dispatch,query, sort, order, filters} = this.props;
     let elem = $(event.target),
       target = elem.closest('a.ticket-control-button').find('span.filter-name'),
       filterName = elem.text(),
@@ -37,28 +37,28 @@ export class FilterBy extends React.Component {
     target.data('filter', filterAlias);
     dispatch(actions.resetFilters(filterAlias, filterName));
     dispatch(actions.getFilterValues(filterAlias));
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.loadFeedbackList(query, sort, order, filters));
     $('div.dropdown-choice').hide();
   }
 
   filterValueChosen(event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch, query, filters, sort} = this.props;
+    const {dispatch, query, filters, sort, order} = this.props;
     let elem = $(event.target),
       value = elem.text(),
       filter = elem.closest('a.ticket-control-button').find('span.filter-name').data('filter');
     dispatch(actions.setFilterValue(filter, value));
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.loadFeedbackList(query, sort, order, filters));
     $('div.dropdown-choice').hide();
   }
 
   resetFilterValue(event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch, query, filters, sort} = this.props;
+    const {dispatch, query, filters, sort, order} = this.props;
     dispatch(actions.setFilterValue());
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.loadFeedbackList(query, sort, order, filters));
     $('div.dropdown-choice').hide();
   }
 

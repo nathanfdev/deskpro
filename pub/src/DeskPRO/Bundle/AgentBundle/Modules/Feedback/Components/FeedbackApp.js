@@ -13,7 +13,7 @@ export class FeedbackApp extends React.Component {
 
   constructor(props) {
     super(props);
-    const { query, sort, filters, dispatch } = this.props;
+    const { query, sort, order, filters, dispatch } = this.props;
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());
@@ -23,7 +23,7 @@ export class FeedbackApp extends React.Component {
     dispatch(actions.feedbackActiveStatus());
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.loadFeedbackList(query, sort, order, filters));
     dispatch(actions.getFilterValues(filters.alias));
   }
 
@@ -40,7 +40,7 @@ export class FeedbackApp extends React.Component {
   sortTable(param, event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch, query, filters} = this.props;
+    const {dispatch, query, filters, sort} = this.props;
     let elem = $(event.target),
       th = elem.closest('th'),
       siblings = th.siblings('th'),
@@ -56,31 +56,18 @@ export class FeedbackApp extends React.Component {
     }
     let order = th.data('order');
     dispatch(actions.setSort(param, th.data('order')));
-    dispatch(actions.loadFeedbackList(query, {sort: param, order: order}, filters));
+    dispatch(actions.loadFeedbackList(query, param, order, filters));
   }
 
 
-  switchView(event) {
+  toggleView(event) {
     event.stopPropagation();
     const {dispatch} = this.props;
-    dispatch(actions.switchViewMode());
-  }
-
-  switchOrder(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {dispatch, sort, query, filters} = this.props;
-    var elem = $(event.target),
-      name = elem.text();
-    sort.sort = elem.data('field');
-    this.setState({sortName: name});
-    elem.closest('a.ticket-control-button').find('span.sort-name').text(name);
-    $('div.dropdown-choice').hide();
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.toggleViewMode());
   }
 
 
-  showOrderChoice(event) {
+  showSortChoice(event) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -90,31 +77,43 @@ export class FeedbackApp extends React.Component {
     filterChoice.show();
   }
 
-
-  switchSortDirection(event) {
+  /** Change sort option (Order By ...)*/
+  toggleSort(event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch, sort, query, filters} = this.props;
+    const {dispatch, order, query, filters} = this.props;
+    var elem = $(event.target),
+      name = elem.text(),
+      table = elem.closest('div.feedback-list').find('table'),
+      newSort = elem.data('field');
+    table.find('i.fa').remove();
+    this.setState({sort: newSort});
+    elem.closest('a.ticket-control-button').find('span.sort-name').text(name);
     $('div.dropdown-choice').hide();
-    var elem = $(event.target);
-    if (sort.order === constants.ORDER_ASC) {
+    dispatch(actions.loadFeedbackList(query, newSort, order, filters));
+  }
+
+  /** Change sort order (ASC, DESC)*/
+  toggleOrder(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {dispatch, sort, order, query, filters} = this.props;
+    $('div.dropdown-choice').hide();
+    let elem = $(event.target),
+      newOrder = constants.ORDER_ASC;
+    if (order === newOrder) {
+      newOrder = constants.ORDER_DESC;
       elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
     }
     else {
       elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
     }
-    dispatch(actions.switchOrderDirection());
-    dispatch(actions.loadFeedbackList(query, sort, filters));
+    dispatch(actions.toggleOrder());
+    dispatch(actions.loadFeedbackList(query, sort, newOrder, filters));
   }
 
 
   render() {
-
-    const sortOptions = [
-      {field: 'date_created', label: 'Date'},
-      {field: 'total_rating', label: 'Rating'},
-      {field: 'num_ratings', label: 'Number of votes'}
-    ];
 
     const displayFields = [
       {name: 'id', label: 'ID'},
@@ -143,11 +142,10 @@ export class FeedbackApp extends React.Component {
         <NavContainer {...this.props} choiceClick={this.choiceClick}/>
         <ListContainer {...this.props}
           sortTable={this.sortTable}
-          switchView={this.switchView}
-          switchOrder={this.switchOrder}
-          showOrderChoice={this.showOrderChoice}
-          switchSortDirection={this.switchSortDirection}
-          sortOptions={sortOptions}
+          toggleView={this.toggleView}
+          toggleOrder={this.toggleOrder}
+          showSortChoice={this.showSortChoice}
+          toggleSort={this.toggleSort}
           displayFields={displayFields}
           />
       </AppContainer>
