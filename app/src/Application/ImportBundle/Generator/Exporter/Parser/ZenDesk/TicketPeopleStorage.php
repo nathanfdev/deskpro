@@ -42,8 +42,8 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
     {
         $people_ids = array();
         foreach ($data as $ticket) {
-            if (isset($ticket['submitter_id']) && $ticket['submitter_id'] > 0) {
-                $people_ids[] = $ticket['submitter_id'];
+            if (isset($ticket['requester_id']) && $ticket['requester_id'] > 0) {
+                $people_ids[] = $ticket['requester_id'];
             }
             if (isset($ticket['assignee_id']) && $ticket['assignee_id'] > 0) {
                 $people_ids[] = $ticket['assignee_id'];

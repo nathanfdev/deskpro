@@ -149,7 +149,7 @@ final class Tickets extends AbstractParser
                 'prefix' => 'ticket_',
                 'ref'    => 'id',
             )),
-            'submitter_id'    => TransformerInterface::TYPE_STRING,
+            'requester_id'    => TransformerInterface::TYPE_STRING,
             'assignee_id'     => TransformerInterface::TYPE_STRING,
             'subject'         => TransformerInterface::TYPE_STRING,
             'description'     => TransformerInterface::TYPE_STRING,
@@ -162,11 +162,11 @@ final class Tickets extends AbstractParser
             'comments'        => TransformerInterface::TYPE_ARRAY,
         ));
 
-        $person_email = $this->tickets_people->getPersonEmail($formatted['submitter_id']);
+        $person_email = $this->tickets_people->getPersonEmail($formatted['requester_id']);
         $agent_email  = $this->tickets_people->getPersonEmail($formatted['assignee_id']);
 
         if ( ! $person_email) {
-            throw new SkippingException(sprintf('Unable to get submitter email by id #%s', $formatted['submitter_id']), $formatted);
+            throw new SkippingException(sprintf('Unable to get submitter email by id #%s', $formatted['requester_id']), $formatted);
         }
 
         $entity = new Entity\Ticket();

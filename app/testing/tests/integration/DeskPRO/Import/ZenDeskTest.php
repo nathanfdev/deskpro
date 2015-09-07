@@ -235,7 +235,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 'tickets'  => array(
                     (object)array(
                         'id'              => 1,
-                        'submitter_id'    => 1,
+                        'requester_id'    => 1,
                         'assignee_id'     => 3,
                         'subject'         => 'Ticket 1',
                         'description'     => 'Ticket description 1',
@@ -248,7 +248,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                     (object)array(
                         'id'              => 2,
-                        'submitter_id'    => 2,
+                        'requester_id'    => 2,
                         'assignee_id'     => 4,
                         'subject'         => 'Ticket 2',
                         'description'     => 'Ticket description 2',
@@ -261,7 +261,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                     (object)array(
                         'id'              => 3,
-                        'submitter_id'    => 3,
+                        'requester_id'    => 3,
                         'assignee_id'     => 4,
                         'subject'         => 'Ticket 3',
                         'description'     => 'Ticket description 3',
