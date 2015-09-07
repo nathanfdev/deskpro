@@ -134,7 +134,11 @@
   }
 }
 
-
+aside.sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
 
 .sidebar-hover-content {
   background: #eef1f3;
