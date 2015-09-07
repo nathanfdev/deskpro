@@ -51,7 +51,7 @@ $kanban-frame-width: 800px;
     left: 0;
     bottom: 0;
     width: $app-switcher-width;
-    z-index: 100;
+    z-index: 300;
 
     transition: all 0.25s ease;
 
@@ -124,10 +124,6 @@ $kanban-frame-width: 800px;
             display: block;
         }
     }
-
-    &.shifted {
-        left: $app-switcher-expanded-width;
-    }
   }
 
   .dp-content-outer-frame {
@@ -153,22 +149,6 @@ $kanban-frame-width: 800px;
     overflow-y: auto;
 
     transition: all 0.25s ease;
-
-    &.expanded {
-        left: $app-switcher-width + $nav-collapsed-width;
-    }
-    &.shifted {
-        left: $app-switcher-expanded-width + $nav-frame-width;
-        width: $list-frame-width - ($app-switcher-expanded-width - $app-switcher-width);
-
-        &.expanded {
-            left: $app-switcher-expanded-width + $nav-collapsed-width;
-        }
-    }
-
-    &.kanban {
-      width: $kanban-frame-width;
-    }
   }
 
   .dp-tab-frame {
@@ -178,18 +158,6 @@ $kanban-frame-width: 800px;
     right: 0;
     bottom: 0;
     transition: all 0.25s ease;
-
-    &.expanded {
-        left: $app-switcher-expanded-width + $nav-frame-width + $list-frame-width;
-    }
-
-    &.kanban-shifted {
-      left: $app-switcher-width + $nav-frame-width + $kanban-frame-width;
-    }
-
-    &.expanded.kanban-shifted {
-      left: $app-switcher-expanded-width + $nav-frame-width + $kanban-frame-width;
-    }
 
     .blank-text {
       font-size: 12px;
@@ -217,15 +185,5 @@ $kanban-frame-width: 800px;
   display: none;
   &.app-active {
     display: block;
-  }
-
-  &.expanded-menu {
-    .dp-nav-frame {
-      left: $app-switcher-expanded-width;
-    }
-
-    .dp-list-frame {
-      left: $app-switcher-expanded-width + $nav-frame-width;
-    }
   }
 }
