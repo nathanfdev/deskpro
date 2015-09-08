@@ -5,7 +5,7 @@ export class TableView extends React.Component {
 
   render() {
     return (
-      <div className="tickets-tabular">
+      <div className="dpmw--items-table-list">
         <table>
           {this.props.children}
         </table>

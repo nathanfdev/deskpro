@@ -7,36 +7,24 @@ export class TableHeader extends React.Component {
     return (
       <thead>
       <tr>
-        <th>
-          <a href="#" onClick={sortTable.bind(this, 'id')} title="Click to sort by ID">
-            ID
-          </a>
+        <th className="id-col sortable" onClick={sortTable.bind(this, 'id')}>
+          ID
         </th>
-        <th>
-          <a href="#" onClick={sortTable.bind(this, 'num_ratings')}>
-            Votes
-          </a>
+        <th className="sortable" onClick={sortTable.bind(this, 'num_ratings')}>
+          Votes
         </th>
-        <th>
-          <a href="#" onClick={sortTable.bind(this, 'title')}>
-            Title
-          </a>
+        <th className="subject-col sortable" onClick={sortTable.bind(this, 'title')}>
+          Title
         </th>
-        <th>
-          <a href="#" onClick={sortTable.bind(this, 'status')}>
-            Status
-          </a>
+        <th className="sortable" onClick={sortTable.bind(this, 'status')}>
+          Status
         </th>
-        <th>
-          <a href="#" onClick={sortTable.bind(this, 'category')}>
-            Type
-          </a>
+        <th className="sortable" onClick={sortTable.bind(this, 'category')}>
+          Type
         </th>
         <th>Labels</th>
-        <th>
-          <a href="#" onClick={sortTable.bind(this, 'author_name')}>
-            Submitter
-          </a>
+        <th className="user-col sortable" onClick={sortTable.bind(this, 'author_name')}>
+          Submitter
         </th>
       </tr>
       </thead>

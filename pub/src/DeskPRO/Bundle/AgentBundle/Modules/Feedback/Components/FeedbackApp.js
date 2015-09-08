@@ -42,19 +42,19 @@ export class FeedbackApp extends React.Component {
   sortTable(param, event) {
     event.preventDefault();
     event.stopPropagation();
-    const {dispatch, query, filters, sort} = this.props;
+    const {dispatch, query, filters} = this.props;
     let elem = $(event.target),
       th = elem.closest('th'),
       siblings = th.siblings('th'),
       caret = th.find('i.fa');
     th.data('order') === 'asc' ? th.data('order', 'desc') : th.data('order', 'asc');
-    siblings.find('i.fa').remove();
+    siblings.find('span.sort-direction').remove();
     siblings.data('order', '');
     if (caret.length > 0) {
       caret.toggleClass('fa-caret-down').toggleClass('fa-caret-up');
     }
     else {
-      th.append('<i class="fa fa-caret-up"/>')
+      th.append('<span class="sort-direction"><i class="fa fa-caret-down"></i></span>')
     }
     let order = th.data('order');
     dispatch(actions.setSort(param, th.data('order')));
