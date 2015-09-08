@@ -11,6 +11,7 @@ import { Nav } from './Nav';
  * Todo: Make possible to access state in actionCreate. Remove sort & order from this component.
  */
 @connect(state => ({
+  dp_window: state.dp_window,
   sort: state.ChatList.sort,
   query: state.ChatList.query,
   order: state.ChatList.order,
