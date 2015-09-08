@@ -42,10 +42,11 @@ export class AppSwitcher extends React.Component {
     const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
 
     return (
-    <nav className={my_classes}>
+    <nav onMouseEnter={this.hoverSwitcher.bind(this)}
+      onMouseLeave={this.cancelSwitcher.bind(this)}
+      className={my_classes}>
       <div className="app-bar">
-        <ul onMouseEnter={this.hoverSwitcher.bind(this)}
-          onMouseLeave={this.cancelSwitcher.bind(this)}>
+        <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
           {this.renderAppIcon('crm', 'CRM', 'fa-users')}
           {this.renderAppIcon('chat', 'Chat', 'fa-comments-o')}
