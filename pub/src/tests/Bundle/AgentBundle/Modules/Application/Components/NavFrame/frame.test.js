@@ -1,11 +1,10 @@
-jest.dontMock('../../../../../../../DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/frame.js');
+jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/frame.js');
 
 describe('UI: NavFrame component', () => {
 
   const React = require('react/addons');
   const TestUtils = React.addons.TestUtils;
-  const frame = require(
-    '../../../../../../../DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/frame.js');
+  const frame = require('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/frame.js');
 
   describe('NavFrame', () => {
 

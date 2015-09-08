@@ -1,11 +1,11 @@
-jest.dontMock('../../../../../../DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments.js');
-jest.dontMock('../../../../../../DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content.js');
-jest.dontMock('../../../../../../DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
+jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments.js');
+jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content.js');
+jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
 
 describe('API Comments service', () => {
 
-  const DpApi = require('../../../../../../DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
-  const Comments = require('../../../../../../DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments.js');
+  const DpApi = require('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
+  const Comments = require('DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments.js');
 
   describe('load()', () => {
 
