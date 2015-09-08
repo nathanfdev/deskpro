@@ -7,9 +7,9 @@ export class TableHeader extends React.Component {
     return (
       <thead>
       <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Agent</th>
+        <th className="id-col sortable">ID</th>
+        <th className="user-col sortable">User</th>
+        <th class="agent-col sortable">Agent</th>
         <th>Labels</th>
         <th>Chat</th>
         <th></th>

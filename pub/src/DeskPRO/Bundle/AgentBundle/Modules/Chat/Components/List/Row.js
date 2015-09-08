@@ -6,12 +6,17 @@ export class Row extends React.Component {
     const {element} = this.props;
 
     return (
-      <tr key={element.id}>
-        <td>{element.id}</td>
+      <tr key={element.id} className="single-row">
+        <td className="id-col"><span className="dpw--item-id">#{element.id}</span></td>
         <td></td>
-        <td>{element.agent}</td>
+        <td className="agent-col">
+          <div className="agent">
+            <span className="dpw--avatar-face" style={{backgroundImage: "url(../img/avatars/avatar4.png)"}}></span>
+            {element.agent}
+          </div>
+        </td>
         <td></td>
-        <td>{element.subject}</td>
+        <td className="item-title">{element.subject}</td>
         <td></td>
         <td></td>
       </tr>);

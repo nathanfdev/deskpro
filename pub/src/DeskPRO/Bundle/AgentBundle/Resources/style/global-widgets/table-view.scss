@@ -48,10 +48,10 @@ $list-view-border-color: #e1e1e1;
   // Ticket status icons
   .extras-col {
     text-align: right;
-    border-right: 0px;
+    border-right: 0;
     position: relative;
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0;
+    padding-right: 0;
 
     ul {
       display: block;
@@ -123,8 +123,8 @@ $list-view-border-color: #e1e1e1;
   }
 
 
-  // Single ticket (<tr>)
-  .ticket-tabular {
+  // Single row (<tr>)
+  .single-row {
     border-bottom: 1px solid $list-view-border-color;
     position: relative;
     cursor: pointer;
@@ -135,8 +135,8 @@ $list-view-border-color: #e1e1e1;
     &:hover, &.ticket-active { background: #eceef0; }
 
     &.locked {
-      .ticket-title, .agent { opacity: 0.5; }
-      .ticket-title { color: #333; }
+      .item-title, .agent { opacity: 0.5; }
+      .item-title { color: #333; }
     }
 
     .item-title {

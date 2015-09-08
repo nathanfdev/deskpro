@@ -6,8 +6,8 @@ export class Row extends React.Component {
     const {feedback} = this.props;
 
     return (
-      <tr key={feedback.id} className="ticket-tabular">
-        <td className="id-col"><span className="dpw--id-container">#{feedback.id}</span></td>
+      <tr key={feedback.id} className="single-row">
+        <td className="id-col"><span className="dpw--item-id">#{feedback.id}</span></td>
         <td>{feedback.num_ratings}</td>
         <td className="item-title"><a href="#">{feedback.title}</a></td>
         <td>{feedback.status}</td>
