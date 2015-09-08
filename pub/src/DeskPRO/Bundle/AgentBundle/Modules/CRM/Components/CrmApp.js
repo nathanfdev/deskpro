@@ -1,6 +1,7 @@
 import React from 'react';
 import AppContainer from 'DeskPRO/Component/AppContainer';
 import { NavContainer } from './Nav/NavContainer';
+import { ListContainer } from './List/ListContainer';
 import { connect } from 'redux/react';
 
 @connect(state => ({
@@ -12,6 +13,7 @@ export class CrmApp extends React.Component {
     return (
       <AppContainer thisAppId="crm" {...this.props}>
         <NavContainer />
+        <ListContainer />
       </AppContainer>
     );
   }

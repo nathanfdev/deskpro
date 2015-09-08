@@ -1,5 +1,6 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/chatListActions';
+import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ActionTypes";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export default class ChatList extends Reducer {
@@ -28,8 +29,8 @@ export default class ChatList extends Reducer {
     this
       .r(actions.load, this.listLoaded)
       .r(actions.toggleSort, this.sortChanged)
-      .r(actions.toggleOrder, this.orderChanged)
-      .r(actions.toggleView, this.viewChanged)
+      .r(AppActions.TOGGLE_ORDER, this.orderChanged)
+      .r(AppActions.TOGGLE_VIEW_MODE, this.viewChanged)
     ;
   }
 

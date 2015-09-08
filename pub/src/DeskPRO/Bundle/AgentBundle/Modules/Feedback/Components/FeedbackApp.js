@@ -3,14 +3,13 @@ import AppContainer from "DeskPRO/Component/AppContainer";
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 import * as actions from '../Actions/FeedbackListActions'
+import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
 
 import { connect } from 'redux/react';
 @connect(state => state.FeedbackList)
-@connect(state => ({
-  dp_window: state.dp_window
-}))
+
 export class FeedbackApp extends React.Component {
 
   constructor(props) {
@@ -65,18 +64,7 @@ export class FeedbackApp extends React.Component {
   toggleView(event) {
     event.stopPropagation();
     const {dispatch} = this.props;
-    dispatch(actions.toggleViewMode());
-  }
-
-
-  showSortChoice(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    var elem = $(event.target),
-      filterChoice = elem.closest('a.ticket-control-button').find('div.focus-choice');
-    $('div.dropdown-choice').hide();
-    filterChoice.show();
+    dispatch(AppActions.toggleViewMode());
   }
 
   /** Change sort option (Order By ...)*/
@@ -110,7 +98,7 @@ export class FeedbackApp extends React.Component {
     else {
       elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
     }
-    dispatch(actions.toggleOrder());
+    dispatch(AppActions.toggleOrder());
     dispatch(actions.loadFeedbackList(query, sort, newOrder, filters));
   }
 
@@ -146,7 +134,6 @@ export class FeedbackApp extends React.Component {
           sortTable={this.sortTable}
           toggleView={this.toggleView}
           toggleOrder={this.toggleOrder}
-          showSortChoice={this.showSortChoice}
           toggleSort={this.toggleSort}
           displayFields={displayFields}
           />

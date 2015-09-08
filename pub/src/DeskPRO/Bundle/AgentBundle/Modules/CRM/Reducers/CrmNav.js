@@ -1,40 +1,49 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/crmNavActions';
+import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ActionTypes";
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export default class CrmNav extends Reducer {
   getInitialState() {
     return {
+      viewMode: constants.VIEW_MODE_TABLE,
+      sort: 'date_created', /* Order By ... */
+      sortName: 'Date', /* Label for Order By... */
+      order: constants.ORDER_DESC, /* Asc, Desc */
+      sortOptions: [{field: 'date_created', label: 'Date'}],
       labels: {
-        person:        [/* string */],
-        organization: [/* string */],
+        person: [/* string */],
+        organization: [/* string */]
       },
       users: {
         total: 0,
-        groups: [/* {count, group} */],
+        groups: [/* {count, group} */]
       },
       organizations: {
         total: 0
       },
       agents: {
         total: 0,
-        teams: [/* {count, group} */],
+        teams: [/* {count, group} */]
       },
       groupNames: {/* id: name */},
-      teamNames:  {/* id: name */}
+      teamNames: {/* id: name */}
     };
   }
 
   registerHandlers() {
     this
-        .r(actions.loadUsersTotalCount, this.usersTotalCountLoaded)
-        .r(actions.loadGroupsCounts, this.groupsCountsLoaded)
-        .r(actions.loadOrganizationsTotalCount, this.organizationsTotalCountLoaded)
-        .r(actions.loadAgentsTotalCount, this.agentsTotalCountLoaded)
-        .r(actions.loadTeamsCounts, this.teamsCountsLoaded)
-        .r(actions.loadPersonLabels, this.personLabelsLoaded)
-        .r(actions.loadOrganizationLabels, this.organizationLabelsLoaded)
-        .r(actions.loadGroups, this.groupsLoaded)
-        .r(actions.loadTeams, this.teamsLoaded)
+      .r(AppActions.TOGGLE_VIEW_MODE, this.viewModeChanged)
+      .r(AppActions.TOGGLE_ORDER, this.orderChanged)
+      .r(actions.loadUsersTotalCount, this.usersTotalCountLoaded)
+      .r(actions.loadGroupsCounts, this.groupsCountsLoaded)
+      .r(actions.loadOrganizationsTotalCount, this.organizationsTotalCountLoaded)
+      .r(actions.loadAgentsTotalCount, this.agentsTotalCountLoaded)
+      .r(actions.loadTeamsCounts, this.teamsCountsLoaded)
+      .r(actions.loadPersonLabels, this.personLabelsLoaded)
+      .r(actions.loadOrganizationLabels, this.organizationLabelsLoaded)
+      .r(actions.loadGroups, this.groupsLoaded)
+      .r(actions.loadTeams, this.teamsLoaded)
     ;
   }
 
@@ -102,4 +111,18 @@ export default class CrmNav extends Reducer {
 
     return next;
   }
+
+  viewModeChanged(prev) {
+    const next = {...prev};
+    next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
+    return next;
+  }
+
+
+  orderChanged(prev) {
+    const next = {...prev};
+    next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    return next;
+  }
+
 }

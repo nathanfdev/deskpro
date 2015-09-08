@@ -22,7 +22,6 @@ export class ListContainer extends Component {
     query: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired,
     sortTable: PropTypes.func.isRequired,
-    showSortChoice: PropTypes.func.isRequired,
     toggleOrder: PropTypes.func.isRequired,
     toggleSort: PropTypes.func.isRequired,
     toggleView: PropTypes.func.isRequired
@@ -31,7 +30,7 @@ export class ListContainer extends Component {
   render() {
     const {
       feedback, viewMode, sortTable, sort, sortName, order, filters, query, sortOptions, displayFields,
-      toggleView, toggleOrder, showSortChoice, toggleSort
+      toggleView, toggleOrder, toggleSort
       } = this.props;
 
     return (
@@ -39,14 +38,12 @@ export class ListContainer extends Component {
         <ControlBar>
           <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
                    toggleOrder={toggleOrder.bind(this)}
-                   showSortChoice={showSortChoice.bind(this)}
                    toggleSort={toggleSort.bind(this)}
             />
           <FilterBy filters={filters} query={query}/>
           <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
         </ControlBar>
 
-        <div className="ticket-list">
           {viewMode === constants.VIEW_MODE_LIST ?
             feedback.map((item, index) =>
                 <FeedbackCard key={index} feedback={item}/>
@@ -58,7 +55,6 @@ export class ListContainer extends Component {
               </TableBody>
             </TableView>
           }
-        </div>
       </ListFrame>
     );
   }
