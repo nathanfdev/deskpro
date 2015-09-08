@@ -1429,6 +1429,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		}
 	},
 
+	hideAgentNotifyList: function() {
+		DeskPRO_Window.hideAgentNotifyList(this);
+	},
+
 	_initAgentNotifier: function(textarea) {
 		var self = this;
 		DeskPRO_Window.initAgentNotifierForRte(
@@ -1665,5 +1669,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	shortcutReplyOpenProperties: function() {
 		this.openStatusMenu();
+	},
+
+	destroy: function() {
+		if (this.agentNotifyList) {
+			this.agentNotifyList.remove();
+		}
 	}
 });

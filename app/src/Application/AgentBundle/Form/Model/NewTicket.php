@@ -396,13 +396,44 @@ class NewTicket
         $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
         $message_text = $formatter->formatText($message_text, $ticket);
 
+        $notify_agent_ids = array();
         if ($this->is_html_reply) {
+            preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $message_text, $matches, PREG_SET_ORDER);
+            foreach ($matches AS $match) {
+                $notify_agent_ids[] = $match[1];
+            }
             $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
             $message_text = \Orb\Util\Strings::trimHtml($message_text);
             $message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
         } else {
             $message->setMessageText($message_text);
+        }
+
+        $notify_chat   = array();
+        $agent_chat = null;
+        if ($notify_agent_ids && $message->is_agent_note) {
+            $agent_chat = new \Application\DeskPRO\Chat\AgentChat($message->person, App::getSession()->getEntity());
+            $agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
+            $notify_email  = array();
+            $notify_agent_ids = array_unique($notify_agent_ids);
+
+            foreach ($notify_agent_ids as $agent_id) {
+                if (!($agent = App::$container->getAgentData()->get($agent_id))) {
+                    continue;
+                }
+
+                $notify_chat[$agent->id] = $agent;
+
+                $pref = $agent->getPref('agent_notif.ticket_mention', 'always_send');
+                if ($pref == 'always_send' || ($pref == 'smart_send' && !App::$container->getAgentData()->isAgentOnline($agent))) {
+                    $notify_email[$agent->id] = $agent;
+                }
+            }
+
+            if ($notify_email) {
+                $ticket_context->getVars()->set('mention_agents', $notify_email);
+            }
         }
 
         // Message Attachments
@@ -511,6 +542,11 @@ class NewTicket
         $this->_em->persist($message);
 
         $this->_ticket_manager->saveTicket($ticket, $ticket_context);
+
+        if ($agent_chat) {
+            $notify_text = $message->person->getDisplayName() . ' alerted you in a note in {{t-' . $ticket->id . '}}: ' . $ticket->subject;
+            $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+        }
 
         $this->_ticket = $ticket;
 
