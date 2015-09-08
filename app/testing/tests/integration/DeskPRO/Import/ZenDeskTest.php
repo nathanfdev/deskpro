@@ -579,18 +579,21 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $ticket = $tickets[0];
 
         $this->assertNotNull($ticket);
+        $this->assertEquals('Ticket 1', $ticket->getTitle());
         $this->assertEquals('archived', $ticket->getStatusCode());
         $this->assertFalse($ticket->isHold());
 
         $ticket = $tickets[1];
 
         $this->assertNotNull($ticket);
+        $this->assertEquals('Ticket 2', $ticket->getTitle());
         $this->assertEquals('awaiting_agent', $ticket->getStatusCode());
         $this->assertFalse($ticket->isHold());
 
         $ticket = $tickets[2];
 
         $this->assertNotNull($ticket);
+        $this->assertEquals('Ticket 4', $ticket->getTitle());
         $this->assertEquals('awaiting_agent', $ticket->getStatusCode());
         $this->assertTrue($ticket->isHold());
     }
