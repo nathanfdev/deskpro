@@ -12,7 +12,7 @@ export class PublishApp extends React.Component {
   render() {
     return (
       <AppContainer thisAppId="publish" {...this.props}>
-        <NavContainer />
+        <NavContainer dp_window={this.props.dp_window} />
         <ListContainer />
       </AppContainer>
     );

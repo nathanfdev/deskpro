@@ -141,7 +141,7 @@ export class FeedbackApp extends React.Component {
 
     return (
       <AppContainer thisAppId="feedback" {...this.props}>
-        <NavContainer {...this.props} choiceClick={this.choiceClick}/>
+        <NavContainer {...this.props} choiceClick={this.choiceClick} dp_window={this.props.dp_window} dispatch={this.props.dispatch.bind(this)} />
         <ListContainer {...this.props}
           sortTable={this.sortTable}
           toggleView={this.toggleView}

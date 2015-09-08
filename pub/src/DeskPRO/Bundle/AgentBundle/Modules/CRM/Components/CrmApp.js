@@ -11,7 +11,7 @@ export class CrmApp extends React.Component {
   render() {
     return (
       <AppContainer thisAppId="crm" {...this.props}>
-        <NavContainer />
+        <NavContainer dp_window={this.props.dp_window} />
       </AppContainer>
     );
   }

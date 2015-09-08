@@ -177,6 +177,10 @@ $kanban-frame-width: 800px;
         margin-bottom: 30px;
       }
     }
+
+    &.collapsed-nav {
+      left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
+    }
   }
 }
 
@@ -190,8 +194,6 @@ $kanban-frame-width: 800px;
     .dp-list-frame {
       left: $app-switcher-width + $nav-collapsed-width;
     }
-    .dp-tab-frame {
-      left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
-    }
+
   }
 }

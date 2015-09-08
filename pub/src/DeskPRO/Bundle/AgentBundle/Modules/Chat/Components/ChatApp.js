@@ -12,7 +12,7 @@ export class ChatApp extends React.Component {
   render() {
     return (
       <AppContainer thisAppId="chat" {...this.props}>
-        <NavContainer />
+        <NavContainer dp_window={this.props.dp_window} />
         <ListContainer />
       </AppContainer>
     );

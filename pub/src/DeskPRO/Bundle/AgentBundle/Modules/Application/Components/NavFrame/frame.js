@@ -14,28 +14,34 @@ export class NavFrame extends React.Component {
             });
         }
 
+        const className = this.props.dp_window && this.props.dp_window.collapseNav ? "sidebar-wrapper sidebar-collapsed" : "sidebar-wrapper";
+
+        // Do nothing if we haven't passed in dispatch as a prop
+        let expandNav = () => {};
+        if (this.props.dispatch) {
+            expandNav = () => this.props.dispatch(AppActions.expandNav());
+        }
+
         return (
             <div>
-
-                {outer}
-
-                <section className="task-nav-frame dp-nav-frame">
-                    <div className="sidebar-wrapper" id="sidebar-wrapper">
-                        <a className="collapse-button" href="#"><i className="fa fa-angle-right"></i></a>
-            <span className="collapse-controls">
-              <span className="disc"></span>
-              <span className="disc"></span>
-              <i className="fa fa-caret-right"></i>
-              <span className="disc"></span>
-              <span className="disc"></span>
-            </span>
-                        <aside className="sidebar has-tabs" id="sidebar">
-
-                            {inner}
-
-                        </aside>
-                    </div>
-                </section>
+              {outer}
+              <section className="task-nav-frame dp-nav-frame">
+                  <div className={className} id="sidebar-wrapper">
+                    <a className="collapse-button" href="#" onClick={expandNav}>
+                      <i className="fa fa-angle-right" />
+                    </a>
+                    <span className="collapse-controls" onClick={expandNav}>
+                      <span className="disc" />
+                      <span className="disc" />
+                      <i className="fa fa-caret-right" />
+                      <span className="disc" />
+                      <span className="disc" />
+                    </span>
+                    <aside className="sidebar has-tabs" id="sidebar">
+                      {inner}
+                    </aside>
+                  </div>
+              </section>
             </div>
         );
     }
