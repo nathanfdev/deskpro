@@ -20,7 +20,7 @@ export class List extends React.Component {
                    toggleSort={toggleSort.bind(this)}
                    toggleOrder={toggleOrder.bind(this)}
             />
-          <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
+          <ListTableViewSwitcher displayFields={displayFields} {...this.props}/>
         </ControlBar>
 
         {this.renderElements(viewMode, elements)}
