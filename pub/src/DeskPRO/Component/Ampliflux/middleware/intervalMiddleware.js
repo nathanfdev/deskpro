@@ -1,22 +1,34 @@
 import { isDSA } from '../actions/actionUtils';
+import uniqueId from 'lodash/utility/uniqueId';
+import Immutable from "immutable";
 
 function getInterval(action) {
-  if (isDSA(action) && action.meta && action.meta.interval) {
-    return action.meta.interval;
+  if (!isDSA(action)) {
+    return null;
+  }
+
+  if (Immutable.Map.isMap(action)) {
+    if (action.hasIn(['meta', 'interval'])) {
+      return parseInt(action.getIn(['meta', 'interval']));
+    }
+  } else {
+    if (action.meta && action.meta.interval) {
+      return parseInt(action.meta.interval);
+    }
   }
 
   return null;
 }
 
 /**
- * Schedules an action to dispatch repeatedly based on action.meta.interval.
+ * Schedules an action to dispatch given a timout on action.meta.delay.
  *
  * `dispatch` will return a cancel function.
  */
 export default function intervalMiddleware() {
   return next => action => {
-    const interval = getInterval(action);
-    if (!interval) {
+    const delay = getInterval(action);
+    if (!delay) {
       return next(action);
     }
 

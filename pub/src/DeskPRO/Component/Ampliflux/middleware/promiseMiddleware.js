@@ -1,41 +1,42 @@
-import { isDSA } from '../actions/actionUtils';
+import { isDSA, getActionType } from '../actions/actionUtils';
 import uniqueId from 'lodash/utility/uniqueId';
+import Immutable from "immutable";
 
 /**
  * Given an action, fetch the promise from it if it exists.
  */
 function getPromise(action) {
-  if (!isDSA(action)) {
-    return null;
-  }
+  let payload;
+  if (Immutable.Map.isMap(action)) {
+      if (!action.get('payload') || action.getIn(['meta', 'sequenceType']) === 'promise') {
+        return null;
+      }
 
-  if (!action.payload) {
-    return null;
-  }
+      payload = action.get('payload');
 
-  // Already been dispatched through the system
-  if (typeof action.sequence !== 'undefined' && typeof action.sequence.type !== 'undefined') {
-    return null;
-  }
-
-  if (typeof action.payload.then === "function") {
-    return action.payload;
-  } else if (action.payload.promise) {
-    if (typeof action.payload.promise.then !== "function") {
-      throw new Error("action.payload.promise is not a promise");
+      if (typeof payload.then === "function") {
+        return payload;
+      } else if (typeof payload.has === 'function' && payload.has('promise')) {
+        return payload.get('promise');
+      } else if (typeof payload.promise !== 'undefined') {
+        return payload.promise;
+      } else {
+        return null;
+      }
+  } else {
+    if (typeof action.payload === 'undefined' || !action.payload || (action.meta && action.meta.sequenceType && action.meta.sequenceType === 'promise')) {
+      return null;
     }
 
-    return action.payload.promise;
-  } else {
-    return null;
-  }
-}
+    payload = action.payload;
 
-function getSeqBaseType(action) {
-  if (action.parentType) {
-    return action.parentType;
-  } else {
-    return action.type;
+    if (typeof payload.then === "function") {
+      return payload;
+    } else if (typeof payload.promise !== 'undefined') {
+      return payload.promise;
+    } else {
+      return null;
+    }
   }
 }
 
@@ -50,6 +51,10 @@ function getSeqBaseType(action) {
  */
 export default function promiseMiddleware({ dispatch }) {
   return next => action => {
+    if (!isDSA(action)) {
+      return null;
+    }
+
     const promise = getPromise(action);
 
     if (!promise) {
@@ -57,47 +62,35 @@ export default function promiseMiddleware({ dispatch }) {
       return next(action);
     }
 
-    const baseType = getSeqBaseType(action);
+    if (!Immutable.Map.isMap(action)) {
+      action = Immutable.fromJS(action);
+    }
 
     const sequenceId = uniqueId();
 
-    const nextAction = {
-      ...action,
-      parentType: null,
-      sequence: {
-        type: "next",
-        id: sequenceId,
-      }
-    }
-    delete nextAction.parentType;
-
-    dispatch({
-      ...nextAction,
-      type: baseType + ".START",
-      payload: action.payload || {},
-      sequence: {
-        type: "start",
-        id: sequenceId,
+    const createSeqAction = (sequence, payload, isError = false) => action.withMutations(v => {
+      v.setIn(['meta', 'sequenceId'], sequenceId);
+      v.setIn(['meta', 'sequence'], sequence);
+      v.setIn(['meta', 'sequenceType'], 'promise');
+      v.set('payload', payload);
+      if (isError) {
+        v.set('error', true);
       }
     });
 
+    dispatch(createSeqAction('start', {
+      promise: promise,
+      originalPayload: action.get('payload')
+    }));
+
     return promise
       .then(result => {
-        const a = {
-          ...nextAction,
-          payload: result
-        };
-        dispatch({ ...a, type: baseType});
-        dispatch({ ...a, type: baseType + ".DONE"});
+        dispatch(createSeqAction('success', result));
+        dispatch(createSeqAction('done', result));
       })
       .catch(error => {
-        const a = {
-          ...nextAction,
-          payload: error,
-          error: true
-        };
-        dispatch({ ...a, type: baseType + ".ERROR"});
-        dispatch({ ...a, type: baseType + ".DONE"});
+        dispatch(createSeqAction('success', result, true));
+        dispatch(createSeqAction('done', result, true));
       });
   }
 }

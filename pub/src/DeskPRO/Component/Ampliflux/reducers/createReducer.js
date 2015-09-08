@@ -1,48 +1,41 @@
-import { isDSA, getActionType } from '../actions/actionUtils';
-import ReducerBuilder from "./utils/ReducerBuilder";
+import { getActionType } from '../actions/actionUtils';
 import Immutable from "immutable";
 
 /**
- * Creates a reducer using a builder passed to your buildFn.
+ * Create a new reducer.
  *
- * <code>
- * export const myStore = createReducer(r => {
- *   r.initialState({
- *     foo: "bar"
- *   });
+ * Handlers created through this function are passed the following params:
+ * - {Immuatable.Map}           state    The current state
+ * - {any}                      payload  The action payload, whatever that is. Typically maps/arrays will be Immutable.
+ * - {Immuatable.Map|Object}    action   The full action. Note that action.payload === payload. Typically this is an Immutable.Map.
  *
- *   r.action("MY_ACTION", (state, data) => {
- *     return {
- *       ...state,
- *       foo: data.something.foo
- *     }
- *   });
- * });
- * </code>
- *
- * @see ReducerBuilder for more examples
- * @param {Function} buildFn   `buildFn(r)` your function that accepts a ReducerBuilder.
- * @return {Function}
+ * @param {Object} initialState  The initial state
+ * @param {Map}    handlers      A map of actionType => handlerFn
+ * @returns {Function}
  */
-export default function createReducer(buildFn) {
-  const builder = new ReducerBuilder();
-  buildFn(builder);
+export default function createReducer(initialState, handlers = {}, enforceImmutable = true) {
+  return function reducer(state = initialState, action) {
+    const actionType = getActionType(action, true);
 
-  const initialState = builder.getInitialState();
-  const handlersMap  = builder.getHandlersMap();
+    if (!Immutable.Iterable.isIterable(state)) {
+      state = Immutable.fromJS(state);
+    }
 
-  return (state = initialState, action) => {
-    if (isDSA(action)) {
-      const type = getActionType(action);
-      if (typeof handlersMap[type] !== 'undefined') {
-        const newState = handlersMap[action.type](state, action.payload, action);
-        if (!Immutable.Map.isMap(newState)) {
-          console.warn("[Reducer :: " + type + "] newState is not an Immutable.Map", newState);
-        }
-        return newState;
+    if (actionType && handlers.hasOwnProperty(actionType)) {
+      if (Immutable.Map.isMap(action)) {
+        state = handlers[actionType](state, action.get('payload'), action);
+      } else {
+        state = handlers[actionType](state, action.payload || undefined, action);
       }
+    } else {
+      state = state;
+    }
+
+    if (enforceImmutable && !Immutable.Iterable.isIterable(state)) {
+      console.error('Reducers must return Immutable objects', state);
+      throw new TypeError('Reducers must return Immutable objects');
     }
 
     return state;
   }
-};
+}

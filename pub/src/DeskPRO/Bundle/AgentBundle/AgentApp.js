@@ -14,7 +14,6 @@ import AppReducers from "./AgentApp_Reducers.js";
 
 import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
 
-import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
 import { devTools } from 'redux-devtools';
 
 export default class AgentApp {
@@ -67,15 +66,6 @@ export default class AgentApp {
         {() => <DpAppContainer {...intlData} history={hist} />}
       </Provider>
     ];
-
-    if (window.DP_DEV_MODE) {
-      $('body').addClass('with-debug-panel');
-      els.push(
-        <DebugPanel top right bottom key="debugPanel">
-          <DevTools store={store} monitor={LogMonitor}/>
-        </DebugPanel>
-      );
-    }
 
     React.render(
       <div>{els}</div>,

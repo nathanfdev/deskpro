@@ -5,6 +5,7 @@ import DpApp from "./DpApp";
 import DpAppLoading from "./DpAppLoading";
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
+import TestApp from '../../Test/Components/TestApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
@@ -67,6 +68,7 @@ export default class DpAppContainer extends React.Component {
             <Route name="tasks" path="tasks" component={TasksApp}/>
             <Route name="publish" path="publish" component={PublishApp}/>
             <Route name="feedback" path="feedback" component={FeedbackApp}/>
+            <Route name="test" path="test" component={TestApp}/>
           </Route>
         </Router>
       );

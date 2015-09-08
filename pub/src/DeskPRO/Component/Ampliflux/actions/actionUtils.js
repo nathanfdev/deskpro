@@ -1,4 +1,5 @@
 import isPlainObject from 'lodash/lang/isPlainObject';
+import Immutable from "immutable";
 
 /**
  * Get a object or function, see if it has the standard
@@ -6,23 +7,39 @@ import isPlainObject from 'lodash/lang/isPlainObject';
  *
  * @param {Function/Object} thing  The thing to check. Typically an action (DSA style)
  *                                 or a function created via createAction.
+ * @param {Boolean} returnNull True to return null if no action type could be found. Otherwise
+ *                             this call will throw an exception.
  * @return {String}
  */
-export function getActionType(thing) {
-  // DSA-actions have type property
-  if (thing && typeof thing.type === "string") {
-    thing = thing.type;
-  // Functions created via createAction have actionType property
-  } else if (thing && typeof thing.actionType === "string") {
-    thing = thing.actionType;
+export function getActionType(thing, returnNull = false) {
+
+  if (Immutable.Map.isMap(thing)) {
+    if (thing.has('type')) {
+      return thing.get('type');
+    }
+  } else {
+    // DSA-actions have type property
+    if (thing && typeof thing.type === "string") {
+      return thing.type;
+    // Functions created via createAction have actionType property (old style)
+    } else if (thing && typeof thing === "function" && typeof thing.actionType === "string") {
+      return thing.actionType;
+    // Functions created via createAction have actionType property (new style)
+    } else if (thing && typeof thing === "function" && typeof thing.actionType === "string") {
+      return thing.type;
+    }
   }
 
-  if (typeof thing !== "string") {
-    console.error("Unknown parameter sent to getActionType", thing);
+  if (typeof thing === "string") {
+    return thing;
+  }
+
+  if (!returnNull) {
+    console.error("Unknown parameter sent to getActionType", thing)
     throw new Error("Unknown parameter sent to getActionType");
   }
 
-  return thing;
+  return null;
 }
 
 /**
@@ -34,15 +51,14 @@ export function getActionType(thing) {
  * - bool error:        [FSA] True if there is an error
  * - object meta:       [FSA/DSA] Optional data, but always an object. (FSA allows it to be anything.)
  * - object sequence:   [DSA] Describing the action if it is in a multi-dispatch sequence (such as async before/after/error etc)
- * - string parentType: [DSA] If the action was re-dispatched, then this will contain the original type.
  *
  * @param {mixed} action
- * @param {bool}  strict
  * @return bool
  */
-export function isDSA(action, strict) {
-  return (
-    isPlainObject(action)
-    && typeof action.type !== 'undefined'
-  );
+export function isDSA(action) {
+  if (Immutable.Map.isMap(action)) {
+    return action.has('type');
+  } else {
+    return action && typeof action.type !== 'undefined';
+  }
 }

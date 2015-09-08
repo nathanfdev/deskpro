@@ -1,21 +1,6 @@
 import isPlainObject from 'lodash/lang/isPlainObject';
 import { getActionType } from "./actionUtils";
-
-/**
- * Create a default action that just passes through
- * its first param.
- *
- * @param {String} actionType
- * @return {Function}
- */
-function createDefaultAction(actionType) {
-  return function(payload) {
-    return {
-      type: actionType,
-      payload: payload
-    };
-  };
-}
+import Immutable from "immutable";
 
 /**
  * Given a param meant to be an action function,
@@ -29,7 +14,7 @@ function createDefaultAction(actionType) {
 function createActionFn(actionType, actionFn) {
   // Default -> whatever is passed to the action, dispatch that
   if (typeof actionFn === 'undefined') {
-    return ({...args}) => args;
+    return (v) => v;
 
   // Constant -> the action has a hard-coded value
   } else if (typeof actionFn !== 'function') {
@@ -41,8 +26,12 @@ function createActionFn(actionType, actionFn) {
   }
 }
 
+
 /**
  * Create a DeskPRO action.
+ *
+ * The function returned will have a special prop:
+ *   - fn.actionType:   Is the actionType you specified'
  *
  * @param {String}     actionType   The action type
  * @param {Function}   actionFn     The action method, undefined for a pass-thru, or a constant.
@@ -52,16 +41,15 @@ function createActionFn(actionType, actionFn) {
  *                                  followed by all other args passed to the action.
  */
 export default function createAction(actionType, actionFn, metaFn) {
-  const type = getActionType(actionType);
+  const type         = getActionType(actionType);
   const userActionFn = createActionFn(type, actionFn);
-  const userMetaFn = typeof metaFn === 'function' ? metaFn : null;
+  const userMetaFn   = typeof metaFn === 'function' ? metaFn : null;
 
   const finalActionFn = (...args) => {
     const action = {
       type: type,
       error: false,
-      meta: {},
-      sequence: {}
+      meta: {}
     };
 
     try {
@@ -77,10 +65,11 @@ export default function createAction(actionType, actionFn, metaFn) {
       action.meta = userMetaFn(action, ...args);
     }
 
-    return action;
+    return Immutable.fromJS(action);
   }
 
-  finalActionFn.actionType = actionType;
+  finalActionFn.type = type;
+  finalActionFn.toString = function() { return type; };
 
   return finalActionFn;
 };

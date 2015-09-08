@@ -15,7 +15,7 @@ export class Reducer {
       hint = hint.substring(0, 100) + "...";
     }
 
-    console.debug("Ampliflux/reducers.js Reducer is deprecated (" + hint + ")");
+    //console.debug("Ampliflux/reducers.js Reducer is deprecated (" + hint + ")");
   }
 
   // Compiles the reducer class into a bunch of handlers.
