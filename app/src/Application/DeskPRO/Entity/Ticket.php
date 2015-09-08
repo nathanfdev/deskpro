@@ -2531,17 +2531,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
-    public function setHiddenStatus($hstatus)
+    /**
+     * Set hidden status
+     *
+     * @param string $hidden_status
+     * @return $this
+     */
+    public function setHiddenStatus($hidden_status)
     {
-        if (!$hstatus) {
+        if (!$hidden_status) {
             if ($this->status == 'hidden') {
                 $this->setStatus('awaiting_agent');
             }
         } else {
-            $this->setStatus('hidden.' . $hstatus);
+            $this->setStatus('hidden.' . $hidden_status);
         }
+
+        return $this;
     }
 
+    /**
+     * Returns status code
+     *
+     * @return string
+     */
     public function getStatusCode()
     {
         if ($this->status == 'hidden') {
@@ -2551,6 +2564,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function isHold()
+    {
+        return $this->is_hold;
+    }
+
+    /**
+     * Mark as hold
+     *
+     * @param bool $is_hold
+     * @return $this
+     */
     public function setIsHold($is_hold)
     {
         if ($is_hold) {
@@ -2559,6 +2586,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             $this->setModelField('is_hold', false);
         }
+
+        return $this;
     }
 
 

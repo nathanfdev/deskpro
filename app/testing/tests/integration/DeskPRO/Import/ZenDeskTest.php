@@ -2,6 +2,7 @@
 
 namespace DpIntegrationTests\DeskPRO\Import;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
@@ -105,7 +106,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Read 3 tickets', $output);
+        $this->assertContains('Read 4 tickets', $output);
         $this->assertContains('[ZDTicket #3] Skipping exception with ticket: Unable to get submitter email by id #3', $output);
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
         $this->assertContains('[ZDTicketComment #3] Skipping exception with ticket message: Comment without author_id, skipping', $output);
@@ -152,12 +153,14 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $command_tester->execute(array(
             'command'   => $command->getName(),
             'script'    => 'zendesk',
+            '--output-path' => $this->output_path,
             '--verbose' => true,
             '--batch'   => true,
         ));
 
         $this->checkJsonEmpty();
         $this->checkNoErrors($command_tester);
+        $this->checkDbData();
     }
 
     public function testImportBatch()
@@ -178,6 +181,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->checkDbWriterOutput($command_tester);
         $this->checkJsonData();
         $this->checkNoErrors($command_tester);
+        $this->checkDbData();
     }
 
     private function checkJsonEmpty()
@@ -203,6 +207,14 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->helper->seeFileFound('1/tickets/ticket_2.json');
         $this->helper->seeInThisFile('Ticket 2');
+        $this->helper->seeInThisFile('"is_hold":false');
+
+        $this->assertFalse(file_exists('1/tickets/ticket_3.json'));
+
+        $this->helper->seeFileFound('1/tickets/ticket_4.json');
+        $this->helper->seeInThisFile('Ticket 4');
+        $this->helper->seeInThisFile('"is_hold":true');
+        $this->helper->seeInThisFile('"status":"awaiting_agent"');
 
         // Checking for articles
         $this->helper->seeFileFound('1/articles/article_1.json');
@@ -227,8 +239,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $date2 = new \DateTime('-5 months');
         $date3 = new \DateTime('-2 months');
         $date4 = new \DateTime('-1 months');
-        $now = new \DateTime();
-
+        $now   = new \DateTime();
 
         $this->adapter
             ->addTicketsIncrementalExportResponse((object)array(
@@ -239,7 +250,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'assignee_id'     => 3,
                         'subject'         => 'Ticket 1',
                         'description'     => 'Ticket description 1',
-                        'status'          => 'new',
+                        'status'          => 'closed',
                         'priority'        => 'high',
                         'organization_id' => 1,
                         'created_at'      => $date1->format('Y-m-d H:i:s'),
@@ -271,6 +282,19 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'created_at'      => $date2->format('Y-m-d H:i:s'),
                         'custom_fields'   => (object)array(),
                         'tags'            => (object)array('label 1', 'label 3'),
+                    ),
+                    (object)array(
+                        'id'              => 4,
+                        'requester_id'    => 1,
+                        'assignee_id'     => 4,
+                        'subject'         => 'Ticket 4',
+                        'description'     => 'Ticket description 4',
+                        'status'          => 'hold',
+                        'priority'        => 'low',
+                        'organization_id' => 1,
+                        'created_at'      => $date2->format('Y-m-d H:i:s'),
+                        'custom_fields'   => (object)array(),
+                        'tags'            => (object)array('label 2', 'label 3'),
                     ),
                 ),
                 'end_time' => $now->getTimestamp(),
@@ -346,6 +370,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'created_at'  => $date4->format('Y-m-d H:i:s'),
                     ),
                 ),
+            ))
+            ->addTicketCommentsFindAllResponse((object)array(
+                'comments' => array(),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
@@ -536,5 +563,35 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->assertNotContains('ERROR', $output);
         $this->assertNotContains('CRITICAL', $output);
+    }
+
+    private function checkDbData()
+    {
+        $this->checkDbTicketsData();
+    }
+
+    private function checkDbTicketsData()
+    {
+        /** @var Entity\Ticket[] $tickets */
+        $tickets = $this->ticket_repository->findAll();
+        $this->assertCount(3, $tickets);
+
+        $ticket = $tickets[0];
+
+        $this->assertNotNull($ticket);
+        $this->assertEquals('archived', $ticket->getStatusCode());
+        $this->assertFalse($ticket->isHold());
+
+        $ticket = $tickets[1];
+
+        $this->assertNotNull($ticket);
+        $this->assertEquals('awaiting_agent', $ticket->getStatusCode());
+        $this->assertFalse($ticket->isHold());
+
+        $ticket = $tickets[2];
+
+        $this->assertNotNull($ticket);
+        $this->assertEquals('awaiting_agent', $ticket->getStatusCode());
+        $this->assertTrue($ticket->isHold());
     }
 }

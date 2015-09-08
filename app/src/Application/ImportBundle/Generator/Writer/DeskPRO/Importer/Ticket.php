@@ -97,6 +97,7 @@ final class Ticket extends AbstractImporter
             ->setDateCreated($entity->getDateCreated())
             ->setDateResolved($entity->getDateResolved())
             ->setDateArchived($entity->getDateArchived())
+            ->setIsHold($entity->isHold())
             ->resetMessages()
             ->resetParticipants()
             ->resetLabels()

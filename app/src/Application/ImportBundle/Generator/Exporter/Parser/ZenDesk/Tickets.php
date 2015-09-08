@@ -400,7 +400,7 @@ final class Tickets extends AbstractParser
             self::STATUS_NEW     => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_OPEN    => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_PENDING => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
-            self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
+            self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
             self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
             self::STATUS_DELETED => DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
