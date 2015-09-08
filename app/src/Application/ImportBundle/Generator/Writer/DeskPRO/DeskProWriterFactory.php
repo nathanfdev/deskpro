@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -57,22 +56,6 @@ class DeskProWriterFactory extends AbstractFactory
 
         /** @var EntityManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
-
-        // recreate isolated entity manager to prevent unnecessary inserts and clears
-        $params = $entity_manager->getConnection()->getParams();
-        $params = array_intersect_key($params, array(
-            'driver'   => 1,
-            'host'     => 1,
-            'user'     => 1,
-            'password' => 1,
-            'port'     => 1,
-            'dbname'   => 1,
-        ));
-
-        $entity_manager = $entity_manager::create(
-            $params,
-            $entity_manager->getConfiguration()
-        );
 
         /** @var EntityRepository\Article $article_repository */
         $article_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
@@ -185,7 +168,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\ObjectLang($object_lang_repository, $entity_manager))
         ;
 
-        $blob_storage = new DeskproBlobStorage($entity_manager);
+        $blob_storage = $this->container->getBlobStorage();
         $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
 
         $ticket_manager = $this->container->getTicketManager();
