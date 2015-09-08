@@ -49,11 +49,7 @@ export class ListContainer extends Component {
     );
   }
 
-  toggleView(event) {
-    event.stopPropagation();
-    const {dispatch} = this.props;
-    dispatch(AppActions.toggleViewMode());
-  }
+
 
   /** Change sort option (Order By ...)*/
   toggleSort(event) {

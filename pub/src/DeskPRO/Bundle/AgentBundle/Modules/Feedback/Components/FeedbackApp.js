@@ -60,13 +60,6 @@ export class FeedbackApp extends React.Component {
     dispatch(actions.loadFeedbackList(query, param, order, filters));
   }
 
-
-  toggleView(event) {
-    event.stopPropagation();
-    const {dispatch} = this.props;
-    dispatch(AppActions.toggleViewMode());
-  }
-
   /** Change sort option (Order By ...)*/
   toggleSort(event) {
     event.preventDefault();

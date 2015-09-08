@@ -23,14 +23,13 @@ export class ListContainer extends Component {
     viewMode: PropTypes.string.isRequired,
     sortTable: PropTypes.func.isRequired,
     toggleOrder: PropTypes.func.isRequired,
-    toggleSort: PropTypes.func.isRequired,
-    toggleView: PropTypes.func.isRequired
+    toggleSort: PropTypes.func.isRequired
   };
 
   render() {
     const {
       feedback, viewMode, sortTable, sort, sortName, order, filters, query, sortOptions, displayFields,
-      toggleView, toggleOrder, toggleSort
+      toggleOrder, toggleSort
       } = this.props;
 
     return (
@@ -41,7 +40,7 @@ export class ListContainer extends Component {
                    toggleSort={toggleSort.bind(this)}
             />
           <FilterBy filters={filters} query={query}/>
-          <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
+          <ListTableViewSwitcher displayFields={displayFields} {...this.props}/>
         </ControlBar>
 
           {viewMode === constants.VIEW_MODE_LIST ?

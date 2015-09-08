@@ -17,16 +17,10 @@ export class ListContainer extends React.Component {
       <List
         {...this.props}
         displayFields={displayFields}
-        toggleView={this.toggleView.bind(this)}
         toggleOrder={this.toggleOrder.bind(this)}
         toggleSort={this.toggleSort.bind(this)}
         />
     );
-  }
-
-  toggleView(e) {
-    //e.preventDefault();
-    this.props.dispatch(AppActions.toggleViewMode());
   }
 
   toggleOrder(e) {
