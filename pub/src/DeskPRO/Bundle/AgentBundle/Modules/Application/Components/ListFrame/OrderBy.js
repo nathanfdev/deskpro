@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import $ from "jquery";
 
 
 export class OrderBy extends Component {
@@ -15,12 +16,12 @@ export class OrderBy extends Component {
   };
 
   render() {
-    const { sortName, order, showSortChoice, toggleSort, sortOptions, toggleOrder} = this.props;
+    const { sortName, order, toggleSort, sortOptions, toggleOrder} = this.props;
 
     return (
       <a href="#" className="ticket-control-button">
         <span className="title">Order by:</span>
-                <span className="multi" onClick={showSortChoice.bind(this)}>
+                <span className="multi" onClick={this.showSortChoice.bind(this)}>
                     <span className="sort-name">{sortName}</span>
                     <span className="multi-down"><i className="fa fa-caret-down"/></span>
                 </span>
@@ -28,6 +29,17 @@ export class OrderBy extends Component {
         <OrderByDropdown sortOptions={sortOptions} toggleSort={toggleSort.bind(this)}/>
       </a>
     );
+  }
+
+
+  showSortChoice(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    var elem = $(event.target),
+      filterChoice = elem.closest('a.ticket-control-button').find('div.focus-choice');
+    $('div.dropdown-choice').hide();
+    filterChoice.show();
   }
 }
 

@@ -10,7 +10,7 @@ export class List extends React.Component {
   render() {
     const {
       elements, viewMode, sort, sortName, order, sortOptions, displayFields,
-      toggleView, toggleOrder, showSortChoice, toggleSort
+      toggleView, toggleOrder, toggleSort
       } = this.props;
 
     return (
@@ -18,7 +18,6 @@ export class List extends React.Component {
         <ControlBar>
           <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
                    toggleSort={toggleSort.bind(this)}
-                   showSortChoice={showSortChoice.bind(this)}
                    toggleOrder={toggleOrder.bind(this)}
             />
           <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>

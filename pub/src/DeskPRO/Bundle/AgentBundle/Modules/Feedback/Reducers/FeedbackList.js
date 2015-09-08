@@ -1,5 +1,7 @@
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ActionTypes";
 import * as FeedbackListActions from "../Actions/FeedbackListActions";
+
 import { Reducer } from "Ampliflux/reducers";
 
 export default class FeedbackList extends Reducer {
@@ -163,6 +165,8 @@ export default class FeedbackList extends Reducer {
 
   registerHandlers() {
     this
+      .r(AppActions.TOGGLE_VIEW_MODE, this.viewModeChanged)
+      .r(AppActions.TOGGLE_ORDER, this.orderChanged)
       .r(FeedbackListActions.feedbackToValidate, this.toValidate)
       .r(FeedbackListActions.feedbackLabels, this.labels)
       .r(FeedbackListActions.feedbackTypes, this.types)
@@ -172,8 +176,6 @@ export default class FeedbackList extends Reducer {
       .r(FeedbackListActions.feedbackClosedStatus, this.closed)
       .r(FeedbackListActions.feedbackHiddenStatus, this.hidden)
       .r(FeedbackListActions.changeQueryState, this.queryChanged)
-      .r(FeedbackListActions.toggleViewMode, this.viewModeChanged)
-      .r(FeedbackListActions.toggleOrder, this.orderChanged)
       .r(FeedbackListActions.getFilterValues, this.getFilterValues)
       .r(FeedbackListActions.setFilterValue, this.setFilterValue)
       .r(FeedbackListActions.resetFilterValue, this.resetFilterValue)
