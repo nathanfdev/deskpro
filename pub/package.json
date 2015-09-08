@@ -60,6 +60,7 @@
   },
   "jest": {
     "testDirectoryName": "tests",
+    "cacheDirectory": "./.jest-cache",
     "scriptPreprocessor": "./jest-preprocessor",
     "unmockedModulePathPatterns": ["react"],
     "testFileExtensions": [
