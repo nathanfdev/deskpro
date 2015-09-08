@@ -732,8 +732,11 @@ HTML;
 
                 // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
-
-                $return = $this->request->getReturnParam();
+                if (!$return = $this->request->getReturnParam()) {
+                    if (!$return = $this->request->server->get('HTTP_REFERER')) {
+                        $return = null;
+                    }
+                }
                 $this->session->set('auth_return', $return);
 
                 if ($this->in->getString('js_tell')) {
