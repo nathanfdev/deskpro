@@ -21,11 +21,11 @@ describe('createAction', () => {
       expect(creator.actionType).toEqual(jasmine.any(String));
     });
 
-    //// Isn't it correct for createAction()? Test is failing.
-    //it('should generate action type for simple actions when no arguments are provided', () => {
-    //  const creator = createAction();
-    //  expect(creator.actionType).toEqual(jasmine.any(String));
-    //});
+    // Isn't it correct for createAction()? Test is failing.
+    it('should generate action type for simple actions when no arguments are provided', () => {
+      const creator = createAction();
+      expect(creator.actionType).toEqual(jasmine.any(String));
+    });
 
   });
 });
