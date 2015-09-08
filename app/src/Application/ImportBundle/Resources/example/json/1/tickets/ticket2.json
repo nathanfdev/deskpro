@@ -1,5 +1,6 @@
 {
-  "oid": 2,
+  "oid": "2",
+  "import_map_key": null,
   "ref": "AAABBBCCC",
   "department": null,
   "person": "user@example.com",

@@ -143,8 +143,7 @@ class CustomDataFeedback extends CustomDataAbstract
             array(
                  'fieldName'    => 'feedback',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
-                 'mappedBy'     => null,
-                 'inversedBy'   => null,
+                 'inversedBy'   => 'custom_data',
                  'joinColumns'  => array(
                      0 => array(
                          'name'                 => 'feedback_id',

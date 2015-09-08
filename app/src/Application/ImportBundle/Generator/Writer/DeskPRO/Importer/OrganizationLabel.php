@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO organization label importer
@@ -49,12 +48,14 @@ final class OrganizationLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Organization) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $this->records = new DoctrineEntitiesCollection();
         $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
         $organization->resetLabels();
 
@@ -66,7 +67,7 @@ final class OrganizationLabel extends AbstractImporter
             ));
         }
 
-        $this->records->add($organization);
+        $this->records->setPrimaryEntity($organization);
         return $this->records;
     }
 

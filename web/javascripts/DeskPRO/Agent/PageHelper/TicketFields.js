@@ -235,6 +235,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
     DP.select(this.display.find('select'));
 
+    this.display.find('.prop-input-problem_id').off('change.prob').on('change.prob', function () {
+      var $title = $(this).next('input');
+      if (!$title.length) return;
+      -1 == $(this).val() ? $title.show() : $title.hide();
+    });
+
 		last.detach().appendTo(this.display);
 	},
 

@@ -227,12 +227,6 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
             throw new Exception('Date created is not set up');
         }
 
-        $attachments = array();
-        foreach ($this->attachments as $attachment) {
-            /** @var Attachment $attachment */
-            $attachments[] = $attachment->toArray();
-        }
-
         return array(
             'oid'          => $this->oid,
             'person'       => $this->person_email,
@@ -240,7 +234,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
             'message_text' => $this->message_text,
             'message_html' => $this->message_html,
             'is_note'      => $this->is_note,
-            'attachments'  => $attachments,
+            'attachments'  => $this->attachments->entitiesToArray(),
         );
     }
 

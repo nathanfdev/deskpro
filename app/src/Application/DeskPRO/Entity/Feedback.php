@@ -185,18 +185,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 

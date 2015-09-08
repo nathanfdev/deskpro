@@ -52,7 +52,7 @@ interface GeneratorInterface extends GeneratorConfigAwareInterface
     /**
      * Generates and writes a collection of entities
      *
-     * @throws GeneratorException
+     * @return void
      */
     public function generate();
 

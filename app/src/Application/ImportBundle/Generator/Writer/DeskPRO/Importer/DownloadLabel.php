@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO download labels importer
@@ -49,21 +48,33 @@ final class DownloadLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Download $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Download) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
-        $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
-        $download->resetLabels();
+        $this->records = new DoctrineEntitiesCollection();
 
-        foreach ($entity->getLabels() as $label) {
-            $download->addLabel($this->createDownloadLabel($label));
+        $oldEntity = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
+        $type = 'download';
+        $newLabels = $entity->getLabels();
+
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for download with oid `%d`',
-                $label, $download->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
@@ -76,12 +87,12 @@ final class DownloadLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelDownload
      */
-    private function createDownloadLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelDownload();
         $entity->setLabel($label);
 
-        $this->records->add($entity);
+        $this->records->addRelatedEntity($entity);
         return $entity;
     }
 }

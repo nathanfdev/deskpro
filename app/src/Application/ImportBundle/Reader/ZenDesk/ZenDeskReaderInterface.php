@@ -127,4 +127,63 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @throws RetryAfterException
      */
     public function getTicketsEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a batch count of articles
+     *
+     * @param DateTime|null $start_time
+     * @return int
+     */
+    public function getArticlesCount(DateTime $start_time = null);
+
+    /**
+     * Returns a batch of the articles collection
+     *
+     * @param DateTime|null $start_time
+     * @return array
+     */
+    public function getArticles(DateTime $start_time = null);
+
+    /**
+     * Returns a batch end time of the articles collection
+     *
+     * @param DateTime $start_time
+     *
+     * @return DateTime
+     * @throws RetryAfterException
+     */
+    public function getArticlesEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a collection of article comments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getArticleComments($id);
+
+    /**
+     * Returns a collection of article attachments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getArticleAttachments($id);
+
+    /**
+     * Returns a collection of article translations
+     *
+     * @param $id
+     * @return array
+     */
+    public function getArticleTranslations($id);
+
+    /**
+     * Returns a collection of article categories
+     * Merges help center categories and sections
+     *
+     * @param int $section_id
+     * @return array
+     */
+    public function getArticleCategory($section_id);
 }

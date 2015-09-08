@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Exception;
 use DateTime;
 
@@ -37,7 +37,7 @@ use DateTime;
  * Class ZenDeskConfig
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskConfig extends BaseConfig
+class ZenDeskConfig implements ReaderConfigInterface
 {
     const AUTH_TYPE_PASSWORD = 'password';
     const AUTH_TYPE_TOKEN    = 'token';
@@ -219,10 +219,9 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * @param array $data
-     * @return ZenDeskConfig
+     * {@inheritdoc}
      */
-    static public function fromArray(array $data)
+    public static function fromArray(array $data)
     {
         if (!$time = @$data['initial_time']) {
             $time = '-2 years';

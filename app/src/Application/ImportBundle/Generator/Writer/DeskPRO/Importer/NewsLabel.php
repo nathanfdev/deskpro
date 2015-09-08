@@ -27,9 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO news labels importer
@@ -49,21 +49,33 @@ final class NewsLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\News $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\News) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
-        $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
-        $news->resetLabels();
+        $this->records = new DoctrineEntitiesCollection();
 
-        foreach ($entity->getLabels() as $label) {
-            $news->addLabel($this->createNewsLabel($label));
+        $oldEntity = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
+        $type = 'news';
+        $newLabels = $entity->getLabels();
+
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for news with oid `%d`',
-                $label, $news->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
@@ -76,12 +88,12 @@ final class NewsLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelNews
      */
-    private function createNewsLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelNews();
         $entity->setLabel($label);
 
-        $this->records->add($entity);
+        $this->records->addRelatedEntity($entity);
         return $entity;
     }
 }

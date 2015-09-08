@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Orb\Util\Strings;
 
 class NewPerson
 {
@@ -146,12 +147,8 @@ class NewPerson
         $this->_em->flush();
 
         if ($this->custom_fields) {
-            $user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-            foreach ($user_field_defs as $field_def) {
-                foreach ($field_def->getHandler()->getDataFromForm($this->custom_fields) as $info) {
-                    $person->setCustomData($info[0], $info[1], $info[2]);
-                }
-            }
+            $manager = App::$container->getPersonFieldManager();
+            $manager->saveFormToObject($this->custom_fields, $person);
         }
 
         $this->_em->flush();

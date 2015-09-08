@@ -34,7 +34,10 @@ IMPORT BUNDLE
     - [Exporter #4. ZenDesk](#exporter-4-zendesk)
         * [ZenDesk Configuration](#zendesk-configuration)
         * [ZenDesk Fixtures](#zendesk-fixtures)
-        * [ZenDesk Batch.json](#zendesk-batch.json)
+            - [ZenDesk Fixtures Core API](#zendesk-fixtures-core-api)
+            - [ZenDesk Fixtures Help Center](#zendesk-fixtures-help-center)
+        * [ZenDesk Batch.json](#zendesk-batchjson)
+    - [Exporter #5. DeskPRO](#exporter-5-deskpro)
 
 ## Commands
 
@@ -261,137 +264,159 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### articles.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| id                         | is optional, use as reference for `article_custom_fields.csv`                 |
-| person                     | means a person email                                                          |
-| title                      |                                                                               |
-| content                    |                                                                               |
-| slug                       | could be empty (generated from title)                                         |
-| language                   |                                                                               |
-| status                     |                                                                               |
-| category                   | could be empty                                                                |
-| label                      | could be empty (only one label is supported)                                  |
-| date_created               | created could be empty (current time)                                         |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/articles.csv`          |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| id                         | is optional, use as reference for `article_custom_fields.csv`                           |
+| person                     | means a person email                                                                    |
+| title                      |                                                                                         |
+| content                    |                                                                                         |
+| slug                       | could be empty (generated from title)                                                   |
+| language                   |                                                                                         |
+| status                     |                                                                                         |
+| category                   | could be empty                                                                          |
+| label                      | could be empty (only one label is supported)                                            |
+| date_created               | created could be empty (current time)                                                   |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/articles.csv`                                |
 
 ###### article_custom_fields.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| article_id                 | reference to `articles.csv`                                                   |
-| field_name                 |                                                                               |
-| value                      |                                                                               |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| article_id                 | reference to `articles.csv`                                                             |
+| field_name                 |                                                                                         |
+| value                      |                                                                                         |
 
 ##### CSV Entity #2. Download
 
 ###### downloads.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| person                     | means a person email                                                          |
-| title                      |                                                                               |
-| content                    |                                                                               |
-| slug                       | could be empty (generated from title)                                         |
-| language                   |                                                                               |
-| category                   | could be empty                                                                |
-| status                     |                                                                               |
-| date_created               | created could be empty (current time)                                         |
-| label                      | could be empty (only one label is supported)                                  |
-| category                   | could be empty                                                                |
-| blob_url                   |                                                                               |
-| blob_path                  |                                                                               |
-| file_name                  |                                                                               |
-| content_type               |                                                                               |
-| is_inline                  | boolean                                                                       |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| person                     | means a person email                                                                    |
+| title                      |                                                                                         |
+| content                    |                                                                                         |
+| slug                       | could be empty (generated from title)                                                   |
+| language                   |                                                                                         |
+| category                   | could be empty                                                                          |
+| status                     |                                                                                         |
+| date_created               | created could be empty (current time)                                                   |
+| label                      | could be empty (only one label is supported)                                            |
+| category                   | could be empty                                                                          |
+| blob_url                   |                                                                                         |
+| blob_path                  |                                                                                         |
+| file_name                  |                                                                                         |
+| content_type               |                                                                                         |
+| is_inline                  | boolean                                                                                 |
 
 ##### CSV Entity #3. Feedback
 
 ###### feedback.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| id                         | use as reference for `feedback_attachments.csv`, `feedback_custom_fields.csv` |
-| person                     | means a person email                                                          |
-| title                      |                                                                               |
-| content                    |                                                                               |
-| slug                       | could be empty (generated from title)                                         |
-| language                   |                                                                               |
-| category                   | could be empty                                                                |
-| popularity                 |                                                                               |
-| status                     |                                                                               |
-| date_created               | created could be empty (current time)                                         |
-| date_published             | created could be empty (current time)                                         |
-| label                      | could be empty (only one label is supported)                                  |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/feedback.csv`          |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| id                         | use as reference for `feedback_attachments.csv`, `feedback_custom_fields.csv`           |
+| person                     | means a person email                                                                    |
+| title                      |                                                                                         |
+| content                    |                                                                                         |
+| slug                       | could be empty (generated from title)                                                   |
+| language                   |                                                                                         |
+| category                   | could be empty                                                                          |
+| popularity                 |                                                                                         |
+| status                     |                                                                                         |
+| date_created               | created could be empty (current time)                                                   |
+| date_published             | created could be empty (current time)                                                   |
+| label                      | could be empty (only one label is supported)                                            |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/feedback.csv`                                |
 
 ###### feedback_attachments.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| feedback_id                | reference to `feedback.csv`                                                   |
-| person                     | means a person email                                                          |
-| blob_url                   |                                                                               |
-| blob_path                  |                                                                               |
-| file_name                  |                                                                               |
-| content_type               |                                                                               |
-| is_inline                  | boolean                                                                       |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| feedback_id                | reference to `feedback.csv`                                                             |
+| person                     | means a person email                                                                    |
+| blob_url                   |                                                                                         |
+| blob_path                  |                                                                                         |
+| file_name                  |                                                                                         |
+| content_type               |                                                                                         |
+| is_inline                  | boolean                                                                                 |
 
 ###### feedback_custom_fields.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| feedback_id                | reference to `feedback.csv`                                                   |
-| field_name                 |                                                                               |
-| value                      |                                                                               |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| feedback_id                | reference to `feedback.csv`                                                             |
+| field_name                 |                                                                                         |
+| value                      |                                                                                         |
 
 ##### CSV Entity #4. News
 
 ###### news.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| person                     | means a person email                                                          |
-| title                      |                                                                               |
-| content                    |                                                                               |
-| slug                       | could be empty (generated from title)                                         |
-| language                   |                                                                               |
-| status                     |                                                                               |
-| date_created               | created could be empty (current time)                                         |
-| date_published             | created could be empty (current time)                                         |
-| category                   | could be empty                                                                |
-| label                      | could be empty (only one label is supported)                                  |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| person                     | means a person email                                                                    |
+| title                      |                                                                                         |
+| content                    |                                                                                         |
+| slug                       | could be empty (generated from title)                                                   |
+| language                   |                                                                                         |
+| status                     |                                                                                         |
+| date_created               | created could be empty (current time)                                                   |
+| date_published             | created could be empty (current time)                                                   |
+| category                   | could be empty                                                                          |
+| label                      | could be empty (only one label is supported)                                            |
 
 ##### CSV Entity #5. Person
 
 ###### people.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| id                         | is optional, use as reference for `people_custom_fields.csv`                  |
-| name                       |                                                                               |
-| email                      |                                                                               |
-| is_agent                   | boolean                                                                       |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/people.csv`            |
+Base info:
+
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| id                         | is optional, use as reference for `people_custom_fields.csv`                            |
+| name                       |                                                                                         |
+| email                      |                                                                                         |
+| is_agent                   | boolean                                                                                 |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/people.csv`                                  |
+
+
+Contact info:
+
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| address                    |                                                                                         |
+| city                       |                                                                                         |
+| state                      |                                                                                         |
+| post_code                  |                                                                                         |
+| country                    |                                                                                         |
+| facebook                   | Facebook profile URL                                                                    |
+| im                         | InstantMessage username                                                                 |
+| linkedin                   | LinkedIn profile URL                                                                    |
+| mobile                     | Phone Number (unspaced and prefixed with country code e.g. +447700900315, +12025550156) |
+| fax                        | Phone Number                                                                            |
+| phone                      | Phone Number                                                                            |
+| skype                      | Skype username                                                                          |
+| twitter                    | Twitter username                                                                        |
+| website                    | Website URL                                                                             |
 
 ###### people_custom_fields.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| person_id                  | reference to `people.csv` `id` or `email` column                              |
-| field_name                 |                                                                               |
-| value                      |                                                                               |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| person_id                  | reference to `people.csv` `id` or `email` column                                        |
+| field_name                 |                                                                                         |
+| value                      |                                                                                         |
 
 *Note:* You should use reference to `id` or `email` column, not both together.
 
 ###### people_contact_data.csv
 
-| Column name                | Description                                                                   |
+| Column name                | Description                                                                             |
 | -------------------------- |-------------------------------------------------------------------------------|
-| person_id                  | reference to `people.csv` `id` or `name` column                               |
-| contact_id                 |                                                                               |
-| field_name                 | `contact_type`, `comment` and contact type specific parameters                |
-| value                      |                                                                               |
+| person_id                  | reference to `people.csv` `id` or `name` column                                         |
+| contact_id                 |                                                                                         |
+| field_name                 | `contact_type`, `comment` and contact type specific parameters                          |
+| value                      |                                                                                         |
 
 *Note:* You should use reference to `id` or `email` column, not both together.
 
@@ -399,61 +424,83 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### tickets.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| id                         | use as reference for `ticket_messages.csv`, `ticket_custom_fields.csv`        |
-| subject                    |                                                                               |
-| user                       | means a person email                                                          |
-| agent                      | means a person email                                                          |
-| status                     |                                                                               |
-| date_created               | created could be empty (current time)                                         |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/tickets.csv`           |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| id                         | use as reference for `ticket_messages.csv`, `ticket_custom_fields.csv`                  |
+| subject                    |                                                                                         |
+| user                       | means a person email                                                                    |
+| agent                      | means a person email                                                                    |
+| status                     |                                                                                         |
+| date_created               | created could be empty (current time)                                                   |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/tickets.csv`                                 |
 
 ###### ticket_messages.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| ticket_id                  | reference to `tickets.csv`                                                    |
-| message_id                 |                                                                               |
-| message_text               |                                                                               |
-| user                       | means a person email                                                          |
-| date_created               | created could be empty (current time)                                         |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| ticket_id                  | reference to `tickets.csv`                                                              |
+| message_id                 |                                                                                         |
+| message_text               |                                                                                         |
+| user                       | means a person email                                                                    |
+| date_created               | created could be empty (current time)                                                   |
 
 ###### ticket_attachments.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| message_id                 | reference to `ticket_messages.csv`                                            |
-| person                     | means a person email                                                          |
-| blob_url                   |                                                                               |
-| blob_path                  |                                                                               |
-| file_name                  |                                                                               |
-| content_type               |                                                                               |
-| is_inline                  | boolean                                                                       |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| message_id                 | reference to `ticket_messages.csv`                                                      |
+| person                     | means a person email                                                                    |
+| blob_url                   |                                                                                         |
+| blob_path                  |                                                                                         |
+| file_name                  |                                                                                         |
+| content_type               |                                                                                         |
+| is_inline                  | boolean                                                                                 |
 
 ###### ticket_custom_fields.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| ticket_id                  | reference to `tickets.csv`                                                    |
-| field_name                 |                                                                               |
-| value                      |                                                                               |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| ticket_id                  | reference to `tickets.csv`                                                              |
+| field_name                 |                                                                                         |
+| value                      |                                                                                         |
 
 ##### CSV Entity #7. Organization
 
 ###### organizations.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| id                         | is optional                                                                   |
-| name                       |                                                                               |
-| importance                 |                                                                               |
-| date_created               | created could be empty (current time)                                         |
-| blob_url                   |                                                                               |
-| blob_path                  |                                                                               |
-| file_name                  |                                                                               |
-| content_type               |                                                                               |
-| custom "Custom field name" | could be multiple, see `example/csv_inline_custom_data/organizations.csv`     |
+Base info:
+
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| id                         | is optional                                                                             |
+| name                       |                                                                                         |
+| importance                 |                                                                                         |
+| date_created               | created could be empty (current time)                                                   |
+| blob_url                   |                                                                                         |
+| blob_path                  |                                                                                         |
+| file_name                  |                                                                                         |
+| content_type               |                                                                                         |
+| custom "Custom field name" | could be multiple, see `example/csv_inline/organizations.csv`                           |
+
+
+Contact info:
+
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| address                    |                                                                                         |
+| city                       |                                                                                         |
+| state                      |                                                                                         |
+| post_code                  |                                                                                         |
+| country                    |                                                                                         |
+| facebook                   | Facebook profile URL                                                                    |
+| im                         | InstantMessage username                                                                 |
+| linkedin                   | LinkedIn profile URL                                                                    |
+| mobile                     | Phone Number (unspaced and prefixed with country code e.g. +447700900315, +12025550156) |
+| fax                        | Phone Number                                                                            |
+| phone                      | Phone Number                                                                            |
+| skype                      | Skype username                                                                          |
+| twitter                    | Twitter username                                                                        |
+| website                    | Website URL                                                                             |
 
  Example:
  
@@ -463,12 +510,12 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 
 ###### organization_contact_data.csv
 
-| Column name                | Description                                                                   |
-| -------------------------- |-------------------------------------------------------------------------------|
-| organization_id            | reference to `organizations.csv` `id` or `name` column                        |
-| contact_id                 |                                                                               |
-| field_name                 | `contact_type`, `comment` and contact type specific parameters                |
-| value                      |                                                                               |
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| organization_id            | reference to `organizations.csv` `id` or `name` column                                  |
+| contact_id                 |                                                                                         |
+| field_name                 | `contact_type`, `comment` and contact type specific parameters                          |
+| value                      |                                                                                         |
 
 *Note:* You should use reference to `id` or `email` column, not both together.
 
@@ -619,7 +666,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ```json
 {
-  "oid": 1,
+  "oid": "1",
+  "import_map_key": "zd_article",
   "person": "user@example.com",
   "title": "Article 1",
   "content": "Content 1",
@@ -633,10 +681,54 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "status": "published",
   "date_created": "2015-01-15 00:00:00",
   "date_published": null,
+  "date_updated": null,
   "date_end": null,
   "categories": ["Category 1"],
-  "labels": ["Label 1"],
-  "custom_fields": []
+  "labels": ["Label 1", "Label 2", "Label 3"],
+  "custom_fields": [
+    {
+      "oid": "1",
+      "key": "Multiple-select box field",
+      "value": "Choice 1 > Choice 2"
+    }
+  ],
+  "attachments": [
+    {
+      "oid": 0,
+      "person": "user@example.com",
+      "blob_data": null,
+      "blob_url": "",
+      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/example\/csv\/articles.csv",
+      "file_name": "articles.csv",
+      "content_type": "csv",
+      "is_inline": false
+    }
+  ],
+  "comments": [
+    {
+      "oid": 0,
+      "person_email": "user@example.com",
+      "content": "Comment 1",
+      "status": "validating",
+      "is_reviewed": false,
+      "validating": "",
+      "date_created": "2015-01-15 00:00:00"
+    }
+  ],
+  "translations": [
+    {
+      "oid": "0",
+      "language": "es_ES",
+      "property": "title",
+      "value": "Article 1 (es_ES)"
+    },
+    {
+      "oid": "1",
+      "language": "es_ES",
+      "property": "content",
+      "value": "Content 1 (es_ES)"
+    }
+  ]
 }
 ```
 
@@ -762,7 +854,8 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ```json
 {
-  "oid": 1,
+  "oid": "1",
+  "import_map_key": "zd_ticket",
   "ref": "A4G7I8Y1RV",
   "department": null,
   "person": "user@example.com",
@@ -933,9 +1026,45 @@ $DP_CONFIG['zendesk_import'] = array(
 
 ##### ZenDesk Fixtures
 
+
+###### ZenDesk Fixtures Core API
+
+Create fake users:
+
 ```bash
-php cmd.php dpdev:import:fixtures person --offset=1000
-php cmd.php dpdev:import:fixtures ticket --offset=1000
+php cmd.php dpdev:import:fixtures --type=person
+```
+
+Create fake tickets:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=ticket
+```
+
+###### ZenDesk Fixtures Help Center
+
+Create fake help center categories:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=category
+```
+
+Create fake help center sections (sub categories):
+
+```bash
+php cmd.php dpdev:import:fixtures --type=section
+```
+
+Create fake articles (includes comments, attachments and translations):
+
+```bash
+php cmd.php dpdev:import:fixtures --type=article
+```
+
+You can clear all category related data just by removing category, every section and all articles in the category will also be deleted:
+
+```bash
+php cmd.php dpdev:import:fixtures --type=category -d
 ```
 
 ##### ZenDesk Batch.json
@@ -946,24 +1075,22 @@ php cmd.php dpdev:import:fixtures ticket --offset=1000
   "date_created": "2015-07-30 06:09:01",
   "people_end_time": "2015-06-30 08:00:01",
   "tickets_end_time": "2015-07-30 06:09:01",
+  "articles_end_time":"2015-07-30 07:09:01",
   "retry_after_time": "2015-07-30 06:11:01",
   "has_remaining": true
 }
 ```
 
-#### Support for batching
+#### Exporter #5. DeskPRO
 
-Common properties:
+Add `zendesk_import` configuration to `config.php`
 
- - id
- - type
- - date_created
- - date_modified
-
-**1) output.batch.json**
-
-Generates by exporters which has support for batching (osticket and zendesk). Specific for each exporter.
-
-**2) input.batch.json**
-
-Generates by json exporter.
+```php
+$DP_CONFIG['deskpro_import'] = array(
+    'db_host'         => 'host',
+    'db_name'         => 'dbname',
+    'db_username'     => 'dbuser',
+    'db_password'     => 'dbpassword',
+    'start_ticket_id' => 0,
+);
+```

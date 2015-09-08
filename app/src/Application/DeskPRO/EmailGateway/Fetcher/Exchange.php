@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\EmailGateway\Storage;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 
 /**
  * Fetches mail from an exchange server
@@ -107,10 +108,12 @@ class Exchange extends AbstractFetcher
     {
         $options = array();
 
-        switch ($this->account->incoming_account->getType()) {
+        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+
+        switch ($incoming_account->getType()) {
             case 'exchange':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $exchange_config */
-                $exchange_config = $this->account->incoming_account;
+                $exchange_config = $incoming_account;
 
                 $options['host']         = $exchange_config->host;
                 $options['port']         = $exchange_config->port;
@@ -126,7 +129,7 @@ class Exchange extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
+                throw new \InvalidArgumentException("Unknown account type: " . $incoming_account->getType());
         }
 
         $this->mode = $options['mode'];

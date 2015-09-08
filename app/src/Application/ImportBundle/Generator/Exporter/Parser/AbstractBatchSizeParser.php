@@ -64,6 +64,10 @@ abstract class AbstractBatchSizeParser extends AbstractBatchParser
             ));
         }
 
+        if (isset($config['has_remaining'])) {
+            $batch_config->setHasRemaining($config['has_remaining']);
+        }
+
         return $batch_config;
     }
 }

@@ -157,6 +157,14 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('prop_name', strtolower($prop_name));
     }
 
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
     public function _resetRefCode()
     {
         if ($this->_set_object) {

@@ -490,6 +490,18 @@ class TicketLogGenerator
                 );
                 break;
 
+            case 'ticket_slas_status':
+                if (!empty($new['sla'])) {
+                    return array(
+                        'action_type' => 'changed_sla_status',
+                        'sla_id'      => $new['sla']->id,
+                        'sla_title'   => $new['sla']->title,
+                        'old_status'  => $new['old_status'],
+                        'new_status'  => $new['new_status']
+                    );
+                }
+                return;
+
             case 'urgency':
                 return array(
                     'action_type' => 'changed_urgency',

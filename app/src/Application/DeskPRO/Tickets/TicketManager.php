@@ -120,7 +120,7 @@ class TicketManager
         $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
         $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
         $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
-        $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getDb(), $container->getTicketFilterChangeDetector());
+        $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
         $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
 
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
@@ -577,7 +577,7 @@ class TicketManager
             $logger->pushHandler($stream);
         }
 
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
+        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && empty($GLOBALS['DP_CRON_ID']) && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
             $stream = new StreamHandler('php://stdout');
             $logger->pushHandler($stream);
         }

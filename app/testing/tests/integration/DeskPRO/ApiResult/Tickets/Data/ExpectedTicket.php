@@ -4,6 +4,7 @@ return array(
     'id' => 1,
     'sent_to_address' => '',
     'email_account_address' => '',
+    'email_account' => null,
     'creation_system' => 'web.person',
     'creation_system_option' => '',
     'ticket_hash' => '561b59a759d44542e3cfd3484d44dd3d7693043a',
@@ -208,17 +209,13 @@ return array(
             'date_validated_ts_ms' => 1396525872000,
         ),
     'person_email_validating' => NULL,
-    'agent' => NULL,
-    'agent_team' => NULL,
-    'organization' => NULL,
-    'custom_data' =>
-        array(),
-    'participants' =>
-        array(),
-    'charges' =>
-        array(),
-    'ticket_slas' =>
-        array(),
-    'labels' =>
-        array()
+    'agent'        => null,
+    'agent_team'   => null,
+    'organization' => null,
+    'custom_data'  => array(),
+    'participants' => array(),
+    'charges'      => array(),
+    'ticket_slas'  => array(),
+    'labels'       => array(),
+    'problems'     => array(),
 );

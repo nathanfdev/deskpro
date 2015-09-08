@@ -1,8 +1,8 @@
 <?php
 
-namespace DpUnitTests\DeskPRO\ApiResult\Tickets;
+namespace DpIntegrationTests\DeskPRO\ApiResult\People;
 
-use DpUnitTests\DeskPRO\ApiResult\AbstractApiResultTest;
+use DpIntegrationTests\DeskPRO\ApiResult\AbstractApiResultTest;
 
 require_once __DIR__ . '/../AbstractApiResultTest.php';
 

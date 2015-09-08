@@ -123,7 +123,7 @@ class MainController extends AbstractController
         $online_agent_ids = $this->db->fetchAllCol("
             SELECT p.id
             FROM sessions s
-            LEFT JOIN people AS p ON p.id = s.person_id
+            JOIN people AS p ON p.id = s.person_id
             WHERE p.is_agent = true AND s.date_last > ?
         ", array($cutoff));
 

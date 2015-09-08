@@ -27,95 +27,21 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-
 /**
  * ZenDesk tickets people storage
  *
  * Class TicketPeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class TicketPeopleStorage implements TicketPeopleStorageInterface, PeopleStorageAwareInterface
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
     /**
-     * @var ZenDeskReaderInterface
-     */
-    private $reader;
-
-    /**
-     * @var PeopleStorage
-     */
-    private $people_storage;
-
-    /**
-     * @var array
-     */
-    private $people = array();
-
-    /**
-     * Constructor
-     *
-     * @param ZenDeskReaderInterface $reader
-     */
-    public function __construct(ZenDeskReaderInterface $reader)
-    {
-        $this->reader = $reader;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function setPeopleStorage(PeopleStorageInterface $storage)
-    {
-        $this->people_storage = $storage;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadByTickets(array $tickets)
-    {
-        $this->loadByIds($this->getTicketsPeopleIds($tickets));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPersonEmail($id)
-    {
-        return isset($this->people[$id]['email']) ? $this->people[$id]['email'] : null;
-    }
-
-    /**
-     * Returns people from reader by ids
-     *
-     * @param array $ids
-     */
-    private function loadByIds($ids)
-    {
-        $request_ids = $this->people_storage ? $this->people_storage->getNotContainsIds($ids) : $ids;
-        $result = $this->reader->getPeopleByIds($request_ids);
-
-        foreach ($result as $person) {
-            $this->people[$person['id']] = $person;
-        }
-        if ($this->people_storage) {
-            $this->people_storage->addIgnoreIds($request_ids);
-            $this->people_storage->addPeople($this->people);
-        }
-    }
-
-    /**
-     * Returns all unique people ids of the found ZenDesk tickets
-     *
-     * @param array $tickets
-     * @return array
-     */
-    private function getTicketsPeopleIds(array $tickets)
+    protected function getPeopleIds(array $data)
     {
         $people_ids = array();
-        foreach ($tickets as $ticket) {
+        foreach ($data as $ticket) {
             if (isset($ticket['submitter_id']) && $ticket['submitter_id'] > 0) {
                 $people_ids[] = $ticket['submitter_id'];
             }

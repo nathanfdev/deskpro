@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO article labels importer
@@ -49,39 +48,27 @@ final class ArticleLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Article $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
-
-        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
-        $article->resetLabels();
-
-        foreach ($entity->getLabels() as $label) {
-            $article->addLabel($this->createArticleLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for article with oid `%d`',
-                $label, $article->getId()
-            ));
+        if ( ! $entity instanceof Entity\Article) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
+        $this->records = new DoctrineEntitiesCollection();
+
+        $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id));
+        $article->resetLabels();
+
+        foreach ($entity->getLabels() as $label_name) {
+            $entity = new DeskPROEntity\LabelArticle();
+            $entity->setLabel($label_name);
+
+            $article->addLabel($entity);
+            $this->logDebug(sprintf('Creating a new label `%s` for article with oid `%d`', $label_name, $article->getId()));
+        }
+
+        $this->records->setPrimaryEntity($article);
         return $this->records;
-    }
-
-    /**
-     * Returns a new article label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelArticle
-     */
-    private function createArticleLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelArticle();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-        return $entity;
     }
 }

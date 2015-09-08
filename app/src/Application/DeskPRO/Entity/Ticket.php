@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\PersistentCollection;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
@@ -516,6 +517,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	protected $jira_issues;
 
+    /**
+     * @var ArrayCollection
+     */
+    protected $problems;
+
 	/**
      * If the tikcet was created from an email just now, then this is the reader
      * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
@@ -558,6 +564,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public $_is_new = false;
 
+    /**
+     * @var array
+     */
+    protected $api_data = array();
+
+    /**
+     * @var string|null
+     */
+    protected $api_data_hash = null;
+
     public function __construct()
     {
         $this->_original_id  = null;
@@ -572,6 +588,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->attachments   = new ArrayCollection();
         $this->charges       = new ArrayCollection();
         $this->ticket_slas   = new ArrayCollection();
+        $this->problems      = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
@@ -935,18 +952,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset the participants collection
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetParticipants()
     {
-        foreach ($this->participants as $participant) {
-            App::getOrm()->remove($participant);
-        }
-
         $this->participants->clear();
-        $this->_onPropertyChanged('participants', null, $this->participants);
-
         return $this;
     }
 
@@ -1353,18 +1364,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset the message collection
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetMessages()
     {
-        foreach ($this->messages as $message) {
-            App::getOrm()->remove($message);
-        }
-
         $this->messages->clear();
-        $this->_onPropertyChanged('messages', null, $this->messages);
-
         return $this;
     }
 
@@ -1585,18 +1590,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 
@@ -1675,13 +1674,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        foreach ($this->labels as $label) {
-            App::getOrm()->remove($label);
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
         }
 
-        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
-
         return $this;
     }
 
@@ -3009,12 +3006,31 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
+        $hash = $this->getStateChangeRecorder()->getStateVersion() . (int) $primary . (int) $deep;
+        if ($hash === $this->api_data_hash) {
+            return $this->api_data;
+        }
+        $this->api_data_hash = $hash;
+
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
             foreach ($this->labels AS $label) {
                 $data['labels'][] = $label['label'];
             }
+
+            $data['problems'] = array();
+            foreach ($this->problems as $problem) {
+                $data['problems'][] = array(
+                    'id' => $problem->id,
+                    'title' => $problem->title,
+                );
+            }
+        }
+
+        if (!empty($data['email_account'])) {
+            unset($data['email_account']['incoming_account']);
+            unset($data['email_account']['outgoing_account']);
         }
 
         $data['total_user_waiting_real'] = $this->getRealTotalUserWaiting();
@@ -3035,10 +3051,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $data['access_code_email_header_token'] = 'PTAC-' . $this->getAccessCode();
 
         // Render custom fields to text values
-        $field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
+        $field_manager = App::getContainer()->getTicketFieldManager();
         $field_manager->addApiData($this, $data);
 
-        return $data;
+        return $this->api_data = $data;
     }
 
     /**
@@ -3284,7 +3300,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             'date_feedback_rating'         => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
             'date_created'                 => $this->date_created->format('Y-m-d H:i:s'),
             'date_resolved'                => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
-            'date_archived'                  => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
+            'date_archived'                => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
             'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
             'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
             'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
@@ -3452,6 +3468,48 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                 throw $e;
             }
         }
+    }
+
+    /**
+     * @param Problem|null $problem
+     * @return null
+     */
+    public function associateProblem(Problem $problem = null)
+    {
+        if (!$problem) {
+            return null;
+        }
+
+        if ($old = $this->problems->first()) {
+            foreach ($problem->tickets as $ticket) {
+                if ($ticket['id'] == $this->id) {
+                    $problem->tickets->removeElement($ticket);
+                }
+            }
+            $this->problems->removeElement($old);
+        }
+
+        $this->problems->add($problem);
+        $problem->tickets->count(); // explicit init
+        $problem->tickets->add($this);
+
+        $this->_onPropertyChanged('problems', null, $this->problems);
+    }
+
+    /**
+     *
+     */
+    public function disassociateProblem()
+    {
+        foreach ($this->problems as $pk => $problem) {
+            foreach ($problem->tickets as $tk => $ticket) {
+                if ($ticket['id'] === $this->id) {
+                    $problem->tickets->remove($tk);
+                }
+            }
+            $this->problems->remove($pk);
+        }
+        $this->_onPropertyChanged('problems', null, $this->problems);
     }
 
     public static function loadMetadata(ClassMetadata $metadata)
@@ -3720,6 +3778,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'language',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Language',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'language_id',
                 'referencedColumnName' => 'id',
@@ -3731,6 +3790,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'department',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Department',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'department_id',
                 'referencedColumnName' => 'id',
@@ -3786,6 +3846,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'person',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'person_id',
                 'referencedColumnName' => 'id',
@@ -3842,6 +3903,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'organization',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Organization',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'organization_id',
                 'referencedColumnName' => 'id',
@@ -3916,6 +3978,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                 'nullable'             => true,
                 'onDelete'             => 'set null',
             )),
+            'dpApi'                => true
         ));
         $metadata->mapManyToOne(array(
             'fieldName'            => 'locked_by_agent',
@@ -3964,5 +4027,32 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'dpApi'                => false,
 			'dpApiDeep'            => false
 		));
+        $metadata->mapManyToMany(
+            array(
+                'fieldName' => 'problems',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Problem',
+                'inversedBy' => 'tickets',
+                'cascade' => array('persist', 'merge'),
+                'joinTable' => array(
+                    'name' => 'problem2tickets',
+                    'inverseJoinColumns' => array(
+                        array(
+                            'name' => 'problem_id',
+                            'referencedColumnName' => 'id',
+                            'nullable' => true,
+                            'onDelete' => 'cascade',
+                        ),
+                    ),
+                    'joinColumns' => array(
+                        array(
+                            'name' => 'ticket_id',
+                            'referencedColumnName' => 'id',
+                            'nullable' => true,
+                            'onDelete' => 'cascade',
+                        ),
+                    ),
+                ),
+            )
+        );
     }
 }

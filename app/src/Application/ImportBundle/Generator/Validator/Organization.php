@@ -47,11 +47,13 @@ class Organization extends AbstractConstraintValidator
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
     public function validate(Entity\EntityInterface $entity)
     {
+        if ( ! $entity instanceof Entity\Organization) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
         $errors = $this->validator->validate($entity);
         if (count($errors) > 0) {
             throw new ValidatorConstraintException($entity, $errors);

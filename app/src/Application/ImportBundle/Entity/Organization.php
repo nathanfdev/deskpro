@@ -246,27 +246,16 @@ class Organization extends AbstractEntity
             throw new \Exception('Date created is not set up');
         }
 
-        $contact_data = array();
-        foreach ($this->contact_data as $contact) {
-            /** @var ContactData $contact */
-            $contact_data[] = $contact->toArray();
-        }
-
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
         return array(
-            'oid'           => $this->oid,
-            'name'          => $this->name,
-            'picture'       => $this->picture ? $this->picture->toArray() : null,
-            'importance'    => $this->importance,
-            'date_created'  => $this->date_created->format('Y-m-d H:i:s'),
-            'contact_data'  => $contact_data,
-            'custom_fields' => $custom_fields,
-            'labels'        => $this->labels,
+            'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
+            'name'           => $this->name,
+            'picture'        => $this->picture ? $this->picture->toArray() : null,
+            'importance'     => $this->importance,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'contact_data'   => $this->contact_data->entitiesToArray(),
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
+            'labels'         => $this->labels,
         );
     }
 

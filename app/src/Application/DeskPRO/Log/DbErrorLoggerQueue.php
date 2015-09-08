@@ -69,6 +69,10 @@ class DbErrorLoggerQueue
             App::getDb()->getEventManager()->addEventListener(array(
                 'onPostCommit', 'onPostRollback'
             ), self::getInstance());
+
+            \DpShutdown::add(function() {
+                DbErrorLoggerQueue::getInstance()->flush();
+            });
         }
     }
 
@@ -84,6 +88,21 @@ class DbErrorLoggerQueue
     }
 
     /**
+     * Adds a log message
+     *
+     * @param $logger
+     * @param $item
+     */
+    public function addBatchFlush($logger, $item)
+    {
+        $this->waiting[] = array($logger, $item);
+
+        if (isset($this->waiting[50])) {
+            $this->flush();
+        }
+    }
+
+    /**
      * Flushes all waiting logs to be written
      */
     public function flush()
@@ -92,11 +111,18 @@ class DbErrorLoggerQueue
             return;
         }
 
+        $loggers = array();
+
         foreach ($this->waiting as $info) {
             $logger = $info[0];
             $item = $info[1];
 
             $logger->logItem($item);
+            $loggers[spl_object_hash($logger)] = $logger;
+        }
+
+        foreach ($loggers as $l) {
+            $l->flush();
         }
 
         $this->waiting = array();

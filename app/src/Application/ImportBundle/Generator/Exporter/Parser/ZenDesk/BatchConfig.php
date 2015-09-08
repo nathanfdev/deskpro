@@ -53,12 +53,12 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     /**
      * @var DateTime
      */
-    private $retry_after_time;
+    private $articles_end_time;
 
     /**
-     * @var bool
+     * @var DateTime
      */
-    private $has_remaining = false;
+    private $retry_after_time;
 
     /**
      * {@inheritdoc}
@@ -113,6 +113,28 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     }
 
     /**
+     * Returns articles end time
+     *
+     * @return DateTime
+     */
+    public function getArticlesEndTime()
+    {
+        return $this->articles_end_time;
+    }
+
+    /**
+     * Set articles end time
+     *
+     * @param DateTime $end_time
+     * @return $this
+     */
+    public function setArticlesEndTime(DateTime $end_time = null)
+    {
+        $this->articles_end_time = $end_time;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRetryAfterTime()
@@ -130,24 +152,6 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     }
 
     /**
-     * @param bool $remaining
-     * @return $this
-     */
-    public function setHasRemaining($remaining)
-    {
-        $this->has_remaining = (bool)$remaining;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getHasRemaining()
-    {
-        return $this->has_remaining;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -155,8 +159,8 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
         return array_merge(parent::toArray(), array(
             'people_end_time'   => $this->getDateFormatOrNull($this->people_end_time),
             'tickets_end_time'  => $this->getDateFormatOrNull($this->tickets_end_time),
+            'articles_end_time' => $this->getDateFormatOrNull($this->articles_end_time),
             'retry_after_time'  => $this->getDateFormatOrNull($this->retry_after_time),
-            'has_remaining'     => $this->has_remaining,
         ));
     }
 }

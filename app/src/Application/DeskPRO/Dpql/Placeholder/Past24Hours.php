@@ -56,8 +56,8 @@ class Past24Hours extends AbstractDateRange
         $today = $date->format('Y-m-d');
 
         $date->modify('-1 day');
-        $beginning = $date->format('Y-m-d');
+        $beginning = $date->format('Y-m-d H:i:s');
 
-        return array("$beginning to $today", "$beginning 00:00:00", $now);
+        return array("$beginning to $today", "$beginning", $now);
     }
 }

@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO feedback labels importer
@@ -49,21 +48,33 @@ final class FeedbackLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Feedback $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Feedback) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
-        $feedback = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
-        $feedback->resetLabels();
+        $this->records = new DoctrineEntitiesCollection();
 
-        foreach ($entity->getLabels() as $label) {
-            $feedback->addLabel($this->createFeedbackLabel($label));
+        $oldEntity = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
+        $type = 'feedback';
+        $newLabels = $entity->getLabels();
+
+        foreach ($oldEntity->labels as $labelEntity) {
+            if (false === $k = array_search($labelEntity->label, $newLabels)) {
+                $oldEntity->labels->removeElement($labelEntity);
+                $this->removeEntity($labelEntity);
+            } else {
+                unset($newLabels[$k]);
+            }
+        }
+
+        foreach ($newLabels as $label) {
+            $oldEntity->addLabel($this->createLabel($label));
             $this->logDebug(sprintf(
-                'Creating a new label `%s` for feedback with oid `%d`',
-                $label, $feedback->getId()
+                'Creating a new label `%s` for %s with oid `%d`',
+                $label, $type, $oldEntity->getId()
             ));
         }
 
@@ -76,12 +87,12 @@ final class FeedbackLabel extends AbstractImporter
      * @param string $label
      * @return DeskPROEntity\LabelFeedback
      */
-    private function createFeedbackLabel($label)
+    private function createLabel($label)
     {
         $entity = new DeskPROEntity\LabelFeedback();
         $entity->setLabel($label);
 
-        $this->records->add($entity);
+        $this->records->addRelatedEntity($entity);
         return $entity;
     }
 }

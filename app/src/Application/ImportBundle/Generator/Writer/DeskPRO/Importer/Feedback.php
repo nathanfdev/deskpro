@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO feedback importer
@@ -72,12 +71,14 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * $record['num_comments']		= $fval->num_comments;
      * $record['num_ratings']		= $fval->num_ratings;
      * $record['popularity']		= $fval->popularity;
-     *
-     * @var Entity\Feedback $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Feedback) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $this->records = new DoctrineEntitiesCollection();
 
         $feedback = new DeskPROEntity\Feedback();
         $feedback
@@ -106,7 +107,8 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             }
         }
 
-        $this->records->add($feedback);
+        $this->records->setPrimaryEntity($feedback);
+
         return $this->records;
     }
 
@@ -142,7 +144,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
                 $category = new DeskPROEntity\FeedbackCategory();
                 $category->setRealTitle($title);
 
-                $this->records->add($category);
+                $this->records->addRelatedEntity($category);
                 $this->logInfo(sprintf('New feedback category creating `%s`', $category->getTitle()));
             }
         }
@@ -161,13 +163,17 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
         $email = $entity->getPersonEmail() ? : $person_email;
+        $blob  = $this->blob_adapter->createByBlob($entity);
+
         $attachment = new DeskPROEntity\FeedbackAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByBlob($entity))
+            ->setBlob($blob)
         ;
 
-        $this->records->add($attachment);
+        $this->records->addRelatedEntity($attachment);
+        $this->records->addRelatedEntity($blob);
+
         return $attachment;
     }
 

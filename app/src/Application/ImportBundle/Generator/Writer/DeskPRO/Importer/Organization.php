@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO organization importer
@@ -66,27 +65,33 @@ final class Organization extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Organization $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if ( ! $entity instanceof Entity\Organization) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
-        $organization = $this->findOrCreateOrganization($entity->getName());
+        $this->records = new DoctrineEntitiesCollection();
+        $organization  = $this->findOrCreateOrganization($entity->getName());
         $organization
             ->setImportance($entity->getImportance())
             ->setDateCreated($entity->getDateCreated())
             ->resetContactData()
-            ->resetLabels()
             ->resetCustomData()
         ;
 
         if ($entity->getPicture()) {
-            $organization->setPicture($this->blob_adapter->createByBlob($entity->getPicture()));
+            $picture = $this->blob_adapter->createByBlob($entity->getPicture());
+
+            $organization->setPicture($picture);
+            $this->records->addRelatedEntity($picture);
         }
         foreach ($entity->getContactData() as $contact) {
-            $organization->addContactData($this->createContactData($contact));
+            $contact_data = $this->createContactData($contact);
+
+            $organization->addContactData($contact_data);
+            $this->records->addRelatedEntity($contact_data);
         }
         foreach ($entity->getCustomFields() as $custom_field) {
             $custom_field = $this->createOrganizationCustomData($custom_field);
@@ -95,6 +100,7 @@ final class Organization extends AbstractImporter
             }
         }
 
+        $this->records->setPrimaryEntity($organization);
         return $this->records;
     }
 
