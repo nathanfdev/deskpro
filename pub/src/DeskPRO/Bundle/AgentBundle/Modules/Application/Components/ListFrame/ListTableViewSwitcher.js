@@ -3,14 +3,14 @@
  */
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions";
 import $ from "jquery";
 
 export class ListTableViewSwitcher extends Component {
 
   static propTypes = {
     displayFields: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    toggleView: PropTypes.func.isRequired
+    viewMode: PropTypes.string.isRequired
   };
 
   showViewModeChoice(event) {
@@ -24,14 +24,14 @@ export class ListTableViewSwitcher extends Component {
 
 
   render() {
-    const {viewMode, displayFields, toggleView} = this.props;
+    const {viewMode, displayFields, dispatch} = this.props;
     return (
       <div className="ticket-control-button">
         <span className="title">View:</span>
         <a href="#">
           <span className="focus" onClick={this.showViewModeChoice.bind(this)}>{viewMode}</span>
         </a>
-        <ListTableViewDropdown displayFields={displayFields} viewMode={viewMode} toggleView={toggleView.bind(this)}/>
+        <ListTableViewDropdown displayFields={displayFields} viewMode={viewMode} dispatch={dispatch}/>
       </div>
     );
   }
@@ -41,10 +41,14 @@ export class ListTableViewDropdown extends Component {
 
   static propTypes = {
     displayFields: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    toggleView: PropTypes.func.isRequired
+    viewMode: PropTypes.string.isRequired
   };
 
+  toggleView(event) {
+    event.stopPropagation();
+    const {dispatch} = this.props;
+    dispatch(actions.toggleViewMode());
+  }
 
   closeDropdown(e) {
     event.preventDefault();
@@ -53,7 +57,7 @@ export class ListTableViewDropdown extends Component {
   }
 
   render() {
-    const {viewMode, displayFields, toggleView} = this.props;
+    const {viewMode, displayFields} = this.props;
 
     return (
       <div className="view-mode-choice dropdown-choice" style={{width:'300px'}}>
@@ -65,7 +69,7 @@ export class ListTableViewDropdown extends Component {
         <div style={{width:'50%',float:'left'}}>
           <label>
             <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_LIST}
-                   onChange={toggleView.bind(this)}>
+                   onChange={this.toggleView.bind(this)}>
               List View
             </input>
           </label>
@@ -78,7 +82,7 @@ export class ListTableViewDropdown extends Component {
         <div style={{width:'50%',float:'left'}}>
           <label>
             <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_TABLE}
-                   onChange={toggleView.bind(this)}>
+                   onChange={this.toggleView.bind(this)}>
               Table View
             </input>
           </label>

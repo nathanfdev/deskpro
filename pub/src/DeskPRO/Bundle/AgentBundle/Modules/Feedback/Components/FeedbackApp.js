@@ -3,14 +3,13 @@ import AppContainer from "DeskPRO/Component/AppContainer";
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 import * as actions from '../Actions/FeedbackListActions'
+import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
 
 import { connect } from 'redux/react';
 @connect(state => state.FeedbackList)
-@connect(state => ({
-  dp_window: state.dp_window
-}))
+
 export class FeedbackApp extends React.Component {
 
   constructor(props) {
@@ -32,9 +31,9 @@ export class FeedbackApp extends React.Component {
   choiceClick(params, event) {
     event.preventDefault();
     event.stopPropagation();
-    const {sort, dispatch, filters} = this.props;
+    const {sort, order, dispatch, filters} = this.props;
     dispatch(actions.changeQueryState(params));
-    dispatch(actions.loadFeedbackList(params, sort, filters));
+    dispatch(actions.loadFeedbackList(params, sort, order, filters));
     $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
     $(event.target).closest('a').addClass('active');
   }
@@ -61,24 +60,6 @@ export class FeedbackApp extends React.Component {
     dispatch(actions.loadFeedbackList(query, param, order, filters));
   }
 
-
-  toggleView(event) {
-    event.stopPropagation();
-    const {dispatch} = this.props;
-    dispatch(actions.toggleViewMode());
-  }
-
-
-  showSortChoice(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    var elem = $(event.target),
-      filterChoice = elem.closest('a.ticket-control-button').find('div.focus-choice');
-    $('div.dropdown-choice').hide();
-    filterChoice.show();
-  }
-
   /** Change sort option (Order By ...)*/
   toggleSort(event) {
     event.preventDefault();
@@ -102,15 +83,9 @@ export class FeedbackApp extends React.Component {
     const {dispatch, sort, order, query, filters} = this.props;
     $('div.dropdown-choice').hide();
     let elem = $(event.target),
-      newOrder = constants.ORDER_ASC;
-    if (order === newOrder) {
-      newOrder = constants.ORDER_DESC;
-      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
-    }
-    else {
-      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
-    }
-    dispatch(actions.toggleOrder());
+      newOrder = (order === constants.ORDER_ASC) ? constants.ORDER_DESC : constants.ORDER_ASC;
+    elem.closest('a.ticket-control-button').find('i.fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
+    dispatch(AppActions.toggleOrder());
     dispatch(actions.loadFeedbackList(query, sort, newOrder, filters));
   }
 
@@ -146,7 +121,6 @@ export class FeedbackApp extends React.Component {
           sortTable={this.sortTable}
           toggleView={this.toggleView}
           toggleOrder={this.toggleOrder}
-          showSortChoice={this.showSortChoice}
           toggleSort={this.toggleSort}
           displayFields={displayFields}
           />

@@ -100,20 +100,6 @@ export const changeQueryState = createAction(
   }
 );
 
-export const toggleViewMode = createAction(
-  "FEEDBACK_TOGGLE_VIEW_MODE",
-  (trigger) => {
-    trigger();
-  }
-);
-
-export const toggleOrder = createAction(
-  "FEEDBACK_TOGGLE_ORDER",
-  (trigger) => {
-    trigger();
-  }
-);
-
 export const getFilterValues = createAction(
   "FEEDBACK_SELECT_FILTER",
   (trigger, filterName) => {
@@ -131,10 +117,8 @@ export const setFilterValue = createAction(
 );
 
 export const resetFilterValue = createAction(
-  "FEEDBACK_RESET_FILTER_VALUE",
-  (trigger) => {
-    trigger();
-  });
+  "FEEDBACK_RESET_FILTER_VALUE"
+);
 
 export const resetFilters = createAction(
   "FEEDBACK_RESET_FILTERS",
