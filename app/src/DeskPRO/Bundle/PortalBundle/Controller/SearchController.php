@@ -161,10 +161,10 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @Route("/search/similar/{content_type}", name="portal_search_similar")
+     * @Route("/search/similar/{content_type}", name="portal_search_similar", defaults={"content_type":null})
      * @Route("/search/similar/{content_type}", name="user_search_similarto")
      */
-    public function similarToAction(Request $request, $content_type)
+    public function similarToAction(Request $request, $content_type = null)
     {
         $content = $request->get('content', '');
 
@@ -175,6 +175,12 @@ class SearchController extends AbstractController
                     'words' => array()
                 )
             );
+        }
+
+        $allowed_types = array('article', 'news', 'download', 'feedback');
+
+        if (null === $content_type) {
+            $content_type = $allowed_types;
         }
 
         $person = $this->getUser() ?: new PersonGuest();
@@ -196,7 +202,6 @@ class SearchController extends AbstractController
         $property_accessor = PropertyAccess::createPropertyAccessor();
         $typed_results = array();
         $words = array();
-        $allowed_types = array('article','news','download','feedback');
         foreach ($search_results as $result) {
             if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
                 $typed_results[] = $result;

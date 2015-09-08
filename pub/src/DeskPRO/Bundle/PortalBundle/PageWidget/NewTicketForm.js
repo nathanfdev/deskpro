@@ -1,7 +1,9 @@
 import _ from "lodash";
+import React from "react";
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
 import DpLevelSelect from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpLevelSelect";
 import DpDropzone from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpDropzone";
+import NewTicketSuggestions from "DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions";
 import DynamicForm from "DeskPRO/Bundle/AppBundle/Form/DynamicForm.js";
 
 //######################################################################################################################
@@ -83,6 +85,10 @@ export default class NewTicketForm extends PageWidget {
       alwaysFields: ['department', 'user_email', 'subject', 'message', 'submit', 'last_department_id'],
       onInit: () => {
         updateLastDepId();
+
+        let $subject = $('#ticket_subject');
+        let $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
+        React.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
       },
       fieldFilter: (fields, currentFields, dynForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {
