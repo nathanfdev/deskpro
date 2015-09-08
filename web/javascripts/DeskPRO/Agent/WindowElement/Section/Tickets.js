@@ -946,8 +946,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				countEls.removeClass('loading');
 			},
 			success: function(batches) {
-
-        return;
 				Object.each(batches, function(html,filterId) {
 
 					var filterEl = $('.filter-' + filterId, this.sectionEl);
