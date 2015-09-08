@@ -454,6 +454,10 @@ $level-10: #ac2020;
     padding: 5px;
     text-align: left;
     color: #999;
+
+    &.clickable-column {
+      cursor: pointer;
+    }
   }
 
   td {
