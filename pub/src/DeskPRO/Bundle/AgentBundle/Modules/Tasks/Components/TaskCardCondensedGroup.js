@@ -24,11 +24,14 @@ const listTarget = {
   }
 };
 
+@DropTarget(DragTypes.TASK, listTarget, collect)
 export default class TaskCardCondensedGroup extends React.Component {
   render() {
     const _this = this;
 
-    return (this.props.divider && this.props.tasks && this.props.tasks.length > 0 ? <tbody>
+    const className = this.props.isOver ? 'list-group-hover' : '';
+
+    return this.props.connectDropTarget(this.props.divider && this.props.tasks && this.props.tasks.length > 0 ? <tbody className={className}>
     <tr className="divider">
       <td colSpan="4"><hr/><span>{this.props.divider}</span></td>
     </tr>

@@ -9,11 +9,11 @@ import { CategoryTab } from './CategoryTab';
 export class Nav extends Component {
 
   render() {
-    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, onClick } = this.props;
+    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, onClick, dispatch, dp_window } = this.props;
 
     return (
-      <NavFrame>
-        <NavFrameHeader icon="fa-thumbs-up">Feedback</NavFrameHeader>
+      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+        <NavFrameHeader icon="fa-thumbs-up" dispatch={dispatch.bind(this)}>Feedback</NavFrameHeader>
 
         <SectionsPane>
 

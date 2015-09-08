@@ -10,7 +10,7 @@ import TicketsListFrame from "./TicketsListFrame";
   user: state.user,
   dp_window: state.dp_window
 }))
-export default class TicketsApp extends React.Component {  
+export default class TicketsApp extends React.Component {
   render() {
     return (
       <AppContainer thisAppId="tickets" {...this.props}>

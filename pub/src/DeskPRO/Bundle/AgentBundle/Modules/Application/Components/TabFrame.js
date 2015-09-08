@@ -10,6 +10,10 @@ export default class TabFrame extends React.Component {
         classes.push('expanded');
       }
 
+      if (dp_window.collapseNav) {
+        classes.push('collapsed-nav');
+      }
+
       if (dp_window.taskView !== 'list') {
         classes.push('kanban-shifted');
       }

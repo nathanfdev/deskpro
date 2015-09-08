@@ -42,7 +42,7 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const { lists, grouping, sort, order } = this.props;
+    const { lists, grouping, sort, order, dp_window } = this.props;
     const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
     const onMyClick = (filters) => {
@@ -54,6 +54,8 @@ export class NavContainer extends React.Component {
 
     return (
       <Nav
+        dp_window={dp_window}
+        dispatch={this.props.dispatch.bind(this)}
         lists={lists}
         grouping={grouping}
         onMyClick={onMyClick}

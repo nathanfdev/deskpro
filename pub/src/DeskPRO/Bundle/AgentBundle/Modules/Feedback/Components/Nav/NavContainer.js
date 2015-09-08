@@ -8,9 +8,13 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const {labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, choiceClick} = this.props;
+    const {labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, choiceClick, dp_window, dispatch} = this.props;
+
+    console.log(this.props);
     return (
       <Nav
+        dispatch={dispatch.bind(this)}
+        dp_window={dp_window}
         onClick={choiceClick.bind(this)}
         labels={labels}
         types={types}

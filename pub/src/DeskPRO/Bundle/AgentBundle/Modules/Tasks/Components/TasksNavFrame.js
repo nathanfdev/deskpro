@@ -7,7 +7,7 @@ import TaskNavGroups from "../Components/TaskNavGroups";
 import TaskNavProjects from "../Components/TaskNavProjects";
 import TaskNavPeople from "../Components/TaskNavPeople";
 import TaskNavLabels from "../Components/TaskNavLabels";
-import { NavFrameHeader } from "../../Application/Components/NavFrame/index";
+import { NavFrameHeader, NavFrame } from "../../Application/Components/NavFrame/index";
 import $ from "jquery";
 
 @connect(state => ({
@@ -54,42 +54,27 @@ export default class TasksNavFrame extends React.Component {
     const expandNav = () => dispatch(AppActions.expandNav());
 
     return (
-      <section className="task-nav-frame dp-nav-frame">
-        <div className={className} id="sidebar-wrapper">
-          <a className="collapse-button" href="#"
-            onClick={expandNav}>
-            <i className="fa fa-angle-right"/>
-          </a>
+      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+        <div part="inner">
+          <NavFrameHeader dispatch={dispatch.bind(this)} icon="fa-check-square-o">Tasks</NavFrameHeader>
 
-          <span className="collapse-controls" onClick={expandNav}>
-            <span className="disc"/>
-            <span className="disc"/>
-            <i className="fa fa-caret-right"/>
-            <span className="disc"/>
-            <span className="disc"/>
-          </span>
-          <aside className="sidebar has-tabs" id="sidebar">
+          <div className="sidebar-list sidebar-list-filters">
+            <TaskNavGroups taskList={taskList} filterTasks={this.filterTasks.bind(this)} />
 
-            <NavFrameHeader dispatch={this.props.dispatch.bind(this)} icon="fa-check-square-o">Tasks</NavFrameHeader>
+            <TaskNavProjects projectList={projectList}
+                             agentList={agentList}
+                             teamList={teamList}
+                             departmentList={departmentList}
+                             createdProject={createdProject}
+                             filterTasks={this.filterTasks.bind(this)}
+              />
 
-            <div className="sidebar-list sidebar-list-filters">
-              <TaskNavGroups taskList={taskList} filterTasks={this.filterTasks.bind(this)} />
+            <TaskNavPeople agentList={agentList} filterTasks={this.filterTasks.bind(this)} />
 
-              <TaskNavProjects projectList={projectList}
-                               agentList={agentList}
-                               teamList={teamList}
-                               departmentList={departmentList}
-                               createdProject={createdProject}
-                               filterTasks={this.filterTasks.bind(this)}
-                />
-
-              <TaskNavPeople agentList={agentList} filterTasks={this.filterTasks.bind(this)} />
-
-              <TaskNavLabels labelList={labelList} filterTasks={this.filterTasks.bind(this)} />
-            </div>
-          </aside>
+            <TaskNavLabels labelList={labelList} filterTasks={this.filterTasks.bind(this)} />
+          </div>
         </div>
-      </section>
+      </NavFrame>
     );
   }
 }
