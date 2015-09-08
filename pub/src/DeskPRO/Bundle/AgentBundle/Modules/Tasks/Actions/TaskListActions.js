@@ -196,8 +196,28 @@ export const loadFilter = createAction(
       filterElements.attachments = (filter.has_attachments === 'has') ? 'not_null' : 'null';
     }
 
+    if (filter.created_after) {
+      filterElements.created_after = filter.created_after;
+    }
+
     if (filter.created_before) {
       filterElements.created_before = filter.created_before;
+    }
+
+    if (filter.due_after) {
+      filterElements.due_after = filter.due_after;
+    }
+
+    if (filter.due_before) {
+      filterElements.due_before = filter.due_before;
+    }
+
+    if (filter.done_after) {
+      filterElements.done_after = filter.done_after;
+    }
+
+    if (filter.done_before) {
+      filterElements.done_before = filter.done_before;
     }
 
     if (filter.order_by) {

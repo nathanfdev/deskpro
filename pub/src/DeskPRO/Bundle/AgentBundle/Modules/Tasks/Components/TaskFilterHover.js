@@ -23,22 +23,41 @@ const TaskFilterHover = React.createClass({
     this.props.closeWindow();
   },
 
+  applyFilter: function(model) {
+    let filtered = model;
+    if (this.state.filterDates) {
+      Object.keys(this.state.filterDates).forEach((key) => {
+        if (key.substring(0, 7) === 'filter_' && this.state.filterDates[key] && Moment.isMoment(this.state.filterDates[key])) {
+          filtered[key.substring(7)] = this.state.filterDates[key].format();
+        }
+      });
+    }
+
+    // Merge model and state
+    this.props.applyFilter(filtered);
+  },
+
   componentDidMount: function() {
     const dateFields = [
-      'filter-created-after',
-      'filter-created-before'
+      'filter_created_after',
+      'filter_created_before',
+      'filter_due_after',
+      'filter_due_before',
+      'filter_done_after',
+      'filter_done_before'
     ];
 
     let pickers = [];
 
     const pickerOptions = {
-      format: "hh:mm, MMMM D, YYYY"
+      format: "HH:mm, MMMM D, YYYY"
     };
 
     dateFields.forEach((field) => {
       let options = pickerOptions;
-      options.input = React.findDOMNode(this.refs[field + '-value']);
-      options.button = React.findDOMNode(this.refs[field + '-button']);
+      options.input = React.findDOMNode(this.refs[field + '_value']);
+      options.button = React.findDOMNode(this.refs[field + '_button']);
+      options.offset = 16;
 
       // Create the picker
       let picker = new Picker(options);
@@ -49,7 +68,7 @@ const TaskFilterHover = React.createClass({
         let updated = newDate ? Moment(newDate).format() : null;
 
         let dates = this.state.filterDates;
-        dates[field] = newDate ? Moment(newDate).format('MMMM D, YYYY') : null;
+        dates[field.replace(/-/g, '_')] = newDate ? Moment(newDate) : null;
 
         this.setState({
           filterDates: dates
@@ -124,7 +143,7 @@ const TaskFilterHover = React.createClass({
           <div className="sidebar-hover-header">
             <i className="fa fa-tags"/> <span className="title">Filter</span>
           </div>
-          <Formsy.Form onSubmit={this.props.applyFilter}>
+          <Formsy.Form onSubmit={this.applyFilter}>
             <div className="sidebar-hover-content-box">
               <h2>Status</h2>
               <div className="sidebar-hover-checkbox-collection inline-radio">
@@ -169,13 +188,35 @@ const TaskFilterHover = React.createClass({
             </div>
             <div className="sidebar-hover-content-box">
               <h2>Created</h2>
-              <div className="filter-created">
-                <FRC.Input type="hidden" ref="filter-created-after-value" name="created_after" />
-                After: <a href="#" ref="filter-created-after-button"><i className="fa fa-calendar-o" /> <span className="filter-created-after" ref="filter-created-after">{dates && dates.created_after ? dates.created_after : 'N/A'}</span></a>
+              <div className="filter-date">
+                <FRC.Input type="hidden" ref="filter_created_after_value" name="created_after" />
+                After: <a href="#" ref="filter_created_after_button"><i className="fa fa-calendar-o" /> <span className="filter-created-after" ref="filter_created_after">{dates && dates.filter_created_after ? dates.filter_created_after.format('h:mma, MMMM D, YYYY') : 'N/A'}</span></a>
               </div>
-              <div className="filter-created">
-                <FRC.Input type="hidden" ref="filter-created-before-value" name="created_before" />
-                Before: <a href="#" ref="filter-created-before-button"><i className="fa fa-calendar-o" /> <span className="filter-created-before" ref="filter-created-before">{dates && dates.created_before ? dates.created_before : 'N/A'}</span></a>
+              <div className="filter-date">
+                <FRC.Input type="hidden" ref="filter_created_before_value" name="created_before" />
+                Before: <a href="#" ref="filter_created_before_button"><i className="fa fa-calendar-o" /> <span className="filter-created-before" ref="filter_created_before">{dates && dates.filter_created_before ? dates.filter_created_before.format('h:mma, MMMM D, YYYY') : 'N/A'}</span></a>
+              </div>
+            </div>
+            <div className="sidebar-hover-content-box">
+              <h2>Due</h2>
+              <div className="filter-date">
+                <FRC.Input type="hidden" ref="filter_due_after_value" name="due_after" />
+                After: <a href="#" ref="filter_due_after_button"><i className="fa fa-calendar-o" /> <span className="filter-due-after" ref="filter_due_after">{dates && dates.filter_due_after ? dates.filter_due_after.format('h:mma, MMMM D, YYYY') : 'N/A'}</span></a>
+              </div>
+              <div className="filter-date">
+                <FRC.Input type="hidden" ref="filter_due_before_value" name="due_before" />
+                Before: <a href="#" ref="filter_due_before_button"><i className="fa fa-calendar-o" /> <span className="filter-due-before" ref="filter_due_before">{dates && dates.filter_due_before ? dates.filter_due_before.format('h:mma, MMMM D, YYYY') : 'N/A'}</span></a>
+              </div>
+            </div>
+            <div className="sidebar-hover-content-box">
+              <h2>Completed</h2>
+              <div className="filter-date">
+                <FRC.Input type="hidden" ref="filter_done_after_value" name="done_after" />
+                After: <a href="#" ref="filter_done_after_button"><i className="fa fa-calendar-o" /> <span className="filter-done-after" ref="filter_done_after">{dates && dates.filter_done_after ? dates.filter_done_after.format('h:mma, MMMM D, YYYY') : 'N/A'}</span></a>
+              </div>
+              <div className="filter-date">
+                <FRC.Input type="hidden" ref="filter_done_before_value" name="done_before" />
+                Before: <a href="#" ref="filter_done_before_button"><i className="fa fa-calendar-o" /> <span className="filter-done-before" ref="filter_done_before">{dates && dates.filter_done_before ? dates.filter_done_before.format('h:mma, MMMM D, YYYY') : 'N/A'}</span></a>
               </div>
             </div>
             <div className="sidebar-hover-content-box">
