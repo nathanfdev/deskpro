@@ -46,17 +46,19 @@ export class ListContainer extends Component {
           <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
         </ControlBar>
 
-        {viewMode === constants.VIEW_MODE_LIST ?
-          feedback.map((item, index) =>
-              <FeedbackCard key={index} feedback={item}/>
-          ) :
-          <TableView>
-            <TableHeader sortTable={sortTable.bind(this)}/>
-            <TableBody>
-              {feedback.map((feedback, index) => <Row key={index} feedback={feedback}/>)}
-            </TableBody>
-          </TableView>
-        }
+        <div className="ticket-list">
+          {viewMode === constants.VIEW_MODE_LIST ?
+            feedback.map((item, index) =>
+                <FeedbackCard key={index} feedback={item}/>
+            ) :
+            <TableView>
+              <TableHeader sortTable={sortTable.bind(this)}/>
+              <TableBody>
+                {feedback.map((feedback, index) => <Row key={index} feedback={feedback}/>)}
+              </TableBody>
+            </TableView>
+          }
+        </div>
       </ListFrame>
     );
   }

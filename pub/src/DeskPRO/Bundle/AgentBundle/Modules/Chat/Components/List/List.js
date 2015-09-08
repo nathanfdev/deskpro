@@ -1,10 +1,10 @@
 import React from 'react';
-import { SectionsPane, Section, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+
 import { ListFrame, ControlBar, OrderBy, ListTableViewSwitcher, TableView, TableBody  }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
+import { ChatCard } from './ChatCard.js';
 
 export class List extends React.Component {
   render() {
@@ -50,7 +50,7 @@ export class List extends React.Component {
     return (
       <div>
         <h1>List View</h1>
-        {elements.map((e, index) => <div key={index} style={{marginTop:'20px'}}>List item: {e}</div>)}
+        {elements.map((element, index) => <ChatCard key={index} chat={element}/>)}
       </div>
     );
   }
