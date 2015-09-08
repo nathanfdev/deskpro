@@ -10,7 +10,12 @@ export default class CrmNav extends Reducer {
       sort: 'date_created', /* Order By ... */
       sortName: 'Date', /* Label for Order By... */
       order: constants.ORDER_DESC, /* Asc, Desc */
-      sortOptions: [{field: 'date_created', label: 'Date'}],
+      sortOptions: [  /* @ToDo actualize field properties */
+        {field: 'date_created', label: 'Created'},
+        {field: 'name', label: 'Name'},
+        {field: 'date_created', label: 'Last login'},
+        {field: 'date_created', label: 'Organization'}
+      ],
       labels: {
         person: [/* string */],
         organization: [/* string */]

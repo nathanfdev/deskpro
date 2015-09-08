@@ -31,9 +31,9 @@ export class FeedbackApp extends React.Component {
   choiceClick(params, event) {
     event.preventDefault();
     event.stopPropagation();
-    const {sort, dispatch, filters} = this.props;
+    const {sort, order, dispatch, filters} = this.props;
     dispatch(actions.changeQueryState(params));
-    dispatch(actions.loadFeedbackList(params, sort, filters));
+    dispatch(actions.loadFeedbackList(params, sort, order, filters));
     $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
     $(event.target).closest('a').addClass('active');
   }
@@ -83,14 +83,8 @@ export class FeedbackApp extends React.Component {
     const {dispatch, sort, order, query, filters} = this.props;
     $('div.dropdown-choice').hide();
     let elem = $(event.target),
-      newOrder = constants.ORDER_ASC;
-    if (order === newOrder) {
-      newOrder = constants.ORDER_DESC;
-      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
-    }
-    else {
-      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
-    }
+      newOrder = (order === constants.ORDER_ASC) ? constants.ORDER_DESC : constants.ORDER_ASC;
+    elem.closest('a.ticket-control-button').find('i.fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
     dispatch(AppActions.toggleOrder());
     dispatch(actions.loadFeedbackList(query, sort, newOrder, filters));
   }

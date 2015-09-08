@@ -24,8 +24,7 @@ export class ListContainer extends Component {
     viewMode: PropTypes.string.isRequired,
     sortTable: PropTypes.func.isRequired,
     toggleOrder: PropTypes.func.isRequired,
-    toggleSort: PropTypes.func.isRequired,
-    toggleView: PropTypes.func.isRequired
+    toggleSort: PropTypes.func.isRequired
   };
 
   render() {
@@ -43,12 +42,11 @@ export class ListContainer extends Component {
                    toggleOrder={this.toggleOrder.bind(this)}
                    toggleSort={this.toggleSort.bind(this)}
             />
-          <ListTableViewSwitcher displayFields={displayFields} toggleView={this.toggleView.bind(this)} {...this.props}/>
+          <ListTableViewSwitcher displayFields={displayFields} {...this.props}/>
         </ControlBar>
       </ListFrame>
     );
   }
-
 
 
   /** Change sort option (Order By ...)*/
@@ -56,14 +54,12 @@ export class ListContainer extends Component {
     event.preventDefault();
     event.stopPropagation();
     const {dispatch, order, query, filters} = this.props;
-     var elem = $(event.target),
-     name = elem.text(),
-     table = elem.closest('div.feedback-list').find('table'),
-     newSort = elem.data('field');
-     table.find('i.fa').remove();
-     this.setState({sort: newSort});
-     elem.closest('a.ticket-control-button').find('span.sort-name').text(name);
-     $('div.dropdown-choice').hide();
+    var elem = $(event.target),
+      newSort = elem.data('field');
+    this.setState({sort: newSort});
+    elem.closest('div.feedback-list').find('table').find('i.fa').remove();
+    elem.closest('a.ticket-control-button').find('span.sort-name').text(elem.text());
+    $('div.dropdown-choice').hide();
     /* @ToDo dispatch(actions.___loadList___(query, newSort, order, filters));*/
   }
 
@@ -74,14 +70,8 @@ export class ListContainer extends Component {
     const {dispatch, sort, order, query, filters} = this.props;
     $('div.dropdown-choice').hide();
     let elem = $(event.target),
-      newOrder = constants.ORDER_ASC;
-    if (order === newOrder) {
-      newOrder = constants.ORDER_DESC;
-      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-up').addClass('fa-caret-down');
-    }
-    else {
-      elem.closest('a.ticket-control-button').find('i.fa').removeClass('fa-caret-down').addClass('fa-caret-up');
-    }
+      newOrder = (order === constants.ORDER_ASC) ? constants.ORDER_DESC : constants.ORDER_ASC;
+    elem.closest('a.ticket-control-button').find('i.fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
     dispatch(AppActions.toggleOrder());
     // @ToDo dispatch(actions.___loadList___(query, sort, newOrder, filters));
   }
