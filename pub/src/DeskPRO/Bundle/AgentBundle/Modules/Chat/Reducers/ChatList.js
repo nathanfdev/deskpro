@@ -3,46 +3,54 @@ import * as actions from '../Actions/chatListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export default class ChatList extends Reducer {
-    getInitialState() {
-        return {
+  getInitialState() {
+    return {
+      query: {agent: 'me'},
+      // list sorting options
+      sort: 'date_created',
+      sortName: 'Date',
+      order: constants.ORDER_DESC,
+      sortOptions: [
+        {field: 'date_created', label: 'Date'},
+        {field: 'total_rating', label: 'Agent'},
+        {field: 'num_ratings', label: 'Department'}
+      ],
 
-            // list sorting options
-            sort: 'date_created',
-            order: constants.ORDER_DESC,
+      // view mode (table or list)
+      viewMode: constants.VIEW_MODE_TABLE,
 
-            // view mode (table or list)
-            view: constants.VIEW_MODE_TABLE,
+      // chats to display
+      elements: []
+    };
+  }
 
-            // chats to display
-            chats: []
-        };
+  registerHandlers() {
+    this
+      .r(actions.load, this.listLoaded)
+      .r(actions.toggleSort, this.sortChanged)
+      .r(actions.toggleOrder, this.orderChanged)
+      .r(actions.toggleView, this.viewChanged)
+    ;
+  }
+
+  listLoaded(prev, {payload}) {
+    return {...prev, elements: payload};
+  }
+
+  sortChanged(prev, {payload}) {
+    return {...prev, sort: payload};
+  }
+
+  orderChanged(prev) {
+    const next = {...prev};
+    next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    return next;
+  }
+
+  viewChanged(prev) {
+    return {
+      ...prev,
+      viewMode: prev.view === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST
     }
-
-    registerHandlers() {
-        this
-            .r(actions.load, this.listLoaded)
-            .r(actions.sort, this.sortChanged)
-            .r(actions.toggleOrder, this.orderChanged)
-            .r(actions.toggleView, this.viewChanged)
-        ;
-    }
-
-    listLoaded(prev, {payload}) {
-        return {...prev, chats: payload};
-    }
-
-    sortChanged(prev, {payload}) {
-        return {...prev, sort: payload};
-    }
-
-    orderChanged(prev) {
-        return {...prev, order: prev.order === constants.ORDER_ASC ? constants.ORDER_DESC : constants.ORDER_ASC}
-    }
-
-    viewChanged(prev) {
-        return {
-            ...prev,
-            view: prev.view === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST
-        }
-    }
+  }
 }

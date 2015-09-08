@@ -1,41 +1,31 @@
 import React from 'react';
-import { SectionsPane, Section, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { ListFrame }
+
+import { ListFrame, ControlBar, OrderBy, ListTableViewSwitcher, TableView, TableBody  }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { TableHeader } from './TableHeader';
+import { Row } from './Row';
+import { ChatCard } from './ChatCard.js';
 
 export class List extends React.Component {
   render() {
-    const { elements, view, toggleView, order, toggleOrder, sort } = this.props;
+    const {
+      elements, viewMode, sort, sortName, order, sortOptions, displayFields,
+      toggleView, toggleOrder, showSortChoice, toggleSort
+      } = this.props;
 
     return (
       <ListFrame>
-        <SectionsPane>
-          <Section>
-            <div className="tickets-control-bar">
+        <ControlBar>
+          <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
+                   toggleSort={toggleSort.bind(this)}
+                   showSortChoice={showSortChoice.bind(this)}
+                   toggleOrder={toggleOrder.bind(this)}
+            />
+          <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
+        </ControlBar>
 
-              <div className="bulk-edit-control">
-                <a href="#">
-                        <span className="checkbox">
-                            <i className="fa fa-check"/>
-                        </span>
-                </a>
-                <span className="count" style={{display: "none"}}><span>X</span></span>
-              </div>
+        {this.renderElements(viewMode, elements)}
 
-                <span className="ticket-controls-default">
-                    Sort: <a href onClick={sort('date_created')}>date_created</a> | <a href onClick={sort('agent')}>agent</a> | <a href onClick={sort('department')}>department</a>
-
-                    <br /><br />
-
-                    Toggle Order: <a href onClick={toggleOrder}>{order}</a> | Toggle View: <a href onClick={toggleView}>{view}</a>
-                </span>
-            </div>
-          </Section>
-          <Section>
-            {this.renderElements(view, elements)}
-          </Section>
-        </SectionsPane>
       </ListFrame>
     );
   }
@@ -56,23 +46,27 @@ export class List extends React.Component {
   }
 
   renderListView(elements) {
-    let key = 0;
-
+    console.log('Elements:', elements);
     return (
       <div>
         <h1>List View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>List item: {e}</div>)}
+        {elements.map((element, index) => <ChatCard key={index} chat={element}/>)}
       </div>
     );
   }
 
   renderTableView(elements) {
-    let key = 0;
+    console.log('Elements:', elements);
 
     return (
       <div>
         <h1>Table View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>Table row: {e}</div>)}
+        <TableView>
+          <TableHeader/>
+          <TableBody>
+            {elements.map((element, index) => <Row key={index} element={element}/>)}
+          </TableBody>
+        </TableView>
       </div>
     );
   }

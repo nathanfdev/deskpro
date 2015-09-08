@@ -100,9 +100,9 @@ const ProjectCreateHover = React.createClass({
     if (typeof agentList.agentList !== 'undefined' && agentList.agentList !== null) {
       agentList.agentList.forEach(function(object) {
         let label = (<span>
-                    <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/>
-            {object.name}
-                </span>
+                      {object.picture_blob ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/> : '' }
+                      {object.name}
+                    </span>
         );
         members.push({value: object.id, label:label});
       });

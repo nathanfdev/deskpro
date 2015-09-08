@@ -16,20 +16,22 @@ export default class LabelList extends Reducer {
     let sortedCharacters = [];
 
     // Sort labels according to their respective first letters
-    payload.forEach(function(key){
+    if (typeof payload.forEach === 'function') {
+      payload.forEach(function(key){
         let label = key.label.toLowerCase();
         let currentCharacter = label.substr(0, 1).toUpperCase();
 
         // .keys() not available, so we push it ourselves
         if (sortedCharacters.indexOf(currentCharacter) === -1) {
-            sortedCharacters.push(currentCharacter);
+          sortedCharacters.push(currentCharacter);
         }
 
         if (typeof sortedLabels[currentCharacter] === 'undefined') {
-            sortedLabels[currentCharacter] = [];
+          sortedLabels[currentCharacter] = [];
         }
         sortedLabels[currentCharacter].push(key);
-    });
+      });
+    }
 
     return {
         ...state,

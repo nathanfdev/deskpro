@@ -8,11 +8,11 @@ import { compileParams } from '../ApiHelpers';
  * @return Promise
  */
 export function loadAddress(address, params = {}) {
-    if (params.length > 0) {
-        address = address + '?' + compileParams(params);
-    }
+  if (params.length > 0) {
+    address = address + '?' + compileParams(params);
+  }
 
-    return DpApi.sendGet('DP_API/' + address);
+  return DpApi.sendGet('DP_API/' + address);
 }
 
 /**
@@ -20,11 +20,11 @@ export function loadAddress(address, params = {}) {
  * @return Promise
  */
 export function toValidate() {
-    let query = {
-        awaiting_validation: 1
-    };
+  let query = {
+    awaiting_validation: 1
+  };
 
-    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /**
@@ -32,11 +32,11 @@ export function toValidate() {
  * @return Promise
  */
 export function commentsToReview() {
-    let query = {
-        awaiting_validation: 1
-    };
+  let query = {
+    awaiting_validation: 1
+  };
 
-    return DpApi.sendGet('DP_API/feedback_comments/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback_comments/counts?' + compileParams(query));
 }
 
 /**
@@ -44,7 +44,7 @@ export function commentsToReview() {
  * @return Promise
  */
 export function getLabels() {
-    return DpApi.sendGet('DP_API/feedback_labels');
+  return DpApi.sendGet('DP_API/feedback_labels');
 }
 
 /**
@@ -52,11 +52,11 @@ export function getLabels() {
  * @return Promise
  */
 export function getTypes() {
-    let query = {
-        group_by: "category"
-    };
+  let query = {
+    group_by: "category"
+  };
 
-    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /**
@@ -64,11 +64,11 @@ export function getTypes() {
  * @return Promise
  */
 export function getCustomCategories() {
-    let query = {
-        group_by: "custom_category"
-    };
+  let query = {
+    group_by: "custom_category"
+  };
 
-    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /**
@@ -76,11 +76,11 @@ export function getCustomCategories() {
  * @return Promise
  */
 export function getNew() {
-    let query = {
-        status: "new"
-    };
+  let query = {
+    status: "new"
+  };
 
-    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /**
@@ -88,12 +88,12 @@ export function getNew() {
  * @return Promise
  */
 export function getActive() {
-    let query = {
-        status: "active",
-        group_by: "status_category"
-    };
+  let query = {
+    status: "active",
+    group_by: "status_category"
+  };
 
-    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /**
@@ -101,12 +101,12 @@ export function getActive() {
  * @return Promise
  */
 export function getClosed() {
-    let query = {
-        status: "closed",
-        group_by: "status_category"
-    };
+  let query = {
+    status: "closed",
+    group_by: "status_category"
+  };
 
-    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /**
@@ -114,32 +114,33 @@ export function getClosed() {
  * @return Promise
  */
 export function getHidden() {
-    let query = {
-        status: "hidden",
-        group_by: "hidden_status"
-    };
+  let query = {
+    status: "hidden",
+    group_by: "hidden_status"
+  };
 
-    return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /**
  * Get list of filtered feedback
  * @return Promise
  */
-export function getList(query, sort, filters) {
-    let params = [];
-    params.push(compileParams(query));
-    params.push(compileParams(sort));
-    if (filters.value && filters.value.length > 0) {
-        params.push(filters.alias + '=' + filters.value.replace(/\s/g, "%20"));
-    }
-    //console.log('DP_API/feedback/?' + params.join('&'));
-    return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
+export function getList(query, sort, order, filters) {
+  let params = [];
+  params.push(compileParams(query));
+  params.push('sort=' + sort);
+  params.push('order=' + order);
+  if (filters.value && filters.value.length > 0) {
+    params.push(filters.alias + '=' + filters.value.replace(/\s/g, "%20"));
+  }
+  console.log('DP_API/feedback/?' + params.join('&'));
+  return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
 }
 /**
  * Get values for chosen filter
  * @return Promise
  */
 export function getFilterValues(filterName) {
-    return DpApi.sendGet('DP_API/feedback/filter?name=' + filterName);
+  return DpApi.sendGet('DP_API/feedback/filter?name=' + filterName);
 }

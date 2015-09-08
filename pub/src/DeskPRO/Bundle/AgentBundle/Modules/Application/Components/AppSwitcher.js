@@ -8,6 +8,20 @@ import { Link } from 'react-router';
   dp_window: state.dp_window
 }))
 export class AppSwitcher extends React.Component {
+  constructor(props) {
+    super(props);
+    this.expanded = false;
+  }
+
+  hoverSwitcher() {
+    this.expanded = setTimeout(() => this.props.dispatch(AppActions.expandSwitcher()), 1000);
+  }
+
+  cancelSwitcher() {
+    clearTimeout(this.expanded);
+    this.props.dispatch(AppActions.collapseSwitcher());
+  }
+
   renderAppIcon(appId, title, iconClass) {
     const { dp_window, dispatch } = this.props;
     const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
@@ -15,7 +29,7 @@ export class AppSwitcher extends React.Component {
 
     return (
       <li>
-        <Link to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`}>
+        <Link activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`} onClick={clickHandler}>
           <i className={className}></i> <span className="title">{title}</span>
         </Link>
       </li>
@@ -23,12 +37,14 @@ export class AppSwitcher extends React.Component {
   }
 
   render() {
-      const { dp_window, dispatch } = this.props;
+    const { dp_window, dispatch } = this.props;
 
-      const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
+    const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
 
     return (
-    <nav className={my_classes}>
+    <nav onMouseEnter={this.hoverSwitcher.bind(this)}
+      onMouseLeave={this.cancelSwitcher.bind(this)}
+      className={my_classes}>
       <div className="app-bar">
         <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
@@ -39,8 +55,6 @@ export class AppSwitcher extends React.Component {
           {this.renderAppIcon('tasks', 'Tasks', 'fa-check-square-o')}
         </ul>
       </div>
-      <a href="#" onClick={() => dispatch(AppActions.expandSwitcher())} className="app-switcher-size-toggle app-switcher-expand">&gt;&nbsp;&gt;&nbsp;&gt;</a>
-      <a href="#" onClick={() => dispatch(AppActions.collapseSwitcher())} className="app-switcher-size-toggle app-switcher-collapse">&lt;&nbsp;&lt;&nbsp;&lt;</a>
     </nav>);
   }
 }

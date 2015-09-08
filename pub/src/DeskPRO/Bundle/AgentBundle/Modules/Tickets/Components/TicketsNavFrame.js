@@ -13,6 +13,8 @@ import * as AppActions from "../../Application/Actions/AppActions";
 
 import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
 
+import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+
 @connect(state => ({
   FilterSetsList: state.FilterSetsList,
   FilterSetsCounts: state.FilterSetsCounts,
@@ -101,17 +103,11 @@ export default class TicketsNavContent extends React.Component {
     }
 
     return (
-      <section className={this.getClasses(dp_window)}>
-        <aside className="sidebar has-tabs">
-          <div className="sidebar-title">
-            <span className="sidebar-type-icon">
-              <i className="fa fa-envelope-o"></i>
-              <span className="help"><i className="fa fa-question"></i></span>
-            </span>
-            <h1><FormattedMessage message={getIntlMessage(Translations, "foobar")} /></h1>
-            <hr />
-            <a href="#" onClick={() => dispatch(AppActions.collapseNav())} className="slider-control"></a>
-          </div>
+      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+        <div part="inner">
+          <NavFrameHeader icon="fa-envelope-o" dispatch={dispatch.bind(this)}>
+            {getIntlMessage(Translations, "foobar")}
+          </NavFrameHeader>
 
           <ul className="tabs sidebar-tabs">
             {this.renderTab('filters', 'Filters')}
@@ -120,10 +116,8 @@ export default class TicketsNavContent extends React.Component {
           </ul>
 
           {tab}
-
-        </aside>
-        <a className="nav-expand-button" onClick={() => dispatch(AppActions.expandNav())} href="#">&nbsp;</a>
-      </section>
+        </div>
+      </NavFrame>
     );
   }
 }

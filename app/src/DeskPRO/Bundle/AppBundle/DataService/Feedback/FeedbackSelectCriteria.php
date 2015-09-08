@@ -135,6 +135,6 @@ class FeedbackSelectCriteria
         );
         $resolver->setAllowedValues('sort',
             ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']);
-        $resolver->setAllowedValues('order', ['Asc', 'Desc']);
+        $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

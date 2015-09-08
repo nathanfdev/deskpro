@@ -654,7 +654,13 @@ $em->getConnection()->executeUpdate("
     INSERT INTO `task_projects`
         (`id`, `title`)
     VALUES
-        (1, 'Example Project')
+        (1, 'Example Project'),
+        (2, 'Example Project 2'),
+        (3, 'Example Project 3'),
+        (4, 'Example Project 4'),
+        (5, 'Example Project 5'),
+        (6, 'Example Project 6'),
+        (7, 'Example Project 7')
     ;
 
     INSERT INTO `task_lists`
@@ -683,8 +689,35 @@ $em->getConnection()->executeUpdate("
         (`id`, `creator_person_id`, `project_id`, `list_id`, `title`, `percent_complete`, `date_created`, `task_type`, `date_due`, `date_event_start`, `date_event_end`, `visibility`, `urgency`, `is_done`, `date_done`, `display_order`)
     VALUES
         (1, 1, 1, 2, 'Test task 1', 0, '2015-09-04 15:30:00', 'task', '2015-09-29 04:12:25', NULL, NULL, 'private', 5, 0, NULL, 1),
-        (2, 1, 1, 1, 'Test task 2', 0, '2015-09-04 15:30:00', 'task', '2015-09-31 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 2),
-        (3, 1, 1, 3, 'Test task 3', 100, '2015-09-04 15:30:00', 'task', NULL, NULL, NULL, 'project', 5, 1, '2015-09-04 16:00:00', 3)
+        (2, 1, 1, 1, 'Test task 2', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 2),
+        (3, 1, 1, 3, 'Test task 3', 100, '2015-09-04 15:30:00', 'task', NULL, NULL, NULL, 'project', 5, 1, '2015-09-04 16:00:00', 3),
+        (4, 1, 1, 1, 'Test task 4', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 4),
+        (5, 1, 1, 1, 'Test task 5', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 5),
+        (6, 1, 2, 1, 'Test task 6', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 6),
+        (7, 1, 2, 1, 'Test task 7', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 7),
+        (8, 1, 2, 1, 'Test task 8', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 8),
+        (9, 1, 2, 1, 'Test task 9', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 9),
+        (10, 1, 3, 1, 'Test task 10', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 10),
+        (11, 1, 3, 1, 'Test task 11', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 11),
+        (12, 1, 4, 1, 'Test task 12', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 12),
+        (13, 1, 4, 1, 'Test task 13', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 13),
+        (14, 1, 5, 1, 'Test task 14', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 14),
+        (15, 1, 5, 1, 'Test task 15', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 15),
+        (16, 1, 5, 1, 'Test task 16', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 16),
+        (17, 1, 5, 1, 'Test task 17', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 17),
+        (18, 1, 5, 1, 'Test task 18', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 18),
+        (19, 1, 5, 1, 'Test task 19', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 19),
+        (20, 1, 5, 1, 'Test task 20', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 20),
+        (21, 1, 5, 1, 'Test task 21', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 21),
+        (22, 1, 5, 1, 'Test task 22', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 22),
+        (23, 1, 5, 1, 'Test task 23', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 23),
+        (24, 1, 5, 1, 'Test task 24', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 24),
+        (25, 1, 5, 1, 'Test task 25', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 25),
+        (26, 1, 5, 1, 'Test task 26', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 26),
+        (27, 1, 5, 1, 'Test task 27', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 27),
+        (28, 1, 6, 1, 'Test task 28', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 28),
+        (29, 1, 6, 1, 'Test task 29', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 29),
+        (30, 1, 6, 1, 'Test task 30', 0, '2015-09-04 15:30:00', 'task', '2015-09-30 04:12:25', NULL, NULL, 'public', 5, 0, NULL, 30)
     ;
 
     INSERT INTO `task_labels`

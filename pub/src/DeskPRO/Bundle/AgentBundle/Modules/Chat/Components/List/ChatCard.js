@@ -1,11 +1,21 @@
 import React from 'react';
 
-export class FeedbackCard extends React.Component {
+export class ChatCard extends React.Component {
+
+  getTimeInterval(date) {
+    let created = new Date(date),
+      now = new Date(),
+      interval = now.getTime() - created.getTime(),
+      inHours = interval / (1000 * 60 * 60);
+    return Math.round(inHours);
+  }
 
   render() {
-    const {feedback} = this.props;
+    const {chat} = this.props;
+    console.log(chat);
+
     return (
-      <div className="card feedback-card">
+      <div className="card chat-card">
         <div className="card-status-bar status-bar-left level-8"></div>
         <div className="card-status-bar status-bar-right level-8"></div>
 
@@ -14,39 +24,36 @@ export class FeedbackCard extends React.Component {
         </div>
 
         <div className="card-line">
-                  <span className="line-box">
-                    <span className="feedback-id">#{feedback.id}</span>
-                  </span>
-                    <span className="line-box card-feedback-mark">
-                    <i className="fa fa-thumbs-up"></i><span className="feedback-count">{feedback.num_ratings}</span>
-                  </span>
-
-          <h1>{feedback.title}</h1>
+          <span className="line-box">
+            <span className="chat-id">#{chat.id}</span>
+          </span>
 
           <div className="task-extras">
-            <span className="text">{feedback.status}</span>
+            <span className="text">
+              {this.getTimeInterval(chat.date_created)} hrs ago
+            </span>
           </div>
         </div>
 
         <div className="card-line">
           <div className="ticket-intro">
-            <p>{feedback.content}</p>
+            <h1>{chat.subject}</h1>
           </div>
         </div>
 
         <div className="card-line">
           <div className="task-extras">
-            <span className="text">{feedback.author_name}</span>
+            <span className="text"></span>
             <span className="chat-avatar" style={{backgroundImage: "url('./img/avatar6.png')"}}></span>
             <span className="disc"></span>
-            <span className="text">{feedback.num_comments}</span> <i className="fa fa-comment"></i>
+            <span className="text"></span> <i className="fa fa-comment"></i>
           </div>
 
           <div className="task-properties">
-            <i className="fa fa-book"></i> <span className="feedback-type">{feedback.type}</span>
+            <i className="fa fa-book"></i> <span className="chat-type"></span>
             <span className="disc"></span>
             <i className="fa fa-book"></i> <span
-            className="feedback-custom-category">{feedback.custom_category}</span>
+            className="chat-custom-category"></span>
             <span className="disc"></span>
           </div>
         </div>

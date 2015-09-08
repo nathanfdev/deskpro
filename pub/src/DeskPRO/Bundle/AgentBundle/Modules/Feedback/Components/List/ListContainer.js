@@ -1,64 +1,65 @@
-import React from 'react';
-import { ListFrame, ControlBar, ListTableViewSwitcher, TableView }
-    from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
-import { FeedbackCard} from './FeedbackCard';
-import { TableHeader} from './TableHeader';
-import { TableBody} from './TableBody';
-import { OrderBy} from './OrderBy';
-import { FilterBy} from './FilterBy';
+import React, {Component, PropTypes} from 'react';
+import { ListFrame, ControlBar, ListTableViewSwitcher, OrderBy, TableView, TableBody }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { FeedbackCard } from './FeedbackCard';
+import { TableHeader } from './TableHeader';
+import { FilterBy } from './FilterBy';
+import { Row } from './Row';
 
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import { connect } from 'redux/react';
+import $ from "jquery";
 
-@connect(state => state.control_bar)
+export class ListContainer extends Component {
 
-export class ListContainer extends React.Component {
+  static propTypes = {
+    feedback: PropTypes.array.isRequired,
+    sortOptions: PropTypes.array.isRequired,
+    displayFields: PropTypes.array.isRequired,
+    sort: PropTypes.string.isRequired,
+    sortName: PropTypes.string.isRequired,
+    order: PropTypes.string.isRequired,
+    filters: PropTypes.object.isRequired,
+    query: PropTypes.object.isRequired,
+    viewMode: PropTypes.string.isRequired,
+    sortTable: PropTypes.func.isRequired,
+    showSortChoice: PropTypes.func.isRequired,
+    toggleOrder: PropTypes.func.isRequired,
+    toggleSort: PropTypes.func.isRequired,
+    toggleView: PropTypes.func.isRequired
+  };
 
-    render() {
-        let itemKey = 0;
+  render() {
+    const {
+      feedback, viewMode, sortTable, sort, sortName, order, filters, query, sortOptions, displayFields,
+      toggleView, toggleOrder, showSortChoice, toggleSort
+      } = this.props;
 
-        const { feedback, viewMode, sortTable, sort, sortName, filters, query } = this.props;
+    return (
+      <ListFrame>
+        <ControlBar>
+          <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
+                   toggleOrder={toggleOrder.bind(this)}
+                   showSortChoice={showSortChoice.bind(this)}
+                   toggleSort={toggleSort.bind(this)}
+            />
+          <FilterBy filters={filters} query={query}/>
+          <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
+        </ControlBar>
 
-        const fields = [
-            {name: 'id', label: 'ID'},
-            {name: 'status', label: 'Status'},
-            {name: 'hidden_status', label: 'Hidden status'},
-            {name: 'status_category', label: 'Status category'},
-            {name: 'title', label: 'Status category'},
-            {name: 'author_name', label: 'Submitter'},
-            {name: 'language_id', label: 'Lang'},
-            {name: 'type', label: 'Type'},
-            {name: 'slug', label: 'Slug'},
-            {name: 'date_created', label: 'Created'},
-            {name: 'date_published', label: 'Published'},
-            {name: 'view_count', label: 'Views'},
-            {name: 'total_rating', label: 'Rating'},
-            {name: 'num_rating', label: 'Votes'},
-            {name: 'num_comments', label: 'Comments'},
-            {name: 'validating', label: 'Validating'},
-            {name: 'popularity', label: 'Popularity'},
-            {name: 'content', label: 'Content'},
-            {name: 'custom_category', label: 'Category'}
-        ];
-
-        return (
-            <ListFrame>
-                <ControlBar>
-                    <OrderBy sort={sort} sortName={sortName}/>
-                    <FilterBy filters={filters} query={query}/>
-                    <ListTableViewSwitcher fields={fields} {...this.props}/>
-                </ControlBar>
-
-                {viewMode === constants.VIEW_MODE_LIST ?
-                    feedback.map(item =>
-                            <FeedbackCard key={itemKey++} feedback={item}/>
-                    ) :
-                    <TableView>
-                        <TableHeader sortTable={sortTable.bind(this)}/>
-                        <TableBody feedback={feedback}/>
-                    </TableView>
-                }
-            </ListFrame>
-        );
-    }
+        <div className="ticket-list">
+          {viewMode === constants.VIEW_MODE_LIST ?
+            feedback.map((item, index) =>
+                <FeedbackCard key={index} feedback={item}/>
+            ) :
+            <TableView>
+              <TableHeader sortTable={sortTable.bind(this)}/>
+              <TableBody>
+                {feedback.map((feedback, index) => <Row key={index} feedback={feedback}/>)}
+              </TableBody>
+            </TableView>
+          }
+        </div>
+      </ListFrame>
+    );
+  }
 }

@@ -1,0 +1,21 @@
+import React from 'react';
+
+export class TableHeader extends React.Component {
+
+  render() {
+    const {sortTable} = this.props;
+    return (
+      <thead>
+      <tr>
+        <th className="id-col sortable">ID</th>
+        <th className="user-col sortable">User</th>
+        <th class="agent-col sortable">Agent</th>
+        <th>Labels</th>
+        <th>Chat</th>
+        <th></th>
+        <th></th>
+      </tr>
+      </thead>
+    );
+  }
+}

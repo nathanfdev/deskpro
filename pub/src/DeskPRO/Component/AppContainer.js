@@ -4,6 +4,11 @@ export default class AppContainer extends React.Component {
   render() {
     const { dp_window, thisAppId } = this.props;
     let classes = ["app-frame-container", "app-active"];
+
+    if (typeof dp_window !== 'undefined' && dp_window.collapseNav) {
+      classes.push("collapsed-nav");
+    }
+
     // if(dp_window.activeAppId == thisAppId) {
     //   classes.push('app-active');
     // } else {

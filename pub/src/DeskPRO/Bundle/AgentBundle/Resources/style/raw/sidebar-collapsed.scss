@@ -1,5 +1,6 @@
 .sidebar-wrapper.sidebar-collapsed {
   width: 15px;
+  background-color: #dfe4eb;
 
   .collapse-button {
     background: #dfe4eb;
@@ -30,6 +31,7 @@
     width: 15px;
     background: #dfe4eb;
     border-right: 1px solid #dcdee1;
+    box-shadow: none;
 
     * { display: none; }
 
