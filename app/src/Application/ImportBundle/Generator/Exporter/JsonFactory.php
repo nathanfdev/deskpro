@@ -71,6 +71,7 @@ class JsonFactory extends AbstractFactory
             ->attach(new Parser\Json\Downloads($reader, $formatter, $helpers))
             ->attach(new Parser\Json\Feedback($reader, $formatter, $helpers))
             ->attach(new Parser\Json\Articles($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\ArticleCategories($reader, $formatter, $helpers))
             ->attach(new Parser\Json\News($reader, $formatter, $helpers))
             ->attach(new Parser\Json\People($reader, $formatter, $helpers))
             ->attach(new Parser\Json\Tickets($reader, $formatter, $helpers))

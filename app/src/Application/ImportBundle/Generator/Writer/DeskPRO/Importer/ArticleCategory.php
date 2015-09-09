@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,46 +25,32 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
 
 /**
- * DeskPRO data exporter factory
- *
- * Class DeskPROFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class ArticleCategory
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-class DeskPROFactory extends AbstractFactory
+final class ArticleCategory extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
+    public function getEntityType()
     {
-        if ( ! $config instanceof DeskPROConfig) {
-            throw new \RuntimeException('Config expected to be instance of DeskPROConfig');
-        }
+        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
+    }
 
-        /** @var DeskproContainer $container */
-        $reader  = DeskPROReaderFactory::createReader($config, $container);
+    /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    {
+        $this->records = new DoctrineEntitiesCollection();
 
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\DeskPRO\People($reader))
-            ->attach(new Parser\DeskPRO\Tickets($reader, $config->getStartTicketId()))
-            ->attach(new Parser\DeskPRO\Articles($reader))
-            ->attach(new Parser\DeskPRO\ArticleCategories($reader))
-            ->attach(new Parser\DeskPRO\Downloads($reader))
-            ->attach(new Parser\DeskPRO\Feedback($reader))
-            ->attach(new Parser\DeskPRO\News($reader))
-            ->attach(new Parser\DeskPRO\Organizations($reader))
-        ;
-
-        return new DeskPRO($parsers, $reader);
+        return $this->records;
     }
 }
