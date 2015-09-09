@@ -1,7 +1,7 @@
 import React from "react";
 import { DragSource } from "react-dnd";
-import { connect } from 'redux/react';
-import $ from 'jquery';
+import { connect } from "redux/react";
+import $ from "jquery";
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";
@@ -16,7 +16,8 @@ import KanbanColumn from "../Components/KanbanColumn";
 import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
 import * as AppActions from "../../Application/Actions/AppActions";
-import * as constants from '../../../Constants/Constants';
+import * as constants from "../../../Constants/Constants";
+import ReactPaginate from "react-paginate";
 
 @connect(state => ({
     taskFrameList: state.taskFrameList,
@@ -185,6 +186,16 @@ export default class TasksListFrame extends React.Component {
     this.props.dispatch(TaskActions.setFilter(query));
   }
 
+  handlePageClick(data) {
+    const page = data.selected + 1;
+
+    let filter = this.state.filter;
+
+    filter.page = page;
+
+    this.props.dispatch(TaskActions.setFilter(filter));
+  }
+
   nextMonth() {
     let moment = this.state.moment.add(1, 'months');
 
@@ -283,6 +294,12 @@ export default class TasksListFrame extends React.Component {
 
         tasks[columnId].push(object);
       });
+    }
+
+    let total_pages = 1;
+
+    if (taskFrameList.taskFrameMeta && taskFrameList.taskFrameMeta.pagination) {
+      total_pages = taskFrameList.taskFrameMeta.pagination.total_pages;
     }
 
     return (
@@ -450,6 +467,28 @@ export default class TasksListFrame extends React.Component {
             </div>
           }
         </div>
+
+        {
+          // pageNum: The total number of pages
+          // pageRangeDisplayed: Number of pages to display in the center
+          // marginPagesDisplayed: Number of pages to display at the ends of the pagination block
+          // initialSelected: Current page INDEX (zero-based - i.e. page number minus 1)
+        }
+
+        { total_pages > 1 ?
+        <div className="pagination-block">
+          <ReactPaginate previousLabel={<i className="fa fa-caret-left" />}
+                         nextLabel={<i className="fa fa-caret-right" />}
+                         breakLabel={<li className="break"><a href="#">...</a></li>}
+                         pageNum={total_pages}
+                         initialSelected={1}
+                         marginPagesDisplayed={3}
+                         pageRangeDisplayed={3}
+                         clickCallback={this.handlePageClick.bind(this)}
+                         containerClassName={"pagination"}
+                         subContainerClassName={"pages pagination"}
+                         activeClassName={"active"} />
+        </div> : '' }
       </section>
     );
   }

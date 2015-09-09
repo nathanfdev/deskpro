@@ -220,6 +220,10 @@ export const loadFilter = createAction(
       filterElements.done_before = filter.done_before;
     }
 
+    if (filter.page) {
+      filterElements.page = filter.page;
+    }
+
     if (filter.order_by) {
       filterElements.order_by = filter.order_by;
     } else {

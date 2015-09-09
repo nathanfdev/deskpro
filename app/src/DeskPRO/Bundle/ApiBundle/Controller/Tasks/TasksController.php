@@ -95,7 +95,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $tasks = $this->filterTasks($request, $entityManager);
 
         $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 100);
+        $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
         $pager->setMaxPerPage($count);
