@@ -4,6 +4,7 @@ import { validateTarget } from './Content';
 
 /**
  * @param target
+ * @param filters
  * @return Promise
  */
 export function load(target, filters) {

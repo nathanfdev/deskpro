@@ -3,7 +3,7 @@
  * @param params
  * @returns {string}
  */
-export function compileParams(params) {
+export function compileParams(params = {}) {
   let compiled = [];
 
   for (let key of Object.keys(params)) {

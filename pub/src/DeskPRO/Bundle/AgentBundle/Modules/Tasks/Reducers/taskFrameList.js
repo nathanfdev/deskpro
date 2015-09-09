@@ -11,10 +11,11 @@ export default class TaskFrameList extends Reducer {
       taskFrameAgents: null,
       taskFrameTeams: null,
       taskFrameDepartments: null,
-      taskFrameTickets: null
+      taskFrameTickets: null,
+      taskFrameMeta: null
     };
   }
-  
+
   tasksLoaded(state, action) {
     let projects = [];
     let links = [];
@@ -22,7 +23,7 @@ export default class TaskFrameList extends Reducer {
     let teams = [];
     let departments = [];
     let tickets = [];
-    
+
     if (typeof action.payload.projects !== 'undefined' && typeof action.payload.projects !== 'undefined') {
       projects = action.payload.projects;
     }
@@ -56,10 +57,11 @@ export default class TaskFrameList extends Reducer {
       taskFrameAgents: agents,
       taskFrameTeams: teams,
       taskFrameDepartments: departments,
-      taskFrameTickets: tickets
+      taskFrameTickets: tickets,
+      taskFrameMeta: action.payload.meta
     };
   }
-  
+
   registerHandlers() {this
     .r(TaskListActions.loadTaskList, this.tasksLoaded)
   }
