@@ -181,6 +181,8 @@ class SearchController extends AbstractController
 
         if (null === $content_type) {
             $content_type = $allowed_types;
+        } else {
+            $content_type = array($content_type);
         }
 
         $person = $this->getUser() ?: new PersonGuest();
@@ -192,7 +194,7 @@ class SearchController extends AbstractController
         $results = $se->getUserSearch()->similarTo(
             $context,
             $content,
-            array('limit_types' => array($content_type))
+            array('limit_types' => $content_type)
         );
 
 

@@ -45,10 +45,6 @@ export default class CustomPerFieldEdit extends PageWidget {
       $addSubmit.hide();
       PortalHttp.sendPost(`/portal-data/custom-per/${type}/${id}`, { new_field: $addInput.val() }).
         then((r) => {
-
-          console.log(r);
-
-
           if (r.isError()) {
             markError();
             return;
@@ -62,7 +58,6 @@ export default class CustomPerFieldEdit extends PageWidget {
           let response_choice = r.data.data.new;
 
           id_incrementer++;
-          console.log(id_incrementer);
           let new_id = 'dyanmic_id_new_custom_per'+(id_incrementer * 250);
           if (multiple) {
             input_name += "[]";

@@ -53,23 +53,87 @@ class SuggestionRow extends React.Component {
   }
 }
 
+class SuggestionMore extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      focused: false
+    }
+  }
+
+  onFocus() {
+    this.setState({
+      focused: true
+    });
+  }
+
+  onBlur() {
+    this.setState({
+      focused: false
+    })
+  }
+
+  render() {
+    return (
+      <li>
+        <a
+          onClick={this.props.showAll}
+          onMouseOver={this.onFocus.bind(this)}
+          onMouseOut={this.onBlur.bind(this)}
+          className={(this.state.focused ? 'focus' : '') + (this.props.alt ? ' alt' : '')}
+          >
+          Show <strong>{this.props.count}</strong> more...
+        </a>
+      </li>
+    );
+  }
+}
+
+
 class Suggestions extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        show_all: false
+    };
+  }
+  showMore() {
+    this.setState({
+      show_all: true
+    });
+  }
+  componentWillReceiveProps(newProps) {
+    if (this.props.results !== newProps.results) {
+      this.setState({
+        show_all: false
+      });
+    }
+  }
   render() {
     if (this.props.results.length === 0) {
       return null;
     }
+    let visible_results;
 
+    if (!this.state.show_all) {
+      visible_results = _.slice(this.props.results, 0, 5);
+    } else {
+      visible_results = this.props.results;
+    }
     return (
       <div>
         <hr/>
         <div className="result-list">
           <ul>
             {
-              _.map(this.props.results, (result, idx) => {
+              _.map(visible_results, (result, idx) => {
                 return (
                   <SuggestionRow key={result.type + result.object.id} alt={idx % 2 === 0} result={result}/>
                 );
               })
+            }
+            {
+              !this.state.show_all ? (<SuggestionMore alt={visible_results.length % 2 === 0} count={this.props.results.length - 5} showAll={this.showMore.bind(this)} />) : null
             }
           </ul>
         </div>
@@ -89,13 +153,13 @@ export default class NewTicketSuggestions extends React.Component {
         words: []
       },
       search_query: {
-        q: ''
+        content: ''
       }
     };
   }
   componentDidMount() {
     let throttleChanges = _.throttle((e) => {
-      this.doSearch({ q: e.target.value });
+      this.doSearch({ content: e.target.value });
     }, 250);
     this.state.$input.on('keyup', throttleChanges);
   }
@@ -106,7 +170,7 @@ export default class NewTicketSuggestions extends React.Component {
       search_query
     });
 
-    if (!search_query.q || search_query.q.length < 3) {
+    if (!search_query.content || search_query.content.length < 3) {
       // we need a query with a length of at least 3 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
       return;
@@ -124,23 +188,21 @@ export default class NewTicketSuggestions extends React.Component {
           doSpin: false
         });
       }
-    }).catch((r) => {
-      console.log('caught error: %o', r);
     });
   }
 	render() {
     let data = this.state.data;
-      return (
-        <div className={"live-results-container" + (this.state.search_query.q.length > 3 ? " show" : "")}>
-          <div className="search-box-results">
-            <header>
-              <span className="result-count">We found the following content that may answer your question</span>
-              <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}} />
-            </header>
-            <Suggestions results={data.results} />
-          </div>
+    return (
+      <div style={{"display": (this.state.search_query.content.length >= 3 && data.results.length > 0 ? " block" : "none")}}>
+        <div className="search-box-results">
+          <header>
+            <span className="result-count">We found the following content that may answer your question</span>
+            <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}} />
+          </header>
+          <Suggestions results={data.results} />
         </div>
-      );
-    }
+      </div>
+    );
+  }
 }
 
