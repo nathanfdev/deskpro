@@ -25,79 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
+
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
- * Exporting entity interface
- *
- * Interface EntityInterface
- * @package Application\ImportBundle\Entity
+ * Class ArticleCategories
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-interface EntityInterface
+final class ArticleCategories extends AbstractParser implements NotSupportedInterface
 {
-    const TYPE_PERSON           = 'person';
-    const TYPE_TICKET           = 'ticket';
-    const TYPE_TICKET_MESSAGE   = 'ticket_message';
-    const TYPE_TICKET_PRIORITY  = 'ticket_priority';
-    const TYPE_BLOB             = 'blob';
-    const TYPE_ATTACHMENT       = 'attachment';
-    const TYPE_CUSTOM_FIELD     = 'custom_field';
-    const TYPE_DOWNLOAD         = 'download';
-    const TYPE_NEWS             = 'news';
-    const TYPE_ARTICLE          = 'article';
-    const TYPE_ARTICLE_CATEGORY = 'article_category';
-    const TYPE_ARTICLE_COMMENT  = 'article_comment';
-    const TYPE_FEEDBACK         = 'feedback';
-    const TYPE_ORGANIZATION     = 'organization';
-    const TYPE_CONTACT_DATA     = 'contact_data';
-    const TYPE_OBJECT_LANG      = 'object_lang';
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
+    }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
-    public function getRawData();
+    public function getCount()
+    {
+        return 0;
+    }
 
     /**
-     * @param array $raw_data
+     * {@inheritdoc}
      */
-    public function setRawData($raw_data);
-
-    /**
-     * @return string
-     */
-    public function getImportMapKey();
-
-    /**
-     * @param string $import_map_key
-     * @return $this
-     */
-    public function setImportMapKey($import_map_key);
-
-    /**
-     * Get entity type
-     *
-     * @return string
-     */
-    public function getType();
-
-    /**
-     * Get entity oid
-     *
-     * @return int|string
-     */
-    public function getOid();
-
-    /**
-     * Get entity destination
-     *
-     * @return string
-     */
-    public function getDestination();
-
-    /**
-     * Convert to array
-     *
-     * @return array
-     */
-    public function toArray();
+    public function export()
+    {
+        return new Entity\Collection();
+    }
 }
