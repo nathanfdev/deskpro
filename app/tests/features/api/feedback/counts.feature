@@ -1,3 +1,4 @@
+@counts
 Feature: /feedback/counts endpoint
   To obtain counters for different types of feedback
   As a developer
