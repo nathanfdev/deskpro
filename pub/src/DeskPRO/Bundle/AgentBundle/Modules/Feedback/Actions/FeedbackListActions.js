@@ -1,6 +1,7 @@
 import { createAction } from "Ampliflux/actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export const feedbackToValidate = createAction(
   "FEEDBACK_TO_VALIDATE",
@@ -95,8 +96,9 @@ export const loadFeedbackList = createAction(
 
 export const changeQueryState = createAction(
   "FEEDBACK_CHANGE_QUERY",
-  (trigger, query) => {
+  (trigger, query, sort, order, filters) => {
     trigger(query);
+    trigger(loadFeedbackList(query, sort, order, filters));
   }
 );
 
@@ -126,8 +128,26 @@ export const resetFilters = createAction(
     trigger({alias: filterAlias, name: filterName, value: ''});
   });
 
-export const setSort = createAction(
-  "FEEDBACK_SET_SORT",
-  (trigger, param, order) => {
-    trigger({sort: param, order: order});
+export const setTableSort = createAction(
+  "FEEDBACK_SET_TABLE_SORT",
+  (trigger, query, sort, order, filters) => {
+    trigger({sort: sort, order: order});
+    trigger(loadFeedbackList(query, sort, order, filters));
   });
+
+export const toggleOrder = createAction(
+  "FEEDBACK_TOGGLE_ORDER",
+  (trigger, query, sort, order, filters) => {
+    trigger();
+    let newOrder = order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    trigger(loadFeedbackList(query, sort, newOrder, filters));
+  });
+
+export const toggleSort = createAction(
+  "FEEDBACK_TOGGLE_SORT",
+  (trigger, query, sort, sortName, order, filters) => {
+    trigger({sort: sort, sortName: sortName});
+    trigger(loadFeedbackList(query, sort, order, filters));
+  });
+
+

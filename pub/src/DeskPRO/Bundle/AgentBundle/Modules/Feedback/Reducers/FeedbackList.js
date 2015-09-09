@@ -155,10 +155,17 @@ export default class FeedbackList extends Reducer {
     return next;
   }
 
-  setSort(prev, {payload}) {
+  setTableSort(prev, {payload}) {
     const next = {...prev};
     next.sort = payload.sort;
     next.order = payload.order;
+    return next;
+  }
+
+  sortChanged(prev, {payload}) {
+    const next = {...prev};
+    next.sort = payload.sort;
+    next.sortName = payload.sortName;
     return next;
   }
 
@@ -166,7 +173,8 @@ export default class FeedbackList extends Reducer {
   registerHandlers() {
     this
       .r(AppActions.TOGGLE_VIEW_MODE, this.viewModeChanged)
-      .r(AppActions.TOGGLE_ORDER, this.orderChanged)
+      .r(FeedbackListActions.toggleOrder, this.orderChanged)
+      .r(FeedbackListActions.toggleSort, this.sortChanged)
       .r(FeedbackListActions.feedbackToValidate, this.toValidate)
       .r(FeedbackListActions.feedbackLabels, this.labels)
       .r(FeedbackListActions.feedbackTypes, this.types)
@@ -180,7 +188,7 @@ export default class FeedbackList extends Reducer {
       .r(FeedbackListActions.setFilterValue, this.setFilterValue)
       .r(FeedbackListActions.resetFilterValue, this.resetFilterValue)
       .r(FeedbackListActions.resetFilters, this.resetFilters)
-      .r(FeedbackListActions.setSort, this.setSort)
+      .r(FeedbackListActions.setTableSort, this.setTableSort)
       .r(FeedbackListActions.loadFeedbackList, this.getList);
   }
 

@@ -5,26 +5,33 @@ import { ListFrame, ControlBar, OrderBy, ListTableViewSwitcher, TableView, Table
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
 import { ChatCard } from './ChatCard.js';
+import * as actions from '../../Actions/chatListActions';
+import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions";
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import $ from "jquery";
+
+import { connect } from 'redux/react';
+@connect(state => state.ChatList)
 
 export class List extends React.Component {
   render() {
-    const {
-      elements, viewMode, sort, sortName, order, sortOptions, displayFields,
-      toggleView, toggleOrder, toggleSort
-      } = this.props;
+    const displayFields = [];
+
+    const { elements, viewMode, sort, sortName, order, sortOptions, dispatch } = this.props;
 
     return (
       <ListFrame>
         <ControlBar>
           <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
-                   toggleSort={toggleSort.bind(this)}
-                   toggleOrder={toggleOrder.bind(this)}
+                   toggleSort={this.toggleSort.bind(this)}
+                   toggleOrder={this.toggleOrder.bind(this)}
             />
-          <ListTableViewSwitcher displayFields={displayFields} {...this.props}/>
+          <ListTableViewSwitcher displayFields={displayFields} viewMode={viewMode} dispatch={dispatch}/>
         </ControlBar>
-
-        {this.renderElements(viewMode, elements)}
-
+        {viewMode === constants.VIEW_MODE_LIST ?
+          this.renderListView(elements) :
+          this.renderTableView(elements)
+        }
       </ListFrame>
     );
   }
@@ -45,7 +52,6 @@ export class List extends React.Component {
   }
 
   renderListView(elements) {
-    console.log('Elements:', elements);
     return (
       <div>
         <h1>List View</h1>
@@ -55,8 +61,6 @@ export class List extends React.Component {
   }
 
   renderTableView(elements) {
-    console.log('Elements:', elements);
-
     return (
       <div>
         <h1>Table View</h1>
@@ -68,5 +72,18 @@ export class List extends React.Component {
         </TableView>
       </div>
     );
+  }
+
+  toggleOrder() {
+    const {dispatch} = this.props;
+    dispatch(AppActions.toggleOrder());
+    //dispatch(actions.load(filters));
+  }
+
+  toggleSort(sort) {
+    return (e) => {
+      e.preventDefault();
+      this.props.dispatch(actions.toggleSort(sort));
+    }
   }
 }

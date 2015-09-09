@@ -15,12 +15,9 @@ export class ListContainer extends Component {
 
   static propTypes = {
     sortOptions: PropTypes.array.isRequired,
-    displayFields: PropTypes.array.isRequired,
     sort: PropTypes.string.isRequired,
     sortName: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    filters: PropTypes.object.isRequired,
-    query: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired,
     sortTable: PropTypes.func.isRequired,
     toggleOrder: PropTypes.func.isRequired,
@@ -31,9 +28,7 @@ export class ListContainer extends Component {
 
     const displayFields = [];
 
-    const {
-      viewMode, sortTable, sort, sortName, order, filters, query, sortOptions
-      } = this.props;
+    const { viewMode, sortTable, sort, sortName, order, sortOptions, dispatch } = this.props;
 
     return (
       <ListFrame>
@@ -42,7 +37,7 @@ export class ListContainer extends Component {
                    toggleOrder={this.toggleOrder.bind(this)}
                    toggleSort={this.toggleSort.bind(this)}
             />
-          <ListTableViewSwitcher displayFields={displayFields} {...this.props}/>
+          <ListTableViewSwitcher displayFields={displayFields} viewMode={viewMode} dispatch={dispatch}/>
         </ControlBar>
       </ListFrame>
     );
@@ -50,29 +45,13 @@ export class ListContainer extends Component {
 
 
   /** Change sort option (Order By ...)*/
-  toggleSort(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {dispatch, order, query, filters} = this.props;
-    var elem = $(event.target),
-      newSort = elem.data('field');
-    this.setState({sort: newSort});
-    elem.closest('div.feedback-list').find('table').find('i.fa').remove();
-    elem.closest('a.ticket-control-button').find('span.sort-name').text(elem.text());
-    $('div.dropdown-choice').hide();
-    /* @ToDo dispatch(actions.___loadList___(query, newSort, order, filters));*/
+  toggleSort(newSort, newSortName) {
+    console.log('Toggle sort params: ', newSort, newSortName);
+    /* @ToDo dispatch(actions.___toggleSort_and_reloadList___(query, newSort, order, filters));*/
   }
 
   /** Change sort order (ASC, DESC)*/
-  toggleOrder(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {dispatch, sort, order, query, filters} = this.props;
-    $('div.dropdown-choice').hide();
-    let elem = $(event.target),
-      newOrder = (order === constants.ORDER_ASC) ? constants.ORDER_DESC : constants.ORDER_ASC;
-    elem.closest('a.ticket-control-button').find('i.fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
-    dispatch(AppActions.toggleOrder());
-    // @ToDo dispatch(actions.___loadList___(query, sort, newOrder, filters));
+  toggleOrder() {
+    // @ToDo dispatch(actions.___toggleOrder_and_reloadList___(query, sort, newOrder, filters));
   }
 }

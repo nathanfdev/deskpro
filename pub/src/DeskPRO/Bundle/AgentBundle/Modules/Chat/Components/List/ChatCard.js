@@ -12,7 +12,6 @@ export class ChatCard extends React.Component {
 
   render() {
     const {chat} = this.props;
-    console.log(chat);
 
     return (
       <div className="card chat-card">

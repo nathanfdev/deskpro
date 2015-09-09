@@ -51,7 +51,7 @@ export default class ChatList extends Reducer {
   viewChanged(prev) {
     return {
       ...prev,
-      viewMode: prev.view === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST
+      viewMode: prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST
     }
   }
 }
