@@ -8,7 +8,7 @@ import * as userSels from "DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/u
   userStatus: userSels.requestStatus("testApp")(state),
   users:      userSels.requestRecords("testApp")(state)
 }))
-export default class TasksListFrame extends React.Component {
+export default class TestNavFrame extends React.Component {
   inc = (e) => {
     this.props.dispatch(TestActions.setCount(this.props.test.get('count') + this.getNum()));
   }

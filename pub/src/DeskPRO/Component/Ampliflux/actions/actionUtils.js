@@ -51,5 +51,5 @@ export function getActionType(thing, returnNull = false) {
  * @return bool
  */
 export function isDSA(action) {
-  return action && typeof action.type !== 'undefined';
+  return action && typeof action.type === 'string';
 }

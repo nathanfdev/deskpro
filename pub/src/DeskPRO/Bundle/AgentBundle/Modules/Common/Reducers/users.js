@@ -14,7 +14,7 @@ function handleSetUserRequest(state, payload) {
   const requestId     = payload.requestId;
   const mode          = payload.mode || 'append';
 
-  let recordIds = Immutable.List(payload.ids || []);
+  let recordIds = Immutable.Set(payload.ids || []);
 
   if (mode !== 'set') {
     const existRecordIds = state.getIn(['requests', requestId]);

@@ -1,7 +1,10 @@
 import { createAction } from "Ampliflux";
 import { objectKeyedFromArray } from "DeskPRO/Component/Util/Objects";
+import isArray from "lodash/lang/isArray";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import Immutable from 'immutable';
+
+window.Immutable = Immutable;
 
 export const gcUsers        = createAction("GC_USERS");
 export const releaseUsers   = createAction("RELEASE_USERS",   (requestId, userIds) => ({ requestId, userIds }));
@@ -13,13 +16,13 @@ export const setUserRequest = createAction("SET_USER_REQUEST", (requestId, recor
   }
 
   if (userIds === null) {
-    userIds = records.keys().toArray();
+    userIds = records.keys().toSet();
   }
 
   return {
     requestId: requestId,
     records:   records,
-    ids:       userIds,
+    ids:       Immutable.Set(userIds),
     mode:      mode
   }
 });
@@ -47,7 +50,7 @@ export const loadUsers = createAction("LOAD_USERS", (requestId, userIds, mode = 
         resolve({
           requestId: requestId,
           records: Immutable.Map(),
-          ids: userIds,
+          ids: Immutable.Set(userIds),
           mode: mode
         });
       }

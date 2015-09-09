@@ -16,6 +16,8 @@ import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Compo
 
 import { devTools } from 'redux-devtools';
 
+import { batchedUpdatesMiddleware } from 'redux-batched-updates';
+
 export default class AgentApp {
   run() {
     $(document).on('ready', () => this.start());
@@ -46,7 +48,8 @@ export default class AgentApp {
       ampMiddleware.redispatchDsaPayload,
       ampMiddleware.guidMiddleware,
       ampMiddleware.promiseMiddleware,
-      ampMiddleware.loggerMiddleware
+      ampMiddleware.loggerMiddleware,
+      batchedUpdatesMiddleware
     );
     const makeStore  = compose(
         middleware,
