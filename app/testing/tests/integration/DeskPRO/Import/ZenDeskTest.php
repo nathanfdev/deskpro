@@ -557,6 +557,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Entity `organization` is not supported', $output);
+        $this->assertContains('Unable to get participant email, id = 100000', $output);
     }
 
     /**
@@ -587,6 +588,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertEquals('Ticket 1', $ticket->getTitle());
         $this->assertEquals('archived', $ticket->getStatusCode());
         $this->assertFalse($ticket->isHold());
+
+        $this->assertNotNull($ticket->hasParticipantEmailAddress('person1@domain.tld'));
 
         $ticket = $tickets[1];
 
