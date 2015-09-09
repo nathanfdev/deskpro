@@ -33,43 +33,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
-use Application\DeskPRO\Entity\CommentAbstract as Comment;
 
 
 /**
  * Class CommentsCountCriteria
  */
-class CommentsCountCriteria extends GroupedCriteria
+class CommentsCountCriteria extends CommentsSelectCriteria implements GroupableCriteriaInterface
 {
+    use Groupable;
+
     /**
      * @inheritDoc
      */
-    public function applyFilters(QueryBuilder $qb)
+    public function getGroupByAllowedValues()
     {
-        $alias = $qb->getRootAliases()[0];
-
-        foreach ($this->filters as $field => $value) {
-            switch ($field) {
-                case 'article':
-                case 'news':
-                case 'download':
-                case 'status':
-                case 'is_reviewed':
-                    $qb->andWhere("$alias.$field = :$field");
-                    $qb->setParameter($field, $value);
-                    break;
-
-                case 'period_created':
-                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                    $qb->andWhere("$datePeriodCaseWhen = :period_created");
-                    $qb->setParameter('period_created', $value);
-                    break;
-            }
-        }
+        return ['article', 'news', 'download', 'status', 'period_created'];
     }
 
     /**
@@ -99,34 +81,5 @@ class CommentsCountCriteria extends GroupedCriteria
         }
 
         $qb->groupBy('group_name');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function configureResolver(OptionsResolver $resolver, array $data = [])
-    {
-        $resolver->setDefined(['group_by', 'article', 'news', 'download', 'status', 'period_created', 'is_reviewed']);
-
-        // group_by validation
-        $resolver->setAllowedValues('group_by', ['article', 'news', 'download', 'status', 'period_created']);
-
-        // filters validation
-        $validateInt = function($value) {
-            return is_int($value) || ctype_digit($value);
-        };
-        $resolver->setAllowedValues('article', $validateInt);
-        $resolver->setAllowedValues('news', $validateInt);
-        $resolver->setAllowedValues('download', $validateInt);
-        $resolver->setAllowedValues('status', [
-            Comment::STATUS_VISIBLE,
-            Comment::STATUS_VALIDATING,
-            Comment::STATUS_USER_VALIDATING,
-            Comment::STATUS_TEMP,
-            Comment::STATUS_DELETED,
-            Comment::STATUS_AGENT,
-        ]);
-        $resolver->setAllowedValues('period_created', DatePeriods::$names);
-        $resolver->setAllowedValues('is_reviewed', ['0', '1']);
     }
 }

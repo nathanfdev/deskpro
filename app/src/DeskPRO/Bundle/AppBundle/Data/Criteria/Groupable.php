@@ -43,7 +43,7 @@ trait Groupable
     /**
      * @var string
      */
-    private $group_by;
+    protected $group_by;
 
     /**
      * @return array
@@ -104,6 +104,6 @@ trait Groupable
     public static function configureGroupByResolver(OptionsResolver $resolver)
     {
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->setAllowedValues('group_by', (new self())->getGroupByAllowedValues());
+        $resolver->setAllowedValues('group_by', (new static())->getGroupByAllowedValues());
     }
 }

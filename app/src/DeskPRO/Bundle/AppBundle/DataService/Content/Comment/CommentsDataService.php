@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -60,10 +60,10 @@ class CommentsDataService
 
     /**
      * @param string $class Concrete comment entity class
-     * @param GroupedCriteria $criteria
+     * @param GroupableCriteriaInterface $criteria
      * @return Count
      */
-    public function countComments($class, GroupedCriteria $criteria)
+    public function countComments($class, GroupableCriteriaInterface $criteria)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
