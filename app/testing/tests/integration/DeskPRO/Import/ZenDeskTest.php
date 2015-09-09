@@ -160,6 +160,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->checkJsonEmpty();
         $this->checkNoErrors($command_tester);
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
     }
 
@@ -183,7 +184,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->checkNoErrors($command_tester);
 
         // seems that exports in a wrong order, disable for a while
-//        $this->checkDbData();
+        $this->checkDbData();
     }
 
     private function checkJsonEmpty()
@@ -558,6 +559,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->assertContains('Entity `organization` is not supported', $output);
         $this->assertContains('Unable to get participant email, id = 100000', $output);
+
+        $this->assertContains('check order', $output);
     }
 
     /**
