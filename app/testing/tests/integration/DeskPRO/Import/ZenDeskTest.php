@@ -206,10 +206,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
         $this->helper->seeInThisFile('Ticket 1');
+        $this->helper->seeInThisFile('"participants":["person1@domain.tld"]');
 
         $this->helper->seeFileFound('1/tickets/ticket_2.json');
         $this->helper->seeInThisFile('Ticket 2');
         $this->helper->seeInThisFile('"is_hold":false');
+        $this->helper->seeInThisFile('"participants":[]');
 
         $this->assertFalse(file_exists('1/tickets/ticket_3.json'));
 
@@ -247,17 +249,18 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addTicketsIncrementalExportResponse((object)array(
                 'tickets'  => array(
                     (object)array(
-                        'id'              => 1,
-                        'requester_id'    => 1,
-                        'assignee_id'     => 3,
-                        'subject'         => 'Ticket 1',
-                        'description'     => 'Ticket description 1',
-                        'status'          => 'closed',
-                        'priority'        => 'high',
-                        'organization_id' => 1,
-                        'created_at'      => $date1->format('Y-m-d H:i:s'),
-                        'custom_fields'   => (object)array(),
-                        'tags'            => (object)array('label 1', 'label 2'),
+                        'id'               => 1,
+                        'requester_id'     => 1,
+                        'assignee_id'      => 3,
+                        'subject'          => 'Ticket 1',
+                        'description'      => 'Ticket description 1',
+                        'status'           => 'closed',
+                        'priority'         => 'high',
+                        'organization_id'  => 1,
+                        'created_at'       => $date1->format('Y-m-d H:i:s'),
+                        'custom_fields'    => (object)array(),
+                        'tags'             => (object)array('label 1', 'label 2'),
+                        'collaborator_ids' => (object)array(1, 100000),
                     ),
                     (object)array(
                         'id'              => 2,
