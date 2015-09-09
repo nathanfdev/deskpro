@@ -35,8 +35,8 @@ use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\NoResultException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 
 /**
@@ -60,18 +60,19 @@ class ChatDataService
     }
 
     /**
-     * @param Criteria $criteria
+     * @param SortableCriteriaInterface $criteria
      * @param int $page
      * @param int $count
      * @return Pagerfanta
      */
-    public function selectChats(Criteria $criteria, $page, $count)
+    public function selectChats(SortableCriteriaInterface $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('c')
            ->from('DeskPRO:ChatConversation', 'c');
         $criteria->applyFilters($qb);
+        $criteria->applySorting($qb);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($count);

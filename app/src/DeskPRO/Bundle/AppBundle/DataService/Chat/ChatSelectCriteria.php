@@ -34,13 +34,17 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Sortable;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 
 /**
  * Class ChatSelectCriteria
  */
-class ChatSelectCriteria extends Criteria
+class ChatSelectCriteria extends Criteria implements SortableCriteriaInterface
 {
+    use Sortable;
+
     /**
      * @param QueryBuilder $qb
      */
@@ -48,14 +52,7 @@ class ChatSelectCriteria extends Criteria
     {
         $alias = $qb->getRootAliases()[0];
 
-        if (array_key_exists('sort', $this->filters)) {
-            $sort = $this->filters['sort'];
-            $order = array_key_exists('order', $this->filters) ? $this->filters['order'] : 'DESC';
-            $qb->orderBy("$alias.$sort", $order);
-        }
-
-        $filters = array_diff_assoc($this->filters, ['sort' => null, 'order' => null]);
-        foreach ($filters as $field => $value) {
+        foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'date_created':
                     list($from, $to) = explode(':', $value);
@@ -81,6 +78,14 @@ class ChatSelectCriteria extends Criteria
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getSortAllowedValues()
+    {
+        return ['agent', 'department', 'date_created'];
+    }
+
+    /**
      * @param OptionsResolver $resolver
      * @param array $data
      */
@@ -89,10 +94,7 @@ class ChatSelectCriteria extends Criteria
         /** @var \Application\DeskPRO\Entity\Person $me */
         list($me) = $data;
 
-        $resolver->setDefined(['sort', 'order', 'agent', 'department', 'date_created', 'date_period']);
-
-        $resolver->setAllowedValues('sort', ['agent', 'department', 'date_created']);
-        $resolver->setAllowedValues('order', ['asc', 'desc']);
+        $resolver->setDefined(['agent', 'department', 'date_created', 'date_period']);
 
         $resolver->setNormalizer('agent', function($options, $value) use ($me) {
             return $value === 'me' ? $me->getId() : $value;

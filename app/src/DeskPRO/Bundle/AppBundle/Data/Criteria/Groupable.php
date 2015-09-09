@@ -46,8 +46,12 @@ trait Groupable
     private $group_by;
 
     /**
-     * Get group_by
-     * @return string
+     * @return array
+     */
+    public abstract function getGroupByAllowedValues();
+
+    /**
+     * @inheritDoc
      */
     public function getGroupBy()
     {
@@ -55,8 +59,7 @@ trait Groupable
     }
 
     /**
-     * Set group_by
-     * @param string $value
+     * @inheritDoc
      */
     public function setGroupBy($value)
     {
@@ -64,8 +67,7 @@ trait Groupable
     }
 
     /**
-     * If group_by is set
-     * @return bool
+     * @inheritDoc
      */
     public function hasGroupBy()
     {
@@ -73,8 +75,7 @@ trait Groupable
     }
 
     /**
-     * Ensures group_by is set
-     * @throws \LogicException
+     * @inheritDoc
      */
     public function ensureGroupBy()
     {
@@ -84,10 +85,7 @@ trait Groupable
     }
 
     /**
-     * Process and remove group_by from given parameters
-     *
-     * @param array $params
-     * @return string
+     * @inheritDoc
      */
     public static function extractGroupBy(array &$params)
     {
@@ -101,16 +99,11 @@ trait Groupable
     }
 
     /**
-     * @param OptionsResolver $resolver
+     * @inheritDoc
      */
     public static function configureGroupByResolver(OptionsResolver $resolver)
     {
         $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
         $resolver->setAllowedValues('group_by', (new self())->getGroupByAllowedValues());
     }
-
-    /**
-     * @return array
-     */
-    public abstract function getGroupByAllowedValues();
 }

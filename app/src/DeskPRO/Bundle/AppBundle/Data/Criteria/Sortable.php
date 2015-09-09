@@ -33,75 +33,115 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class Criteria
+ * Class Sortable
  */
-abstract class Criteria implements CriteriaInterface
+trait Sortable
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $filters;
+    private $sort;
 
     /**
-     * Criteria constructor.
-     * @param array $filters
+     * @var string
      */
-    protected function __construct(array $filters = [])
+    private $order;
+
+    /**
+     * @inheritDoc
+     */
+    abstract public function getSortAllowedValues();
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrderAllowedValues()
     {
-        $this->filters = $filters;
+        return ['asc', 'desc'];
     }
 
     /**
-     * Create an instance from parameters
-     *
-     * This method is complicated for the sake of universality. It relies on duck-typing checks to handle creation
-     * of different types of Criteria instances such as GroupableCriteriaInterface, SortableCriteriaInterface etc.
-     *
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @return Criteria
+     * @inheritDoc
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
+    public function getSort()
     {
-        $isGroupable = in_array(GroupableCriteriaInterface::class, class_implements(static::class));
-        $isSortable = in_array(SortableCriteriaInterface::class, class_implements(static::class));
+        return $this->sort;
+    }
 
-        static::configureResolver($resolver, $data);
-        if ($isGroupable) {
-            static::configureGroupByResolver($resolver);
-        }
-        if ($isSortable) {
-            static::configureSortingResolver($resolver);
+    /**
+     * @inheritDoc
+     */
+    public function setSort($value)
+    {
+        $this->sort = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setOrder($value)
+    {
+        $this->order = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasSorting()
+    {
+        return (bool) $this->order && (bool) $this->sort;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function extractSorting(array &$params)
+    {
+        $sort = null;
+        if (array_key_exists('sort', $params)) {
+            $sort = $params['sort'];
+            unset($params['sort']);
         }
 
-        $params = $resolver->resolve($params);
-
-        if ($isGroupable) {
-            $group_by = static::extractGroupBy($params);
-        }
-        if ($isSortable) {
-            list($sort, $order) = static::extractSorting($params);
+        $order = 'desc';
+        if (array_key_exists('order', $params)) {
+            $order = $params['order'];
+            unset($params['order']);
         }
 
-        $instance = new static($params);
-
-        if ($isGroupable) {
-            $instance->setGroupBy($group_by);
-        }
-        if ($isSortable) {
-            $instance->setSort($sort);
-            $instance->setOrder($order);
-        }
-
-        return $instance;
+        return [$sort, $order];
     }
 
     /**
      * @param QueryBuilder $qb
      */
-    public abstract function applyFilters(QueryBuilder $qb);
+    public function applySorting(QueryBuilder $qb)
+    {
+        if ($this->hasSorting()) {
+            $alias = $qb->getRootAliases()[0];
+            $qb->orderBy("$alias.$this->sort", $this->order);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function configureSortingResolver(OptionsResolver $resolver)
+    {
+        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['sort', 'order']));
+        $resolver->setAllowedValues('sort', (new self())->getSortAllowedValues());
+        $resolver->setAllowedValues('order', (new self())->getOrderAllowedValues());
+    }
 }
