@@ -144,22 +144,23 @@ final class Tickets extends AbstractParser
     private function exportTicket(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'              => TransformerInterface::TYPE_STRING,
-            'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'               => TransformerInterface::TYPE_STRING,
+            'destination'      => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'ticket_',
                 'ref'    => 'id',
             )),
-            'requester_id'    => TransformerInterface::TYPE_STRING,
-            'assignee_id'     => TransformerInterface::TYPE_STRING,
-            'subject'         => TransformerInterface::TYPE_STRING,
-            'description'     => TransformerInterface::TYPE_STRING,
-            'status'          => TransformerInterface::TYPE_STRING,
-            'priority'        => TransformerInterface::TYPE_STRING,
-            'organization_id' => TransformerInterface::TYPE_STRING,
-            'created_at'      => TransformerInterface::TYPE_DATE,
-            'custom_fields'   => TransformerInterface::TYPE_ARRAY,
-            'tags'            => TransformerInterface::TYPE_ARRAY,
-            'comments'        => TransformerInterface::TYPE_ARRAY,
+            'requester_id'     => TransformerInterface::TYPE_STRING,
+            'assignee_id'      => TransformerInterface::TYPE_STRING,
+            'collaborator_ids' => TransformerInterface::TYPE_ARRAY,
+            'subject'          => TransformerInterface::TYPE_STRING,
+            'description'      => TransformerInterface::TYPE_STRING,
+            'status'           => TransformerInterface::TYPE_STRING,
+            'priority'         => TransformerInterface::TYPE_STRING,
+            'organization_id'  => TransformerInterface::TYPE_STRING,
+            'created_at'       => TransformerInterface::TYPE_DATE,
+            'custom_fields'    => TransformerInterface::TYPE_ARRAY,
+            'tags'             => TransformerInterface::TYPE_ARRAY,
+            'comments'         => TransformerInterface::TYPE_ARRAY,
         ));
 
         $person_email = $this->tickets_people->getPersonEmail($formatted['requester_id']);
@@ -200,6 +201,14 @@ final class Tickets extends AbstractParser
 
         foreach ($formatted['tags'] as $label) {
             $entity->addLabel($label);
+        }
+        foreach ($formatted['collaborator_ids'] as $collaborator_id) {
+            $participant_email = $this->tickets_people->getPersonEmail($collaborator_id);
+            if ($participant_email) {
+                $entity->addParticipant($participant_email);
+            } else {
+                $this->logWarning(sprintf('Unable to get participant email, id = %s', $collaborator_id));
+            }
         }
         foreach ($this->exportMessages($formatted) as $message) {
             $entity->addMessage($message);
