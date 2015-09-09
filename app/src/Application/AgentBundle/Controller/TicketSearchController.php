@@ -1916,7 +1916,7 @@ class TicketSearchController extends AbstractController
 
 					// Cleanup RTE markup
 					if ($name == 'reply') {
-						$new_message = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html_core');
+						$new_message = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html');
 						$new_message = Strings::trimHtml($new_message);
 						$new_message = Strings::prepareWysiwygHtml($new_message);
 						$opt['reply_text'] = $new_message;
