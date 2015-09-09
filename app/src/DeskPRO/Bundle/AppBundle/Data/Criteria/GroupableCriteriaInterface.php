@@ -35,71 +35,57 @@ namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Doctrine\ORM\QueryBuilder;
+
 /**
- * Class GroupedCriteria
+ * Interface GroupableCriteriaInterface
  */
-abstract class GroupedCriteria extends Criteria implements GroupedCriteriaInterface
+interface GroupableCriteriaInterface extends CriteriaInterface
 {
     /**
-     * @var string
+     * @return array
      */
-    protected $group_by;
+    public function getGroupByAllowedValues();
 
     /**
-     * @param array $filters
-     * @param string $group_by
+     * @param QueryBuilder $qb
      */
-    public function __construct(array $filters, $group_by)
-    {
-        parent::__construct($filters);
-        $this->group_by = $group_by;
-    }
+    public function applyGroupBy(QueryBuilder $qb);
 
     /**
-     * @return bool
-     */
-    public function hasGroupBy()
-    {
-        return (bool) $this->group_by;
-    }
-
-    /**
+     * Get group_by
      * @return string
      */
-    public function getGroupBy()
-    {
-        return $this->group_by;
-    }
+    public function getGroupBy();
 
     /**
-     * throws \LogicException
+     * Set group_by
+     * @param string $value
      */
-    public function ensureGroupBy()
-    {
-        if (!$this->hasGroupBy()) {
-            throw new \LogicException('Cannot group without group_by');
-        }
-    }
+    public function setGroupBy($value);
 
     /**
+     * If group_by is set
+     * @return bool
+     */
+    public function hasGroupBy();
+
+    /**
+     * Ensures group_by is set
+     * @throws \LogicException
+     */
+    public function ensureGroupBy();
+
+    /**
+     * Removes group_by from given parameters and returns the value of group_by
+     *
      * @param array $params
-     * @param OptionsResolver $resolver
-     * @param array $data
-     * @return GroupedCriteria
+     * @return string
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
-    {
-        static::configureResolver($resolver, $data);
-        $params = $resolver->resolve($params);
+    public static function extractGroupBy(array &$params);
 
-        $group_by = null;
-        if (array_key_exists('group_by', $params)) {
-            $group_by = $params['group_by'];
-            unset($params['group_by']);
-        }
-
-        $filters = $params;
-
-        return new static($filters, $group_by);
-    }
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public static function configureGroupByResolver(OptionsResolver $resolver);
 }

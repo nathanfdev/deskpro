@@ -33,32 +33,84 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
-use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Interface GroupedCriteriaInterface
+ * Class Groupable
  */
-interface GroupedCriteriaInterface extends CriteriaInterface
+trait Groupable
 {
     /**
-     * @param QueryBuilder $qb
+     * @var string
      */
-    public function applyGroupBy(QueryBuilder $qb);
+    private $group_by;
 
     /**
-     * If group_by value set
-     *
-     * @return bool
-     */
-    public function hasGroupBy();
-
-    /**
-     * throws \LogicException
-     */
-    public function ensureGroupBy();
-
-    /**
+     * Get group_by
      * @return string
      */
-    public function getGroupBy();
+    public function getGroupBy()
+    {
+        return $this->group_by;
+    }
+
+    /**
+     * Set group_by
+     * @param string $value
+     */
+    public function setGroupBy($value)
+    {
+        $this->group_by = $value;
+    }
+
+    /**
+     * If group_by is set
+     * @return bool
+     */
+    public function hasGroupBy()
+    {
+        return (bool) $this->group_by;
+    }
+
+    /**
+     * Ensures group_by is set
+     * @throws \LogicException
+     */
+    public function ensureGroupBy()
+    {
+        if (!$this->hasGroupBy()) {
+            throw new \LogicException('Cannot group without group_by');
+        }
+    }
+
+    /**
+     * Process and remove group_by from given parameters
+     *
+     * @param array $params
+     * @return string
+     */
+    public static function extractGroupBy(array &$params)
+    {
+        $group_by = null;
+        if (array_key_exists('group_by', $params)) {
+            $group_by = $params['group_by'];
+            unset($params['group_by']);
+        }
+
+        return $group_by;
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public static function configureGroupByResolver(OptionsResolver $resolver)
+    {
+        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
+        $resolver->setAllowedValues('group_by', (new self())->getGroupByAllowedValues());
+    }
+
+    /**
+     * @return array
+     */
+    public abstract function getGroupByAllowedValues();
 }

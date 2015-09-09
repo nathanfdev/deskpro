@@ -36,7 +36,7 @@ use Doctrine\ORM\NoResultException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 
 /**
@@ -81,19 +81,19 @@ class ChatDataService
     }
 
     /**
-     * @param GroupedCriteria $criteria
+     * @param GroupableCriteriaInterface $criteria
      * @return Count
      */
-    public function countChats(GroupedCriteria $criteria)
+    public function countChats(GroupableCriteriaInterface $criteria)
     {
         return $criteria->hasGroupBy() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
     }
 
     /**
-     * @param GroupedCriteria $criteria
+     * @param GroupableCriteriaInterface $criteria
      * @return Count
      */
-    private function countFlat(GroupedCriteria $criteria)
+    private function countFlat(GroupableCriteriaInterface $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -111,10 +111,10 @@ class ChatDataService
     }
 
     /**
-     * @param GroupedCriteria $criteria
+     * @param GroupableCriteriaInterface $criteria
      * @return Count
      */
-    private function countGrouped(GroupedCriteria $criteria)
+    private function countGrouped(GroupableCriteriaInterface $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 

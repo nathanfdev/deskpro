@@ -33,13 +33,13 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 
 /**
  * Class ChatSelectCriteria
  */
-class ChatSelectCriteria extends GroupedCriteria
+class ChatSelectCriteria extends Criteria
 {
     /**
      * @param QueryBuilder $qb
@@ -107,13 +107,5 @@ class ChatSelectCriteria extends GroupedCriteria
             return (bool) preg_match('/\d{4}\-\d{2}\-\d{2}\:\d{4}\-\d{2}\-\d{2}/', $value);
         });
         $resolver->setAllowedValues('date_period', DatePeriods::$names);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function applyGroupBy(QueryBuilder $qb)
-    {
-        throw new \LogicException(__CLASS__ . ' extends GroupedCriteria to provide group_by to its child');
     }
 }
