@@ -199,12 +199,11 @@ export const mergeFullPayload = (statePropKey = null, defaultValue = {}, deep = 
  * @return {Function}
  */
 export const async = ({ start, success, error, done }) => (state, payload, action) => {
-  const seq = Immutable.Map.isMap(action) ? action.getIn(['meta', 'sequence']) : (action && action.meta && action.meta.sequence ? action.meta.sequence : null);
+  const seq = action && action.meta && action.meta.sequence ? action.meta.sequence : null;
 
   switch (seq) {
     case 'start':
       if (start) {
-
         return start(state, payload, action);
       }
       break;
@@ -232,18 +231,52 @@ export const async = ({ start, success, error, done }) => (state, payload, actio
 /**
  * Handle setting a loading indicator on state for a async action.
  *
- * @param {String} propName  The name of the property to set on state
+ * @param {Object} props          The properties to set for each sequence. It may be a string, array or a function. If a function, it will be passed the (state, payload, action) and must return a string or array.
+ * @param {Object} props.loading  Set on start and unset on done.
+ * @param {Object} props.success  Set on success
+ * @param {Object} props.error    Set on error
  * @return {Immutable.Map}
  */
-export const asyncIndicator = (propName = 'isLoading') => (state, payload, action) => {
+export const asyncIndicator = (props) => (state, payload, action) => {
   verifyImmutable(state);
 
   const seq = Immutable.Map.isMap(action) ? action.getIn(['meta', 'sequence']) : (action && action.meta && action.meta.sequence ? action.meta.sequence : null);
 
-  if (seq === 'start') {
-    state = state.setIn(propName.split('.'), true);
-  } else {
-    state = state.setIn(propName.split('.'), false);
+  if (typeof props === 'function') {
+    props = props(state, payload, action);
+  }
+
+  // Single param may be used to represent just the loading state
+  if (!isPlainObject(props)) {
+    props = { loading: props };
+  }
+
+  for (let k in props) {
+    if (typeof props[k] === 'function') {
+      props[k] = props[k](state, payload, action);
+    }
+    if (props[k] && props[k].indexOf('.') !== -1) {
+      props[k] = props[k].split('.');
+    }
+  }
+
+  switch (seq) {
+    case 'start':
+      if (props.loading) state = state.setIn(props.loading, true);
+      if (props.success) state = state.setIn(props.success, false);
+      if (props.error)   state = state.setIn(props.error,   false);
+      break;
+    case 'success':
+      if (props.success) state = state.setIn(props.success, true);
+      if (props.error)   state = state.setIn(props.error,   false);
+      break;
+    case 'error':
+      if (props.error)   state = state.setIn(props.error,   true);
+      if (props.success) state = state.setIn(props.success, false);
+      break;
+    case 'done':
+      if (props.loading) state = state.setIn(props.loading, false);
+      break;
   }
 
   return state;

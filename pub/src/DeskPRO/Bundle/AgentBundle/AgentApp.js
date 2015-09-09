@@ -39,12 +39,14 @@ export default class AgentApp {
 
     const reducer    = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
     const middleware = applyMiddleware(
+      ampMiddleware.timerMiddleware('startTime'),
       ampMiddleware.intervalMiddleware,
       ampMiddleware.timeoutMiddleware,
       ampMiddleware.actionThunkMiddleware,
+      ampMiddleware.redispatchDsaPayload,
       ampMiddleware.guidMiddleware,
-      ampMiddleware.loggerMiddleware,
-      ampMiddleware.promiseMiddleware
+      ampMiddleware.promiseMiddleware,
+      ampMiddleware.loggerMiddleware
     );
     const makeStore  = compose(
         middleware,

@@ -1,6 +1,4 @@
-import isPlainObject from 'lodash/lang/isPlainObject';
 import { getActionType } from "./actionUtils";
-import Immutable from "immutable";
 
 /**
  * Given a param meant to be an action function,
@@ -65,7 +63,7 @@ export default function createAction(actionType, actionFn, metaFn) {
       action.meta = userMetaFn(action, ...args);
     }
 
-    return Immutable.fromJS(action);
+    return action;
   }
 
   finalActionFn.type = type;

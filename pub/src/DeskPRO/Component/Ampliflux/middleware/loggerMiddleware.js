@@ -28,34 +28,38 @@ export default function loggerMiddleware({ getState }) {
     }
 
     const actionType = isDSA(action) ? getActionType(action) : "ANON";
+    const sequenceType = action && action.meta && action.meta.sequenceType ? action.meta.sequenceType : null;
+    const sequence = action && action.meta && action.meta.sequence ? action.meta.sequence : null;
+
+    const dispatchTitle = actionType + (sequenceType ? ` - ${sequenceType} ${sequence}` : '');
 
     if (console.groupCollapsed) {
-      console.groupCollapsed("[Dispatch] " + actionType);
+      console.groupCollapsed("[Dispatch] " + dispatchTitle);
     } else {
-      console.group("[Dispatch] " + actionType);
+      console.group("[Dispatch] " + dispatchTitle);
     }
 
     console.debug("Action", jsValue(action));
     try {
-      let result = jsValue(next(action));
-      if (result && result.error) {
-        console.error("Result", result);
+      const result = next(action);
+      const jsResult = jsValue(result);
+      if (jsResult && jsResult.error) {
+        console.error("Result", jsResult);
       } else {
-        console.debug("Result", result);
+        console.debug("Result", jsResult);
       }
 
       console.debug("NextState", jsValue(getState()));
       console.groupEnd();
 
-      if (result && result.error && result.error === true) {
+      if (jsResult && jsResult.error && jsResult.error === true) {
         console.warn("Note: Last action " + actionType + " had error status");
       }
-
       return result;
     } catch (e) {
       console.groupEnd();
       console.error("Error in above action", e);
-      throw e;
+      throw e
     }
   }
 }

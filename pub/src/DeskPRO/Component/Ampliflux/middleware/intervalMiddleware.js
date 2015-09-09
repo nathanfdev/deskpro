@@ -1,20 +1,13 @@
 import { isDSA } from '../actions/actionUtils';
 import uniqueId from 'lodash/utility/uniqueId';
-import Immutable from "immutable";
 
 function getInterval(action) {
   if (!isDSA(action)) {
     return null;
   }
 
-  if (Immutable.Map.isMap(action)) {
-    if (action.hasIn(['meta', 'interval'])) {
-      return parseInt(action.getIn(['meta', 'interval']));
-    }
-  } else {
-    if (action.meta && action.meta.interval) {
-      return parseInt(action.meta.interval);
-    }
+  if (action.meta && action.meta.interval) {
+    return parseInt(action.meta.interval);
   }
 
   return null;
@@ -39,6 +32,6 @@ export default function intervalMiddleware() {
 
     return function cancel() {
       clearInterval(iId);
-    }
+    };
   }
 }

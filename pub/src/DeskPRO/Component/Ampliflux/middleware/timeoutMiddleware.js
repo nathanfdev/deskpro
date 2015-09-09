@@ -1,20 +1,13 @@
 import { isDSA } from '../actions/actionUtils';
 import uniqueId from 'lodash/utility/uniqueId';
-import Immutable from "immutable";
 
 function getDelay(action) {
   if (!isDSA(action)) {
     return null;
   }
 
-  if (Immutable.Map.isMap(action)) {
-    if (action.hasIn(['meta', 'delay'])) {
-      return parseInt(action.getIn(['meta', 'delay']));
-    }
-  } else {
-    if (action.meta && action.meta.delay) {
-      return parseInt(action.meta.delay);
-    }
+  if (action.meta && action.meta.delay) {
+    return parseInt(action.meta.delay);
   }
 
   return null;
@@ -39,6 +32,6 @@ export default function timeoutMiddleware() {
 
     return function cancel() {
       clearTimeout(tId);
-    }
+    };
   }
 }

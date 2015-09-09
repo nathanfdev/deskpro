@@ -3,7 +3,6 @@ var gulp                  = require('gulp'),
     webpack               = require("webpack"),
     express               = require('express'),
     cors                  = require('cors'),
-    WebpackDevServer      = require("webpack-dev-server"),
     del                   = require('del'),
     runSeq                = require('run-sequence'),
     path                  = require("path"),
@@ -260,7 +259,7 @@ function runWebpackBundle(config, callback)
 
 /**
  * @param {Object} config
- * @return {WebpackDevServer}
+ * @return {express}
  */
 function startWebpackServer(config)
 {

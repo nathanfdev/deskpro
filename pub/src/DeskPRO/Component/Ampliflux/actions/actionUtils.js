@@ -1,4 +1,5 @@
 import isPlainObject from 'lodash/lang/isPlainObject';
+import objGet from "lodash/object/get";
 import Immutable from "immutable";
 
 /**
@@ -13,21 +14,15 @@ import Immutable from "immutable";
  */
 export function getActionType(thing, returnNull = false) {
 
-  if (Immutable.Map.isMap(thing)) {
-    if (thing.has('type')) {
-      return thing.get('type');
-    }
-  } else {
-    // DSA-actions have type property
-    if (thing && typeof thing.type === "string") {
-      return thing.type;
-    // Functions created via createAction have actionType property (old style)
-    } else if (thing && typeof thing === "function" && typeof thing.actionType === "string") {
-      return thing.actionType;
-    // Functions created via createAction have actionType property (new style)
-    } else if (thing && typeof thing === "function" && typeof thing.actionType === "string") {
-      return thing.type;
-    }
+  // DSA-actions have type property
+  if (thing && typeof thing.type === "string") {
+    return thing.type;
+  // Functions created via createAction have actionType property (old style)
+  } else if (thing && typeof thing === "function" && typeof thing.actionType === "string") {
+    return thing.actionType;
+  // Functions created via createAction have actionType property (new style)
+  } else if (thing && typeof thing === "function" && typeof thing.actionType === "string") {
+    return thing.type;
   }
 
   if (typeof thing === "string") {
@@ -56,9 +51,5 @@ export function getActionType(thing, returnNull = false) {
  * @return bool
  */
 export function isDSA(action) {
-  if (Immutable.Map.isMap(action)) {
-    return action.has('type');
-  } else {
-    return action && typeof action.type !== 'undefined';
-  }
+  return action && typeof action.type !== 'undefined';
 }

@@ -1,7 +1,7 @@
 import * as TestActions from "../Actions/TestActions";
 import { createReducer } from "Ampliflux";
 import { setPayload, setFullPayload, composeHandlers, async, asyncIndicator } from "Ampliflux/reducers/handlers";
-import { Map } from "immutable";
+import Immutable from "immutable";
 
 const initialState = {
   count: 0,
@@ -16,7 +16,7 @@ export default createReducer(initialState, {
     asyncIndicator('status.userIsLoading'),
     async({
       success: (state, payload) => {
-        return state.set('user', Map(payload.getData().data.person));
+        return state.set('user', Immutable.fromJS(payload.getData().data.person));
       }
     })
   )
