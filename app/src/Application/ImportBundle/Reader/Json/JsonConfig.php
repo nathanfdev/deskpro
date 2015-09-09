@@ -43,11 +43,6 @@ class JsonConfig implements ReaderConfigInterface
     private $path;
 
     /**
-     * @var bool
-     */
-    private $exclude_done = false;
-
-    /**
      * Constructor
      *
      * @param string $path
@@ -72,24 +67,6 @@ class JsonConfig implements ReaderConfigInterface
     public function setPath($path)
     {
         $this->path = $path;
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isExcludeDone()
-    {
-        return $this->exclude_done;
-    }
-
-    /**
-     * @param boolean $exclude_done
-     * @return $this
-     */
-    public function setExcludeDone($exclude_done)
-    {
-        $this->exclude_done = $exclude_done;
         return $this;
     }
 

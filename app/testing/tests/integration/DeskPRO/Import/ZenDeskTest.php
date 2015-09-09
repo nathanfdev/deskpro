@@ -559,8 +559,6 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->assertContains('Entity `organization` is not supported', $output);
         $this->assertContains('Unable to get participant email, id = 100000', $output);
-
-        $this->assertContains('check order', $output);
     }
 
     /**
