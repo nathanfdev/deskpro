@@ -36,8 +36,6 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\CountBadge\CountsGroup;
-use DeskPRO\Bundle\AppBundle\CountBadge\GroupedCount;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -254,16 +252,20 @@ class FeedbackDataService extends AbstractDataService
      * Select filtered list of feedback
      *
      * @param FeedbackSelectCriteria $criteria
+     * @param int $page
+     * @param int $count
      * @return array
      */
-    public function selectFeedback(FeedbackSelectCriteria $criteria)
+    public function selectFeedback(FeedbackSelectCriteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            ->select('f.id', 'f.status', 'f.hidden_status', 'statusCategory.id as status_category_id',
+            /*->select('f.id', 'f.status', 'f.hidden_status', 'statusCategory.id as status_category_id',
                 'category.title as type', 'person.name as author_name', 'language.id as language_id', 'f.title', 'f.slug',
                 'f.date_created', 'f.date_published', 'f.view_count', 'f.total_rating', 'f.num_ratings', 'f.num_comments',
                 'f.validating', 'f.popularity', 'f.content', 'customCat.input as custom_category')
+            */
+            ->select('f')
             ->from('DeskPRO:Feedback', 'f')
             ->leftJoin('f.status_category', 'statusCategory')
             ->leftJoin('f.custom_data', 'customCat')
@@ -272,7 +274,12 @@ class FeedbackDataService extends AbstractDataService
             ->leftJoin('f.language', 'language')
             ->addGroupBy('f.id');
         $criteria->applyFilters($qb);
-        return $qb->getQuery()->getResult();
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return $pager;
     }
 
     /**

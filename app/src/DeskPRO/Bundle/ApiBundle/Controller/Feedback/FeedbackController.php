@@ -104,28 +104,14 @@ class FeedbackController extends BaseController
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $feedback = $dataService->selectFeedback($criteria);
-        return View::create(
-            $this->createRepresentation($feedback),
-            Response::HTTP_OK
-        );
-        /*$entityManager = $this->getDoctrine()->getManager();
-
-        $datatype = $this->getDatatype($request);
-
-        $tasks = $this->filterTasks($request, $entityManager);
-
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
+        $feedback = $dataService->selectFeedback($criteria, $page, $count);
         return View::create(
-            $this->dataSerialize($pager, null, $datatype),
+            $this->dataSerialize($feedback),
             Response::HTTP_OK
-        );*/
+        );
     }
 
 
