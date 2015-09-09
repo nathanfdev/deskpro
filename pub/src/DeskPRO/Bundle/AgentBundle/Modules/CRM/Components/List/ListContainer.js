@@ -15,12 +15,9 @@ export class ListContainer extends Component {
 
   static propTypes = {
     sortOptions: PropTypes.array.isRequired,
-    displayFields: PropTypes.array.isRequired,
     sort: PropTypes.string.isRequired,
     sortName: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    filters: PropTypes.object.isRequired,
-    query: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired,
     sortTable: PropTypes.func.isRequired,
     toggleOrder: PropTypes.func.isRequired,
