@@ -27,7 +27,7 @@
 /web/loader-build
 /pub/node_modules
 /pub/src-build
-#/pub/build
+/pub/build
 
 # cache and log files
 /app/sys/cache/*
