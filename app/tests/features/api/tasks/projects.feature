@@ -1,3 +1,4 @@
+@tasks-nav
 Feature: /projects endpoint
   To CRUD DeskPRO projects
   As a developer

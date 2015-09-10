@@ -1,3 +1,4 @@
+@tasks-nav
 Feature: /task_labels endpoint
   To CRUD DeskPRO task labels
   As a developer

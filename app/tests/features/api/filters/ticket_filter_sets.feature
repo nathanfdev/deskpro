@@ -1,3 +1,4 @@
+@tickets-nav
 Feature: /ticket_filter_sets endpoint
   To CRUD deskpro filters sets
   As a developer

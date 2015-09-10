@@ -1,4 +1,4 @@
-@crm-nav
+@crm-nav @tasks-nav
 Feature: /agent_teams endpoint
   To retrieve DeskPRO agent teams
   As a developer

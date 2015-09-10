@@ -1,3 +1,4 @@
+@feedback-nav
 Feature: /feedback/ endpoint
   To obtain filtered list of feedback
   As a developer
