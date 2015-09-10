@@ -1,4 +1,4 @@
-@chat-nav
+@chat-nav @tasks-nav
 Feature: /departments endpoint
   To retrieve DeskPRO departments
   As a developer

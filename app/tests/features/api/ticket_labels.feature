@@ -1,3 +1,4 @@
+@tickets-nav
 Feature: /ticket_labels endpoint
   To retrieve info on ticket labels
   As a developer

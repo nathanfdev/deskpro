@@ -1,3 +1,4 @@
+@feedback-nav
 Feature: /feedback/filter endpoint
   To obtain values for different types of filter
   As a developer
