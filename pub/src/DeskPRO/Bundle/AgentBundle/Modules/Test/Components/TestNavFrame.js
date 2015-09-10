@@ -1,31 +1,35 @@
-import React from "react";
-import * as TestActions from "../Actions/TestActions";
-import { connect } from "react-redux";
-import * as userSels from "DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/userSelector";
+import React from 'react';
+import * as TestActions from '../Actions/TestActions';
+import { connect } from 'react-redux';
+import { createUserRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/userSelectors';
+
+const testAppUserSel = createUserRequestSelectors('testApp');
+
+console.log(testAppUserSel);
 
 @connect(state => ({
-  test:       state.Test.test,
-  userStatus: userSels.requestStatus("testApp")(state),
-  users:      userSels.requestRecords("testApp")(state)
+  test: state.Test.test,
+  userStatus: testAppUserSel.statusSel(state),
+  users: testAppUserSel.recordsSel(state)
 }))
 export default class TestNavFrame extends React.Component {
-  inc = (e) => {
-    this.props.dispatch(TestActions.setCount(this.props.test.get('count') + this.getNum()));
-  }
-
   getNum() {
     return 5;
   }
 
-  loadUser = (e) => {
+  inc = () => {
+    this.props.dispatch(TestActions.setCount(this.props.test.get('count') + this.getNum()));
+  }
+
+  loadUser = () => {
     this.props.dispatch(TestActions.loadUser());
   }
 
-  loadBatch1 = (e) => {
+  loadBatch1 = () => {
     this.props.dispatch(TestActions.loadUserBatch([1,2]));
   }
 
-  loadBatch2 = (e) => {
+  loadBatch2 = () => {
     this.props.dispatch(TestActions.loadUserBatch([2,3,4,5]));
   }
 
