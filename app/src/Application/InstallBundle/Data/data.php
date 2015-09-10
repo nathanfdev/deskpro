@@ -340,7 +340,7 @@ $publisher = new \Application\DeskPRO\Entity\Person();
 $publisher->name = 'Corporate Content';
 $publisher->can_agent = true;
 $publisher->is_agent = true;
-$publisher->addEmailAddressString('content@publisher.com');
+$publisher->addEmailAddressString('content.publisher@deskprodemo.com');
 $publisher->setPassword('publisher');
 
 $em->persist($publisher);
@@ -350,7 +350,7 @@ $em->flush($publisher);
 // a regular dude
 $person = new \Application\DeskPRO\Entity\Person();
 $person->name = 'Joe Kool';
-$person->addEmailAddressString('joe@joe.com');
+$person->addEmailAddressString('joe@deskprodemo.com');
 $person->setPassword('joe');
 
 $em->persist($person);
