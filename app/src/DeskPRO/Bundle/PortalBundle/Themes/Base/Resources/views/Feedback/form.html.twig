@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<div class="feedback-form-expanded as-no-dpui">
+<div class="feedback-form-expanded as-no-dpui"{% if form_was_submitted %} data-do-show="true"{% endif %}>
     {% if is_user() %}
         <div>
             <a class="user-logged-in" href="#">

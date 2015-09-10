@@ -36,7 +36,12 @@ export default class FeedbackForm extends PageWidget {
     let $feedbackAttachments = this.$element.find('#new_feedback_more_attachments');
     let feedbackReader = new FeedbackValueReader(this.$element);
 
-    $feedbackAttachments.hide();
+    // deatch the "Add More Attachments" button from the DOM (unnecessary if JS enabled)
+    $feedbackAttachments.remove();
+
+    if ($expandedForm.data('do-show')) {
+      $expandedForm.show();
+    }
 
     this.processChangedCategory = () => {
       if (feedbackReader.getCategoryId()) {

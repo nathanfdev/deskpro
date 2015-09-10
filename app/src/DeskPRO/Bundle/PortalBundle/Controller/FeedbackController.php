@@ -147,6 +147,11 @@ class FeedbackController extends AbstractController
             }
         }
 
+        $form_was_submitted = false;
+        if ($form->isSubmitted()) {
+            $form_was_submitted = true;
+        }
+
         //
         // BREADCRUMBS
         //
@@ -156,7 +161,6 @@ class FeedbackController extends AbstractController
         // FILTER CATEGORIES
         //
         $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
-
 
         //
         // JS INITIAL DATA
@@ -175,22 +179,23 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
-                'page'            => $page,
-                'feedback_types' => $feedback_types,
-                'count'           => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true,
-                'status' => $filter->getStatus(),
+                'page'              => $page,
+                'feedback_types'    => $feedback_types,
+                'count'             => $this->getBrandSetting('portal.per_page_content'),
+                'show_pagination'   => true,
+                'status'            => $filter->getStatus(),
                 'status_categories' => $filter->getStatusCategories(),
-                'types' => $filter->getTypes(),
-                'sort' => $filter->getSort(),
-                'sort_direction' => $filter->getSortDirection(),
-                'form'            => $form->createView(),
-                'user'            => $this->getUser(),
-                'rerendering_saved'  => $rerendering_saved,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->feedback(),
-                'rss_link' => $rss_link,
-                'filter_js' => $filter_js
+                'types'             => $filter->getTypes(),
+                'sort'              => $filter->getSort(),
+                'sort_direction'    => $filter->getSortDirection(),
+                'form'              => $form->createView(),
+                'form_was_submitted'=> $form_was_submitted,
+                'user'              => $this->getUser(),
+                'rerendering_saved' => $rerendering_saved,
+                'breadcrumbs'       => $breadcrumbs,
+                'page_title'        => $this->createPageTitle()->feedback(),
+                'rss_link'          => $rss_link,
+                'filter_js'         => $filter_js
             )
         );
     }
