@@ -196,5 +196,5 @@ $container->loadFromExtension('twig', array(
 ############################################################################
 
 $container->loadFromExtension('deskpro_core', array());
-$container->loadFromExtension('deskpro_search', array());
+//$container->loadFromExtension('deskpro_search', array()); -- already included in config.shared.php
 $container->loadFromExtension('deskpro_api_core', array());

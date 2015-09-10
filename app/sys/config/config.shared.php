@@ -695,3 +695,10 @@ $container->loadFromExtension(
         ),
     )
 );
+
+
+############################################################################
+# DeskPRO Configuration
+############################################################################
+
+$container->loadFromExtension('deskpro_search', array());
