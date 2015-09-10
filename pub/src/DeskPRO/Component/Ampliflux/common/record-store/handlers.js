@@ -1,0 +1,132 @@
+import { async, asyncIndicator, composeHandlers } from '../../reducers/handlers';
+
+/**
+ * (Reducer builder) Runs cleanup of unused records
+ *
+ * @return {Function} reducer
+ */
+export function gc() {
+  return state => state;
+}
+
+
+/**
+ * (Reducer builder) Unregisters 'interest' in certain records.
+ * When GC is run, any records in the store that are not currently being
+ * used by any request will be cleaned up.
+ *
+ * @return {Function} reducer
+ */
+export function releaseRecords() {
+  return state => state;
+}
+
+
+/**
+ * Builds a reducer that unregisters an entire request.
+ *
+ * @return {Function} reducer
+ */
+export function releaseRequest() {
+  return state => state;
+}
+
+
+/**
+ * (Reducer builder) Handles updating the store with updated requests.
+ *
+ * @param {Immutable.Map} state The current state
+ * @param {String} requestId The request ID
+ * @param {Immutable.Map} setRecords New records to merge into the collection
+ * @param {Immutable.Set|int[]} ids The ids the requestor is actually interested in (i.e., ids of setRecords + ids of records not provided that are already in state)
+ * @param {String} mode 'set' or 'append'. If 'set', then the requestors 'ids' will be set to `ids`. Otherwise, they are added to the current set of IDs.
+ * @return {Immutable.Map} New state
+ */
+function handleSetRequestRecords(state, requestId, setRecords, ids, mode) {
+  let recordIds = Immutable.Set(ids || []);
+
+  if (mode !== 'set') {
+    const existRecordIds = state.getIn(['requests', requestId]);
+    if (existRecordIds) {
+      recordIds = recordIds.merge(existRecordIds);
+    }
+  }
+
+  return state.merge({
+    records: state.get('records').merge(setRecords),
+    requests: { [requestId]: recordIds}
+  });
+}
+
+
+/**
+ * (Reducer builder) Handles a 'set' request.
+ *
+ * @return {Function} reducer
+ */
+export function setRequestRecords() {
+  return (state, payload) => handleSetRequestRecords(
+    state,
+    payload.requestId,
+    payload.records,
+    payload.ids,
+    payload.mode
+  );
+}
+
+
+/**
+ * (Reducer builder) Handles a 'load' request.
+ *
+ * @return {Function} reducer
+ */
+export function requestRecords() {
+  return composeHandlers(
+    asyncIndicator((state, payload) => ({
+      loading: `status.${payload.requestId}.isLoading`,
+      success: `status.${payload.requestId}.isDone`,
+    })),
+    async({
+      success: (state, payload) => {
+        return handleSetRequestRecords(
+          state,
+          payload.requestId,
+          payload.records,
+          payload.ids,
+          payload.mode
+        );
+      }
+    })
+  );
+}
+
+
+/**
+ * Creates empty state required for common storage.
+ *
+ * @return {Object} empty state
+ */
+export function createEmptyRecordStoreState() {
+  return {
+    records: {},
+    requests: {},
+    status: {}
+  };
+}
+
+
+/**
+ * Builds a map of reducers that handle all of the relevant actions for common storage.
+ *
+ * @param {Object} actionTypes A map of type => action type constant
+ * @return {Object} Handlers map
+ */
+export function buildRecordStoreHandlers({ gcAction, releaseRecordsAction, releaseRequestAction, setRequestRecordAction, requestRecordsAction }) {
+  return {
+    [gcAction]: gc(),
+    [releaseRecordsAction]: releaseRecords(),
+    [releaseRequestAction]: releaseRequest(),
+    [setRequestRecordAction]: setRequestRecords(),
+    [requestRecordsAction]: requestRecords()
+  };
+}

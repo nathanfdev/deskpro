@@ -42,17 +42,22 @@ export default function loggerMiddleware({ getState }) {
     console.debug('Action', jsValue(action));
     try {
       const result = next(action);
-      const jsResult = jsValue(result);
-      if (jsResult && jsResult.error) {
-        console.error('Result', jsResult);
-      } else {
-        console.debug('Result', jsResult);
+      let isErrorStatus = false;
+
+      if (typeof result !== 'undefined') {
+        const jsResult = jsValue(result);
+        if (jsResult && jsResult.error && jsResult.error === true) {
+          isErrorStatus = true;
+          console.error('Result', jsResult);
+        } else {
+          console.debug('Result', jsResult);
+        }
       }
 
       console.debug('NextState', jsValue(getState()));
       console.groupEnd();
 
-      if (jsResult && jsResult.error && jsResult.error === true) {
+      if (isErrorStatus) {
         console.warn('Note: Last action ' + actionType + ' had error status');
       }
       return result;

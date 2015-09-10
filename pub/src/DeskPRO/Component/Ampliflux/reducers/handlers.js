@@ -228,7 +228,7 @@ export function async({ start, success, error, done }) {
   };
 }
 
-function _resolveProps(rawProps) {
+function _resolveProps(rawProps, state, payload, action) {
   let props = rawProps;
   if (typeof props === 'function') {
     props = props(state, payload, action);
@@ -265,7 +265,7 @@ export function asyncIndicator(props) {
     verifyImmutable(state);
 
     const seq = action && action.meta && action.meta.sequence ? action.meta.sequence : null;
-    const useProps = _resolveProps(props);
+    const useProps = _resolveProps(props, state, payload, action);
 
     let newState = state;
 

@@ -1,21 +1,42 @@
+import objGet from 'lodash/object/get';
 import Immutable from 'immutable';
 
+/**
+ * (Action creator builder) Triggers a record gc.
+ *
+ * @return {Function} action creator
+ */
 export function gcRecords() {
   return () => ({});
 }
 
+/**
+ * (Action creator builder) Releases records for a request.
+ *
+ * @return {Function} action creator
+ */
 export function releaseRecords() {
   return (requestId, ids) => {
     return { requestId, ids: Immutable.Set(ids)};
   };
 }
 
+/**
+ * (Action creator builder) Releases an entire request.
+ *
+ * @return {Function} action creator
+ */
 export function releaseRequest() {
   return (requestId) => {
     return { requestId };
   };
 }
 
+/**
+ * (Action creator builder) Adds records to the store and registers interest for the request.
+ *
+ * @return {Function} action creator
+ */
 export function setRequestRecords() {
   return (requestId, setRecords, reqIds, mode = 'append') => {
     let records = setRecords;
@@ -49,12 +70,21 @@ export function setRequestRecords() {
   };
 }
 
+/**
+ * (Action creator builder) Used to request new records from the store. If they aren't loaded yet,
+ * they will loaded now.
+ *
+ * @param  {String}   stateKey The key in the store that is being used for the record-store. Use an array to denote hierarchy.
+ * @param  {Function} loaderFn Your function will accept an Immutable.Set of IDs the reqestor wants to load.
+ * @return {Function} action creator
+ */
 export function requestRecords(stateKey, loaderFn) {
   return (requestId, reqIds, mode = 'append') => (dispatch, getState) => {
     const ids = Immutable.Set(reqIds);
-    const state      = stateLoaderFn(getState);
+    const allState   = getState();
+    const state      = objGet(allState, stateKey) || Immutable.fromJS({records: {}});
     const records    = state.get('records');
-    const missingIds = ids.filter(id => !records.has(id + ''));
+    const missingIds = ids.filter(id => !records.has(id));
 
     return {
       requestId: requestId,
@@ -62,15 +92,18 @@ export function requestRecords(stateKey, loaderFn) {
       missingIds: missingIds,
       promise: new Promise((resolve) => {
         if (missingIds.size) {
-          const newRecords = loaderFn(missingIds);
-          if (!Immutable.Map.isMap(newRecords)) {
-            Immutable.fromJS(newRecords);
-          }
-          resolve({
-            requestId: requestId,
-            records: records.merge(newRecords),
-            ids: ids,
-            mode: mode
+          loaderFn(missingIds).then(newRecords => {
+            if (!Immutable.Map.isMap(newRecords)) {
+              Immutable.fromJS(newRecords);
+            }
+            resolve({
+              requestId: requestId,
+              records: records.merge(newRecords),
+              ids: ids,
+              mode: mode
+            });
+          }).catch(error => {
+            reject(error);
           });
         } else {
           resolve({

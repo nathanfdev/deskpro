@@ -11,9 +11,15 @@ import Immutable from 'immutable';
  *
  * @param {Object} initialState  The initial state
  * @param {Map}    handlers      A map of actionType => handlerFn
+ * @param {Map}    handlers...   A map of actionType => handlerFn
  * @returns {Function} Your reducer
  */
-export default function createReducer(initialState, handlers = {}) {
+export default function createReducer(initialState, ...handlerGroups) {
+  const handlers = {};
+  handlerGroups.forEach(g => Object.assign(handlers, g));
+
+  console.log(handlerGroups);
+
   return function reducer(state = initialState, action = {}) {
     const actionType = getActionType(action, true);
     const inState = Immutable.Iterable.isIterable(state) ? state : Immutable.fromJS(state);
