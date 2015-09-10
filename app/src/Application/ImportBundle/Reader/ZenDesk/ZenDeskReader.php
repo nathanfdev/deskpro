@@ -40,6 +40,8 @@ use DateTime;
  *
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
+ *
+ * @property ZenDeskConfig $config
  */
 class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
 {
@@ -47,11 +49,6 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
      * @var Request\RequestAdapterInterface
      */
     private $adapter;
-
-    /**
-     * @var DateTime
-     */
-    private $initial_time;
 
     /**
      * Constructor
@@ -62,9 +59,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     public function __construct(Request\RequestAdapterInterface $adapter, ZenDeskConfig $config)
     {
         parent::__construct($config);
-
-        $this->adapter      = $adapter;
-        $this->initial_time = $config->getInitialTime();
+        $this->adapter = $adapter;
     }
 
     /**
@@ -316,6 +311,22 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticlesCategories()
+    {
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesSections()
+    {
+        return array();
+    }
+
+    /**
      * Converts stdClass to array
      *
      * @param mixed $object
@@ -334,11 +345,12 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
      */
     private function getStartTimeTimestamp(DateTime $start_time = null)
     {
-        if ($start_time && $start_time > $this->initial_time) {
+        $initial_time = $this->config->getInitialTime();
+        if ($start_time && $start_time > $initial_time) {
             return $start_time->getTimestamp();
         }
 
-        return $this->initial_time->getTimestamp();
+        return $initial_time->getTimestamp();
     }
 
     /**

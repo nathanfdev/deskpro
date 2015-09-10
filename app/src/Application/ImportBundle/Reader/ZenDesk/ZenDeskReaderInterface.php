@@ -186,4 +186,18 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @return array
      */
     public function getArticleCategory($section_id);
+
+    /**
+     * Returns a collection of article categories
+     *
+     * @return array
+     */
+    public function getArticlesCategories();
+
+    /**
+     * Returns a collection of article sub categories
+     *
+     * @return array
+     */
+    public function getArticlesSections();
 }

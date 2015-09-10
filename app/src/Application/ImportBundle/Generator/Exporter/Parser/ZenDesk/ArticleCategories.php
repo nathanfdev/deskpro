@@ -48,7 +48,7 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->getArticles();
     }
 
     /**
@@ -57,5 +57,20 @@ final class ArticleCategories extends AbstractParser
     public function export()
     {
         return new Entity\Collection();
+    }
+
+    /**
+     * Returns help center categories
+     * Loads data from ZenDesk reader
+     *
+     * @return array
+     * @throws \Exception
+     */
+    private function getArticles()
+    {
+        return array_merge(
+            $this->reader->getArticlesCategories(),
+            $this->reader->getArticlesSections()
+        );
     }
 }
