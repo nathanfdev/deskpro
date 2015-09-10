@@ -210,13 +210,26 @@
     {% if prototype is defined %}
         {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
     {% endif %}
-    <div {{ block('widget_container_attributes') }}>
-        {%- if form.parent is empty -%}
-            {{ form_errors(form) }}
-        {%- endif -%}
-        {{- block('form_rows') -}}
-        {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
-        {{- form_rest(form) -}}
+    <div class="form-widget">
+        <div class="attach-field">
+            <div class="as-no-dpui">
+                <div {{ block('widget_container_attributes') }}>
+                    {%- if form.parent is empty -%}
+                        {{ form_errors(form) }}
+                    {%- endif -%}
+                    {{- block('form_rows') -}}
+                    {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+                    {{- form_rest(form) -}}
+                </div>
+            </div>
+            <div class="as-dpui">
+                <div class="new-ticket-attachements new-ticket-attachements-interactive"
+                     data-base-name="{{ form.vars.full_name }}">
+                    <a class="attach-file"><i class="fa fa-link"></i> {{ phrase('portal.general.attach-instructions') }}
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock feedback_attachment_collection_widget %}
 

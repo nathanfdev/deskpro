@@ -1,6 +1,7 @@
 import React from "react"
 import _ from "lodash"
 import TypeSlider from "./TypeSlider"
+import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
 
 export default class TypeRow extends React.Component {
   render() {
@@ -16,7 +17,7 @@ export default class TypeRow extends React.Component {
           })}
           <li style={{float: "right"}}>
             <img style={{display: this.props.doSpin ? "inline" : "none", height: "30px", width: "30px"}}
-                 src={ window.DESKPRO_BASE_URL + '/web/spinner.gif' }/>
+                 src={ PortalUrlGenerator.path('/web/spinner.gif') }/>
           </li>
         </ul>
       </div>

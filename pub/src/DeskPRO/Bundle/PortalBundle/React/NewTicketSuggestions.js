@@ -197,7 +197,8 @@ export default class NewTicketSuggestions extends React.Component {
         <div className="search-box-results">
           <header>
             <span className="result-count">We found the following content that may answer your question</span>
-            <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}} />
+            <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}}
+                 src={ PortalUrlGenerator.path('/web/spinner.gif') }/>
           </header>
           <Suggestions results={data.results} />
         </div>

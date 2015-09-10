@@ -4576,9 +4576,14 @@ h1.fancy-header {
 
     .input, .button, span {
       display: inline-block;
-      padding: 10px 15px;
+      padding: 5px 10px;
       font-size: 1.2em;
       line-height: 1em;
+      margin-top: 10px;
+    }
+
+    .deskpro-choice-widget {
+      display: inline-block;
     }
 
     .input {
@@ -4603,6 +4608,7 @@ h1.fancy-header {
       background: $button-color-secondary;
       text-align: center;
       text-shadow: none;
+      margin-top: 10px;
     }
 
     @media screen and (max-width: 760px) {
@@ -4620,10 +4626,20 @@ h1.fancy-header {
   top: -30px;
   left: 20px;
   padding: 10px;
-  padding-bottom: 1px;
+  padding-bottom: 10px;
   max-width: 600px;
   border-radius: 4px;
   background: darken($page-background, 5%);
+
+  .button {
+    width: 34%;
+    border: 1px solid $button-color;
+    border-bottom: none;
+    background: $button-color;
+    text-align: center;
+    text-shadow: none;
+    margin-top: 15px;
+  }
 
   &:before {
     position: absolute;
