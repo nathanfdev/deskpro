@@ -54,15 +54,15 @@ gulp.task('priv:start-prod', function () {
 //######################################################################################################################
 
 gulp.task('refresh:bundle', ['clean'], function (callback) {
-  runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
+  runWebpackBundle(getWebpackConfig('all', false, deskpro.isProd), callback);
 });
 
 gulp.task('bundle', function (callback) {
-  runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
+  runWebpackBundle(getWebpackConfig('all', false, deskpro.isProd), callback);
 });
 
 gulp.task('bundle:portal', function (callback) {
-  runWebpackBundle(getWebpackConfig('portal', deskpro.isProd), callback);
+  runWebpackBundle(getWebpackConfig('portal', false, deskpro.isProd), callback);
 });
 
 gulp.task('bundle:dev-server', function(callback) {
