@@ -7,6 +7,7 @@
     'portal.tickets.list_department' => 'Department',
     'portal.tickets.list_subject' => 'Subject',
     'portal.tickets.list_last_action' => 'Last Action',
+    'portal.tickets.list_date_created' => 'Date Created',
     'portal.tickets.new-section-title' => 'Contact Us',
     'portal.tickets.guest-thanks-section-title' => 'Thank You',
     'portal.tickets.new-intro' => 'Please complete this form and one of our agents will reply to you by email as soon as possible.',

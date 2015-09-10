@@ -64,23 +64,24 @@ class TicketsController extends AbstractController
         }
 
         // create data service filters
+        $awaiting_user_sort_param = 'user_sort';
         $awaiting_user_filter = new TicketFilter(
             $type,
             TicketFilter::CATEGORY_AWAITING_USER,
-            $request->query->get('user_sort', 'activity'),
-            $request->query->get('user_direction', 'desc')
+            $request->query->get($awaiting_user_sort_param, 'activity'),
+            $request->query->get($awaiting_user_sort_dir_param = 'user_direction', 'desc')
         );
         $awaiting_agent_filter = new TicketFilter(
             $type,
             TicketFilter::CATEGORY_AWAITING_AGENT,
-            $request->query->get('agent_sort', 'activity'),
-            $request->query->get('agent_direction', 'desc')
+            $request->query->get($awaiting_agent_sort_param = 'agent_sort', 'activity'),
+            $request->query->get($awaiting_agent_sort_dir_param = 'agent_direction', 'desc')
         );
         $resolved_filter = new TicketFilter(
             $type,
             TicketFilter::CATEGORY_RESOLVED,
-            $request->query->get('resolved_sort', 'activity'),
-            $request->query->get('resolved_direction', 'desc')
+            $request->query->get($resolved_sort_param = 'resolved_sort', 'activity'),
+            $request->query->get($resolved_sort_dir_param = 'resolved_direction', 'desc')
         );
 
         // page
@@ -103,19 +104,28 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'awaiting_user_tickets'          => $awaiting_user_pager,
-                'awaiting_user_tickets_pg_param' => $awaiting_user_pg_param,
-
+                'awaiting_user_tickets'           => $awaiting_user_pager,
+                'awaiting_user_tickets_pg_param'  => $awaiting_user_pg_param,
+                'awaiting_user_sort'              => $awaiting_user_filter->getSort(),
+                'awaiting_user_sort_param'        => $awaiting_user_sort_param,
+                'awaiting_user_sort_dir'          => $awaiting_user_filter->getSortDirection(),
+                'awaiting_user_sort_dir_param'    => $awaiting_user_sort_dir_param,
                 'awaiting_agent_tickets'          => $awaiting_agent_pager,
                 'awaiting_agent_tickets_pg_param' => $awaiting_agent_pg_param,
-
-                'resolved_tickets'          => $resolved_pager,
-                'resolved_tickets_pg_param' => $resolved_pg_param,
-
-                'type'   => $type,
-                'person' => $person,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->tickets()
+                'awaiting_agent_sort'             => $awaiting_agent_filter->getSort(),
+                'awaiting_agent_sort_param'       => $awaiting_agent_sort_param,
+                'awaiting_agent_sort_dir'         => $awaiting_agent_filter->getSortDirection(),
+                'awaiting_agent_sort_dir_param'   => $awaiting_agent_sort_dir_param,
+                'resolved_tickets'                => $resolved_pager,
+                'resolved_tickets_pg_param'       => $resolved_pg_param,
+                'resolved_sort'                   => $resolved_filter->getSort(),
+                'resolved_sort_param'             => $resolved_sort_param,
+                'resolved_sort_dir'               => $resolved_filter->getSortDirection(),
+                'resolved_sort_dir_param'         => $resolved_sort_dir_param,
+                'type'                            => $type,
+                'person'                          => $person,
+                'breadcrumbs'                     => $breadcrumbs,
+                'page_title'                      => $this->createPageTitle()->tickets()
             )
         );
     }
