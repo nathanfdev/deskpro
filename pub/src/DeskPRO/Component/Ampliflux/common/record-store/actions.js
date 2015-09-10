@@ -1,6 +1,9 @@
 import objGet from 'lodash/object/get';
 import Immutable from 'immutable';
 
+export const MODE_APPEND = 'append';
+export const MODE_SET = 'set';
+
 /**
  * (Action creator builder) Triggers a record gc.
  *
@@ -35,10 +38,11 @@ export function releaseRequest() {
 /**
  * (Action creator builder) Adds records to the store and registers interest for the request.
  *
+ * @param {String} defaultMode Specify the default mode (MODE_APPEND or MODE_SET).
  * @return {Function} action creator
  */
-export function setRequestRecords() {
-  return (requestId, setRecords, reqIds, mode = 'append') => {
+export function setRequestRecords(defaultMode = MODE_APPEND) {
+  return (requestId, setRecords, reqIds, mode = defaultMode) => {
     let records = setRecords;
     let ids     = reqIds;
 
@@ -76,10 +80,11 @@ export function setRequestRecords() {
  *
  * @param  {String}   stateKey The key in the store that is being used for the record-store. Use an array to denote hierarchy.
  * @param  {Function} loaderFn Your function will accept an Immutable.Set of IDs the reqestor wants to load.
+ * @param {String} defaultMode Specify the default mode (MODE_APPEND or MODE_SET).
  * @return {Function} action creator
  */
-export function requestRecords(stateKey, loaderFn) {
-  return (requestId, reqIds, mode = 'append') => (dispatch, getState) => {
+export function requestRecords(stateKey, loaderFn, defaultMode = MODE_APPEND) {
+  return (requestId, reqIds, mode = defaultMode) => (dispatch, getState) => {
     const ids = Immutable.Set(reqIds);
     const allState   = getState();
     const state      = objGet(allState, stateKey) || Immutable.fromJS({records: {}});

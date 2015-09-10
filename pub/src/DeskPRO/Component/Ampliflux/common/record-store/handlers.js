@@ -1,4 +1,5 @@
 import { async, asyncIndicator, composeHandlers } from '../../reducers/handlers';
+import { MODE_SET } from './actions';
 
 /**
  * (Reducer builder) Runs cleanup of unused records
@@ -45,7 +46,7 @@ export function releaseRequest() {
 function handleSetRequestRecords(state, requestId, setRecords, ids, mode) {
   let recordIds = Immutable.Set(ids || []);
 
-  if (mode !== 'set') {
+  if (mode !== MODE_SET) {
     const existRecordIds = state.getIn(['requests', requestId]);
     if (existRecordIds) {
       recordIds = recordIds.merge(existRecordIds);
