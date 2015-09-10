@@ -63,7 +63,7 @@ export default class OmniSearch extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('/search', { data: search_query }).then((r) => {
+    PortalHttp.sendGet('DP_URL/search', { data: search_query }).then((r) => {
       if (!r.isError()) {
         this.setState({
           data: r.data.data,
@@ -108,7 +108,7 @@ export default class OmniSearch extends React.Component {
             <header>
               <span className="result-count">{total} results</span>
               <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}}
-                   src={ window.DESKPRO_BASE_URL + '/web/spinner.gif' }/>
+                src={ PortalUrlGenerator.getSpinnerPath() }/>
               <ul className="result-filter">
                 {_.map(this.state.types, (type) => {
                   return (<SearchType key={type.type} name={type.name} active={type.active} type={type.type} toggleType={this.toggleType.bind(this)} />);

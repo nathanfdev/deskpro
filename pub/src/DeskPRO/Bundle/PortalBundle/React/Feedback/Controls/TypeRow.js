@@ -17,7 +17,7 @@ export default class TypeRow extends React.Component {
           })}
           <li style={{float: "right"}}>
             <img style={{display: this.props.doSpin ? "inline" : "none", height: "30px", width: "30px"}}
-                 src={ PortalUrlGenerator.path('/web/spinner.gif') }/>
+                 src={ PortalUrlGenerator.getSpinnerPath() } />
           </li>
         </ul>
       </div>

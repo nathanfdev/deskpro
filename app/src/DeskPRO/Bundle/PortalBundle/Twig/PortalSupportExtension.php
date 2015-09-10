@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
+use League\Url\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -97,6 +98,9 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
             new \Twig_SimpleFunction('has_permission', array($this, 'hasPermission')),
             new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
+            new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
+            new \Twig_SimpleFunction('is_multi_lang', array($this, 'isMultLang')),
+            new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
             new \Twig_SimpleFunction('date', array($this, 'date'))
         );
 
@@ -181,6 +185,43 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return false;
+    }
+
+    public function langCode()
+    {
+        if (!$lang = $this->container->get('language_stack')->getActive()) {
+            $lang = $this->container->get('language_stack')->getDefaultLanguage();
+        }
+
+        return $lang->getTwoLetterLanguageCode();
+    }
+
+    public function isMultLang()
+    {
+        return $this->container->get('language_manager')->isMultiLanguagePortal();
+    }
+
+    public function baseUrl()
+    {
+        $language_manager = $this->container->get('language_manager');
+        $abs_url = $this->container->get('router')->generate(
+            'portal_home',
+            array(),
+            UrlGeneratorInterface::ABSOLUTE_URL
+        )
+        ;
+
+        // if this is multi language portal
+        // then the generated homepage will include a language code
+        // we must remove it for the JS to work properly
+        if ($language_manager->isMultiLanguagePortal()) {
+            $url = Url::createFromUrl($abs_url);
+            $path = $url->getPath()->toArray();
+            array_pop($path);
+            $abs_url = $url->getBaseUrl() . implode('/', $path);
+        }
+
+        return $abs_url;
     }
 
 

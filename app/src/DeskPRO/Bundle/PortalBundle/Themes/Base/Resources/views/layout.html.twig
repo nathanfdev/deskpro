@@ -35,7 +35,9 @@
 
   window.DP_LOAD_FN = [];
 
-  window.DESKPRO_BASE_URL = '{{ url('portal_home') }}';
+  window.DESKPRO_BASE_URL = '{{ base_url() }}';
+  window.DESKPRO_MULTI_LANG = {{ is_multi_lang() ? 'true' : 'false' }};
+  window.DESKPRO_LANG = '{{ lang_code() }}';
 })();
 </script>
 {% block doc_begin %}{% endblock %}

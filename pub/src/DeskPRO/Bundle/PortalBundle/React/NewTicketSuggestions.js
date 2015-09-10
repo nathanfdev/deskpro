@@ -133,7 +133,7 @@ class Suggestions extends React.Component {
               })
             }
             {
-              !this.state.show_all ? (<SuggestionMore alt={visible_results.length % 2 === 0} count={this.props.results.length - 5} showAll={this.showMore.bind(this)} />) : null
+              (!this.state.show_all && this.props.results.length > 5) ? (<SuggestionMore alt={visible_results.length % 2 === 0} count={this.props.results.length - 5} showAll={this.showMore.bind(this)} />) : null
             }
           </ul>
         </div>
@@ -180,7 +180,7 @@ export default class NewTicketSuggestions extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('/search/similar', { data: search_query }).then((r) => {
+    PortalHttp.sendGet('DP_URL/search/similar', { data: search_query }).then((r) => {
       if (!r.isError()) {
         this.setState({
           data: r.data.data,
@@ -198,7 +198,7 @@ export default class NewTicketSuggestions extends React.Component {
           <header>
             <span className="result-count">We found the following content that may answer your question</span>
             <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}}
-                 src={ PortalUrlGenerator.path('/web/spinner.gif') }/>
+                 src={ PortalUrlGenerator.getSpinnerPath() }/>
           </header>
           <Suggestions results={data.results} />
         </div>
