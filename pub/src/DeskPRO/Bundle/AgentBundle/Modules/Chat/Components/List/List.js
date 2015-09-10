@@ -28,10 +28,9 @@ export class List extends React.Component {
             />
           <ListTableViewSwitcher displayFields={displayFields} viewMode={viewMode} dispatch={dispatch}/>
         </ControlBar>
-        {viewMode === constants.VIEW_MODE_LIST ?
-          this.renderListView(elements) :
-          this.renderTableView(elements)
-        }
+
+        {this.renderElements(viewMode, elements)}
+
       </ListFrame>
     );
   }

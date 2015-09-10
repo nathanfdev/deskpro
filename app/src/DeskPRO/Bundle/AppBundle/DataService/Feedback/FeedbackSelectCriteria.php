@@ -99,7 +99,7 @@ class FeedbackSelectCriteria extends Criteria
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
         $resolver->setDefined([
-            'awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label', 'sort', 'order'
+            'awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label', 'sort', 'order', 'page', 'count'
         ]);
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues(

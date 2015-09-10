@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrame, ControlBar, ListTableViewSwitcher, OrderBy, TableView, TableBody }
+import { ListFrame, ControlBar, ListTableViewSwitcher, OrderBy, TableView, TableBody, Pagination }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { FeedbackCard } from './FeedbackCard';
 import { TableHeader } from './TableHeader';
@@ -70,17 +70,9 @@ export class ListContainer extends Component {
           <ListTableViewSwitcher displayFields={displayFields} viewMode={viewMode} dispatch={dispatch}/>
         </ControlBar>
 
-        {viewMode === constants.VIEW_MODE_LIST ?
-          feedback.map((item, index) =>
-              <FeedbackCard key={index} feedback={item}/>
-          ) :
-          <TableView>
-            <TableHeader sortTable={this.sortTable.bind(this)}/>
-            <TableBody>
-              {feedback.map((feedback, index) => <Row key={index} feedback={feedback}/>)}
-            </TableBody>
-          </TableView>
-        }
+        {this.renderElements(viewMode, feedback)}
+
+        <Pagination/>
       </ListFrame>
     );
   }
@@ -99,6 +91,44 @@ export class ListContainer extends Component {
   toggleOrder() {
     const {dispatch, query, sort, order, filters} = this.props;
     dispatch(actions.toggleOrder(query, sort, order, filters));
+  }
+
+  renderElements(view, elements) {
+    if (!elements.length) {
+      return 'No data to display'
+    }
+
+    switch (view) {
+      case 'list':
+        return this.renderListView(elements);
+      case 'table':
+        return this.renderTableView(elements);
+      default:
+        throw `Unknown "${view}" view type`;
+    }
+  }
+
+  renderListView(elements) {
+    return (
+      <div>
+        <h1>List View</h1>
+        {elements.map((element, index) => <FeedbackCard key={index} feedback={element}/>)}
+      </div>
+    );
+  }
+
+  renderTableView(elements) {
+    return (
+      <div>
+        <h1>Table View</h1>
+        <TableView>
+          <TableHeader sortTable={this.sortTable.bind(this)}/>
+          <TableBody>
+            {elements.map((element, index) => <Row key={index} feedback={element}/>)}
+          </TableBody>
+        </TableView>
+      </div>
+    );
   }
 
 }
