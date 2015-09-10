@@ -49,6 +49,14 @@ final class ArticleCategory extends AbstractEntity
     private $categories;
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->categories = new Collection();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getType()
@@ -83,12 +91,12 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
-     * @param ArticleCategory[]|Collection $categories
+     * @param ArticleCategory $category
      * @return $this
      */
-    public function setCategories($categories)
+    public function addCategory(ArticleCategory $category)
     {
-        $this->categories = $categories;
+        $this->categories->attach($category);
         return $this;
     }
 

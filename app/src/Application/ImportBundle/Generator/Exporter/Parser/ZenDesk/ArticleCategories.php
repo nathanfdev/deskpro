@@ -28,6 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 
 /**
  * Class ArticleCategories
@@ -48,7 +52,10 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getArticles();
+        $categories = $this->reader->getArticlesCategories();
+        $sections   = $this->reader->getArticlesSections();
+
+        return count($categories) + count($sections);
     }
 
     /**
@@ -56,21 +63,130 @@ final class ArticleCategories extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = $this->exportCategories();
+        $sections   = $this->exportSections();
+
+        foreach ($collection as $category) {
+            foreach ($sections as $section) {
+                if ($section->getDestination() == $category->getDestination()) {
+                    $category->addCategory($section);
+                }
+            }
+        }
+
+        return $collection;
     }
 
     /**
-     * Returns help center categories
-     * Loads data from ZenDesk reader
-     *
-     * @return array
-     * @throws \Exception
+     * @return Entity\Collection|Entity\ArticleCategory[]
      */
-    private function getArticles()
+    private function exportCategories()
     {
-        return array_merge(
-            $this->reader->getArticlesCategories(),
-            $this->reader->getArticlesSections()
-        );
+        $collection = new Entity\Collection();
+        $collection->setExpectedCount($this->getCount());
+
+        $categories = $this->reader->getArticlesCategories();
+
+        foreach ($categories as $data) {
+            $this->advanceProgressBar();
+
+            try {
+                $entity = $this->exportCategory($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDArticleCategory', $this->getEntityType(), 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDArticleCategory', $this->getEntityType(), 'id', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('ZDArticleCategory', $this->getEntityType(), 'id', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\ArticleCategory
+     */
+    private function exportCategory(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'id'           => TransformerInterface::TYPE_INT,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_category_',
+                'ref'    => 'id',
+            )),
+            'title'        => TransformerInterface::TYPE_STRING,
+        ));
+
+        $entity = new Entity\ArticleCategory();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+            ->setDestination($formatted['destination'])
+            ->setTitle($formatted['title'])
+        ;
+
+        return $entity;
+    }
+
+    /**
+     * @return Entity\Collection|Entity\ArticleCategory[]
+     */
+    private function exportSections()
+    {
+        $collection = new Entity\Collection();
+        $sections   = $this->reader->getArticlesSections();
+
+        foreach ($sections as $data) {
+            $this->advanceProgressBar();
+
+            try {
+                $entity = $this->exportSection($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException('ZDArticleSection', $this->getEntityType(), 'id', $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException('ZDArticleSection', $this->getEntityType(), 'id', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('ZDArticleSection', $this->getEntityType(), 'id', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\ArticleCategory
+     */
+    private function exportSection(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'id'           => TransformerInterface::TYPE_INT,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_category_',
+                'ref'    => 'category_id',
+            )),
+            'title'        => TransformerInterface::TYPE_STRING,
+            'category_id'  => TransformerInterface::TYPE_INT,
+        ));
+
+        $entity = new Entity\ArticleCategory();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+            ->setDestination($formatted['destination'])
+            ->setTitle($formatted['title'])
+        ;
+
+        return $entity;
     }
 }

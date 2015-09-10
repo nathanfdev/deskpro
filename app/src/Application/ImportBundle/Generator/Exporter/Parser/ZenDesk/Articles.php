@@ -97,7 +97,7 @@ final class Articles extends AbstractParser
         $collection = new Entity\Collection();
         $collection->setExpectedCount(count($articles));
 
-        foreach ($articles as $num => $data) {
+        foreach ($articles as $data) {
             $this->advanceProgressBar();
 
             try {
