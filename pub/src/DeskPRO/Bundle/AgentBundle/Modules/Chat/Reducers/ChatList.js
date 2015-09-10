@@ -4,18 +4,22 @@ import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Acti
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export default class ChatList extends Reducer {
+
   getInitialState() {
     return {
       query: {agent: 'me'},
+
+      displayFields: [],
+
       // list sorting options
       sort: 'date_created',
       sortName: 'Date',
-      order: constants.ORDER_DESC,
       sortOptions: [
         {field: 'date_created', label: 'Date'},
         {field: 'total_rating', label: 'Agent'},
         {field: 'num_ratings', label: 'Department'}
       ],
+      order: constants.ORDER_DESC,
 
       // view mode (table or list)
       viewMode: constants.VIEW_MODE_TABLE,
