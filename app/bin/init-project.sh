@@ -24,11 +24,12 @@ echo ".. done"
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/web
 npm install
-bower install --config.interactive=false --allow-root
+
+npm run-script bower-install
 echo ".. done"
 
 echo ">> Building web assets"
-gulp prod
+npm run-script gulp-prod
 echo ".. done"
 echo
 
@@ -38,13 +39,6 @@ npm install
 echo ".. done"
 
 echo ">> Building new web assets"
-bin/gulp
+npm run-script gulp-prod
 echo ".. done"
 echo
-
-# once we have built, we can re-install only prod
-rm -rf node_modules/
-echo ">> Installing new web dependencies (prod)"
-cd $DIR_ROOT/pub
-npm install
-echo ".. done"

@@ -42,7 +42,9 @@
   },
   "scripts": {
     "test": "bin/mocha --compilers js:babel/register --recursive",
-    "test-all": "bin/mocha --compilers js:babel/register --recursive \"src/**/test/*.js\""
+    "test-all": "bin/mocha --compilers js:babel/register --recursive \"src/**/test/*.js\"",
+    "bower-install": "bower install --config.interactive=false",
+    "gulp-prod": "gulp prod"
   },
   "devDependencies": {
     "webpack-notifier": "^1.2.1"

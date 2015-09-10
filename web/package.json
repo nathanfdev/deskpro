@@ -29,5 +29,9 @@
     "less": "2.3.1",
     "node-sass": "2.0.1",
     "run-sequence": "1.0.2"
+  },
+  "scripts": {
+    "bower-install": "bower install --config.interactive=false",
+    "gulp-prod": "gulp prod"
   }
 }
