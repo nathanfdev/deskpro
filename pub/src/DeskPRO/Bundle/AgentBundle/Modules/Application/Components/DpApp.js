@@ -2,7 +2,7 @@ import React from "react";
 
 import { connect } from 'redux/react';
 
-import Header from "./Header";
+import { Header } from "./Header";
 import { AppSwitcher } from "./AppSwitcher";
 import TabFrame from "./TabFrame";
 
