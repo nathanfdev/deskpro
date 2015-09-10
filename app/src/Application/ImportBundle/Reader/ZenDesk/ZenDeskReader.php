@@ -315,7 +315,16 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
      */
     public function getArticlesCategories()
     {
-        return array();
+        $categories = array();
+        $result     = $this->adapter->doRequest('HelpCenter\CategoriesFindAll');
+
+        if ($result) {
+            foreach ($result->categories as $category) {
+                $categories[] = $this->toArray($category);
+            }
+        }
+
+        return $categories;
     }
 
     /**
@@ -323,7 +332,16 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
      */
     public function getArticlesSections()
     {
-        return array();
+        $sections = array();
+        $result   = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+
+        if ($result) {
+            foreach ($result->sections as $section) {
+                $sections[] = $this->toArray($section);
+            }
+        }
+
+        return $sections;
     }
 
     /**
