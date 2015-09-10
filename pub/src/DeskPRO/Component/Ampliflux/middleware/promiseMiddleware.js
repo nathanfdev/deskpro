@@ -1,8 +1,11 @@
-import { isDSA, getActionType } from '../actions/actionUtils';
+import { isDSA } from '../actions/actionUtils';
 import uniqueId from 'lodash/utility/uniqueId';
 
 /**
  * Given an action, fetch the promise from it if it exists.
+ *
+ * @param {any} action The action provided
+ * @return {Promise|null} A promise if found, or null;
  */
 function getPromise(action) {
   let payload;
@@ -17,13 +20,13 @@ function getPromise(action) {
 
   payload = action.payload;
 
-  if (typeof payload.then === "function") {
+  if (typeof payload.then === 'function') {
     return payload;
   } else if (typeof payload.promise !== 'undefined') {
     return payload.promise;
-  } else {
-    return null;
   }
+
+  return null;
 }
 
 /**
@@ -34,6 +37,8 @@ function getPromise(action) {
  * other data in the payload which will be dispatched in the 'before' action.
  *
  * `dispatch` will return the promise.
+ *
+ * @return {Function} middleware
  */
 export default function promiseMiddleware({ dispatch }) {
   return next => action => {
@@ -58,21 +63,18 @@ export default function promiseMiddleware({ dispatch }) {
     } else {
       const sequenceId = uniqueId();
 
-      const createSeqAction = (sequence, payload, isError = false) => {
-        let copyAction = {
-          ...action,
-          payload: payload,
-          error: isError === true,
-          meta: {
-            ...action.meta,
-            sequenceId:      sequenceId,
-            sequence:        sequence,
-            sequenceType:    'promise',
-            previousPayload: action.payload
-          }
-        };
-        return copyAction;
-      }
+      const createSeqAction = (sequence, payload, isError = false) => ({
+        ...action,
+        payload: payload,
+        error: isError === true,
+        meta: {
+          ...action.meta,
+          sequenceId: sequenceId,
+          sequence: sequence,
+          sequenceType: 'promise',
+          previousPayload: action.payload
+        }
+      });
 
       dispatch(createSeqAction('start', action.payload));
 
@@ -82,11 +84,11 @@ export default function promiseMiddleware({ dispatch }) {
           dispatch(createSeqAction('done', result));
         })
         .catch(error => {
-          dispatch(createSeqAction('error', result, true));
-          dispatch(createSeqAction('done', result, true));
+          dispatch(createSeqAction('error', error, true));
+          dispatch(createSeqAction('done', error, true));
         });
 
       return promise;
     }
-  }
+  };
 }

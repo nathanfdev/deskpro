@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash/lang/isPlainObject';
 import { isDSA, getActionType } from '../actions/actionUtils';
-import Immutable from "immutable";
+import Immutable from 'immutable';
 
 function jsValue(val) {
   if ((/boolean|number|string/).test(typeof val)) {
@@ -12,7 +12,7 @@ function jsValue(val) {
   }
 
   if (isPlainObject(val)) {
-    let v = Immutable.fromJS(val);
+    const v = Immutable.fromJS(val);
     if (v) {
       return v.toJS();
     }
@@ -27,39 +27,39 @@ export default function loggerMiddleware({ getState }) {
       return next(action);
     }
 
-    const actionType = isDSA(action) ? getActionType(action) : "ANON";
+    const actionType = isDSA(action) ? getActionType(action) : '[anon]';
     const sequenceType = action && action.meta && action.meta.sequenceType ? action.meta.sequenceType : null;
     const sequence = action && action.meta && action.meta.sequence ? action.meta.sequence : null;
 
     const dispatchTitle = actionType + (sequenceType ? ` - ${sequenceType} ${sequence}` : '');
 
     if (console.groupCollapsed) {
-      console.groupCollapsed("[Dispatch] " + dispatchTitle);
+      console.groupCollapsed('[Dispatch] ' + dispatchTitle);
     } else {
-      console.group("[Dispatch] " + dispatchTitle);
+      console.group('[Dispatch] ' + dispatchTitle);
     }
 
-    console.debug("Action", jsValue(action));
+    console.debug('Action', jsValue(action));
     try {
       const result = next(action);
       const jsResult = jsValue(result);
       if (jsResult && jsResult.error) {
-        console.error("Result", jsResult);
+        console.error('Result', jsResult);
       } else {
-        console.debug("Result", jsResult);
+        console.debug('Result', jsResult);
       }
 
-      console.debug("NextState", jsValue(getState()));
+      console.debug('NextState', jsValue(getState()));
       console.groupEnd();
 
       if (jsResult && jsResult.error && jsResult.error === true) {
-        console.warn("Note: Last action " + actionType + " had error status");
+        console.warn('Note: Last action ' + actionType + ' had error status');
       }
       return result;
     } catch (e) {
       console.groupEnd();
-      console.error("Error in above action", e);
-      throw e
+      console.error('Error in above action', e);
+      throw e;
     }
-  }
+  };
 }

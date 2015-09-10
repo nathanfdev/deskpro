@@ -1,5 +1,4 @@
 import { isDSA } from '../actions/actionUtils';
-import uuid from "node-uuid";
 
 export default function timerMiddleware(timeProp) {
   return () => next => action => {
@@ -10,5 +9,5 @@ export default function timerMiddleware(timeProp) {
       action.meta[timeProp] = new Date();
     }
     return next(action);
-  }
+  };
 }

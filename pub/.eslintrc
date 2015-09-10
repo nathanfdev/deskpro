@@ -8,16 +8,15 @@
   "parser": "babel-eslint",
   "rules": {
     "valid-jsdoc": 2,
-
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
     "react/react-in-jsx-scope": 2,
-
     "no-var": 0,
     "vars-on-top": 0,
-
     "comma-dangle": 0,
-    "new-cap": 0
+    "new-cap": 0,
+    "no-console": 0,
+    "indent": [2, 2, {"SwitchCase": 1}]
   },
   "plugins": [
     "react"

@@ -1,5 +1,4 @@
 import { isDSA } from '../actions/actionUtils';
-import uniqueId from 'lodash/utility/uniqueId';
 
 function getDelay(action) {
   if (!isDSA(action)) {
@@ -7,7 +6,7 @@ function getDelay(action) {
   }
 
   if (action.meta && action.meta.delay) {
-    return parseInt(action.meta.delay);
+    return parseInt(action.meta.delay, 10);
   }
 
   return null;
@@ -17,6 +16,8 @@ function getDelay(action) {
  * Schedules an action to dispatch given a timout on action.meta.delay.
  *
  * `dispatch` will return a cancel function.
+ *
+ * @return {Function} middleware
  */
 export default function timeoutMiddleware() {
   return next => action => {
@@ -33,5 +34,5 @@ export default function timeoutMiddleware() {
     return function cancel() {
       clearTimeout(tId);
     };
-  }
+  };
 }

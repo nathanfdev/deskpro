@@ -1,5 +1,5 @@
-import createAction from "./createAction";
+import createAction from './createAction';
 
 export default {
   createAction
-}
+};

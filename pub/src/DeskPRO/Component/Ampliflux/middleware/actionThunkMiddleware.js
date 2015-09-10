@@ -4,11 +4,12 @@ function copyActionNewPayload(action, payload) {
   return {
     ...action,
     payload: payload
-  }
+  };
 }
 
 /**
  * Similar to redux-thunk except it also works if a function is returned as part of a payload.
+ * @return {Function} middleware
  */
 export default function actionThunkMiddleware({ dispatch, getState }) {
   return next => action => {
@@ -28,16 +29,16 @@ export default function actionThunkMiddleware({ dispatch, getState }) {
       // undefined means the function will use dispatch itself
       if (typeof result === 'undefined') {
         return result;
-      // otherwise, pass the value thru
-      } else {
-        if (isDSA(action) && !isDSA(result)) {
-          return dispatch(copyActionNewPayload(action, result));
-        } else {
-          return next(result);
-        }
       }
+
+      // otherwise, pass the value thru
+      if (isDSA(action) && !isDSA(result)) {
+        return dispatch(copyActionNewPayload(action, result));
+      }
+
+      return next(result);
     }
 
     return next(action);
-  }
+  };
 }

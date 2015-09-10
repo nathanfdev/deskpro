@@ -1,5 +1,5 @@
 import { getActionType } from '../actions/actionUtils';
-import Immutable from "immutable";
+import Immutable from 'immutable';
 
 /**
  * Create a new reducer.
@@ -11,28 +11,25 @@ import Immutable from "immutable";
  *
  * @param {Object} initialState  The initial state
  * @param {Map}    handlers      A map of actionType => handlerFn
- * @returns {Function}
+ * @returns {Function} Your reducer
  */
 export default function createReducer(initialState, handlers = {}) {
   return function reducer(state = initialState, action = {}) {
     const actionType = getActionType(action, true);
+    const inState = Immutable.Iterable.isIterable(state) ? state : Immutable.fromJS(state);
 
-    if (!Immutable.Iterable.isIterable(state)) {
-      state = Immutable.fromJS(state);
-    }
+    let newState = inState;
 
     if (actionType && handlers.hasOwnProperty(actionType)) {
-      let payload = action.payload || undefined;
-      state = handlers[actionType](state, payload, action);
-    } else {
-      state = state;
+      const payload = action.payload || undefined;
+      newState = handlers[actionType](state, payload, action);
     }
 
-    if (!Immutable.Iterable.isIterable(state)) {
+    if (!Immutable.Iterable.isIterable(newState)) {
       console.error('Reducers must return Immutable objects', state);
       throw new TypeError('Reducers must return Immutable objects');
     }
 
-    return state;
-  }
+    return newState;
+  };
 }

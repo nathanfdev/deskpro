@@ -1,8 +1,9 @@
 import { isDSA } from '../actions/actionUtils';
-import uuid from "node-uuid";
+import uuid from 'node-uuid';
 
 /**
  * Adds a unique ID to every action. Useful for logging etc.
+ * @return {Function} middleware
  */
 export default function guidMiddleware() {
   return next => action => {
@@ -13,5 +14,5 @@ export default function guidMiddleware() {
       action.meta.guid = uuid();
     }
     return next(action);
-  }
+  };
 }

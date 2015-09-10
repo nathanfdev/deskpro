@@ -1,8 +1,7 @@
-import { getActionType } from '../actions/actionUtils';
-import createReducer from "./createReducer";
-import Immutable from "immutable";
 
-export const composeReducers = (...funcs) => (state, action) => funcs.reduceRight((composed, f) => f(composed, action), state);
+export function composeReducers(...funcs) {
+  return (state, action) => funcs.reduceRight((composed, f) => f(composed, action), state);
+}
 
 /**
  * This wraps a reducer to make it a "shared records store".
@@ -14,6 +13,4 @@ export const composeReducers = (...funcs) => (state, action) => funcs.reduceRigh
  * @param {Map}    handlers      A map of actionType => handlerFn
  * @returns {Function}
  */
-export default function sharedRecordsStore(state, action) {
-
-}
+// export default function sharedRecordsStore(state, action)

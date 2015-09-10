@@ -1,5 +1,5 @@
-import createReducer from "./createReducer";
+import createReducer from './createReducer';
 
 export default {
   createReducer
-}
+};
