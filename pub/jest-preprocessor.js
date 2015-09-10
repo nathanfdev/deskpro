@@ -13,6 +13,8 @@ module.exports = {
       var depth = matches.length - 4;
       var margin = '../'.repeat(depth);
 
+      // DeskPRO/... paths ---------------------------------------------------------------------------------------------
+
       // sources imports
       result = result.replace(
         /^import(.*)[\"\']DeskPRO(.*)[\"\'](.*)$/gm,
@@ -29,6 +31,12 @@ module.exports = {
       result = result.replace(
         /^(.+)([\s=])require\([\"\']DeskPRO(.*)[\"\']\)(.*)$/gm,
         "$1$2require('" + margin + "DeskPRO$3')$4"
+      );
+
+      // Ampliflux/... paths -------------------------------------------------------------------------------------------
+      result = result.replace(
+        /^import(.*)[\"\'"]Ampliflux(.*)[\"\'](.*)$/gm,
+        "import$1'" + margin + "DeskPRO/Component/Ampliflux$2'$3"
       );
     }
 
