@@ -564,7 +564,7 @@
     /*
      * When creating a new feedback in portal, this status category is set automatically
      */
-    'portal.default_feedback_status_category_id' => 2,
+    'portal.default_feedback_status_category_id' => 1,
 
     /*
      * The default "per page" number of results in content lists
