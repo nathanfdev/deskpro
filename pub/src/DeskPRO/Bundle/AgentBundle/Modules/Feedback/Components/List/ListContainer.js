@@ -35,29 +35,8 @@ export class ListContainer extends Component {
 
 
   render() {
-    const displayFields = [
-      {name: 'id', label: 'ID'},
-      {name: 'status', label: 'Status'},
-      {name: 'hidden_status', label: 'Hidden status'},
-      {name: 'status_category', label: 'Status category'},
-      {name: 'title', label: 'Status category'},
-      {name: 'author_name', label: 'Submitter'},
-      {name: 'language_id', label: 'Lang'},
-      {name: 'type', label: 'Type'},
-      {name: 'slug', label: 'Slug'},
-      {name: 'date_created', label: 'Created'},
-      {name: 'date_published', label: 'Published'},
-      {name: 'view_count', label: 'Views'},
-      {name: 'total_rating', label: 'Rating'},
-      {name: 'num_rating', label: 'Votes'},
-      {name: 'num_comments', label: 'Comments'},
-      {name: 'validating', label: 'Validating'},
-      {name: 'popularity', label: 'Popularity'},
-      {name: 'content', label: 'Content'},
-      {name: 'custom_category', label: 'Category'}
-    ];
 
-    const { feedback, viewMode, sort, sortName, order, filters, query, sortOptions, dispatch } = this.props;
+    const { feedback, viewMode, sort, sortName, order, filters, query, sortOptions, dispatch, listViewFields,tableViewFields } = this.props;
 
     return (
       <ListFrame>
@@ -65,9 +44,11 @@ export class ListContainer extends Component {
           <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
                    toggleOrder={this.toggleOrder.bind(this)}
                    toggleSort={this.toggleSort.bind(this)}
+
             />
           <FilterBy filters={filters} query={query}/>
-          <ListTableViewSwitcher displayFields={displayFields} viewMode={viewMode} dispatch={dispatch}/>
+          <ListTableViewSwitcher listViewFields={listViewFields} tableViewFields={tableViewFields} viewMode={viewMode}
+                                 dispatch={dispatch} displayFieldsStatus={this.displayFieldsStatus.bind(this)}/>
         </ControlBar>
 
         {this.renderElements(viewMode, feedback)}
@@ -91,6 +72,11 @@ export class ListContainer extends Component {
   toggleOrder() {
     const {dispatch, query, sort, order, filters} = this.props;
     dispatch(actions.toggleOrder(query, sort, order, filters));
+  }
+
+  displayFieldsStatus(type, field, status) {
+    const {dispatch} = this.props;
+    dispatch(actions.changeDisplayFieldsStatus(type, field, status));
   }
 
   renderElements(view, elements) {
