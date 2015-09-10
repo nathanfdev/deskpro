@@ -33,75 +33,77 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class Criteria
+ * Class Groupable
  */
-abstract class Criteria implements CriteriaInterface
+trait Groupable
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $filters;
+    protected $group_by;
 
     /**
-     * Criteria constructor.
-     * @param array $filters
+     * @return array
      */
-    protected function __construct(array $filters = [])
+    public abstract function getGroupByAllowedValues();
+
+    /**
+     * @inheritDoc
+     */
+    public function getGroupBy()
     {
-        $this->filters = $filters;
+        return $this->group_by;
     }
 
     /**
-     * Create an instance from parameters
-     *
-     * This method is complicated for the sake of universality. It relies on duck-typing checks to handle creation
-     * of different types of Criteria instances such as GroupableCriteriaInterface, SortableCriteriaInterface etc.
-     *
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @return Criteria
+     * @inheritDoc
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
+    public function setGroupBy($value)
     {
-        $isGroupable = in_array(GroupableCriteriaInterface::class, class_implements(static::class));
-        $isSortable = in_array(SortableCriteriaInterface::class, class_implements(static::class));
-
-        static::configureResolver($resolver, $data);
-        if ($isGroupable) {
-            static::configureGroupByResolver($resolver);
-        }
-        if ($isSortable) {
-            static::configureSortingResolver($resolver);
-        }
-
-        $params = $resolver->resolve($params);
-
-        if ($isGroupable) {
-            $group_by = static::extractGroupBy($params);
-        }
-        if ($isSortable) {
-            list($sort, $order) = static::extractSorting($params);
-        }
-
-        $instance = new static($params);
-
-        if ($isGroupable) {
-            $instance->setGroupBy($group_by);
-        }
-        if ($isSortable) {
-            $instance->setSort($sort);
-            $instance->setOrder($order);
-        }
-
-        return $instance;
+        $this->group_by = $value;
     }
 
     /**
-     * @param QueryBuilder $qb
+     * @inheritDoc
      */
-    public abstract function applyFilters(QueryBuilder $qb);
+    public function hasGroupBy()
+    {
+        return (bool) $this->group_by;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function ensureGroupBy()
+    {
+        if (!$this->hasGroupBy()) {
+            throw new \LogicException('Cannot group without group_by');
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function extractGroupBy(array &$params)
+    {
+        $group_by = null;
+        if (array_key_exists('group_by', $params)) {
+            $group_by = $params['group_by'];
+            unset($params['group_by']);
+        }
+
+        return $group_by;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function configureGroupByResolver(OptionsResolver $resolver)
+    {
+        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
+        $resolver->setAllowedValues('group_by', (new static())->getGroupByAllowedValues());
+    }
 }

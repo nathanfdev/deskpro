@@ -31,44 +31,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupedCriteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
-use Application\DeskPRO\Entity\ContentAbstract as Content;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
 
 /**
  * Class BaseContentCountCriteria
  */
-abstract class BaseContentCountCriteria extends GroupedCriteria
+abstract class BaseContentCountCriteria extends ContentSelectCriteria implements GroupableCriteriaInterface
 {
+    use Groupable;
+
     /**
-     * @param QueryBuilder $qb
+     * @inheritDoc
      */
-    public function applyFilters(QueryBuilder $qb)
+    public function getGroupByAllowedValues()
     {
-        $alias = $qb->getRootAliases()[0];
-
-        foreach ($this->filters as $field => $value) {
-            switch ($field) {
-                case 'status':
-                case 'hidden_status':
-                    $qb->andWhere("$alias.$field = :$field");
-                    $qb->setParameter($field, $value);
-                    break;
-
-                case 'period_created':
-                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                    $qb->andWhere("$datePeriodCaseWhen = :period_created");
-                    $qb->setParameter('period_created', $value);
-                    break;
-
-                case 'author':
-                    $qb->andWhere("$alias.person = :person");
-                    $qb->setParameter('person', $value);
-                    break;
-            }
-        }
+        return ['author', 'category', 'period_created', 'period_updated'];
     }
 
     /**
@@ -98,37 +79,6 @@ abstract class BaseContentCountCriteria extends GroupedCriteria
         }
 
         $qb->groupBy('group_name');
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureResolver(OptionsResolver $resolver, array $data = [])
-    {
-        /** @var \Application\DeskPRO\Entity\Person $me */
-        list($me) = $data;
-
-        $resolver->setDefined(['group_by', 'status', 'hidden_status', 'author', 'category', 'period_created']);
-
-        // group_by validation
-        $resolver->setAllowedValues('group_by', ['author', 'category', 'period_created', 'period_updated']);
-
-        // filters validation
-        $validateInt = function($value) {
-            return is_int($value) || ctype_digit($value);
-        };
-        $resolver->setAllowedValues('category', $validateInt);
-
-        $resolver->setNormalizer('author', function($options, $value) use ($me) {
-            return $value === 'me' ? $me->getId() : $value;
-        });
-        $resolver->setAllowedValues('author', function($value) {
-            return is_int($value) || ctype_digit($value) || ($value === 'me');
-        });
-
-        $resolver->setAllowedValues('status', Content::getAllStatuses());
-        $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());
-        $resolver->setAllowedValues('period_created', DatePeriods::$names);
     }
 
     /**

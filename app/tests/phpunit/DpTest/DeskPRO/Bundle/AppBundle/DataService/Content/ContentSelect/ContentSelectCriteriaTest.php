@@ -68,31 +68,6 @@ class ContentSelectCriteriaTest extends DeskProTestCase
     }
 
     /**
-     * @test
-     */
-    function it_should_extend_ContentCountCriteria()
-    {
-        $this->assertInstanceOf(ContentCountCriteria::class, $this->instance());
-    }
-
-    /**
-     * @test
-     */
-    function it_should_inherit_all_OptionsResolver_configurations_from_ContentCountCriteria_except_group_by_option()
-    {
-        $data = [new \Application\DeskPRO\Entity\Person()];
-        ContentCountCriteria::configureResolver($countOptionsResolver = new OptionsResolver(), $data);
-        ContentSelectCriteria::configureResolver($selectOptionsResolver = new OptionsResolver(), $data);
-        $countOptions = $countOptionsResolver->getDefinedOptions();
-        $selectOptions = $selectOptionsResolver->getDefinedOptions();
-
-        $this->assertEquals(
-            array_values($selectOptions),
-            array_values($this->removeFromArray('group_by', $countOptions))
-        );
-    }
-
-    /**
      * @param array $parameters
      * @return ContentSelectCriteria
      */

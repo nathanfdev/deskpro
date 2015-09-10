@@ -35,7 +35,9 @@ namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
 
 /**
  * Class ContentCountCriteriaTest
@@ -72,6 +74,31 @@ class ContentCountCriteriaTest extends DeskProTestCase
     function it_should_be_constructable_with_proper_parameters()
     {
         $this->assertInstanceOf(ContentCountCriteria::class, $this->instance(self::$dummyProperParams));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_extend_ContentSelectCriteria()
+    {
+        $this->assertInstanceOf(ContentSelectCriteria::class, $this->instance([]));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_inherit_all_OptionsResolver_configurations_from_ContentCountCriteria_except_group_by_option()
+    {
+        $data = [new \Application\DeskPRO\Entity\Person()];
+        ContentCountCriteria::fromParameters([], $countOptionsResolver = new OptionsResolver(), $data);
+        ContentSelectCriteria::fromParameters([], $selectOptionsResolver = new OptionsResolver(), $data);
+        $countOptions = $countOptionsResolver->getDefinedOptions();
+        $selectOptions = $selectOptionsResolver->getDefinedOptions();
+
+        $this->assertEquals(
+            array_values($selectOptions),
+            array_values($this->removeFromArray('group_by', $countOptions))
+        );
     }
 
     /**

@@ -34,72 +34,114 @@
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class GroupedCriteria
+ * Class Sortable
  */
-abstract class GroupedCriteria extends Criteria implements GroupedCriteriaInterface
+trait Sortable
 {
     /**
      * @var string
      */
-    protected $group_by;
+    private $sort;
 
     /**
-     * @param array $filters
-     * @param string $group_by
+     * @var string
      */
-    public function __construct(array $filters, $group_by)
+    private $order;
+
+    /**
+     * @inheritDoc
+     */
+    abstract public function getSortAllowedValues();
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrderAllowedValues()
     {
-        parent::__construct($filters);
-        $this->group_by = $group_by;
+        return ['asc', 'desc'];
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
-    public function hasGroupBy()
+    public function getSort()
     {
-        return (bool) $this->group_by;
+        return $this->sort;
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
-    public function getGroupBy()
+    public function setSort($value)
     {
-        return $this->group_by;
+        $this->sort = $value;
     }
 
     /**
-     * throws \LogicException
+     * @inheritDoc
      */
-    public function ensureGroupBy()
+    public function getOrder()
     {
-        if (!$this->hasGroupBy()) {
-            throw new \LogicException('Cannot group without group_by');
+        return $this->order;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setOrder($value)
+    {
+        $this->order = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasSorting()
+    {
+        return (bool) $this->order && (bool) $this->sort;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function extractSorting(array &$params)
+    {
+        $sort = null;
+        if (array_key_exists('sort', $params)) {
+            $sort = $params['sort'];
+            unset($params['sort']);
+        }
+
+        $order = 'desc';
+        if (array_key_exists('order', $params)) {
+            $order = $params['order'];
+            unset($params['order']);
+        }
+
+        return [$sort, $order];
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     */
+    public function applySorting(QueryBuilder $qb)
+    {
+        if ($this->hasSorting()) {
+            $alias = $qb->getRootAliases()[0];
+            $qb->orderBy("$alias.$this->sort", $this->order);
         }
     }
 
     /**
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @param array $data
-     * @return GroupedCriteria
+     * @inheritDoc
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
+    public static function configureSortingResolver(OptionsResolver $resolver)
     {
-        static::configureResolver($resolver, $data);
-        $params = $resolver->resolve($params);
-
-        $group_by = null;
-        if (array_key_exists('group_by', $params)) {
-            $group_by = $params['group_by'];
-            unset($params['group_by']);
-        }
-
-        $filters = $params;
-
-        return new static($filters, $group_by);
+        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['sort', 'order']));
+        $resolver->setAllowedValues('sort', (new self())->getSortAllowedValues());
+        $resolver->setAllowedValues('order', (new self())->getOrderAllowedValues());
     }
 }

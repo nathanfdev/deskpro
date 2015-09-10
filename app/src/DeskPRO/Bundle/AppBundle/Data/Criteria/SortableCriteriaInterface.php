@@ -33,32 +33,70 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Interface GroupedCriteriaInterface
+ * Interface SortableCriteriaInterface
  */
-interface GroupedCriteriaInterface extends CriteriaInterface
+interface SortableCriteriaInterface extends CriteriaInterface
 {
+    /**
+     * @return array
+     */
+    public function getSortAllowedValues();
+
+    /**
+     * @return array
+     */
+    public function getOrderAllowedValues();
+
     /**
      * @param QueryBuilder $qb
      */
-    public function applyGroupBy(QueryBuilder $qb);
+    public function applySorting(QueryBuilder $qb);
 
     /**
-     * If group_by value set
-     *
-     * @return bool
-     */
-    public function hasGroupBy();
-
-    /**
-     * throws \LogicException
-     */
-    public function ensureGroupBy();
-
-    /**
+     * Get sort
      * @return string
      */
-    public function getGroupBy();
+    public function getSort();
+
+    /**
+     * Set sort
+     * @param string $value
+     */
+    public function setSort($value);
+
+    /**
+     * Get order
+     * @return string
+     */
+    public function getOrder();
+
+    /**
+     * Set order
+     * @param string $value
+     */
+    public function setOrder($value);
+
+    /**
+     * If sort and order are set
+     * @return bool
+     */
+    public function hasSorting();
+
+    /**
+     * Removes sort and order from given parameters and returns the values
+     *
+     * @param array $params
+     * @return array [0 => $sort, 1 => $order]
+     */
+    public static function extractSorting(array &$params);
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public static function configureSortingResolver(OptionsResolver $resolver);
 }

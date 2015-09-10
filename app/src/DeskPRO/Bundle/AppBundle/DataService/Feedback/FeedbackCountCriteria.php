@@ -30,69 +30,25 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\OptionsResolver\Exception\AccessException;
-use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
 
 /**
  * Class FeedbackCountCriteria
  *
  * This class uses the same filtering criteria as FeedbackSelectCriteria and additionally adds GROUP BY functionality
  */
-class FeedbackCountCriteria extends FeedbackSelectCriteria
+class FeedbackCountCriteria extends FeedbackSelectCriteria implements GroupableCriteriaInterface
 {
-    /**
-     * @var string
-     */
-    private $group_by;
+    use Groupable;
 
     /**
-     * ChatCountCriteria constructor.
-     *
-     * @param array $filters
-     * @param string $group_by
+     * @inheritDoc
      */
-    protected function __construct(array $filters, $group_by)
+    public function getGroupByAllowedValues()
     {
-        parent::__construct($filters);
-        $this->group_by = $group_by;
-    }
-
-    /**
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @return FeedbackCountCriteria
-     * @throws AccessException
-     * @throws UndefinedOptionsException
-     */
-    public static function fromParameters(array $params, OptionsResolver $resolver)
-    {
-        self::configureResolver($resolver);
-        $params = $resolver->resolve($params);
-        $group_by = null;
-        if (array_key_exists('group_by', $params)) {
-            $group_by = $params['group_by'];
-            unset($params['group_by']);
-        }
-        $filters = $params;
-        return new self($filters, $group_by);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGrouped()
-    {
-        return (bool)$this->group_by;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroupBy()
-    {
-        return $this->group_by;
+        return ['status_category', 'hidden_status', 'category', 'custom_category'];
     }
 
     /**
@@ -101,9 +57,6 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
      */
     public function applyGroupBy(QueryBuilder $qb)
     {
-        if (!$this->isGrouped()) {
-            throw new \LogicException('Cannot group without group_by');
-        }
         $alias = $qb->getRootAliases()[0];
         /** @ToDo  Temporary solution before refactoring of the feedback statuses */
         if ($this->group_by === 'hidden_status') {
@@ -128,17 +81,5 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria
                 ->setParameter('type', $this->filters['status']);
         }
         $qb->groupBy('group_name');
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     * @throws AccessException
-     * @throws UndefinedOptionsException
-     */
-    protected static function configureResolver(OptionsResolver $resolver)
-    {
-        parent::configureResolver($resolver);
-        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->setAllowedValues('group_by', ['status_category', 'hidden_status', 'category', 'custom_category']);
     }
 }

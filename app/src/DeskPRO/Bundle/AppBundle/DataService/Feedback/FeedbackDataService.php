@@ -289,7 +289,7 @@ class FeedbackDataService extends AbstractDataService
      */
     public function countFeedback(FeedbackCountCriteria $criteria)
     {
-        return $criteria->isGrouped() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
+        return $criteria->hasGroupBy() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
     }
 
     /**

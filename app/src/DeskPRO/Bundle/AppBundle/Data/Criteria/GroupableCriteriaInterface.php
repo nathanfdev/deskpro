@@ -33,75 +33,59 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Doctrine\ORM\QueryBuilder;
+
 /**
- * Class Criteria
+ * Interface GroupableCriteriaInterface
  */
-abstract class Criteria implements CriteriaInterface
+interface GroupableCriteriaInterface extends CriteriaInterface
 {
     /**
-     * @var array
+     * @return array
      */
-    protected $filters;
-
-    /**
-     * Criteria constructor.
-     * @param array $filters
-     */
-    protected function __construct(array $filters = [])
-    {
-        $this->filters = $filters;
-    }
-
-    /**
-     * Create an instance from parameters
-     *
-     * This method is complicated for the sake of universality. It relies on duck-typing checks to handle creation
-     * of different types of Criteria instances such as GroupableCriteriaInterface, SortableCriteriaInterface etc.
-     *
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @return Criteria
-     */
-    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
-    {
-        $isGroupable = in_array(GroupableCriteriaInterface::class, class_implements(static::class));
-        $isSortable = in_array(SortableCriteriaInterface::class, class_implements(static::class));
-
-        static::configureResolver($resolver, $data);
-        if ($isGroupable) {
-            static::configureGroupByResolver($resolver);
-        }
-        if ($isSortable) {
-            static::configureSortingResolver($resolver);
-        }
-
-        $params = $resolver->resolve($params);
-
-        if ($isGroupable) {
-            $group_by = static::extractGroupBy($params);
-        }
-        if ($isSortable) {
-            list($sort, $order) = static::extractSorting($params);
-        }
-
-        $instance = new static($params);
-
-        if ($isGroupable) {
-            $instance->setGroupBy($group_by);
-        }
-        if ($isSortable) {
-            $instance->setSort($sort);
-            $instance->setOrder($order);
-        }
-
-        return $instance;
-    }
+    public function getGroupByAllowedValues();
 
     /**
      * @param QueryBuilder $qb
      */
-    public abstract function applyFilters(QueryBuilder $qb);
+    public function applyGroupBy(QueryBuilder $qb);
+
+    /**
+     * Get group_by
+     * @return string
+     */
+    public function getGroupBy();
+
+    /**
+     * Set group_by
+     * @param string $value
+     */
+    public function setGroupBy($value);
+
+    /**
+     * If group_by is set
+     * @return bool
+     */
+    public function hasGroupBy();
+
+    /**
+     * Ensures group_by is set
+     * @throws \LogicException
+     */
+    public function ensureGroupBy();
+
+    /**
+     * Removes group_by from given parameters and returns the value of group_by
+     *
+     * @param array $params
+     * @return string
+     */
+    public static function extractGroupBy(array &$params);
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public static function configureGroupByResolver(OptionsResolver $resolver);
 }

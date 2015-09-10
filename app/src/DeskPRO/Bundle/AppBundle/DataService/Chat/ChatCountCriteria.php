@@ -31,15 +31,18 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 
 /**
  * Class ChatCountCriteria
  */
-class ChatCountCriteria extends ChatSelectCriteria
+class ChatCountCriteria extends ChatSelectCriteria implements GroupableCriteriaInterface
 {
+    use Groupable;
+
     /**
      * @param QueryBuilder $qb
      */
@@ -48,7 +51,7 @@ class ChatCountCriteria extends ChatSelectCriteria
         $this->ensureGroupBy();
 
         $alias = $qb->getRootAliases()[0];
-        switch ($this->group_by) {
+        switch ($this->getGroupBy()) {
             case 'date_created':
                 $qb->addSelect("DATE($alias.date_created) as group_name");
                 break;
@@ -68,7 +71,7 @@ class ChatCountCriteria extends ChatSelectCriteria
             case 'agent':
             case 'department':
                 $qb->addSelect('g.id as group_name');
-                $qb->leftJoin("{$alias}.{$this->group_by}", 'g');
+                $qb->leftJoin("{$alias}.{$this->getGroupBy()}", 'g');
                 break;
         }
 
@@ -76,15 +79,10 @@ class ChatCountCriteria extends ChatSelectCriteria
     }
 
     /**
-     * @param OptionsResolver $resolver
-     * @param array $data
+     * @inheritDoc
      */
-    public static function configureResolver(OptionsResolver $resolver, array $data = [])
+    public function getGroupByAllowedValues()
     {
-        parent::configureResolver($resolver, $data);
-
-        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['group_by']));
-        $resolver->remove('order_by');
-        $resolver->setAllowedValues('group_by', ['agent', 'department', 'date_created', 'date_period']);
+        return ['agent', 'department', 'date_created', 'date_period'];
     }
 }
