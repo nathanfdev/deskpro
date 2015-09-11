@@ -63,7 +63,7 @@ class Messenger
     /**
      * @param array  $participants
      * @param Person $person
-     * @return AgentChat $chat
+     * @return \DeskPRO\Bundle\AppBundle\Entity\AgentChat $chat
      */
     public function createChat(Person $person, array $participants)
     {

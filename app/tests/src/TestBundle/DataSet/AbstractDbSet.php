@@ -190,18 +190,13 @@ abstract class AbstractDbSet implements DataSetInterface
     private function dumpToCache()
     {
         if (strlen(DP_DATABASE_PASSWORD)) {
-            $my_cnf = <<<MY
-[client]
-user=%s
-password=%s
-MY;
-
-            file_put_contents(sprintf('%s/.my.cnf', $_SERVER['HOME']), sprintf($my_cnf, DP_DATABASE_USER, DP_DATABASE_PASSWORD));
             $cmd = sprintf(
-                "%s --opt -Q -h%s --port=%s %s > %s",
+                "%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s",
                 $this->mysqldump_bin_path,
                 escapeshellarg(DP_DATABASE_HOST),
                 escapeshellarg(3306),
+                escapeshellarg(DP_DATABASE_USER),
+                escapeshellarg(DP_DATABASE_PASSWORD),
                 escapeshellarg($this->getDatabaseName()),
                 escapeshellarg($this->getCachePath())
             );

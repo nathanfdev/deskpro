@@ -76,10 +76,10 @@ class ChatsController extends BaseController
             $searchString = '';
         }
         $chats = $searchService->searchAllChats($user, $searchString);
-//        foreach($chats as &$chat)
-//        {
-//            $chat = $chat->toApiData();
-//        }
+        foreach($chats as &$chat)
+        {
+            $chat = $chat->toApiData();
+        }
         return View::create($this->createRepresentation($chats), Response::HTTP_OK);
     }
 
@@ -245,7 +245,7 @@ class ChatsController extends BaseController
      * @throws AccessDeniedHttpException
      * @throws InvalidFormException
      * @return View
-     * @Annotations\Post("/agent_chats/{id}/messages", name="agent_chats_add_chat")
+     * @Annotations\Post("/agent_chats/{id}/messages", name="agent_chats_add_chat_message")
      */
     public function postMessagesAction($id, Request $request)
     {
