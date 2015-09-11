@@ -8,8 +8,8 @@ services:
   deskpro.agentchat.history:
       class: DeskPRO\Bundle\AppBundle\AgentChat\History
       arguments:
-          - @doctrine.orm.default_entity_manager
           - @deskpro.agentchat.searcher
+          - @doctrine.orm.default_entity_manager
 
   deskpro.agentchat.searcher:
       class: DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine

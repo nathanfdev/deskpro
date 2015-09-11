@@ -29,28 +29,25 @@
  *
  * @package DeskPRO
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChats;
-use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
-use DeskPRO\Bundle\AppBundle\AgentChat\History;
-use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
+
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController as BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Routing\ClassResourceInterface;
+use DeskPRO\Bundle\AppBundle\AgentChat\History;
+use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @RouteResource("agent_chats")
- */
-class ChatsController extends BaseController implements ClassResourceInterface
+class ChatsController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -64,6 +61,7 @@ class ChatsController extends BaseController implements ClassResourceInterface
      *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
      * @param Request $request
+     * @Annotations\Get("/agent_chats", name="agent_chats_list")
      * @return View
      */
     public function cgetAction(Request $request)
@@ -92,7 +90,7 @@ class ChatsController extends BaseController implements ClassResourceInterface
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the sandbox widget",
+     *              "description"="the id of the chat",
      *              "dataType"="integer"
      *          }
      *      },
@@ -102,6 +100,8 @@ class ChatsController extends BaseController implements ClassResourceInterface
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
+     *
+     * @Annotations\Get("/agent_chats/{id}", name="agent_chats_view_chat")
      *
      * @param integer $id
      * @return View
@@ -124,13 +124,13 @@ class ChatsController extends BaseController implements ClassResourceInterface
     /**
      * @ApiDoc(
      *      description="create an agent-chat",
-     *      input={"class"="sandbox_widget","name"=""},
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="\Application\DeskPRO\Entity\AgentChat"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
+     * @Annotations\Post("/agent_chats", name="agent_chats_add_chat")
      *
      * @param Request $request
      * @return View
@@ -206,6 +206,7 @@ class ChatsController extends BaseController implements ClassResourceInterface
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
      * @return View
+     * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
      */
     public function getMessagesAction($id, Request $request)
     {
@@ -242,7 +243,9 @@ class ChatsController extends BaseController implements ClassResourceInterface
      * @param Request $request
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
+     * @throws InvalidFormException
      * @return View
+     * @Annotations\Post("/agent_chats/{id}/messages", name="agent_chats_add_chat")
      */
     public function postMessagesAction($id, Request $request)
     {
