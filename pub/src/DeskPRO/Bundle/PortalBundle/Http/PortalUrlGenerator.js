@@ -4,19 +4,28 @@ class PortalUrlGenerator {
   /**
    * base_url must NOT contain lang_code. it is base path to index.php via the web.
    */
-  constructor(base_url, lang_code, is_multi_lang) {
-    this.lang_code = lang_code;
-    this.is_multi_lang = is_multi_lang;
-    this.base_url = base_url.replace(/\/$/, ''); // remove trailing slash from base url
+  constructor(portal_window) {
+    this.lang_code = portal_window.lang;
+    this.is_multi_lang = portal_window.is_multi_lang;
+    this.base_url = portal_window.base_url.replace(/\/$/, ''); // remove trailing slash
+    this.root_url = portal_window.root_url.replace(/\/$/, ''); // remove trailing slash
+    this.web_url = portal_window.web_url.replace(/\/$/, ''); // remove trailing slash
   }
 
-  path(path, ignore_lang = false) {
-    let return_path = [this.base_url];
+  path(path) {
+    return this._makeUrl(this.base_url, path);
+  }
 
-    // push the current lang_code into the path if it is a mult-lang site
-    if (!ignore_lang && this.is_multi_lang) {
-      return_path.push(this.lang_code);
-    }
+  rootPath(path) {
+    return this._makeUrl(this.root_url, path);
+  }
+
+  webPath(path) {
+    return this._makeUrl(this.web_url, path);
+  }
+
+  _makeUrl(base, path) {
+    let return_path = [base];
 
     // remove leading/trailing slashes from path input
     path = path.replace(/^\/|\/$/g, '');
@@ -26,14 +35,14 @@ class PortalUrlGenerator {
   }
 
   getSpinnerPath() {
-    return this.path('/web/spinner.gif', true);
+    return this.webPath('/spinner.gif');
   }
 
   getFlagPath(flag_img_name) {
-    return this.path(`/web/images/flags/${flag_img_name}`, true);
+    return this.webPath(`/images/flags/${flag_img_name}`);
   }
 }
 
-const url_generator = new PortalUrlGenerator(PortalWindow.base_url, PortalWindow.lang, PortalWindow.is_multi_lang);
+const url_generator = new PortalUrlGenerator(PortalWindow);
 
 export default url_generator;

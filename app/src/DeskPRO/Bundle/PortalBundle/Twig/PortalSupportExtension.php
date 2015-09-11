@@ -99,6 +99,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('has_permission', array($this, 'hasPermission')),
             new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
             new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
+            new \Twig_SimpleFunction('root_url', array($this, 'rootUrl')),
             new \Twig_SimpleFunction('is_multi_lang', array($this, 'isMultLang')),
             new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
             new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
@@ -209,25 +210,35 @@ class PortalSupportExtension extends \Twig_Extension
 
     public function baseUrl()
     {
-        $language_manager = $this->container->get('language_manager');
-        $abs_url = $this->container->get('router')->generate(
+        $portal_router = $this->container->get('router');
+
+        // $base_url is the base URL to generate API calls to, it includes mode/language info.
+        $base_url = $portal_router->generate(
             'portal_home',
             array(),
             UrlGeneratorInterface::ABSOLUTE_URL
-        )
-        ;
+        );
 
-        // if this is multi language portal
-        // then the generated homepage will include a language code
-        // we must remove it for the JS to work properly
-        if ($language_manager->isMultiLanguagePortal()) {
-            $url = Url::createFromUrl($abs_url);
-            $path = $url->getPath()->toArray();
-            array_pop($path);
-            $abs_url = $url->getBaseUrl() . implode('/', $path);
-        }
+        return $base_url;
+    }
 
-        return $abs_url;
+    public function rootUrl()
+    {
+        $portal_router = $this->container->get('router');
+
+        // one of the rare time we use this $base_symfony_router. This is used to
+        // generate the URL without the /mode/lang_code prefix appended to the base url.
+        // JS uses this to generate paths to /web/images and such.
+        $base_symfony_router = $portal_router->getBaseRouter();
+
+        // $root_url is the url that the root index.php lives on
+        $root_url = $base_symfony_router->generate(
+            'portal_home',
+            array(),
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        return $root_url;
     }
 
 

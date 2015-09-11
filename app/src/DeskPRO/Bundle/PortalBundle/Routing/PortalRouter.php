@@ -98,6 +98,11 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
+    public function getBaseRouter()
+    {
+        return $this->router;
+    }
+
     public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
     {
         $generated = $this->router->generate($name, $parameters, $referenceType);
