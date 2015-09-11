@@ -91,21 +91,21 @@ class AgentChatParticipant extends DomainObject
     /**
      * @var Person|null
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      */
     protected $person;
 
     /**
      * @var AgentTeam|null
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
-     * @ORM\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="agent_team_id", referencedColumnName="id")
      */
     protected $team;
 
     /**
      * @var Department
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
      */
     protected $department;
 

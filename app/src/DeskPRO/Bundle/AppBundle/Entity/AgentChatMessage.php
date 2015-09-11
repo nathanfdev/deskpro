@@ -79,7 +79,7 @@ class AgentChatMessage extends DomainObject
     /**
      * @var Person|null
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      */
     protected $person;
 
