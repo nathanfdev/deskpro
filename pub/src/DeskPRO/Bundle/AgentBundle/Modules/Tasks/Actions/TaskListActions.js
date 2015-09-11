@@ -4,7 +4,7 @@ import * as Tasks from "DeskPRO/Bundle/AgentBundle/Services/Api/Tasks";
 import * as People from "DeskPRO/Bundle/AgentBundle/Services/Api/People";
 import * as Departments from "DeskPRO/Bundle/AgentBundle/Services/Api/Departments";
 import * as AgentTeams from "DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams";
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export const loadTasks = createAction(
   "TASKS_LOAD_TASKS",
@@ -248,6 +248,7 @@ export const loadTaskList = createAction(
     Tasks.loadAddress(data).then(
       (value) => {
         let result = value.getData();
+        let output = {};
 
         let projects = [];
         let linked_items = [];
@@ -297,25 +298,26 @@ export const loadTaskList = createAction(
           Tasks.loadDepartments({ids: departments.join(',')}),
           AgentTeams.loadAgentTeams({ids: teams.join(',')})
         ]).then((ps) => {
-          result['projects'] = ps[0].getData().data;
-          result['linked_items'] = ps[1].getData().data;
-          result['people'] = ps[2].getData().data;
-          result['departments'] = ps[3].getData().data;
-          result['teams'] = ps[4].getData().data;
+          output['projects'] = ps[0].getData().data;
+          output['linked_items'] = ps[1].getData().data;
+          output['people'] = ps[2].getData().data;
+          output['departments'] = ps[3].getData().data;
+          output['teams'] = ps[4].getData().data;
 
-          result['source'] = data;
+          output['source'] = data;
 
         }).then(() => {
           let linked_tickets = [];
-          result['linked_items'].forEach((value) => {
+          output['linked_items'].forEach((value) => {
             if (value.ticket) {
               linked_tickets.push(value.ticket);
             }
           });
 
           Tasks.loadLinkedTickets({ids: linked_tickets.join(',')}).then((data) => {
-            result['tickets'] = data.getData().data;
-            trigger(result);
+            output['tickets'] = data.getData().data;
+            output['data'] = result.data;
+            trigger(output);
           });
         });
       }
@@ -343,6 +345,21 @@ export const editTask = createAction(
     let taskId = data.taskId;
     delete data.taskId;
     Tasks.editTask(taskId, data).then(
+      (value) => {
+        trigger(value.getData(), createTask);
+        trigger(null, loadTaskList(source));
+      },
+      (value) => {
+        trigger(value.xhr.responseJSON, failedTask);
+      }
+    )
+  }
+);
+
+export const massEditTasks = createAction(
+  "TASKS_MASS_EDIT_TASKS",
+  (trigger, data, source = 'nowhere') => {
+    Tasks.massEditTasks(data).then(
       (value) => {
         trigger(value.getData(), createTask);
         trigger(null, loadTaskList(source));

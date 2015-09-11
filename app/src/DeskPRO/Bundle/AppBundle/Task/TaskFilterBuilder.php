@@ -320,7 +320,7 @@ class TaskFilterBuilder
                 break;
             case 'list':
                 $direction = $this->getSortDirection($request);
-                $query = $query->orderBy('t.list', $direction);
+                $query = $query->orderBy('t.list', $direction)->addOrderBy('t.display_order', 'ASC');
                 break;
             case 'done':
                 $direction = $this->getSortDirection($request, 'DESC');

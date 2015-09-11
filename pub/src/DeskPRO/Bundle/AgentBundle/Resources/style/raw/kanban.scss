@@ -23,6 +23,17 @@
     color: #fff;
   }
 
+  .placeholder {
+    display: none;
+    height: 10px;
+    width: 100%;
+    background-color: #ccc;
+
+    &.is-over {
+      display: block;
+    }
+  }
+
   .card {
     font-weight: normal;
     margin: 5px 0 5px 10px;

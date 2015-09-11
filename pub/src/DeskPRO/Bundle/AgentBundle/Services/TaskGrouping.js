@@ -150,11 +150,11 @@ export default class TaskGrouping {
         });
 
         returnGroups.sort((a, b) => {
-          if (a.title === b.title) {
+          if (a.display_order === b.display_order) {
             return 0;
           }
 
-          return a.title > b.title ? 1 : -1;
+          return a.display_order > b.display_order ? 1 : -1;
         });
 
         returnGroups.push({

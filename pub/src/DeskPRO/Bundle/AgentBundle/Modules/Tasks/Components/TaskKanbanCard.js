@@ -1,10 +1,19 @@
 import React from "react";
 import Moment from "moment";
-import { DragSource } from "react-dnd";
+import { DragSource, DropTarget } from "react-dnd";
 import { IntlMixin, FormattedDate } from "react-intl";
 import DragTypes from "../../../Services/DragTypes.js";
 import $ from "jquery";
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+
+const cardTarget = {
+  drop(props, monitor) {
+    const item = monitor.getItem();
+    if (item.id !== props.task.id) {
+      props.moveCard(item, props.task);
+    }
+  }
+};
 
 const listCardSource = {
   beginDrag(props, monitor, component) {
@@ -47,8 +56,10 @@ const TaskKanbanCard = React.createClass({
       assigneeName = this.props.departments[this.props.task.departments[0]].title;
     }
 
-    return this.props.connectDragSource(<div className="card task-card">
-      <div>
+    const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
+
+    return this.props.connectDragSource(this.props.connectDropTarget(<div>
+      <div className="card task-card">
         <div className="card-status-bar status-bar-left" />
         <div className="card-status-bar status-bar-right" />
 
@@ -58,7 +69,7 @@ const TaskKanbanCard = React.createClass({
 
         <div className="content">
           <h1 className={this.props.task.is_done ? 'complete' : ''}>{this.props.task.title}</h1>
-
+          {this.props.task.display_order}
           <div className="card-line task-details">
             <div className="top-right-box">
               <span className="assignment">
@@ -83,7 +94,8 @@ const TaskKanbanCard = React.createClass({
           </div>
         </div>
       </div>
-    </div>);
+      <div className={placeHolder} />
+    </div>));
   }
 });
 
@@ -91,4 +103,7 @@ module.exports = DragSource(DragTypes.TASK, listCardSource, (connect, monitor) =
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
-}))(TaskKanbanCard);
+}))(DropTarget(DragTypes.TASK, cardTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver()
+}))(TaskKanbanCard));

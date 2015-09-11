@@ -102,6 +102,14 @@ class TaskType extends AbstractType
                 )
             )
             ->add(
+                'display_order',
+                'integer',
+                array(
+                    'required' => false,
+                    'description' => 'the task position in a list',
+                )
+            )
+            ->add(
                 'project',
                 'entity',
                 array(
