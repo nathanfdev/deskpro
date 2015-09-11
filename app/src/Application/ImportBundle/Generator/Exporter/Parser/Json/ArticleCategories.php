@@ -27,6 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
 /**
@@ -48,7 +52,7 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->reader->getDirectoryFilesCount($this->getArticleCategoryReaderConfig());
     }
 
     /**
@@ -56,6 +60,71 @@ final class ArticleCategories extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        return $this->exportCategories($this->reader->getData($this->getArticleCategoryReaderConfig()));
+    }
+
+    /**
+     * @param array $categories
+     * @return Entity\Collection
+     */
+    private function exportCategories(array $categories)
+    {
+        $collection = new Entity\Collection();
+
+        foreach ($categories as $data) {
+            $this->advanceProgressBar();
+
+            try {
+                $entity = $this->exportArticleCategory($data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (TransformerException $e) {
+                $this->logTransformerException('JSONArticleCategory', $this->getEntityType(), 'oid', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('JSONArticleCategory', $this->getEntityType(), 'oid', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\ArticleCategory
+     */
+    private function exportArticleCategory(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_category_',
+                'ref'    => 'oid',
+            )),
+            'categories'     => TransformerInterface::TYPE_ARRAY,
+        ));
+
+        $entity = new Entity\ArticleCategory();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['oid'])
+            ->setTitle($formatted['title'])
+            ->setCategories($this->exportCategories($formatted['categories']))
+        ;
+
+        return $entity;
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Json\JsonConfig
+     */
+    private function getArticleCategoryReaderConfig()
+    {
+        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_CATEGORY_PATH);
     }
 }

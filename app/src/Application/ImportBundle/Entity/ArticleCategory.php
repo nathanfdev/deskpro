@@ -101,6 +101,16 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
+     * @param Collection $categories
+     * @return $this
+     */
+    public function setCategories(Collection $categories)
+    {
+        $this->categories = $categories;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
