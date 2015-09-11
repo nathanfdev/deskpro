@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableView, TableBody } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
-import { TableHeader } from './TableHeader';
 import { Row } from './Row';
+import { TableHeaderContainer } from './TableHeaderContainer';
 
 export class FeedbackTable extends React.Component {
 
@@ -9,7 +9,7 @@ export class FeedbackTable extends React.Component {
     return (
       <div>
         <TableView>
-          <TableHeader />
+          <TableHeaderContainer/>
           <TableBody>
             {this.props.elements.map((element, index) => <Row key={index} element={element}/>)}
           </TableBody>

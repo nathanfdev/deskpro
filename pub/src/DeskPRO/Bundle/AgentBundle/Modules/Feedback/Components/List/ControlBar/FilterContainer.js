@@ -1,29 +1,12 @@
 import React from 'react';
-import { connect } from 'redux/react';
+import { FilterBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import * as actions from '../../../Actions/FeedbackListActions'
 import $ from "jquery";
 
+import { connect } from 'redux/react';
 @connect(state => state.FeedbackList)
 
 export class FilterContainer extends React.Component {
-
-  showFilterChoice(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    let elem = $(event.target),
-      filterChoice = elem.closest('a.ticket-control-button').find('div.filter-choice');
-    $('div.dropdown-choice').hide();
-    filterChoice.show();
-  }
-
-  showFilterValueChoice(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    let elem = $(event.target),
-      filterValueChoice = elem.closest('a.ticket-control-button').find('div.filter-values');
-    $('div.dropdown-choice').hide();
-    filterValueChoice.show();
-  }
 
   filterChosen(event) {
     event.preventDefault();
@@ -65,16 +48,7 @@ export class FilterContainer extends React.Component {
   render() {
     const {query, filterValues, filters} = this.props;
     return (
-      <a href="#" className="ticket-control-button">
-        <span className="title">Filter by:</span>
-                    <span className="multi" onClick={this.showFilterChoice.bind(this)}>
-                        <span className="filter-name" data-filter={filters.alias}>{filters.name}</span>
-                        <span className="multi-down"><i className="fa fa-caret-down"/></span>
-                    </span>
-                <span className="down" onClick={this.showFilterValueChoice.bind(this)}>
-                    {filters.value ? filters.value : 'select...'} <i className="fa fa-caret-down"/>
-                </span>
-
+      <FilterBy filters={filters}>
         <div className="filter-choice dropdown-choice">
           <ul>
             {query.hasOwnProperty('status') ? '' :
@@ -94,7 +68,6 @@ export class FilterContainer extends React.Component {
             })}
           </ul>
         </div>
-
-      </a>);
+      </FilterBy>);
   }
 }

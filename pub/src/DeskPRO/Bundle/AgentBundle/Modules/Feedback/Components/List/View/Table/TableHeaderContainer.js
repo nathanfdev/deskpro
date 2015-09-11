@@ -2,6 +2,7 @@ import React from 'react';
 import $ from "jquery";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { TableHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 
 import { connect } from 'redux/react';
 @connect(state => ({
@@ -9,13 +10,11 @@ import { connect } from 'redux/react';
   filters: state.FeedbackList.filters,
   query: state.FeedbackList.query
 }))
-export class TableHeader extends React.Component {
+export class TableHeaderContainer extends React.Component {
 
   render() {
-    //const {sortTable} = this.props;
     return (
-      <thead>
-      <tr>
+      <TableHeader>
         <th className="id-col sortable" onClick={this.handleClick.bind(this, 'id')}>
           ID
         </th>
@@ -35,8 +34,7 @@ export class TableHeader extends React.Component {
         <th className="user-col sortable" onClick={this.handleClick.bind(this, 'author_name')}>
           Submitter
         </th>
-      </tr>
-      </thead>
+      </TableHeader>
     );
   }
 
@@ -60,7 +58,4 @@ export class TableHeader extends React.Component {
     dispatch(setTableSort(query, param, order, filters));
   }
 
-  sortTable(param, order) {
-
-  }
 }
