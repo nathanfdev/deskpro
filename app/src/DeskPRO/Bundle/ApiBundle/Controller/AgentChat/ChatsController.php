@@ -70,17 +70,19 @@ class ChatsController extends BaseController
         $searchService = $this->get('deskpro.agentchat.history');
         $user = $this->getUser();
         $requestParams = $request->query->all();
+
         if(isset($requestParams['search'])) {
             $searchString = $requestParams['search'];
         } else {
             $searchString = '';
         }
+
         $chats = $searchService->searchAllChats($user, $searchString);
-        foreach($chats as &$chat)
-        {
-            $chat = $chat->toApiData();
-        }
-        return View::create($this->createRepresentation($chats), Response::HTTP_OK);
+
+        return View::create(
+            $this->DataSerialize($chats),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -109,16 +111,10 @@ class ChatsController extends BaseController
      */
     public function getAction($id)
     {
-        $chat = $this->getChat($id);
-        if($chat) {
-            $response = View::create(
-                $this->createRepresentation($chat->toApiData()),
-                Response::HTTP_OK
-            );
-        } else {
-            throw new NotFoundHttpException();
-        }
-        return $response;
+        return View::create(
+            $this->DataSerialize($this->getChat($id)),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -191,10 +187,10 @@ class ChatsController extends BaseController
         $this->em()->persist($chat);
         $this->em()->flush();
         return View::create(
-            $this->createRepresentation($chat->toApiData()),
+            $this->dataSerialize($chat),
             $status,
             array(
-                'Location' => $this->generateUrl('get_agent_chats', array('id' => $chat->getId()))
+                'Location' => $this->generateUrl('agent_chats_view_chat', array('id' => $chat->getId()))
             )
         );
     }
@@ -214,26 +210,22 @@ class ChatsController extends BaseController
         $messenger = $this->get('deskpro.agentchat.messenger');
         $user = $this->getUser();
         $chat = $this->getChat($id);
-        if(!$chat) {
-            throw new NotFoundHttpException();
-        }
+
         if(!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
             throw new AccessDeniedHttpException();
         }
+
         $searchString = $request->query->getAlnum('search', '');
         $orderBy = $request->query->get('order', 'date_created');
         $page = $request->query->getInt('page', 1);
         /** @var History $searchService */
         $searchService = $this->get('deskpro.agentchat.history');
         $messages = $searchService->searchInChat($chat, $searchString, $orderBy);
-        $return = array();
-//        foreach($messages as $message) {
-//            $return[] = $message->toApiData();
-//        }
-        $pager = new Pagerfanta(new ArrayAdapter($return));
+
+        $pager = new Pagerfanta(new ArrayAdapter($messages));
         $pager->setCurrentPage($page);
         return View::create(
-            $this->createRepresentation($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -260,16 +252,15 @@ class ChatsController extends BaseController
         $messenger = $this->get('deskpro.agentchat.messenger');
         $user = $this->getUser();
         $chat = $this->getChat($id);
-        if(!$chat) {
-            throw new NotFoundHttpException();
-        }
+
         if(!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
             throw new AccessDeniedHttpException();
         }
+
         $data = $form->getData();
         $message = $messenger->addMessage($chat, $user, $data['message']);
         return View::create(
-            $this->createRepresentation($message->toApiData()),
+            $this->dataSerialize($message),
             Response::HTTP_CREATED
         );
     }
@@ -277,12 +268,16 @@ class ChatsController extends BaseController
     /**
      * @param $id
      * @return AgentChat|null
+     * @throws NotFoundHttpException;
      */
     private function getChat($id)
     {
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
-        $chat = $messenger->getChat($id);
+        if(!$chat = $messenger->getChat($id))
+        {
+            throw new NotFoundHttpException();
+        }
         return $chat;
     }
 
