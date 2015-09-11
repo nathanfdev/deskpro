@@ -1941,7 +1941,12 @@
 
 	1440766882 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1440766882.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/Sergey/Sites/deskpro.lo/app/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1440766882'
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1440766882'
+	),
+
+	1441964828 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1441964828.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Volumes/Den.Mac.External/projects/deskpro/app/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1441964828'
 	),
 
 );
