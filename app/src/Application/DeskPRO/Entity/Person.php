@@ -55,6 +55,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use JMS\Serializer\Annotation as Serializer;
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 
 /**
  * A "person" is a record in the database that stores information about a person.
@@ -115,7 +116,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @property string $browser
  * @Serializer\ExclusionPolicy("ALL")
  */
-class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable, EquatableInterface
+class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable, EquatableInterface, Chatable
 {
     const CREATED_WEB_PERSON = 'web.person';
     const CREATED_WEB_AGENT = 'web.agent';
@@ -3106,6 +3107,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->assigned_tasks->add($assignment);
         $this->setModelField('assigned_tasks', $assignment);
     }
+
+    /**
+     * @return integer
+     */
+    public function getChatableType()
+    {
+        return Chatable::PARTICIPANT_TYPE_PERSON;
+    }
+
 
     ############################################################################
     # Doctrine Metadata
