@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0ee2f916821fae7aa280447d2cdc9532",
+    "hash": "c48059084a203559d2a8d91c5e71e078",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -603,29 +603,32 @@
         },
         {
             "name": "behatch/contexts",
-            "version": "2.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behatch/contexts.git",
-                "reference": "67de9a82d08e7355628b8d1a707bddec13f945f2"
+                "reference": "8651373334a5756449b62cd57842f3a60aa66f56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behatch/contexts/zipball/67de9a82d08e7355628b8d1a707bddec13f945f2",
-                "reference": "67de9a82d08e7355628b8d1a707bddec13f945f2",
+                "url": "https://api.github.com/repos/Behatch/contexts/zipball/8651373334a5756449b62cd57842f3a60aa66f56",
+                "reference": "8651373334a5756449b62cd57842f3a60aa66f56",
                 "shasum": ""
             },
             "require": {
-                "behat/behat": "3.*",
-                "behat/mink": "*",
+                "behat/behat": "~3.0",
                 "behat/mink-extension": "~2.0",
-                "justinrainbow/json-schema": "*",
+                "justinrainbow/json-schema": "~1.4",
+                "php": "~5.4",
                 "symfony/property-access": "~2.3"
             },
+            "replace": {
+                "sanpi/behatch-contexts": "self.version"
+            },
             "require-dev": {
-                "atoum/atoum": "*@dev",
-                "behat/mink-goutte-driver": "*",
-                "behat/mink-selenium2-driver": "*",
+                "atoum/atoum": "dev-master",
+                "behat/mink-goutte-driver": "~1.1",
+                "behat/mink-selenium2-driver": "~1.2",
                 "kherge/box": "~2.0"
             },
             "type": "library",
@@ -645,7 +648,7 @@
                 "Context",
                 "Symfony2"
             ],
-            "time": "2014-09-15 13:48:07"
+            "time": "2015-06-03 12:30:00"
         },
         {
             "name": "bossa/phpspec2-expect",
@@ -703,7 +706,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/87f46480b4563be774f9d080ef0c5d9bd5931e7c",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/99fca3c16b5051c24a8d803591477d53888954cb",
                 "reference": "87f46480b4563be774f9d080ef0c5d9bd5931e7c",
                 "shasum": ""
             },
@@ -1143,7 +1146,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/9d64747db385f26c223dafc52e9ce79c6510a5a3",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/d63be7eb9a95d46720f7d6badac4e5bc2bcff2e3",
                 "reference": "9d64747db385f26c223dafc52e9ce79c6510a5a3",
                 "shasum": ""
             },
@@ -1537,7 +1540,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/c030c0ca811ff2a03615a2608f895bd89ce48b93",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/4e85ba638acf62e1afe735f94b0c51aa971f8773",
                 "reference": "c030c0ca811ff2a03615a2608f895bd89ce48b93",
                 "shasum": ""
             },
@@ -1859,7 +1862,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/60471548dc046d7ff260e04c6920e78f4164c2aa",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/d430b9a915fa9e7243002ee33c482621659e7748",
                 "reference": "60471548dc046d7ff260e04c6920e78f4164c2aa",
                 "shasum": ""
             },
@@ -3675,7 +3678,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/97441d92fdbdfaec32301615640f468cc1ea2d8f",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/9f3583c35339f185e114d148eac08d600a9360ef",
                 "reference": "97441d92fdbdfaec32301615640f468cc1ea2d8f",
                 "shasum": ""
             },
@@ -6584,7 +6587,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/52bdc2cf257febeab237edc7ce01d5fdecba6e2a",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/04e31fbaa121dd09f01a05cb26409386d800dce8",
                 "reference": "52bdc2cf257febeab237edc7ce01d5fdecba6e2a",
                 "shasum": ""
             },
@@ -6944,7 +6947,8 @@
         "zendesk/zendesk_api_client_php": 20,
         "behat/mink-extension": 20,
         "vipsoft/code-coverage-extension": 20,
-        "sensiolabs/behat-page-object-extension": 20
+        "sensiolabs/behat-page-object-extension": 20,
+        "behatch/contexts": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
