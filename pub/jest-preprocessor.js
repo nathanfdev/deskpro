@@ -3,16 +3,30 @@ var path = require('path');
 
 module.exports = {
   process: function(src, filename) {
-    var result = this.fixPaths(src, filename);
+    var result = this.compileDefines(src);
+    result = this.fixPaths(result, filename);
     result = babelJest.process(result, filename);
 
     return result;
   },
 
+  // process macros: "// #define ~Alias Value"
+  compileDefines: function(result) {
+    const regex = /^\/\/ \#define (\~.+) (.+)$/gm;
+
+    var define;
+    do {
+      if (define = regex.exec(result)) {
+        result = result.replace(new RegExp(define[1], 'g'), define[2]);
+      }
+    }
+    while (define);
+
+    return result;
+  },
+
+  // Fix absolute paths to relative for source imports and tests dontMock and require
   fixPaths: function(result, filename) {
-
-    // Fix absolute paths to relative for source imports and tests dontMock and require
-
     var index = filename.indexOf(path.sep + 'pub' + path.sep + 'src');
     if (index > -1) {
       var relative = filename.substr(index);

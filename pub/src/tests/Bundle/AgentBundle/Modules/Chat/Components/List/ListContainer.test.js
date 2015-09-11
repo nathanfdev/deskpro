@@ -1,10 +1,12 @@
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ListContainer');
+// #define ~List DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List
+
+jest.dontMock('~List/ListContainer');
 
 describe('ListContainer', () => {
 
   const React = require('react/addons');
-  const ListContainer = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ListContainer').ListContainer;
-  const List = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/List').List;
+  const ListContainer = require('~List/ListContainer').ListContainer;
+  const List = require('~List/List').List;
 
   // TODO turn into common test helper
   // TODO rename redux -> store and createRedux -> createStore after Redux upgrade

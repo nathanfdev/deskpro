@@ -1,16 +1,19 @@
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/TableView');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/ChatsTable');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/Row');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/TableHeader');
+// #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame
+// #define ~List DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List
+
+jest.dontMock('~ListFrame/TableView');
+jest.dontMock('~ListFrame/index');
+jest.dontMock('~List/View/Table/ChatsTable');
+jest.dontMock('~List/View/Table/Row');
+jest.dontMock('~List/View/Table/TableHeader');
 
 describe('ChatsTable', () => {
 
   const React = require('react/addons');
   const TestUtils = React.addons.TestUtils;
-  const ChatsTable = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/ChatsTable').ChatsTable;
-  const Row = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/Row').Row;
-  const TableHeader = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/TableHeader').TableHeader;
+  const ChatsTable = require('~List/View/Table/ChatsTable').ChatsTable;
+  const Row = require('~List/View/Table/Row').Row;
+  const TableHeader = require('~List/View/Table/TableHeader').TableHeader;
 
   it('should render its header', () => {
     spyOn(TableHeader.prototype, 'render').andCallThrough();

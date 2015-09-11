@@ -1,19 +1,21 @@
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/frame');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/List');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/List/ChatsList');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar/ChatsListControlBar');
+// #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame
+// #define ~List DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List
+
+jest.dontMock('~ListFrame/frame');
+jest.dontMock('~ListFrame/index');
+jest.dontMock('~List/List');
+jest.dontMock('~List/View/List/ChatsList');
+jest.dontMock('~List/ControlBar/ChatsListControlBar');
 
 describe('List', () => {
 
-  const React = require('react/addons');
-  const TestUtils = React.addons.TestUtils;
-  const List = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/List').List;
-  const ListFrame = require('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/frame').ListFrame;
-  const ChatsListControlBar =
-    require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar/ChatsListControlBar').ChatsListControlBar;
-  const ChatsList = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/List/ChatsList').ChatsList;
-  const ChatsTable = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/ChatsTable').ChatsTable;
+  const React               = require('react/addons');
+  const TestUtils           = React.addons.TestUtils;
+  const ListFrame           = require('~ListFrame/frame').ListFrame;
+  const List                = require('~List/List').List;
+  const ChatsListControlBar = require('~List/ControlBar/ChatsListControlBar').ChatsListControlBar;
+  const ChatsList           = require('~List/View/List/ChatsList').ChatsList;
+  const ChatsTable          = require('~List/View/Table/ChatsTable').ChatsTable;
 
   it('should render ListFrame', () => {
     spyOn(ListFrame.prototype, 'render').andCallThrough();
