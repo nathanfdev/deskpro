@@ -30,7 +30,7 @@
  * @package DeskPRO
  * @category Entities
  */
-namespace DeskPRO\Bundle\AppBundle\EntityRepository;
+namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
 use Doctrine\ORM\AbstractQuery;

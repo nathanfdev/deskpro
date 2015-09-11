@@ -31,7 +31,7 @@
  * @package DeskPRO
  * @category Entities
  */
-namespace DeskPRO\Bundle\AppBundle\EntityRepository;
+namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
