@@ -383,6 +383,44 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
             ))
+            ->addArticleCategoriesFindAll((object)array(
+                'categories' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'name'            => 'Category 1',
+                        'description'     => 'Category description',
+                        'locale'          => 'en-gb',
+                        'source_locale'   => 'ru',
+                        'url'             => 'http://url.com/',
+                        'html_url'        => 'http://url.com/',
+                        'category_id'     => 1,
+                        'outdated'        => false,
+                        'position'        => 0,
+                        'translation_ids' => array(),
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
+                    )
+                )
+            ))
+            ->addArticleSectionsFindAll((object)array(
+                'sections' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'name'            => 'Section 1',
+                        'description'     => 'Section description',
+                        'locale'          => 'en-gb',
+                        'source_locale'   => 'ru',
+                        'url'             => 'http://url.com/',
+                        'html_url'        => 'http://url.com/',
+                        'category_id'     => 1,
+                        'outdated'        => false,
+                        'position'        => 0,
+                        'translation_ids' => array(),
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
+                    )
+                )
+            ))
             ->addArticlesIncrementalExportResponse((object)array(
                 'articles' => array(
                     (object)array(
@@ -488,25 +526,6 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ))
             ->addArticleTranslationsFindAllResponse((object)array(
                 'translations' => array(),
-            ))
-            ->addArticleCategoriesFindAll((object)array(
-                'sections' => array(
-                    (object)array(
-                        'id'              => 1,
-                        'name'            => 'Section 1',
-                        'description'     => 'Section description',
-                        'locale'          => 'en-gb',
-                        'source_locale'   => 'ru',
-                        'url'             => 'http://url.com/',
-                        'html_url'        => 'http://url.com/',
-                        'category_id'     => 1,
-                        'outdated'        => false,
-                        'position'        => 0,
-                        'translation_ids' => array(),
-                        'created_at'      => $date1->format('Y-m-d H:i:s'),
-                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
-                    )
-                ),
             ))
             ->addPeopleFindResponse((object)array(
                 'users' => array(

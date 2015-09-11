@@ -25,33 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json;
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 
-use Application\ImportBundle\Generator\Writer\AbstractFactory;
+use Application\ImportBundle\Entity;
 
 /**
- * Class JsonWriterFactory
- * @package Application\ImportBundle\Generator\Writer\Json
+ * Class ArticleCategory
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-class JsonWriterFactory extends AbstractFactory
+final class ArticleCategory implements DestinationInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function createWriter()
+    public function getEntityType()
     {
-        $mapping = new Destination\Collection();
-        $mapping
-            ->attach(new Destination\Article())
-            ->attach(new Destination\ArticleCategory())
-            ->attach(new Destination\Download())
-            ->attach(new Destination\Feedback())
-            ->attach(new Destination\News())
-            ->attach(new Destination\Person())
-            ->attach(new Destination\Ticket())
-            ->attach(new Destination\Organization())
-        ;
+        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
+    }
 
-        return new JsonWriter($mapping);
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityOutputPath()
+    {
+        return self::ENTITY_ARTICLE_CATEGORY_PATH;
     }
 }

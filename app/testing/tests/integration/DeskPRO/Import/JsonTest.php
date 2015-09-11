@@ -55,6 +55,11 @@ class JsonTest extends \DpIntegrationTestCase
     private $article_repository;
 
     /**
+     * @var EntityRepository\ArticleCategory
+     */
+    private $article_category_repository;
+
+    /**
      * @var EntityRepository\Feedback
      */
     private $feedback_repository;
@@ -105,17 +110,18 @@ class JsonTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->ticket_attachment_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->news_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
-        $this->article_repository             = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
-        $this->feedback_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
-        $this->feedback_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
-        $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
-        $this->organization_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
-        $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
-        $this->object_lang_repository         = $entity_manager->getRepository('Application\DeskPRO\Entity\ObjectLang');
+        $this->ticket_repository              = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository   = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository              = $entity_manager->getRepository('DeskPRO:Person');
+        $this->news_repository                = $entity_manager->getRepository('DeskPRO:News');
+        $this->article_repository             = $entity_manager->getRepository('DeskPRO:Article');
+        $this->article_category_repository    = $entity_manager->getRepository('DeskPRO:ArticleCategory');
+        $this->feedback_repository            = $entity_manager->getRepository('DeskPRO:Feedback');
+        $this->feedback_attachment_repository = $entity_manager->getRepository('DeskPRO:FeedbackAttachment');
+        $this->download_repository            = $entity_manager->getRepository('DeskPRO:Download');
+        $this->organization_repository        = $entity_manager->getRepository('DeskPRO:Organization');
+        $this->blob_repository                = $entity_manager->getRepository('DeskPRO:Blob');
+        $this->object_lang_repository         = $entity_manager->getRepository('DeskPRO:ObjectLang');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
