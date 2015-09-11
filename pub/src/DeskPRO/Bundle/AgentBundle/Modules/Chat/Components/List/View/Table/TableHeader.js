@@ -10,7 +10,7 @@ export class TableHeader extends React.Component {
       <tr>
         <th className="id-col sortable">ID</th>
         <th className="user-col sortable">User</th>
-        <th class="agent-col sortable">Agent</th>
+        <th className="agent-col sortable">Agent</th>
         <th>Labels</th>
         <th>Chat</th>
         <th></th>

@@ -1,6 +1,4 @@
 jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ListContainer');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ListContainer');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/List');
 
 describe('ListContainer', () => {
 

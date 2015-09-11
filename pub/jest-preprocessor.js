@@ -35,8 +35,16 @@ module.exports = {
 
       // Ampliflux/... paths -------------------------------------------------------------------------------------------
       result = result.replace(
-        /^import(.*)[\"\'"]Ampliflux(.*)[\"\'](.*)$/gm,
+        /^import(.*)[\"\']Ampliflux(.*)[\"\'](.*)$/gm,
         "import$1'" + margin + "DeskPRO/Component/Ampliflux$2'$3"
+      );
+
+      // Helpers/... paths ----------------------------------------------------------------------------------------
+
+      // tests require
+      result = result.replace(
+        /^(.+)([\s=])require\([\"\']Helpers(.*)[\"\']\)(.*)$/gm,
+        "$1$2require('" + margin + "tests/Helpers$3')$4"
       );
     }
 
