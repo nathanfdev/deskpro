@@ -67,9 +67,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->ticket_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->ticket_repository            = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository            = $entity_manager->getRepository('DeskPRO:Person');
 
         $this->output_path = dp_get_data_dir() . '/import/zendesk/export';
         if ( ! is_dir($this->output_path)) {

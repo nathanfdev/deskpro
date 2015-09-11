@@ -52,8 +52,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->person_repository       = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->organization_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
+        $this->person_repository       = $entity_manager->getRepository('DeskPRO:Person');
+        $this->organization_repository = $entity_manager->getRepository('DeskPRO:Organization');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv_inline';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';

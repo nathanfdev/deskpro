@@ -125,22 +125,22 @@ class CsvTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository                    = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->ticket_attachment_repository         = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository                    = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->news_repository                      = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
-        $this->article_repository                   = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
-        $this->feedback_repository                  = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
-        $this->feedback_attachment_repository       = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
-        $this->download_repository                  = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
-        $this->organization_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
-        $this->organization_contact_data_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\OrganizationContactData');
-        $this->blob_repository                      = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
-        $this->custom_data_ticket_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataTicket');
-        $this->custom_data_person_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataPerson');
-        $this->custom_data_feedback_repository      = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataFeedback');
-        $this->custom_data_article_repository       = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataArticle');
-        $this->custom_data_organization_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataOrganization');
+        $this->ticket_repository                    = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository         = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository                    = $entity_manager->getRepository('DeskPRO:Person');
+        $this->news_repository                      = $entity_manager->getRepository('DeskPRO:News');
+        $this->article_repository                   = $entity_manager->getRepository('DeskPRO:Article');
+        $this->feedback_repository                  = $entity_manager->getRepository('DeskPRO:Feedback');
+        $this->feedback_attachment_repository       = $entity_manager->getRepository('DeskPRO:FeedbackAttachment');
+        $this->download_repository                  = $entity_manager->getRepository('DeskPRO:Download');
+        $this->organization_repository              = $entity_manager->getRepository('DeskPRO:Organization');
+        $this->organization_contact_data_repository = $entity_manager->getRepository('DeskPRO:OrganizationContactData');
+        $this->blob_repository                      = $entity_manager->getRepository('DeskPRO:Blob');
+        $this->custom_data_ticket_repository        = $entity_manager->getRepository('DeskPRO:CustomDataTicket');
+        $this->custom_data_person_repository        = $entity_manager->getRepository('DeskPRO:CustomDataPerson');
+        $this->custom_data_feedback_repository      = $entity_manager->getRepository('DeskPRO:CustomDataFeedback');
+        $this->custom_data_article_repository       = $entity_manager->getRepository('DeskPRO:CustomDataArticle');
+        $this->custom_data_organization_repository  = $entity_manager->getRepository('DeskPRO:CustomDataOrganization');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
