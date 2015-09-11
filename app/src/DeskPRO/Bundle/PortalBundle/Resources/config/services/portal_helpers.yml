@@ -17,4 +17,4 @@ services:
 
   language_changer:
       class: DeskPRO\Bundle\PortalBundle\Helper\LanguageChanger
-      arguments: [@router, @language_manager]
+      arguments: [@router, @language_manager, @portal_mode_storage]

@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\Routing\RouterInterface;
 use League\Url\Url;
 
@@ -50,10 +51,20 @@ class LanguageChanger
      */
     private $lang_manager;
 
-    public function __construct(RouterInterface $router, LanguageManager $lang_manager)
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_storage;
+
+    public function __construct(
+        RouterInterface $router,
+        LanguageManager $lang_manager,
+        PortalModeStorage $mode_storage
+    )
     {
         $this->router = $router;
         $this->lang_manager = $lang_manager;
+        $this->mode_storage = $mode_storage;
     }
 
     public function changeLanguage($new_lang_code, $http_referer)
@@ -61,6 +72,8 @@ class LanguageChanger
         $router = $this->router;
         $language_manager = $this->lang_manager;
         $language_stack = $language_manager->getLanguageStack();
+        $mode = $this->mode_storage->getMode();
+        $isMode = $mode && strlen(trim($mode->getModePath(), '/')) > 0;
 
         $referer_or_home = function () use ($http_referer, $router) {
             if (!$http_referer) {
@@ -93,8 +106,14 @@ class LanguageChanger
         $url = Url::createFromUrl($http_referer);
         $path = $url->getPath();
         $path_array = $path->toArray();
+        if ($isMode) {
+            array_shift($path_array);
+        }
         array_shift($path_array);
         array_unshift($path_array, $new_lang->getUrlCode());
+        if ($isMode) {
+            array_unshift($path_array, trim($mode->getModePath(), '/'));
+        }
         $url->setPath($path_array);
 
         return (string)$url;
