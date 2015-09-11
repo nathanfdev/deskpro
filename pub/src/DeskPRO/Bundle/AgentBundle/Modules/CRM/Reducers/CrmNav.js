@@ -7,7 +7,7 @@ export default class CrmNav extends Reducer {
   getInitialState() {
     return {
       viewMode: constants.VIEW_MODE_TABLE,
-
+      elements: [],
       // Display Fields in Table/List view switcher
       tableViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
       listViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
@@ -15,7 +15,7 @@ export default class CrmNav extends Reducer {
       sort: 'date_created', /* Order By ... */
       sortName: 'Date', /* Label for Order By... */
       order: constants.ORDER_DESC, /* Asc, Desc */
-      sortOptions: [  /* @ToDo actualize field properties */
+      sortOptions: [/* @ToDo actualize field properties */
         {field: 'date_created', label: 'Created'},
         {field: 'name', label: 'Name'},
         {field: 'date_created', label: 'Last login'},
