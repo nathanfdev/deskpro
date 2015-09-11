@@ -1,0 +1,16 @@
+{
+  "oid": "1",
+  "title": "Category 1",
+  "categories": [
+    {
+      "oid": "1",
+      "title": "Sub category 1",
+      "categories": []
+    },
+    {
+      "oid": "2",
+      "title": "Sub category 2",
+      "categories": []
+    }
+  ]
+}
