@@ -5,30 +5,19 @@ import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
 import { TypeTab } from './TypeTab';
 import { CategoryTab } from './CategoryTab';
-import * as actions from '../../Actions/FeedbackListActions'
-import $ from "jquery";
 
-import { connect } from 'redux/react';
-@connect(state => state.FeedbackList)
 
 export class Nav extends Component {
-
-  constructor(props) {
-    super(props);
-    const { dispatch } = this.props;
-    dispatch(actions.feedbackToValidate());
-    dispatch(actions.commentsToReview());
-    dispatch(actions.feedbackLabels());
-    dispatch(actions.feedbackTypes());
-    dispatch(actions.feedbackCustomCategories());
-    dispatch(actions.feedbackNew());
-    dispatch(actions.feedbackActiveStatus());
-    dispatch(actions.feedbackClosedStatus());
-    dispatch(actions.feedbackHiddenStatus());
-  }
-
+  static propTypes = {
+    groupChoice: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    statuses: PropTypes.object.isRequired,
+    labels: PropTypes.array.isRequired,
+    types: PropTypes.array.isRequired,
+    customCategories: PropTypes.array.isRequired,
+  };
   render() {
-    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;
+    const { groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
@@ -37,25 +26,25 @@ export class Nav extends Component {
         <SectionsPane>
 
           <Pending toValidateCount={toValidateCount} commentsToReviewCount={commentsToReviewCount}
-                   onClick={this.groupChoice.bind(this)}/>
+                   onClick={groupChoice.bind(this)}/>
 
           <Section>
             <TabsPane>
               <Tab title="Status">
-                <StatusTab statuses={statuses} onClick={this.groupChoice.bind(this)}/>
+                <StatusTab statuses={statuses} onClick={groupChoice.bind(this)}/>
               </Tab>
 
               <Tab title="Labels">
-                <LabelsDictionary labels={labels} onClick={this.groupChoice.bind(this)}/>
+                <LabelsDictionary labels={labels} onClick={groupChoice.bind(this)}/>
               </Tab>
             </TabsPane>
 
             <TabsPane>
               <Tab title="Type">
-                <TypeTab types={types} onClick={this.groupChoice.bind(this)}/>
+                <TypeTab types={types} onClick={groupChoice.bind(this)}/>
               </Tab>
               <Tab title="Categories">
-                <CategoryTab customCategories={customCategories} onClick={this.groupChoice.bind(this)}/>
+                <CategoryTab customCategories={customCategories} onClick={groupChoice.bind(this)}/>
               </Tab>
             </TabsPane>
 
@@ -63,15 +52,6 @@ export class Nav extends Component {
         </SectionsPane>
       </NavFrame>
     );
-  }
-
-  groupChoice(params, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
-    $(event.target).closest('a').addClass('active');
-    const {dispatch, sort, order, filters } = this.props;
-    dispatch(actions.changeQueryState(params, sort, order, filters));
   }
 
 }

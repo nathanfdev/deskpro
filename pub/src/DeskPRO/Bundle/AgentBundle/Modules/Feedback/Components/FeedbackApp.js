@@ -1,6 +1,6 @@
 import React from "react";
 import AppContainer from "DeskPRO/Component/AppContainer";
-import { Nav } from './Nav/Nav';
+import { NavContainer } from './Nav/NavContainer.js';
 import { ListContainer } from './List/ListContainer';
 
 export class FeedbackApp extends React.Component {
@@ -8,7 +8,7 @@ export class FeedbackApp extends React.Component {
   render() {
     return (
       <AppContainer thisAppId="feedback">
-        <Nav/>
+        <NavContainer/>
         <ListContainer/>
       </AppContainer>
     );
