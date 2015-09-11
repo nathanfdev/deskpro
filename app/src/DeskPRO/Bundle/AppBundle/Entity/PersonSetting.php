@@ -52,14 +52,12 @@ class PersonSetting
     private $creator;
 
     /**
-     * @ORM\Id()
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
     private $name;
 
     /**
-     * @ORM\Id()
      * @ORM\Column(type="json_array")
      * @Assert\NotBlank()
      */
