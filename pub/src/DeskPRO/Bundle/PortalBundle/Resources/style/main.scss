@@ -2618,13 +2618,20 @@ header {
   }
 }
 
-.active-button-dropdown {
-  position: absolute;
-  position: absolute;
-  top: 30px;
-  right: 4px;
-  z-index: 99;
+.dropdown-group:hover .active-button-dropdown {
   display: block;
+}
+.dropdown-group .active-button-dropdown:hover {
+  display: block;
+}
+
+.active-button-dropdown {
+  display: none;
+  position: absolute;
+  position: absolute;
+  top: 45px;
+  right: 0;
+  z-index: 999;
   padding: 7px 14px;
   padding-bottom: 14px;
   min-width: 135px;

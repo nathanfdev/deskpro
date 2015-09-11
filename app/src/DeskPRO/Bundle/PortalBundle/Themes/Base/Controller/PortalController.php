@@ -112,13 +112,24 @@ class PortalController extends AbstractController
     {
         $user = $this->getUser();
 
+        $auth_manager = $this->get('dp_authentication_manager.user');
+
+        $page_vars = array(
+            'display_registration_link'     => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(
+            ),
+            'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
+            'user'                          => $user,
+            'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
+            'login_icon_usersources'        => $auth_manager->getLoginIconUsersources(),
+            'show_forgot_password'          => $auth_manager->isForgotPasswordVisible(),
+            'show_remember_me'              => $auth_manager->isRememberMeEnabled(),
+            'show_login_form'               => $auth_manager->isLoginFormVisible(),
+            'show_auth'                     => $auth_manager->isAuthVisible(),
+        );
+
         return $this->renderThemeView(
             'Theme:Portal:Header/small_user_info.html.twig',
-            array(
-                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
-                'ticket_count'              => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
-                'user'                      => $user,
-            )
+            $page_vars
         );
     }
 }
