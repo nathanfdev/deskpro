@@ -1,31 +1,38 @@
 import React from 'react';
 import $ from "jquery";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
+import { connect } from 'redux/react';
+@connect(state => ({
+  order: state.FeedbackList.order,
+  filters: state.FeedbackList.filters,
+  query: state.FeedbackList.query
+}))
 export class TableHeader extends React.Component {
 
   render() {
-    const {sortTable} = this.props;
+    //const {sortTable} = this.props;
     return (
       <thead>
       <tr>
-        <th className="id-col sortable" onClick={this.handleClick.bind(this, 'id', sortTable)}>
+        <th className="id-col sortable" onClick={this.handleClick.bind(this, 'id')}>
           ID
         </th>
-        <th className="sortable" onClick={this.handleClick.bind(this, 'num_ratings', sortTable)}>
+        <th className="sortable" onClick={this.handleClick.bind(this, 'num_ratings')}>
           Votes
         </th>
-        <th className="subject-col sortable" onClick={this.handleClick.bind(this, 'title', sortTable)}>
+        <th className="subject-col sortable" onClick={this.handleClick.bind(this, 'title')}>
           Title
         </th>
-        <th className="sortable" onClick={this.handleClick.bind(this, 'status', sortTable)}>
+        <th className="sortable" onClick={this.handleClick.bind(this, 'status')}>
           Status
         </th>
-        <th className="sortable" onClick={this.handleClick.bind(this, 'category', sortTable)}>
+        <th className="sortable" onClick={this.handleClick.bind(this, 'category')}>
           Type
         </th>
         <th>Labels</th>
-        <th className="user-col sortable" onClick={this.handleClick.bind(this, 'author_name', sortTable)}>
+        <th className="user-col sortable" onClick={this.handleClick.bind(this, 'author_name')}>
           Submitter
         </th>
       </tr>
@@ -33,7 +40,7 @@ export class TableHeader extends React.Component {
     );
   }
 
-  handleClick(param, sortTable, event) {
+  handleClick(param, event) {
     event.preventDefault();
     event.stopPropagation();
     let elem = $(event.target),
@@ -49,6 +56,11 @@ export class TableHeader extends React.Component {
     else {
       elem.append('<span class="sort-direction"><i class="fa fa-caret-down"></i></span>')
     }
-    sortTable(param, order);
+    const {dispatch, query, filters} = this.props;
+    dispatch(setTableSort(query, param, order, filters));
+  }
+
+  sortTable(param, order) {
+
   }
 }

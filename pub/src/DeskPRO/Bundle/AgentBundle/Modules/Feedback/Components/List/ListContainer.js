@@ -1,120 +1,15 @@
-import React, {Component, PropTypes} from 'react';
-import { ListFrame, ControlBar, ListTableViewSwitcher, OrderBy, TableView, TableBody, Pagination }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
-import { FeedbackCard } from './FeedbackCard';
-import { TableHeader } from './TableHeader';
-import { FilterBy } from './FilterBy';
-import { Row } from './Row';
-
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import * as actions from '../../Actions/FeedbackListActions'
-import $ from "jquery";
-
+import React from 'react';
+import { List } from './List';
 import { connect } from 'redux/react';
-@connect(state => state.FeedbackList)
 
-export class ListContainer extends Component {
-
-  constructor(props) {
-    super(props);
-    const { query, sort, order, filters, dispatch } = this.props;
-    dispatch(actions.loadFeedbackList(query, sort, order, filters));
-    dispatch(actions.getFilterValues(filters.alias));
-  }
-
-  static propTypes = {
-    feedback: PropTypes.array.isRequired,
-    sortOptions: PropTypes.array.isRequired,
-    sort: PropTypes.string.isRequired,
-    sortName: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
-    filters: PropTypes.object.isRequired,
-    query: PropTypes.object.isRequired,
-    viewMode: PropTypes.string.isRequired
-  };
-
-
+@connect(state => ({
+  elements: state.FeedbackList.feedback,
+  viewMode: state.FeedbackList.viewMode
+}))
+export class ListContainer extends React.Component {
   render() {
-
-    const { feedback, viewMode, sort, sortName, order, filters, query, sortOptions, dispatch, listViewFields,tableViewFields } = this.props;
-
     return (
-      <ListFrame>
-        <ControlBar>
-          <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
-                   toggleOrder={this.toggleOrder.bind(this)}
-                   toggleSort={this.toggleSort.bind(this)}
-
-            />
-          <FilterBy filters={filters} query={query}/>
-          <ListTableViewSwitcher listViewFields={listViewFields} tableViewFields={tableViewFields} viewMode={viewMode}
-                                 dispatch={dispatch} displayFieldsStatus={this.displayFieldsStatus.bind(this)}/>
-        </ControlBar>
-
-        {this.renderElements(viewMode, feedback)}
-
-        <Pagination/>
-      </ListFrame>
+      <List {...this.props} />
     );
   }
-
-  sortTable(param, order) {
-    const {dispatch, query, filters} = this.props;
-    dispatch(actions.setTableSort(query, param, order, filters));
-  }
-
-  /** Change sort option (Order By ...)*/
-  toggleSort(newSort, newSortName) {
-    const {dispatch, order, query, filters} = this.props;
-    dispatch(actions.toggleSort(query, newSort, newSortName, order, filters));
-  }
-
-  toggleOrder() {
-    const {dispatch, query, sort, order, filters} = this.props;
-    dispatch(actions.toggleOrder(query, sort, order, filters));
-  }
-
-  displayFieldsStatus(type, field, status) {
-    const {dispatch} = this.props;
-    dispatch(actions.changeDisplayFieldsStatus(type, field, status));
-  }
-
-  renderElements(view, elements) {
-    if (!elements.length) {
-      return 'No data to display'
-    }
-
-    switch (view) {
-      case 'list':
-        return this.renderListView(elements);
-      case 'table':
-        return this.renderTableView(elements);
-      default:
-        throw `Unknown "${view}" view type`;
-    }
-  }
-
-  renderListView(elements) {
-    return (
-      <div>
-        <h1>List View</h1>
-        {elements.map((element, index) => <FeedbackCard key={index} feedback={element}/>)}
-      </div>
-    );
-  }
-
-  renderTableView(elements) {
-    return (
-      <div>
-        <h1>Table View</h1>
-        <TableView>
-          <TableHeader sortTable={this.sortTable.bind(this)}/>
-          <TableBody>
-            {elements.map((element, index) => <Row key={index} feedback={element}/>)}
-          </TableBody>
-        </TableView>
-      </div>
-    );
-  }
-
 }
