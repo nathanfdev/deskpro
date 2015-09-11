@@ -249,6 +249,9 @@ class ArticlesController extends AbstractController
 
         // Perm check
         if (!$this->person->PermissionsManager->UserPublishChecker->canViewArticle($article)) {
+            if ($article->status === 'hidden') {
+                throw $this->createNotFoundException();
+            }
             return $this->renderLoginOrPermissionError();
         }
 

@@ -452,6 +452,9 @@ class FeedbackController extends AbstractController
 
         // Perm check
         if (!$this->person->PermissionsManager->UserPublishChecker->canViewFeedback($feedback, App::getSession())) {
+            if ($feedback->status === 'hidden') {
+                throw $this->createNotFoundException();
+            }
             return $this->renderLoginOrPermissionError();
         }
 
