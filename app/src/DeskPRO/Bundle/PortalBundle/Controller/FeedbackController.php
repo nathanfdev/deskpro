@@ -290,6 +290,7 @@ class FeedbackController extends AbstractController
 
         $page_options = array_merge($page_options, array(
             'form' => $form->createView(),
+            'form_was_submitted' => false,
             'user' => $this->getUser(),
         ));
 

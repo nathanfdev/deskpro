@@ -101,6 +101,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
             new \Twig_SimpleFunction('is_multi_lang', array($this, 'isMultLang')),
             new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
+            new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
             new \Twig_SimpleFunction('date', array($this, 'date'))
         );
 
@@ -185,6 +186,11 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return false;
+    }
+
+    public function enabledLanguages()
+    {
+        return $this->container->get('language_manager')->getEnabledLanguages();
     }
 
     public function langCode()

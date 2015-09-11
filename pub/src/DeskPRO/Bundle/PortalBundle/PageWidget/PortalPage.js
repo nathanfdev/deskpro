@@ -5,6 +5,7 @@ import TicketView from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketView";
 import FeedbackPage from "DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackPage";
 import HTmlLinkToPostWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/HtmlLinkToPostWidget";
 import OmniSearchWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchWidget";
+import LanguageChangerWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LanguageChangerWidget";
 import ContactUsDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/ContactUsDropdownWidget";
 import CustomPerFieldEdit from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/CustomPerFieldEdit";
 import $ from "jquery";
@@ -12,6 +13,7 @@ import $ from "jquery";
 export default class PortalPage extends PageWidget {
   init() {
     this.addWidgetDef(OmniSearchWidget, "#omnisearch");
+    this.addWidgetDef(LanguageChangerWidget, "#language-changer");
     this.addWidgetDef(ContactUsDropdownWidget, ".search-and-ticket .search-and-ticket-dropdown");
     this.addWidgetDef(NewTicketForm, "#new_ticket_page");
     this.addWidgetDef(EditTicketForm, "#edit_ticket_page");

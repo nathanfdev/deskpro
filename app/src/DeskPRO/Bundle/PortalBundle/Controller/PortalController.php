@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
+use League\Url\Url;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
@@ -144,6 +145,20 @@ class PortalController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_home');
+    }
+
+    /**
+     * @Route("/change-language", name="portal_change_language")
+     */
+    public function changeLanguageAction(Request $request)
+    {
+        $new_lang_code = $request->get('lang_code');
+        $referer = $request->server->get('HTTP_REFERER');
+
+        $lang_changer = $this->get('language_changer');
+        $redirect_url = $lang_changer->changeLanguage($new_lang_code, $referer);
+
+        return $this->redirect($redirect_url);
     }
 
     public function removeTrailingSlashAction(Request $request)
