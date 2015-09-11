@@ -25,4 +25,18 @@ export class TableBody extends React.Component {
     );
   }
 }
+export class TableHeader extends React.Component {
+
+  render() {
+
+    return (
+      <thead>
+      <tr>
+        {this.props.children}
+      </tr>
+      </thead>
+    );
+  }
+
+}
 

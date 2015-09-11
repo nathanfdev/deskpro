@@ -9,7 +9,9 @@ export default class ChatList extends Reducer {
     return {
       query: {agent: 'me'},
 
-      displayFields: [],
+      // Display Fields in Table/List view switcher
+      tableViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
+      listViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
 
       // list sorting options
       sort: 'date_created',

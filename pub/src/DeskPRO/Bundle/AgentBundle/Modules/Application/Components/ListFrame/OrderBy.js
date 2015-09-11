@@ -50,7 +50,6 @@ export class OrderSwitcher extends React.Component {
 
   render() {
     const {order, toggleOrder} = this.props;
-
     return (
       <span className="order-switcher">
         <span onClick={this.handleClick.bind(this, toggleOrder)}>

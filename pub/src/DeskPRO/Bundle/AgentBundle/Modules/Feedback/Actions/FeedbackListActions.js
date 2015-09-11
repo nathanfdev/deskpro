@@ -150,4 +150,8 @@ export const toggleSort = createAction(
     trigger(loadFeedbackList(query, sort, order, filters));
   });
 
-
+export const changeDisplayFieldsStatus = createAction(
+  "FEEDBACK_DISPLAY_FIELD_STATUS",
+  (trigger, type, field, status) => {
+    trigger({type: type, field: field, status: status})
+  });

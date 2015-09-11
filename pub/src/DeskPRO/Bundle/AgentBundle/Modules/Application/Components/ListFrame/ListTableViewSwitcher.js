@@ -9,7 +9,8 @@ import $ from "jquery";
 export class ListTableViewSwitcher extends Component {
 
   static propTypes = {
-    displayFields: PropTypes.array.isRequired,
+    listViewFields: PropTypes.array.isRequired,
+    tableViewFields: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 
@@ -24,14 +25,15 @@ export class ListTableViewSwitcher extends Component {
 
 
   render() {
-    const {viewMode, displayFields, dispatch} = this.props;
+    const {viewMode, listViewFields, tableViewFields, dispatch, displayFieldsStatus} = this.props;
     return (
       <div className="ticket-control-button">
         <span className="title">View:</span>
         <a href="#">
           <span className="focus" onClick={this.showViewModeChoice.bind(this)}>{viewMode}</span>
         </a>
-        <ListTableViewDropdown displayFields={displayFields} viewMode={viewMode} dispatch={dispatch}/>
+        <ListTableViewDropdown listViewFields={listViewFields} tableViewFields={tableViewFields} viewMode={viewMode}
+                               dispatch={dispatch} displayFieldsStatus={displayFieldsStatus}/>
       </div>
     );
   }
@@ -40,7 +42,8 @@ export class ListTableViewSwitcher extends Component {
 export class ListTableViewDropdown extends Component {
 
   static propTypes = {
-    displayFields: PropTypes.array.isRequired,
+    listViewFields: PropTypes.array.isRequired,
+    tableViewFields: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 
@@ -57,7 +60,7 @@ export class ListTableViewDropdown extends Component {
   }
 
   render() {
-    const {viewMode, displayFields} = this.props;
+    const {viewMode, listViewFields, tableViewFields, displayFieldsStatus } = this.props;
 
     return (
       <div className="view-mode-choice dropdown-choice" style={{width:'300px'}}>
@@ -76,7 +79,7 @@ export class ListTableViewDropdown extends Component {
           <br/>
           <fieldset>
             <legend>Display fields</legend>
-            <DisplayFields displayFields={displayFields}/>
+            <DisplayFields fields={listViewFields} displayFieldsStatus={displayFieldsStatus} type="list"/>
           </fieldset>
         </div>
         <div style={{width:'50%',float:'left'}}>
@@ -89,7 +92,7 @@ export class ListTableViewDropdown extends Component {
           <br/>
           <fieldset>
             <legend>Display fields</legend>
-            <DisplayFields displayFields={displayFields}/>
+            <DisplayFields fields={tableViewFields} displayFieldsStatus={displayFieldsStatus} type="table"/>
           </fieldset>
         </div>
         <button>Save fields</button>
@@ -100,16 +103,72 @@ export class ListTableViewDropdown extends Component {
 
 export class DisplayFields extends Component {
   static propTypes = {
-    displayFields: PropTypes.array.isRequired
+    fields: PropTypes.array.isRequired,
+    type: PropTypes.string.isRequired,
+    displayFieldsStatus: PropTypes.func.isRequired
   };
 
   render() {
-    const {displayFields} = this.props;
+    const {fields, type, displayFieldsStatus} = this.props;
     return (
-      <select multiple size="10">
-        {displayFields.map((field, index) =>
-          <option key={index}>{field.label}</option>)}
-      </select>
+      <div style={{overflowY:'scroll', height:'200px'}} className="fields-container">
+        {type === 'table' ?
+          fields.map((field, index) =>
+            <FieldForTableView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
+          :
+          fields.map((field, index) =>
+            <FieldForListView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
+        }
+      </div>
     );
+  }
+}
+
+export class FieldForTableView extends Component {
+  static propTypes = {
+    field: PropTypes.object.isRequired,
+    displayFieldsStatus: PropTypes.func.isRequired
+  };
+
+  render() {
+    const {field, displayFieldsStatus} = this.props;
+    return (
+      <div>
+        <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
+               onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>
+        <span>{field.label}</span>
+      </div>
+    );
+  }
+
+  handleChange(displayFieldsStatus, field, e) {
+    let status = $(e.target).prop('checked') ? constants.FIELD_SHOWN : constants.FIELD_HIDDEN;
+    displayFieldsStatus('tableViewFields', field, status);
+  }
+}
+
+export class FieldForListView extends Component {
+  static propTypes = {
+    field: PropTypes.object.isRequired,
+    displayFieldsStatus: PropTypes.func.isRequired
+  };
+
+  render() {
+    const {field, displayFieldsStatus} = this.props;
+    return (
+      <div>
+        {field.status === constants.FIELD_REQUIRED ?
+          <input type="checkbox" checked="true" readOnly/>
+          :
+          <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
+                 onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>}
+        <span>{field.label}</span>
+      </div>
+    );
+  }
+
+  handleChange(displayFieldsStatus, field, e) {
+    let status = $(e.target).prop('checked') ? constants.FIELD_SHOWN : constants.FIELD_HIDDEN;
+    displayFieldsStatus('listViewFields', field, status);
   }
 }
