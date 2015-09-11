@@ -486,7 +486,7 @@ export default class TasksListFrame extends React.Component {
         }
 
         { total_pages > 1 ?
-        <div className="pagination-block">
+        <div className="dpw--ticket-pagination">
           <ReactPaginate previousLabel={<i className="fa fa-caret-left" />}
                          nextLabel={<i className="fa fa-caret-right" />}
                          breakLabel={<li className="break"><a href="#">...</a></li>}
@@ -495,8 +495,8 @@ export default class TasksListFrame extends React.Component {
                          marginPagesDisplayed={3}
                          pageRangeDisplayed={3}
                          clickCallback={this.handlePageClick.bind(this)}
-                         containerClassName={"pagination"}
-                         subContainerClassName={"pages pagination"}
+                         containerClassName={"pages-list"}
+                         subContainerClassName={"pages-list sublist"}
                          activeClassName={"active"} />
         </div> : '' }
       </section>

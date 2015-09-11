@@ -247,8 +247,8 @@ export const loadTaskList = createAction(
   (trigger, data) => {
     Tasks.loadAddress(data).then(
       (value) => {
-        let result = value.getData();
-        let output = {};
+        const result = value.getData();
+        let output = result;
 
         let projects = [];
         let linked_items = [];
@@ -316,7 +316,6 @@ export const loadTaskList = createAction(
 
           Tasks.loadLinkedTickets({ids: linked_tickets.join(',')}).then((data) => {
             output['tickets'] = data.getData().data;
-            output['data'] = result.data;
             trigger(output);
           });
         });
