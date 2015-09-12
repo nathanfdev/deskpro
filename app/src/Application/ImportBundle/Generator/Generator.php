@@ -71,15 +71,15 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * @param Exporter\ExporterInterface $exporter
      * @param Validator\Collection       $validators
      * @param GeneratorConfig            $config
-     * @param Writer\WriterInterface     $writer
      * @param ImportService              $importer
+     * @param Writer\WriterInterface     $writer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
         Validator\Collection       $validators,
         GeneratorConfig            $config,
-        Writer\WriterInterface     $writer = null,
-        ImportService              $importer
+        ImportService              $importer,
+        Writer\WriterInterface     $writer = null
     ) {
         $this->config     = $config;
         $this->exporter   = $exporter;

@@ -71,6 +71,9 @@ class GeneratorFactory
             ->attach(new Validator\Organization($symfony_validator))
         ;
 
-        return new Generator($exporter, $validators, $config, $writer, $container->get('deskpro.import'));
+        /** @var \Application\ImportBundle\Service\Import $import_service */
+        $import_service = $container->get('deskpro.import');
+
+        return new Generator($exporter, $validators, $config, $import_service, $writer);
     }
 }
