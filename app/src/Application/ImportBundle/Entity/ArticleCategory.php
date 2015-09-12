@@ -65,6 +65,8 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
+     * Returns article category title
+     *
      * @return string
      */
     public function getTitle()
@@ -73,6 +75,8 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
+     * Set title
+     *
      * @param string $title
      * @return $this
      */
@@ -83,6 +87,8 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
+     * Returns a collection of child categories
+     *
      * @return ArticleCategory[]|Collection
      */
     public function getCategories()
@@ -91,6 +97,8 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
+     * Add a child category
+     *
      * @param ArticleCategory $category
      * @return $this
      */
@@ -101,6 +109,8 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
+     * Set a collection of child categories
+     *
      * @param Collection $categories
      * @return $this
      */
