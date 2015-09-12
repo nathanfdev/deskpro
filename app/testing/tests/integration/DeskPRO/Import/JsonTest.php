@@ -292,7 +292,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
         $this->assertEquals(3, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
-        $this->assertEquals(2, $this->article_repository->countAll());
+        $this->assertEquals(3, $this->article_repository->countAll());
         $this->assertEquals(3, $this->article_category_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
@@ -316,7 +316,7 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbArticleData()
     {
-        $this->assertCount(2, $this->article_repository->findAll());
+        $this->assertCount(3, $this->article_repository->findAll());
 
         /** @var Entity\Article $article */
         $article = $this->article_repository->findOneBy(array('id' => 2));

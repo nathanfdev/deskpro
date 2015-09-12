@@ -47,7 +47,15 @@ class Article extends AbstractFixture
             ->setCategories(array($parent_category, $child_category))
         ;
 
+        $old_article = new Entity\Article();
+        $old_article
+            ->setTitle('Old Article 2')
+            ->setContent('Some text')
+            ->setCategories(array($child_category))
+        ;
+
         $manager->persist($article);
+        $manager->persist($old_article);
         $manager->flush();
 
         foreach (array('Label 1', 'Label 2') as $label) {
