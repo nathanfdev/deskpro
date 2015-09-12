@@ -76,8 +76,6 @@ final class Article extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $article = $this->findOrCreateArticle($entity_id);
         $article
             ->setTitle($entity->getTitle())

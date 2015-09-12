@@ -48,14 +48,14 @@ final class PersonLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
+     *
+     * // todo refactor this
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Person) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
-
-        $this->records = new DoctrineEntitiesCollection();
 
         $oldEntity = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
         $type = 'person';

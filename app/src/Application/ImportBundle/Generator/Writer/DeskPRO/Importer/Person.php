@@ -55,8 +55,6 @@ final class Person extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         if ($entity->isAgent()) {
             $this->logAlert(sprintf('Importing agent `%s`', $entity->getFirstEmail()));
         }
@@ -230,17 +228,6 @@ final class Person extends AbstractImporter
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());
-    }
-
-    /**
-     * Returns the person email mapper
-     *
-     * @return Mapper\PersonEmail
-     * @throws \Exception
-     */
-    private function getPersonEmailMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_EMAIL);
     }
 
     /**

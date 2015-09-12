@@ -48,14 +48,14 @@ final class DownloadLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
+     *
+     * // todo refactor this
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Download) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
-
-        $this->records = new DoctrineEntitiesCollection();
 
         $oldEntity = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
         $type = 'download';

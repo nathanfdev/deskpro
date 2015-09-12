@@ -127,7 +127,7 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 /** @var ImporterInterface $importer */
-                $records = $importer->getDoctrineEntities($entity, $entity_id);
+                $records = $importer->reset()->getDoctrineEntities($entity, $entity_id);
                 foreach ($records as $record) {
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);

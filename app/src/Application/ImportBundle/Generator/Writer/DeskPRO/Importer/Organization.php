@@ -72,8 +72,7 @@ final class Organization extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-        $organization  = $this->findOrCreateOrganization($entity->getName());
+        $organization = $this->findOrCreateOrganization($entity->getName());
         $organization
             ->setImportance($entity->getImportance())
             ->setDateCreated($entity->getDateCreated())

@@ -49,8 +49,6 @@ final class ArticleCategory extends AbstractImporter
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new DoctrineEntitiesCollection();
-
         return $this->records;
     }
 }

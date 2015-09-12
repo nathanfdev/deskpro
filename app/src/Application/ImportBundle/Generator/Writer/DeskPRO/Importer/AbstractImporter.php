@@ -64,6 +64,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function reset()
+    {
+        $this->records = new DoctrineEntitiesCollection();
+        return $this;
+    }
+
+    /**
      * Returns a language id by title
      *
      * @param string $title

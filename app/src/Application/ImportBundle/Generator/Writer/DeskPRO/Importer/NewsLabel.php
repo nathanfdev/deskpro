@@ -49,14 +49,14 @@ final class NewsLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
+     *
+     * // todo refactor this
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\News) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
-
-        $this->records = new DoctrineEntitiesCollection();
 
         $oldEntity = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
         $type = 'news';

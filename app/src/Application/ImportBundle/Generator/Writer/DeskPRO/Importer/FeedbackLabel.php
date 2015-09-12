@@ -48,14 +48,14 @@ final class FeedbackLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
+     *
+     * // todo refactor this
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Feedback) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
-
-        $this->records = new DoctrineEntitiesCollection();
 
         $oldEntity = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
         $type = 'feedback';

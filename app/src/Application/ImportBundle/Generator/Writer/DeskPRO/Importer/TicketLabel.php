@@ -55,8 +55,6 @@ final class TicketLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
         $ticket->resetLabels();
 
