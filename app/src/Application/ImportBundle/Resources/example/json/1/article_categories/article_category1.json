@@ -1,6 +1,7 @@
 {
   "oid": "1",
   "title": "Category 1",
+  "import_map_key": "zd_article_category",
   "categories": [
     {
       "oid": "1",

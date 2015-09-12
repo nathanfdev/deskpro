@@ -18,10 +18,33 @@ class Article extends AbstractFixture
      */
     public function load(ObjectManager $manager)
     {
+        $parent_category = new Entity\ArticleCategory();
+        $parent_category->setRealTitle('Category 1');
+
+        $child_category = new Entity\ArticleCategory();
+        $child_category->setRealTitle('Old Sub Category 1');
+        $child_category->setParent($parent_category);
+
+        $manager->persist($parent_category);
+        $manager->persist($child_category);
+
+        $manager->flush();
+
+        $map = new ImportMap();
+        $map
+            ->setTypename(ImportMap::TYPE_ZENDESK_ARTICLE_CATEGORY)
+            ->setOldId(1)
+            ->setNewId($parent_category->getId())
+        ;
+
+        $manager->persist($map);
+        $manager->flush();
+
         $article = new Entity\Article();
         $article
             ->setTitle('Article 1')
             ->setContent('Some text')
+            ->setCategories(array($parent_category, $child_category))
         ;
 
         $manager->persist($article);

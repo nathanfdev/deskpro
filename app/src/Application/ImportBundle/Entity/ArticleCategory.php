@@ -126,9 +126,10 @@ final class ArticleCategory extends AbstractEntity
     public function toArray()
     {
         return array(
-            'oid'        => $this->oid,
-            'title'      => $this->title,
-            'categories' => $this->categories->entitiesToArray(),
+            'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
+            'title'          => $this->title,
+            'categories'     => $this->categories->entitiesToArray(),
         );
     }
 

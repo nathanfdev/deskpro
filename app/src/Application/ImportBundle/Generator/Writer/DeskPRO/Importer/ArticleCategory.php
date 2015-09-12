@@ -83,10 +83,10 @@ final class ArticleCategory extends AbstractImporter
     /**
      * Create categories tree
      *
-     * @param DeskPROEntity\ArticleCategory $root_category
+     * @param DeskPROEntity\ArticleCategory $parent_category
      * @param Entity\ArticleCategory        $entity
      */
-    private function createDeepCategories(DeskPROEntity\ArticleCategory $root_category, Entity\ArticleCategory $entity)
+    private function createDeepCategories(DeskPROEntity\ArticleCategory $parent_category, Entity\ArticleCategory $entity)
     {
         $new_category_names = array();
         $old_category_names = array();
@@ -94,12 +94,12 @@ final class ArticleCategory extends AbstractImporter
         foreach ($entity->getCategories() as $new_category) {
             $new_category_names[] = $new_category->getTitle();
         }
-        foreach ($root_category->getChildren() as $old_category) {
+        foreach ($parent_category->getChildren() as $old_category) {
             /** @var DeskPROEntity\ArticleCategory $old_category */
             $old_category_names[] = $old_category->getRealTitle();
         }
 
-        foreach ($root_category->getChildren() as $old_category) {
+        foreach ($parent_category->getChildren() as $old_category) {
             if ( ! in_array($old_category->getRealTitle(), $new_category_names)) {
                 $this->entity_manager->remove($old_category);
                 $this->logDebug(sprintf('Removing article category `%s`', $old_category->getRealTitle()));
@@ -114,7 +114,7 @@ final class ArticleCategory extends AbstractImporter
             $category = new DeskPROEntity\ArticleCategory();
             $category
                 ->setRealTitle($child_entity->getTitle())
-                ->setParent($root_category)
+                ->setParent($parent_category)
             ;
 
             $this->createDeepCategories($category, $child_entity);
