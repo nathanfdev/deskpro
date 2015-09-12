@@ -33,7 +33,6 @@ use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
 use Application\ImportBundle\Service\Import as ImportService;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Symfony\Component\Validator\ValidatorInterface as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
@@ -70,14 +69,14 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Constructor
      *
      * @param Exporter\ExporterInterface $exporter
-     * @param SymfonyValidator           $validator
+     * @param Validator\Collection       $validators
      * @param GeneratorConfig            $config
      * @param Writer\WriterInterface     $writer
      * @param ImportService              $importer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
-        SymfonyValidator           $validator,
+        Validator\Collection       $validators,
         GeneratorConfig            $config,
         Writer\WriterInterface     $writer = null,
         ImportService              $importer
@@ -86,17 +85,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $this->exporter   = $exporter;
         $this->writer     = $writer;
         $this->importer   = $importer;
-        $this->validators = new Validator\Collection();
-        $this->validators
-            ->attach(new Validator\Download($validator))
-            ->attach(new Validator\Feedback($validator))
-            ->attach(new Validator\Article($validator))
-            ->attach(new Validator\ArticleCategory($validator))
-            ->attach(new Validator\News($validator))
-            ->attach(new Validator\Person($validator))
-            ->attach(new Validator\Ticket($validator))
-            ->attach(new Validator\Organization($validator))
-        ;
+        $this->validators = $validators;
     }
 
     /**
