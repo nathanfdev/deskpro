@@ -1,9 +1,9 @@
 {
   "oid": "710618383",
   "import_map_key": null,
-  "is_agent": true,
-  "is_user": false,
-  "is_admin": true,
+  "is_agent": false,
+  "is_user": true,
+  "is_admin": false,
   "first_name": null,
   "last_name": null,
   "name": "Sergey",
