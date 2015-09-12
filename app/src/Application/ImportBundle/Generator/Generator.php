@@ -90,7 +90,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $this->validators
             ->attach(new Validator\Download($validator))
             ->attach(new Validator\Feedback($validator))
-            ->attach(new Validator\Articles($validator))
+            ->attach(new Validator\Article($validator))
             ->attach(new Validator\News($validator))
             ->attach(new Validator\Person($validator))
             ->attach(new Validator\Ticket($validator))

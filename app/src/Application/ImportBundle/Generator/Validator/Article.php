@@ -30,12 +30,12 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * Kb entities validator
+ * Article entities validator
  *
  * Class Article
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Articles extends AbstractConstraintValidator
+final class Article extends AbstractConstraintValidator
 {
     /**
      * {@inheritdoc}
