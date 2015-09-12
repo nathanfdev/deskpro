@@ -44,19 +44,4 @@ final class Ticket extends AbstractConstraintValidator
     {
         return Entity\EntityInterface::TYPE_TICKET;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        if ( ! $entity instanceof Entity\Ticket) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
-        }
-
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
-    }
 }
