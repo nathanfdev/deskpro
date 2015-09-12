@@ -44,6 +44,16 @@ final class ArticleCategory extends AbstractEntity
     private $title;
 
     /**
+     * @var bool
+     */
+    private $is_agent = false;
+
+    /**
+     * @var bool
+     */
+    private $is_book = false;
+
+    /**
      * @var ArticleCategory[]|Collection
      */
     private $categories;
@@ -83,6 +93,42 @@ final class ArticleCategory extends AbstractEntity
     public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
+
+    /**
+     * @param boolean $is_agent
+     * @return $this
+     */
+    public function setAsAgent($is_agent)
+    {
+        $this->is_agent = (bool)$is_agent;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isBook()
+    {
+        return $this->is_book;
+    }
+
+    /**
+     * @param boolean $is_book
+     * @return $this
+     */
+    public function setAsBook($is_book)
+    {
+        $this->is_book = (bool)$is_book;
         return $this;
     }
 
@@ -129,6 +175,8 @@ final class ArticleCategory extends AbstractEntity
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
             'title'          => $this->title,
+            'is_agent'       => $this->is_agent,
+            'is_book'        => $this->is_book,
             'categories'     => $this->categories->entitiesToArray(),
         );
     }
