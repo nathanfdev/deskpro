@@ -310,6 +310,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkDbFeedbackData();
         $this->checkDbOrganizationData();
         $this->checkDbDownloadData();
+        $this->checkDbNewsData();
         $this->checkDbBlobData();
     }
 
@@ -449,6 +450,22 @@ class JsonTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('Label 1'), $labels);
+    }
+
+    private function checkDbNewsData()
+    {
+        $this->assertCount(2, $this->news_repository->findAll());
+
+        /** @var Entity\News $news */
+        $news = $this->news_repository->findOneBy(array('title' => 'News Title 1'));
+        $this->assertNotNull($news);
+
+        $labels = array();
+        foreach ($news->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('News Label 1'), $labels);
     }
 
     private function checkDbBlobData()

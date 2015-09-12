@@ -49,8 +49,6 @@ final class NewsLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * // todo refactor this
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
@@ -58,42 +56,18 @@ final class NewsLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $oldEntity = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
-        $type = 'news';
-        $newLabels = $entity->getLabels();
+        $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
+        $news->resetLabels();
 
-        foreach ($oldEntity->labels as $labelEntity) {
-            if (false === $k = array_search($labelEntity->label, $newLabels)) {
-                $oldEntity->labels->removeElement($labelEntity);
-                $this->removeEntity($labelEntity);
-            } else {
-                unset($newLabels[$k]);
-            }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelNews();
+            $label->setLabel($label_name);
+
+            $news->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for news with oid `%d`', $label_name, $news->getId()));
         }
 
-        foreach ($newLabels as $label) {
-            $oldEntity->addLabel($this->createLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for %s with oid `%d`',
-                $label, $type, $oldEntity->getId()
-            ));
-        }
-
+        $this->records->setPrimaryEntity($news);
         return $this->records;
-    }
-
-    /**
-     * Returns a new news label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelNews
-     */
-    private function createLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelNews();
-        $entity->setLabel($label);
-
-        $this->records->addRelatedEntity($entity);
-        return $entity;
     }
 }
