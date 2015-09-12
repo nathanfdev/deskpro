@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
@@ -126,6 +127,7 @@ final class ArticleCategories extends AbstractParser
         $entity = new Entity\ArticleCategory();
         $entity
             ->setRawData($data)
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_ZENDESK_ARTICLE_CATEGORY)
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['name'])

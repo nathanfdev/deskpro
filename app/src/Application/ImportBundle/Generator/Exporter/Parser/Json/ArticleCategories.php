@@ -109,6 +109,7 @@ final class ArticleCategories extends AbstractParser
         $entity = new Entity\ArticleCategory();
         $entity
             ->setRawData($data)
+            ->setImportMapKey($formatted['import_map_key'])
             ->setOid($formatted['oid'])
             ->setDestination($formatted['oid'])
             ->setTitle($formatted['title'])

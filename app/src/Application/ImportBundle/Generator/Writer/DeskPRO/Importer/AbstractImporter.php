@@ -362,11 +362,13 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * todo inject
-     * @param DomainObject $entity
+     * Returns the article category mapper
+     *
+     * @return Mapper\ArticleCategory
+     * @throws \Exception
      */
-    protected function removeEntity(DomainObject $entity)
+    protected function getArticleCategoryMapper()
     {
-        App::getOrm()->remove($entity);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
     }
 }

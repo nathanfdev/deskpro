@@ -49,6 +49,56 @@ final class ArticleCategory extends AbstractImporter
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
+        if ( ! $entity instanceof Entity\ArticleCategory) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $category = $this->findOrCreateArticleCategory($entity_id);
+        $category->setRealTitle($entity->getTitle());
+
+        $this->createDeepCategories($category, $entity);
+
+        $this->records->setPrimaryEntity($category);
         return $this->records;
+    }
+
+    /**
+     * Create categories tree
+     *
+     * @param DeskPROEntity\ArticleCategory $root_category
+     * @param Entity\ArticleCategory        $entity
+     */
+    private function createDeepCategories(DeskPROEntity\ArticleCategory $root_category, Entity\ArticleCategory $entity)
+    {
+        foreach ($entity->getCategories() as $child_entity) {
+            $category = new DeskPROEntity\ArticleCategory();
+            $category
+                ->setRealTitle($child_entity->getTitle())
+                ->setParent($root_category)
+            ;
+
+            $this->createDeepCategories($category, $child_entity);
+            $this->records->addRelatedEntity($category);
+        }
+    }
+
+    /**
+     * Returns an article category by oid
+     * Creates a new article if not found
+     *
+     * @param int $entity_id
+     *
+     * @return DeskPROEntity\ArticleCategory
+     */
+    protected function findOrCreateArticleCategory($entity_id)
+    {
+        $category = $this->getArticleCategoryMapper()->findOneBy(array('id' => $entity_id), false);
+        if ($category) {
+            $this->logDebug(sprintf('Found existing article category `%s`', $category->getRealTitle()));
+            return $category;
+        }
+
+        $this->logDebug('Creating new article category');
+        return new DeskPROEntity\ArticleCategory();
     }
 }
