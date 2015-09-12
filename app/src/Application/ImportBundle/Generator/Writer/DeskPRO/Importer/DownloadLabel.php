@@ -48,8 +48,6 @@ final class DownloadLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * // todo refactor this
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
@@ -57,42 +55,18 @@ final class DownloadLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $oldEntity = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
-        $type = 'download';
-        $newLabels = $entity->getLabels();
+        $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
+        $download->resetLabels();
 
-        foreach ($oldEntity->labels as $labelEntity) {
-            if (false === $k = array_search($labelEntity->label, $newLabels)) {
-                $oldEntity->labels->removeElement($labelEntity);
-                $this->removeEntity($labelEntity);
-            } else {
-                unset($newLabels[$k]);
-            }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelDownload();
+            $label->setLabel($label_name);
+
+            $download->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for download with oid `%d`', $label_name, $download->getId()));
         }
 
-        foreach ($newLabels as $label) {
-            $oldEntity->addLabel($this->createLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for %s with oid `%d`',
-                $label, $type, $oldEntity->getId()
-            ));
-        }
-
+        $this->records->setPrimaryEntity($download);
         return $this->records;
-    }
-
-    /**
-     * Returns a new download label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelDownload
-     */
-    private function createLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelDownload();
-        $entity->setLabel($label);
-
-        $this->records->addRelatedEntity($entity);
-        return $entity;
     }
 }
