@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 

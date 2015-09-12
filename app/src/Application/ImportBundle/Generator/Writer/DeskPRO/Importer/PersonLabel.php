@@ -66,6 +66,7 @@ final class PersonLabel extends AbstractImporter
             $this->logDebug(sprintf('Creating a new label `%s` for person with oid `%d`', $label_name, $person->getId()));
         }
 
+        $this->records->setPrimaryEntity($person);
         return $this->records;
     }
 }
