@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -85,6 +86,13 @@ class ArticleCategory extends CategoryAbstract
      */
     protected $template_suffix = '';
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
 
 
     ############################################################################

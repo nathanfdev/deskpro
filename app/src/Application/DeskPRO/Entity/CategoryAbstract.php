@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -104,6 +105,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->id;
     }
 
+    /**
+     * @param CategoryAbstract|null $cat
+     */
     public function setParent(CategoryAbstract $cat = null)
     {
         if ($cat && $cat->getId() && $this->getId() && $cat->getId() == $this->getId()) {
@@ -121,6 +125,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         }
     }
 
+    /**
+     * @return int
+     */
     public function getParentId()
     {
         if ($this->parent) {
@@ -140,16 +147,21 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * @return string
+     */
     public function getRealTitle()
     {
         return $this->title;
     }
-
 
     /**
      * Get an array of titles from parents down to this.
@@ -236,6 +248,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $ids;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getChildren()
     {
         if ($this->structure_helper) {
@@ -245,6 +260,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->children;
     }
 
+    /**
+     * @return int|mixed
+     */
     public function getParent()
     {
         if ($this->structure_helper) {
@@ -254,6 +272,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->parent;
     }
 
+    /**
+     * @return string
+     */
     public function getUrlSlug()
     {
         return $this->id . '-' . Strings::slugifyTitle($this->title);
@@ -293,7 +314,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->title;
     }
 
-
+    /**
+     * @return string
+     */
     public function getSelectTitle()
     {
         if ($this->depth) {
@@ -303,7 +326,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         }
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function __toString()
     {
         return $this->getFullTitle();

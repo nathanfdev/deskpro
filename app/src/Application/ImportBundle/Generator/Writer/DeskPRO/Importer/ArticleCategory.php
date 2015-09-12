@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class ArticleCategory
@@ -36,6 +37,23 @@ use Application\ImportBundle\Entity;
  */
 final class ArticleCategory extends AbstractImporter
 {
+    /**
+     * @var EntityManager
+     */
+    private $entity_manager;
+
+    /**
+     * Constructor
+     *
+     * @param Mapper\Collection $mappers
+     * @param EntityManager     $entity_manager
+     */
+    public function __construct(Mapper\Collection $mappers, EntityManager $entity_manager)
+    {
+        parent::__construct($mappers);
+        $this->entity_manager = $entity_manager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -70,7 +88,29 @@ final class ArticleCategory extends AbstractImporter
      */
     private function createDeepCategories(DeskPROEntity\ArticleCategory $root_category, Entity\ArticleCategory $entity)
     {
+        $new_category_names = array();
+        $old_category_names = array();
+
+        foreach ($entity->getCategories() as $new_category) {
+            $new_category_names[] = $new_category->getTitle();
+        }
+        foreach ($root_category->getChildren() as $old_category) {
+            /** @var DeskPROEntity\ArticleCategory $old_category */
+            $old_category_names[] = $old_category->getRealTitle();
+        }
+
+        foreach ($root_category->getChildren() as $old_category) {
+            if ( ! in_array($old_category->getRealTitle(), $new_category_names)) {
+                $this->entity_manager->remove($old_category);
+                $this->logDebug(sprintf('Removing article category `%s`', $old_category->getRealTitle()));
+            }
+        }
+
         foreach ($entity->getCategories() as $child_entity) {
+            if (in_array($child_entity->getTitle(), $old_category_names)) {
+                continue;
+            }
+
             $category = new DeskPROEntity\ArticleCategory();
             $category
                 ->setRealTitle($child_entity->getTitle())

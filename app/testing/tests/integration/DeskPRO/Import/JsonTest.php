@@ -357,10 +357,20 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbArticleCategoryData()
     {
-        $this->assertCount(2, $this->article_category_repository->findAll());
+        $this->assertCount(4, $this->article_category_repository->findAll());
 
+        /** @var Entity\ArticleCategory $parent_category */
         $parent_category = $this->article_category_repository->findOneBy(array('title' => 'Category 1'));
         $this->assertNotNull($parent_category);
+        $this->assertCount(2, $parent_category->getChildren());
+
+        $children_categories = $parent_category->getChildren();
+
+        $children_category = $children_categories[0];
+        $this->assertEquals('Sub category 1', $children_category->getRealTitle());
+
+        $children_category = $children_categories[1];
+        $this->assertEquals('Sub category 2', $children_category->getRealTitle());
     }
 
     private function checkDbPeopleData()
