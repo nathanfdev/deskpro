@@ -103,6 +103,8 @@ final class ArticleCategories extends AbstractParser
                 'prefix' => 'article_category_',
                 'ref'    => 'oid',
             )),
+            'is_agent'       => TransformerInterface::TYPE_BOOLEAN,
+            'is_book'        => TransformerInterface::TYPE_BOOLEAN,
             'categories'     => TransformerInterface::TYPE_ARRAY,
         ));
 
@@ -113,6 +115,8 @@ final class ArticleCategories extends AbstractParser
             ->setOid($formatted['oid'])
             ->setDestination($formatted['oid'])
             ->setTitle($formatted['title'])
+            ->setAsAgent($formatted['is_agent'])
+            ->setAsBook($formatted['is_book'])
             ->setCategories($this->exportCategories($formatted['categories']))
         ;
 
