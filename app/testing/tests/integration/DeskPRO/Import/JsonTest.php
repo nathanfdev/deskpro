@@ -309,6 +309,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkDbTicketsData();
         $this->checkDbFeedbackData();
         $this->checkDbOrganizationData();
+        $this->checkDbDownloadData();
         $this->checkDbBlobData();
     }
 
@@ -357,8 +358,8 @@ class JsonTest extends \DpIntegrationTestCase
     {
         $this->assertCount(2, $this->article_category_repository->findAll());
 
-        $category = $this->article_category_repository->findOneBy(array('id' => 2));
-        $this->assertEquals('Category 1', $category);
+        $parent_category = $this->article_category_repository->findOneBy(array('title' => 'Category 1'));
+        $this->assertNotNull($parent_category);
     }
 
     private function checkDbPeopleData()
@@ -421,6 +422,22 @@ class JsonTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('label1', 'label2'), $labels);
+    }
+
+    private function checkDbDownloadData()
+    {
+        $this->assertCount(1, $this->download_repository->findAll());
+
+        /** @var Entity\Download $download */
+        $download = $this->download_repository->findOneBy(array('title' => 'Download 1'));
+        $this->assertNotNull($download);
+
+        $labels = array();
+        foreach ($download->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('Label 1'), $labels);
     }
 
     private function checkDbBlobData()
