@@ -44,6 +44,7 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
     const FILE_ARTICLES                   = 'articles.csv';
+    const FILE_ARTICLE_CATEGORIES         = 'article_categories.csv';
     const FILE_ARTICLE_CUSTOM_FIELDS      = 'article_custom_fields.csv';
     const FILE_DOWNLOADS                  = 'downloads.csv';
     const FILE_DOWNLOAD_ATTACHMENTS       = 'downloads_attachments.csv';

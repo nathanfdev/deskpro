@@ -28,6 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * Class ArticleCategories
@@ -48,7 +51,7 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->getReaderCount($this->getArticleCategoryReaderConfig());
     }
 
     /**
@@ -56,6 +59,68 @@ final class ArticleCategories extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $categories = $this->getReaderData($this->getArticleCategoryReaderConfig());
+
+        foreach ($categories as $num => $data) {
+            try {
+                $entity = $this->exportCategory($num, $data);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            } catch (TransformerException $e) {
+                $this->logTransformerException('CSVArticleCategory', $this->getEntityType(), 'title', $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException('CSVArticleCategory', $this->getEntityType(), 'title', $e, $data);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an article category entity
+     *
+     * @param int   $num
+     * @param array $data
+     *
+     * @return Entity\ArticleCategory
+     */
+    private function exportCategory($num, array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'article_category_',
+                'ref'    => 'id',
+            )),
+            'title'       => TransformerInterface::TYPE_STRING,
+            'is_book'     => TransformerInterface::TYPE_BOOLEAN,
+            'is_agent'    => TransformerInterface::TYPE_BOOLEAN,
+        ));
+
+        $entity = new Entity\ArticleCategory();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+            ->setDestination($formatted['destination'])
+            ->setTitle($formatted['title'])
+            ->setAsAgent($formatted['is_agent'])
+            ->setAsBook($formatted['is_book'])
+        ;
+
+        return $entity;
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getArticleCategoryReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_ARTICLE_CATEGORIES);
     }
 }

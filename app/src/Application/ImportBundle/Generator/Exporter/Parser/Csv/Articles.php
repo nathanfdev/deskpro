@@ -91,9 +91,9 @@ final class Articles extends AbstractParser
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (TransformerException $e) {
-                $this->logTransformerException('CSVDownload', $this->getEntityType(), 'title', $e);
+                $this->logTransformerException('CSVArticle', $this->getEntityType(), 'title', $e);
             } catch (\Exception $e) {
-                $this->logUnknownException('CSVDownload', $this->getEntityType(), 'title', $e, $data);
+                $this->logUnknownException('CSVArticle', $this->getEntityType(), 'title', $e, $data);
             }
         }
 
