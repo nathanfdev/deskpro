@@ -48,8 +48,6 @@ final class PersonLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * // todo refactor this
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
@@ -57,42 +55,17 @@ final class PersonLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $oldEntity = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
-        $type = 'person';
-        $newLabels = $entity->getLabels();
+        $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
+        $person->resetLabels();
 
-        foreach ($oldEntity->labels as $labelEntity) {
-            if (false === $k = array_search($labelEntity->label, $newLabels)) {
-                $oldEntity->labels->removeElement($labelEntity);
-                $this->removeEntity($labelEntity);
-            } else {
-                unset($newLabels[$k]);
-            }
-        }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelPerson();
+            $label->setLabel($label_name);
 
-        foreach ($newLabels as $label) {
-            $oldEntity->addLabel($this->createLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for %s with oid `%d`',
-                $label, $type, $oldEntity->getId()
-            ));
+            $person->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for person with oid `%d`', $label_name, $person->getId()));
         }
 
         return $this->records;
-    }
-
-    /**
-     * Returns a new person label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelPerson
-     */
-    private function createLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelPerson();
-        $entity->setLabel($label);
-
-        $this->records->addRelatedEntity($entity);
-        return $entity;
     }
 }

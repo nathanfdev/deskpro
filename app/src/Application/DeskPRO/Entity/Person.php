@@ -91,7 +91,7 @@ use Orb\Util\Util;
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
  * @property PhoneNumber[] $phone_numbers
- * @property LabelPerson[] $labels
+ * @property ArrayCollection|LabelPerson[] $labels
  * @property CustomDataPerson[] $custom_data
  * @property PersonContactData[] $contact_data
  * @property Usergroup[] $usergroups
@@ -369,6 +369,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $phone_numbers;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
