@@ -254,5 +254,10 @@ final class Feedback extends AbstractContentEntity
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('attachments', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
+        ;
     }
 }

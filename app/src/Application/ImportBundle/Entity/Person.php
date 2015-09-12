@@ -701,6 +701,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
             ->addGetterConstraint('firstEmail', new Constraints\Email())
             ->addGetterConstraint('organizationValid', new Constraints\True())
+
+            ->addPropertyConstraint('contact_data', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
         ;
     }
 }

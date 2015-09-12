@@ -120,7 +120,7 @@ final class ArticleCategories extends AbstractParser
                 'prefix' => 'article_category_',
                 'ref'    => 'id',
             )),
-            'title'        => TransformerInterface::TYPE_STRING,
+            'name'         => TransformerInterface::TYPE_STRING,
         ));
 
         $entity = new Entity\ArticleCategory();
@@ -128,7 +128,7 @@ final class ArticleCategories extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
-            ->setTitle($formatted['title'])
+            ->setTitle($formatted['name'])
         ;
 
         return $entity;
@@ -175,7 +175,7 @@ final class ArticleCategories extends AbstractParser
                 'prefix' => 'article_category_',
                 'ref'    => 'category_id',
             )),
-            'title'        => TransformerInterface::TYPE_STRING,
+            'name'         => TransformerInterface::TYPE_STRING,
             'category_id'  => TransformerInterface::TYPE_INT,
         ));
 
@@ -184,7 +184,7 @@ final class ArticleCategories extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
-            ->setTitle($formatted['title'])
+            ->setTitle($formatted['name'])
         ;
 
         return $entity;

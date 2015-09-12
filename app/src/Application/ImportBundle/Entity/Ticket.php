@@ -679,6 +679,9 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             )))
 
             ->addGetterConstraint('statusValid', new Constraints\True())
+
+            ->addPropertyConstraint('messages', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
         ;
     }
 }

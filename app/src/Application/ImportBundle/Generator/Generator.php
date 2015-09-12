@@ -91,6 +91,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             ->attach(new Validator\Download($validator))
             ->attach(new Validator\Feedback($validator))
             ->attach(new Validator\Article($validator))
+            ->attach(new Validator\ArticleCategory($validator))
             ->attach(new Validator\News($validator))
             ->attach(new Validator\Person($validator))
             ->attach(new Validator\Ticket($validator))

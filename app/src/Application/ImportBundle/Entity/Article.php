@@ -392,6 +392,10 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
 
         $metadata
             ->addPropertyConstraint('person_email', new Constraints\NotBlank())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
+            ->addPropertyConstraint('comments', new Constraints\Valid())
+            ->addPropertyConstraint('attachments', new Constraints\Valid())
+            ->addPropertyConstraint('translations', new Constraints\Valid())
         ;
     }
 }

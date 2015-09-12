@@ -141,6 +141,7 @@ final class ArticleCategory extends AbstractEntity
 
         $metadata
             ->addPropertyConstraint('title', new Constraints\NotBlank())
+            ->addPropertyConstraint('categories', new Constraints\Valid())
         ;
     }
 }

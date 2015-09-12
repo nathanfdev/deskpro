@@ -30,19 +30,19 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * People entities validator
+ * Article category entities validator
  *
- * Class Person
+ * Class ArticleCategory
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Person extends AbstractConstraintValidator
+final class ArticleCategory extends AbstractConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_PERSON;
+        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
     }
 
     /**
@@ -50,7 +50,7 @@ final class Person extends AbstractConstraintValidator
      */
     public function validate(Entity\EntityInterface $entity)
     {
-        if ( ! $entity instanceof Entity\Person) {
+        if (!$entity instanceof Entity\ArticleCategory) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
