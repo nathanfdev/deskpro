@@ -397,6 +397,17 @@ class JsonTest extends \DpIntegrationTestCase
     {
         $this->assertCount(2, $this->feedback_repository->findAll());
         $this->assertCount(1, $this->feedback_attachment_repository->findAll());
+
+        /** @var Entity\Feedback $feedback */
+        $feedback = $this->feedback_repository->findOneBy(array('title' => 'Feedback 1'));
+        $this->assertNotNull($feedback);
+
+        $labels = array();
+        foreach ($feedback->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('Feedback Label 1'), $labels);
     }
 
     private function checkDbOrganizationData()
