@@ -220,6 +220,7 @@ final class Article extends AbstractImporter
      */
     private function createArticleCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefArticle $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ARTICLE);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataArticle());

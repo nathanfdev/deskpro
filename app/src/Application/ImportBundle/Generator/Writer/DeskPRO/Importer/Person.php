@@ -225,6 +225,7 @@ final class Person extends AbstractImporter
      */
     private function createPersonCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefPerson $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());

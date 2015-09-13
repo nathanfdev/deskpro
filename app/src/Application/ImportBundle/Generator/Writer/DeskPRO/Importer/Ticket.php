@@ -308,7 +308,8 @@ final class Ticket extends AbstractImporter
                 $priority = new DeskPROEntity\TicketPriority();
                 $priority
                     ->setRealTitle($entity->getTitle())
-                    ->setPriority($entity->getValue());
+                    ->setPriority($entity->getValue())
+                ;
 
                 $this->records->addRelatedEntity($priority);
                 $this->logNotice(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
@@ -356,6 +357,7 @@ final class Ticket extends AbstractImporter
      */
     private function createTicketCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefTicket $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataTicket());

@@ -148,7 +148,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Returns custom def person entity
      *
-     * @param AbstractCustomDefMapper                $mapper
+     * @param AbstractCustomDefMapper          $mapper
      * @param Entity\CustomField               $entity
      * @param DeskPROEntity\CustomDataAbstract $custom_field
      *
