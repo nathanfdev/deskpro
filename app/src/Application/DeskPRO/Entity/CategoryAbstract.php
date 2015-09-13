@@ -106,23 +106,26 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * @param CategoryAbstract|null $cat
+     * @param CategoryAbstract|null $category
+     * @return $this
      */
-    public function setParent(CategoryAbstract $cat = null)
+    public function setParent(CategoryAbstract $category = null)
     {
-        if ($cat && $cat->getId() && $this->getId() && $cat->getId() == $this->getId()) {
+        if ($category && $category->getId() && $this->getId() && $category->getId() == $this->getId()) {
             throw new \InvalidArgumentException("Cannot set parent to self");
         }
 
-        $this->setModelField('parent', $cat);
+        $this->setModelField('parent', $category);
 
-        if ($cat) {
-            $this->setModelField('root', $cat->root ? $cat->root : $cat->id);
-            $this->setModelField('depth', $cat->depth + 1);
+        if ($category) {
+            $this->setModelField('root', $category->root ? $category->root : $category->id);
+            $this->setModelField('depth', $category->depth + 1);
         } else {
             $this->setModelField('root', null);
             $this->setModelField('depth', 0);
         }
+
+        return $this;
     }
 
     /**
@@ -227,7 +230,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         if (!isset($this->_structure['all_child_ids'])) {
 
             $all_ids = array();
-            $r = function ($cat) use (&$r, &$all_ids) {
+            $r = function (CategoryAbstract $cat) use (&$r, &$all_ids) {
                 foreach ($cat->getChildren() as $c) {
                     $all_ids[] = $c->id;
                     if ($c->getChildren()) {

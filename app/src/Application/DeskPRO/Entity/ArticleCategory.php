@@ -94,6 +94,41 @@ class ArticleCategory extends CategoryAbstract
         $this->children = new ArrayCollection();
     }
 
+    /**
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
+
+    /**
+     * @param bool $is_agent
+     * @return $this
+     */
+    public function setIsAgent($is_agent)
+    {
+        $this->setModelField('is_agent', (bool)$is_agent);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBook()
+    {
+        return $this->is_book;
+    }
+
+    /**
+     * @param bool $is_book
+     * @return $this
+     */
+    public function setIsBook($is_book)
+    {
+        $this->setModelField('is_book', (bool)$is_book);
+        return $this;
+    }
 
     ############################################################################
     # Doctrine Metadata

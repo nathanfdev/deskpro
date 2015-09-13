@@ -72,7 +72,11 @@ final class ArticleCategory extends AbstractImporter
         }
 
         $category = $this->findOrCreateArticleCategory($entity_id);
-        $category->setRealTitle($entity->getTitle());
+        $category
+            ->setRealTitle($entity->getTitle())
+            ->setIsAgent($entity->isAgent())
+            ->setIsBook($entity->isBook())
+        ;
 
         $this->createDeepCategories($category, $entity);
 
@@ -115,6 +119,8 @@ final class ArticleCategory extends AbstractImporter
             $category
                 ->setRealTitle($child_entity->getTitle())
                 ->setParent($parent_category)
+                ->setIsAgent($entity->isAgent())
+                ->setIsBook($entity->isBook())
             ;
 
             $this->createDeepCategories($category, $child_entity);
