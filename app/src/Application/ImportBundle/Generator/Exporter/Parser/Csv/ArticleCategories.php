@@ -39,6 +39,11 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 final class ArticleCategories extends AbstractParser
 {
     /**
+     * @var int
+     */
+    private $auto_generate_num = 0;
+
+    /**
      * {@inheritdoc}
      */
     public function getEntityType()
@@ -59,6 +64,8 @@ final class ArticleCategories extends AbstractParser
      */
     public function export()
     {
+        $this->auto_generate_num = 0;
+
         $collection = new Entity\Collection();
         $categories = $this->getReaderData($this->getArticleCategoryReaderConfig());
 
@@ -68,6 +75,9 @@ final class ArticleCategories extends AbstractParser
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+                $this->auto_generate_num = max($this->auto_generate_num, (int)$entity->getOid()) + 1;
+
             } catch (TransformerException $e) {
                 $this->logTransformerException('CSVArticleCategory', $this->getEntityType(), 'title', $e);
             } catch (\Exception $e) {
@@ -75,7 +85,87 @@ final class ArticleCategories extends AbstractParser
             }
         }
 
-        return $collection;
+        return $this->toDeepCollection($collection);
+    }
+
+    /**
+     * @param Entity\Collection      $list_collection
+     * @param Entity\Collection|null $deep_collection
+     * @param int                    $deep_level
+     *
+     * @return Entity\Collection
+     */
+    private function toDeepCollection(Entity\Collection $list_collection, Entity\Collection $deep_collection = null, $deep_level = 1)
+    {
+        $deep_collection = $deep_collection ? : new Entity\Collection();
+
+        foreach ($list_collection as $category) {
+            /** @var Entity\ArticleCategory $category */
+            $category_path = explode('>', $category->getTitle());
+            $category_path = array_map('trim', $category_path);
+
+            if (count($category_path) === $deep_level) {
+                $category->setTitle(end($category_path));
+                $list_collection->detach($category);
+
+                if ($deep_level > 1) {
+                    $parent_category = $this->findOrCreateDeepParentCategory($deep_collection, $category_path);
+                    $parent_category->addCategory($category);
+                } else {
+                    $deep_collection->attach($category);
+                }
+            }
+        }
+
+        if ($list_collection->count() > 0) {
+            return $this->toDeepCollection($list_collection, $deep_collection, $deep_level + 1);
+        }
+
+        return $deep_collection;
+    }
+
+    /**
+     * @param Entity\Collection $collection
+     * @param array             $category_path
+     *
+     * @return Entity\ArticleCategory|null
+     */
+    private function findOrCreateDeepParentCategory(Entity\Collection $collection, array $category_path)
+    {
+        $title    = array_shift($category_path);
+        $category = null;
+
+        foreach ($collection as $exist_category) {
+            /** @var Entity\ArticleCategory $category */
+            if ($exist_category->getTitle() === $title) {
+                $category = $exist_category;
+                break;
+            }
+        }
+
+        if (null === $category) {
+            $category = new Entity\ArticleCategory();
+            $category
+                ->setOid($this->auto_generate_num)
+                ->setDestination('article_category_' . $this->auto_generate_num)
+                ->setRawData(array(
+                    'title'          => $title,
+                    'auto_generated' => true,
+                ))
+                ->setTitle($title)
+                ->setAsAgent(false)
+                ->setAsBook(false)
+            ;
+
+            $collection->attach($category);
+            $this->auto_generate_num++;
+        }
+
+        if (count($category_path) > 1) {
+            return $this->findOrCreateDeepParentCategory($category->getCategories(), $category_path);
+        }
+
+        return $category;
     }
 
     /**

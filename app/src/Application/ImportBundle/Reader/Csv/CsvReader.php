@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Reader\Csv;
 use Application\ImportBundle\Reader\AbstractReader;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
-use Orb\Util\Arrays;
 use SplFileObject;
 use LimitIterator;
 
@@ -181,6 +180,6 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      */
     private function isValidRow($row)
     {
-        return is_array($row) && count(Arrays::removeEmptyString($row)) > 1;
+        return is_array($row) && count($row) > 1;
     }
 }
