@@ -1913,6 +1913,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $l ? $l->getId() : 0;
     }
 
+    /**
+     * Set language
+     *
+     * @param Language|null $language
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+        return $this;
+    }
+
+    /**
+     * Set language by id
+     *
+     * @param int $id
+     * @return $this
+     */
     public function setLanguageId($id)
     {
         if ($id) {

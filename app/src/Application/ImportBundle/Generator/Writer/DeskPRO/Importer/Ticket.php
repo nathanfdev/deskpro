@@ -92,6 +92,7 @@ final class Ticket extends AbstractImporter
             ->setPriority($this->findOrCreateTicketPriority($entity->getPriority()))
             ->setCategory($this->findOrCreateTicketCategory($entity->getCategory()))
             ->setStatus($entity->getStatus())
+            ->setLanguage($entity->getLanguage() ? $this->findLanguage($entity->getLanguage()) : null)
             ->setDateCreated($entity->getDateCreated())
             ->setDateResolved($entity->getDateResolved())
             ->setDateArchived($entity->getDateArchived())
@@ -101,10 +102,6 @@ final class Ticket extends AbstractImporter
             ->resetLabels()
             ->resetCustomData()
         ;
-
-        if ($entity->getLanguage()) {
-            $ticket['language'] = $this->findLanguage($entity->getLanguage());
-        }
 
         if ($entity->getAgentEmail()) {
             $agent = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
