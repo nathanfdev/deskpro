@@ -94,6 +94,7 @@
         <tr class="mode-edit">
             <th width="80">{{ phrase('agent.problems.problem') }}:</th>
             <td>
+				{% set open_problems = open_problems ? open_problems : [] %}
 				{% set selected_problem = ticket.problems.first %}
 
                 {% if _as %}

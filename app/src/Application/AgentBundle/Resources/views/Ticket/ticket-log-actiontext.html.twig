@@ -632,6 +632,12 @@
 			<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.content }}</textarea>
 		</div>
 	</div>
+{% elseif log.action_type == 'email_account' %}
+	<span class="type">{{ phrase('agent.general.email_account') }}</span>
+    {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old|default(phrase('agent.general.none'))}}</span>
+    {{ phrase('agent.tickets.changed_to') }}
+    <span class="new-val">{{log.details.new|default(phrase('agent.general.none'))}}</span>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}
