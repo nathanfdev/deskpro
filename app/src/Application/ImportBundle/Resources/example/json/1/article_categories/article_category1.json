@@ -5,12 +5,12 @@
   "categories": [
     {
       "oid": "1",
-      "title": "Sub category 1",
+      "title": "Sub Category 1",
       "categories": []
     },
     {
       "oid": "2",
-      "title": "Sub category 2",
+      "title": "Sub Category 2",
       "categories": []
     }
   ]

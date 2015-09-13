@@ -80,6 +80,38 @@ final class ArticleCategory implements MapperInterface, MapperByTitleInterface
      */
     public function findOneByTitle($title, $throw_exception = true)
     {
-        return $this->findOneBy(array('title' => $title), $throw_exception);
+        return $this->findDeepCategory($title, null, $throw_exception);
+    }
+
+    /**
+     * Find a category
+     * We store value for categories like "A > A1"
+     *
+     * Category 1
+     *   SubCategory A
+     *   SubCategory B
+     *
+     * @param array|string         $category_path
+     * @param ArticleCategory|null $parent
+     * @param bool                 $throw_exception
+     *
+     * @return ArticleCategory
+     */
+    public function findDeepCategory($category_path, ArticleCategory $parent = null, $throw_exception = true)
+    {
+        if (is_string($category_path)) {
+            $category_path = explode('>', $category_path);
+            $category_path = array_map('trim', $category_path);
+        }
+
+        $category = $this->findOneBy(
+            array(
+                'title'  => array_shift($category_path),
+                'parent' => $parent,
+            ),
+            $throw_exception
+        );
+
+        return empty($category_path) ? $category : $this->findDeepCategory($category_path, $category);
     }
 }

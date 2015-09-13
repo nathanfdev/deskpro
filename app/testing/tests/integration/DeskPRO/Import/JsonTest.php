@@ -172,9 +172,9 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
-        $this->checkDbEmpty();
-        $this->checkJsonEmpty();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonEmpty();
+        $this->checkDbEmpty();
     }
 
     public function testExport()
@@ -192,9 +192,9 @@ class JsonTest extends \DpIntegrationTestCase
             '--batch'       => true,
         ));
 
-        $this->checkDbEmpty();
-        $this->checkJsonData();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonData();
+        $this->checkDbEmpty();
     }
 
     public function testImport()
@@ -213,9 +213,9 @@ class JsonTest extends \DpIntegrationTestCase
         ));
 
         $this->checkDbWriterOutput($command_tester);
-        $this->checkDbData();
-        $this->checkJsonEmpty();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonEmpty();
+        $this->checkDbData();
     }
 
     public function testImportBatch()
@@ -235,9 +235,9 @@ class JsonTest extends \DpIntegrationTestCase
         ));
 
         $this->checkDbWriterOutput($command_tester);
-        $this->checkDbData();
-        $this->checkJsonData();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonData();
+        $this->checkDbData();
     }
 
     private function checkJsonEmpty()
@@ -269,7 +269,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkJsonFile('/1/news/news1.json', '1/news/news_1.json');
         $this->checkJsonFile('/1/news/news2.json', '1/news/news_2.json');
         $this->checkJsonFile('/1/downloads/download1.json', '1/downloads/download_1.json');
-        $this->checkJsonFile('/1/organization_some_organization.json', '1/organization_some_organization.json');
+        $this->checkJsonFile('/1/organizations/organization_some_organization.json', '1/organizations/organization_some_organization.json');
     }
 
     /**
@@ -326,6 +326,8 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals('Content 1', $article->getContentPlain());
         $this->assertEquals('2-slug-article-1', $article->getUrlSlug());
         $this->assertEquals('published', $article->getStatusCode());
+        $this->assertEquals('Sub Category 1', $article->getCategoryNames(',', false));
+        $this->assertEquals('Category 1 > Sub Category 1', $article->getCategoryNames());
         $this->assertEquals(new \DateTime('2015-01-15 00:00:00'), $article->getDateCreated());
         $this->assertNull($article->getDatePublished());
         $this->assertNull($article->getDateEnd());
@@ -367,10 +369,10 @@ class JsonTest extends \DpIntegrationTestCase
         $children_categories = $parent_category->getChildren();
 
         $children_category = $children_categories[0];
-        $this->assertEquals('Sub category 1', $children_category->getRealTitle());
+        $this->assertEquals('Sub Category 1', $children_category->getRealTitle());
 
         $children_category = $children_categories[1];
-        $this->assertEquals('Sub category 2', $children_category->getRealTitle());
+        $this->assertEquals('Sub Category 2', $children_category->getRealTitle());
     }
 
     private function checkDbPeopleData()

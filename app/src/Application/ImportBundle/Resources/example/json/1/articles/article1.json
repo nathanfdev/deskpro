@@ -16,7 +16,7 @@
   "date_published": null,
   "date_updated": null,
   "date_end": null,
-  "categories": ["Sub Category 1"],
+  "categories": ["Category 1 > Sub Category 1"],
   "labels": ["Label 1", "Label 2", "Label 3"],
   "custom_fields": [
     {
