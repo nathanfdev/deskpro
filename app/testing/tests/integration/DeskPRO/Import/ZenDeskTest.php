@@ -229,6 +229,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->helper->seeInThisFile('Title (de)');
         $this->helper->seeInThisFile('Content (de)');
+        $this->helper->seeInThisFile('"categories":["Category 1 > Section 1"]');
     }
 
     private function checkDbEmpty()

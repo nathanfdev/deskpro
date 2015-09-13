@@ -198,22 +198,47 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getArticleCategory($section_id)
+    public function getArticleCategoryPath($section_id)
     {
-        $response_sections = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
-        $response_sections = $this->toArray($response_sections->sections);
+        $response_categories = $this->adapter->doRequest('HelpCenter\CategoriesFindAll');
+        $response_categories = $this->toArray($response_categories->categories);
+
+        $response_sections   = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+        $response_sections   = $this->toArray($response_sections->sections);
+
+        $categories = array();
+        foreach ($response_categories as $category) {
+            $categories[$category['id']] = $category;
+        }
 
         $sections = array();
-        foreach ($response_sections as $section) {
-            $sections[$section['id']] = $section;
+        foreach ($response_sections as $category) {
+            $sections[$category['id']] = $category;
         }
 
         if (isset($sections[$section_id])) {
-            return $sections[$section_id];
+            $section = $sections[$section_id];
         } else {
             $response_section = $this->adapter->doRequest('HelpCenter\SectionFind', array('id' => $section_id));
-            return $this->toArray($response_section->section);
+            $section = $this->toArray($response_section->section);
         }
+
+        if ( ! empty($section)) {
+            if (isset($categories[$section['category_id']])) {
+                $category = $categories[$section['category_id']];
+            } else {
+                $response_section = $this->adapter->doRequest('HelpCenter\CategoryFind', array('id' => $section['category_id']));
+                $category = $this->toArray($response_section->category);
+            }
+
+            if ( ! empty($category)) {
+                return $category['name'] . ' > ' . $section['name'];
+            } else {
+                return $section['name'];
+            }
+        }
+
+        return '';
     }
 
     /**

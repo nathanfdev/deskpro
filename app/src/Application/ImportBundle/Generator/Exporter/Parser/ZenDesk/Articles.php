@@ -181,9 +181,9 @@ final class Articles extends AbstractParser
             $entity->setStatus(DeskPROEntity\Article::STATUS_PUBLISHED);
         }
         if ($formatted['section_id']) {
-            $section = $this->reader->getArticleCategory($formatted['section_id']);
-            if (isset($section['name'])) {
-                $entity->addCategory($section['name']);
+            $category_path = $this->reader->getArticleCategoryPath($formatted['section_id']);
+            if ($category_path) {
+                $entity->addCategory($category_path);
             }
         }
 
