@@ -396,6 +396,8 @@ class JsonTest extends \DpIntegrationTestCase
         $ticket = $this->ticket_repository->findOneBy(array('ref' => 'AAABBBCCC'));
         $this->assertNotNull($ticket);
         $this->assertEquals(1, $ticket->getLanguageId());
+        $this->assertNotNull($ticket->getAgent());
+        $this->assertEquals('user@example.com', $ticket->getAgent()->getPrimaryEmail()->getEmail());
 
         $labels = array();
         foreach ($ticket->labels as $label) {
