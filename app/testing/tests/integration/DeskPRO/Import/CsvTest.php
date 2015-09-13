@@ -55,6 +55,11 @@ class CsvTest extends \DpIntegrationTestCase
     private $article_repository;
 
     /**
+     * @var EntityRepository\ArticleCategory
+     */
+    private $article_category_repository;
+
+    /**
      * @var EntityRepository\Feedback
      */
     private $feedback_repository;
@@ -130,6 +135,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->person_repository                    = $entity_manager->getRepository('DeskPRO:Person');
         $this->news_repository                      = $entity_manager->getRepository('DeskPRO:News');
         $this->article_repository                   = $entity_manager->getRepository('DeskPRO:Article');
+        $this->article_category_repository          = $entity_manager->getRepository('DeskPRO:ArticleCategory');
         $this->feedback_repository                  = $entity_manager->getRepository('DeskPRO:Feedback');
         $this->feedback_attachment_repository       = $entity_manager->getRepository('DeskPRO:FeedbackAttachment');
         $this->download_repository                  = $entity_manager->getRepository('DeskPRO:Download');
@@ -309,6 +315,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals(1, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
         $this->assertEquals(1, $this->article_repository->countAll());
+        $this->assertEquals(1, $this->article_category_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
@@ -325,6 +332,7 @@ class CsvTest extends \DpIntegrationTestCase
     private function checkDbData()
     {
         $this->checkDbArticleData();
+        $this->checkDbArticleCategoryData();
         $this->checkDbPeopleData();
         $this->checkDbTicketsData();
         $this->checkDbFeedbackData();
@@ -397,6 +405,23 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals('Content 1', $article->getContentPlain());
         $this->assertEquals('published', $article->getStatusCode());
         $this->assertEquals('Category 1', $article->getPrimaryCategory());
+    }
+
+    private function checkDbArticleCategoryData()
+    {
+        $this->assertEquals(5, $this->article_category_repository->countAll());
+
+        $category_1 = $this->article_category_repository->findOneBy(array('title' => 'Category 1', 'parent' => null));
+        $this->assertNotNull($category_1);
+
+        $category_2 = $this->article_category_repository->findOneBy(array('title' => 'Sub Category 1', 'parent' => $category_1));
+        $this->assertNotNull($category_2);
+
+        $category_3 = $this->article_category_repository->findOneBy(array('title' => 'Sub Category 2', 'parent' => $category_2));
+        $this->assertNotNull($category_3);
+
+        $category_4 = $this->article_category_repository->findOneBy(array('title' => 'Sub Category 3', 'parent' => $category_3));
+        $this->assertNotNull($category_4);
     }
 
     private function checkDbOrganizationData()
