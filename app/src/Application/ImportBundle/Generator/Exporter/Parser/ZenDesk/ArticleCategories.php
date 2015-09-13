@@ -35,6 +35,8 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 
 /**
+ * ZenDesk article categories parser
+ *
  * Class ArticleCategories
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
@@ -79,6 +81,8 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
+     * Returns a collection of article category entities
+     *
      * @return Entity\Collection|Entity\ArticleCategory[]
      */
     private function exportCategories()
@@ -110,6 +114,8 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
+     * Returns an article category entity
+     *
      * @param array $data
      * @return Entity\ArticleCategory
      */
@@ -137,6 +143,8 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
+     * Returns a collection of article subcategory entities
+     *
      * @return Entity\Collection|Entity\ArticleCategory[]
      */
     private function exportSections()
@@ -166,6 +174,8 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
+     * Returns an article subcategory entity
+     *
      * @param array $data
      * @return Entity\ArticleCategory
      */

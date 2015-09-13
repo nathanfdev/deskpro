@@ -33,6 +33,8 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
+ * Article categories csv file parser
+ *
  * Class ArticleCategories
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
@@ -89,6 +91,8 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
+     * Converts to category tree collection
+     *
      * @param Entity\Collection      $list_collection
      * @param Entity\Collection|null $deep_collection
      * @param int                    $deep_level
@@ -125,6 +129,9 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
+     * Returns parent article category entity
+     * Creates a new entity if not found
+     *
      * @param Entity\Collection $collection
      * @param array             $category_path
      *

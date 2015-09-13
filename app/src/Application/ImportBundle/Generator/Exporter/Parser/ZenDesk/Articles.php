@@ -119,7 +119,7 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns a article entity
+     * Returns an article entity
      *
      * @param array $data
      *

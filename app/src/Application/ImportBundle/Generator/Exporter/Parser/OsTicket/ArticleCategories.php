@@ -31,6 +31,8 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
+ * OsTicket article categories parser
+ *
  * Class ArticleCategories
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */

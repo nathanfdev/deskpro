@@ -34,6 +34,8 @@ use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
 /**
+ * Article categories json file parser
+ *
  * Class ArticleCategories
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
