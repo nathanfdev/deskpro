@@ -744,6 +744,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 
 ###### JSON Entity #2. Article Category
 
+```json
 {
   "oid": "1",
   "title": "Category 1",
@@ -761,6 +762,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
     }
   ]
 }
+```
 
 ###### JSON Entity #3. Download
 
