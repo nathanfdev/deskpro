@@ -27,51 +27,43 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 
 /**
- * Custom def ticket record mapper
- *
- * Class CustomDefFeedback
+ * Class AbstractCustomDefMapper
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class CustomDefFeedback extends AbstractCustomDefMapper
+abstract class AbstractCustomDefMapper implements MapperInterface
 {
     /**
-     * @var EntityRepository\CustomDefFeedback
-     */
-    private $repository;
-
-    /**
-     * Constructor
+     * Find a choice custom def entity
+     * We store value for choice custom fields like "A > A1"
      *
-     * @param EntityRepository\CustomDefFeedback $repository
+     * MyField
+     *   Option A
+     *     |- Option A1
+     *     |- Option A2
+     *   Option B
+     *     |- Option B1
+     *     |- Option B2
+     *
+     * @param array|string      $choice_chain
+     * @param CustomDefAbstract $parent
+     *
+     * @return CustomDefAbstract
      */
-    public function __construct(EntityRepository\CustomDefFeedback $repository)
+    public function findChoiceCustomDef($choice_chain, CustomDefAbstract $parent)
     {
-        $this->repository = $repository;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return self::TYPE_CUSTOM_DEF_FEEDBACK;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefFeedback $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def feedback not found', $criteria);
+        if (is_string($choice_chain)) {
+            $choice_chain = explode('>', $choice_chain);
+            $choice_chain = array_map('trim', $choice_chain);
         }
 
-        return $record;
+        $custom_field_def = $this->findOneBy(array(
+            'title'  => array_shift($choice_chain),
+            'parent' => $parent,
+        ));
+
+        return empty($choice_chain) ? $custom_field_def : $this->findChoiceCustomDef($choice_chain, $custom_field_def);
     }
 }
