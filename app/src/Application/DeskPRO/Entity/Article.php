@@ -52,7 +52,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     const END_ACTION_ARCHIVE = 'archive';
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection|ArticleCategory[]
      */
     protected $categories;
 

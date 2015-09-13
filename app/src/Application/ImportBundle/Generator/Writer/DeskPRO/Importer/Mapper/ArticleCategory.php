@@ -91,13 +91,13 @@ final class ArticleCategory implements MapperInterface, MapperByTitleInterface
      *   SubCategory A
      *   SubCategory B
      *
-     * @param array|string         $category_path
-     * @param ArticleCategory|null $parent
-     * @param bool                 $throw_exception
+     * @param array|string                $category_path
+     * @param Entity\ArticleCategory|null $parent
+     * @param bool                        $throw_exception
      *
      * @return ArticleCategory
      */
-    public function findDeepCategory($category_path, ArticleCategory $parent = null, $throw_exception = true)
+    public function findDeepCategory($category_path, Entity\ArticleCategory $parent = null, $throw_exception = true)
     {
         if (is_string($category_path)) {
             $category_path = explode('>', $category_path);
@@ -112,6 +112,6 @@ final class ArticleCategory implements MapperInterface, MapperByTitleInterface
             $throw_exception
         );
 
-        return empty($category_path) ? $category : $this->findDeepCategory($category_path, $category);
+        return empty($category_path) ? $category : $this->findDeepCategory($category_path, $category, $throw_exception);
     }
 }
