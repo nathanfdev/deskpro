@@ -17,7 +17,7 @@ import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
 import * as AppActions from "../../Application/Actions/AppActions";
 import * as constants from "../../../Constants/Constants";
-import ReactPaginate from "react-paginate";
+import ReactPaginate from "../../Application/Components/Pagination/deskpro-react-paginate";
 
 @connect(state => ({
     taskFrameList: state.taskFrameList,
@@ -491,7 +491,6 @@ export default class TasksListFrame extends React.Component {
                          nextLabel={<i className="fa fa-caret-right" />}
                          breakLabel={<li className="break"><a href="#">...</a></li>}
                          pageNum={total_pages}
-                         initialSelected={1}
                          marginPagesDisplayed={3}
                          pageRangeDisplayed={3}
                          clickCallback={this.handlePageClick.bind(this)}
