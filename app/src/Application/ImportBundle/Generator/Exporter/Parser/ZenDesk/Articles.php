@@ -31,7 +31,6 @@ use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
@@ -92,30 +91,7 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        $articles   = $this->getArticles();
-
-        $collection = new Entity\Collection();
-        $collection->setExpectedCount(count($articles));
-
-        foreach ($articles as $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportArticle($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDArticle', $this->getEntityType(), 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDArticle', $this->getEntityType(), 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDArticle', $this->getEntityType(), 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($this->getArticles(), 'ZDArticle', 'id', 'exportArticle');
     }
 
     /**
@@ -126,7 +102,7 @@ final class Articles extends AbstractParser
      * @return Entity\Article
      * @throws SkippingException
      */
-    private function exportArticle(array $data)
+    protected function exportArticle(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'           => TransformerInterface::TYPE_INT,
@@ -217,25 +193,7 @@ final class Articles extends AbstractParser
      */
     private function exportComments(array $comments)
     {
-        $collection = new Entity\Collection();
-
-        foreach ($comments as $num => $data) {
-            try {
-                $entity = $this->exportComment($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDArticleComment', 'article comment', 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDArticleComment', 'article comment', 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDArticleComment', 'article comment', 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($comments, 'ZDArticleComment', 'id', 'exportComment', false);
     }
 
     /**
@@ -244,7 +202,7 @@ final class Articles extends AbstractParser
      * @param array $data
      * @return Entity\ArticleComment
      */
-    private function exportComment(array $data)
+    protected function exportComment(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_INT,

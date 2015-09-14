@@ -236,7 +236,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages(array $ticket)
     {
-        return $this->exportCollection($ticket['comments'], 'ZDTicketComment', 'id', 'exportMessage');
+        return $this->exportCollection($ticket['comments'], 'ZDTicketComment', 'id', 'exportMessage', false);
     }
 
     /**

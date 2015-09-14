@@ -59,8 +59,11 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
             }
 
             try {
+                /** @var Entity\EntityInterface $entity */
                 $entity = $this->$method($item);
+
                 $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (SkippingException $e) {
                 $this->logSkippingException($prefix, $prefix, $ref_column, $e);
