@@ -19,8 +19,8 @@ export class ViewSwitcherContainer extends React.Component {
   }
 
   displayFieldsStatus(type, field, status) {
-    const {dispatch, query, sort, order, filters } = this.props;
-    dispatch(changeDisplayFieldsStatus(type, field, status, query, sort, order, filters));
+    const {dispatch, query, sort, order, filters, tableViewFields, listViewFields } = this.props;
+    dispatch(changeDisplayFieldsStatus(type, field, status, query, sort, order, filters, tableViewFields, listViewFields));
   }
 
 }

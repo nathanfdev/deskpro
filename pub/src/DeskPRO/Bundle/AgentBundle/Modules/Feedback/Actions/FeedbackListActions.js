@@ -150,9 +150,26 @@ export const toggleSort = createAction(
     trigger(loadFeedbackList(query, sort, order, filters));
   });
 
+export const storeDisplayFieldsToPersonSetting = createAction(
+  "FEEDBACK_DISPLAY_FIELD_TO_PERSON_SETTING",
+  (trigger, displayFields) => {
+    Feedback.postDisplayFieldsToPersonSetting('feedback_display_fields', displayFields).then(
+      (value) => trigger(value.getData())
+    )
+  });
+
+export const getDisplayFieldsFromPersonSetting = createAction(
+  "FEEDBACK_DISPLAY_FIELD_TO_PERSON_SETTING",
+  (trigger) => {
+    Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(
+      (value) => trigger(value.getData())
+    )
+  });
+
 export const changeDisplayFieldsStatus = createAction(
   "FEEDBACK_DISPLAY_FIELD_STATUS",
-  (trigger, type, field, status, query, sort, order, filters) => {
+  (trigger, type, field, status, query, sort, order, filters, listViewFields, tableViewFields) => {
     trigger({type: type, field: field, status: status});
+    trigger(storeDisplayFieldsToPersonSetting([{listViewFields: listViewFields, tableViewFields: tableViewFields}]));
     trigger(loadFeedbackList(query, sort, order, filters));
   });

@@ -123,6 +123,21 @@ export function getHidden() {
 }
 
 /**
+ * Store display fields to person setting
+ * @return Promise
+ */
+export function postDisplayFieldsToPersonSetting(settingName, displayFields) {
+  return DpApi.sendPost('DP_API/person_setting', {name: settingName, value: displayFields});
+}
+/**
+ * Get display fields from person setting
+ * @return Promise
+ */
+export function getDisplayFieldsFromPersonSetting(settingName) {
+  return DpApi.sendGet('DP_API/person_setting/' + settingName);
+}
+
+/**
  * Get list of filtered feedback
  * @return Promise
  */

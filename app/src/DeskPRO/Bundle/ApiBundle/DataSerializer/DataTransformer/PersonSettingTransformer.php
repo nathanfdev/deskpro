@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -24,73 +24,28 @@
  * |                                                                          |
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
-
 /**
  * DeskPRO
  *
- * @category Entities
+ * @package DeskPRO
  */
-namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
-use Doctrine\ORM\Mapping as ORM;
-use Application\DeskPRO\Entity\Person;
-use Symfony\Component\Validator\Constraints as Assert;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
+
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * @ORM\Entity()
- * @ORM\Table(name="person_settings")
+ * Class PersonSettingTransformer
  */
-class PersonSetting extends NotifyPropertyChangeEntity
+class PersonSettingTransformer extends AbstractDataSerializerTransformer
 {
-    /**
-     * @var Person
-     * @ORM\Id()
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     * @Assert\Valid()
-     */
-    protected $person;
-
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
-     */
-    protected $name;
-
-    /**
-     * @ORM\Column(type="json_array")
-     * @Assert\NotBlank()
-     */
-    protected $value;
-
-    public function __construct(Person $person, $name)
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $this->person = $person;
-        $this->name = $name;
+        return ['name', 'value'];
     }
 
-    public function getPerson()
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return $this->person;
+        return [];
     }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    public function setValue($value)
-    {
-        $this->value = $value;
-
-        return $this;
-    }
-
 }
