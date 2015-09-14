@@ -1,5 +1,5 @@
 import React from 'react';
-import * as actions from '../Actions/imListActions.js';
+import * as actions from '../Actions/imListActions';
 import IMOverlay from './Overlay';
 
 const IMButton = React.createClass({

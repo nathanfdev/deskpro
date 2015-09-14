@@ -1,10 +1,11 @@
 import React from 'react';
-import AgentsList from './AgentsList.js';
-import TeamsList from './TeamsList.js';
-import DepartmentsList from './DepartmentsList.js';
+import AgentsList from './AgentsList';
+import TeamsList from './TeamsList';
+import DepartmentsList from './DepartmentsList';
+import * as actions from '../Actions/imListActions';
 
 export default class Overlay extends React.Component {
-    render() {
+    render () {
         return (
             <div className="dropdown im-dropdown" id="im-dropdown">
                 <header className="dropdown-header">Agent Instant Messages</header>
@@ -19,7 +20,7 @@ export default class Overlay extends React.Component {
                             <div>
                                 <input type="text" placeholder="Filter agents by name" />
                             </div>
-                              </form>
+                        </form>
                         <div className="im-list-wrapper">
                             <AgentsList />
                         </div>
@@ -39,4 +40,3 @@ export default class Overlay extends React.Component {
         );
     }
 }
-
