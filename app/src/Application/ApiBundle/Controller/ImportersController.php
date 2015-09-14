@@ -97,8 +97,7 @@ class ImportersController extends AbstractController implements ProtectedControl
 
             // TODO: remove when these are ready
             if (
-                $importer['name'] === 'importers.osticket' ||
-                $importer['name'] === 'importers.zendesk'
+                $importer['name'] === 'importers.osticket'
             ) {
                 continue;
             }
