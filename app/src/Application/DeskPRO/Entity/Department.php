@@ -46,6 +46,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 use JMS\Serializer\Annotation as Serializer;
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
+use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 
 /**
  * Departments.
@@ -59,7 +61,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @property Department $children
  * @Serializer\ExclusionPolicy("ALL")
  */
-class Department extends DomainObject implements HasPhraseName
+class Department extends DomainObject implements HasPhraseName, PersonList, Chatable
 {
     /**
      * @var int
@@ -450,6 +452,19 @@ class Department extends DomainObject implements HasPhraseName
     public function __toString()
     {
         return $this->getFullTitle();
+    }
+
+    public function getPersonList()
+    {
+        return $this->_people;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getChatableType()
+    {
+        return Chatable::PARTICIPANT_TYPE_DEPARTMENT;
     }
 
     ############################################################################

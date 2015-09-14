@@ -158,7 +158,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
         }
 
         if (!$ref_class = new \ReflectionClass($class)) {
-            throw new ObjectRouterException(sprintf('could not reflect on "%s"', $class));
+            throw new ObjectRouterException(sprintf('could not reflect on "%s" in file "%s"', $class, $object_or_filename));
         }
 
         $annotations = $this->annotation_reader->getClassAnnotations($ref_class);

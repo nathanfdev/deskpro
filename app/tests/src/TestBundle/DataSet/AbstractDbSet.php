@@ -196,7 +196,7 @@ abstract class AbstractDbSet implements DataSetInterface
                 escapeshellarg(DP_DATABASE_HOST),
                 escapeshellarg(3306),
                 escapeshellarg(DP_DATABASE_USER),
-                DP_DATABASE_PASSWORD,
+                escapeshellarg(DP_DATABASE_PASSWORD),
                 escapeshellarg($this->getDatabaseName()),
                 escapeshellarg($this->getCachePath())
             );

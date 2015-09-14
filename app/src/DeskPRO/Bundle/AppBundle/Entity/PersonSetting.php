@@ -59,7 +59,6 @@ class PersonSetting
     private $name;
 
     /**
-     * @ORM\Id()
      * @ORM\Column(type="json_array")
      * @Assert\NotBlank()
      */

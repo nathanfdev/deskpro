@@ -155,6 +155,9 @@ export default class TasksListFrame extends React.Component {
       view: view,
       changeView: false
     });
+
+    // force a reload so we get the correct data
+    this.props.dispatch(TaskActions.setFilter(this.state.filter));
   }
 
   toggleOrder(field) {
@@ -210,6 +213,13 @@ export default class TasksListFrame extends React.Component {
     this.setState({
       moment: moment
     });
+  }
+
+  massEdit(data) {
+    this.props.dispatch(TaskActions.massEditTasks(
+      data,
+      this.props.taskFrameList.taskFrameSource
+    ));
   }
 
   render() {
@@ -274,11 +284,8 @@ export default class TasksListFrame extends React.Component {
     }
 
     const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
-
     const columnField = this.state.order;
-
     const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
-
     const sectionClass = this.state.view !== 'list' ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
 
     let tasks = [];
@@ -388,7 +395,10 @@ export default class TasksListFrame extends React.Component {
                                          dispatch={_this.props.dispatch.bind(_this)}
                                          columnField={columnField}
                                          updateField={grouping.updateField}
-                                         updateValue={grouping.updateValue}/>
+                                         updateValue={grouping.updateValue}
+                                         source={taskFrameList.taskFrameSource}
+                                         massEdit={this.massEdit.bind(this)}
+                                         editTask={_this.editTask.bind(_this)} />
                 }) : '' }
             </div>
             : (this.state.view === 'condensed') ?
@@ -476,7 +486,7 @@ export default class TasksListFrame extends React.Component {
         }
 
         { total_pages > 1 ?
-        <div className="pagination-block">
+        <div className="dpw--ticket-pagination">
           <ReactPaginate previousLabel={<i className="fa fa-caret-left" />}
                          nextLabel={<i className="fa fa-caret-right" />}
                          breakLabel={<li className="break"><a href="#">...</a></li>}
@@ -485,8 +495,8 @@ export default class TasksListFrame extends React.Component {
                          marginPagesDisplayed={3}
                          pageRangeDisplayed={3}
                          clickCallback={this.handlePageClick.bind(this)}
-                         containerClassName={"pagination"}
-                         subContainerClassName={"pages pagination"}
+                         containerClassName={"pages-list"}
+                         subContainerClassName={"pages-list sublist"}
                          activeClassName={"active"} />
         </div> : '' }
       </section>
