@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 @connect(state => ({
   user: state.user
 }))
-export default class Header extends React.Component {
-	static propTypes = {
+export class Header extends React.Component {
+  static propTypes = {
     user: PropTypes.object.isRequired
-  }
+  };
 
   render() {
-  	const { user } = this.props;
+    const { user } = this.props;
     return (<header className="dp-window-header top-bar">
-	      <a href="https://www.deskpro.com/" className="logo"></a>
-	      <span>Welcome, {user.display_name}</span>
-	    </header>);
+      <a href="https://www.deskpro.com/" className="logo"></a>
+      <span>Welcome, {user.display_name}</span>
+    </header>);
   }
 }

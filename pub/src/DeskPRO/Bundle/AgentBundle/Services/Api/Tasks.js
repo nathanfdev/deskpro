@@ -140,6 +140,28 @@ export function editTask(taskId, data) {
 }
 
 /**
+ * Update multiple tasks
+ * @param data
+ * @return Promise
+ */
+export function massEditTasks(data) {
+  // Clean-up
+  // The API supports multiple assignment, but the UI doesn't yet
+  if (data.departments && data.departments.length > 0) {
+    data.teams = [];
+    data.agents = [];
+  } else if (data.teams && data.teams.length > 0) {
+    data.departments = [];
+    data.agents = [];
+  } else if (data.agents && data.agents.length > 0 || data.agents === false) {    // Allows un-assign
+    data.departments = [];
+    data.teams = [];
+  }
+
+  return DpApi.sendPut('DP_API/tasks/mass', data);
+}
+
+/**
  * Load links for related items for a task
  * @param params
  * @return Promise

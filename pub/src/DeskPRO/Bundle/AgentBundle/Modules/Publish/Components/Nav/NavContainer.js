@@ -48,7 +48,7 @@ export class NavContainer extends React.Component {
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
     const setMine = (isMine) => this.setMine(isMine).bind(this);
 
-    const { dispatch, lists } = this.props;
+    const { dispatch, lists, dp_window } = this.props;
     const onClick = {
       articles: (group) => {
         dispatch(listActions.load('articles', lists.articles.grouped_by, group));
@@ -85,6 +85,8 @@ export class NavContainer extends React.Component {
         toggleGroupingVisibility={toggleGroupingVisibility}
         setMine={setMine}
         onClick={onClick}
+        dispatch={dispatch.bind(this)}
+        dp_window={dp_window}
       />
     );
   }

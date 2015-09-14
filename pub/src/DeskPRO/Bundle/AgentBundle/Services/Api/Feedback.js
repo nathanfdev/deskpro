@@ -123,6 +123,21 @@ export function getHidden() {
 }
 
 /**
+ * Store display fields to person setting
+ * @return Promise
+ */
+export function postDisplayFieldsToPersonSetting(settingName, displayFields) {
+  return DpApi.sendPost('DP_API/person_setting', {name: settingName, value: displayFields});
+}
+/**
+ * Get display fields from person setting
+ * @return Promise
+ */
+export function getDisplayFieldsFromPersonSetting(settingName) {
+  return DpApi.sendGet('DP_API/person_setting/' + settingName);
+}
+
+/**
  * Get list of filtered feedback
  * @return Promise
  */
@@ -134,7 +149,7 @@ export function getList(query, sort, order, filters) {
   if (filters.value && filters.value.length > 0) {
     params.push(filters.alias + '=' + filters.value.replace(/\s/g, "%20"));
   }
-  console.log('DP_API/feedback/?' + params.join('&'));
+  //console.log('DP_API/feedback/?' + params.join('&'));
   return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
 }
 /**

@@ -13,10 +13,3 @@ export const toggleSort = createAction(
   (trigger, sort) => trigger(sort)
 );
 
-export const toggleOrder = createAction(
-  'CHAT_LIST_TOGGLE_ORDER'
-);
-
-export const toggleView = createAction(
-  'CHAT_LIST_TOGGLE_VIEW'
-);

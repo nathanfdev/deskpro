@@ -62,7 +62,7 @@
 	  "sensiolabs/behat-page-object-extension": "2.0.*@dev",
 	  "friendsofsymfony/rest-bundle": "~1.5",
 	  "jms/serializer-bundle": "~1.0",
-	  "behatch/contexts": "*",
+	  "behatch/contexts": "dev-master",
 	  "nelmio/api-doc-bundle": "~2.7",
 	  "willdurand/hateoas-bundle": "~1.0",
 	  "phpspec/prophecy-phpunit": "~1.0",

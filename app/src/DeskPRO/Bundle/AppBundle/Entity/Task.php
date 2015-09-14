@@ -491,9 +491,9 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param \DateTime $date_done
+     * @param \DateTime|null $date_done
      */
-    public function setDateDone(\DateTime $date_done)
+    public function setDateDone($date_done)
     {
         $this->setModelField('date_done', $date_done);
     }

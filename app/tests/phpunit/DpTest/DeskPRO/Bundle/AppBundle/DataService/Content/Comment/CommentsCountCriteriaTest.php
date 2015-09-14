@@ -35,7 +35,9 @@ namespace DpTest\Bundle\AppBundle\DataService\Content;
 
 use Prophecy\Argument;
 use DpTest\DeskProTestCase;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
 
 /**
  * Class CommentsCountCriteriaTest
@@ -72,6 +74,32 @@ class CommentsCountCriteriaTest extends DeskProTestCase
     function it_should_be_constructable_with_proper_parameters()
     {
         $this->assertInstanceOf(CommentsCountCriteria::class, $this->instance(self::$dummyProperParams));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_extend_CommentsSelectCriteria()
+    {
+        $this->assertInstanceOf(CommentsSelectCriteria::class, $this->instance([]));
+    }
+
+    /**
+     * @test
+     */
+    function it_should_inherit_all_OptionsResolver_data_from_CommentsSelectCriteria_and_add_own_group_by_option()
+    {
+        $data = [new \Application\DeskPRO\Entity\Person()];
+
+        CommentsCountCriteria::fromParameters([], $countOptionsResolver = new OptionsResolver(), $data);
+        CommentsSelectCriteria::fromParameters([], $selectOptionsResolver = new OptionsResolver(), $data);
+        $countOptions = $countOptionsResolver->getDefinedOptions();
+        $selectOptions = $selectOptionsResolver->getDefinedOptions();
+
+        $this->assertEquals(
+            array_values($selectOptions),
+            array_values($this->removeFromArray('group_by', $countOptions))
+        );
     }
 
     /**

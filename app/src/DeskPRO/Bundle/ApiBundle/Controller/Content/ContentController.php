@@ -43,7 +43,6 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ArticlesCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ArticlesSelectCriteria;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Download;
@@ -121,9 +120,7 @@ class ContentController extends BaseController
 
         $params = array_diff_assoc($request->query->all(), ['count' => null, 'page' => null]);
         try {
-            $criteria = $type === 'articles'
-                      ? ArticlesSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
-                      : ContentSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
+            $criteria = ContentSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }

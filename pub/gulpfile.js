@@ -104,18 +104,6 @@ gulp.task('bundle:dev-server:portal', function(callback) {
 function getWebpackConfig(mode, isDevServer, isProd) {
   var node_modules_dir = path.join(__dirname, 'node_modules');
 
-  // - This is a collection of [alias, file]
-  // that we use to bypass compilation
-  // - These libs come with pre-compiled dist versions,
-  // so by using those, we save time in our own compile (up to about 1.5s saved)
-  var deps = [
-    ['immutable$', 'immutable/dist/immutable.min.js'],
-    ['jquery$', 'jquery/dist/jquery.min.js'],
-    ['moment$', 'moment/min/moment.min.js'],
-    ['react$', 'react/dist/react.min.js'],
-    ['react-intl$', 'react-intl/dist/react-intl.min.js']
-  ];
-
   var config = {
     cache: true,
     entry: {},
@@ -148,10 +136,6 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         }
       ],
       loaders: [
-        {
-          test: /react\.min\.js/,
-          loader: "expose?React"
-        },
         {
           test: /\.js$/,
           include: [

@@ -7,7 +7,7 @@ export default class dp_window extends Reducer {
         return {
             isLoaded: false,
             activeAppId: 'tickets',
-            collapsedNav: false,
+            collapseNav: false,
             expandedSwitcher: false,
             taskView: constants.VIEW_MODE_LIST
         };
@@ -23,7 +23,8 @@ export default class dp_window extends Reducer {
     setActiveApp(state, action) {
         return {
             ...state,
-            activeAppId: action.payload
+            activeAppId: action.payload,
+            expandedSwitcher: false
         };
     }
 

@@ -34,38 +34,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 
-class FeedbackSelectCriteria
+class FeedbackSelectCriteria extends Criteria
 {
-    /**
-     * @var array
-     */
-    protected $filters = [];
-
-    /**
-     * FeedbackCountCriteria constructor.
-     *
-     * @param array $filters
-     */
-    protected function __construct(array $filters)
-    {
-        $this->filters = $filters;
-    }
-
-    /**
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @return FeedbackSelectCriteria
-     * @throws AccessException
-     * @throws UndefinedOptionsException
-     */
-    public static function fromParameters(array $params, OptionsResolver $resolver)
-    {
-        self::configureResolver($resolver);
-        $filters = $resolver->resolve($params);
-        return new self($filters);
-    }
-
     /**
      * @param QueryBuilder $qb
      */
@@ -120,13 +92,14 @@ class FeedbackSelectCriteria
 
     /**
      * @param OptionsResolver $resolver
+     * @param array $data
      * @throws AccessException
      * @throws UndefinedOptionsException
      */
-    protected static function configureResolver(OptionsResolver $resolver)
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
         $resolver->setDefined([
-            'awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label', 'sort', 'order'
+            'awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label', 'sort', 'order', 'page', 'count'
         ]);
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues(

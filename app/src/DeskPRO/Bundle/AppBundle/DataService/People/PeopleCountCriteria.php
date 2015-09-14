@@ -33,41 +33,13 @@ namespace DeskPRO\Bundle\AppBundle\DataService\People;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 
 /**
  * Class PeopleCountCriteria
  */
-class PeopleCountCriteria
+class PeopleCountCriteria extends Criteria
 {
-    /**
-     * @var array
-     */
-    protected $filters = [];
-
-    /**
-     * ChatCountCriteria constructor.
-     *
-     * @param array $filters
-     */
-    protected function __construct(array $filters)
-    {
-        $this->filters = $filters;
-    }
-
-
-    /**
-     * @param array $params
-     * @param OptionsResolver $resolver
-     * @return PeopleCountCriteria
-     */
-    public static function fromParameters(array $params, OptionsResolver $resolver)
-    {
-        self::configureResolver($resolver);
-        $filters = $resolver->resolve($params);
-
-        return new self($filters);
-    }
-
     /**
      * @param QueryBuilder $qb
      */
@@ -87,9 +59,9 @@ class PeopleCountCriteria
     }
 
     /**
-     * @param OptionsResolver $resolver
+     * @inheritDoc
      */
-    private static function configureResolver(OptionsResolver $resolver)
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
         $resolver->setDefined(['is_agent', 'is_deleted']);
         $resolver->setAllowedValues('is_agent', ['0', '1']);

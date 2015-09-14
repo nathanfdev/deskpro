@@ -1,4 +1,4 @@
-@chat-nav
+@chat-nav @tasks-nav
 Feature: /people endpoint
   To retrieve DeskPRO people
   As a developer

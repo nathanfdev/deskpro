@@ -1,6 +1,6 @@
-import $ from "jquery";
-import DpApi from "DeskPRO/Bundle/AppBundle/Http/DpApi";
-import UrlCorrector from "DeskPRO/Bundle/AppBundle/Http/UrlCorrector";
+import $ from 'jquery';
+import DpApi from 'DeskPRO/Component/Http/DpApi';
+import UrlCorrector from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
 
 const api = new DpApi($.ajax);
 api.enableJsonPayloads();

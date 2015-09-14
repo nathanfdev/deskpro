@@ -37,7 +37,7 @@ use Prophecy\Argument;
 use DpTest\DeskProTestCase;
 use Pagerfanta\Pagerfanta;
 use Application\DeskPRO\Entity\Article;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ArticlesSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService;
 
 /**
@@ -58,8 +58,8 @@ class ContentDataServiceTest extends DeskProTestCase
      */
     function it_should_return_Pagerfanta_instance()
     {
-        /** @var ArticlesSelectCriteria $criteria */
-        $criteria = $this->prophesize(ArticlesSelectCriteria::class)->reveal();
+        /** @var ContentSelectCriteria $criteria */
+        $criteria = $this->prophesize(ContentSelectCriteria::class)->reveal();
         $result = $this->instance()->selectContent(Article::class, $criteria, 1, 10);
         $this->assertInstanceOf(Pagerfanta::class, $result);
     }

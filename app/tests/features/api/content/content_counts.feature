@@ -1,4 +1,4 @@
-@counts @chat-nav
+@counts @publish-nav
 Feature: Content counts endpoints (/articles/counts, /news/counts, /downloads/counts)
   To retrieve counts of various DeskPRO content
   As a developer

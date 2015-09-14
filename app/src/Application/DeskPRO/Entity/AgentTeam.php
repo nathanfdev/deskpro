@@ -41,12 +41,15 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 use JMS\Serializer\Annotation as Serializer;
+use DeskPRO\Bundle\AppBundle\Entity\PersonList;
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
+use Application\DeskPRO\Domain\DomainObject;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
  * @Serializer\ExclusionPolicy("ALL")
  */
-class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
+class AgentTeam extends DomainObject implements PersonList, Chatable
 {
     /**
      * The unique ID.
@@ -123,6 +126,19 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 
         return $this->avatar->getThumbnailUrl($size);
     }
+
+    public function getPersonList()
+    {
+        return $this->members;
+    }
+    /**
+     * @return integer
+     */
+    public function getChatableType()
+    {
+        return Chatable::PARTICIPANT_TYPE_TEAM;
+    }
+
 
     ############################################################################
     # Validation Metadata

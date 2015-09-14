@@ -103,6 +103,7 @@ a { color: $link-color; }
 //@import 'tooltips';
 //@import 'stats';
 //@import 'editor';
+@import 'pagination';
 
 
 
@@ -172,7 +173,7 @@ $content-width: $app-width + $sidebar-width;
   border-right: 1px solid #e2e4e5;
   position: relative;
   z-index: 209;
-  transition: all 1s ease;
+  transition: all 0.25s ease;
   // Hide the expand controls when the sidebar is visible
   .collapse-button, .collapse-controls { display: none; }
 }

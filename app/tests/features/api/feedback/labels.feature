@@ -1,3 +1,4 @@
+@feedback-nav
 Feature: /feedback_labels endpoint
   To retrieve info on feedback labels
   As a developer

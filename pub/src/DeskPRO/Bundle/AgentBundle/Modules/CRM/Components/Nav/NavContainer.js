@@ -20,7 +20,7 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const {labels, users, organizations, agents, groupNames, teamNames} = this.props;
+    const {labels, users, organizations, agents, groupNames, teamNames, dp_window} = this.props;
 
     return (
       <Nav
@@ -30,6 +30,8 @@ export class NavContainer extends React.Component {
           agents={agents}
           groupNames={groupNames}
           teamNames={teamNames}
+          dispatch={this.props.dispatch.bind(this)}
+          dp_window={dp_window}
       />
     );
   }

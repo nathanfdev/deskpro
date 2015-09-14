@@ -33,27 +33,69 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+use Application\DeskPRO\Entity\ContentAbstract as Content;
 
 /**
  * Class ContentSelectCriteria
  */
-class ContentSelectCriteria extends ContentCountCriteria
+class ContentSelectCriteria extends Criteria
 {
+    /**
+     * @param QueryBuilder $qb
+     */
+    public function applyFilters(QueryBuilder $qb)
+    {
+        $alias = $qb->getRootAliases()[0];
+
+        foreach ($this->filters as $field => $value) {
+            switch ($field) {
+                case 'status':
+                case 'hidden_status':
+                    $qb->andWhere("$alias.$field = :$field");
+                    $qb->setParameter($field, $value);
+                    break;
+
+                case 'period_created':
+                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+                    $qb->andWhere("$datePeriodCaseWhen = :period_created");
+                    $qb->setParameter('period_created', $value);
+                    break;
+
+                case 'author':
+                    $qb->andWhere("$alias.person = :person");
+                    $qb->setParameter('person', $value);
+                    break;
+            }
+        }
+    }
+
     /**
      * @param OptionsResolver $resolver
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        parent::configureResolver($resolver, $data);
-        $resolver->remove('group_by');
-    }
+        /** @var \Application\DeskPRO\Entity\Person $me */
+        list($me) = $data;
 
-    /**
-     * @inheritdoc
-     */
-    public function applyGroupBy(QueryBuilder $qb)
-    {
-        throw new \LogicException('You can\'t group_by in ' . __CLASS__);
+        $resolver->setDefined(['status', 'hidden_status', 'author', 'category', 'period_created']);
+
+        // filters validation
+        $validateInt = function($value) {
+            return is_int($value) || ctype_digit($value);
+        };
+        $resolver->setAllowedValues('category', $validateInt);
+
+        $resolver->setNormalizer('author', function($options, $value) use ($me) {
+            return $value === 'me' ? $me->getId() : $value;
+        });
+        $resolver->setAllowedValues('author', function($value) {
+            return is_int($value) || ctype_digit($value) || ($value === 'me');
+        });
+
+        $resolver->setAllowedValues('status', Content::getAllStatuses());
+        $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());
+        $resolver->setAllowedValues('period_created', DatePeriods::$names);
     }
 }

@@ -1,73 +1,19 @@
 import React from 'react';
-import { SectionsPane, Section, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { ListFrame, ControlBar, OrderBy, ListTableViewSwitcher, TableView, TableBody  }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
-import { TableHeader } from './TableHeader';
-import { Row } from './Row';
+
+import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { ChatsListControlBar } from './ControlBar/ChatsListControlBar';
+import { ChatsList } from './View/List/ChatsList';
+import { ChatsTable } from './View/Table/ChatsTable';
 
 export class List extends React.Component {
   render() {
-    const {
-      elements, viewMode, sort, sortName, order, sortOptions, displayFields,
-      toggleView, toggleOrder, showSortChoice, toggleSort
-      } = this.props;
+    const { elements, viewMode } = this.props;
 
     return (
       <ListFrame>
-        <ControlBar>
-          <OrderBy sort={sort} sortName={sortName} order={order} sortOptions={sortOptions}
-                   toggleSort={toggleSort.bind(this)}
-                   showSortChoice={showSortChoice.bind(this)}
-                   toggleOrder={toggleOrder.bind(this)}
-            />
-          <ListTableViewSwitcher displayFields={displayFields} toggleView={toggleView.bind(this)} {...this.props}/>
-        </ControlBar>
-
-        {this.renderElements(viewMode, elements)}
-
+        <ChatsListControlBar />
+        {viewMode === 'list' ? <ChatsList elements={elements} /> : <ChatsTable elements={elements} />}
       </ListFrame>
-    );
-  }
-
-  renderElements(view, elements) {
-    if (!elements.length) {
-      return 'No data to display'
-    }
-
-    switch (view) {
-      case 'list':
-        return this.renderListView(elements);
-      case 'table':
-        return this.renderTableView(elements);
-      default:
-        throw `Unknown "${view}" view type`;
-    }
-  }
-
-  renderListView(elements) {
-    console.log('Elements:', elements);
-    return (
-      <div>
-        <h1>List View</h1>
-        {elements.map((e, index) => <div key={index} style={{marginTop:'20px'}}>List item: {e}</div>)}
-      </div>
-    );
-  }
-
-  renderTableView(elements) {
-    console.log('Elements:', elements);
-
-    return (
-      <div>
-        <h1>Table View</h1>
-        <TableView>
-          <TableHeader/>
-          <TableBody>
-            {elements.map((element, index) => <Row key={index} element={element}/>)}
-          </TableBody>
-        </TableView>
-      </div>
     );
   }
 }

@@ -43,6 +43,7 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
+use DeskPRO\Bundle\ApiBundle\Task\DisplayOrder;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
@@ -95,7 +96,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $tasks = $this->filterTasks($request, $entityManager);
 
         $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 100);
+        $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
         $pager->setMaxPerPage($count);
@@ -104,6 +105,64 @@ class TasksController extends BaseController implements ClassResourceInterface
         return View::create(
             $this->dataSerialize($pager, null, $datatype),
             Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @APIDoc(
+     *      description="update multiple tasks",
+     *      input={"class"="task", "name"=""},
+     *      statusCodes={
+     *          204="Updated",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Put("/tasks/mass", name="api_tasks_mass_put")
+     * @param Request $request
+     * @param $id
+     * @throws WrappedApiErrorException
+     * @return View
+     */
+    public function massActionAction(Request $request)
+    {
+        $submitted = $request->request->all();
+
+        if (empty($submitted['ids'])) {
+            throw $this->createNotFoundException();
+        }
+
+        // We only need to validate the data for one task
+        $taskIds = $submitted['ids'];
+        unset($submitted['ids']);
+
+        $task = $this->getTask($taskIds[0]);
+
+        $this->validateForm($request, $task, $submitted);
+
+        if (count($submitted)) {
+            $dql = "UPDATE DeskPRO\Bundle\AppBundle\Entity\Task t SET";
+
+            foreach ($submitted as $field => $value) {
+                $dql .= " t." . $field . " = :" . $field;
+            }
+
+            $dql .= " WHERE t.id IN (:ids)";
+
+            /** @var \Doctrine\ORM\Query $query */
+            $query = $this->getDoctrine()->getManager()->createQuery($dql);
+
+            foreach ($submitted as $field => $value) {
+                $query = $query->setParameter($field, $value);
+            }
+
+            $query = $query->setParameter('ids', $taskIds);
+            $query->execute();
+        }
+
+        return View::create(
+            $this->dataSerialize($task),
+            Response::HTTP_NO_CONTENT
         );
     }
 
@@ -455,7 +514,40 @@ class TasksController extends BaseController implements ClassResourceInterface
         $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         $submitted = $request->request->all();
+        if (!empty($submitted['display_order']) && $task->getId()) {
+            $displayOrder = new DisplayOrder();
+            $displayOrder->reposition(
+                $this->getDoctrine()->getManager(),
+                $task,
+                $submitted['display_order']
+            );
+        }
 
+        $this->validateForm($request, $task, $submitted);
+        $this->getDoctrine()->getManager()->persist($task);
+        $this->getDoctrine()->getManager()->flush();
+
+        $location = $this->generateUrl('api_tasks_get', array('taskId' => $task->getId()));
+
+        return View::create(
+            $this->dataSerialize($task),
+            $status,
+            array(
+                'Location' => $location,
+            )
+        );
+    }
+
+    /**
+     * Validate the form
+     * @param  Request              $request   The request object
+     * @param  Task                 $task      The task to update
+     * @param  array                $submitted The submitted data
+     * @throws InvalidFormException            If form is invalid
+     * @return boolean                         True if valid
+     */
+    protected function validateForm(Request $request, Task $task, $submitted)
+    {
         /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(
             null,
@@ -468,18 +560,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($task);
-            $this->getDoctrine()->getManager()->flush();
-
-            $location = $this->generateUrl('api_tasks_get', array('taskId' => $task->getId()));
-
-            return View::create(
-                $this->dataSerialize($task),
-                $status,
-                array(
-                    'Location' => $location,
-                )
-            );
+            return true;
         }
 
         throw new InvalidFormException($form);

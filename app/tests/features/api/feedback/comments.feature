@@ -1,3 +1,4 @@
+@counts @feedback-nav
 Feature: /feedback_comments/counts endpoint
   To retrieve count of feedback comments to validate
   As a developer

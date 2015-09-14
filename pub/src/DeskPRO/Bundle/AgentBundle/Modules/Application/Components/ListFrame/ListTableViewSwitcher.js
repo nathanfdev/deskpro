@@ -3,14 +3,15 @@
  */
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions";
 import $ from "jquery";
 
 export class ListTableViewSwitcher extends Component {
 
   static propTypes = {
-    displayFields: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    toggleView: PropTypes.func.isRequired
+    listViewFields: PropTypes.array.isRequired,
+    tableViewFields: PropTypes.array.isRequired,
+    viewMode: PropTypes.string.isRequired
   };
 
   showViewModeChoice(event) {
@@ -18,20 +19,26 @@ export class ListTableViewSwitcher extends Component {
     event.stopPropagation();
     var elem = $(event.target),
       viewModeChoice = elem.closest('div.ticket-control-button').find('div.view-mode-choice');
-    $('div.dropdown-choice').hide();
-    viewModeChoice.show();
+    viewModeChoice.css('display') === 'none' ? viewModeChoice.show() : viewModeChoice.hide();
   }
 
 
   render() {
-    const {viewMode, displayFields, toggleView} = this.props;
+    const {viewMode, listViewFields, tableViewFields, dispatch, displayFieldsStatus} = this.props;
+    listViewFields.sort(function(a, b){
+      return a.priority-b.priority
+    });
+    tableViewFields.sort(function(a, b){
+      return a.priority-b.priority
+    });
     return (
       <div className="ticket-control-button">
         <span className="title">View:</span>
         <a href="#">
           <span className="focus" onClick={this.showViewModeChoice.bind(this)}>{viewMode}</span>
         </a>
-        <ListTableViewDropdown displayFields={displayFields} viewMode={viewMode} toggleView={toggleView.bind(this)}/>
+        <ListTableViewDropdown listViewFields={listViewFields} tableViewFields={tableViewFields} viewMode={viewMode}
+                               dispatch={dispatch} displayFieldsStatus={displayFieldsStatus}/>
       </div>
     );
   }
@@ -40,11 +47,16 @@ export class ListTableViewSwitcher extends Component {
 export class ListTableViewDropdown extends Component {
 
   static propTypes = {
-    displayFields: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    toggleView: PropTypes.func.isRequired
+    listViewFields: PropTypes.array.isRequired,
+    tableViewFields: PropTypes.array.isRequired,
+    viewMode: PropTypes.string.isRequired
   };
 
+  toggleView(event) {
+    event.stopPropagation();
+    const {dispatch} = this.props;
+    dispatch(actions.toggleViewMode());
+  }
 
   closeDropdown(e) {
     event.preventDefault();
@@ -53,7 +65,7 @@ export class ListTableViewDropdown extends Component {
   }
 
   render() {
-    const {viewMode, displayFields, toggleView} = this.props;
+    const {viewMode, listViewFields, tableViewFields, displayFieldsStatus } = this.props;
 
     return (
       <div className="view-mode-choice dropdown-choice" style={{width:'300px'}}>
@@ -65,27 +77,27 @@ export class ListTableViewDropdown extends Component {
         <div style={{width:'50%',float:'left'}}>
           <label>
             <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_LIST}
-                   onChange={toggleView.bind(this)}>
+                   onChange={this.toggleView.bind(this)}>
               List View
             </input>
           </label>
           <br/>
           <fieldset>
             <legend>Display fields</legend>
-            <DisplayFields displayFields={displayFields}/>
+            <DisplayFields fields={listViewFields} displayFieldsStatus={displayFieldsStatus} type="list"/>
           </fieldset>
         </div>
         <div style={{width:'50%',float:'left'}}>
           <label>
             <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_TABLE}
-                   onChange={toggleView.bind(this)}>
+                   onChange={this.toggleView.bind(this)}>
               Table View
             </input>
           </label>
           <br/>
           <fieldset>
             <legend>Display fields</legend>
-            <DisplayFields displayFields={displayFields}/>
+            <DisplayFields fields={tableViewFields} displayFieldsStatus={displayFieldsStatus} type="table"/>
           </fieldset>
         </div>
         <button>Save fields</button>
@@ -96,16 +108,72 @@ export class ListTableViewDropdown extends Component {
 
 export class DisplayFields extends Component {
   static propTypes = {
-    displayFields: PropTypes.array.isRequired
+    fields: PropTypes.array.isRequired,
+    type: PropTypes.string.isRequired,
+    displayFieldsStatus: PropTypes.func.isRequired
   };
 
   render() {
-    const {displayFields} = this.props;
+    const {fields, type, displayFieldsStatus} = this.props;
     return (
-      <select multiple size="10">
-        {displayFields.map((field, index) =>
-          <option key={index}>{field.label}</option>)}
-      </select>
+      <div style={{overflowY:'scroll', height:'200px'}} className="fields-container">
+        {type === 'table' ?
+          fields.map((field, index) =>
+            <FieldForTableView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
+          :
+          fields.map((field, index) =>
+            <FieldForListView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
+        }
+      </div>
     );
+  }
+}
+
+export class FieldForTableView extends Component {
+  static propTypes = {
+    field: PropTypes.object.isRequired,
+    displayFieldsStatus: PropTypes.func.isRequired
+  };
+
+  render() {
+    const {field, displayFieldsStatus} = this.props;
+    return (
+      <div>
+        <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
+               onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>
+        <span>{field.label}</span>
+      </div>
+    );
+  }
+
+  handleChange(displayFieldsStatus, field, e) {
+    let status = $(e.target).prop('checked') ? constants.FIELD_SHOWN : constants.FIELD_HIDDEN;
+    displayFieldsStatus('tableViewFields', field, status);
+  }
+}
+
+export class FieldForListView extends Component {
+  static propTypes = {
+    field: PropTypes.object.isRequired,
+    displayFieldsStatus: PropTypes.func.isRequired
+  };
+
+  render() {
+    const {field, displayFieldsStatus} = this.props;
+    return (
+      <div>
+        {field.status === constants.FIELD_REQUIRED ?
+          <input type="checkbox" checked="true" readOnly/>
+          :
+          <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
+                 onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>}
+        <span>{field.label}</span>
+      </div>
+    );
+  }
+
+  handleChange(displayFieldsStatus, field, e) {
+    let status = $(e.target).prop('checked') ? constants.FIELD_SHOWN : constants.FIELD_HIDDEN;
+    displayFieldsStatus('listViewFields', field, status);
   }
 }

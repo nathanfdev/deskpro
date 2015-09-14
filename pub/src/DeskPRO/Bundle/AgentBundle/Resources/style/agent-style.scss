@@ -1,4 +1,5 @@
 @import "raw/styles";
+@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/pagination";
 
 html, body {
   margin: 0;
@@ -19,7 +20,7 @@ $window-header-height: 44px;
 $app-switcher-width: 55px;
 $app-switcher-expanded-width: 150px;
 $nav-frame-width: 220px;
-$nav-collapsed-width: 10px;
+$nav-collapsed-width: 15px;
 
 $list-frame-width: 450px;
 $tab-frame-width: 100%;
@@ -51,7 +52,7 @@ $kanban-frame-width: 800px;
     left: 0;
     bottom: 0;
     width: $app-switcher-width;
-    z-index: 100;
+    z-index: 300;
 
     transition: all 0.25s ease;
 
@@ -82,6 +83,10 @@ $kanban-frame-width: 800px;
         .app-switcher-expand {
             display: none;
         }
+
+        .app-bar {
+          width: auto;
+        }
     }
   }
 
@@ -95,7 +100,6 @@ $kanban-frame-width: 800px;
     top: $window-header-height;
     left: $app-switcher-width;
     bottom: 0;
-    width: $nav-frame-width;
     z-index: 100;
     overflow-y: auto;
 
@@ -119,10 +123,6 @@ $kanban-frame-width: 800px;
         a.nav-expand-button {
             display: block;
         }
-    }
-
-    &.shifted {
-        left: $app-switcher-expanded-width;
     }
   }
 
@@ -150,18 +150,6 @@ $kanban-frame-width: 800px;
 
     transition: all 0.25s ease;
 
-    &.expanded {
-        left: $app-switcher-width + $nav-collapsed-width;
-    }
-    &.shifted {
-        left: $app-switcher-expanded-width + $nav-frame-width;
-        width: $list-frame-width - ($app-switcher-expanded-width - $app-switcher-width);
-
-        &.expanded {
-            left: $app-switcher-expanded-width + $nav-collapsed-width;
-        }
-    }
-
     &.kanban {
       width: $kanban-frame-width;
     }
@@ -174,14 +162,6 @@ $kanban-frame-width: 800px;
     right: 0;
     bottom: 0;
     transition: all 0.25s ease;
-
-    &.expanded {
-        left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
-    }
-
-    &.kanban-shifted {
-      left: $app-switcher-width + $nav-frame-width + $kanban-frame-width;
-    }
 
     .blank-text {
       font-size: 12px;
@@ -202,6 +182,17 @@ $kanban-frame-width: 800px;
         margin-bottom: 30px;
       }
     }
+
+    &.collapsed-nav {
+      left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
+    }
+
+    &.kanban-shifted {
+      left: $app-switcher-width + $nav-frame-width + $kanban-frame-width;
+      &.collapsed-nav {
+        left: $app-switcher-width + $nav-collapsed-width + $kanban-frame-width;
+      }
+    }
   }
 }
 
@@ -209,5 +200,12 @@ $kanban-frame-width: 800px;
   display: none;
   &.app-active {
     display: block;
+  }
+
+  &.collapsed-nav {
+    .dp-list-frame {
+      left: $app-switcher-width + $nav-collapsed-width;
+    }
+
   }
 }
