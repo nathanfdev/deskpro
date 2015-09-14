@@ -126,7 +126,7 @@ class CsvExport extends AbstractJob
                     implode(',', array($person['name'], $person['first_name'], $person['last_name'])),
                     $person['title_prefix'],
                     $person->getPrimaryEmailAddress(),
-                    implode(',', $person->getEmailAddresses()),
+                    implode(',', $person->getEmailAddresses(true)),
                     $person->organization ? $person->organization['name'] : '',
                     $person['organization_position'],
                     $person['date_created'] ? $person['date_created']->format('Y-m-d H:i:s') : '',

@@ -1811,10 +1811,13 @@ class Person extends DomainObject implements HighlightableModelInterface
     /**
      * @return array
      */
-    public function getEmailAddresses()
+    public function getEmailAddresses($skipPrimary = false)
     {
         $arr = array();
         foreach ($this->emails as $email) {
+            if ($skipPrimary && $email->email == $this->primary_email->email) {
+                continue;
+            }
             if ($email->is_validated) {
                 $arr[] = $email->email;
             }
