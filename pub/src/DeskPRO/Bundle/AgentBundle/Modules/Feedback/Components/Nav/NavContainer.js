@@ -10,7 +10,7 @@ export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    const { dispatch } = this.props;
+    const { dispatch, query, sort, order, filters } = this.props;
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());
@@ -20,6 +20,8 @@ export class NavContainer extends React.Component {
     dispatch(actions.feedbackActiveStatus());
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
+    dispatch(actions.loadFeedbackList(query, sort, order, filters));
+    dispatch(actions.getFilterValues(filters.alias));
   }
 
   render() {

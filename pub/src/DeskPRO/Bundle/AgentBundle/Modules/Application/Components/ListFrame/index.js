@@ -3,7 +3,7 @@ import { ControlBar } from './ControlBar';
 import { ListTableViewSwitcher } from './ListTableViewSwitcher';
 import { OrderBy, OrderByDropdown } from './OrderBy';
 import { FilterBy } from './FilterBy';
-import { TableView, TableBody, TableHeader } from './TableView';
+import { TableView, TableBody, TableHeader, Th, Row, Td } from './TableView';
 import { Pagination } from './Pagination';
 
 export default {
@@ -13,8 +13,11 @@ export default {
   TableView,
   TableBody,
   TableHeader,
+  Th,
   OrderBy,
   OrderByDropdown,
   Pagination,
-  FilterBy
+  FilterBy,
+  Row,
+  Td
 };

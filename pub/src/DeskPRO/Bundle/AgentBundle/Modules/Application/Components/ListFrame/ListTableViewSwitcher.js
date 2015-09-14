@@ -19,13 +19,18 @@ export class ListTableViewSwitcher extends Component {
     event.stopPropagation();
     var elem = $(event.target),
       viewModeChoice = elem.closest('div.ticket-control-button').find('div.view-mode-choice');
-    $('div.dropdown-choice').hide();
-    viewModeChoice.show();
+    viewModeChoice.css('display') === 'none' ? viewModeChoice.show() : viewModeChoice.hide();
   }
 
 
   render() {
     const {viewMode, listViewFields, tableViewFields, dispatch, displayFieldsStatus} = this.props;
+    listViewFields.sort(function(a, b){
+      return a.priority-b.priority
+    });
+    tableViewFields.sort(function(a, b){
+      return a.priority-b.priority
+    });
     return (
       <div className="ticket-control-button">
         <span className="title">View:</span>

@@ -6,19 +6,8 @@ import { FeedbackList } from './View/List/FeedbackList';
 import { FeedbackTable } from './View/Table/FeedbackTable';
 
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import * as actions from '../../Actions/FeedbackListActions'
-
-import { connect } from 'redux/react';
-@connect(state => state.FeedbackList)
 
 export class List extends Component {
-
-  constructor(props) {
-    super(props);
-    const { query, sort, order, filters, dispatch } = this.props;
-    dispatch(actions.loadFeedbackList(query, sort, order, filters));
-    dispatch(actions.getFilterValues(filters.alias));
-  }
 
   static propTypes = {
     elements: PropTypes.array.isRequired,
