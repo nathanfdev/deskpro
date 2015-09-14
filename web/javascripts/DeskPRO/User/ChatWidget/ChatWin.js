@@ -699,10 +699,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 
 		var row = $(tpl);
-		row.find('a').on('click', function(ev) {
-			ev.preventDefault();
-			window.open($(this).attr('href'));
-		});
+		row.find('a').attr('target', '_blank');
 		row.find('.time').text(time);
 
 		row.appendTo($('#dp_chat_messages_pane'));
