@@ -107,17 +107,17 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Read 4 tickets', $output);
-        $this->assertContains('[ZDTicket #3] Skipping exception with ticket: Unable to get submitter email by id #3', $output);
+        $this->assertContains('[ZDTicket #3] Skipping exception with ZDTicket: Unable to get submitter email by id #3', $output);
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
-        $this->assertContains('[ZDTicketComment #3] Skipping exception with ticket message: Comment without author_id, skipping', $output);
-        $this->assertContains('[ZDTicketComment #4] Skipping exception with ticket message: Unable to get comment author, skipping', $output);
+        $this->assertContains('[ZDTicketComment #3] Skipping exception with ZDTicketComment: Comment without author_id, skipping', $output);
+        $this->assertContains('[ZDTicketComment #4] Skipping exception with ZDTicketComment: Unable to get comment author, skipping', $output);
         $this->assertContains('[ZDAttachment #2] Skipping exception with attachment: Inline attachment, skipping', $output);
         $this->assertContains('[ZDAttachment #3] Skipping exception with attachment: Unable to download attachment', $output);
 
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
         $this->assertContains('[ZDTicket #3] Reading comments', $output);
         $this->assertContains('Read 3 people', $output);
-        $this->assertContains('[ZDPerson #3] Skipping exception with person: Person without email, skipping', $output);
+        $this->assertContains('[ZDPerson #3] Skipping exception with ZDPerson: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkNoErrors($command_tester);

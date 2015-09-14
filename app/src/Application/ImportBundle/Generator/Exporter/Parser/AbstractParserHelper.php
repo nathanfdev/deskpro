@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Entity;
 
 /**
  * Class AbstractParserHelper
@@ -37,7 +38,46 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 abstract class AbstractParserHelper extends AbstractGenerator implements ParserHelperInterface
 {
     /**
+     * Exports a collection of entities
+     *
+     * @param array  $data
+     * @param string $prefix
+     * @param string $ref_column
+     * @param string $method
+     * @param bool   $advance_progressbar
+     *
+     * @return Entity\Collection
+     */
+    protected function exportCollection(array $data, $prefix, $ref_column, $method, $advance_progressbar = true)
+    {
+        $collection = new Entity\Collection();
+        $collection->setExpectedCount(count($data));
+
+        foreach ($data as $num => $item) {
+            if ($advance_progressbar) {
+                $this->advanceProgressBar();
+            }
+
+            try {
+                $entity = $this->$method($item);
+                $collection->attach($entity);
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException($prefix, $prefix, $ref_column, $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException($prefix, $prefix, $ref_column, $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException($prefix, $prefix, $ref_column, $e, $item);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
      * Log skipping exception
+     *
+     * todo remove entity_type argument
      *
      * @param string            $prefix
      * @param string            $entity_type
@@ -55,6 +95,8 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
 
     /**
      * Log transformer exception
+     *
+     * todo remove entity_type argument
      *
      * @param string               $prefix
      * @param string               $entity_type
@@ -75,6 +117,8 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
 
     /**
      * Log unknown exception
+     *
+     * todo remove entity_type argument
      *
      * @param string     $prefix
      * @param string     $entity_type
