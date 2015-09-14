@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'redux/react';
-import IMButton from '../../IM/Components/Nav/Header/IMButton';
+import IMButton from '../../IM/Components/IMButton';
 
 @connect(state => ({
   user: state.user
