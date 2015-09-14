@@ -12,8 +12,8 @@ describe('ViewSwitcherContainer', () => {
 
   function renderInRedux(react, state) {
     const { Provider, Connector } = require('react-redux');
-    const createRedux = require('redux').createRedux;
-    const redux = createRedux(state);
+    const createStore = require('redux').createStore;
+    const redux = createStore(state);
 
     return react.addons.TestUtils.renderIntoDocument(
       <Provider redux={redux}>

@@ -5,10 +5,10 @@ import { toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Acti
 import { toggleSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Actions/chatListActions';
 
 @connect(state => ({
-  sort:        state.ChatList.sort,
-  sortName:    state.ChatList.sortName,
-  sortOptions: state.ChatList.sortOptions,
-  order:       state.ChatList.order
+  sort:        state.Chat.list.sort,
+  sortName:    state.Chat.list.sortName,
+  sortOptions: state.Chat.list.sortOptions,
+  order:       state.Chat.list.order
 }))
 export class OrderByContainer extends React.Component {
 

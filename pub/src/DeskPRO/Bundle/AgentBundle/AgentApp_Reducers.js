@@ -1,8 +1,8 @@
 import ROOT_dp_window                                     from "./Modules/Application/Reducers/dp_window.js";
 import ROOT_routing                                       from "./Modules/Application/Reducers/routing.js";
 import ROOT_user                                          from "./Modules/Application/Reducers/user.js";
-import ROOT_ChatList                                      from "./Modules/Chat/Reducers/ChatList.js";
-import ROOT_ChatNav                                       from "./Modules/Chat/Reducers/ChatNav.js";
+import Chat_list                                          from "./Modules/Chat/Reducers/list.js";
+import Chat_nav                                           from "./Modules/Chat/Reducers/nav.js";
 import Common_users                                       from "./Modules/Common/Reducers/users.js";
 import ROOT_CrmNav                                        from "./Modules/CRM/Reducers/CrmNav.js";
 import ROOT_FeedbackList                                  from "./Modules/Feedback/Reducers/FeedbackList.js";
@@ -38,8 +38,6 @@ export default {
   "dp_window":                                            ROOT_dp_window,
   "routing":                                              ROOT_routing,
   "user":                                                 ROOT_user,
-  "ChatList":                                             ROOT_ChatList,
-  "ChatNav":                                              ROOT_ChatNav,
   "CrmNav":                                               ROOT_CrmNav,
   "FeedbackList":                                         ROOT_FeedbackList,
   "PublishList":                                          ROOT_PublishList,
@@ -56,6 +54,10 @@ export default {
   "taskList":                                             ROOT_taskList,
   "taskListList":                                         ROOT_taskListList,
   "teamList":                                             ROOT_teamList,
+  "Chat": {
+    "list":                                               Chat_list,
+    "nav":                                                Chat_nav,
+  },
   "Common": {
     "users":                                              Common_users,
   },

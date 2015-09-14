@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux/actions";
+import { createAction } from "Ampliflux";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 
 export const hideSidebarHover = createAction("TICKETS_SIDEBAR_HOVER_HIDE");

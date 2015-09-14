@@ -3,25 +3,19 @@
 jest.dontMock('~List/ListContainer');
 
 describe('ListContainer', () => {
-
   const React = require('react/addons');
   const ListContainer = require('~List/ListContainer').ListContainer;
   const List = require('~List/List').List;
 
   // TODO turn into common test helper
-  // TODO rename redux -> store and createRedux -> createStore after Redux upgrade
   function renderInRedux(react, state) {
-    const { Provider, Connector } = require('react-redux');
-    const createRedux = require('redux').createRedux;
-    const redux = createRedux(state);
+    const { Provider } = require('react-redux');
+    const createStore = require('redux').createStore;
+    const store = createStore(() => state, state);
 
     return react.addons.TestUtils.renderIntoDocument(
-      <Provider redux={redux}>
-        {() =>
-          <Connector select={() => state}>
-            {() => <ListContainer />}
-          </Connector>
-        }
+      <Provider store={store}>
+        {() => <ListContainer />}
       </Provider>
     );
   }
@@ -37,5 +31,4 @@ describe('ListContainer', () => {
     renderInRedux(React, {ChatList: () => ({})});
     expect(List.prototype.render).toHaveBeenCalled();
   });
-
 });

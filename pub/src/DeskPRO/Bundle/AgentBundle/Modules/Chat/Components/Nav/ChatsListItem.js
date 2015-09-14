@@ -5,8 +5,8 @@ import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compone
 
 @connect(state => ({
   labels: {
-    agent: state.ChatNav.agentNames,
-    department: state.ChatNav.departmentNames,
+    agent: state.Chat.nav.agentNames,
+    department: state.Chat.nav.departmentNames,
     date_period: DatePeriods.all
   }
 }))

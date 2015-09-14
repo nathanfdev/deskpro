@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux/actions';
+import { createAction } from 'Ampliflux';
 import * as Chat from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
 
 export const load = createAction(

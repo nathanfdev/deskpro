@@ -5,10 +5,10 @@ import { ChatsListItem } from './ChatsListItem';
 
 export class Nav extends React.Component {
   render() {
-    const {lists, grouping, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick, dispatch, dp_window} = this.props;
+    const {lists, grouping, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick} = this.props;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+      <NavFrame>
         <div part="outer">
 
           <ListGroupingControl
@@ -28,7 +28,7 @@ export class Nav extends React.Component {
         </div>
 
         <div part="inner">
-          <NavFrameHeader icon="fa-comments-o" dispatch={dispatch.bind(this)}>Chat</NavFrameHeader>
+          <NavFrameHeader icon="fa-comments-o">Chat</NavFrameHeader>
 
           <SectionsPane>
             <Section>

@@ -1,2 +1,2 @@
-import { createAction } from 'Ampliflux/actions';
+import { createAction } from 'Ampliflux';
 
