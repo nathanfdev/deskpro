@@ -1317,6 +1317,17 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->getLanguage()->getId();
     }
 
+    /**
+     * Set language
+     *
+     * @param Language|null $language
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+        return $this;
+    }
 
     /**
      * @param int $id

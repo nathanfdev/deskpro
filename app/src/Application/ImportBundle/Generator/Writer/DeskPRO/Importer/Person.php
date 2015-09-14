@@ -68,6 +68,7 @@ final class Person extends AbstractImporter
             ->setIsAgent($entity->isAgent())
             ->setCanAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin())
+            ->setLanguage($entity->getLanguage() ? $this->findLanguage($entity->getLanguage()) : null)
             ->setDateCreated($entity->getDateCreated())
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
             ->setOrganizationPosition($entity->getOrganizationPosition())
@@ -77,10 +78,6 @@ final class Person extends AbstractImporter
             ->resetContactData()
             ->resetCustomData()
         ;
-
-        if ($entity->getLanguage()) {
-            $person['language'] = $this->findLanguage($entity->getLanguage());
-        }
 
         if ($entity->isAgent() && ! in_array('agent_all_safe_perms', $entity->getUserGroups(), true)) {
             $entity->addUserGroup('agent_all_safe_perms');
@@ -101,12 +98,9 @@ final class Person extends AbstractImporter
         foreach ($entity->getEmails() as $num => $email) {
             if ($this->getEmailAccountMapper()->findOneByEmail($email, false)) {
                 $this->logWarning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
-            } elseif(!$person->hasEmailAddress($email)) {
+            } elseif ( ! $person->hasEmailAddress($email)) {
                 $person->addEmailAddressString($email);
-                $this->logDebug(sprintf(
-                    $num ? 'Set email `%s`' : 'Set primary email `%s`',
-                    $entity->getFirstEmail()
-                ));
+                $this->logDebug(sprintf($num ? 'Set email `%s`' : 'Set primary email `%s`', $entity->getFirstEmail()));
             }
         }
         foreach ($entity->getUserGroups() as $user_group_name) {
