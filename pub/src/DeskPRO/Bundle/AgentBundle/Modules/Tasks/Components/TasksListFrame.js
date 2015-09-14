@@ -427,8 +427,10 @@ export default class TasksListFrame extends React.Component {
                                          updateField={grouping.updateField}
                                          updateValue={grouping.updateValue}
                                          source={taskFrameList.taskFrameSource}
+                                         updateMassActions={_this.updateMassActions.bind(_this)}
                                          moveCard={this.moveCard.bind(this)}
                                          massEdit={this.massEdit.bind(this)}
+                                         actionable={_this.state.actionable}
                                          order={this.state.order}
                                          editTask={_this.editTask.bind(_this)} />
                 }) : '' }

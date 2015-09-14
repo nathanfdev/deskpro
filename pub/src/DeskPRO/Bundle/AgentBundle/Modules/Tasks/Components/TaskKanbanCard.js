@@ -45,6 +45,10 @@ const TaskKanbanCard = React.createClass({
     });
   },
 
+  toggleMassAction: function(event) {
+    this.props.updateMassActions(this.props.task.id);
+  },
+
   render: function() {
     let assigneeName = '';
 
@@ -58,13 +62,17 @@ const TaskKanbanCard = React.createClass({
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
 
+    const selected = this.props.selected;
+
     const result = <div>
       <div className="card task-card">
         <div className="card-status-bar status-bar-left" />
         <div className="card-status-bar status-bar-right" />
 
         <div className="card-checkbox">
-          <span className="checkbox" />
+          <span className="checkbox" onClick={this.toggleMassAction}>
+            {selected ? <i className="fa fa-check" /> : '' }
+          </span>
         </div>
 
         <div className="content">

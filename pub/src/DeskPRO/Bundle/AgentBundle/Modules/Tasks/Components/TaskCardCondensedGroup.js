@@ -31,7 +31,7 @@ export default class TaskCardCondensedGroup extends React.Component {
 
     this.state = {
       tasks: props.tasks
-    }
+    };
   }
 
   moveCard(item, targetItem) {
@@ -39,7 +39,7 @@ export default class TaskCardCondensedGroup extends React.Component {
       this.setState({
         tasks: cards
       });
-    })
+    });
   }
 
   render() {
