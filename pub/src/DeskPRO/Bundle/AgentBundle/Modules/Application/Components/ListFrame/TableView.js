@@ -16,25 +16,23 @@ export class TableView extends React.Component {
   }
 }
 
-export class TableBody extends React.Component {
 
-  render() {
-
-    return (
-      <tbody>
-      {this.props.children}
-      </tbody>
-    );
-  }
-}
 export class TableHeader extends React.Component {
 
   render() {
-
+    const {tableViewFields, sortTable} = this.props;
+    let filtered = tableViewFields.filter(function (field) {
+      return field.status !== constants.FIELD_HIDDEN
+    });
+    filtered.sort(function (a, b) {
+      return a.priority - b.priority
+    });
     return (
       <thead>
       <tr>
-        {this.props.children}
+        {filtered.map((field, index) =>
+            <Th key={index} field={field} sortTable={sortTable}/>
+        )}
       </tr>
       </thead>
     );
@@ -73,6 +71,18 @@ export class Th extends React.Component {
     sortTable(param, order);
   }
 
+}
+
+export class TableBody extends React.Component {
+
+  render() {
+
+    return (
+      <tbody>
+      {this.props.children}
+      </tbody>
+    );
+  }
 }
 
 export class Row extends React.Component {

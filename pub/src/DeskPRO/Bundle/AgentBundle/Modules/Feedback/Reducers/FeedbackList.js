@@ -45,12 +45,12 @@ export default class FeedbackList extends Reducer {
         {name: 'custom_category', label: 'Category', status: constants.FIELD_HIDDEN, priority: 15}
       ],
       tableViewFields: [
-        {name: 'id', label: 'ID', className:'id-col', status: constants.FIELD_SHOWN, priority: 3},
+        {name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 3},
         {name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2},
         {name: 'hidden_status', label: 'Hidden status', status: constants.FIELD_SHOWN, priority: 1},
-        {name: 'title', label: 'Title', className:'item-title', status: constants.FIELD_SHOWN, priority: 4},
+        {name: 'title', label: 'Title', className: 'item-title', status: constants.FIELD_SHOWN, priority: 4},
         {name: 'status_category', label: 'Status category', status: constants.FIELD_SHOWN, priority: 5},
-        {name: 'author_name', label: 'Submitter', className:'user-col', status: constants.FIELD_SHOWN, priority: 6},
+        {name: 'author_name', label: 'Submitter', className: 'user-col', status: constants.FIELD_SHOWN, priority: 6},
         {name: 'language_id', label: 'Lang', status: constants.FIELD_HIDDEN, priority: 7},
         {name: 'type', label: 'Type', status: constants.FIELD_HIDDEN, priority: 8},
         {name: 'slug', label: 'Slug', status: constants.FIELD_HIDDEN, priority: 9},
