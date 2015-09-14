@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
@@ -62,26 +61,9 @@ final class News extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $news       = $this->reader->getData($this->getNewsReaderConfig());
+        $data = $this->reader->getData($this->getNewsReaderConfig());
 
-        foreach ($news as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportNews($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONNews', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONNews', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($data, 'JSONNews', 'oid', 'exportNews');
     }
 
     /**
@@ -90,7 +72,7 @@ final class News extends AbstractParser
      * @param array $data
      * @return Entity\News
      */
-    private function exportNews(array $data)
+    protected function exportNews(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
