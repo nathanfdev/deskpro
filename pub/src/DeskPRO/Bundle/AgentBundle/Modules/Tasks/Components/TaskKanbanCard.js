@@ -58,7 +58,7 @@ const TaskKanbanCard = React.createClass({
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
 
-    return this.props.connectDragSource(this.props.connectDropTarget(<div>
+    const result = <div>
       <div className="card task-card">
         <div className="card-status-bar status-bar-left" />
         <div className="card-status-bar status-bar-right" />
@@ -69,7 +69,6 @@ const TaskKanbanCard = React.createClass({
 
         <div className="content">
           <h1 className={this.props.task.is_done ? 'complete' : ''}>{this.props.task.title}</h1>
-          {this.props.task.display_order}
           <div className="card-line task-details">
             <div className="top-right-box">
               <span className="assignment">
@@ -95,7 +94,13 @@ const TaskKanbanCard = React.createClass({
         </div>
       </div>
       <div className={placeHolder} />
-    </div>));
+    </div>;
+
+    if (this.props.order === 'list') {
+      return this.props.connectDragSource(this.props.connectDropTarget(result));
+    }
+
+    return this.props.connectDragSource(result);
   }
 });
 

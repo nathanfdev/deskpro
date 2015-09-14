@@ -37,34 +37,11 @@ export default class KanbanColumn extends React.Component {
   }
 
   moveCard(item, targetItem) {
-    const cards = this.state.tasks;
-    const id = item.id;
-    const afterId = targetItem.id;
-
-    let oldOrder = [];
-    this.state.tasks.forEach((card) => {
-      oldOrder.push(card.display_order);
-    });
-
-    const card = cards.filter(c => c.id === id)[0];
-    const afterCard = cards.filter(c => c.id === afterId)[0];
-    const cardIndex = cards.indexOf(card);
-    const afterIndex = cards.indexOf(afterCard);
-
-    cards.splice(cardIndex, 1);
-    cards.splice(afterIndex, 0, card);
-
-    this.setState({
-      tasks: cards
-    });
-
-    this.props.editTask(
-      this.props.source,
-      {
-        taskId: card.id,
-        display_order: targetItem.display_order
-      }
-    );
+    this.props.moveCard(item, targetItem, this.state.tasks, (cards) => {
+      this.setState({
+        tasks: cards
+      });
+    })
   }
 
   render() {
@@ -80,6 +57,7 @@ export default class KanbanColumn extends React.Component {
                                agents={this.props.agents} teams={this.props.teams}
                                dispatch={_this.props.dispatch.bind(_this)}
                                moveCard={this.moveCard.bind(this)}
+                               order={this.props.order}
                               />
         }) : ''
       }
