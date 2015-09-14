@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { ListTableViewSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Actions/crmNavActions';
 

@@ -3,7 +3,7 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TableHeader, Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 @connect(state => ({
   feedback: state.FeedbackList.feedback,
   order: state.FeedbackList.order,

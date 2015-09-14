@@ -3,7 +3,7 @@ import { Nav } from './Nav';
 import * as actions from '../../Actions/FeedbackListActions'
 import $ from "jquery";
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 @connect(state =>  state.FeedbackList)
 
 export class NavContainer extends React.Component {

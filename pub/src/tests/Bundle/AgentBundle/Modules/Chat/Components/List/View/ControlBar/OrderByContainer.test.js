@@ -11,7 +11,7 @@ describe('OrderByContainer', () => {
   const dummyState = {sort: 'id', order: 'desc', sortOptions: [], sortName: 'sort'};
 
   function renderInRedux(react, state) {
-    const { Provider, Connector } = require('redux/react');
+    const { Provider, Connector } = require('react-redux');
     const createRedux = require('redux').createRedux;
     const redux = createRedux(state);
 

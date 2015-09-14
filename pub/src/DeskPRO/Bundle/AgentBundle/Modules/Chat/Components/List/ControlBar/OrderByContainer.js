@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions';
 import { toggleSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Actions/chatListActions';
