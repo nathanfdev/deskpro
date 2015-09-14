@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
@@ -62,26 +61,9 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $tickets    = $this->reader->getData($this->getTicketReaderConfig());
+        $data = $this->reader->getData($this->getTicketReaderConfig());
 
-        foreach ($tickets as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportTicket($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTicket', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONTicket', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($data, 'JSONTicket', 'oid', 'exportTicket');
     }
 
     /**
@@ -90,7 +72,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\Ticket|null
      */
-    private function exportTicket(array $data)
+    protected function exportTicket(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
@@ -218,22 +200,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages(array $messages)
     {
-        $collection = new Entity\Collection();
-        foreach ($messages as $num => $data) {
-            try {
-                $entity = $this->exportMessage($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTicketMessage', 'ticket message', 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONTicketMessage', 'ticket message', 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($messages, 'JSONTicketMessage', 'oid', 'exportMessage');
     }
 
     /**
@@ -242,7 +209,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\TicketMessage|null
      */
-    private function exportMessage(array $data)
+    protected function exportMessage(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'          => TransformerInterface::TYPE_STRING,
