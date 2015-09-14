@@ -278,7 +278,7 @@ class CsvExport extends AbstractJob
             /** @var $cd PersonContactData */
             $data = ('phone' === $cd['contact_type'] || 'mobile' === $cd['contact_type'])
                 ? $cd['field_1'] . $cd['field_2']
-                :$cd->getSearchString();
+                : $cd->getSearchString(true);
 
             $types[$cd['contact_type']][] = $data;
         }
