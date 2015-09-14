@@ -1,6 +1,5 @@
 import React from 'react';
-import { Row } from './Row';
-import { TableBody } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { TableBody, Row } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 
 import { connect } from 'redux/react';
 @connect(state => ({
@@ -10,12 +9,11 @@ import { connect } from 'redux/react';
 export class TableBodyContainer extends React.Component {
 
   render() {
-    const { feedback } = this.props;
-
+    const { feedback, tableViewFields } = this.props;
     return (
       <TableBody>
         {feedback.map((element, index) =>
-            <Row key={index} element={element}/>
+            <Row key={index} element={element} tableViewFields={tableViewFields}/>
         )}
       </TableBody>
     );
