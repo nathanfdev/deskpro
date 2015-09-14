@@ -107,6 +107,7 @@ final class ArticleCategories extends AbstractParser
             )),
             'is_agent'       => TransformerInterface::TYPE_BOOLEAN,
             'is_book'        => TransformerInterface::TYPE_BOOLEAN,
+            'user_groups'    => TransformerInterface::TYPE_ARRAY,
             'categories'     => TransformerInterface::TYPE_ARRAY,
         ));
 
@@ -121,6 +122,10 @@ final class ArticleCategories extends AbstractParser
             ->setAsBook($formatted['is_book'])
             ->setCategories($this->exportCategories($formatted['categories']))
         ;
+
+        foreach ($formatted['user_groups'] as $user_group) {
+            $entity->addUserGroup($user_group);
+        }
 
         return $entity;
     }
