@@ -1,39 +1,35 @@
 import React from 'react';
-import $ from "jquery";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TableHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import $ from "jquery";
 
 import { connect } from 'redux/react';
 @connect(state => ({
   order: state.FeedbackList.order,
   filters: state.FeedbackList.filters,
-  query: state.FeedbackList.query
+  query: state.FeedbackList.query,
+  tableViewFields: state.FeedbackList.tableViewFields
 }))
 export class TableHeaderContainer extends React.Component {
 
   render() {
+    const { tableViewFields } = this.props;
+    let filtered = tableViewFields.filter(function (field) {
+      return field.status !== constants.FIELD_HIDDEN
+    });
+    filtered.sort(function (a, b) {
+      return a.priority - b.priority
+    });
+
     return (
       <TableHeader>
-        <th className="id-col sortable" onClick={this.handleClick.bind(this, 'id')}>
-          ID
-        </th>
-        <th className="sortable" onClick={this.handleClick.bind(this, 'num_ratings')}>
-          Votes
-        </th>
-        <th className="subject-col sortable" onClick={this.handleClick.bind(this, 'title')}>
-          Title
-        </th>
-        <th className="sortable" onClick={this.handleClick.bind(this, 'status')}>
-          Status
-        </th>
-        <th className="sortable" onClick={this.handleClick.bind(this, 'category')}>
-          Type
-        </th>
-        <th>Labels</th>
-        <th className="user-col sortable" onClick={this.handleClick.bind(this, 'author_name')}>
-          Submitter
-        </th>
+        {filtered.map((element, index) =>
+            <th key={index} className={'sortable '+ element.className}
+                onClick={this.handleClick.bind(this, element.name)}>
+              {element.label}
+            </th>
+        )}
       </TableHeader>
     );
   }

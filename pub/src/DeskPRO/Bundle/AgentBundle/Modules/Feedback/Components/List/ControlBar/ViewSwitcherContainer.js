@@ -4,14 +4,14 @@ import { ListTableViewSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Applic
 import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
 @connect(state => ({
-  viewMode:      state.FeedbackList.viewMode,
+  viewMode: state.FeedbackList.viewMode,
   tableViewFields: state.FeedbackList.tableViewFields,
   listViewFields: state.FeedbackList.listViewFields
 }))
 export class ViewSwitcherContainer extends React.Component {
   render() {
     return (
-      <ListTableViewSwitcher {...this.props}  displayFieldsStatus={this.displayFieldsStatus.bind(this)} />
+      <ListTableViewSwitcher {...this.props} displayFieldsStatus={this.displayFieldsStatus.bind(this)}/>
     );
   }
 
