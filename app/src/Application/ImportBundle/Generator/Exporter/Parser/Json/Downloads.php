@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
@@ -62,26 +61,9 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $downloads  = $this->reader->getData($this->getDownloadReaderConfig());
+        $data = $this->reader->getData($this->getDownloadReaderConfig());
 
-        foreach ($downloads as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportDownload($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONDownload', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONDownload', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($data, 'JSONDownload', 'oid', 'exportDownload');
     }
 
     /**
@@ -90,7 +72,7 @@ final class Downloads extends AbstractParser
      * @param array $data
      * @return Entity\Download|null
      */
-    private function exportDownload(array $data)
+    protected function exportDownload(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
