@@ -200,7 +200,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages(array $messages)
     {
-        return $this->exportCollection($messages, 'JSONTicketMessage', 'oid', 'exportMessage');
+        return $this->exportCollection($messages, 'JSONTicketMessage', 'oid', 'exportMessage', false);
     }
 
     /**
