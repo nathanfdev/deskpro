@@ -91,7 +91,8 @@ class ArticleCategory extends CategoryAbstract
      */
     public function __construct()
     {
-        $this->children = new ArrayCollection();
+        $this->children   = new ArrayCollection();
+        $this->usergroups = new ArrayCollection();
     }
 
     /**
@@ -127,6 +128,44 @@ class ArticleCategory extends CategoryAbstract
     public function setIsBook($is_book)
     {
         $this->setModelField('is_book', (bool)$is_book);
+        return $this;
+    }
+
+    /**
+     * Check if the category belongs to an user group
+     *
+     * @param $user_group
+     * @return bool
+     */
+    public function hasUserGroup(Usergroup $user_group)
+    {
+        return $this->usergroups->contains($user_group);
+    }
+
+    /**
+     * Add a new user group
+     *
+     * @param Usergroup $user_group
+     * @return $this
+     */
+    public function addUserGroup(Usergroup $user_group)
+    {
+        if ( ! $this->hasUserGroup($user_group)) {
+            $this->usergroups->add($user_group);
+            $this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove all user groups
+     *
+     * @return $this
+     */
+    public function resetUserGroups()
+    {
+        $this->usergroups->clear();
         return $this;
     }
 

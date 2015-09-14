@@ -2101,7 +2101,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Check if hte user belongs to a usergroup
+     * Check if the user belongs to a usergroup
      *
      * @param $usergroup
      * @return bool

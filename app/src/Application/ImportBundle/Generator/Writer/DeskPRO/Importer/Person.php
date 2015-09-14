@@ -154,35 +154,6 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns an user group by sys name
-     *
-     * @param string $sys_name
-     *
-     * @return DeskPROEntity\UserGroup|null
-     * @throws \Exception
-     */
-    private function findUserGroup($sys_name)
-    {
-        /** @var Mapper\UserGroup $mapper */
-        $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
-        $user_group = null;
-
-        if ($sys_name) {
-            $user_group = $mapper->findOneBySysName($sys_name, false);
-            if ($user_group) {
-                $this->logDebug(sprintf(
-                    'Found existing user group `%d` with title `%s`',
-                    $user_group->getId(), $user_group->getTitle()
-                ));
-            } else {
-                $this->logWarning(sprintf('No user group `%s`', $sys_name));
-            }
-        }
-
-        return $user_group;
-    }
-
-    /**
      * Returns person contact data entity
      *
      * @param Entity\ContactData $entity

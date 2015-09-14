@@ -72,12 +72,8 @@ final class ArticleCategory extends AbstractImporter
         }
 
         $category = $this->findOrCreateArticleCategory($entity_id);
-        $category
-            ->setRealTitle($entity->getTitle())
-            ->setIsAgent($entity->isAgent())
-            ->setIsBook($entity->isBook())
-        ;
 
+        $this->setCategoryProperties($entity, $category, null);
         $this->createDeepCategories($category, $entity);
 
         $this->records->setPrimaryEntity($category);
@@ -115,17 +111,41 @@ final class ArticleCategory extends AbstractImporter
                 continue;
             }
 
-            $category = new DeskPROEntity\ArticleCategory();
-            $category
-                ->setRealTitle($child_entity->getTitle())
-                ->setParent($parent_category)
-                ->setIsAgent($entity->isAgent())
-                ->setIsBook($entity->isBook())
-            ;
+            $category = $this->setCategoryProperties($child_entity, null, $parent_category);
 
             $this->createDeepCategories($category, $child_entity);
             $this->records->addRelatedEntity($category);
         }
+    }
+
+    /**
+     * Set article category properties
+     *
+     * @param Entity\ArticleCategory             $entity
+     * @param DeskPROEntity\ArticleCategory      $category
+     * @param DeskPROEntity\ArticleCategory|null $parent_category
+     *
+     * @return DeskPROEntity\ArticleCategory
+     */
+    private function setCategoryProperties(Entity\ArticleCategory $entity, DeskPROEntity\ArticleCategory $category = null, DeskPROEntity\ArticleCategory $parent_category = null)
+    {
+        $category = $category ? : new DeskPROEntity\ArticleCategory();
+        $category
+            ->setRealTitle($entity->getTitle())
+            ->setParent($parent_category)
+            ->setIsAgent($entity->isAgent())
+            ->setIsBook($entity->isBook())
+            ->resetUserGroups()
+        ;
+
+        foreach ($entity->getUserGroups() as $user_group_name) {
+            $user_group = $this->findUserGroup($user_group_name);
+            if ($user_group) {
+                $category->addUserGroup($user_group);
+            }
+        }
+
+        return $category;
     }
 
     /**
