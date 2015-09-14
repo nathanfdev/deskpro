@@ -1815,7 +1815,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $arr = array();
         foreach ($this->emails as $email) {
-            if ($skipPrimary && $email->email == $this->primary_email->email) {
+            if ($skipPrimary && $email->email === $this->primary_email->email) {
                 continue;
             }
             if ($email->is_validated) {
