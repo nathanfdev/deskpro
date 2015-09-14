@@ -22,6 +22,7 @@ export class NavContainer extends React.Component {
     dispatch(actions.feedbackHiddenStatus());
     dispatch(actions.loadFeedbackList(query, sort, order, filters));
     dispatch(actions.getFilterValues(filters.alias));
+    dispatch(actions.getDisplayFieldsFromPersonSetting());
   }
 
   render() {
