@@ -54,6 +54,11 @@ final class ArticleCategory extends AbstractEntity
     private $is_book = false;
 
     /**
+     * @var string[]
+     */
+    private $user_groups = array();
+
+    /**
      * @var ArticleCategory[]|Collection
      */
     private $categories;
@@ -133,6 +138,28 @@ final class ArticleCategory extends AbstractEntity
     }
 
     /**
+     * Returns a collection of article category user groups
+     *
+     * @return array
+     */
+    public function getUserGroups()
+    {
+        return $this->user_groups;
+    }
+
+    /**
+     * Add an user group
+     *
+     * @param string $user_group
+     * @return $this
+     */
+    public function addUserGroup($user_group)
+    {
+        $this->user_groups[] = $user_group;
+        return $this;
+    }
+
+    /**
      * Returns a collection of child categories
      *
      * @return ArticleCategory[]|Collection
@@ -177,6 +204,7 @@ final class ArticleCategory extends AbstractEntity
             'title'          => $this->title,
             'is_agent'       => $this->is_agent,
             'is_book'        => $this->is_book,
+            'user_groups'    => $this->user_groups,
             'categories'     => $this->categories->entitiesToArray(),
         );
     }
@@ -191,6 +219,12 @@ final class ArticleCategory extends AbstractEntity
         $metadata
             ->addPropertyConstraint('title', new Constraints\NotBlank())
             ->addPropertyConstraint('categories', new Constraints\Valid())
+
+            ->addPropertyConstraint('user_groups', new Constraints\All(array(
+                'constraints' => array(
+                    new Constraints\NotBlank(),
+                ),
+            )))
         ;
     }
 }

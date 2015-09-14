@@ -698,6 +698,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
                 ),
             )))
 
+            ->addPropertyConstraint('user_groups', new Constraints\All(array(
+                'constraints' => array(
+                    new Constraints\NotBlank(),
+                ),
+            )))
+
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
             ->addGetterConstraint('firstEmail', new Constraints\Email())
             ->addGetterConstraint('organizationValid', new Constraints\True())
