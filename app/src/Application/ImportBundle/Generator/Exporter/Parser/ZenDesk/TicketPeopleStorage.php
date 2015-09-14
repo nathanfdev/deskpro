@@ -56,6 +56,13 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
                     }
                 }
             }
+            if ( ! empty($ticket['collaborator_ids'])) {
+                foreach ($ticket['collaborator_ids'] as $collaborator_id) {
+                    if ($collaborator_id > 0) {
+                        $people_ids[] = $collaborator_id;
+                    }
+                }
+            }
         }
 
         return array_unique($people_ids);

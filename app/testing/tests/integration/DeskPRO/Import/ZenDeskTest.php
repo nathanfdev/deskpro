@@ -160,6 +160,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->checkJsonEmpty();
         $this->checkNoErrors($command_tester);
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
     }
 
@@ -183,7 +184,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->checkNoErrors($command_tester);
 
         // seems that exports in a wrong order, disable for a while
-//        $this->checkDbData();
+        $this->checkDbData();
     }
 
     private function checkJsonEmpty()
@@ -206,10 +207,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
         $this->helper->seeInThisFile('Ticket 1');
+        $this->helper->seeInThisFile('"participants":["person1@domain.tld"]');
 
         $this->helper->seeFileFound('1/tickets/ticket_2.json');
         $this->helper->seeInThisFile('Ticket 2');
         $this->helper->seeInThisFile('"is_hold":false');
+        $this->helper->seeInThisFile('"participants":[]');
 
         $this->assertFalse(file_exists('1/tickets/ticket_3.json'));
 
@@ -247,17 +250,18 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addTicketsIncrementalExportResponse((object)array(
                 'tickets'  => array(
                     (object)array(
-                        'id'              => 1,
-                        'requester_id'    => 1,
-                        'assignee_id'     => 3,
-                        'subject'         => 'Ticket 1',
-                        'description'     => 'Ticket description 1',
-                        'status'          => 'closed',
-                        'priority'        => 'high',
-                        'organization_id' => 1,
-                        'created_at'      => $date1->format('Y-m-d H:i:s'),
-                        'custom_fields'   => (object)array(),
-                        'tags'            => (object)array('label 1', 'label 2'),
+                        'id'               => 1,
+                        'requester_id'     => 1,
+                        'assignee_id'      => 3,
+                        'subject'          => 'Ticket 1',
+                        'description'      => 'Ticket description 1',
+                        'status'           => 'closed',
+                        'priority'         => 'high',
+                        'organization_id'  => 1,
+                        'created_at'       => $date1->format('Y-m-d H:i:s'),
+                        'custom_fields'    => (object)array(),
+                        'tags'             => (object)array('label 1', 'label 2'),
+                        'collaborator_ids' => (object)array(1, 100000),
                     ),
                     (object)array(
                         'id'              => 2,
@@ -554,6 +558,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Entity `organization` is not supported', $output);
+        $this->assertContains('Unable to get participant email, id = 100000', $output);
     }
 
     /**
@@ -584,6 +589,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertEquals('Ticket 1', $ticket->getTitle());
         $this->assertEquals('archived', $ticket->getStatusCode());
         $this->assertFalse($ticket->isHold());
+
+        $this->assertNotNull($ticket->hasParticipantEmailAddress('person1@domain.tld'));
 
         $ticket = $tickets[1];
 
