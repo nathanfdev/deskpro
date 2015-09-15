@@ -10,21 +10,14 @@ import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compone
     date_period: DatePeriods.all
   }
 }))
-export class ChatsListItem extends React.Component {
+export class ListItemContainer extends React.Component {
   render() {
     const {count, group, groupBy, onClick} = this.props;
-    const label = this.getLabel(groupBy, group);
+    const label = this.props.labels[groupBy][group] ? this.props.labels[groupBy][group] : '...';
     const onItemClick = () => { onClick({[groupBy]: group}); };
 
     return (
       <ListItem count={count} label={label} onClick={onItemClick} />
     );
-  }
-
-  getLabel(groupBy, group) {
-    if (this.props.labels[groupBy] && this.props.labels[groupBy][group]) {
-      return this.props.labels[groupBy][group];
-    }
-    return '[no label]';
   }
 }
