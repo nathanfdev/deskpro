@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async } from "Ampliflux/reducers/handlers";
+import { async } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatNavActions';
 
 const initialState = {
@@ -25,7 +25,7 @@ const initialState = {
 export default createReducer(initialState, {
 
   [actions.loadCounts]: async({
-    success: (state, payload, action) => {
+    success: (state, payload) => {
       return state.mergeDeep({
         lists: {
           [payload.list]: {
@@ -38,44 +38,18 @@ export default createReducer(initialState, {
   }),
 
   [actions.loadAgentName]: async({
-    success: (state, payload) => {
-      let agentNames = state.get('agentNames');
-      agentNames = {...agentNames, [payload.id]: payload.name};
-
-      return state.merge({agentNames});
-    }
+    success: (state, payload) => state.mergeIn(['agentNames'], {[payload.id]: payload.name})
   }),
 
   [actions.loadDepartmentName]: async({
-    success: (state, payload) => {
-      let departmentNames = state.get('departmentNames');
-      departmentNames = {...departmentNames, [payload.id]: payload.name};
-
-      return state.merge({departmentNames});
-    }
+    success: (state, payload) => state.mergeIn(['departmentNames'], {[payload.id]: payload.name})
   }),
 
-  [actions.toggleListGroupingVisibility]: async({
-    success: (state, payload) => {
-      return state.merge({
-        lists: {
-          [payload]: {
-            isGroupingControlVisible: !state.get('lists')[payload].isGroupingControlVisible
-          }
-        }
-      });
-    }
-  }),
+  [actions.toggleListGroupingVisibility]: (state, payload) => {
+    const target = ['lists', payload, 'isGroupingControlVisible'];
+    return state.setIn(target, !state.getIn(target));
+  },
 
-  [actions.changeListGrouping]: async({
-    success: (state, payload) => {
-      return state.merge({
-        lists: {
-          [payload.list]: {
-            groupBy: payload.groupBy
-          }
-        }
-      });
-    }
-  })
+  [actions.changeListGrouping]: (state, payload) => state.setIn(['lists', payload.list, 'groupBy'], payload.groupBy)
+
 });

@@ -5,25 +5,26 @@ import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compone
 
 @connect(state => ({
   labels: {
-    agent: state.Chat.nav.agentNames,
-    department: state.Chat.nav.departmentNames,
+    agent: state.Chat.nav.get('agentNames').toJS(),
+    department: state.Chat.nav.get('departmentNames').toJS(),
     date_period: DatePeriods.all
   }
 }))
 export class ChatsListItem extends React.Component {
-  getLabel(groupBy, group) {
-    if (this.props.labels[groupBy] && this.props.labels[groupBy][group]) {
-      return this.props.labels[groupBy];
-    }
-    return '[no label]';
-  }
   render() {
     const {count, group, groupBy, onClick} = this.props;
     const label = this.getLabel(groupBy, group);
-    const onItemClick = () => { onClick({[groupBy]: group}) };
+    const onItemClick = () => { onClick({[groupBy]: group}); };
 
     return (
       <ListItem count={count} label={label} onClick={onItemClick} />
     );
+  }
+
+  getLabel(groupBy, group) {
+    if (this.props.labels[groupBy] && this.props.labels[groupBy][group]) {
+      return this.props.labels[groupBy][group];
+    }
+    return '[no label]';
   }
 }
