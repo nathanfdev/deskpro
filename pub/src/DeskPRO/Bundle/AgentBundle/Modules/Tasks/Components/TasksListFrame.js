@@ -222,6 +222,36 @@ export default class TasksListFrame extends React.Component {
     ));
   }
 
+  moveCard(item, targetItem, tasks, callback) {
+    const cards = tasks;
+    const id = item.id;
+    const afterId = targetItem.id;
+
+    let oldOrder = [];
+    tasks.forEach((card) => {
+      oldOrder.push(card.display_order);
+    });
+
+    const card = cards.filter(c => c.id === id)[0];
+    const afterCard = cards.filter(c => c.id === afterId)[0];
+    const cardIndex = cards.indexOf(card);
+    const afterIndex = cards.indexOf(afterCard);
+
+    cards.splice(cardIndex, 1);
+    cards.splice(afterIndex, 0, card);
+
+    // Used to set the state of the column
+    callback(cards);
+
+    this.editTask(
+      this.props.taskFrameList.taskFrameSource,
+      {
+        taskId: card.id,
+        display_order: targetItem.display_order
+      }
+    );
+  }
+
   render() {
     const {taskFrameList, projectList, taskFilter, labelList, agentList, teamList, departmentList} = this.props;
 
@@ -397,7 +427,11 @@ export default class TasksListFrame extends React.Component {
                                          updateField={grouping.updateField}
                                          updateValue={grouping.updateValue}
                                          source={taskFrameList.taskFrameSource}
+                                         updateMassActions={_this.updateMassActions.bind(_this)}
+                                         moveCard={this.moveCard.bind(this)}
                                          massEdit={this.massEdit.bind(this)}
+                                         actionable={_this.state.actionable}
+                                         order={this.state.order}
                                          editTask={_this.editTask.bind(_this)} />
                 }) : '' }
             </div>
@@ -434,7 +468,9 @@ export default class TasksListFrame extends React.Component {
                                                        editTask={_this.editTask.bind(_this)}
                                                        updateMassActions={_this.updateMassActions.bind(_this)}
                                                        actionable={_this.state.actionable}
-                                                       divider={grouping.title} />
+                                                       order={this.state.order}
+                                                       divider={grouping.title}
+                                                       moveCard={this.moveCard.bind(this)} />
                     }
                 }) : '' }
               </table>
@@ -471,7 +507,9 @@ export default class TasksListFrame extends React.Component {
                                         editTask={_this.editTask.bind(_this)}
                                         updateMassActions={_this.updateMassActions.bind(_this)}
                                         actionable={_this.state.actionable}
-                                        divider={grouping.title}/>
+                                        divider={grouping.title}
+                                        order={this.state.order}
+                                        moveCard={this.moveCard.bind(this)}/>
               }) : '' }
 
             </div>

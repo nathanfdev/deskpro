@@ -1,5 +1,5 @@
 import React from "react";
-import { DragSource } from "react-dnd";
+import { DragSource, DropTarget } from "react-dnd";
 import { connect } from 'redux/react';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
@@ -10,6 +10,15 @@ import DragTypes from "../../../Services/DragTypes.js";
 import Picker from "anytime";
 import Moment from "moment";
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+
+const cardTarget = {
+  drop(props, monitor) {
+    const item = monitor.getItem();
+    if (item.id !== props.task.id) {
+      props.moveCard(item, props.task);
+    }
+  }
+};
 
 const cardSource = {
   beginDrag(props, monitor, component) {
@@ -171,6 +180,7 @@ const TaskCard = React.createClass({
       agents,
       source,
       connectDragSource,
+      connectDropTarget,
       connectDragPreview
     } = this.props;
 
@@ -212,7 +222,10 @@ const TaskCard = React.createClass({
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
+    const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
+
+    const result = <div>
+      <div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
         <div>
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />
@@ -295,7 +308,16 @@ const TaskCard = React.createClass({
               </div>
             </div> : '' }
         </div>
-    </div>);
+    </div>
+    <div className={placeHolder} />
+  </div>;
+
+  if (this.props.order === 'list') {
+    return connectDragSource(connectDropTarget(result));
+  }
+
+  return connectDragSource(result);
+
   }
 });
 
@@ -303,4 +325,7 @@ module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
-}))(TaskCard);
+}))(DropTarget(DragTypes.TASK, cardTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver()
+}))(TaskCard));
