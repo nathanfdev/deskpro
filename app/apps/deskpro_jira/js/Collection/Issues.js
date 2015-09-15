@@ -30,7 +30,7 @@ define(function () {
           // replace fields with rendered format
           if (!issue.renderedFields) return;
           for (var i in issue.renderedFields) {
-            if (!issue.renderedField[i]) continue;
+            if (!issue.renderedFields[i]) continue;
             issue.fields[i] = issue.renderedFields[i];
             issue.renderedFields[i] = true;
           }
