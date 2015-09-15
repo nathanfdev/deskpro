@@ -4,28 +4,23 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions";
+import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions";
 import $ from "jquery";
+import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
+import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
+
 
 export class ListTableViewSwitcher extends Component {
 
   static propTypes = {
+    viewModeOptions: PropTypes.array.isRequired,
     listViewFields: PropTypes.array.isRequired,
     tableViewFields: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 
-  showViewModeChoice(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    var elem           = $(event.target),
-        viewModeChoice = elem.closest('.control-button').find('.dpw-navigation-dropdown');
-    viewModeChoice.toggle();
-  }
-
-
   render() {
-    const {viewMode, listViewFields, tableViewFields, dispatch, displayFieldsStatus} = this.props;
+    const {viewMode, viewModeOptions, listViewFields, tableViewFields, dispatch, displayFieldsStatus} = this.props;
     listViewFields.sort(function (a, b) {
       return a.priority - b.priority
     });
@@ -35,51 +30,37 @@ export class ListTableViewSwitcher extends Component {
     return (
       <div className="control-button">
         <span className="title">View:</span>
-        <a href="#"><span className="focus" onClick={this.showViewModeChoice.bind(this)}>{viewMode}</span></a>
-        <ListTableViewDropdown listViewFields={listViewFields} tableViewFields={tableViewFields} viewMode={viewMode}
-                               dispatch={dispatch} displayFieldsStatus={displayFieldsStatus}/>
+        <ControlButton title={viewMode}/>
+        <DropdownMenu>
+          {viewModeOptions.map((option, index)=>
+              <Option key={index} active={viewMode === option.field} option={option} onClick={this.toggleView.bind(this, option)}/>
+          )}
+          <DropdownMenuFooter>
+            <div className="dpw-navigation-dropdown-options-link">
+              <a href="#">View Options <i className="fa fa-cog"></i></a>
+            </div>
+          </DropdownMenuFooter>
+        </DropdownMenu>
       </div>
     );
   }
-}
 
-export class ListTableViewDropdown extends Component {
-
-  static propTypes = {
-    listViewFields: PropTypes.array.isRequired,
-    tableViewFields: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired
-  };
-
-  toggleView(event) {
+  toggleView(newView, event) {
     event.stopPropagation();
     const {dispatch} = this.props;
     dispatch(actions.toggleViewMode());
   }
 
-
-  render() {
-    const {viewMode, listViewFields, tableViewFields, displayFieldsStatus } = this.props;
-
-    return (
-      <div className="dpw-navigation-dropdown">
-        <ul>
-          <ViewSelector type="list" active={viewMode === constants.VIEW_MODE_LIST}
-                        toggleView={this.toggleView.bind(this)}/>
-          <ViewSelector type="table" active={viewMode === constants.VIEW_MODE_TABLE}
-                        toggleView={this.toggleView.bind(this)}/>
-          <li>
-            <div className="dpw-navigation-dropdown-item dpw-navigation-dropdown-footer">
-              <div className="dpw-navigation-dropdown-options-link">
-                <a href="#">View Options <i className="fa fa-cog"></i></a>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    );
+  showViewModeChoice(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var elem           = $(event.target),
+        viewModeChoice = elem.closest('.control-button').find('.dpw-navigation-dropdown');
+    viewModeChoice.toggle();
   }
+
 }
+
 
 export class ViewSelector extends Component {
   render() {

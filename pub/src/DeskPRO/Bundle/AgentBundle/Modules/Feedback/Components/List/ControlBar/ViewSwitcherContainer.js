@@ -8,6 +8,7 @@ import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Fe
   order: state.FeedbackList.order,
   filters: state.FeedbackList.filters,
   viewMode: state.FeedbackList.viewMode,
+  viewModeOptions: state.FeedbackList.viewModeOptions,
   tableViewFields: state.FeedbackList.tableViewFields,
   listViewFields: state.FeedbackList.listViewFields
 }))

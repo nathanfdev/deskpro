@@ -1,23 +1,17 @@
 import { ListFrame } from './frame';
-import { ControlBar } from './ControlBar';
+import { ControlBar, ControlButton } from './ControlBar';
 import { ListTableViewSwitcher } from './ListTableViewSwitcher';
-import { OrderBy, OrderByDropdown } from './OrderBy';
+import { OrderBy } from './OrderBy';
 import { FilterBy } from './FilterBy';
 import { TableView, TableBody, TableHeader, Th, Row, Td } from './TableView';
 import { Pagination } from './Pagination';
 
 export default {
   ListFrame,
-  ControlBar,
+  ControlBar, ControlButton,
   ListTableViewSwitcher,
-  TableView,
-  TableBody,
-  TableHeader,
-  Th,
+  TableView, TableBody, TableHeader, Th, Row, Td,
   OrderBy,
-  OrderByDropdown,
   Pagination,
-  FilterBy,
-  Row,
-  Td
+  FilterBy
 };

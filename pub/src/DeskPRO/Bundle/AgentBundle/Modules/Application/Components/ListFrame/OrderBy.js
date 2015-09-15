@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
 import classNames from 'classnames';
+import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
+import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
 
 export class OrderBy extends Component {
 
@@ -19,96 +21,36 @@ export class OrderBy extends Component {
 
     return (
       <div className="control-button">
-
         <span className="title">Order by:</span>
-        <a href="#">
-          <span className="multi" onClick={this.handleClick.bind(this)}>
-            <span className="sort-name">{sortName}</span>
-            <span className="multi-down"><i className="fa fa-caret-down"/></span>
-          </span>
-        </a>
-        <OrderByDropdown order={order} toggleOrder={toggleOrder.bind(this)} sortOptions={sortOptions} sort={sort}
-                         toggleSort={toggleSort.bind(this)}/>
-      </div>
-    );
-  }
-
-
-  handleClick(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    let elem     = $(event.target),
-        dropdown = elem.closest('.control-button').find('.dpw-navigation-dropdown');
-    dropdown.toggle();
-  }
-
-}
-
-export class OrderByDropdown extends React.Component {
-  static propTypes = {
-    sort: PropTypes.string.isRequired,
-    sortOptions: PropTypes.array.isRequired,
-    toggleSort: PropTypes.func.isRequired
-  };
-
-  render() {
-    const {sortOptions, sort, order, toggleSort, toggleOrder} = this.props;
-    return (
-      <div className="dpw-navigation-dropdown">
-        <ul>
+        <ControlButton title={sortName}/>
+        <DropdownMenu>
           {sortOptions.map((option, index)=>
-              <Option key={index} sort={sort} toggleSort={toggleSort} option={option}/>
+              <Option key={index} active={sort === option.field} onClick={this.handleClick.bind(this, option)}
+                      option={option}/>
           )}
-          <OrderSwitcher order={order} toggleOrder={toggleOrder.bind(this)}/>
-        </ul>
+          <DropdownMenuFooter>
+            <OrderSwitcher order={order} toggleOrder={toggleOrder.bind(this)}/>
+          </DropdownMenuFooter>
+        </DropdownMenu>
       </div>
-    );
-  }
-
-
-}
-
-export class Option extends React.Component {
-  static propTypes = {
-    toggleSort: PropTypes.func.isRequired
-  };
-
-  render() {
-    const {option, sort, toggleSort} = this.props;
-    var classes = classNames('dpw-navigation-dropdown-item', {
-      'active': option.field === sort
-    });
-    return (
-      <li>
-        <a href="#" className={classes} onClick={this.handleClick.bind(this, toggleSort, option.field)}>
-              <span className="dpw-navigation-dropdown-item-mark">
-                <span className="dpw-navigation-dropdown-item-icon"><i className="fa fa-calendar-o"></i></span>
-              </span>
-          <span className="dpw-navigation-dropdown-item-title">{option.label}</span>
-          {option.field === sort ?
-           <span className="dpw-navigation-dropdown-item-status"><i className="fa fa-check"></i></span>
-            : ''
-          }
-        </a>
-      </li>
     );
   }
 
   /** Change sort option (Order By ...)*/
-  handleClick(toggleSort, newSort, event) {
+  handleClick(newSort, event) {
     event.preventDefault();
     event.stopPropagation();
-    var elem        = $(event.target),
-        newSortName = elem.text(),
-        table       = elem.closest('div.feedback-list').find('table');
+    const {toggleSort} = this.props;
+    var elem          = $(event.target),
+          newSortName = elem.text(),
+          table       = $('.dpmw--items-table-list').find('table');
     table.find('i.fa').remove();
-    elem.closest('.control-button').find('span.sort-name').text(newSortName);
-    $('.dpw-navigation-dropdown').hide();
-    toggleSort(newSort, newSortName);
+    elem.closest('.control-button').find('span.control-button-title').text(newSortName);
+    toggleSort(newSort.field, newSort.label);
   }
 }
 
-export class OrderSwitcher extends React.Component {
+export class OrderSwitcher extends Component {
 
   static propTypes = {
     order: PropTypes.string.isRequired,
@@ -118,21 +60,17 @@ export class OrderSwitcher extends React.Component {
   render() {
     const {order, toggleOrder} = this.props;
     return (
-      <li>
-        <div className="dpw-navigation-dropdown-item dpw-navigation-dropdown-footer">
-          <div className="dpw-navigation-dropdown-options-ordering">
-            <span>Sort type:</span>
-            <Radio type="asc" order={order} toggleOrder={toggleOrder}/>
-            <Radio type="desc" order={order}  toggleOrder={toggleOrder}/>
-          </div>
-        </div>
-      </li>
+      <div className="dpw-navigation-dropdown-options-ordering">
+        <span>Sort type:</span>
+        <Radio type="asc" order={order} toggleOrder={toggleOrder}/>
+        <Radio type="desc" order={order} toggleOrder={toggleOrder}/>
+      </div>
     );
   }
 
 }
 
-export class Radio extends React.Component {
+export class Radio extends Component {
   render() {
     const {type, order, toggleOrder}=this.props;
     var classes = classNames('dpwd-radio-button', {
@@ -145,13 +83,11 @@ export class Radio extends React.Component {
       </span>
     );
   }
+
   /** Change sort order (ASC, DESC)*/
   handleClick(toggleOrder, type, event) {
     event.preventDefault();
     event.stopPropagation();
-    $('div.dropdown-choice').hide();
-    let elem = $(event.target);
-    elem.closest('span.order-switcher').find('i.fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
     toggleOrder(type);
   }
 }
