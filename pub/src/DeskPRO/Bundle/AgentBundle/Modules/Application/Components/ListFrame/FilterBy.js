@@ -6,7 +6,7 @@ export class FilterBy extends Component {
   render() {
     const {filters}=this.props;
     return (
-      <a href="#" className="ticket-control-button">
+      <a href="#" className="control-button">
         <span className="title">Filter by:</span>
         <span className="multi" onClick={this.showFilterChoice.bind(this)}>
           <span className="filter-name" data-filter={filters.alias}>{filters.name}</span>
