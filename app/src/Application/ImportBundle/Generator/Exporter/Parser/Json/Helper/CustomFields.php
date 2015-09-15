@@ -31,6 +31,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class CustomFields
@@ -54,7 +55,15 @@ class CustomFields extends AbstractParserFormatterHelper
      */
     public function export(array $custom_fields)
     {
-        return $this->exportCollection($custom_fields, 'JSONCustomField', 'oid', 'exportCustomField', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($custom_fields)
+            ->setPrefix('JSONCustomField')
+            ->setRefColumn('oid')
+            ->setMethod('exportCustomField')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 
 /**
@@ -61,9 +62,16 @@ final class Organizations extends AbstractParser
      */
     public function export()
     {
-        $data = $this->reader->getData($this->getOrganizationsReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getOrganizationsReaderConfig()))
+            ->setPrefix('JSONOrganization')
+            ->setRefColumn('oid')
+            ->setMethod('exportOrganization')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        return $this->exportCollection($data, 'JSONOrganization', 'oid', 'exportOrganization');
+        return $this->exportCollection($config);
     }
 
     /**

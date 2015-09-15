@@ -31,6 +31,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class Translations
@@ -54,7 +55,15 @@ class Translations extends AbstractParserFormatterHelper
      */
     public function export(array $translations)
     {
-        return $this->exportCollection($translations, 'JSONTranslation', 'oid', 'exportTranslation', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($translations)
+            ->setPrefix('JSONTranslation')
+            ->setRefColumn('oid')
+            ->setMethod('exportTranslation')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

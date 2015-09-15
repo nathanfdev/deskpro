@@ -32,6 +32,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Client as HttpClient;
@@ -75,7 +76,15 @@ class Attachment extends AbstractParserFormatterHelper
      */
     public function export(array $attachments)
     {
-        return $this->exportCollection($attachments, 'ZDAttachment', 'id', 'exportAttachment', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($attachments)
+            ->setPrefix('ZDAttachment')
+            ->setRefColumn('id')
+            ->setMethod('exportAttachment')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

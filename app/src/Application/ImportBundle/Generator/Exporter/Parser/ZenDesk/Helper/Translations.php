@@ -31,6 +31,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\LocaleMapper;
 
@@ -56,7 +57,15 @@ class Translations extends AbstractParserFormatterHelper
      */
     public function export(array $translations)
     {
-        return $this->exportCollection($translations, 'ZDTranslation', 'id', 'exportTranslation', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($translations)
+            ->setPrefix('ZDTranslation')
+            ->setRefColumn('id')
+            ->setMethod('exportTranslation')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

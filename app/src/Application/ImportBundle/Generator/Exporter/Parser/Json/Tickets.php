@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
@@ -61,9 +62,16 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $data = $this->reader->getData($this->getTicketReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getTicketReaderConfig()))
+            ->setPrefix('JSONTicket')
+            ->setRefColumn('oid')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        return $this->exportCollection($data, 'JSONTicket', 'oid', 'exportTicket');
+        return $this->exportCollection($config);
     }
 
     /**
@@ -200,7 +208,15 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages(array $messages)
     {
-        return $this->exportCollection($messages, 'JSONTicketMessage', 'oid', 'exportMessage', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($messages)
+            ->setPrefix('JSONTicketMessage')
+            ->setRefColumn('oid')
+            ->setMethod('exportMessage')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

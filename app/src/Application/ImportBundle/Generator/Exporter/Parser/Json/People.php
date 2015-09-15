@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
@@ -61,9 +62,16 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $data = $this->reader->getData($this->getPersonReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getPersonReaderConfig()))
+            ->setPrefix('JSONPerson')
+            ->setRefColumn('oid')
+            ->setMethod('exportPerson')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        return $this->exportCollection($data, 'JSONPerson', 'oid', 'exportPerson');
+        return $this->exportCollection($config);
     }
 
     /**

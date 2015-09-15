@@ -32,6 +32,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class ContactData
@@ -55,7 +56,15 @@ class ContactData extends AbstractParserFormatterHelper
      */
     public function export(array $contact_data)
     {
-        return $this->exportCollection($contact_data, 'JSONContactData', 'oid', 'exportContact', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($contact_data)
+            ->setPrefix('JSONContactData')
+            ->setRefColumn('oid')
+            ->setMethod('exportContact')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**
@@ -77,8 +86,8 @@ class ContactData extends AbstractParserFormatterHelper
             'comment'      => TransformerInterface::TYPE_STRING,
         ));
 
-        $handler   = ContactDataFactory::getHandler($formatted['contact_type']);
-        $entity    = $handler->toEntity($data);
+        $handler = ContactDataFactory::getHandler($formatted['contact_type']);
+        $entity  = $handler->toEntity($data);
         $entity
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])

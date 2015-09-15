@@ -40,28 +40,28 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
     /**
      * Exports a collection of entities
      *
-     * @param array           $data
-     * @param string          $prefix
-     * @param string          $ref_column
-     * @param string|callable $method
-     * @param bool            $advance_progressbar
-     *
+     * @param ExportCollectionConfig $export_config
      * @return Entity\Collection
      */
-    protected function exportCollection(array $data, $prefix, $ref_column, $method, $advance_progressbar = true)
+    protected function exportCollection(ExportCollectionConfig $export_config)
     {
         $collection = new Entity\Collection();
-        $collection->setExpectedCount(count($data));
+        $collection->setExpectedCount(count($export_config->getData()));
 
-        foreach ($data as $num => $item) {
-            if ($advance_progressbar) {
+        foreach ($export_config->getData() as $num => $item) {
+            if ($export_config->isAdvanceProgressbar()) {
                 $this->advanceProgressBar();
             }
+
+            $ref_column = $export_config->getRefColumn();
+            $prefix     = $export_config->getPrefix();
 
             $oid = isset($item[$ref_column]) ? $item[$ref_column] : '?';
 
             try {
-                if (is_callable($method)) {
+                $method = $export_config->getMethod();
+
+                if (is_callable($export_config->getMethod())) {
                     $result = $method($item, $num);
                 } else {
                     $result = $this->$method($item, $num);

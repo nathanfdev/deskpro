@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
@@ -91,7 +92,16 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        return $this->exportCollection($this->getArticles(), 'ZDArticle', 'id', 'exportArticle');
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getArticles())
+            ->setPrefix('ZDArticle')
+            ->setRefColumn('id')
+            ->setMethod('exportArticle')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**
@@ -193,7 +203,15 @@ final class Articles extends AbstractParser
      */
     private function exportComments(array $comments)
     {
-        return $this->exportCollection($comments, 'ZDArticleComment', 'id', 'exportComment', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($comments)
+            ->setPrefix('ZDArticleComment')
+            ->setRefColumn('id')
+            ->setMethod('exportComment')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

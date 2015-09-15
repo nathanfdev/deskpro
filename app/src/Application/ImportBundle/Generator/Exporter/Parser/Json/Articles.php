@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
@@ -61,9 +62,16 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        $data = $this->reader->getData($this->getArticleReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getArticleReaderConfig()))
+            ->setPrefix('JSONArticle')
+            ->setRefColumn('oid')
+            ->setMethod('exportArticle')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        return $this->exportCollection($data, 'JSONArticle', 'oid', 'exportArticle');
+        return $this->exportCollection($config);
     }
 
     /**
@@ -171,7 +179,15 @@ final class Articles extends AbstractParser
      */
     private function exportComments(array $comments)
     {
-        return $this->exportCollection($comments, 'JSONArticleComment', 'oid', 'exportComment', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($comments)
+            ->setPrefix('JSONArticleComment')
+            ->setRefColumn('oid')
+            ->setMethod('exportComment')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

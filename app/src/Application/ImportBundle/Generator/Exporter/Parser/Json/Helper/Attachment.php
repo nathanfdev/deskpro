@@ -31,6 +31,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class Attachment
@@ -54,7 +55,15 @@ class Attachment extends AbstractParserFormatterHelper
      */
     public function exportAttachments(array $attachments)
     {
-        return $this->exportCollection($attachments, 'JSONAttachment', 'oid', 'exportAttachment', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($attachments)
+            ->setPrefix('JSONAttachment')
+            ->setRefColumn('oid')
+            ->setMethod('exportAttachment')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**

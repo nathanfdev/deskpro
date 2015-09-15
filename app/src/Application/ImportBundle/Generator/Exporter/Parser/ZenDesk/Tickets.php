@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
@@ -106,7 +107,16 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        return $this->exportCollection($this->getTickets(), 'ZDTicket', 'id', 'exportTicket');
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getTickets())
+            ->setPrefix('ZDTicket')
+            ->setRefColumn('id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**
@@ -236,7 +246,15 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages(array $ticket)
     {
-        return $this->exportCollection($ticket['comments'], 'ZDTicketComment', 'id', 'exportMessage', false);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($ticket['comments'])
+            ->setPrefix('ZDTicketComment')
+            ->setRefColumn('id')
+            ->setMethod('exportMessage')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**
