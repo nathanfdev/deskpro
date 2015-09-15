@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import classNames from 'classnames';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import $ from "jquery";
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
+import { ViewOptionsSubmenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ViewOptionsSubmenu';
 
 
 export class ViewModeSwitcher extends Component {
@@ -35,10 +34,13 @@ export class ViewModeSwitcher extends Component {
           )}
           <DropdownMenuFooter>
             <div className="dpw-navigation-dropdown-options-link">
-              <a href="#">View Options <i className="fa fa-cog"></i></a>
+              <a href="#" onClick={this.openOptionsSubmenu.bind(this)}>View Options <i className="fa fa-cog"></i></a>
             </div>
           </DropdownMenuFooter>
         </DropdownMenu>
+        <ViewOptionsSubmenu viewMode={viewMode} viewModeOptions={viewModeOptions}
+                            listViewFields={listViewFields} tableViewFields={tableViewFields}
+                            displayFieldsStatus={ displayFieldsStatus}/>
       </div>
     );
   }
@@ -49,77 +51,11 @@ export class ViewModeSwitcher extends Component {
     const {toggleView} = this.props;
     toggleView(newView);
   }
-}
 
-
-export class DisplayFields extends Component {
-  static propTypes = {
-    fields: PropTypes.array.isRequired,
-    type: PropTypes.string.isRequired,
-    displayFieldsStatus: PropTypes.func.isRequired
-  };
-
-  render() {
-    const {fields, type, displayFieldsStatus} = this.props;
-    return (
-      <div style={{overflowY:'scroll', height:'200px'}} className="fields-container">
-        {type === 'table' ?
-         fields.map((field, index) =>
-           <FieldForTableView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
-          :
-         fields.map((field, index) =>
-           <FieldForListView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
-        }
-      </div>
-    );
-  }
-}
-
-export class FieldForTableView extends Component {
-  static propTypes = {
-    field: PropTypes.object.isRequired,
-    displayFieldsStatus: PropTypes.func.isRequired
-  };
-
-  render() {
-    const {field, displayFieldsStatus} = this.props;
-    return (
-      <div>
-        <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
-               onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>
-        <span>{field.label}</span>
-      </div>
-    );
-  }
-
-  handleChange(displayFieldsStatus, field, e) {
-    let status = $(e.target).prop('checked') ? constants.FIELD_SHOWN : constants.FIELD_HIDDEN;
-    displayFieldsStatus('tableViewFields', field, status);
-  }
-}
-
-export class FieldForListView extends Component {
-  static propTypes = {
-    field: PropTypes.object.isRequired,
-    displayFieldsStatus: PropTypes.func.isRequired
-  };
-
-  render() {
-    const {field, displayFieldsStatus} = this.props;
-    return (
-      <div>
-        {field.status === constants.FIELD_REQUIRED ?
-         <input type="checkbox" checked="true" readOnly/>
-          :
-         <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
-                onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>}
-        <span>{field.label}</span>
-      </div>
-    );
-  }
-
-  handleChange(displayFieldsStatus, field, e) {
-    let status = $(e.target).prop('checked') ? constants.FIELD_SHOWN : constants.FIELD_HIDDEN;
-    displayFieldsStatus('listViewFields', field, status);
+  openOptionsSubmenu(event) {
+    event.stopPropagation();
+    var controlButton = $(event.target).closest('.control-button');
+    controlButton.find('.dpw-navigation-dropdown').not('.dpw-navigation-dropdown-secondary').hide();
+    controlButton.find('.dpw-navigation-dropdown-secondary').show();
   }
 }

@@ -28,6 +28,6 @@ export class ControlButton extends React.Component {
   handleClick(event) {
     event.preventDefault();
     event.stopPropagation();
-    $(event.target).closest('.control-button').find('.dpw-navigation-dropdown').toggle();
+    $(event.target).closest('.control-button').find('.dpw-navigation-dropdown').not('.dpw-navigation-dropdown-secondary').toggle();
   }
 }
