@@ -18,14 +18,14 @@ import { Nav } from './Nav';
     lists: state.Chat.nav.get('lists').toJS(),
     grouping: {
       my: {
-        visible: state.Chat.nav.get('lists').get('my').isGroupingControlVisible,
+        visible: state.Chat.nav.getIn(['lists', 'my', 'isGroupingControlVisible']),
         options: [
           {value: 'date_period', label: 'Date Created'},
           {value: 'department', label: 'Department'}
         ]
       },
       all: {
-        visible: state.Chat.nav.get('lists').get('all').isGroupingControlVisible,
+        visible: state.Chat.nav.getIn(['lists', 'all', 'isGroupingControlVisible']),
         options: [
           {value: 'agent', label: 'Agent'},
           {value: 'department', label: 'Department'},

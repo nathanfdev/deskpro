@@ -11,9 +11,15 @@ import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compone
   }
 }))
 export class ChatsListItem extends React.Component {
+  getLabel(groupBy, group) {
+    if (this.props.labels[groupBy] && this.props.labels[groupBy][group]) {
+      return this.props.labels[groupBy];
+    }
+    return '[no label]';
+  }
   render() {
     const {count, group, groupBy, onClick} = this.props;
-    const label = this.props.labels[groupBy][group];
+    const label = this.getLabel(groupBy, group);
     const onItemClick = () => { onClick({[groupBy]: group}) };
 
     return (

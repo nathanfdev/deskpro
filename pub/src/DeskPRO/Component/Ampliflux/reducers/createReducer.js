@@ -18,8 +18,6 @@ export default function createReducer(initialState, ...handlerGroups) {
   const handlers = {};
   handlerGroups.forEach(g => Object.assign(handlers, g));
 
-  console.log(handlerGroups);
-
   return function reducer(state = initialState, action = {}) {
     const actionType = getActionType(action, true);
     const inState = Immutable.Iterable.isIterable(state) ? state : Immutable.fromJS(state);
