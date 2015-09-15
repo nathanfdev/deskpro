@@ -163,9 +163,9 @@ export default class FeedbackList extends Reducer {
   }
 
 
-  orderChanged(prev) {
+  orderChanged(prev, {payload}) {
     const next = {...prev};
-    next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    next.order = payload.order;
     return next;
   }
 

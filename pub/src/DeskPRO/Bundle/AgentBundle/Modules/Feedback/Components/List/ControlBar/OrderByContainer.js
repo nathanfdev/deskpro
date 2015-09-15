@@ -35,8 +35,8 @@ export class OrderByContainer extends React.Component {
     dispatch(toggleSort(query, newSort, newSortName, order, filters));
   }
 
-  toggleListOrder() {
-    const {dispatch, query, sort, order, filters} = this.props;
+  toggleListOrder(order) {
+    const {dispatch, query, sort, filters} = this.props;
     dispatch(toggleOrder(query, sort, order, filters));
   }
 

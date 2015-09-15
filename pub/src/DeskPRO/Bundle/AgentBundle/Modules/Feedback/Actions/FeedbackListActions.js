@@ -138,9 +138,8 @@ export const setTableSort = createAction(
 export const toggleOrder = createAction(
   "FEEDBACK_TOGGLE_ORDER",
   (trigger, query, sort, order, filters) => {
-    trigger();
-    let newOrder = order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
-    trigger(loadFeedbackList(query, sort, newOrder, filters));
+    trigger({order:order});
+    trigger(loadFeedbackList(query, sort, order, filters));
   });
 
 export const toggleSort = createAction(

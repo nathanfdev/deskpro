@@ -2,6 +2,7 @@
  * Component to toggle view between the two modes: List and Table
  */
 import React, {Component, PropTypes} from 'react';
+import classNames from 'classnames';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions";
 import $ from "jquery";
@@ -17,26 +18,24 @@ export class ListTableViewSwitcher extends Component {
   showViewModeChoice(event) {
     event.preventDefault();
     event.stopPropagation();
-    var elem = $(event.target),
-      viewModeChoice = elem.closest('div.ticket-control-button').find('div.view-mode-choice');
-    viewModeChoice.css('display') === 'none' ? viewModeChoice.show() : viewModeChoice.hide();
+    var elem           = $(event.target),
+        viewModeChoice = elem.closest('.control-button').find('.dpw-navigation-dropdown');
+    viewModeChoice.toggle();
   }
 
 
   render() {
     const {viewMode, listViewFields, tableViewFields, dispatch, displayFieldsStatus} = this.props;
-    listViewFields.sort(function(a, b){
-      return a.priority-b.priority
+    listViewFields.sort(function (a, b) {
+      return a.priority - b.priority
     });
-    tableViewFields.sort(function(a, b){
-      return a.priority-b.priority
+    tableViewFields.sort(function (a, b) {
+      return a.priority - b.priority
     });
     return (
-      <div className="ticket-control-button">
+      <div className="control-button">
         <span className="title">View:</span>
-        <a href="#">
-          <span className="focus" onClick={this.showViewModeChoice.bind(this)}>{viewMode}</span>
-        </a>
+        <a href="#"><span className="focus" onClick={this.showViewModeChoice.bind(this)}>{viewMode}</span></a>
         <ListTableViewDropdown listViewFields={listViewFields} tableViewFields={tableViewFields} viewMode={viewMode}
                                dispatch={dispatch} displayFieldsStatus={displayFieldsStatus}/>
       </div>
@@ -58,50 +57,58 @@ export class ListTableViewDropdown extends Component {
     dispatch(actions.toggleViewMode());
   }
 
-  closeDropdown(e) {
-    event.preventDefault();
-    event.stopPropagation();
-    $(e.target).closest('.dropdown-choice').hide();
-  }
 
   render() {
     const {viewMode, listViewFields, tableViewFields, displayFieldsStatus } = this.props;
 
     return (
-      <div className="view-mode-choice dropdown-choice" style={{width:'300px'}}>
-        <p>This dropdown is prototype only!</p>
-
-        <div style={{textAlign:'right', width:'100%'}}>
-          <a href="#" onClick={this.closeDropdown.bind(this)}><span>X</span></a>
-        </div>
-        <div style={{width:'50%',float:'left'}}>
-          <label>
-            <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_LIST}
-                   onChange={this.toggleView.bind(this)}>
-              List View
-            </input>
-          </label>
-          <br/>
-          <fieldset>
-            <legend>Display fields</legend>
-            <DisplayFields fields={listViewFields} displayFieldsStatus={displayFieldsStatus} type="list"/>
-          </fieldset>
-        </div>
-        <div style={{width:'50%',float:'left'}}>
-          <label>
-            <input name="view-mode" type="radio" defaultChecked={viewMode === constants.VIEW_MODE_TABLE}
-                   onChange={this.toggleView.bind(this)}>
-              Table View
-            </input>
-          </label>
-          <br/>
-          <fieldset>
-            <legend>Display fields</legend>
-            <DisplayFields fields={tableViewFields} displayFieldsStatus={displayFieldsStatus} type="table"/>
-          </fieldset>
-        </div>
-        <button>Save fields</button>
+      <div className="dpw-navigation-dropdown">
+        <ul>
+          <ViewSelector type="list" active={viewMode === constants.VIEW_MODE_LIST}
+                        toggleView={this.toggleView.bind(this)}/>
+          <ViewSelector type="table" active={viewMode === constants.VIEW_MODE_TABLE}
+                        toggleView={this.toggleView.bind(this)}/>
+          <li>
+            <div className="dpw-navigation-dropdown-item dpw-navigation-dropdown-footer">
+              <div className="dpw-navigation-dropdown-options-link">
+                <a href="#">View Options <i className="fa fa-cog"></i></a>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
+    );
+  }
+}
+
+export class ViewSelector extends Component {
+  render() {
+    const {active, type, toggleView } = this.props;
+    var classes = classNames('dpw-navigation-dropdown-item', {
+      'active': active
+    });
+    var toggle;
+    toggle      = active ?
+                  (e)=> {
+                    e.preventDefault()
+                  }
+      : toggleView;
+
+    return (
+      <li>
+        <a href="#" className={classes} onClick={toggle}>
+              <span className="dpw-navigation-dropdown-item-mark">
+                <span className="dpw-navigation-dropdown-item-icon dpw-navigation-dropdown-item-icon-2x"><i
+                  className="fa fa-list"></i></span>
+              </span>
+          <span className="dpw-navigation-dropdown-item-title">{type.charAt(0).toUpperCase() + type.slice(1)}
+            View</span>
+          {active ?
+           <span className="dpw-navigation-dropdown-item-status"><i className="fa fa-check"></i></span>
+            : ''
+          }
+        </a>
+      </li>
     );
   }
 }
@@ -118,11 +125,11 @@ export class DisplayFields extends Component {
     return (
       <div style={{overflowY:'scroll', height:'200px'}} className="fields-container">
         {type === 'table' ?
-          fields.map((field, index) =>
-            <FieldForTableView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
+         fields.map((field, index) =>
+           <FieldForTableView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
           :
-          fields.map((field, index) =>
-            <FieldForListView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
+         fields.map((field, index) =>
+           <FieldForListView key={index} field={field} displayFieldsStatus={displayFieldsStatus}/>)
         }
       </div>
     );
@@ -163,10 +170,10 @@ export class FieldForListView extends Component {
     return (
       <div>
         {field.status === constants.FIELD_REQUIRED ?
-          <input type="checkbox" checked="true" readOnly/>
+         <input type="checkbox" checked="true" readOnly/>
           :
-          <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
-                 onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>}
+         <input type="checkbox" defaultChecked={field.status === constants.FIELD_SHOWN}
+                onChange={this.handleChange.bind(this, displayFieldsStatus, field.name)}/>}
         <span>{field.label}</span>
       </div>
     );
