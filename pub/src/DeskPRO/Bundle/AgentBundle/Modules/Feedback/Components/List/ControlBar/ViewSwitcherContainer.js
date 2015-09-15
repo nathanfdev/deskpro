@@ -23,7 +23,7 @@ export class ViewSwitcherContainer extends React.Component {
     );
   }
 
-  toggleView(newView, event) {
+  toggleView(newView) {
     const {dispatch} = this.props;
     dispatch(actions.toggleViewMode(newView.field));
   }

@@ -9,7 +9,11 @@ export default class FeedbackList extends Reducer {
     return {
       viewMode: constants.VIEW_MODE_TABLE,
       viewModeOptions: [
-        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon:'fa-table'}, {field: constants.VIEW_MODE_LIST, label: 'List view', icon:'fa-list'}
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table'}, {
+          field: constants.VIEW_MODE_LIST,
+          label: 'List view',
+          icon: 'fa-list'
+        }
       ],
       query: {awaiting_validation: 1},
       filters: {

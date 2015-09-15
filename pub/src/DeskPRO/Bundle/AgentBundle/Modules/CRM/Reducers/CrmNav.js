@@ -7,9 +7,18 @@ export default class CrmNav extends Reducer {
   getInitialState() {
     return {
       viewMode: constants.VIEW_MODE_TABLE,
+      viewModeOptions: [
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table'}, {
+          field: constants.VIEW_MODE_LIST,
+          label: 'List view',
+          icon: 'fa-list'
+        }
+      ],
       elements: [],
       // Display Fields in Table/List view switcher
-      tableViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
+      tableViewFields: [
+        {name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 3},
+      ],
       listViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
 
       sort: 'date_created', /* Order By ... */
@@ -58,56 +67,56 @@ export default class CrmNav extends Reducer {
   }
 
   usersTotalCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next       = {...prev};
     next.users.total = payload;
 
     return next;
   }
 
   groupsCountsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next        = {...prev};
     next.users.groups = payload;
 
     return next;
   }
 
   organizationsTotalCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next               = {...prev};
     next.organizations.total = payload;
 
     return next;
   }
 
   agentsTotalCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next        = {...prev};
     next.agents.total = payload;
 
     return next;
   }
 
   teamsCountsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next        = {...prev};
     next.agents.teams = payload;
 
     return next;
   }
 
   personLabelsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next         = {...prev};
     next.labels.person = payload;
 
     return next;
   }
 
   organizationLabelsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next               = {...prev};
     next.labels.organization = payload;
 
     return next;
   }
 
   groupsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next      = {...prev};
     next.groupNames = {};
     payload.forEach(group => next.groupNames[group.id] = group.title);
 
@@ -115,7 +124,7 @@ export default class CrmNav extends Reducer {
   }
 
   teamsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next     = {...prev};
     next.teamNames = {};
     payload.forEach(team => next.teamNames[team.id] = team.name);
 
@@ -123,7 +132,7 @@ export default class CrmNav extends Reducer {
   }
 
   viewModeChanged(prev) {
-    const next = {...prev};
+    const next    = {...prev};
     next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
     return next;
   }

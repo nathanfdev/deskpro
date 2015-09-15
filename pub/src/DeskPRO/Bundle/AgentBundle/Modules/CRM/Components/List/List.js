@@ -27,7 +27,6 @@ export class List extends Component {
       <ListFrame>
         <CrmListControlBar />
         {viewMode === constants.VIEW_MODE_LIST ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
-        <Pagination/>
       </ListFrame>
     );
   }
