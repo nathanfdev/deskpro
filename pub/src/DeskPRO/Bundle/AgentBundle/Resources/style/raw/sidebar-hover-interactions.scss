@@ -12,6 +12,10 @@
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
   border: none;
 
+  &.assign-hover {
+    width: 528px;
+  }
+
   &.hide {
     max-width: 0px;
     display: none;
@@ -30,6 +34,16 @@
   position: absolute;
   left: -8px;
   top: 16px;
+}
+
+.assign-hover:before {
+  content: "";
+  display:block;
+  border: 4px solid rgba(0,0,0,0);
+  border-bottom: 4px solid #4681b2;
+  position: absolute;
+  top: -8px;
+  left: 263px;
 }
 
 .hide-indicator:before {

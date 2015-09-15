@@ -61,7 +61,8 @@ export default class TaskCardGroup extends React.Component {
                     dispatch={_this.props.dispatch.bind(_this)} editTask={_this.props.editTask.bind(_this)}
                     updateMassActions={_this.props.updateMassActions.bind(_this)}
                     selected={_this.props.actionable.indexOf(object.id) !== -1} tickets={this.props.tickets}
-                    moveCard={this.moveCard.bind(this)} order={this.props.order} />
+                    moveCard={this.moveCard.bind(this)} order={this.props.order}
+                    toggleAssignWindow={_this.props.toggleAssignWindow.bind(_this)} />
         </span>
       }) : '' }
     </div>)
