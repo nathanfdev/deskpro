@@ -162,14 +162,14 @@ class JsonTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Entity `ticket_1` parsed successfully!', $output);
-        $this->assertContains('Entity `person_710618382` parsed successfully!', $output);
-        $this->assertContains('Entity `news_1` parsed successfully!', $output);
-        $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
-        $this->assertContains('Entity `article_1` parsed successfully!', $output);
-        $this->assertContains('Entity `article_2` parsed successfully!', $output);
-        $this->assertContains('Entity `download_1` parsed successfully!', $output);
-        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
+        $this->assertContains('[JSONTicket #1] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONPerson #710618382] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONNews #1] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONFeedback #1] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONArticle #1] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONArticle #2] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONDownload #1] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONOrganization #Some Organization] Entity parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkNoErrors($command_tester);
