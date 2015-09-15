@@ -67,12 +67,14 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'issuer_id'         => $app->getSetting('issuer_id'),
             'cert'              => $app->getSetting('cert'),
             'login_custom_text' => $app->getSetting('login_custom_text'),
+            'raw_info_filter' => $app->getSetting('raw_info_filter') ?: null,
         );
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->lost_password_url = '';
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Saml';
 
         $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
 
         if ('auto' == $app->getSetting('sso_type')) {
             $us->makeSsoAutoOnly();

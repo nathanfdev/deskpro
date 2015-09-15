@@ -54,6 +54,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin';
 
         $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
 
         $em->persist($us);
         $em->persist($app);
