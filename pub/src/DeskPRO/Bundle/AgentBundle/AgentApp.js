@@ -48,7 +48,7 @@ export default class AgentApp {
       ampMiddleware.redispatchDsaPayload,
       ampMiddleware.guidMiddleware,
       ampMiddleware.promiseMiddleware,
-      ampMiddleware.loggerMiddleware,
+      //ampMiddleware.loggerMiddleware,
       batchedUpdatesMiddleware
     );
     const makeStore  = compose(

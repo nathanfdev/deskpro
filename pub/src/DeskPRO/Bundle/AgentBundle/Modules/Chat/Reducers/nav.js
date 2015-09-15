@@ -23,10 +23,8 @@ const initialState = {
 
 export default createReducer(initialState, {
 
-  [actions.loadCounts]: (state, payload) => {
-    throw state; // isn't thrown, logs contain:
-                 // [Dispatch] CHAT_LOAD_CONVERSATIONS_COUNTS - promise success
-                 // [Dispatch] CHAT_LOAD_CONVERSATIONS_COUNTS - promise done
+  [actions.loadCounts]: (state, payload, action) => {
+    console.log(action.type + ': payload ', payload);
     return state.merge({
       lists: {
         [payload.list]: {

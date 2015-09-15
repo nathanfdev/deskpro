@@ -35,10 +35,14 @@ export const loadCounts = createAction(
         }
       }
 
-      return {
+      const result = {
         list,
         counts: promise.getData().data
       };
+
+      console.log('CHAT_LOAD_CONVERSATIONS_COUNTS: resolving promise to ', result);
+
+      return result;
     })
 );
 
