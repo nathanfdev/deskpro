@@ -11,7 +11,5 @@ export default keyMirror({
   EXPAND_NAV: null,
   COLLAPSE_SWITCHER: null,
   EXPAND_SWITCHER: null,
-  TOGGLE_VIEW: null,
-  TOGGLE_VIEW_MODE: null,
-  TOGGLE_ORDER: null
+  TOGGLE_VIEW: null
 });

@@ -159,9 +159,9 @@ export default class FeedbackList extends Reducer {
     return next;
   }
 
-  viewModeChanged(prev) {
+  viewModeChanged(prev, {payload}) {
     const next    = {...prev};
-    next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
+    next.viewMode = payload.viewMode;
     return next;
   }
 

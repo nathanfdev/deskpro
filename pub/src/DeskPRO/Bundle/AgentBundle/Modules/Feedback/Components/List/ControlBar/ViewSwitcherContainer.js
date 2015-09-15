@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'redux/react';
-import { ListTableViewSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions";
 
 @connect(state => ({
   sort: state.FeedbackList.sort,
@@ -15,8 +16,16 @@ import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Fe
 export class ViewSwitcherContainer extends React.Component {
   render() {
     return (
-      <ListTableViewSwitcher {...this.props} displayFieldsStatus={this.displayFieldsStatus.bind(this)}/>
+      <ViewModeSwitcher
+        {...this.props}
+        toggleView={this.toggleView.bind(this)}
+        displayFieldsStatus={this.displayFieldsStatus.bind(this)}/>
     );
+  }
+
+  toggleView(newView, event) {
+    const {dispatch} = this.props;
+    dispatch(actions.toggleViewMode(newView.field));
   }
 
   displayFieldsStatus(type, field, status) {

@@ -1,26 +1,23 @@
-/**
- * Component to toggle view between the two modes: List and Table
- */
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions";
 import $ from "jquery";
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
 
 
-export class ListTableViewSwitcher extends Component {
+export class ViewModeSwitcher extends Component {
 
   static propTypes = {
     viewModeOptions: PropTypes.array.isRequired,
     listViewFields: PropTypes.array.isRequired,
     tableViewFields: PropTypes.array.isRequired,
+    toggleView: PropTypes.func.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 
   render() {
-    const {viewMode, viewModeOptions, listViewFields, tableViewFields, dispatch, displayFieldsStatus} = this.props;
+    const {viewMode, viewModeOptions, listViewFields, tableViewFields, displayFieldsStatus} = this.props;
     listViewFields.sort(function (a, b) {
       return a.priority - b.priority
     });
@@ -33,7 +30,8 @@ export class ListTableViewSwitcher extends Component {
         <ControlButton title={viewMode}/>
         <DropdownMenu>
           {viewModeOptions.map((option, index)=>
-              <Option key={index} active={viewMode === option.field} option={option} onClick={this.toggleView.bind(this, option)}/>
+              <Option key={index} active={viewMode === option.field} option={option}
+                      onClick={this.handleClick.bind(this, option)}/>
           )}
           <DropdownMenuFooter>
             <div className="dpw-navigation-dropdown-options-link">
@@ -45,54 +43,14 @@ export class ListTableViewSwitcher extends Component {
     );
   }
 
-  toggleView(newView, event) {
+  /** Change sort option (Order By ...)*/
+  handleClick(newView, event) {
     event.stopPropagation();
-    const {dispatch} = this.props;
-    dispatch(actions.toggleViewMode());
+    const {toggleView} = this.props;
+    toggleView(newView);
   }
-
-  showViewModeChoice(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    var elem           = $(event.target),
-        viewModeChoice = elem.closest('.control-button').find('.dpw-navigation-dropdown');
-    viewModeChoice.toggle();
-  }
-
 }
 
-
-export class ViewSelector extends Component {
-  render() {
-    const {active, type, toggleView } = this.props;
-    var classes = classNames('dpw-navigation-dropdown-item', {
-      'active': active
-    });
-    var toggle;
-    toggle      = active ?
-                  (e)=> {
-                    e.preventDefault()
-                  }
-      : toggleView;
-
-    return (
-      <li>
-        <a href="#" className={classes} onClick={toggle}>
-              <span className="dpw-navigation-dropdown-item-mark">
-                <span className="dpw-navigation-dropdown-item-icon dpw-navigation-dropdown-item-icon-2x"><i
-                  className="fa fa-list"></i></span>
-              </span>
-          <span className="dpw-navigation-dropdown-item-title">{type.charAt(0).toUpperCase() + type.slice(1)}
-            View</span>
-          {active ?
-           <span className="dpw-navigation-dropdown-item-status"><i className="fa fa-check"></i></span>
-            : ''
-          }
-        </a>
-      </li>
-    );
-  }
-}
 
 export class DisplayFields extends Component {
   static propTypes = {

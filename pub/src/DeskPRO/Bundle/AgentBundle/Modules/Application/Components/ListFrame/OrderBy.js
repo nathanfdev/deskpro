@@ -12,12 +12,11 @@ export class OrderBy extends Component {
     sort: PropTypes.string.isRequired,
     sortName: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    toggleSort: PropTypes.func.isRequired,
     toggleOrder: PropTypes.func.isRequired
   };
 
   render() {
-    const { sortName, sort, order, toggleSort, sortOptions, toggleOrder} = this.props;
+    const { sortName, sort, order, sortOptions, toggleOrder} = this.props;
 
     return (
       <div className="control-button">
@@ -41,11 +40,7 @@ export class OrderBy extends Component {
     event.preventDefault();
     event.stopPropagation();
     const {toggleSort} = this.props;
-    var elem          = $(event.target),
-          newSortName = elem.text(),
-          table       = $('.dpmw--items-table-list').find('table');
-    table.find('i.fa').remove();
-    elem.closest('.control-button').find('span.control-button-title').text(newSortName);
+    $('.dpmw--items-table-list').find('table').find('i.fa').remove();
     toggleSort(newSort.field, newSort.label);
   }
 }

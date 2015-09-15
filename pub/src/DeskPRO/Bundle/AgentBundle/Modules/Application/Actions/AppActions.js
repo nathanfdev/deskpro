@@ -18,9 +18,6 @@ export const collapseSwitcher = createAction(ActionTypes.COLLAPSE_SWITCHER);
 
 export const toggleView = createAction(ActionTypes.TOGGLE_VIEW);
 
-export const toggleViewMode = createAction(ActionTypes.TOGGLE_VIEW_MODE);
-export const toggleOrder = createAction(ActionTypes.TOGGLE_ORDER);
-
 export function transitionTo(pathname, query = null, state = null) {
   return dispatch => {
     dispatch(doTransitionTo([pathname, query, state]));

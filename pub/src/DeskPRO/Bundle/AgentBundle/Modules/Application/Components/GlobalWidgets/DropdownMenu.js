@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 
 export class DropdownMenu extends Component {
@@ -16,6 +16,12 @@ export class DropdownMenu extends Component {
 }
 
 export class Option extends Component {
+
+  static propTypes = {
+    option: PropTypes.object.isRequired,
+    active: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired
+  };
 
   render() {
     const {active, option, onClick } = this.props;
