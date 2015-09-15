@@ -58,23 +58,24 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
                 $this->advanceProgressBar();
             }
 
+            $oid = isset($item[$ref_column]) ? $item[$ref_column] : '?';
+
             try {
                 if (is_callable($method)) {
-                    $result = $method($item);
+                    $result = $method($item, $num);
                 } else {
-                    $result = $this->$method($item);
+                    $result = $this->$method($item, $num);
                 }
 
                 if ($result instanceof Entity\EntityInterface) {
                     $collection->attach($result);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $result->getDestination()));
-
                 } elseif ($result instanceof Entity\Collection) {
-                    foreach ($result as $entity) {
-                        $collection->attach($entity);
-                        $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                    }
+                    $collection->merge($result);
+                } else {
+                    throw new \RuntimeException('Unsupported parser result');
                 }
+
+                $this->logInfo(sprintf('[%s #%s] Entity parsed successfully!', $prefix, $oid));
 
             } catch (SkippingException $e) {
                 $this->logSkippingException($prefix, $prefix, $ref_column, $e);

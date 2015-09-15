@@ -57,26 +57,17 @@ class Attachment extends AbstractParserFormatterHelper
      */
     public function exportAttachments(array $data, $destination_prefix, $ref_column)
     {
-        $collection = new Entity\Collection();
-        foreach ($data as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
+        $that = $this;
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf(
-                    'Attachment of entity `%s%s` parsed successfully!',
-                    $destination_prefix, $entity->getOid())
-                );
-
-            } catch (\Exception $e) {
-                $this->logWarning(sprintf(
-                    'Invalid attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection(
+            $data,
+            'CSVAttachment',
+            $ref_column,
+            function($attachment, $num) use($that, $destination_prefix, $ref_column) {
+                return $that->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
+            },
+            false
+        );
     }
 
     /**

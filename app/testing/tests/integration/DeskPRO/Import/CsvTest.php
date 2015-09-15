@@ -184,7 +184,7 @@ class CsvTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Attachment of entity `message_0` parsed successfully!', $output);
+        $this->assertContains('[CSVAttachment #1] Entity parsed successfully!', $output);
         $this->assertContains('Entity `message_1` parsed successfully!', $output);
         $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
         $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
