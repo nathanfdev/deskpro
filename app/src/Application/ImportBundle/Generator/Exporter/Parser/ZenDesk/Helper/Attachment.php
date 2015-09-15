@@ -75,7 +75,7 @@ class Attachment extends AbstractParserFormatterHelper
      */
     public function export(array $attachments)
     {
-        return $this->exportCollection($attachments, 'ZDAttachment', 'id', 'exportAttachment');
+        return $this->exportCollection($attachments, 'ZDAttachment', 'id', 'exportAttachment', false);
     }
 
     /**

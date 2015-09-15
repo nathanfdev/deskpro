@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
@@ -56,22 +55,7 @@ class ContactData extends AbstractParserFormatterHelper
      */
     public function export(array $contact_data)
     {
-        $collection = new Entity\Collection();
-        foreach ($contact_data as $num => $data) {
-            try {
-                $entity = $this->exportContact($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONContactData', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONContactData', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($contact_data, 'JSONContactData', 'oid', 'exportContact', false);
     }
 
     /**

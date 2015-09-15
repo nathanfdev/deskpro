@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
@@ -55,20 +54,7 @@ class Attachment extends AbstractParserFormatterHelper
      */
     public function exportAttachments(array $attachments)
     {
-        $collection = new Entity\Collection();
-        foreach ($attachments as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($attachment);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONAttachment', $this->getEntityType(), 'oid', $e);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($attachments, 'JSONAttachment', 'oid', 'exportAttachment', false);
     }
 
     /**

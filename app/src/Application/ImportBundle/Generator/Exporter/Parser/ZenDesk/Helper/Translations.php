@@ -56,7 +56,7 @@ class Translations extends AbstractParserFormatterHelper
      */
     public function export(array $translations)
     {
-        return $this->exportCollection($translations, 'ZDTranslation', 'id', 'exportTranslation');
+        return $this->exportCollection($translations, 'ZDTranslation', 'id', 'exportTranslation', false);
     }
 
     /**

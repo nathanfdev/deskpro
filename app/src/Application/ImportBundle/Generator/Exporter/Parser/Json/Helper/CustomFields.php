@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
@@ -55,18 +54,7 @@ class CustomFields extends AbstractParserFormatterHelper
      */
     public function export(array $custom_fields)
     {
-        $collection = new Entity\Collection();
-        foreach ($custom_fields as $num => $custom_field) {
-            try {
-                $entity = $this->exportCustomField($custom_field);
-                $collection->attach($entity);
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONCustomField', $this->getEntityType(), 'oid', $e);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($custom_fields, 'JSONCustomField', 'oid', 'exportCustomField', false);
     }
 
     /**
