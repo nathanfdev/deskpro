@@ -40,11 +40,11 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
     /**
      * Exports a collection of entities
      *
-     * @param array  $data
-     * @param string $prefix
-     * @param string $ref_column
-     * @param string $method
-     * @param bool   $advance_progressbar
+     * @param array           $data
+     * @param string          $prefix
+     * @param string          $ref_column
+     * @param string|callable $method
+     * @param bool            $advance_progressbar
      *
      * @return Entity\Collection
      */
@@ -59,11 +59,22 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
             }
 
             try {
-                /** @var Entity\EntityInterface $entity */
-                $entity = $this->$method($item);
+                if (is_callable($method)) {
+                    $result = $method($item);
+                } else {
+                    $result = $this->$method($item);
+                }
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                if ($result instanceof Entity\EntityInterface) {
+                    $collection->attach($result);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $result->getDestination()));
+
+                } elseif ($result instanceof Entity\Collection) {
+                    foreach ($result as $entity) {
+                        $collection->attach($entity);
+                        $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                    }
+                }
 
             } catch (SkippingException $e) {
                 $this->logSkippingException($prefix, $prefix, $ref_column, $e);
