@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { List } from './List';
 
 @connect(state => ({
-  elements: state.Chat.list.elements,
-  viewMode: state.Chat.list.viewMode
+  elements: state.Chat.list.get('elements'),
+  viewMode: state.Chat.list.get('viewMode')
 }))
 export class ListContainer extends React.Component {
   render() {

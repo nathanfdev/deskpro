@@ -1,41 +1,26 @@
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/OrderBy');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar/OrderByContainer');
+// #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame
+// #define ~ControlBar DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar
+
+jest.dontMock('~ListFrame/OrderBy');
+jest.dontMock('~ListFrame/index');
+jest.dontMock('~ControlBar/OrderByContainer');
 
 describe('OrderByContainer', () => {
-
-  const React = require('react/addons');
-  const OrderByContainer =
-    require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar/OrderByContainer').OrderByContainer;
-  const OrderBy = require('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/OrderBy').OrderBy;
-  const dummyState = {sort: 'id', order: 'desc', sortOptions: [], sortName: 'sort'};
-
-  function renderInRedux(react, state) {
-    const { Provider, Connector } = require('react-redux');
-    const createStore = require('redux').createStore;
-    const redux = createStore(state);
-
-    return react.addons.TestUtils.renderIntoDocument(
-      <Provider redux={redux}>
-        {() =>
-          <Connector select={() => state}>
-            {() => <OrderByContainer />}
-          </Connector>
-        }
-      </Provider>
-    );
-  }
+  const renderInRedux = require('Helpers/redux').renderInRedux;
+  const OrderByContainer = require('~ControlBar/OrderByContainer').OrderByContainer;
+  const OrderBy = require('~ListFrame/OrderBy').OrderBy;
+  const state = {Chat: {list: {'get': jasmine.createSpy().andCallFake((arg) => {
+    return {sort: 'id', order: 'desc', sortOptions: [], sortName: 'sort'}[arg];
+  })}}};
 
   it('should connect to ChatList state', () => {
-    const state = {ChatList: jasmine.createSpy().andReturn(dummyState)};
-    renderInRedux(React, state);
-    expect(state.ChatList).toHaveBeenCalled();
+    renderInRedux(state, OrderByContainer);
+    expect(state.Chat.list.get).toHaveBeenCalled();
   });
 
   it('should render OrderBy component', () => {
     spyOn(OrderBy.prototype, 'render').andCallThrough();
-    renderInRedux(React, {ChatList: () => dummyState});
+    renderInRedux(state, OrderByContainer);
     expect(OrderBy.prototype.render).toHaveBeenCalled();
   });
-
 });

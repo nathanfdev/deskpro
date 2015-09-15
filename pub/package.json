@@ -83,7 +83,7 @@
     "testDirectoryName": "tests",
     "cacheDirectory": "./.jest-cache",
     "scriptPreprocessor": "./jest-preprocessor",
-    "unmockedModulePathPatterns": ["react", "/node_modules/"],
+    "unmockedModulePathPatterns": ["react", "/node_modules/", "/tests/Helpers/"],
     "testFileExtensions": [
       "es6",
       "js"
