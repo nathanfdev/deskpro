@@ -594,7 +594,7 @@ var DpChatMake = function() {
 
 		var linkUrls = function(string) {
 			return string
-				.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
+				.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
 		};
 
 		this.util = {

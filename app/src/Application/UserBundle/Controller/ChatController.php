@@ -401,6 +401,7 @@ class ChatController extends AbstractController
 
     protected function _sendTranscript($convo, $email, $name)
     {
+        $this->container->getTranslator()->setPersonContext($this->person);
         $convo_messages = $this->em->createQuery("
             SELECT m
             FROM DeskPRO:ChatMessage m
@@ -422,6 +423,7 @@ class ChatController extends AbstractController
         $message->setBody($email_body, 'text/html');
 
         $this->container->getMailer()->send($message);
+        $this->container->getTranslator()->setPersonContext();
     }
 
     public function chatEndedFeedbackAction($session_code)

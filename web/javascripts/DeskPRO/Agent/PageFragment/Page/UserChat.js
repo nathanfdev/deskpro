@@ -861,7 +861,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		if (is_html) {
 			var titleMsg = 'New chat message';
-			$('.prop-msg', row).html(msg);
 		} else {
 			var titleMsg = msg;
 			var isTruncated = false;
@@ -878,9 +877,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			if (isTruncated) {
 				msg += ' <div class="truncated-wrap"><div class="truncated-btn">&bull; &bull; &bull;</div><textarea class="orig-message" style="display:none;">' + Orb.escapeHtml(origMsg) + '</textarea></div>';
 			}
-
-			$('.prop-msg', row).html(msg);
 		}
+		$('.prop-msg', row).html(msg);
+		$('.prop-msg', row).html(msg).find('a').each(function(){
+			$(this).attr('target', '_blank');
+		});
 
 
 		$('time', row).attr('datetime', (new Date()).toString());
@@ -921,7 +922,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       , promise
       , msg = $('<dp>' + msg + '</dp>')
       , doSend = function(){
-          console.log(msg.html());
           msg = msg.html();
           promises.length = 0;
           DeskPRO_Window.util.ajaxWithClientMessages({

@@ -41,6 +41,7 @@ interface ZenDeskReaderInterface extends ReaderInterface
     const CODE_UNAUTHORIZED          = 401;
     const CODE_UN_PROCESSABLE_ENTITY = 422;
     const CODE_TOO_MANY_REQUESTS     = 429;
+    const CODE_NOT_FOUND             = 404;
 
     /**
      * Returns a batch count of users

@@ -66,6 +66,8 @@ class PermsProcessor extends Base
         $this->em->persist($AGENTGROUP_ALL);
         $this->em->flush();
 
+        $this->connection->executeUpdate(sprintf('INSERT INTO person2usergroups VALUES (%d, %d)', $data['context_person_id'], $AGENTGROUP_ALL->id));
+
         ##BEGIN:usergroups.agent_all_nondestructive##
         $AGENTGROUP_ALL_ND = new \Application\DeskPRO\Entity\Usergroup();
         $AGENTGROUP_ALL_ND['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');

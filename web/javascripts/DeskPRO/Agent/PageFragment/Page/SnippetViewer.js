@@ -175,12 +175,6 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 							snippets = sortSnippets(snippets);
 
-							var hasMore = false;
-							if (snippets.length > 15) {
-								var hasMore = true;
-								snippets = snippets.slice(0, 15);
-							}
-
 							var newListWrap = $('<div/>');
 							var catTitle = $('<div class="cat-title"/>');
 							catTitle.text(catList.find('.category-' + cid).text());
@@ -221,12 +215,6 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							});
 
 							catSnippets = sortSnippets(catSnippets);
-
-							var hasMore = false;
-							if (catSnippets.length > 15) {
-								var hasMore = true;
-								catSnippets = catSnippets.slice(0, 15);
-							}
 
 							var newListWrap = $('<div/>');
 							var catTitle = $('<div class="cat-title"/>');

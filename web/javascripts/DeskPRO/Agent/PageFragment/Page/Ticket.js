@@ -1409,6 +1409,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if ($(this).hasClass('cboxElement')) {
 				return;
 			}
+      if (!$(this).attr('href')) {
+        return;
+      }
 
 			ev.preventDefault();
 			ev.stopPropagation();

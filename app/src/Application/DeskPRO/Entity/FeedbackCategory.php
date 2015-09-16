@@ -206,7 +206,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
             array(
                  'fieldName'    => 'usergroups',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                 'cascade'      => array('persist', 'merge', 'remove'),
+                 'cascade'      => array('persist', 'merge'),
                  'joinTable'    => array(
                      'name'               => 'feedback_category2usergroup',
                      'schema'             => null,

@@ -90,8 +90,17 @@ class ImportersController extends AbstractController implements ProtectedControl
             }
         }
 
+        $ret = array();
+
         foreach ($importers as $importer) {
             /** @var $importer DataStoreEntity */
+
+            // TODO: remove when these are ready
+            if (
+                $importer['name'] === 'importers.osticket'
+            ) {
+                continue;
+            }
             $ret[] = array(
                 'id'          => str_replace('importers.', '', $importer['name']),
                 'title'       => $importer->getData('title'),

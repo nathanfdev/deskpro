@@ -527,7 +527,6 @@ class TicketLogGenerator
                 break;
 
             case 'trigger':
-                $a = 1;
                 return array(
                     'action_type' => 'trigger',
                     'id_after'    => $new['trigger_id'],
@@ -717,6 +716,14 @@ class TicketLogGenerator
 				$log_data['is_choice']    = $is_choice;
 
 				return $log_data;
+
+            case 'email_account':
+                return array(
+                    'action_type'   => 'email_account',
+                    'old'           => $old ? $old->address : null,
+                    'new'           => $new ? $new->address : null,
+                );
+                break;
 
             default:
                 return array();
