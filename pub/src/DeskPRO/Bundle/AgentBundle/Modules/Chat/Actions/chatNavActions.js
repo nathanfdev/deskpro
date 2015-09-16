@@ -1,9 +1,8 @@
 import { createAction } from 'Ampliflux';
 import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
-import { loadPeopleNames, releasePeopleNamesRequest }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/PeopleNamesActions';
-import { loadDepartmentsNames, releaseDepartmentsNamesRequest }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/DepartmentsNamesActions';
+import { loadUsers, releaseRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/UserActions';
+import { loadDepartments, releaseDepartmentsRequest }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/departmentsActions';
 
 /**
  * Used to identify requests within record stores
@@ -16,9 +15,9 @@ export const loadCounts = createAction(
   (list, groupBy) =>
     (dispatch) => loadChatCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
       if (groupBy === 'department') {
-        dispatch(loadDepartmentsNames(recordStoresId, promise.getData().data.nested.map(count => count.group)));
+        dispatch(loadDepartments(recordStoresId, promise.getData().data.nested.map(count => count.group)));
       } else if (groupBy === 'agent') {
-        dispatch(loadPeopleNames(recordStoresId, promise.getData().data.nested.map(count => count.group)));
+        dispatch(loadUsers(recordStoresId, promise.getData().data.nested.map(count => count.group)));
       }
 
       return {
@@ -45,8 +44,9 @@ export const changeListGrouping = createAction(
 
 export const unmount = createAction(
   'CHAT_NAV_UNMOUNT',
-  () => (dispatch) => {
-    dispatch(releasePeopleNamesRequest(recordStoresId));
-    dispatch(releaseDepartmentsNamesRequest(recordStoresId));
+  () => dispatch => {
+    console.log('CHAT_NAV_UNMOUNT');
+    dispatch(releaseRequest(recordStoresId));
+    dispatch(releaseDepartmentsRequest(recordStoresId));
   }
 );

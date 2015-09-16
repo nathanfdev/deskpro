@@ -2,30 +2,31 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { createPeopleNamesRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/peopleNamesSelectors';
-import { createDepartmentsNamesRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/departmentsNamesSelectors';
+import { createUserRequestSelectors }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/userSelectors';
+import { createDepartmentsRequestSelectors }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/departmentsSelectors';
 
-const chatNavPeopleNamesSelector = createPeopleNamesRequestSelectors('chatNav');
-const chatNavDepartmentsNamesSelector = createDepartmentsNamesRequestSelectors('chatNav');
+const chatNavUsersSelector = createUserRequestSelectors('chatNav');
+const chatNavDepartmentsSelector = createDepartmentsRequestSelectors('chatNav');
 
 /**
- * Reduces record stores {id: {id, name}} to {id: name}
+ * Reduces record stores to property value {id: {...}} to {id: property}
+ * @param property
  * @param records
- * @return Object {id: name}
+ * @return Object {id: property}
  */
-function reduceToName(records) {
+function reduceTo(property, records) {
   const reduced = {};
-  Object.keys(records).forEach(key => reduced[key] = records[key].name);
+  Object.keys(records).forEach(key => reduced[key] = records[key][property]);
 
   return reduced;
 }
 
 @connect(state => ({
   labels: {
-    agent: reduceToName(chatNavPeopleNamesSelector.recordsSel(state).toJS()),
-    department: reduceToName(chatNavDepartmentsNamesSelector.recordsSel(state).toJS()),
+    agent: reduceTo('name', chatNavUsersSelector.recordsSel(state).toJS()),
+    department: reduceTo('title', chatNavDepartmentsSelector.recordsSel(state).toJS()),
     date_period: DatePeriods.all
   }
 }))

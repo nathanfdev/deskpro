@@ -9,12 +9,8 @@ export function loadDepartment(id) {
   return DpApi.sendGet(`DP_API/departments/${id}`);
 }
 
-/**
- * @param ids
- * @return Promise
- */
-export function loadNames(ids) {
-  return DpApi.sendGet('DP_API/departments/names?ids=' + ids.join(','));
+export function load(ids) {
+  return DpApi.sendGet('DP_API/departments?ids=' + ids.join(','));
 }
 
 /**

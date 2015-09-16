@@ -3,8 +3,7 @@ import ROOT_routing                                       from "./Modules/Applic
 import ROOT_user                                          from "./Modules/Application/Reducers/user.js";
 import Chat_list                                          from "./Modules/Chat/Reducers/list.js";
 import Chat_nav                                           from "./Modules/Chat/Reducers/nav.js";
-import Common_departmentsNames                            from "./Modules/Common/Reducers/departmentsNames.js";
-import Common_peopleNames                                 from "./Modules/Common/Reducers/peopleNames.js";
+import Common_departments                                 from "./Modules/Common/Reducers/departments.js";
 import Common_users                                       from "./Modules/Common/Reducers/users.js";
 import ROOT_CrmNav                                        from "./Modules/CRM/Reducers/CrmNav.js";
 import ROOT_FeedbackList                                  from "./Modules/Feedback/Reducers/FeedbackList.js";
@@ -61,8 +60,7 @@ export default {
     "nav":                                                Chat_nav,
   },
   "Common": {
-    "departmentsNames":                                   Common_departmentsNames,
-    "peopleNames":                                        Common_peopleNames,
+    "departments":                                        Common_departments,
     "users":                                              Common_users,
   },
   "Test": {
