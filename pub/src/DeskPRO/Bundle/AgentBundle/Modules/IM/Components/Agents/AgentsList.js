@@ -6,9 +6,10 @@ const AgentsList = React.createClass(
     {
     getInitialState: function() {
         return {
-            agents: this.props.agents
-        }
+            agents: this.filterAgents()
+        };
     },
+
     render: function() {
         return (
             <div>
@@ -22,21 +23,34 @@ const AgentsList = React.createClass(
                 </form>
                 <div className="im-list-wrapper">
                     <ul className="im-list">
-                        {this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />)}
+                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />) : this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />)}
                     </ul>
                 </div>
             </div>
         );
     },
 
-    onChange: function()
+    onChange: function(event)
     {
-        this.setState({agents: this.filterAgents()});
+        this.setState({agents: this.filterAgents(event.target.value)});
     },
 
-    filterAgents: function ()
+    filterAgents: function(value = '')
     {
-        return this.props.agents;
+        let newAgents = [];
+        if(typeof value == 'string' && value.trim().length > 0) {
+            this.props.agents.forEach((agent) => {
+                const name = agent.name.toLowerCase();
+                if(name.indexOf(value.toLowerCase()) >= 0) {
+                    newAgents.push(agent);
+                }
+            });
+        } else {
+            console.log(this.props.agents);
+            newAgents = this.props.agents;
+        }
+
+        return newAgents;
     }
 });
 
