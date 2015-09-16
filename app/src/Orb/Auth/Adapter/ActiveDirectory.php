@@ -136,9 +136,9 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      *
      * @return Result
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
-        $res = $this->doAuthenticate();
+        $res = $this->doAdAuthenticate();
 
         if (!$res->isValid() && strpos($this->set_username, '@')) {
             $record = $this->findRecordViaEmail();
@@ -288,7 +288,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      *
      * @return Result
      */
-    public function doAuthenticate()
+    public function doAdAuthenticate()
     {
         if (!$this->set_username) {
             if ($this->logger) {
