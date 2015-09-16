@@ -4,8 +4,11 @@ import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 import { createPeopleNamesRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/peopleNamesSelectors';
+import { createDepartmentsNamesRequestSelectors }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/departmentsNamesSelectors';
 
 const chatNavPeopleNamesSelector = createPeopleNamesRequestSelectors('chatNav');
+const chatNavDepartmentsNamesSelector = createDepartmentsNamesRequestSelectors('chatNav');
 
 /**
  * Reduces record stores {id: {id, name}} to {id: name}
@@ -22,7 +25,7 @@ function reduceToName(records) {
 @connect(state => ({
   labels: {
     agent: reduceToName(chatNavPeopleNamesSelector.recordsSel(state).toJS()),
-    department: state.Chat.nav.get('departmentNames').toJS(),
+    department: reduceToName(chatNavDepartmentsNamesSelector.recordsSel(state).toJS()),
     date_period: DatePeriods.all
   }
 }))
