@@ -15,6 +15,7 @@ import * as chat_stores from "DeskPRO/Bundle/AgentBundle/Modules/Chat/Reducers/i
 import * as crm_stores from "DeskPRO/Bundle/AgentBundle/Modules/CRM/Reducers/index";
 import * as publish_stores from "DeskPRO/Bundle/AgentBundle/Modules/Publish/Reducers/index";
 import * as feedback_stores from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Reducers/index";
+import * as im_stores from "DeskPRO/Bundle/AgentBundle/Modules/IM/Reducers/index";
 
 import { DpAppContainer } from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
 
@@ -31,7 +32,8 @@ export default class AgentApp {
         chat_stores,
         crm_stores,
         publish_stores,
-        feedback_stores
+        feedback_stores,
+        im_stores
     ));
 
     const dispatcher = createDispatcher(
