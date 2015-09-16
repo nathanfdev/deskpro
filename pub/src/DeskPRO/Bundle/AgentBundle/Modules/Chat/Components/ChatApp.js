@@ -8,6 +8,7 @@ export class ChatApp extends React.Component {
     return (
       <AppContainer thisAppId="chat">
         <NavContainer />
+        <ListContainer />
       </AppContainer>
     );
   }
