@@ -28,8 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
@@ -62,41 +62,38 @@ final class ArticleCategories extends AbstractParser
      */
     public function export()
     {
-        return $this->exportCategories($this->reader->getData($this->getArticleCategoryReaderConfig()));
+        return $this->exportCategories($this->reader->getData($this->getArticleCategoryReaderConfig()), true);
     }
 
     /**
+     * Returns a collection of article category entities
+     *
      * @param array $categories
+     * @param bool  $advance_progressbar
+     *
      * @return Entity\Collection
      */
-    private function exportCategories(array $categories)
+    protected function exportCategories(array $categories, $advance_progressbar)
     {
-        $collection = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($categories)
+            ->setPrefix('JSONArticleCategory')
+            ->setRefColumn('oid')
+            ->setMethod('exportArticleCategory')
+            ->setAdvanceProgressbar($advance_progressbar)
+        ;
 
-        foreach ($categories as $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportArticleCategory($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONArticleCategory', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONArticleCategory', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
+     * Returns an article category entity
+     *
      * @param array $data
      * @return Entity\ArticleCategory
      */
-    private function exportArticleCategory(array $data)
+    protected function exportArticleCategory(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
@@ -120,7 +117,7 @@ final class ArticleCategories extends AbstractParser
             ->setTitle($formatted['title'])
             ->setAsAgent($formatted['is_agent'])
             ->setAsBook($formatted['is_book'])
-            ->setCategories($this->exportCategories($formatted['categories']))
+            ->setCategories($this->exportCategories($formatted['categories'], false))
         ;
 
         foreach ($formatted['user_groups'] as $user_group) {
