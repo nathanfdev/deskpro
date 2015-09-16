@@ -54,7 +54,7 @@ class Attachment extends AbstractParserFormatterHelper
      * @param string $destination_prefix
      * @param string $ref_column
      *
-     * @return Entity\Collection
+     * @return Entity\Attachment[]|Entity\Collection
      */
     public function exportAttachments(array $data, $destination_prefix, $ref_column)
     {
@@ -80,7 +80,7 @@ class Attachment extends AbstractParserFormatterHelper
      * @param array  $data
      * @param string $ref_column
      *
-     * @return Entity\Attachment|null
+     * @return Entity\Attachment
      */
     public function exportAttachment($num, $destination_prefix, array $data, $ref_column)
     {

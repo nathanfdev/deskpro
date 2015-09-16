@@ -53,7 +53,7 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
      * @param string    $destination_prefix
      * @param string    $ref_column
      *
-     * @return Entity\Collection
+     * @return Entity\CustomField[]|Entity\Collection
      */
     public function export(array $data, $destination_prefix, $ref_column)
     {
@@ -82,7 +82,7 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
      * @param array  $data
      * @param string $ref_column
      *
-     * @return Entity\CustomField|null
+     * @return Entity\CustomField
      */
     protected function exportCustomField($num, $destination_prefix, array $data, $ref_column)
     {
