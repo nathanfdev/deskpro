@@ -146,7 +146,6 @@ final class Tickets extends AbstractParser
 
         $messages = $this->exportMessages($formatted['ticket_id']);
         foreach ($messages as $message) {
-            /** @var Entity\TicketMessage $message */
             $entity->addMessage($message);
         }
 
@@ -182,7 +181,7 @@ final class Tickets extends AbstractParser
      * Returns a collection of the ticket messages
      *
      * @param int $ticket_id
-     * @return Entity\Collection
+     * @return Entity\TicketMessage[]|Entity\Collection
      */
     private function exportMessages($ticket_id)
     {
@@ -230,7 +229,6 @@ final class Tickets extends AbstractParser
 
         $attachments = $this->exportAttachments($formatted['id']);
         foreach ($attachments as $attachment) {
-            /** @var Entity\Attachment $attachment */
             $entity->addAttachment($attachment);
         }
 
@@ -241,7 +239,7 @@ final class Tickets extends AbstractParser
      * Returns a collection of the ticket message attachments
      *
      * @param int $message_id
-     * @return Entity\Collection
+     * @return Entity\Attachment[]|Entity\Collection
      */
     private function exportAttachments($message_id)
     {
