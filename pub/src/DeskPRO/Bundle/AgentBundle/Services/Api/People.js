@@ -31,6 +31,14 @@ export function loadAgentsTotalCount() {
 }
 
 /**
+ * @param ids
+ * @return Promise
+ */
+export function loadNames(ids) {
+  return DpApi.sendGet('DP_API/people/names?ids=' + ids.join(','));
+}
+
+/**
  * Compile parameters into a URL string
  * @param params
  * @returns {string}

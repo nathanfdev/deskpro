@@ -37,10 +37,6 @@ export default createReducer(initialState, {
     }
   }),
 
-  [actions.loadAgentName]: async({
-    success: (state, payload) => state.mergeIn(['agentNames'], {[payload.id]: payload.name})
-  }),
-
   [actions.loadDepartmentName]: async({
     success: (state, payload) => state.mergeIn(['departmentNames'], {[payload.id]: payload.name})
   }),
