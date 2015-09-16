@@ -23,7 +23,7 @@ export class Option extends Component {
   static propTypes = {
     option: PropTypes.object.isRequired,
     active: PropTypes.bool.isRequired,
-    callback: PropTypes.func.isRequired
+    callbackFunc: PropTypes.func.isRequired
   };
 
   render() {
@@ -59,8 +59,8 @@ export class Option extends Component {
   handleClick(option, event) {
     event.preventDefault();
     event.stopPropagation();
-    const {callback} = this.props;
-    callback(option);
+    const {callbackFunc} = this.props;
+    callbackFunc(option);
   }
 }
 

@@ -19,7 +19,7 @@ export class ViewSwitcherDropdownContainer extends Component {
       <DropdownMenu dropdownClass="view-mode-dropdown">
         {viewModeOptions.map((option, index)=>
             <Option key={index} active={currentViewMode.field === option.field} option={option}
-                    callback={this.toggleView.bind(this)}/>
+                    callbackFunc={this.toggleView.bind(this)}/>
         )}
         <DropdownMenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
@@ -35,7 +35,7 @@ export class ViewSwitcherDropdownContainer extends Component {
   /** Change sort option (Order By ...)*/
   toggleView(newView) {
     const {dispatch} = this.props;
-    dispatch(toggleViewMode(newView));
+    dispatch(toggleViewMode(newView.field));
   }
 
   openOptionsSubmenu(event) {

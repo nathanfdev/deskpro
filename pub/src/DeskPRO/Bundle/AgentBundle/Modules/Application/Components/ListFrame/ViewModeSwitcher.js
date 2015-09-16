@@ -10,8 +10,7 @@ export class ViewModeSwitcher extends Component {
   static propTypes = {
     viewModeOptions: PropTypes.array.isRequired,
     listViewFields: PropTypes.array.isRequired,
-    tableViewFields: PropTypes.array.isRequired,
-    toggleView: PropTypes.func.isRequired
+    tableViewFields: PropTypes.array.isRequired
   };
 
   render() {

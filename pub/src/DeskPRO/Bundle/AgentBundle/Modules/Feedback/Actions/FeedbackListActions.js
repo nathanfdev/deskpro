@@ -138,7 +138,7 @@ export const setTableSort = createAction(
 export const toggleViewMode = createAction(
   "FEEDBACK_TOGGLE_VIEW_MODE",
   (trigger, viewMode) => {
-    trigger({viewMode:viewMode});
+    trigger(viewMode);
   });
 
 export const toggleOrder = createAction(

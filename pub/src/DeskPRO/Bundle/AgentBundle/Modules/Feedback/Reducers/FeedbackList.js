@@ -160,13 +160,12 @@ export default class FeedbackList extends Reducer {
   }
 
   viewModeChanged(prev, {payload}) {
-    console.log('Pre: ', prev);
-    let next = {...prev};
-    var viewModeOptions = next.viewModeOptions;
-    for (let option of viewModeOptions) {
-      option.current = (option.field === payload.viewMode);
-    }
-    console.log('Post: ', next.viewModeOptions);
+    const next = {...prev};
+    console.log('Pre: ', next.viewModeOptions);
+    next.viewModeOptions.forEach(obj=> {
+      obj.current = obj.field === payload;
+    });
+    console.log('Next: ', next.viewModeOptions);
     return next;
   }
 
