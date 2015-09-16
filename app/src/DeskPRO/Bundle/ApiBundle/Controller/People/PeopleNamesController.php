@@ -48,7 +48,7 @@ class PeopleNamesController extends BaseController implements ClassResourceInter
 {
     /**
      * @ApiDoc(
-     *      description="Get [person id => name] map",
+     *      description="Get collection of people names [[id,name], ...]",
      *      parameters={
      *          {
      *              "name"="ids",
@@ -62,11 +62,11 @@ class PeopleNamesController extends BaseController implements ClassResourceInter
      *          200="Success"
      *      }
      * )
-     * @Get("/people/names", name="api_people")
+     * @Get("/people/names", name="api_people_names")
      * @param Request $request
      * @return View
      */
-    public function getMapAction(Request $request)
+    public function cgetAction(Request $request)
     {
         $ids = explode(',', $request->query->get('ids'));
         $names = $this->selectPeopleNames($ids);
@@ -93,11 +93,7 @@ class PeopleNamesController extends BaseController implements ClassResourceInter
             ->where('p.id IN (:ids)')
             ->setParameters(compact('ids'));
 
-        $records = $qb->getQuery()->getArrayResult();
-        $names = [];
-        foreach ($records as $record) {
-            $names[$record['id']] = $record['name'];
-        }
+        $names = $qb->getQuery()->getArrayResult();
 
         return $names;
     }
