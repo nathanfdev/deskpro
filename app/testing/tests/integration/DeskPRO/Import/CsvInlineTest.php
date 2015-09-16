@@ -119,8 +119,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->assertCount(4, $person['contact_data']);
 
         // Checking for tickets
-        $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
-        $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #144] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #145] Entity parsed successfully!', $output);
 
         $ticket = $this->getContent('1/tickets/ticket_144.json');
         $this->assertCount(4, $ticket['custom_fields']);

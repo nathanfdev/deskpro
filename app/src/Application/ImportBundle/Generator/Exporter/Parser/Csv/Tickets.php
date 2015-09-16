@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Orb\Util\Strings;
@@ -67,41 +66,35 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $collection    = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getTicketReaderConfig()))
+            ->setPrefix('CSVTicket')
+            ->setRefColumn('id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $tickets       = $this->getReaderData($this->getTicketReaderConfig());
+        $collection    = $this->exportCollection($config);
         $messages      = $this->exportMessages();
         $custom_fields = $this->exportTicketCustomFields();
 
-        foreach ($tickets as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportTicket($num, $data);
-
-                foreach ($messages as $message_entity) {
-                    if ($entity->getDestination() === $message_entity->getDestination()) {
-                        $entity->addMessage($message_entity);
-                    }
+        foreach ($collection as $ticket) {
+            /** @var Entity\Ticket $ticket */
+            foreach ($messages as $message_entity) {
+                if ($ticket->getDestination() === $message_entity->getDestination()) {
+                    $ticket->addMessage($message_entity);
                 }
-                foreach ($custom_fields as $custom_field_entity) {
-                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                        $entity->addCustomField($custom_field_entity);
-                    }
+            }
+            foreach ($custom_fields as $custom_field_entity) {
+                if ($ticket->getDestination() === $custom_field_entity->getDestination()) {
+                    $ticket->addCustomField($custom_field_entity);
                 }
+            }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
-                foreach ($inline_custom_fields as $custom_field_entity) {
-                    $entity->addCustomField($custom_field_entity);
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVTicket', $this->getEntityType(), 'subject', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVTicket', $this->getEntityType(), 'subject', $e, $data);
+            $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($ticket->getDestination(), $ticket->getRawData());
+            foreach ($inline_custom_fields as $custom_field_entity) {
+                $ticket->addCustomField($custom_field_entity);
             }
         }
 
@@ -111,12 +104,12 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket entity
      *
-     * @param int   $num
      * @param array $data
+     * @param int   $num
      *
-     * @return Entity\Ticket|null
+     * @return Entity\Ticket
      */
-    private function exportTicket($num, array $data)
+    protected function exportTicket(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
             'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
