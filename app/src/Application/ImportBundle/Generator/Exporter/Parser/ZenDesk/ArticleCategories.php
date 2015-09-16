@@ -30,9 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * ZenDesk article categories parser
@@ -85,32 +84,18 @@ final class ArticleCategories extends AbstractParser
      *
      * @return Entity\Collection|Entity\ArticleCategory[]
      */
-    private function exportCategories()
+    protected function exportCategories()
     {
-        $collection = new Entity\Collection();
-        $collection->setExpectedCount($this->getCount());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getArticlesCategories())
+            ->setPrefix('ZDArticleCategory')
+            ->setRefColumn('id')
+            ->setMethod('exportCategory')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $categories = $this->reader->getArticlesCategories();
-
-        foreach ($categories as $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportCategory($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDArticleCategory', $this->getEntityType(), 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDArticleCategory', $this->getEntityType(), 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDArticleCategory', $this->getEntityType(), 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -119,7 +104,7 @@ final class ArticleCategories extends AbstractParser
      * @param array $data
      * @return Entity\ArticleCategory
      */
-    private function exportCategory(array $data)
+    protected function exportCategory(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'           => TransformerInterface::TYPE_INT,
@@ -147,30 +132,18 @@ final class ArticleCategories extends AbstractParser
      *
      * @return Entity\Collection|Entity\ArticleCategory[]
      */
-    private function exportSections()
+    protected function exportSections()
     {
-        $collection = new Entity\Collection();
-        $sections   = $this->reader->getArticlesSections();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getArticlesSections())
+            ->setPrefix('ZDArticleSection')
+            ->setRefColumn('id')
+            ->setMethod('exportSection')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($sections as $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportSection($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDArticleSection', $this->getEntityType(), 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDArticleSection', $this->getEntityType(), 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDArticleSection', $this->getEntityType(), 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -179,7 +152,7 @@ final class ArticleCategories extends AbstractParser
      * @param array $data
      * @return Entity\ArticleCategory
      */
-    private function exportSection(array $data)
+    protected function exportSection(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'           => TransformerInterface::TYPE_INT,
