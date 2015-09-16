@@ -83,4 +83,8 @@ export class NavContainer extends React.Component {
       }
     }
   }
+
+  componentWillUnmount() {
+    this.props.dispatch(actions.unmount());
+  }
 }

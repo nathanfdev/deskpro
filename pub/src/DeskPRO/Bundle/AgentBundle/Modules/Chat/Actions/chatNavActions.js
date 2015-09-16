@@ -1,16 +1,24 @@
 import { createAction } from 'Ampliflux';
-import { loadPeopleNames } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/PeopleNamesActions';
-import { loadDepartmentsNames } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/DepartmentsNamesActions';
-import * as Chat from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
+import { loadCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
+import { loadPeopleNames, releasePeopleNamesRequest }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/PeopleNamesActions';
+import { loadDepartmentsNames, releaseDepartmentsNamesRequest }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/DepartmentsNamesActions';
+
+/**
+ * Used to identify requests within record stores
+ * @type {string}
+ */
+const recordStoresId = 'chatNav';
 
 export const loadCounts = createAction(
-  'CHAT_LOAD_CONVERSATIONS_COUNTS',
+  'CHAT_NAV_LOAD_CONVERSATIONS_COUNTS',
   (list, groupBy) =>
-    (dispatch) => Chat.loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
+    (dispatch) => loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
       if (groupBy === 'department') {
-        dispatch(loadDepartmentsNames('chatNav', promise.getData().data.nested.map(count => count.group)));
+        dispatch(loadDepartmentsNames(recordStoresId, promise.getData().data.nested.map(count => count.group)));
       } else if (groupBy === 'agent') {
-        dispatch(loadPeopleNames('chatNav', promise.getData().data.nested.map(count => count.group)));
+        dispatch(loadPeopleNames(recordStoresId, promise.getData().data.nested.map(count => count.group)));
       }
 
       return {
@@ -21,16 +29,24 @@ export const loadCounts = createAction(
 );
 
 export const toggleListGroupingVisibility = createAction(
-  'CHAT_TOGGLE_LIST_GROUPING_VISIBILITY',
+  'CHAT_NAV_TOGGLE_LIST_GROUPING_VISIBILITY',
   list => list
 );
 
 export const changeListGrouping = createAction(
-  'CHAT_CHANGE_LIST_GROUPING',
+  'CHAT_NAV_CHANGE_LIST_GROUPING',
   (list, groupBy) => dispatch => {
     dispatch(loadCounts(list, groupBy));
     dispatch(toggleListGroupingVisibility(list));
 
     return {list, groupBy};
+  }
+);
+
+export const unmount = createAction(
+  'CHAT_NAV_UNMOUNT',
+  () => (dispatch) => {
+    dispatch(releasePeopleNamesRequest(recordStoresId));
+    dispatch(releaseDepartmentsNamesRequest(recordStoresId));
   }
 );
