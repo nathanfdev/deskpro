@@ -4,10 +4,11 @@ import { connect } from 'redux/react';
 
 @connect(state => ({
   elements: state.FeedbackList.feedback,
-  viewMode: state.FeedbackList.viewMode
+  viewModeOptions: state.FeedbackList.viewModeOptions
 }))
 export class ListContainer extends React.Component {
   render() {
+
     return (
       <List {...this.props} />
     );

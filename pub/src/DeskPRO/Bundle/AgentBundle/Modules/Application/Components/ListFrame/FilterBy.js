@@ -6,19 +6,15 @@ export class FilterBy extends Component {
   render() {
     const {filters}=this.props;
     return (
-      <div className="control-button">
-        <span className="title">Filter by:</span>
-        <a href="#">
-          <span className="multi" onClick={this.showFilterChoice.bind(this)}>
-            <span className="filter-name" data-filter={filters.alias}>{filters.name}</span>
-            <span className="multi-down"><i className="fa fa-caret-down"/></span>
-          </span>
+      <li>
+        <a href="#" className="dpwd-navigation-dropdown-top-row-button">
+          <span className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">Order by:</span>
+          <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className="fa fa-calendar-o"></i></span>
+          <span className="dpwd-navigation-dropdown-top-row-button-text">{filters.name} ({filters.value ? filters.value : '...'})</span>
+          <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className="fa fa-caret-down"></i></span>
         </a>
-        <span className="down" onClick={this.showFilterValueChoice.bind(this)}>
-          {filters.value ? filters.value : 'select...'} <i className="fa fa-caret-down"/>
-        </span>
         {this.props.children}
-      </div>
+      </li>
     );
   }
 

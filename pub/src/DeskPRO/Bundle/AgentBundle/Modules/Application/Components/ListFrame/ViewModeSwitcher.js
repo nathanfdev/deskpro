@@ -11,51 +11,25 @@ export class ViewModeSwitcher extends Component {
     viewModeOptions: PropTypes.array.isRequired,
     listViewFields: PropTypes.array.isRequired,
     tableViewFields: PropTypes.array.isRequired,
-    toggleView: PropTypes.func.isRequired,
-    viewMode: PropTypes.string.isRequired
+    toggleView: PropTypes.func.isRequired
   };
 
   render() {
-    const {viewMode, viewModeOptions, listViewFields, tableViewFields, displayFieldsStatus} = this.props;
+    const {viewModeOptions, listViewFields, tableViewFields, displayFieldsStatus} = this.props;
     listViewFields.sort(function (a, b) {
       return a.priority - b.priority
     });
     tableViewFields.sort(function (a, b) {
       return a.priority - b.priority
     });
+    let currentViewMode = viewModeOptions.find((option)=>option.current === true);
     return (
-      <div className="control-button">
-        <span className="title">View:</span>
-        <ControlButton title={viewMode}/>
-        <DropdownMenu>
-          {viewModeOptions.map((option, index)=>
-              <Option key={index} active={viewMode === option.field} option={option}
-                      onClick={this.handleClick.bind(this, option)}/>
-          )}
-          <DropdownMenuFooter>
-            <div className="dpw-navigation-dropdown-options-link">
-              <a href="#" onClick={this.openOptionsSubmenu.bind(this)}>View Options <i className="fa fa-cog"></i></a>
-            </div>
-          </DropdownMenuFooter>
-        </DropdownMenu>
-        <ViewOptionsSubmenu viewMode={viewMode} viewModeOptions={viewModeOptions}
-                            listViewFields={listViewFields} tableViewFields={tableViewFields}
-                            displayFieldsStatus={ displayFieldsStatus}/>
-      </div>
+      <li>
+        <ControlButton title="View:" icon={currentViewMode.icon} dropdownClass="view-mode-dropdown"
+                       currentMode={currentViewMode.label.substring(0, currentViewMode.label.indexOf(' '))}/>
+      </li>
     );
   }
 
-  /** Change sort option (Order By ...)*/
-  handleClick(newView, event) {
-    event.stopPropagation();
-    const {toggleView} = this.props;
-    toggleView(newView);
-  }
 
-  openOptionsSubmenu(event) {
-    event.stopPropagation();
-    var controlButton = $(event.target).closest('.control-button');
-    controlButton.find('.dpw-navigation-dropdown').not('.dpw-navigation-dropdown-secondary').hide();
-    controlButton.find('.dpw-navigation-dropdown-secondary').show();
-  }
 }

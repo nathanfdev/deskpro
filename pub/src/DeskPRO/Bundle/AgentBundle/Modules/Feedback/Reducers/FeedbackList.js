@@ -7,13 +7,9 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
   getInitialState() {
     return {
-      viewMode: constants.VIEW_MODE_TABLE,
       viewModeOptions: [
-        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table'}, {
-          field: constants.VIEW_MODE_LIST,
-          label: 'List view',
-          icon: 'fa-list'
-        }
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
+        {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
       ],
       query: {awaiting_validation: 1},
       filters: {
@@ -26,9 +22,9 @@ export default class FeedbackList extends Reducer {
       sortName: 'Date', /* Label for Order By... */
       order: constants.ORDER_DESC, /* Asc, Desc */
       sortOptions: [
-        {field: 'date_created', label: 'Date', icon:'fa-calendar-o'},
-        {field: 'total_rating', label: 'Rating', icon:'fa-calendar-o'},
-        {field: 'num_ratings', label: 'Number of votes', icon:'fa-calendar-o'}
+        {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
+        {field: 'total_rating', label: 'Rating', icon: 'fa-calendar-o', current: false},
+        {field: 'num_ratings', label: 'Number of votes', icon: 'fa-calendar-o', current: false}
       ],
       listViewFields: [
         {name: 'id', label: 'ID', status: constants.FIELD_REQUIRED, priority: 3},
@@ -164,8 +160,13 @@ export default class FeedbackList extends Reducer {
   }
 
   viewModeChanged(prev, {payload}) {
-    const next    = {...prev};
-    next.viewMode = payload.viewMode;
+    console.log('Pre: ', prev);
+    let next = {...prev};
+    var viewModeOptions = next.viewModeOptions;
+    for (let option of viewModeOptions) {
+      option.current = (option.field === payload.viewMode);
+    }
+    console.log('Post: ', next.viewModeOptions);
     return next;
   }
 

@@ -22,22 +22,10 @@ export class OrderByContainer extends React.Component {
         sortName={sortName}
         sortOptions={sortOptions}
         order={order}
-        toggleSort={this.toggleListSort.bind(this)}
-        toggleOrder={this.toggleListOrder.bind(this)}
         />
     );
   }
 
 
-  /** Change sort option (Order By ...)*/
-  toggleListSort(newSort, newSortName) {
-    const {dispatch, order, query, filters} = this.props;
-    dispatch(toggleSort(query, newSort, newSortName, order, filters));
-  }
-
-  toggleListOrder(order) {
-    const {dispatch, query, sort, filters} = this.props;
-    dispatch(toggleOrder(query, sort, order, filters));
-  }
 
 }

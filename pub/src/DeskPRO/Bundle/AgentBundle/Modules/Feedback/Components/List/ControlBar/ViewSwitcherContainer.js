@@ -8,7 +8,6 @@ import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/Fe
   sort: state.FeedbackList.sort,
   order: state.FeedbackList.order,
   filters: state.FeedbackList.filters,
-  viewMode: state.FeedbackList.viewMode,
   viewModeOptions: state.FeedbackList.viewModeOptions,
   tableViewFields: state.FeedbackList.tableViewFields,
   listViewFields: state.FeedbackList.listViewFields
