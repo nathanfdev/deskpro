@@ -25,17 +25,11 @@ const initialState = {
 export default createReducer(initialState, {
 
   [actions.loadCounts]: async({
-    success: (state, payload) => {
-      return state.mergeDeep({
-        lists: {
-          [payload.list]: {
-            total: payload.counts.count,
-            items: payload.counts.nested
-          }
-        }
-      });
-    }
+    success: (state, payload) =>
+      state.setIn(['lists', payload.list, 'total'], payload.counts.count)
+           .setIn(['lists', payload.list, 'items'], payload.counts.nested)
   }),
+
 
   [actions.loadDepartmentName]: async({
     success: (state, payload) => state.mergeIn(['departmentNames'], {[payload.id]: payload.name})
