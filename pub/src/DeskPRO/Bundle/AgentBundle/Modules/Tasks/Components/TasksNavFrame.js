@@ -13,10 +13,10 @@ import $ from "jquery";
 @connect(state => ({
   taskList: state.taskList,
   projectList: state.projectList,
-  agentList:state.agentList,
-  labelList:state.labelList,
-  teamList:state.teamList,
-  departmentList:state.departmentList,
+  agentList: state.agentList,
+  labelList: state.labelList,
+  teamList: state.teamList,
+  departmentList: state.departmentList,
   user: state.user,
   createdProject: state.createdProject,
   dp_window: state.dp_window
@@ -67,6 +67,7 @@ export default class TasksNavFrame extends React.Component {
                              departmentList={departmentList}
                              createdProject={createdProject}
                              filterTasks={this.filterTasks.bind(this)}
+                             user={this.props.user}
               />
 
             <TaskNavPeople agentList={agentList} filterTasks={this.filterTasks.bind(this)} />
