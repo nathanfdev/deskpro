@@ -55,8 +55,7 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
 
             $ref_column = $export_config->getRefColumn();
             $prefix     = $export_config->getPrefix();
-
-            $oid = isset($item[$ref_column]) ? $item[$ref_column] : '?';
+            $oid        = isset($item[$ref_column]) ? $item[$ref_column] : '?';
 
             try {
                 $method = $export_config->getMethod();
