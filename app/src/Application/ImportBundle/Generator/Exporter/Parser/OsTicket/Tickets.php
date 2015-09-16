@@ -94,15 +94,8 @@ final class Tickets extends AbstractParser
 
             $collection->merge($this->exportCollection($config));
 
-            if ( ! empty($batch)) {
-                foreach ($batch as $data) {
-                    if (isset($data['ticket_id'])) {
-                        $this->tickets_min_id = max($this->tickets_min_id, $data['ticket_id']);
-                    }
-                }
-            }
-
             $this->entities_loaded += count($batch);
+            $this->tickets_min_id   = max($this->tickets_min_id, $collection->getMaxOid());
 
         } while (count($batch) > 0);
 

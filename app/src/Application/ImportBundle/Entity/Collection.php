@@ -131,4 +131,21 @@ final class Collection extends AbstractCollection
 
         return $entities;
     }
+
+    /**
+     * Returns the max oid
+     *
+     * @return mixed
+     */
+    public function getMaxOid()
+    {
+        return max(
+            array_map(
+                function(EntityInterface $entity) {
+                    return $entity->getOid();
+                },
+                $this->collection
+            )
+        );
+    }
 }
