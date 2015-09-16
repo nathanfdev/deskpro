@@ -189,8 +189,8 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('[CSVTicket #144] Entity parsed successfully!', $output);
         $this->assertContains('[CSVTicket #145] Entity parsed successfully!', $output);
         $this->assertContains('Custom field of entity `ticket_144` parsed successfully!', $output);
-        $this->assertContains('Entity `person_1` parsed successfully!', $output);
-        $this->assertContains('Entity `person_6` parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #joe.smith@example.com] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #agent2@email.tld] Entity parsed successfully!', $output);
         $this->assertContains('Entity `article_1` parsed successfully!', $output);
         $this->assertContains('Entity `article_2` parsed successfully!', $output);
         $this->assertContains('Entity `download_num_0` parsed successfully!', $output);

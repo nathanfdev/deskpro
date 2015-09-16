@@ -96,9 +96,9 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         // Checking for people
-        $this->assertContains('Entity `person_joe.smith@example.com` parsed successfully!', $output);
-        $this->assertContains('Entity `person_angry.customer@example.com` parsed successfully!', $output);
-        $this->assertContains('Entity `person_some@email.tld` parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #joe.smith@example.com] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #angry.customer@example.com] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #some@email.tld] Entity parsed successfully!', $output);
         $this->assertContains('Custom field of entity `person_joe.smith@example.com` parsed successfully!', $output);
 
         $this->helper->seeFileFound('1/people/person_some@email.tld.json');
