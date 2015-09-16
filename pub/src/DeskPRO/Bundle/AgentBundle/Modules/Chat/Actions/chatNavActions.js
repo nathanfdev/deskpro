@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { loadCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
+import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
 import { loadPeopleNames, releasePeopleNamesRequest }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/PeopleNamesActions';
 import { loadDepartmentsNames, releaseDepartmentsNamesRequest }
@@ -14,7 +14,7 @@ const recordStoresId = 'chatNav';
 export const loadCounts = createAction(
   'CHAT_NAV_LOAD_CONVERSATIONS_COUNTS',
   (list, groupBy) =>
-    (dispatch) => loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
+    (dispatch) => loadChatCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
       if (groupBy === 'department') {
         dispatch(loadDepartmentsNames(recordStoresId, promise.getData().data.nested.map(count => count.group)));
       } else if (groupBy === 'agent') {
