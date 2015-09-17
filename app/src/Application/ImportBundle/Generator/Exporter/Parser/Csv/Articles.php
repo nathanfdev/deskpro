@@ -30,8 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Articles csv file parser
@@ -64,36 +64,29 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        $collection    = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getArticleReaderConfig()))
+            ->setPrefix('CSVArticle')
+            ->setRefColumn('id')
+            ->setMethod('exportArticle')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $articles      = $this->getReaderData($this->getArticleReaderConfig());
+        $collection    =  $this->exportCollection($config);
         $custom_fields = $this->exportArticleCustomFields();
 
-        foreach ($articles as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportArticle($num, $data);
-
-                foreach ($custom_fields as $custom_field_entity) {
-                    /** @var Entity\CustomField $custom_field_entity */
-                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                        $entity->addCustomField($custom_field_entity);
-                    }
+        foreach ($collection as $article) {
+            /** @var Entity\Article $article */
+            foreach ($custom_fields as $custom_field_entity) {
+                if ($article->getDestination() === $custom_field_entity->getDestination()) {
+                    $article->addCustomField($custom_field_entity);
                 }
+            }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
-                foreach ($inline_custom_fields as $custom_field_entity) {
-                    $entity->addCustomField($custom_field_entity);
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVArticle', $this->getEntityType(), 'title', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVArticle', $this->getEntityType(), 'title', $e, $data);
+            $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($article->getDestination(), $article->getRawData());
+            foreach ($inline_custom_fields as $custom_field_entity) {
+                $article->addCustomField($custom_field_entity);
             }
         }
 
@@ -103,12 +96,12 @@ final class Articles extends AbstractParser
     /**
      * Returns an article entity
      *
-     * @param int   $num
      * @param array $data
+     * @param int   $num
      *
      * @return Entity\Article|null
      */
-    private function exportArticle($num, array $data)
+    protected function exportArticle(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
             'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
@@ -161,7 +154,7 @@ final class Articles extends AbstractParser
     /**
      * Returns a collection of articles custom field data
      *
-     * @return Entity\Collection
+     * @return Entity\CustomField[]|Entity\Collection
      */
     private function exportArticleCustomFields()
     {
