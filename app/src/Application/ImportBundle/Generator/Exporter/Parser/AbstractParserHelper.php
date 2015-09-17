@@ -59,7 +59,7 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
             try {
                 $method = $export_config->getMethod();
 
-                if (is_callable($export_config->getMethod())) {
+                if (is_callable($method)) {
                     $result = $method($item, $num);
                 } else {
                     $result = $this->$method($item, $num);
