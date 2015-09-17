@@ -4,8 +4,8 @@ import { ListTableViewSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Applic
 
 @connect(state => ({
   viewMode:      state.Chat.list.get('viewMode'),
-  tableViewFields: state.Chat.list.get('tableViewFields'),
-  listViewFields: state.Chat.list.get('listViewFields')
+  tableViewFields: state.Chat.list.get('tableViewFields').toJS(),
+  listViewFields: state.Chat.list.get('listViewFields').toJS()
 }))
 export class ViewSwitcherContainer extends React.Component {
   render() {
