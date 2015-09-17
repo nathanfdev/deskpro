@@ -1,21 +1,23 @@
-import React from 'react';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-
+import React, { PropTypes } from 'react';
+import { VIEW_MODE_LIST } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { ChatsListControlBar } from './ControlBar/ChatsListControlBar';
 import { ChatsList } from './View/List/ChatsList';
 import { ChatsTable } from './View/Table/ChatsTable';
 
 export class List extends React.Component {
+  static propTypes = {
+    elements: PropTypes.array.isRequired,
+    viewMode: PropTypes.string.isRequired
+  };
+
   render() {
-    const { elements, viewModeOptions } = this.props;
+    const { elements, viewMode } = this.props;
 
     return (
       <ListFrame>
         <ChatsListControlBar />
-        {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_LIST ?
-         <ChatsList elements={elements}/> : <ChatsTable elements={elements}/>
-        }
+        {viewMode === VIEW_MODE_LIST ? <ChatsList elements={elements} /> : <ChatsTable elements={elements} />}
       </ListFrame>
     );
   }
