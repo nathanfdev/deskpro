@@ -56,9 +56,13 @@ export default function promiseMiddleware({ dispatch }) {
     if (!isDSA(action)) {
       // It's just a lonely action so we will just wait on it resolving
       promise.then(result => {
-        dispatch(result);
+        if (result) {
+          dispatch(result);
+        }
       }).catch(result => {
-        dispatch(result);
+        if (result) {
+          dispatch(result);
+        }
       });
     } else {
       const sequenceId = uniqueId();
