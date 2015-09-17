@@ -4018,6 +4018,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             'mappedBy'             => 'ticket',
             'fetch'                => 'EXTRA_LAZY',
             'orderBy'              => array( 'date_created' => 'ASC'),
+            'orphanRemoval'        => true,
         ));
         $metadata->mapOneToMany(array(
             'fieldName'            => 'sms_messages',

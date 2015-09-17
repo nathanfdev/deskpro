@@ -224,6 +224,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         // todo check for progress bar in unattended mode
         $arguments[] = '-vvv';
 
+        if (defined('DPC_SITE_ID')) {
+            $arguments[] = '--dpc-site-id ' . DPC_SITE_ID;
+        }
+
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
         do {
@@ -601,6 +605,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function checkPhpInfo()
     {
+        if (defined('DPC_SITE_ID')) {
+            return true;
+        }
+
         if (dp_is_php_path_guessed()) {
             $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
 
@@ -620,6 +628,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function checkRequirements()
     {
+        if (defined('DPC_SITE_ID')) {
+            return true;
+        }
+
         $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/check-req.php'));
 
         $process = new Process($cmd, realpath(DP_ROOT));

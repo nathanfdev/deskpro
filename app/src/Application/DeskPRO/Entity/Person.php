@@ -3554,7 +3554,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             array(
                 'fieldName' => 'preferences',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
-                'cascade' => array('remove', 'merge'),
+                'cascade' => array('persist', 'remove', 'merge'),
                 'mappedBy' => 'person',
             )
         );

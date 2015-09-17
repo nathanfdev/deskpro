@@ -70,3 +70,35 @@ echo "Expires     : " . $lic->getExpireDate()->format('Y-m-d H:i:s');
 echo "\n";
 echo "Expire Days : " . $lic->getExpireDays();
 echo "\n";
+
+#------------------------------
+# Refresh
+#------------------------------
+
+if (isset($_GET['refresh'])) {
+    require_once DP_ROOT.'/src/Application/DeskPRO/LowUtil/RemoteRequest.php';
+    try {
+        $url = \DeskPRO\Kernel\License::getSecureLicServer() . '/api/license/renew-key';
+        $result = \DeskPRO_LowUtil_RemoteRequester::create()->request($url, array(
+            'license_id' => $lic->getLicenseId(),
+            'license_code' => $lic->getLicenseCode(),
+        ), 'POST');
+
+        if ($result) {
+            $result = @json_decode($result, true);
+        }
+        if ($result && !empty($result['license_code'])) {
+            $container->getDb()->update('settings', array(
+                'value' => $result['license_code']
+            ), array(
+                'name' => 'core.license'
+            ));
+            echo "Refresh request: done\n";
+        } else {
+            echo "Refresh request: failed\n";
+        }
+    } catch (\Exception $e) {
+        echo "Refresh request: failed\n";
+    }
+    echo "\n";
+}

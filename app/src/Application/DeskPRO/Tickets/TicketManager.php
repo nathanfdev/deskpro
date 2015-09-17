@@ -48,7 +48,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
-use Orb\Util\Util;
+use Orb\Util\Util as OrbUtil;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 class TicketManager
@@ -323,13 +323,13 @@ class TicketManager
         #----------------------------------------
 
         foreach ($this->save_actions as $action) {
-            $context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", Util::getBaseClassname($action)));
+            $context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", OrbUtil::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
                 try{
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
-                    $context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+                    $context->getLogger()->error(sprintf("[%s] Exception: %s", OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
                 $action->processTicket($ticket, $context);
@@ -345,13 +345,13 @@ class TicketManager
         $this->auto_vars['custom_field_manager']->flush();
 
         foreach ($this->post_save_actions as $action) {
-            $context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
+            $context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", OrbUtil::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
                 try{
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
-                    $context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+                    $context->getLogger()->error(sprintf("[%s] Exception: %s", OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
                 $action->processTicket($ticket, $context);
