@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrame, ControlBar, ListTableViewSwitcher, OrderBy, TableView, TableBody, Pagination }
+import { ListFrame, ControlBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { CrmListControlBar } from './ControlBar/CrmListControlBar';
 import { CrmList } from './View/List/CrmList';
@@ -27,7 +27,6 @@ export class List extends Component {
       <ListFrame>
         <CrmListControlBar />
         {viewMode === constants.VIEW_MODE_LIST ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
-        <Pagination/>
       </ListFrame>
     );
   }

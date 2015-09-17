@@ -71,6 +71,7 @@ a { color: $link-color; }
 
 @import 'live-search';
 @import 'forms';
+@import 'checkbox';
 @import 'sidebar-kb';
 @import 'dropdown-panels';
 
@@ -89,6 +90,7 @@ a { color: $link-color; }
   @import 'cards';
   @import 'kanban';
   @import 'task-calendar';
+  @import 'popup';
 
 @import 'ticket';
   @import 'ticket-view';

@@ -1,26 +1,33 @@
 import React from 'react';
-import { connect } from 'redux/react';
+import $ from "jquery";
 
 export class ControlBar extends React.Component {
-    render() {
-        return (
-            <div className="tickets-control-bar">
-
-                <div className="bulk-edit-control">
-                    <a href="#">
-                        <span className="checkbox">
-                            <i className="fa fa-check"/>
-                        </span>
-                    </a>
-                    <span className="count" style={{display: "none"}}><span>X</span></span>
-                </div>
-
-                <span className="ticket-controls-default">
-                    {this.props.children}
-                    </span>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="control-bar">
+        {this.props.children}
+      </div>
+    );
+  }
 }
 
+export class ControlButton extends React.Component {
+  render() {
+    const { title } = this.props;
 
+    return (
+      <a href="#">
+          <span className="multi" onClick={this.handleClick.bind(this)}>
+            <span className="control-button-title">{title}</span>
+            <span className="multi-down"><i className="fa fa-caret-down"/></span>
+          </span>
+      </a>
+    );
+  }
+
+  handleClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $(event.target).closest('.control-button').find('.dpw-navigation-dropdown').toggle();
+  }
+}

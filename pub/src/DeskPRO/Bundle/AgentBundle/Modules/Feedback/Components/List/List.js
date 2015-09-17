@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrame,  Pagination }
+import { ListFrame }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
 import { FeedbackList } from './View/List/FeedbackList';
@@ -23,7 +23,6 @@ export class List extends Component {
       <ListFrame>
         <FeedbackListControlBar />
         {viewMode === constants.VIEW_MODE_LIST ? <FeedbackList elements={elements}/> : <FeedbackTable elements={elements}/>}
-        <Pagination/>
       </ListFrame>
     );
   }

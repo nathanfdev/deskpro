@@ -8,6 +8,13 @@ export default class FeedbackList extends Reducer {
   getInitialState() {
     return {
       viewMode: constants.VIEW_MODE_TABLE,
+      viewModeOptions: [
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table'}, {
+          field: constants.VIEW_MODE_LIST,
+          label: 'List view',
+          icon: 'fa-list'
+        }
+      ],
       query: {awaiting_validation: 1},
       filters: {
         name: 'type',
@@ -19,9 +26,9 @@ export default class FeedbackList extends Reducer {
       sortName: 'Date', /* Label for Order By... */
       order: constants.ORDER_DESC, /* Asc, Desc */
       sortOptions: [
-        {field: 'date_created', label: 'Date'},
-        {field: 'total_rating', label: 'Rating'},
-        {field: 'num_ratings', label: 'Number of votes'}
+        {field: 'date_created', label: 'Date', icon:'fa-calendar-o'},
+        {field: 'total_rating', label: 'Rating', icon:'fa-calendar-o'},
+        {field: 'num_ratings', label: 'Number of votes', icon:'fa-calendar-o'}
       ],
       listViewFields: [
         {name: 'id', label: 'ID', status: constants.FIELD_REQUIRED, priority: 3},
@@ -156,16 +163,16 @@ export default class FeedbackList extends Reducer {
     return next;
   }
 
-  viewModeChanged(prev) {
+  viewModeChanged(prev, {payload}) {
     const next    = {...prev};
-    next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
+    next.viewMode = payload.viewMode;
     return next;
   }
 
 
-  orderChanged(prev) {
+  orderChanged(prev, {payload}) {
     const next = {...prev};
-    next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    next.order = payload.order;
     return next;
   }
 
@@ -223,14 +230,13 @@ export default class FeedbackList extends Reducer {
 
   getDisplayFields(prev, {payload}) {
     const next = {...prev};
-    console.log(payload);
     return next;
   }
 
 
   registerHandlers() {
     this
-      .r(AppActions.TOGGLE_VIEW_MODE, this.viewModeChanged)
+      .r(FeedbackListActions.toggleViewMode, this.viewModeChanged)
       .r(FeedbackListActions.changeDisplayFieldsStatus, this.displayFieldsChanged)
       .r(FeedbackListActions.getDisplayFieldsFromPersonSetting, this.getDisplayFields)
       .r(FeedbackListActions.toggleOrder, this.orderChanged)
