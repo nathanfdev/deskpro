@@ -55,7 +55,6 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
 
             $ref_column = $export_config->getRefColumn();
             $prefix     = $export_config->getPrefix();
-            $oid        = isset($item[$ref_column]) ? $item[$ref_column] : '?';
 
             try {
                 $method = $export_config->getMethod();
@@ -68,13 +67,13 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
 
                 if ($result instanceof Entity\EntityInterface) {
                     $collection->attach($result);
+                    $this->logInfo(sprintf('[%s #%s] Entity parsed successfully!', $prefix, $result->getOid()));
                 } elseif ($result instanceof Entity\Collection) {
                     $collection->merge($result);
+                    $this->logInfo(sprintf('[%s #%s] Entity parsed successfully!', $prefix, $result->getMaxOid()));
                 } else {
                     throw new \RuntimeException('Unsupported parser result');
                 }
-
-                $this->logInfo(sprintf('[%s #%s] Entity parsed successfully!', $prefix, $oid));
 
             } catch (SkippingException $e) {
                 $this->logSkippingException($prefix, $prefix, $ref_column, $e);

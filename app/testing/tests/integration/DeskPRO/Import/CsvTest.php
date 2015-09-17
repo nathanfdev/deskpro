@@ -184,20 +184,20 @@ class CsvTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('[CSVAttachment #1] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVAttachment #0] Entity parsed successfully!', $output);
         $this->assertContains('[CSVTicketMessage #1] Entity parsed successfully!', $output);
         $this->assertContains('[CSVTicket #144] Entity parsed successfully!', $output);
         $this->assertContains('[CSVTicket #145] Entity parsed successfully!', $output);
         $this->assertContains('Custom field of entity `ticket_144` parsed successfully!', $output);
-        $this->assertContains('[CSVPerson #joe.smith@example.com] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVPerson #agent2@email.tld] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #1] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #6] Entity parsed successfully!', $output);
         $this->assertContains('Entity `article_1` parsed successfully!', $output);
         $this->assertContains('Entity `article_2` parsed successfully!', $output);
         $this->assertContains('Entity `download_num_0` parsed successfully!', $output);
         $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
-        $this->assertContains('Entity `news_num_0` parsed successfully!', $output);
-        $this->assertContains('Entity `news_num_1` parsed successfully!', $output);
-        $this->assertContains('[CSVOrganization #Some Organization] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVNews #num_0] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVNews #num_1] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVOrganization #num_0] Entity parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkDbEmpty();
