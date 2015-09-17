@@ -2,6 +2,11 @@ import React from 'react';
 import { connect } from 'redux/react';
 import AgentsListItem from './AgentsListItem'
 
+/**
+ * TODO: find a way to avoid this really srong dark magic arount porps.agents and state.agents. The point is that when
+ * TODO: rendering this template at the very first time you have nothing in props.agents, cause ajax still on progress
+ * TODO: and promise have no data yet.
+ */
 const AgentsList = React.createClass(
     {
     getInitialState: function() {
@@ -42,11 +47,11 @@ const AgentsList = React.createClass(
             this.props.agents.forEach((agent) => {
                 const name = agent.name.toLowerCase();
                 if(name.indexOf(value.toLowerCase()) >= 0) {
+                    agent.highlight = value;
                     newAgents.push(agent);
                 }
             });
         } else {
-            console.log(this.props.agents);
             newAgents = this.props.agents;
         }
 
