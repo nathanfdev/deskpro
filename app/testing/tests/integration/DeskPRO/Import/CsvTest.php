@@ -185,36 +185,44 @@ class CsvTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         // Checking for tickets
-        $this->assertContains('[CSVAttachment #0] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVTicketMessage #1] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVTicket #144] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVTicket #145] Entity parsed successfully!', $output);
-        $this->assertContains('Custom field of entity `ticket_144` parsed successfully!', $output);
+        $this->assertContains('[CSVAttachment #0 (message_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicketMessage #1 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #144 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #145 (ticket_145)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #0 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #1 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #2 (ticket_145)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #3 (ticket_145)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #4 (ticket_145)] Entity parsed successfully!', $output);
 
         // Checking for people
-        $this->assertContains('[CSVPerson #1] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVPerson #6] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #1 (person_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #6 (person_6)] Entity parsed successfully!', $output);
 
         // Checking for article categories
-        $this->assertContains('[CSVArticleCategory #num_0] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVArticleCategory #num_1] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVArticleCategory #num_2] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticleCategory #num_0 (article_category_num_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticleCategory #num_1 (article_category_num_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticleCategory #num_2 (article_category_num_2)] Entity parsed successfully!', $output);
 
-        $this->assertContains('[CSVArticle #1] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVArticle #2] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticle #1 (article_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticle #2 (article_2)] Entity parsed successfully!', $output);
 
         // Checking for downloads
-        $this->assertContains('[CSVDownload #num_0] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVDownload #num_0 (download_num_0)] Entity parsed successfully!', $output);
 
         // Checking for feedback
-        $this->assertContains('[CSVFeedback #1] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVFeedback #1 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('CSVAttachment #0 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #0 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #1 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #2 (feedback_1)] Entity parsed successfully!', $output);
 
         // Checking for news
-        $this->assertContains('[CSVNews #num_0] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVNews #num_1] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVNews #num_0 (news_num_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVNews #num_1 (news_num_1)] Entity parsed successfully!', $output);
 
         // Checking for organizations
-        $this->assertContains('[CSVOrganization #num_0] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVOrganization #num_0 (organization_some_organization)] Entity parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkDbEmpty();

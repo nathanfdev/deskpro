@@ -133,6 +133,21 @@ final class Collection extends AbstractCollection
     }
 
     /**
+     * Returns containing entity destinations
+     *
+     * @return array
+     */
+    public function getDestinations()
+    {
+        return array_map(
+            function(EntityInterface $entity) {
+                return $entity->getDestination();
+            },
+            $this->collection
+        );
+    }
+
+    /**
      * Returns the max oid
      *
      * @return mixed

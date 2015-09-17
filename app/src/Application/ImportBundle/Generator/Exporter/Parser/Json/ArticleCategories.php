@@ -113,7 +113,7 @@ final class ArticleCategories extends AbstractParser
             ->setRawData($data)
             ->setImportMapKey($formatted['import_map_key'])
             ->setOid($formatted['oid'])
-            ->setDestination($formatted['oid'])
+            ->setDestination($formatted['destination'])
             ->setTitle($formatted['title'])
             ->setAsAgent($formatted['is_agent'])
             ->setAsBook($formatted['is_book'])
