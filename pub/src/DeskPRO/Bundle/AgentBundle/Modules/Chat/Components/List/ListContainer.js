@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { List } from '../../Components/List/List';
+import { List } from './List';
 
 @connect(state => ({
   elements: state.Chat.list.get('elements'),
