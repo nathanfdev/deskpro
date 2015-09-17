@@ -35,11 +35,11 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DpTest\PortalTestCase;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class TaskTest extends PortalTestCase
+class TaskTest extends ApiTestCase
 {
     /**
      * Test that a valid task can be saved
@@ -88,13 +88,5 @@ class TaskTest extends PortalTestCase
         $person->setEmail('example@example.com');
         $person->setName('Test User');
         return $person;
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }

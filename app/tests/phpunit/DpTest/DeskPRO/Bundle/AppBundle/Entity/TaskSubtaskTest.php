@@ -36,11 +36,11 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DpTest\PortalTestCase;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class TaskSubtaskTest extends PortalTestCase
+class TaskSubtaskTest extends ApiTestCase
 {
     /**
      * Test that a valid subtask can be saved
@@ -129,13 +129,5 @@ class TaskSubtaskTest extends PortalTestCase
     private function getInvalidTask()
     {
         return new Task($this->getUser());
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }

@@ -35,11 +35,11 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
-use DpTest\PortalTestCase;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class TaskListTest extends PortalTestCase
+class TaskListTest extends ApiTestCase
 {
     /**
      * Test valid project member
@@ -117,13 +117,5 @@ class TaskListTest extends PortalTestCase
     private function getInvalidProject()
     {
         return new TaskProject();
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }

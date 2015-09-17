@@ -34,11 +34,11 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
-use DpTest\PortalTestCase;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class TaskProjectTest extends PortalTestCase
+class TaskProjectTest extends ApiTestCase
 {
     /**
      * Test that a valid project can be saved
@@ -72,13 +72,5 @@ class TaskProjectTest extends PortalTestCase
 
         $this->assertEquals('title', $errors[0]->getPropertyPath());
         $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }
