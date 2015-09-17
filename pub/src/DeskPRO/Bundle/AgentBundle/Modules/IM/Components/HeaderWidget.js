@@ -1,11 +1,15 @@
 import React from 'react';
-import * as actions from '../Actions/imListActions';
 import Overlay from './Overlay';
+import Recent from './Recent';
+import * as actions from '../Actions/imListActions';
 
-const IMButton = React.createClass({
+const HeaderWidget = React.createClass({
 
     getInitialState: function() {
-        return { overlayShown: false };
+        return {
+            overlayShown: false,
+            recentAgents: []//this.props.dispatch(actions.loadRecentAgents())
+        };
     },
 
     onClick: function() {
@@ -20,10 +24,11 @@ const IMButton = React.createClass({
                       IMs <i className="fa fa-angle-down"></i>
                   </span>
                 </a>
+                { this.state.recentAgents.map((agent, index) => <Recent key={index} agent={agent} />)}
                 { this.state.overlayShown ? <Overlay/> : null }
             </div>
         );
     }
 });
 
-module.exports = IMButton;
+module.exports = HeaderWidget;

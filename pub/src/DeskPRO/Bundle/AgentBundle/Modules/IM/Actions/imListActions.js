@@ -24,3 +24,11 @@ export const loadDepartments = createAction(
         return Departments.loadDepartments().then(promise => trigger(promise.getData().data))
     }
 );
+
+//TODO just a stub right now
+export const loadRecentAgents = createAction(
+    'IM_LIST_LOAD_RECENT_AGENTS',
+    (trigger) => {
+        return Agents.loadAgents().then(promise => trigger(promise.getData().data))
+    }
+);

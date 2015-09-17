@@ -6,9 +6,9 @@ import * as actions from '../Actions/imListActions';
 import { connect } from 'react-redux';
 
 @connect(state => ({
-    agents: state.IM.IMList.agents,
-    teams: state.IM.IMList.teams,
-    departments: state.IM.IMList.departments
+    agents: state.IM.list.agents,
+    teams: state.IM.list.teams,
+    departments: state.IM.list.departments
 }))
 export default class Overlay extends React.Component {
 
