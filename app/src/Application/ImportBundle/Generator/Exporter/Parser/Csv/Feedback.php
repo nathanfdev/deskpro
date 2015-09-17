@@ -29,8 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Feedback csv file parser
@@ -63,43 +63,35 @@ final class Feedback extends AbstractParser
      */
     public function export()
     {
-        $collection     = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getFeedbackReaderConfig()))
+            ->setPrefix('CSVFeedback')
+            ->setRefColumn('id')
+            ->setMethod('exportFeedback')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $feedback_items = $this->getReaderData($this->getFeedbackReaderConfig());
-        $attachments    = $this->exportFeedbackAttachments();
-        $custom_fields  = $this->exportFeedbackCustomFields();
+        $collection    = $this->exportCollection($config);
+        $attachments   = $this->exportFeedbackAttachments();
+        $custom_fields = $this->exportFeedbackCustomFields();
 
-        foreach ($feedback_items as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportFeedback($num, $data);
-
-                foreach ($attachments as $attachment) {
-                    /** @var Entity\Attachment $attachment */
-                    if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $entity->getOid()) {
-                        $entity->addAttachment($attachment);
-                    }
+        foreach ($collection as $num => $feedback) {
+            /** @var Entity\Feedback $feedback */
+            foreach ($attachments as $attachment) {
+                if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $feedback->getOid()) {
+                    $feedback->addAttachment($attachment);
                 }
-                foreach ($custom_fields as $custom_field_entity) {
-                    /** @var Entity\CustomField $custom_field_entity */
-                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                        $entity->addCustomField($custom_field_entity);
-                    }
+            }
+            foreach ($custom_fields as $custom_field_entity) {
+                if ($feedback->getDestination() === $custom_field_entity->getDestination()) {
+                    $feedback->addCustomField($custom_field_entity);
                 }
+            }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
-                foreach ($inline_custom_fields as $custom_field_entity) {
-                    $entity->addCustomField($custom_field_entity);
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVFeedback', $this->getEntityType(), 'title', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVFeedback', $this->getEntityType(), 'title', $e, $data);
+            $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($feedback->getDestination(), $feedback->getRawData());
+            foreach ($inline_custom_fields as $custom_field_entity) {
+                $feedback->addCustomField($custom_field_entity);
             }
         }
 
@@ -109,12 +101,12 @@ final class Feedback extends AbstractParser
     /**
      * Returns a feedback entity
      *
-     * @param int   $num
      * @param array $data
+     * @param int   $num
      *
      * @return Entity\Feedback|null
      */
-    private function exportFeedback($num, array $data)
+    protected function exportFeedback(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
             'id'             => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
@@ -164,7 +156,7 @@ final class Feedback extends AbstractParser
     /**
      * Returns a collection of ticket attachments
      *
-     * @return Entity\Collection
+     * @return Entity\Attachment[]|Entity\Collection
      */
     private function exportFeedbackAttachments()
     {
@@ -177,7 +169,7 @@ final class Feedback extends AbstractParser
     /**
      * Returns a collection of ticket custom field data
      *
-     * @return Entity\Collection
+     * @return Entity\CustomField[]|Entity\Collection
      */
     private function exportFeedbackCustomFields()
     {
