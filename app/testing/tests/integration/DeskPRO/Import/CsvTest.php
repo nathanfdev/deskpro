@@ -184,20 +184,36 @@ class CsvTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
+        // Checking for tickets
         $this->assertContains('[CSVAttachment #0] Entity parsed successfully!', $output);
         $this->assertContains('[CSVTicketMessage #1] Entity parsed successfully!', $output);
         $this->assertContains('[CSVTicket #144] Entity parsed successfully!', $output);
         $this->assertContains('[CSVTicket #145] Entity parsed successfully!', $output);
         $this->assertContains('Custom field of entity `ticket_144` parsed successfully!', $output);
+
+        // Checking for people
         $this->assertContains('[CSVPerson #1] Entity parsed successfully!', $output);
         $this->assertContains('[CSVPerson #6] Entity parsed successfully!', $output);
+
+        // Checking for article categories
+        $this->assertContains('[CSVArticleCategory #num_0] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticleCategory #num_1] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticleCategory #num_2] Entity parsed successfully!', $output);
+
         $this->assertContains('[CSVArticle #1] Entity parsed successfully!', $output);
         $this->assertContains('[CSVArticle #2] Entity parsed successfully!', $output);
+
+        // Checking for downloads
         $this->assertContains('[CSVDownload #num_0] Entity parsed successfully!', $output);
+
+        // Checking for feedback
         $this->assertContains('[CSVFeedback #1] Entity parsed successfully!', $output);
-        $this->assertContains('[CSVAttachment #0] Entity parsed successfully!', $output);
+
+        // Checking for news
         $this->assertContains('[CSVNews #num_0] Entity parsed successfully!', $output);
         $this->assertContains('[CSVNews #num_1] Entity parsed successfully!', $output);
+
+        // Checking for organizations
         $this->assertContains('[CSVOrganization #num_0] Entity parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 

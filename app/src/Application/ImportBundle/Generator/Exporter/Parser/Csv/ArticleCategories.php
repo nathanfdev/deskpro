@@ -29,8 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Article categories csv file parser
@@ -66,26 +66,17 @@ final class ArticleCategories extends AbstractParser
      */
     public function export()
     {
-        $this->auto_generate_num = 0;
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getArticleCategoryReaderConfig()))
+            ->setPrefix('CSVArticleCategory')
+            ->setRefColumn('id')
+            ->setMethod('exportCategory')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $collection = new Entity\Collection();
-        $categories = $this->getReaderData($this->getArticleCategoryReaderConfig());
-
-        foreach ($categories as $num => $data) {
-            try {
-                $entity = $this->exportCategory($num, $data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-                $this->auto_generate_num = max($this->auto_generate_num, (int)$entity->getOid()) + 1;
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVArticleCategory', $this->getEntityType(), 'title', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVArticleCategory', $this->getEntityType(), 'title', $e, $data);
-            }
-        }
+        $collection = $this->exportCollection($config);
+        $this->auto_generate_num = (int)$collection->getMaxOid() + 1;
 
         return $this->toDeepCollection($collection);
     }
@@ -178,12 +169,12 @@ final class ArticleCategories extends AbstractParser
     /**
      * Returns an article category entity
      *
-     * @param int   $num
      * @param array $data
+     * @param int   $num
      *
      * @return Entity\ArticleCategory
      */
-    private function exportCategory($num, array $data)
+    protected function exportCategory(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(

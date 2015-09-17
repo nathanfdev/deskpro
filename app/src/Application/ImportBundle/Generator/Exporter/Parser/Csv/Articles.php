@@ -73,7 +73,7 @@ final class Articles extends AbstractParser
             ->setAdvanceProgressbar(true)
         ;
 
-        $collection    =  $this->exportCollection($config);
+        $collection    = $this->exportCollection($config);
         $custom_fields = $this->exportArticleCustomFields();
 
         foreach ($collection as $article) {
