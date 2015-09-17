@@ -154,6 +154,26 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    public function getFullFormatted()
+    {
+        $num = $this->getNumberFormatted();
+
+        if ($ext = $this->ext) {
+            $num .= ' ext . ' . $this->ext;
+        }
+
+        return $num;
+    }
+
+    public function getNumberFormatted()
+    {
+        try {
+            return PhoneNumbers::toInternationalFormat($this->number);
+        } catch (\Exception $e) {
+            return $this->number;
+        }
+    }
+
     /**
      * @return string|int|null
      */
