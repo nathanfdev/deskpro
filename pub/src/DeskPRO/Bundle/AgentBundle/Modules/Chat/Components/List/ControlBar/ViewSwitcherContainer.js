@@ -3,7 +3,7 @@ import { connect } from 'redux/react';
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 
 @connect(state => ({
-  viewMode:      state.ChatList.viewMode,
+  viewModeOptions:      state.ChatList.viewModeOptions,
   tableViewFields: state.ChatList.tableViewFields,
   listViewFields: state.ChatList.listViewFields
 }))

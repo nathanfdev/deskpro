@@ -7,13 +7,15 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
   getInitialState() {
     return {
-      viewMode: constants.VIEW_MODE_TABLE,
       viewModeOptions: [
-        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table'}, {
-          field: constants.VIEW_MODE_LIST,
-          label: 'List view',
-          icon: 'fa-list'
-        }
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
+        {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
+      ],
+      order: constants.ORDER_DESC, /* Asc, Desc */
+      sortOptions: [
+        {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
+        {field: 'total_rating', label: 'Rating', icon: 'fa-calendar-o', current: false},
+        {field: 'num_ratings', label: 'Number of votes', icon: 'fa-calendar-o', current: false}
       ],
       query: {awaiting_validation: 1},
       filters: {
@@ -22,14 +24,6 @@ export default class FeedbackList extends Reducer {
         value: ''
       },
       filterValues: [/* string */],
-      sort: 'date_created', /* Order By ... */
-      sortName: 'Date', /* Label for Order By... */
-      order: constants.ORDER_DESC, /* Asc, Desc */
-      sortOptions: [
-        {field: 'date_created', label: 'Date', icon:'fa-calendar-o'},
-        {field: 'total_rating', label: 'Rating', icon:'fa-calendar-o'},
-        {field: 'num_ratings', label: 'Number of votes', icon:'fa-calendar-o'}
-      ],
       listViewFields: [
         {name: 'id', label: 'ID', status: constants.FIELD_REQUIRED, priority: 3},
         {name: 'status', label: 'Status', status: constants.FIELD_REQUIRED, priority: 2},
@@ -164,8 +158,13 @@ export default class FeedbackList extends Reducer {
   }
 
   viewModeChanged(prev, {payload}) {
-    const next    = {...prev};
-    next.viewMode = payload.viewMode;
+    const next           = {...prev};
+    next.viewModeOptions = [];
+    prev.viewModeOptions.forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      next.viewModeOptions.push(nextObj);
+    });
     return next;
   }
 
@@ -212,9 +211,13 @@ export default class FeedbackList extends Reducer {
   }
 
   sortChanged(prev, {payload}) {
-    const next    = {...prev};
-    next.sort     = payload.sort;
-    next.sortName = payload.sortName;
+    const next       = {...prev};
+    next.sortOptions = [];
+    prev.sortOptions.forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      next.sortOptions.push(nextObj);
+    });
     return next;
   }
 

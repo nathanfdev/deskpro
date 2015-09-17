@@ -2,13 +2,11 @@ import React from 'react';
 import { connect } from 'redux/react';
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
-import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions";
 
 @connect(state => ({
   sort: state.FeedbackList.sort,
   order: state.FeedbackList.order,
   filters: state.FeedbackList.filters,
-  viewMode: state.FeedbackList.viewMode,
   viewModeOptions: state.FeedbackList.viewModeOptions,
   tableViewFields: state.FeedbackList.tableViewFields,
   listViewFields: state.FeedbackList.listViewFields
@@ -16,16 +14,8 @@ import * as actions from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/Fe
 export class ViewSwitcherContainer extends React.Component {
   render() {
     return (
-      <ViewModeSwitcher
-        {...this.props}
-        toggleView={this.toggleView.bind(this)}
-        displayFieldsStatus={this.displayFieldsStatus.bind(this)}/>
+      <ViewModeSwitcher {...this.props} />
     );
-  }
-
-  toggleView(newView) {
-    const {dispatch} = this.props;
-    dispatch(actions.toggleViewMode(newView.field));
   }
 
   displayFieldsStatus(type, field, status) {
