@@ -1,11 +1,10 @@
-import React from "react";
-
-import * as TaskActions from "../Actions/TaskListActions";
+import React from 'react';
+import TaskNavItemLabel from '../Components/TaskNavItemLabel';
 
 export default class TasksNavLabels extends React.Component {
   render() {
     const {labelList} = this.props;
-    let _this = this;
+    const _this = this;
 
     return (<section className="sidebar-list sidebar-list-labels tasks-nav-labels">
       <div className="list-sidebar-title">
@@ -13,14 +12,13 @@ export default class TasksNavLabels extends React.Component {
       </div>
 
       <div className="sidebar-label-list sidebar-list">
-        <ul>{labelList.labelCharacters ? labelList.labelCharacters.map(function(object) {
+        <ul>{labelList.labelCharacters ? labelList.labelCharacters.map((object) => {
           return (<li key={object}>
             <span className="labelCharacter">{object}</span>
-            {labelList.labelList[object] ? labelList.labelList[object].map(function(label) {
-              return <a href="#" className="item-label" key={label.id}  onClick={_this.props.filterTasks.bind(_this, {labels: [label.label]})}>{label.label}</a>
-            }): ''}
-          </li>)
-
+            {labelList.labelList[object] ? labelList.labelList[object].map((label) => {
+              return <TaskNavItemLabel key={label.label} label={label} filterTasks={_this.props.filterTasks.bind(_this)} />;
+            }) : ''}
+          </li>);
         }) : ''}</ul>
       </div>
     </section>);
