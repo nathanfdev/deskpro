@@ -44,17 +44,17 @@ var CheckboxGroupDeskPRO = React.createClass({
         var controls = this.props.options.map(function(checkbox, key) {
             var checked = (typeof _this.getValue() !== 'undefined' && _this.getValue().indexOf(checkbox.value) !== -1);
             let disabled = _this.isFormDisabled() || checkbox.disabled || _this.props.disabled;
-            let checkboxClass = checked ? "checkbox checked" : "checkbox";
+            let checkboxClass = checked ? "checkbox-button checked" : "checkbox-button";
             return (
                 <li key={key}><a
                 checked={checked}
                 disabled={disabled}
                 href="#"
-                className="checkbox-button"
+                className={checkboxClass}
                 onClick={_this.changeCheckbox}
                 ref={key}
                 >
-                    <span className={checkboxClass}>
+                    <span className="checkbox">
                         <i className="fa fa-check"/>
                     </span>
                     <span className="name">{checkbox.label}</span>

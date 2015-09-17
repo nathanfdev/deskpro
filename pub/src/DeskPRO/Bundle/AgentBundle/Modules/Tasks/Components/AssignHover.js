@@ -62,7 +62,6 @@ const AssignHover = React.createClass({
   },
 
   render: function() {
-    console.log(this.props.taskData);
     return (<div style={{top: this.props.position.y + 10, left: this.props.position.x - 300}} className="sidebar-hover assign-hover">
         <div className="dpmw--popup-main">
           <div className="dpmw--popup-header">

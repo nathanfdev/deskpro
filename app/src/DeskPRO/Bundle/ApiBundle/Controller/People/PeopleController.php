@@ -82,6 +82,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
      * )
      * @Get("/people", name="api_people")
      * @param Request $request
+     * @todo perhaps we need some method to take all agents just in one touch
      * @return View
      */
     public function cgetAction(Request $request)

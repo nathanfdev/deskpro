@@ -97,9 +97,9 @@
   }
 
   // Agents list
-  .im-list-wrapper {// Handles the scroller when too many items & some extra amrgin for titles on the right side
+  .im-list-wrapper {// Handles the scroller when too many items & some extra margin for titles on the right side
     overflow: scroll;
-    max-height: 260px;
+    max-height: 220px;
 
     h2 {
       margin-top: 15px;

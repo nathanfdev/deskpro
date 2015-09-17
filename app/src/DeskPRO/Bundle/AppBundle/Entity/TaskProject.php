@@ -230,7 +230,7 @@ class TaskProject extends NotifyPropertyChangeEntity
     {
         if (!empty($this->members)) {
             foreach ($this->members as $member) {
-                if ($member->getTean() === $agentTeam) {
+                if ($member->getTeam() === $agentTeam) {
                     $this->members->removeElement($member);
                 }
             }

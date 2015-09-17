@@ -1,6 +1,6 @@
 import React from 'react';
 import * as actions from '../Actions/imListActions';
-import IMOverlay from './Overlay';
+import Overlay from './Overlay';
 
 const IMButton = React.createClass({
 
@@ -20,7 +20,7 @@ const IMButton = React.createClass({
                       IMs <i className="fa fa-angle-down"></i>
                   </span>
                 </a>
-                { this.state.overlayShown ? <IMOverlay/> : null }
+                { this.state.overlayShown ? <Overlay/> : null }
             </div>
         );
     }

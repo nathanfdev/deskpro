@@ -1,10 +1,24 @@
 import React from 'react';
-import AgentsList from './AgentsList';
-import TeamsList from './TeamsList';
-import DepartmentsList from './DepartmentsList';
+import AgentsList from './Agents/AgentsList';
+import TeamsList from './Teams/TeamsList';
+import DepartmentsList from './Departments/DepartmentsList';
 import * as actions from '../Actions/imListActions';
+import { connect } from 'redux/react';
 
+@connect(state => ({
+    agents: state.IMList.agents,
+    teams: state.IMList.teams,
+    departments: state.IMList.departments
+}))
 export default class Overlay extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.props.dispatch(actions.loadAgents());
+        this.props.dispatch(actions.loadTeams());
+        this.props.dispatch(actions.loadDepartments());
+    }
+
     render () {
         return (
             <div className="dropdown im-dropdown" id="im-dropdown">
@@ -12,27 +26,16 @@ export default class Overlay extends React.Component {
                 <div className="wrapper">
                     <div className="bucket left">
                         <h1>Agents</h1>
-                        <div className="show-offline-agents">
-                            <input type="checkbox" id="checkbox-name" /><label for="checkbox-name"></label> Show offline agents?
-                        </div>
-
-                        <form>
-                            <div>
-                                <input type="text" placeholder="Filter agents by name" />
-                            </div>
-                        </form>
-                        <div className="im-list-wrapper">
-                            <AgentsList />
-                        </div>
+                        <AgentsList agents={this.props.agents}/>
                     </div>
 
                     <div className="bucket right">
                         <a href="#" className="broadcast-to-all"><i className="fa fa-bullhorn"></i> Broadcast to Everyone</a>
                         <div className="im-list-wrapper">
                             <h2>Teams</h2>
-                            <TeamsList />
+                            <TeamsList teams={this.props.teams}/>
                             <h2>Departments</h2>
-                            <DepartmentsList />
+                            <DepartmentsList departments={this.props.departments} />
                         </div>
                     </div>
                 </div>

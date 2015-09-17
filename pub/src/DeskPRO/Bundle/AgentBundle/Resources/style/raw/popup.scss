@@ -69,7 +69,7 @@
     text-decoration: none;
   }
 
-  a.dpw--popup-button {
+  a.dpw--popup-button, button.dpw--popup-button {
     display: inline-block;
     text-transform: uppercase;
     font-size: 11px;
@@ -79,6 +79,7 @@
     padding: 10px;
     color: #fff;
     border-radius: 2px;
+    border: none;
   }
 
   .dpw--popup-content-line {
@@ -297,7 +298,18 @@
 .dpw-popup-content-item-show-only-selected {
   color: #bec1c2;
 
-  .dpw--checkbox-boxy {  margin-left: 3px; }
+  .checked .dpw--checkbox-boxy {
+    border-color: #62ad8c;
+    color: #62ad8c;
+
+    i {
+      color: #62ad8c;
+    }
+  }
+
+  .dpw--checkbox-boxy {
+    margin-left: 3px;
+  }
 }
 
 // Some forms (not all)
