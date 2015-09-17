@@ -23,7 +23,8 @@ const ProjectCreateHover = React.createClass({
       teams: null,
       agents: null,
       selected: null,
-      filterSelected: false
+      filterSelected: false,
+      filterValue: null
     };
   },
 
@@ -47,9 +48,6 @@ const ProjectCreateHover = React.createClass({
 
   clearFilter: function() {
     this.setState({
-      agents: this.props.agentList,
-      teams: this.props.teamList,
-      departments: this.props.departmentList,
       filterValue: null,
       filterSelected: false
     });
@@ -57,62 +55,14 @@ const ProjectCreateHover = React.createClass({
 
   quickFilter: function(event) {
     const value = $(event.target).val().toLowerCase();
-    let agents = this.props.agentList;
-    let teams = this.props.teamList;
-    let departments = this.props.departmentList;
-
-    if (value) {
-      agents = agents.filter((agent) => {
-        return agent.name.toLowerCase().indexOf(value) > -1;
-      });
-      teams = teams.filter((team) => {
-        return team.name.toLowerCase().indexOf(value) > -1;
-      });
-      departments = departments.filter((department) => {
-        return department.name.toLowerCase().indexOf(value) > -1;
-      });
-    }
-
     this.setState({
-      agents: agents,
-      teams: teams,
-      departments: departments,
       filterValue: value
-    });
-  },
-
-  filterSelected: function() {
-    if (this.state.filterSelected === true) {
-      this.clearFilter();
-
-      return;
-    }
-
-    let agents = this.props.agentList;
-    let teams = this.props.teamList;
-    let departments = this.props.departmentList;
-
-    agents = agents.filter((agent) => {
-      return this.state.selected.agents.indexOf(agent.value) > -1;
-    });
-    teams = teams.filter((team) => {
-      return this.state.selected.teams.indexOf(team.value) > -1;
-    });
-    departments = departments.filter((department) => {
-      return this.state.selected.departments.indexOf(department.value) > -1;
-    });
-
-    this.setState({
-      agents: agents,
-      teams: teams,
-      departments: departments,
-      filterSelected: true
     });
   },
 
   assignSelf: function() {
     const userId = this.props.user.id;
-    if (this.state.selected.agents.indexOf(userId) < 0) {
+    if (this.props.agentList.indexOf(userId) < 0) {
       let selected = this.state.selected;
       selected.agents.push(userId);
 
@@ -152,20 +102,30 @@ const ProjectCreateHover = React.createClass({
     });
   },
 
+  toggleFilterSelected: function() {
+    this.setState({
+      filterSelected: !this.state.filterSelected
+    });
+  },
+
+  filterAssignees: function(items, type, filter = null, onlySelected = false) {
+    if (filter && filter.length > 0) {
+      items = items.filter((item) => {
+        return item.name.toLowerCase().indexOf(filter.toLowerCase()) > -1;
+      });
+    }
+
+    if (onlySelected) {
+      items = items.filter((item) => {
+        return this.state.selected[type].indexOf(item.value) > -1;
+      });
+    }
+
+    return items;
+  },
+
   componentWillReceiveProps: function() {
     let state = {};
-
-    if (this.state.agents === null && this.props.agentList.length > 0) {
-      state.agents = this.props.agentList;
-    }
-
-    if (this.state.teams === null && this.props.teamList.length > 0) {
-      state.teams = this.props.teamList;
-    }
-
-    if (this.state.departments === null && this.props.departmentList.length > 0) {
-      state.departments = this.props.departmentList;
-    }
 
     if (this.state.selected === null && Object.keys(this.props.projectData).length > 0) {
       state.selected = {
@@ -261,7 +221,7 @@ const ProjectCreateHover = React.createClass({
                 <div className="dpmw--popup-content-right">
                   <div className="dpw-popup-content-item">
                     <div className="dpw-popup-content-item-show-only-selected">
-                      <a href="#" className={this.state.filterSelected === true ? "checkbox-link checked" : "checkbox-link"} onClick={this.filterSelected}>
+                      <a href="#" className={this.state.filterSelected === true ? "checkbox-link checked" : "checkbox-link"} onClick={this.toggleFilterSelected}>
                         <span>Show only Selected</span>
                         <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
                        </a>
@@ -282,10 +242,10 @@ const ProjectCreateHover = React.createClass({
                 <div className="dpmw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Agent <a href="#" onClick={this.assignSelf}>Assign to me</a></h1>
                   <div className="dpw--popup-item-collection">
-                    {this.state.agents ? <FRC.CheckboxGroupDeskPRO
+                    {this.props.agentList ? <FRC.CheckboxGroupDeskPRO
                       name="agents"
                       label="Agent"
-                      options={this.state.agents}
+                      options={this.filterAssignees(this.props.agentList, 'agents', this.state.filterValue, this.state.filterSelected)}
                       value={this.state.selected && this.state.selected.agents ? this.state.selected.agents : []}
                       ref="agentSelect"
                       onChange={this.updateAssignment}
@@ -297,10 +257,10 @@ const ProjectCreateHover = React.createClass({
                 <div className="dpmw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Team</h1>
                   <div className="dpw--popup-item-collection">
-                    {this.state.teams ? <FRC.CheckboxGroupDeskPRO
+                    {this.props.teamList ? <FRC.CheckboxGroupDeskPRO
                       name="teams"
                       label="Team"
-                      options={this.state.teams}
+                      options={this.filterAssignees(this.props.teamList, 'teams', this.state.filterValue, this.state.filterSelected)}
                       value={this.state.selected && this.state.selected.teams ? this.state.selected.teams : []}
                       ref="teamSelect"
                       onChange={this.updateAssignment}
@@ -312,10 +272,10 @@ const ProjectCreateHover = React.createClass({
                 <div className="dpmw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Department</h1>
                   <div className="dpw--popup-item-collection">
-                    {this.state.departments ? <FRC.CheckboxGroupDeskPRO
+                    {this.props.departmentList ? <FRC.CheckboxGroupDeskPRO
                       name="departments"
                       label="Department"
-                      options={this.state.departments}
+                      options={this.filterAssignees(this.props.departmentList, 'departments', this.state.filterValue, this.state.filterSelected)}
                       value={this.state.selected && this.state.selected.departments ? this.state.selected.departments : []}
                       ref="departmentSelect"
                       onChange={this.updateAssignment}
