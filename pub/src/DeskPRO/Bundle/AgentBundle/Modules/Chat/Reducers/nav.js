@@ -16,10 +16,7 @@ const initialState = {
       isGroupingControlVisible: false,
       items: [/* {count, group} */]
     }
-  },
-
-  agentNames: {/* id: name */},
-  departmentNames: {/* id: name */}
+  }
 };
 
 export default createReducer(initialState, {
