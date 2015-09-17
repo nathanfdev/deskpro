@@ -14,8 +14,6 @@ import AppReducers from "./AgentApp_Reducers.js";
 
 import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
 
-import { devTools } from 'redux-devtools';
-
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 
 export default class AgentApp {
@@ -52,8 +50,7 @@ export default class AgentApp {
       batchedUpdatesMiddleware
     );
     const makeStore  = compose(
-        middleware,
-        devTools()
+        middleware
     )(createStore);
     const store      = makeStore(reducer);
 
