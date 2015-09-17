@@ -6,6 +6,7 @@ var React = require('react');
 var Formsy = require('formsy-react');
 var ComponentMixin = require('./mixins/component');
 var Row = require('./row');
+var $ = require('jquery');
 
 var CheckboxGroupDeskPRO = React.createClass({
 
@@ -27,14 +28,15 @@ var CheckboxGroupDeskPRO = React.createClass({
         let value = [];
         let target = event.currentTarget;
 
-        target.checked = (typeof target.checked === 'undefined' || target.checked === false);
+        // target.checked = (typeof target.checked === 'undefined' || target.checked === false);
+        $(target).data('checked', !$(target).data('checked'));
 
         this.props.options.forEach(function(option, key) {
-            if (this.refs[key].getDOMNode().checked) {
+            if ($(this.refs[option.value].getDOMNode()).data('checked')) {
                 value.push(option.value);
             }
-
         }.bind(this));
+
         this.setValue(value);
         this.props.onChange(this.props.name, value);
     },
@@ -48,11 +50,12 @@ var CheckboxGroupDeskPRO = React.createClass({
             return (
                 <li key={key}><a
                 checked={checked}
+                data-checked={checked}
                 disabled={disabled}
                 href="#"
                 className={checkboxClass}
                 onClick={_this.changeCheckbox}
-                ref={key}
+                ref={checkbox.value}
                 >
                     <span className="checkbox">
                         <i className="fa fa-check"/>
