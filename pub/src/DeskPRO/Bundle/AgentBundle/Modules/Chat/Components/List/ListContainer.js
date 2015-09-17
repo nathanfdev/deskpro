@@ -4,7 +4,7 @@ import { List } from './List';
 
 @connect(state => ({
   elements: state.Chat.list.get('elements'),
-  viewMode: state.Chat.list.get('viewMode')
+  viewModeOptions: state.Chat.list.get('viewModeOptions').toJS()
 }))
 export class ListContainer extends React.Component {
   render() {

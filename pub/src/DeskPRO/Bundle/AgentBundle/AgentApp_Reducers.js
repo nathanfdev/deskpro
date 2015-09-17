@@ -7,6 +7,7 @@ import Common_departments                                 from "./Modules/Common
 import Common_users                                       from "./Modules/Common/Reducers/users.js";
 import ROOT_CrmNav                                        from "./Modules/CRM/Reducers/CrmNav.js";
 import ROOT_FeedbackList                                  from "./Modules/Feedback/Reducers/FeedbackList.js";
+import IM_IMList                                          from "./Modules/IM/Reducers/IMList.js";
 import ROOT_PublishList                                   from "./Modules/Publish/Reducers/PublishList.js";
 import ROOT_PublishNav                                    from "./Modules/Publish/Reducers/PublishNav.js";
 import ROOT_agentList                                     from "./Modules/Tasks/Reducers/agentList.js";
@@ -62,6 +63,9 @@ export default {
   "Common": {
     "departments":                                        Common_departments,
     "users":                                              Common_users,
+  },
+  "IM": {
+    "IMList":                                             IM_IMList,
   },
   "Test": {
     "test":                                               Test_test,
