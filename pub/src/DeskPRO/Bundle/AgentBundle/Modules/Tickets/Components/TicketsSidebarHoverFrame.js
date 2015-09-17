@@ -1,6 +1,6 @@
 import React from "react";
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";
@@ -14,7 +14,7 @@ export default class TicketsSidebarHoverFrame extends React.Component {
   render() {
     const { SidebarHover, dispatch } = this.props;
     const classes = "sidebar-hover " + (SidebarHover.open ? 'show' : 'hide');
-    
+
     return (
       <section className={classes}>
         <FilterGroupingOptions dispatch={dispatch} payload={SidebarHover.payload} />

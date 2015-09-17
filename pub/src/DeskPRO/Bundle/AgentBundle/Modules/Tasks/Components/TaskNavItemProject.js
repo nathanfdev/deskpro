@@ -1,7 +1,7 @@
 import React from "react";
 import ProjectCreateHover from "../Components/ProjectCreateHover";
 import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { DropTarget } from "react-dnd";
 import DragTypes from "../../../Services/DragTypes.js";
 

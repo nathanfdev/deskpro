@@ -3,7 +3,7 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Actions/crmNavActions';
 import { TableHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 @connect(state => ({
   order: state.CrmNav.order,
   tableViewFields: state.CrmNav.tableViewFields

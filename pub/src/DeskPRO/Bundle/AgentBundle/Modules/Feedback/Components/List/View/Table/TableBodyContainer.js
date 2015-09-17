@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableBody, Row } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 @connect(state => ({
   feedback: state.FeedbackList.feedback,
   tableViewFields: state.FeedbackList.tableViewFields

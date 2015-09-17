@@ -1,7 +1,7 @@
 import React from "react";
 import Moment from "moment";
 import { DragSource } from "react-dnd";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";

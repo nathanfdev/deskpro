@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import * as actions from '../../Actions/publishNavActions'
 import * as listActions from '../../Actions/publishListActions'

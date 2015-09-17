@@ -34,7 +34,7 @@ echo
 
 echo ">> Installing new web dependencies (dev)"
 cd $DIR_ROOT/pub
-npm install
+npm install --save-dev
 echo ".. done"
 
 echo ">> Building new web assets"

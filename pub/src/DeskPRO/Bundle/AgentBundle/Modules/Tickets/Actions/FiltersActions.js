@@ -1,4 +1,4 @@
-import {createAction} from "Ampliflux/actions";
+import {createAction} from "Ampliflux";
 import * as FilterSets from "DeskPRO/Bundle/AgentBundle/Services/Api/FilterSets";
 import * as Filters from "DeskPRO/Bundle/AgentBundle/Services/Api/Filters";
 

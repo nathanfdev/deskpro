@@ -1,12 +1,14 @@
 var gulp                  = require('gulp'),
     gutil                 = require('gulp-util'),
     webpack               = require("webpack"),
-    WebpackDevServer      = require("webpack-dev-server"),
+    express               = require('express'),
+    cors                  = require('cors'),
     del                   = require('del'),
     runSeq                = require('run-sequence'),
     path                  = require("path"),
     ExtractTextPlugin     = require("extract-text-webpack-plugin"),
-    fs                    = require("fs");
+    glob                  = require("glob"),
+    reducerRefresh        = require("./build-tools/app-reducer-gen/loader").refreshBundle;
 
 //######################################################################################################################
 //# Util
@@ -61,55 +63,13 @@ gulp.task('priv:start-prod', function () {
 //# Bundler
 //######################################################################################################################
 
-function createReducers(reducers_path) {
-  console.log("Parsing reducers in " + reducers_path);
-  if(!fs.existsSync(reducers_path)) {
-    return false;
-  }
-  var files = fs.readdirSync(reducers_path);
-  var imports = '';
-  var exports = '';
-  var processed_files = [];
-  for(var k in files) {
-    var file = files[k];
-    if(file == 'index.js' || !file.match(/\.js$/)) {
-      continue;
-    }
-
-    processed_files.push(file);
-    var store_name = file.substr(0, file.length - 3);
-    imports+= "import " + store_name + " from './" + store_name + "';\n";
-    exports+= store_name + ",";
-  }
-
-  console.log("[" + processed_files.join(", ") + "]");
-
-  var index = imports + "export default {"+ exports +"};";
-  fs.writeFileSync(path.join(reducers_path, "index.js"), index);
-}
-
-gulp.task('create-reducers', function(callback) {
-  var bundles_path = path.join(__dirname, "src/DeskPRO/Bundle");
-  var bundles = fs.readdirSync(bundles_path);
-  for(var k in bundles) {
-    var bundle = bundles[k];
-    var modules_path = path.join(bundles_path, bundle, "Modules");
-    if(fs.existsSync(modules_path)) {
-      var modules = fs.readdirSync(modules_path);
-      for(var l in modules) {
-        createReducers(path.join(modules_path, modules[l], 'Reducers'));
-      }
-    }
-  }
-
-  return callback();
-});
-
-gulp.task('bundle', ['create-reducers'], function (callback) {
+gulp.task('bundle', function (callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
 gulp.task('bundle:agent', function (callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
 });
 
@@ -117,40 +77,18 @@ gulp.task('bundle:portal', function (callback) {
   runWebpackBundle(getWebpackConfig('portal', deskpro.isProd), callback);
 });
 
-gulp.task('bundle:dev-server', ['create-reducers'], function(callback) {
+gulp.task('bundle:dev-server', function(callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   startWebpackServer(getWebpackConfig('all', true, false));
 });
 
-gulp.task('bundle:dev-server:agent', ['create-reducers'], function(callback) {
+gulp.task('bundle:dev-server:agent', function(callback) {
+  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 
 gulp.task('bundle:dev-server:portal', function(callback) {
   startWebpackServer(getWebpackConfig('portal', true, false));
-});
-
-gulp.task('build-test', function(callback) {
-  var config = getWebpackConfig('agent', true, false);
-  config.entry = path.join(__dirname, "src/DeskPRO/tests/runner");
-  config.module.loader = [{
-    test: /\.js$/,
-    include: [
-      path.resolve(__dirname, "src/DeskPRO")
-    ],
-    loader: "babel-loader?stage=0"
-  }];
-
-  webpack(config).run(function(err, stats) {
-    if(err) throw new gutil.PluginError("webpack", err);
-    gutil.log("[webpack]", stats.toString({
-        // output options
-    }));
-    callback();
-  });
-});
-
-gulp.task('test', ['build-test'], function(callback) {
-  require('./build/main.js');
 });
 
 //######################################################################################################################
@@ -178,12 +116,25 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     resolve: {
       root: [
         path.join(__dirname, "src"),
-        path.join(__dirname, "src/DeskPRO/Component")
+        path.join(__dirname, "src/DeskPRO/Component"),
+        path.join(__dirname, "built-tools"),
       ],
       alias: {}
     },
-    devtool: "source-map",
+    resolveLoader: {
+      modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules", "build-tools"]
+    },
+    devtool: "eval",
     module: {
+      preLoaders: [
+        {
+          test: /\/Reducers\/.*?\.js$/,
+          include: [
+            path.resolve(__dirname, "src/DeskPRO/Bundle/AgentBundle/Modules")
+          ],
+          loader: "app-reducer-gen"
+        }
+      ],
       loaders: [
         {
           test: /\.js$/,
@@ -194,10 +145,19 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         },
         {
           test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
-          loader: "file-loader?context=src&name=[path][name].[ext]"
+          loader: "file-loader?context=src&name=[path][name].[ext]",
+          include: [
+            path.resolve(__dirname, "src/DeskPRO"),
+            path.resolve(__dirname, "node_modules/node-bourbon"),
+            path.resolve(__dirname, "node_modules/node-neat"),
+            path.resolve(__dirname, "node_modules/font-awesome"),
+          ],
         },
         {
           test: /\.scss$/,
+          include: [
+            path.resolve(__dirname, "src/DeskPRO")
+          ],
           loader: ExtractTextPlugin.extract("style-loader",
             "css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&" +
             "includePaths[]=" + (path.resolve(__dirname, "./bower_components")) + "&" +
@@ -215,6 +175,14 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       })
     ]
   };
+
+  if (false) {
+    deps.forEach(function (dep) {
+      var depPath = path.resolve(node_modules_dir, dep[1]);
+      config.resolve.alias[dep[0]] = depPath;
+      config.module.noParse.push(depPath);
+    });
+  }
 
   if (mode == 'all' || mode == 'portal') {
     config.entry['DeskPRO_PortalBundle']       = ["./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle"];
@@ -251,8 +219,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
 
     if (config.entry['DeskPRO_AgentBundle']) {
-      config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/dev-server');
-      config.entry['DeskPRO_AgentBundle'].unshift('webpack-dev-server/client?http://localhost:9666');
+      config.entry['DeskPRO_AgentBundle'].unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
   }
 
@@ -276,12 +243,14 @@ function runWebpackBundle(config, callback)
 
 /**
  * @param {Object} config
- * @return {WebpackDevServer}
+ * @return {express}
  */
 function startWebpackServer(config)
 {
+  var app = express();
   var compiler = webpack(config);
-  return new WebpackDevServer(compiler, {
+
+  app.use(require('webpack-dev-middleware')(compiler, {
     publicPath: config.output.publicPath,
     hot: true,
     historyApiFallback: true,
@@ -296,10 +265,19 @@ function startWebpackServer(config)
       assets: false,
       version: false
     }
-  }).listen(9666, "localhost", function(err) {
+  }));
+
+  app.use(require('webpack-hot-middleware')(compiler));
+
+  app.use(cors());
+
+  app.listen(9666, 'localhost', function (err) {
     if(err) throw new gutil.PluginError("webpack-dev-server", err);
+
     gutil.log("[webpack-dev-server]", "http://localhost:9666/");
     gutil.log("[webpack-dev-server]", "In your config.php, add this line: ");
     gutil.log("[webpack-dev-server]", "$DP_CONFIG['pub_asset_urls'] = array('pub/build' => 'http://localhost:9666/pub/build/');");
   });
+
+  return app;
 }

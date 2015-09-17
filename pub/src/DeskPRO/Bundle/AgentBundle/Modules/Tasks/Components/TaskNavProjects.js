@@ -2,7 +2,7 @@ import React from "react";
 import ProjectCreateHover from "../Components/ProjectCreateHover";
 import TaskNavItemProject from "../Components/TaskNavItemProject";
 import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import $ from 'jquery';
 
 import * as TaskActions from "../Actions/TaskListActions";

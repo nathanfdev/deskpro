@@ -1,6 +1,6 @@
 import React from 'react';
 import { List } from './List';
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 
 @connect(state => ({
   elements: state.FeedbackList.feedback,

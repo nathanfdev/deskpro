@@ -1,41 +1,30 @@
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ListTableViewSwitcher');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar/ViewSwitcherContainer');
+// #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame
+// #define ~ControlBar DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar
+
+jest.dontMock('~ListFrame/ListTableViewSwitcher');
+jest.dontMock('~ListFrame/index');
+jest.dontMock('~ControlBar/ViewSwitcherContainer');
+
+import { renderInRedux, toImmutable } from 'Helpers/redux';
 
 describe('ViewSwitcherContainer', () => {
-
-  const React = require('react/addons');
-  const ViewSwitcherContainer =
-    require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar/ViewSwitcherContainer').ViewSwitcherContainer;
-  const ListTableViewSwitcher = require('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ListTableViewSwitcher').ListTableViewSwitcher;
-  const dummyState = {viewMode: 'list', displayFields: []};
-
-  function renderInRedux(react, state) {
-    const { Provider, Connector } = require('redux/react');
-    const createRedux = require('redux').createRedux;
-    const redux = createRedux(state);
-
-    return react.addons.TestUtils.renderIntoDocument(
-      <Provider redux={redux}>
-        {() =>
-          <Connector select={() => state}>
-            {() => <ViewSwitcherContainer />}
-          </Connector>
-        }
-      </Provider>
-    );
-  }
+  const ViewSwitcherContainer = require('~ControlBar/ViewSwitcherContainer').ViewSwitcherContainer;
+  const ListTableViewSwitcher = require('~ListFrame/ListTableViewSwitcher').ListTableViewSwitcher;
+  const state = {
+    Chat: {
+      list: toImmutable({viewMode: 'list', tableViewFields: [], listViewFields: []})
+    }
+  };
 
   it('should connect to ChatList state', () => {
-    const state = {ChatList: jasmine.createSpy().andReturn(dummyState)};
-    renderInRedux(React, state);
-    expect(state.ChatList).toHaveBeenCalled();
+    spyOn(state.Chat.list, 'get').andCallThrough();
+    renderInRedux(state, ViewSwitcherContainer);
+    expect(state.Chat.list.get).toHaveBeenCalled();
   });
 
   it('should render ListTableViewSwitcher component', () => {
     spyOn(ListTableViewSwitcher.prototype, 'render').andCallThrough();
-    renderInRedux(React, {ChatList: () => dummyState});
+    renderInRedux(state, ViewSwitcherContainer);
     expect(ListTableViewSwitcher.prototype.render).toHaveBeenCalled();
   });
-
 });

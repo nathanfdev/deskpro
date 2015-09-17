@@ -1,10 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { List } from './List';
-import { connect } from 'redux/react';
 
 @connect(state => ({
-  elements: state.ChatList.elements,
-  viewModeOptions: state.ChatList.viewModeOptions
+  elements: state.Chat.list.get('elements'),
+  viewModeOptions: state.Chat.list.get('viewModeOptions').toJS()
 }))
 export class ListContainer extends React.Component {
   render() {

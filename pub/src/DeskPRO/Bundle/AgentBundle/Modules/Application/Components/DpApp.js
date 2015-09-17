@@ -1,6 +1,6 @@
 import React from "react";
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 
 import { Header } from "./Header";
 import { AppSwitcher } from "./AppSwitcher";
@@ -15,7 +15,7 @@ import { routingStarted } from "../Actions/AppActions";
 @connect(state => ({
   ...state
 }))
-export class DpApp extends React.Component {
+export default class DpApp extends React.Component {
   constructor(props) {
     super(props);
     const { dispatch, router } = this.props;

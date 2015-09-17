@@ -3,7 +3,7 @@ import AgentsList from './Agents/AgentsList';
 import TeamsList from './Teams/TeamsList';
 import DepartmentsList from './Departments/DepartmentsList';
 import * as actions from '../Actions/imListActions';
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 
 @connect(state => ({
     agents: state.IMList.agents,

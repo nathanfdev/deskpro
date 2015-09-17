@@ -7,7 +7,7 @@ export class ChatApp extends React.Component {
   render() {
     return (
       <AppContainer thisAppId="chat">
-        <NavContainer  />
+        <NavContainer />
         <ListContainer />
       </AppContainer>
     );

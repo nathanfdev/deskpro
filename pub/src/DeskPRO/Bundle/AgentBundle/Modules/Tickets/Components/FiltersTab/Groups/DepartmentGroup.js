@@ -1,10 +1,10 @@
 import React from "react";
 
-import { connect } from "redux/react";
+import { connect } from "react-redux";
 import * as DepartmentsActions from "../../../Actions/DepartmentsActions";
 
 @connect(state => ({
-  Departments: state.Departments,
+  Departments: state.Tickets.Departments,
 }))
 export default class DepartmentGroup extends React.Component {
   constructor(props) {
@@ -16,10 +16,10 @@ export default class DepartmentGroup extends React.Component {
       dispatch(DepartmentsActions.loadDepartment(this.department_id));
     }
   }
-  
+
   render() {
     const { Departments, count, item } = this.props;
-    
+
     if(!Departments[this.department_id]) {
       return (<span></span>);
     } else {

@@ -9,6 +9,10 @@ export function loadDepartment(id) {
   return DpApi.sendGet(`DP_API/departments/${id}`);
 }
 
+export function load(ids) {
+  return DpApi.sendGet('DP_API/departments?ids=' + ids.join(','));
+}
+
 /**
  * Compile parameters into a URL string
  * @param params

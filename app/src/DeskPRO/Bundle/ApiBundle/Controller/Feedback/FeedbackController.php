@@ -204,6 +204,11 @@ class FeedbackController extends BaseController
                     ->from('DeskPRO:CustomDataFeedback', 'c')
                     ->orderBy('c.input');
                 break;
+            default:
+                // @TODO: Create code for what happens when "type" is set as the filter name
+                $qb
+                    ->select('s.title')
+                    ->from('DeskPRO:FeedbackStatusCategory', 's');
         }
         $result = $qb->getQuery()->getScalarResult();
         return View::create(

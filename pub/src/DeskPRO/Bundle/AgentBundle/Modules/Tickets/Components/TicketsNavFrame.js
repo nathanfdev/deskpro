@@ -5,7 +5,7 @@ import TicketsTabFilterSets from "./FiltersTab/TicketsTabFilterSets";
 import TicketsTabLabels from "./LabelsTab/TicketsTabLabels";
 import TicketsTabStars from "./StarsTab/TicketsTabStars";
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as TicketActions from "../Actions/FiltersActions";
 import * as LabelActions from "../Actions/LabelsListActions";
@@ -16,10 +16,10 @@ import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
 import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 @connect(state => ({
-  FilterSetsList: state.FilterSetsList,
-  FilterSetsCounts: state.FilterSetsCounts,
-  LabelsList: state.LabelsList,
-  StarsCounts: state.StarsCounts,
+  FilterSetsList: state.Tickets.FilterSetsList,
+  FilterSetsCounts: state.Tickets.FilterSetsCounts,
+  LabelsList: state.Tickets.LabelsList,
+  StarsCounts: state.Tickets.StarsCounts,
   Translations: state.Translations,
   dp_window: state.dp_window,
 }))

@@ -1,10 +1,11 @@
 import React from "react";
 
-import { connect } from 'redux/react';
-import { DpApp } from "./DpApp";
+import { connect } from 'react-redux';
+import DpApp from "./DpApp";
 import DpAppLoading from "./DpAppLoading";
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
+import TestApp from '../../Test/Components/TestApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
@@ -15,22 +16,20 @@ import { Router, Route, Redirect } from 'react-router';
 class ReactRouterWrapper extends React.Component {
   render() {
     return (
-      <DpApp router={this.context.router}>
+      <DpApp>
         {this.props.children}
       </DpApp>
     );
   }
 }
-ReactRouterWrapper.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
-@connect(state => ({
-  dp_window: state.dp_window,
-  routing: state.routing
-}))
-
-export class DpAppContainer extends React.Component {
+@connect((state) => {
+  return {
+    dp_window: state.dp_window,
+    routing: state.routing
+  }
+})
+export default class DpAppContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -43,17 +42,20 @@ export class DpAppContainer extends React.Component {
 
   workOutBasePath() {
     let base_end = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);
-    if (base_end == -1) {
-      return "/agent";
+    let bp;
+    if (base_end === -1) {
+      bp = "/agent";
+    } else {
+      bp = DP_BASE_URL.substr(base_end) + "/agent";
     }
 
-    return DP_BASE_URL.substr(base_end) + "/agent";
+    return bp;
   }
 
   render() {
     const { dp_window, history } = this.props;
     const base_path = this.workOutBasePath();
-    const default_path = `${base_path}/tickets`;
+    const default_path = `${base_path}/tasks`;
 
     if (dp_window.isLoaded) {
       return (
@@ -66,6 +68,7 @@ export class DpAppContainer extends React.Component {
             <Route name="tasks" path="tasks" component={TasksApp}/>
             <Route name="publish" path="publish" component={PublishApp}/>
             <Route name="feedback" path="feedback" component={FeedbackApp}/>
+            <Route name="test" path="test" component={TestApp}/>
           </Route>
         </Router>
       );

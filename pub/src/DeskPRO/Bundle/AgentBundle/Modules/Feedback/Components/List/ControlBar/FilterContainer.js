@@ -1,9 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { FilterBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import * as actions from '../../../Actions/FeedbackListActions'
 import $ from "jquery";
 
-import { connect } from 'redux/react';
 @connect(state => state.FeedbackList)
 
 export class FilterContainer extends React.Component {

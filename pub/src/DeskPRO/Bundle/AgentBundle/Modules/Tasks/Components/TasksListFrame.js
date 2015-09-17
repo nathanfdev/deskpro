@@ -1,7 +1,7 @@
 import React from "react";
 import { DragSource } from "react-dnd";
-import { connect } from "redux/react";
-import $ from "jquery";
+import { connect } from 'react-redux';
+import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";
 import Formsy from "formsy-react";

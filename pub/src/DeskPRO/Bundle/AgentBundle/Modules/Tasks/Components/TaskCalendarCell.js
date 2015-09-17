@@ -2,7 +2,7 @@ import React, {PropTypes} from "react";
 import Moment from "moment";
 import TaskCalendarCard from "../Components/TaskCalendarCard";
 import Calendar from "../../../Services/Calendar";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import * as TaskActions from "../Actions/TaskListActions";
 import { DropTarget } from 'react-dnd';
 import DragTypes from "../../../Services/DragTypes.js";

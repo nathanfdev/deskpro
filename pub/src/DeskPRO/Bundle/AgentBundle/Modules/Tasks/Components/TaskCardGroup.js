@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react";
 import TaskCard from "./TaskCard";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import * as TaskActions from "../Actions/TaskListActions";
 import { DropTarget } from 'react-dnd';
 import DragTypes from "../../../Services/DragTypes.js";

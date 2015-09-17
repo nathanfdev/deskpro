@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import * as AppActions from "../Actions/AppActions";
 import { Link } from 'react-router';
 

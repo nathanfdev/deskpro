@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux/actions";
+import { createAction } from "Ampliflux";
 import Stars from "DeskPRO/Bundle/AgentBundle/Services/Api/Stars";
 
 export const loadStarCounts = createAction(

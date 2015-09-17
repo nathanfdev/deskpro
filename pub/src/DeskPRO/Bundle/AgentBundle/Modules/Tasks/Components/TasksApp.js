@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import AppContainer from "DeskPRO/Component/AppContainer";
 import HTML5Backend from 'react-dnd/modules/backends/HTML5';
 import { DragDropContext } from 'react-dnd';

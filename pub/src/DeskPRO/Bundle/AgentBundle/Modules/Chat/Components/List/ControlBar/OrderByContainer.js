@@ -1,14 +1,14 @@
 import React from 'react';
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions';
-import { toggleSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Actions/chatListActions';
+import { changeSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Actions/chatListActions';
 
 @connect(state => ({
-  sort:        state.ChatList.sort,
-  sortName:    state.ChatList.sortName,
-  sortOptions: state.ChatList.sortOptions,
-  order:       state.ChatList.order
+  sort:        state.Chat.list.get('sort'),
+  sortName:    state.Chat.list.get('sortName'),
+  sortOptions: state.Chat.list.get('sortOptions').toJS(),
+  order:       state.Chat.list.get('order')
 }))
 export class OrderByContainer extends React.Component {
 
@@ -21,7 +21,7 @@ export class OrderByContainer extends React.Component {
         sortName={sortName}
         sortOptions={sortOptions}
         order={order}
-        toggleSort={this.toggleListSort.bind(this)}
+        toggleSort={this.changeListSort.bind(this)}
         toggleOrder={this.toggleListOrder.bind(this)}
       />
     );
@@ -31,11 +31,7 @@ export class OrderByContainer extends React.Component {
     this.props.dispatch(toggleOrder());
   }
 
-  toggleListSort(sort) {
-    return (e) => {
-      e.preventDefault();
-      this.props.dispatch(actions.toggleSort(sort));
-    }
+  changeListSort(sort) {
+    this.props.dispatch(changeSort(sort));
   }
-
 }

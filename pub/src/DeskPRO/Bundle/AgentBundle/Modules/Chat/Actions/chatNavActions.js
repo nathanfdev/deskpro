@@ -1,56 +1,52 @@
-import { createAction } from 'Ampliflux/actions';
-import * as Chat from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
-import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
-import * as Departments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Departments';
+import { createAction } from 'Ampliflux';
+import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
+import { loadUsers, releaseRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/UserActions';
+import { loadDepartments, releaseDepartmentsRequest }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/departmentsActions';
+
+/**
+ * Used to identify requests within record stores
+ * @type {string}
+ */
+const recordStoresId = 'chatNav';
 
 export const loadCounts = createAction(
-    'CHAT_LOAD_CONVERSATIONS_COUNTS',
-    (trigger, list, groupBy) => Chat.loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
-      trigger({
+  'CHAT_NAV_LOAD_CONVERSATIONS_COUNTS',
+  (list, groupBy) =>
+    (dispatch) => loadChatCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
+      if (groupBy === 'department') {
+        dispatch(loadDepartments(recordStoresId, promise.getData().data.nested.map(count => count.group)));
+      } else if (groupBy === 'agent') {
+        dispatch(loadUsers(recordStoresId, promise.getData().data.nested.map(count => count.group)));
+      }
+
+      return {
         list,
         counts: promise.getData().data
-      });
-
-      if (groupBy === 'department') {
-        const nested = promise.getData().data.nested;
-        for (let i = 0; i < nested.length; i++) {
-          trigger(loadDepartmentName(nested[i].group));
-        }
-      }
-
-      if (groupBy === 'agent') {
-        const nested = promise.getData().data.nested;
-        for (let i = 0; i < nested.length; i++) {
-          trigger(loadAgentName(nested[i].group));
-        }
-      }
-    })
-);
-
-export const loadAgentName = createAction(
-    'CHAT_LOAD_AGENT_NAME',
-    (trigger, id) => People.loadPerson(id).then(promise => {
-      trigger({id, name: promise.getData().data.name});
-    })
-);
-
-export const loadDepartmentName = createAction(
-    'CHAT_LOAD_DEPARTMENT_NAME',
-    (trigger, id) => Departments.loadDepartment(id).then(promise => {
-      trigger({id, name: promise.getData().data.title});
+      };
     })
 );
 
 export const toggleListGroupingVisibility = createAction(
-    'CHAT_TOGGLE_LIST_GROUPING_VISIBILITY',
-    (trigger, list) => trigger(list)
+  'CHAT_NAV_TOGGLE_LIST_GROUPING_VISIBILITY',
+  list => list
 );
 
 export const changeListGrouping = createAction(
-    'CHAT_CHANGE_LIST_GROUPING',
-    (trigger, list, groupBy) => {
-      trigger({list, groupBy});
-      trigger(loadCounts(list, groupBy));
-      trigger(toggleListGroupingVisibility(list));
-    }
+  'CHAT_NAV_CHANGE_LIST_GROUPING',
+  (list, groupBy) => dispatch => {
+    dispatch(loadCounts(list, groupBy));
+    dispatch(toggleListGroupingVisibility(list));
+
+    return {list, groupBy};
+  }
+);
+
+export const unmount = createAction(
+  'CHAT_NAV_UNMOUNT',
+  () => dispatch => {
+    console.log('CHAT_NAV_UNMOUNT');
+    dispatch(releaseRequest(recordStoresId));
+    dispatch(releaseDepartmentsRequest(recordStoresId));
+  }
 );

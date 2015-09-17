@@ -3,39 +3,19 @@
 jest.dontMock('~List/ListContainer');
 
 describe('ListContainer', () => {
-
-  const React = require('react/addons');
+  const renderInRedux = require('Helpers/redux').renderInRedux;
   const ListContainer = require('~List/ListContainer').ListContainer;
   const List = require('~List/List').List;
-
-  // TODO turn into common test helper
-  // TODO rename redux -> store and createRedux -> createStore after Redux upgrade
-  function renderInRedux(react, state) {
-    const { Provider, Connector } = require('redux/react');
-    const createRedux = require('redux').createRedux;
-    const redux = createRedux(state);
-
-    return react.addons.TestUtils.renderIntoDocument(
-      <Provider redux={redux}>
-        {() =>
-          <Connector select={() => state}>
-            {() => <ListContainer />}
-          </Connector>
-        }
-      </Provider>
-    );
-  }
+  const state = {Chat: {list: {'get': jasmine.createSpy().andReturn({})}}};
 
   it('should connect to ChatList state', () => {
-    const state = {ChatList: jasmine.createSpy().andReturn({})};
-    renderInRedux(React, state);
-    expect(state.ChatList).toHaveBeenCalled();
+    renderInRedux(state, ListContainer);
+    expect(state.Chat.list.get).toHaveBeenCalled();
   });
 
   it('should render List component', () => {
     spyOn(List.prototype, 'render').andCallThrough();
-    renderInRedux(React, {ChatList: () => ({})});
+    renderInRedux(state, ListContainer);
     expect(List.prototype.render).toHaveBeenCalled();
   });
-
 });

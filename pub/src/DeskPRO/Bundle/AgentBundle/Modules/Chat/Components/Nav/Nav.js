@@ -1,14 +1,14 @@
 import React from 'react';
 import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, ListGroupingControl }
        from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { ChatsListItem } from './ChatsListItem';
+import { ListItemContainer } from './ListItemContainer';
 
 export class Nav extends React.Component {
   render() {
-    const {lists, grouping, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick, dispatch, dp_window} = this.props;
+    const {lists, grouping, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick} = this.props;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+      <NavFrame>
         <div part="outer">
 
           <ListGroupingControl
@@ -28,7 +28,7 @@ export class Nav extends React.Component {
         </div>
 
         <div part="inner">
-          <NavFrameHeader icon="fa-comments-o" dispatch={dispatch.bind(this)}>Chat</NavFrameHeader>
+          <NavFrameHeader icon="fa-comments-o">Chat</NavFrameHeader>
 
           <SectionsPane>
             <Section>
@@ -45,7 +45,7 @@ export class Nav extends React.Component {
 
               <ul>
                 {lists.my.items.map(item =>
-                   <ChatsListItem
+                   <ListItemContainer
                      groupBy={lists.my.groupBy}
                      group={item.group}
                      count={item.count}
@@ -70,7 +70,7 @@ export class Nav extends React.Component {
 
               <ul>
                 {lists.all.items.map(item =>
-                   <ChatsListItem
+                   <ListItemContainer
                      groupBy={lists.all.groupBy}
                      group={item.group}
                      count={item.count}

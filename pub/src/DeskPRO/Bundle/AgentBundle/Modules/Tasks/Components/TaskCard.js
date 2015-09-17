@@ -1,6 +1,6 @@
 import React from "react";
 import { DragSource, DropTarget } from "react-dnd";
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
 import { IntlMixin, FormattedDate } from "react-intl";

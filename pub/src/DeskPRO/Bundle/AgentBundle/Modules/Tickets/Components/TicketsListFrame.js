@@ -1,10 +1,10 @@
 import React from "react";
 
-import { connect } from 'redux/react';
+import { connect } from 'react-redux';
 import * as TicketActions from "../Actions/FiltersActions";
 
 @connect(state => ({
-  TicketsList: state.TicketsList,
+  TicketsList: state.Tickets.TicketsList,
   dp_window: state.dp_window
 }))
 export default class TicketsListFrame extends React.Component {

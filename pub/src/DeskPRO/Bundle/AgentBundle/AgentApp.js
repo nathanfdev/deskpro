@@ -1,23 +1,22 @@
 import "babel/polyfill";
 import $ from "jquery";
 import React from 'react';
-import { createRedux, createDispatcher, composeStores } from 'redux';
-import thunkMiddleware from 'redux/lib/middleware/thunk';
-import promiseMiddleware from 'redux-promise';
-import { Provider } from 'redux/react';
-import { composeReducers } from "Ampliflux/reducers";
+
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+
+import { combineReducerHierarchy } from "Ampliflux";
+import * as ampMiddleware from "Ampliflux/middleware";
+
 import BrowserHistory from 'react-router/lib/BrowserHistory';
 
-import * as app_stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Reducers/index";
-import * as ticket_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/index";
-import * as task_stores from "DeskPRO/Bundle/AgentBundle/Modules/Tasks/Reducers/index";
-import * as chat_stores from "DeskPRO/Bundle/AgentBundle/Modules/Chat/Reducers/index";
-import * as crm_stores from "DeskPRO/Bundle/AgentBundle/Modules/CRM/Reducers/index";
-import * as publish_stores from "DeskPRO/Bundle/AgentBundle/Modules/Publish/Reducers/index";
-import * as feedback_stores from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Reducers/index";
-import * as im_stores from "DeskPRO/Bundle/AgentBundle/Modules/IM/Reducers/index";
+import AppReducers from "./AgentApp_Reducers.js";
 
-import { DpAppContainer } from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
+import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
+
+import { devTools } from 'redux-devtools';
+
+import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 
 export default class AgentApp {
   run() {
@@ -25,23 +24,38 @@ export default class AgentApp {
   }
 
   start() {
-    const store = composeReducers(Object.assign({},
-        app_stores,
-        ticket_stores,
-        task_stores,
-        chat_stores,
-        crm_stores,
-        publish_stores,
-        feedback_stores,
-        im_stores
-    ));
+    
+    window.DP_ENABLE_ACTION_LOGGER = true;
+    window.DP_DEV_MODE = true;
 
-    const dispatcher = createDispatcher(
-      store,
-      getState => [thunkMiddleware(getState), promiseMiddleware]
+    // This builder calls compile on old-style reducers
+    // created via the Reducer class
+    const legacyReducerBuilder = function(r) {
+      if (r.isAmplifluxReducer) {
+        const rInst = new r();
+        return rInst.compile();
+      } else {
+        return r;
+      }
+    };
+
+    const reducer    = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
+    const middleware = applyMiddleware(
+      ampMiddleware.timerMiddleware('startTime'),
+      ampMiddleware.intervalMiddleware,
+      ampMiddleware.timeoutMiddleware,
+      ampMiddleware.actionThunkMiddleware,
+      ampMiddleware.redispatchDsaPayload,
+      ampMiddleware.guidMiddleware,
+      ampMiddleware.promiseMiddleware,
+      ampMiddleware.loggerMiddleware,
+      batchedUpdatesMiddleware
     );
-
-    const redux = createRedux(dispatcher);
+    const makeStore  = compose(
+        middleware,
+        devTools()
+    )(createStore);
+    const store      = makeStore(reducer);
 
     var intlData = {
       "locales": "en-US",
@@ -49,13 +63,17 @@ export default class AgentApp {
         "foobar": "Tickets"
       }
     };
-    
+
     const hist = new BrowserHistory();
 
-    React.render(
-      <Provider redux={redux}>
+    let els = [
+      <Provider store={store}>
         {() => <DpAppContainer {...intlData} history={hist} />}
-      </Provider>,
+      </Provider>
+    ];
+
+    React.render(
+      <div>{els}</div>,
       document.getElementById('deskpro_app_window')
     );
   }

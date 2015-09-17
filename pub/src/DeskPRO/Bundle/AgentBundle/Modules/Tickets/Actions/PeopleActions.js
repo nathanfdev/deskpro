@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux/actions";
+import { createAction } from "Ampliflux";
 import * as People from "DeskPRO/Bundle/AgentBundle/Services/Api/People";
 
 export const loadPeople = createAction(

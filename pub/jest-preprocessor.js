@@ -59,6 +59,10 @@ module.exports = {
       // Helpers/... paths ----------------------------------------------------------------------------------------
 
       result = result.replace(
+        /^import(.*)[\"\']Helpers(.*)[\"\'](.*)$/gm,
+        "import$1'" + margin + "tests/Helpers$2'$3"
+      );
+      result = result.replace(
         /^(.+)([\s=])require\([\"\']Helpers(.*)[\"\']\)(.*)$/gm,
         "$1$2require('" + margin + "tests/Helpers$3')$4"
       );

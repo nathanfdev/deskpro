@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux/actions";
+import { createAction } from "Ampliflux";
 import * as AgentTeams from "DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams";
 
 export const loadAgentTeam = createAction(
