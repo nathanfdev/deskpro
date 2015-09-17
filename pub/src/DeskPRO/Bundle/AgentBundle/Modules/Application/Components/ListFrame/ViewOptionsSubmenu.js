@@ -54,6 +54,9 @@ export class FieldsList extends Component {
 
   render() {
     const {fields,displayFieldsStatus} = this.props;
+    fields.sort(function (a, b) {
+      return a.priority - b.priority
+    });
     return (
       <div className="dpw-navigation-dropdown-column-list">
         <ul>

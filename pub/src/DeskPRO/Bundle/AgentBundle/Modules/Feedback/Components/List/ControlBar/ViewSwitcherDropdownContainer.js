@@ -19,7 +19,7 @@ export class ViewSwitcherDropdownContainer extends Component {
       <DropdownMenu dropdownClass="view-mode-dropdown">
         {viewModeOptions.map((option, index)=>
             <Option key={index} active={currentViewMode.field === option.field} option={option}
-                    callbackFunc={this.toggleView.bind(this)}/>
+                    callback={this.toggleView.bind(this)}/>
         )}
         <DropdownMenuFooter>
           <div className="dpw-navigation-dropdown-options-link">

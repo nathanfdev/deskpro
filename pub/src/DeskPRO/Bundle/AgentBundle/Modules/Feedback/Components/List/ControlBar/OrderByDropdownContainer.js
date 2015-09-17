@@ -20,7 +20,7 @@ export class OrderByDropdownContainer extends React.Component {
     return (
       <DropdownMenu dropdownClass="order-dropdown">
         {sortOptions.map((option, index)=>
-            <Option key={index} active={sort === option.field} callbackFunc={this.toggleListSort.bind(this)}
+            <Option key={index} active={sort === option.field} callback={this.toggleListSort.bind(this)}
                     option={option}/>
         )}
         <DropdownMenuFooter>

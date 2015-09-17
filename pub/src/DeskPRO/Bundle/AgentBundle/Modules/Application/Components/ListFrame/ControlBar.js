@@ -24,14 +24,14 @@ export class ControlButtonsRow extends React.Component {
 
 export class ControlButton extends React.Component {
   render() {
-    const { title, currentMode, icon } = this.props;
+    const { title, label, icon } = this.props;
     var classes = classNames('fa', icon);
     return (
       <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.toggleDropdown.bind(this)}>
         <span
           className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">{title}</span>
         <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className={classes}></i></span>
-        <span className="dpwd-navigation-dropdown-top-row-button-text">{currentMode}</span>
+        <span className="dpwd-navigation-dropdown-top-row-button-text">{label}</span>
         <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className="fa fa-caret-down"></i></span>
       </a>
     );
