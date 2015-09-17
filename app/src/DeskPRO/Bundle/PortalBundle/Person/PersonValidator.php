@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\DataService\EmailDataService;
-use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
