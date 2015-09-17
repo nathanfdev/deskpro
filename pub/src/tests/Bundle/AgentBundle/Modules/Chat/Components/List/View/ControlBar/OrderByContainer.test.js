@@ -5,15 +5,19 @@ jest.dontMock('~ListFrame/OrderBy');
 jest.dontMock('~ListFrame/index');
 jest.dontMock('~ControlBar/OrderByContainer');
 
+import { renderInRedux, toImmutable } from 'Helpers/redux';
+
 describe('OrderByContainer', () => {
-  const renderInRedux = require('Helpers/redux').renderInRedux;
   const OrderByContainer = require('~ControlBar/OrderByContainer').OrderByContainer;
   const OrderBy = require('~ListFrame/OrderBy').OrderBy;
-  const state = {Chat: {list: {'get': jasmine.createSpy().andCallFake((arg) => {
-    return {sort: 'id', order: 'desc', sortOptions: [], sortName: 'sort'}[arg];
-  })}}};
+  const state = {
+    Chat: {
+      list: toImmutable({sort: 'id', order: 'desc', sortOptions: [], sortName: 'sort'})
+    }
+  };
 
   it('should connect to ChatList state', () => {
+    spyOn(state.Chat.list, 'get').andCallThrough();
     renderInRedux(state, OrderByContainer);
     expect(state.Chat.list.get).toHaveBeenCalled();
   });

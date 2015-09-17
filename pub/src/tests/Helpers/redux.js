@@ -1,4 +1,5 @@
-const React = require('react/addons');
+import Immutable from 'immutable';
+import React from 'react/addons';
 
 export function renderInRedux(state, element) {
   const { Provider } = require('react-redux');
@@ -10,4 +11,8 @@ export function renderInRedux(state, element) {
       {() => React.createElement(element)}
     </Provider>
   );
+}
+
+export function toImmutable(data) {
+  return Immutable.fromJS(data);
 }
