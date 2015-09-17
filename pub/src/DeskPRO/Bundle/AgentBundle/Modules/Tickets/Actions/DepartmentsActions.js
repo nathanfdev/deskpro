@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux";
+import { createAction } from "Ampliflux/actions";
 import * as Departments from "DeskPRO/Bundle/AgentBundle/Services/Api/Departments";
 
 export const setDepartments  = createAction("TICKETS_SET_DEPARTMENTS");
