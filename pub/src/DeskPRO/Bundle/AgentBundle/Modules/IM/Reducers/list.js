@@ -1,7 +1,7 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/imListActions.js';
 
-export default class IMList extends Reducer {
+export default class IM_list extends Reducer {
 
     getInitialState() {
         return {

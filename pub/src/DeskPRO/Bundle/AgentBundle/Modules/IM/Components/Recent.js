@@ -6,7 +6,7 @@ export default class Recent extends React.Component {
             backgroundImage: 'url("'+this.props.agent.gravatar_url+'")'
         };
         return (
-            <a href="#" class="chat-avatar" style={style}></a>
+            <a href="#" className="chat-avatar" style={style}></a>
         );
     }
 }

@@ -1,34 +1,41 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Overlay from './Overlay';
 import Recent from './Recent';
 import * as actions from '../Actions/imListActions';
 
-const HeaderWidget = React.createClass({
+@connect(state => ({
+    recentAgents: state.IM.list.recentAgents
+}))
+export default class HeaderWidget extends React.Component {
 
-    getInitialState: function() {
-        return {
-            overlayShown: false,
-            recentAgents: []//this.props.dispatch(actions.loadRecentAgents())
+    constructor(props) {
+        super(props);
+        this.props.dispatch(actions.loadRecentAgents());
+        this.state = {
+            overlayShown: false
         };
-    },
+    }
 
-    onClick: function() {
-        this.setState({ overlayShown: !this.state.overlayShown });
-    },
+    onClick() {
+        const newState = {
+            overlayShown: !this.state.overlayShown
+        };
+        this.setState(newState);
+        console.log(this.props);
+    }
 
-    render: function() {
+    render() {
         return (
             <div className="agent-ims">
-                <a href="#" onClick={this.onClick} className="show-more">
+                <a href="#" onClick={this.onClick.bind(this)} className="show-more">
                   <span>
                       IMs <i className="fa fa-angle-down"></i>
                   </span>
                 </a>
-                { this.state.recentAgents.map((agent, index) => <Recent key={index} agent={agent} />)}
+                { this.props.recentAgents.map((agent, index) => <Recent key={index} agent={agent} />)}
                 { this.state.overlayShown ? <Overlay/> : null }
             </div>
         );
     }
-});
-
-module.exports = HeaderWidget;
+}
