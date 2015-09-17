@@ -1,14 +1,14 @@
 // #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame
-// #define ~ControlBar DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/ControlBar
+// #define ~Containers DeskPRO/Bundle/AgentBundle/Modules/Chat/Containers/List/ControlBar
 
 jest.dontMock('~ListFrame/ListTableViewSwitcher');
 jest.dontMock('~ListFrame/index');
-jest.dontMock('~ControlBar/ViewSwitcherContainer');
+jest.dontMock('~Containers/ViewSwitcherContainer');
 
 import { renderInRedux, toImmutable } from 'Helpers/redux';
 
 describe('ViewSwitcherContainer', () => {
-  const ViewSwitcherContainer = require('~ControlBar/ViewSwitcherContainer').ViewSwitcherContainer;
+  const ViewSwitcherContainer = require('~Containers/ViewSwitcherContainer').ViewSwitcherContainer;
   const ListTableViewSwitcher = require('~ListFrame/ListTableViewSwitcher').ListTableViewSwitcher;
   const state = {
     Chat: {

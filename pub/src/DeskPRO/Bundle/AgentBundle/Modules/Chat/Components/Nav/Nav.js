@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, ListGroupingControl }
        from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { ListItemContainer } from './ListItemContainer';
+import { ListItemContainer } from '../../Containers/Nav/ListItemContainer';
 
 export class Nav extends React.Component {
   render() {

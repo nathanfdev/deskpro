@@ -1,7 +1,7 @@
 import React from 'react';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
-import { OrderByContainer } from './OrderByContainer';
-import { ViewSwitcherContainer } from './ViewSwitcherContainer';
+import { OrderByContainer } from '../../../Containers/List/ControlBar/OrderByContainer';
+import { ViewSwitcherContainer } from '../../../Containers/List/ControlBar//ViewSwitcherContainer';
 
 export class ChatsListControlBar extends React.Component {
   render() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import AppContainer from 'DeskPRO/Component/AppContainer';
-import { NavContainer } from './Nav/NavContainer';
-import { ListContainer } from './List/ListContainer';
+import { NavContainer } from '../Containers/Nav/NavContainer';
+import { ListContainer } from '../Containers/List/ListContainer';
 
 export class ChatApp extends React.Component {
   render() {

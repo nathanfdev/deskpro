@@ -1,10 +1,11 @@
 // #define ~List DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List
+// #define ~Containers DeskPRO/Bundle/AgentBundle/Modules/Chat/Containers/List
 
-jest.dontMock('~List/ListContainer');
+jest.dontMock('~Containers/ListContainer');
 
 describe('ListContainer', () => {
   const renderInRedux = require('Helpers/redux').renderInRedux;
-  const ListContainer = require('~List/ListContainer').ListContainer;
+  const ListContainer = require('~Containers/ListContainer').ListContainer;
   const List = require('~List/List').List;
   const state = {Chat: {list: {'get': jasmine.createSpy().andReturn({})}}};
 
