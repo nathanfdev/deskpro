@@ -18,6 +18,8 @@ import TaskGrouping from "../../../Services/TaskGrouping";
 import * as AppActions from "../../Application/Actions/AppActions";
 import * as constants from "../../../Constants/Constants";
 import ReactPaginate from "../../Application/Components/Pagination/deskpro-react-paginate";
+import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
+import AssignHover from "../Components/AssignHover";
 
 @connect(state => ({
     taskFrameList: state.taskFrameList,
@@ -41,7 +43,10 @@ export default class TasksListFrame extends React.Component {
       order: 'due',
       direction: constants.ORDER_ASC,
       filter: {},
-      moment: new Moment()
+      moment: new Moment(),
+      showAssignWindow: false,
+      position: {},
+      taskData: {}
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
@@ -222,6 +227,81 @@ export default class TasksListFrame extends React.Component {
     ));
   }
 
+  handleAssigneeChange(assignee) {
+    let task = {};
+    const assignment = assignee.value;
+
+    task.agents = [];
+    task.teams = [];
+    task.departments = [];
+
+    if (assignment !== 'unassigned') {
+      let assignmentParts = assignment.split('-');
+      task[assignmentParts[0]] = [assignmentParts[1]];
+    }
+
+    task.taskId = assignee.id;
+    this.closeAssignWindow();
+
+    this.editTask(this.props.taskFrameList.taskFrameSource, task);
+  }
+
+  toggleAssignWindow(task = {}) {
+    let target = $(event.target).closest('div.top-right-box');
+    let modifier = 12;
+
+    if (typeof target[0] === 'undefined') {
+      target = $(event.target).closest('.list-sidebar-title');
+      modifier = 13;
+    }
+
+    this.setState({
+      showAssignWindow: !this.state.showAssignWindow,
+      position: {
+        x: target[0].getBoundingClientRect().right,
+        y: target[0].getBoundingClientRect().top + modifier
+      },
+      taskData: this.state.showAssignWindow ? {} : task
+    });
+  }
+
+  moveCard(item, targetItem, tasks, callback) {
+    const cards = tasks;
+    const id = item.id;
+    const afterId = targetItem.id;
+
+    let oldOrder = [];
+    tasks.forEach((card) => {
+      oldOrder.push(card.display_order);
+    });
+
+    const card = cards.filter(c => c.id === id)[0];
+    const afterCard = cards.filter(c => c.id === afterId)[0];
+    const cardIndex = cards.indexOf(card);
+    const afterIndex = cards.indexOf(afterCard);
+
+    cards.splice(cardIndex, 1);
+    cards.splice(afterIndex, 0, card);
+
+    // Used to set the state of the column
+    callback(cards);
+
+    this.editTask(
+      this.props.taskFrameList.taskFrameSource,
+      {
+        taskId: card.id,
+        display_order: targetItem.display_order
+      }
+    );
+  }
+
+  closeAssignWindow() {
+    this.setState({
+      taskData: {},
+      showAssignWindow: false
+    });
+  }
+
   render() {
     const {taskFrameList, projectList, taskFilter, labelList, agentList, teamList, departmentList} = this.props;
 
@@ -312,11 +392,21 @@ export default class TasksListFrame extends React.Component {
     return (
       <section className={sectionClass}>
         <div className="ticket-list">
+          <ComponentRootWrapper open={this.state.showAssignWindow}>
+            <AssignHover position={this.state.position}
+                          assignTask={this.handleAssigneeChange.bind(this)}
+                          agents={this.agents}
+                          teams={this.teams}
+                          departments={this.departments}
+                          taskData={this.state.taskData}
+                          closeWindow={this.closeAssignWindow.bind(this)} />
+          </ComponentRootWrapper>
           <div className="tickets-control-bar">
             <div className="bulk-edit-control">
               <a href="#" onClick={this.toggleAllMassActions.bind(this)}>
-                  <span className="checkbox">{this.state.actionable.length > 0 ?
-                      <i className="fa fa-check"/> : ''}</span>
+                  <span className="checkbox">
+                    {this.state.actionable.length > 0 ? <i className="fa fa-check"/> : ''}
+                  </span>
               </a>
               <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}>
                 <span>{this.state.actionable.length}</span>
@@ -397,7 +487,11 @@ export default class TasksListFrame extends React.Component {
                                          updateField={grouping.updateField}
                                          updateValue={grouping.updateValue}
                                          source={taskFrameList.taskFrameSource}
+                                         updateMassActions={_this.updateMassActions.bind(_this)}
+                                         moveCard={this.moveCard.bind(this)}
                                          massEdit={this.massEdit.bind(this)}
+                                         actionable={_this.state.actionable}
+                                         order={this.state.order}
                                          editTask={_this.editTask.bind(_this)} />
                 }) : '' }
             </div>
@@ -434,7 +528,9 @@ export default class TasksListFrame extends React.Component {
                                                        editTask={_this.editTask.bind(_this)}
                                                        updateMassActions={_this.updateMassActions.bind(_this)}
                                                        actionable={_this.state.actionable}
-                                                       divider={grouping.title} />
+                                                       order={this.state.order}
+                                                       divider={grouping.title}
+                                                       moveCard={this.moveCard.bind(this)} />
                     }
                 }) : '' }
               </table>
@@ -471,7 +567,10 @@ export default class TasksListFrame extends React.Component {
                                         editTask={_this.editTask.bind(_this)}
                                         updateMassActions={_this.updateMassActions.bind(_this)}
                                         actionable={_this.state.actionable}
-                                        divider={grouping.title}/>
+                                        divider={grouping.title}
+                                        order={this.state.order}
+                                        toggleAssignWindow={_this.toggleAssignWindow.bind(_this)}
+                                        moveCard={this.moveCard.bind(this)}/>
               }) : '' }
 
             </div>

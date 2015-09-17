@@ -63,14 +63,14 @@ export default class TasksNavProjects extends React.Component {
         title : model.title,
         departments : model.departments,
         teams: model.teams,
-        agents : model.members
+        agents : model.agents
       }))
     } else {
       this.props.dispatch(TaskActions.createProject({
         title : model.title,
         departments : model.departments,
         teams : model.teams,
-        agents : model.members
+        agents : model.agents
       }));
     }
   }
@@ -79,6 +79,30 @@ export default class TasksNavProjects extends React.Component {
     const {projectList, agentList, teamList, departmentList, createdProject} = this.props;
     // Workaround to bind toggleWindow to every edit link
     let _this = this;
+    let agents = [], teams = [], departments = [];
+
+    if (typeof departmentList.departmentList !== 'undefined' && departmentList.departmentList !== null) {
+      departmentList.departmentList.forEach(function(object) {
+        departments.push({value: object.id, label: object.title, name: object.title});
+      });
+    }
+
+    if (typeof teamList.teamList !== 'undefined' && teamList.teamList !== null) {
+      teamList.teamList.forEach(function(object) {
+        teams.push({value: object.id, label: object.name, name: object.name});
+      });
+    }
+
+    if (typeof agentList.agentList !== 'undefined' && agentList.agentList !== null) {
+      agentList.agentList.forEach(function(object) {
+        let label = (<span>
+                      {object.picture_blob ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/> : '' }
+                      {object.name}
+                    </span>
+        );
+        agents.push({value: object.id, label:label, name: object.name});
+      });
+    }
 
     return (<section className="sidebar-list tasks-nav-projects">
         <div>
@@ -87,11 +111,12 @@ export default class TasksNavProjects extends React.Component {
               position={this.state.position}
               createProject={this.createProject.bind(this)}
               createdProject={createdProject}
-              agentList={agentList}
-              teamList={teamList}
-              departmentList={departmentList}
+              agentList={agents}
+              teamList={teams}
+              departmentList={departments}
               projectData={this.state.projectData}
               closeWindow={this.closeWindow.bind(this)}
+              user={this.props.user}
             />
           </ComponentRootWrapper>
         </div>

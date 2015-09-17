@@ -357,6 +357,16 @@ $level-10: #ac2020;
   }
 }
 
+.task-list-frame .placeholder {
+  display: none;
+  height: 10px;
+  width: 100%;
+  background-color: #ccc;
+
+  &.is-over {
+    display: block;
+  }
+}
 
 // Ticket Specific
 
@@ -458,6 +468,10 @@ $level-10: #ac2020;
     &.clickable-column {
       cursor: pointer;
     }
+  }
+
+  tr.is-over {
+    border-bottom: 3px solid #ccc;
   }
 
   td {

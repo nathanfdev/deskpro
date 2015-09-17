@@ -24,7 +24,7 @@ export default class AgentApp {
   }
 
   start() {
-
+    
     window.DP_ENABLE_ACTION_LOGGER = true;
     window.DP_DEV_MODE = true;
 

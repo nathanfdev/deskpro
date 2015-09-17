@@ -6,6 +6,7 @@ var React = require('react');
 var Formsy = require('formsy-react');
 var ComponentMixin = require('./mixins/component');
 var Row = require('./row');
+var $ = require('jquery');
 
 var CheckboxGroupDeskPRO = React.createClass({
 
@@ -27,14 +28,15 @@ var CheckboxGroupDeskPRO = React.createClass({
         let value = [];
         let target = event.currentTarget;
 
-        target.checked = (typeof target.checked === 'undefined' || target.checked === false);
+        // target.checked = (typeof target.checked === 'undefined' || target.checked === false);
+        $(target).data('checked', !$(target).data('checked'));
 
         this.props.options.forEach(function(option, key) {
-            if (this.refs[key].getDOMNode().checked) {
+            if ($(this.refs[option.value].getDOMNode()).data('checked')) {
                 value.push(option.value);
             }
-
         }.bind(this));
+
         this.setValue(value);
         this.props.onChange(this.props.name, value);
     },
@@ -44,17 +46,18 @@ var CheckboxGroupDeskPRO = React.createClass({
         var controls = this.props.options.map(function(checkbox, key) {
             var checked = (typeof _this.getValue() !== 'undefined' && _this.getValue().indexOf(checkbox.value) !== -1);
             let disabled = _this.isFormDisabled() || checkbox.disabled || _this.props.disabled;
-            let checkboxClass = checked ? "checkbox checked" : "checkbox";
+            let checkboxClass = checked ? "checkbox-button checked" : "checkbox-button";
             return (
                 <li key={key}><a
                 checked={checked}
+                data-checked={checked}
                 disabled={disabled}
                 href="#"
-                className="checkbox-button"
+                className={checkboxClass}
                 onClick={_this.changeCheckbox}
-                ref={key}
+                ref={checkbox.value}
                 >
-                    <span className={checkboxClass}>
+                    <span className="checkbox">
                         <i className="fa fa-check"/>
                     </span>
                     <span className="name">{checkbox.label}</span>

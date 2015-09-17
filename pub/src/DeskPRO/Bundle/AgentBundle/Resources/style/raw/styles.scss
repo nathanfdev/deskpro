@@ -60,25 +60,25 @@ a { color: $link-color; }
 
 @import 'content';
 
-//@import 'dropdowns';
-//  @import 'dropdown-im';
-//  @import 'dropdown-notifications';
-//  @import 'dropdown-incoming-chat';
-//  @import 'dropdown-incoming-call';
-//  @import 'dropdown-active-chat';// Ongoing chat with someone
-//  @import 'dropdown-chat';// Chat controls
-//  @import 'help-dropdown';// Help stuff
+@import 'dropdowns';
+  @import 'dropdown-im';
+  @import 'dropdown-notifications';
+  @import 'dropdown-incoming-chat';
+  @import 'dropdown-incoming-call';
+  @import 'dropdown-active-chat';// Ongoing chat with someone
+  @import 'dropdown-chat';// Chat controls
+  @import 'help-dropdown';// Help stuff
 
-//@import 'live-search';
+@import 'live-search';
 @import 'forms';
-//@import 'sidebar-kb';
-//@import 'dropdown-panels';
+@import 'sidebar-kb';
+@import 'dropdown-panels';
 
-//@import 'setting-popups';
-//  @import 'settings-popup-signatures';
-//  @import 'settings-popup-avatar-crop';
-//  @import 'settings-popup-devices';
-//  @import 'settings-notifications';
+@import 'setting-popups';
+  @import 'settings-popup-signatures';
+  @import 'settings-popup-avatar-crop';
+  @import 'settings-popup-devices';
+  @import 'settings-notifications';
 
 @import 'tickets';
   @import 'tickets-timeline';
@@ -89,20 +89,21 @@ a { color: $link-color; }
   @import 'cards';
   @import 'kanban';
   @import 'task-calendar';
+  @import 'popup';
 
 @import 'ticket';
   @import 'ticket-view';
   @import 'tickets-table-view';
 
-//@import 'right-panel';//
-//  @import 'main-panel';// Container with sidebar for right side view (ticket or other)
-//  @import 'external-apps';
+@import 'right-panel';//
+  @import 'main-panel';// Container with sidebar for right side view (ticket or other)
+  @import 'external-apps';
 
-//@import 'reports';
-//@import 'reports-editor';
-//@import 'tooltips';
-//@import 'stats';
-//@import 'editor';
+@import 'reports';
+@import 'reports-editor';
+@import 'tooltips';
+@import 'stats';
+@import 'editor';
 @import 'pagination';
 
 

@@ -1,6 +1,7 @@
 import React from "react";
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
+import $ from "jquery";
 
 import * as TaskActions from "../Actions/TaskListActions";
 
@@ -17,7 +18,13 @@ const ProjectCreateHover = React.createClass({
   getInitialState: function() {
     return {
       canSubmit: false,
-      projectTitle: null
+      projectTitle: null,
+      departments: null,
+      teams: null,
+      agents: null,
+      selected: null,
+      filterSelected: false,
+      filterValue: null
     };
   },
 
@@ -39,6 +46,47 @@ const ProjectCreateHover = React.createClass({
     })
   },
 
+  clearFilter: function() {
+    this.setState({
+      filterValue: null,
+      filterSelected: false
+    });
+  },
+
+  quickFilter: function(event) {
+    const value = $(event.target).val().toLowerCase();
+    this.setState({
+      filterValue: value
+    });
+  },
+
+  assignSelf: function() {
+    const userId = this.props.user.id;
+    if (this.props.agentList.indexOf(userId) < 0) {
+      let selected = this.state.selected;
+      selected.agents.push(userId);
+
+      this.setState({
+        selected: selected
+      });
+
+      this.refs['agentSelect'].setValue(selected.agents);
+    }
+  },
+
+  unassignAll: function() {
+    this.setState({
+      selected: {
+        agents: [],
+        teams: [],
+        departments: []
+      }
+    });
+    this.refs['agentSelect'].setValue([]);
+    this.refs['teamSelect'].setValue([]);
+    this.refs['departmentSelect'].setValue([]);
+  },
+
   serverValidation: function(field) {
     if (this.props.createdProject.failedProject === null
       || typeof this.props.createdProject.failedProject.errors === 'undefined'
@@ -52,6 +100,44 @@ const ProjectCreateHover = React.createClass({
     return errors.map(function(error) {
       return <span className="form-error-description" key={error.code}>{error.message}</span>
     });
+  },
+
+  toggleFilterSelected: function() {
+    this.setState({
+      filterSelected: !this.state.filterSelected
+    });
+  },
+
+  filterAssignees: function(items, type, filter = null, onlySelected = false) {
+    if (filter && filter.length > 0) {
+      items = items.filter((item) => {
+        return item.name.toLowerCase().indexOf(filter.toLowerCase()) > -1;
+      });
+    }
+
+    if (onlySelected) {
+      items = items.filter((item) => {
+        return this.state.selected[type].indexOf(item.value) > -1;
+      });
+    }
+
+    return items;
+  },
+
+  componentWillReceiveProps: function() {
+    let state = {};
+
+    if (this.state.selected === null && Object.keys(this.props.projectData).length > 0) {
+      state.selected = {
+        departments: this.props.projectData.departments,
+        teams: this.props.projectData.teams,
+        agents: this.props.projectData.agents
+      }
+    }
+    
+    if (Object.keys(state).length > 0) {
+      this.setState(state);    
+    }
   },
 
   parseMembers: function(members) {
@@ -80,38 +166,21 @@ const ProjectCreateHover = React.createClass({
     return result;
   },
 
+  updateAssignment: function(field, value) {
+    let selected = this.state.selected;
+    selected[field] = value;
+    this.setState({
+      selected: selected
+    });
+  },
+
   render: function() {
     const {agentList, teamList, departmentList} = this.props;
 
-    let departments = [], teams = [], members = [];
-
-    if (typeof departmentList.departmentList !== 'undefined' && departmentList.departmentList !== null) {
-      departmentList.departmentList.forEach(function(object) {
-        departments.push({value: object.id, label:object.title});
-      });
-    }
-
-    if (typeof teamList.teamList !== 'undefined' && teamList.teamList !== null) {
-      teamList.teamList.forEach(function(object) {
-        teams.push({value: object.id, label:object.name});
-      });
-    }
-
-    if (typeof agentList.agentList !== 'undefined' && agentList.agentList !== null) {
-      agentList.agentList.forEach(function(object) {
-        let label = (<span>
-                      {object.picture_blob ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/> : '' }
-                      {object.name}
-                    </span>
-        );
-        members.push({value: object.id, label:label});
-      });
-    }
-
-    let project = this.props.projectData ? this.props.projectData : {};
-    let currentMembers = project.members && project.members.length > 0 ? this.parseMembers(project.members) : {};
+    const project = this.props.projectData ? this.props.projectData : {};
+    const currentMembers = project.members && project.members.length > 0 ? this.parseMembers(project.members) : {};
     const positionY = (this.props.position.y - 20);
-    const maxY = window.innerHeight - 380;
+    const maxY = window.innerHeight - 400;
     let overshotY = false;
 
     let top = positionY + 'px';
@@ -122,59 +191,104 @@ const ProjectCreateHover = React.createClass({
     }
 
     return (<div style={{top: top}} className={overshotY ? "sidebar-hover hide-indicator" : "sidebar-hover"}>
-        <div className="sidebar-hover-content">
-          <div className="sidebar-hover-header">
-            <i className="fa fa-tags"/> <span className="title"><span>Project -</span> {project.id ? 'Edit' : 'Create New'}</span>
+        <div className="dpmw--popup-main">
+          <div className="dpmw--popup-header">
+            <i className="fa fa-tags"/> Project - {project.id ? 'Edit' : 'Create New'}
           </div>
           <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton} onSubmit={this.props.createProject}>
-            <div className="sidebar-hover-content-box">
-              <FRC.Input name="projectId" type="hidden" value={project.id} />
-              <h2>Title</h2>
-              <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: "The title field is required"}} value={project.title} />
-              {this.serverValidation('title')}
-            </div>
-
-            <div className="sidebar-hover-content-box">
-              <h2>Departments</h2>
-              <div className="sidebar-hover-checkbox-collection">
-                {departments ? <FRC.CheckboxGroupDeskPRO
-                  name="departments"
-                  label="Departments"
-                  options={departments}
-                  value={currentMembers['department'] ? currentMembers['department'] : []}
-                  multiple
-                  /> : ''}
+            <div className="dpw--popup-content">
+              <div className="dpw--popup-content-line">
+                <div className="dpmw--popup-content-full">
+                  <FRC.Input name="projectId" type="hidden" value={project.id} />
+                  <h2 className="dpw--popup-item-section-title">Title</h2>
+                  <div className="dpw--popup-form-container">
+                    <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: "The title field is required"}} value={project.title} />
+                    {this.serverValidation('title')}
+                  </div>
+                </div>
               </div>
-            </div>
+              <div className="dpw--popup-content-line">
+                <div className="dpw--popup-content-left">
+                  <div className="dpw-quick-filter">
+                    <div className="dpw-quick-filter-container">
+                      <div className="dpw-quick-filter-icon"><i className="fa fa-filter"></i></div>
+                      <input type="text" placeholder="Quick Filter" value={this.state.filterValue} onChange={this.quickFilter} />
+                      <span className="dpw-quick-filter-clear-link" onClick={this.clearFilter}><i className="fa fa-times-circle"></i></span>
+                    </div>
+                  </div>
+                </div>
 
-            { teams.length ? <div className="sidebar-hover-content-box">
-              <h2>Teams</h2>
-              <div className="sidebar-hover-checkbox-collection">
-                {teams ? <FRC.CheckboxGroupDeskPRO
-                  name="teams"
-                  label="Teams"
-                  options={teams}
-                  value={currentMembers['team'] ? currentMembers['team'] : []}
-                  multiple
-                  /> : ''}
+                <div className="dpmw--popup-content-right">
+                  <div className="dpw-popup-content-item">
+                    <div className="dpw-popup-content-item-show-only-selected">
+                      <a href="#" className={this.state.filterSelected === true ? "checkbox-link checked" : "checkbox-link"} onClick={this.toggleFilterSelected}>
+                        <span>Show only Selected</span>
+                        <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
+                       </a>
+                    </div>
+                  </div>
+                  <div className="dpw-popup-content-item">
+                    <div className="dpw-popup-content-item-unassign-all">
+                      <a href="#" className="checkbox-link" onClick={this.unassignAll}>
+                        <span>Unassign</span>
+                        <span className="unassign-all-icon"><span /></span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div> : '' }
 
-            <div className="sidebar-hover-content-box">
-              <h2>Project Members</h2>
-              <div className="sidebar-hover-checkbox-collection">
-                {members ? <FRC.CheckboxGroupDeskPRO
-                  name="members"
-                  label="Members"
-                  options={members}
-                  value={currentMembers['person'] ? currentMembers['person'] : []}
-                  multiple
-                  /> : ''}
+              <div className="dpw--popup-content-line">
+                <div className="dpmw--popup-content-of-three">
+                  <h1 className="dpw--popup-item-collection-title">Agent <a href="#" onClick={this.assignSelf}>Assign to me</a></h1>
+                  <div className="dpw--popup-item-collection">
+                    {this.props.agentList ? <FRC.CheckboxGroupDeskPRO
+                      name="agents"
+                      label="Agent"
+                      options={this.filterAssignees(this.props.agentList, 'agents', this.state.filterValue, this.state.filterSelected)}
+                      value={this.state.selected && this.state.selected.agents ? this.state.selected.agents : []}
+                      ref="agentSelect"
+                      onChange={this.updateAssignment}
+                      multiple
+                      /> : ''}
+                  </div>
+                </div>
+
+                <div className="dpmw--popup-content-of-three">
+                  <h1 className="dpw--popup-item-collection-title">Team</h1>
+                  <div className="dpw--popup-item-collection">
+                    {this.props.teamList ? <FRC.CheckboxGroupDeskPRO
+                      name="teams"
+                      label="Team"
+                      options={this.filterAssignees(this.props.teamList, 'teams', this.state.filterValue, this.state.filterSelected)}
+                      value={this.state.selected && this.state.selected.teams ? this.state.selected.teams : []}
+                      ref="teamSelect"
+                      onChange={this.updateAssignment}
+                      multiple
+                      /> : ''}
+                  </div>
+                </div>
+
+                <div className="dpmw--popup-content-of-three">
+                  <h1 className="dpw--popup-item-collection-title">Department</h1>
+                  <div className="dpw--popup-item-collection">
+                    {this.props.departmentList ? <FRC.CheckboxGroupDeskPRO
+                      name="departments"
+                      label="Department"
+                      options={this.filterAssignees(this.props.departmentList, 'departments', this.state.filterValue, this.state.filterSelected)}
+                      value={this.state.selected && this.state.selected.departments ? this.state.selected.departments : []}
+                      ref="departmentSelect"
+                      onChange={this.updateAssignment}
+                      multiple
+                      /> : ''}
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="sidebar-hover-content-box">
-              <button type="submit" value="Save" className="button" disabled={!this.state.canSubmit}>Save</button>
+              <div className="dpw--popup-content-line">
+                <div className="dpw--popup-content-left">
+                  <button type="submit" value="Save" className="dpw--popup-button" disabled={!this.state.canSubmit}>Save</button>
+                </div>
+              </div>
             </div>
           </Formsy.Form>
         </div>

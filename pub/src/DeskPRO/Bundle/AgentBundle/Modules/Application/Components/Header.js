@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import IMButton from '../../IM/Components/IMButton';
 
 @connect(state => ({
   user: state.user
@@ -11,9 +12,10 @@ export class Header extends React.Component {
 
   render() {
     const { user } = this.props;
+
     return (<header className="dp-window-header top-bar">
       <a href="https://www.deskpro.com/" className="logo"></a>
-      <span>Welcome, {user.display_name}</span>
+      <IMButton/>
     </header>);
   }
 }

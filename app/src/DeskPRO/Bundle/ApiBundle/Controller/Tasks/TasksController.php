@@ -523,6 +523,14 @@ class TasksController extends BaseController implements ClassResourceInterface
             );
         }
 
+        if (!empty($submitted['agents'])) {
+            foreach ($submitted['agents'] as &$agentId) {
+                if ($agentId === 'me') {
+                    $agentId = $this->getUser()->getId();
+                }
+            }
+        }
+
         $this->validateForm($request, $task, $submitted);
         $this->getDoctrine()->getManager()->persist($task);
         $this->getDoctrine()->getManager()->flush();

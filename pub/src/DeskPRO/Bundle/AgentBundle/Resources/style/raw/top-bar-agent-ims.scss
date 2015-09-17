@@ -22,7 +22,7 @@
     padding-left: 10px;
     padding-right: 10px;
 
-    span {
+    > span {
       display: inline-block;
       margin-top: $text-top-margin;
     }

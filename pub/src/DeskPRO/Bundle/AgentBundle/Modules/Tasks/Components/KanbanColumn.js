@@ -33,38 +33,15 @@ export default class KanbanColumn extends React.Component {
     super(props);
     this.state = {
       tasks: props.tasks
-    }
+    };
   }
 
   moveCard(item, targetItem) {
-    const cards = this.state.tasks;
-    const id = item.id;
-    const afterId = targetItem.id;
-
-    let oldOrder = [];
-    this.state.tasks.forEach((card) => {
-      oldOrder.push(card.display_order);
+    this.props.moveCard(item, targetItem, this.state.tasks, (cards) => {
+      this.setState({
+        tasks: cards
+      });
     });
-
-    const card = cards.filter(c => c.id === id)[0];
-    const afterCard = cards.filter(c => c.id === afterId)[0];
-    const cardIndex = cards.indexOf(card);
-    const afterIndex = cards.indexOf(afterCard);
-
-    cards.splice(cardIndex, 1);
-    cards.splice(afterIndex, 0, card);
-
-    this.setState({
-      tasks: cards
-    });
-
-    this.props.editTask(
-      this.props.source,
-      {
-        taskId: card.id,
-        display_order: targetItem.display_order
-      }
-    );
   }
 
   render() {
@@ -72,14 +49,19 @@ export default class KanbanColumn extends React.Component {
 
     const columnClass = this.props.isOver ? 'list drag-hover' : 'list';
 
+    const tasks = this.state.tasks ? this.state.tasks : this.props.tasks;
+
     return this.props.connectDropTarget(<div className={columnClass}>
       <h1 className="kanban-list-header">{this.props.taskList.title}</h1>
       {
-        this.state.tasks ? this.state.tasks.map((task) => {
+        tasks ? tasks.map((task) => {
           return <TaskKanbanCard task={task} key={task.id} departments={this.props.departments}
                                agents={this.props.agents} teams={this.props.teams}
                                dispatch={_this.props.dispatch.bind(_this)}
                                moveCard={this.moveCard.bind(this)}
+                               order={this.props.order}
+                               updateMassActions={_this.props.updateMassActions.bind(_this)}
+                               selected={_this.props.actionable.indexOf(task.id) !== -1}
                               />
         }) : ''
       }

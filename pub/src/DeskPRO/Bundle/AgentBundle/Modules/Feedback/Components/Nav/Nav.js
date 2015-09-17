@@ -14,7 +14,7 @@ export class Nav extends Component {
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.array.isRequired,
     types: PropTypes.array.isRequired,
-    customCategories: PropTypes.array.isRequired,
+    customCategories: PropTypes.array.isRequired
   };
   render() {
     const { groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;

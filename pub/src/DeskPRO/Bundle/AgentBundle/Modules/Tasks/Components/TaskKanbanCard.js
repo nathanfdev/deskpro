@@ -45,6 +45,10 @@ const TaskKanbanCard = React.createClass({
     });
   },
 
+  toggleMassAction: function(event) {
+    this.props.updateMassActions(this.props.task.id);
+  },
+
   render: function() {
     let assigneeName = '';
 
@@ -58,18 +62,21 @@ const TaskKanbanCard = React.createClass({
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
 
-    return this.props.connectDragSource(this.props.connectDropTarget(<div>
+    const selected = this.props.selected;
+
+    const result = <div>
       <div className="card task-card">
         <div className="card-status-bar status-bar-left" />
         <div className="card-status-bar status-bar-right" />
 
         <div className="card-checkbox">
-          <span className="checkbox" />
+          <span className="checkbox" onClick={this.toggleMassAction}>
+            {selected ? <i className="fa fa-check" /> : '' }
+          </span>
         </div>
 
         <div className="content">
           <h1 className={this.props.task.is_done ? 'complete' : ''}>{this.props.task.title}</h1>
-          {this.props.task.display_order}
           <div className="card-line task-details">
             <div className="top-right-box">
               <span className="assignment">
@@ -95,7 +102,13 @@ const TaskKanbanCard = React.createClass({
         </div>
       </div>
       <div className={placeHolder} />
-    </div>));
+    </div>;
+
+    if (this.props.order === 'list') {
+      return this.props.connectDragSource(this.props.connectDropTarget(result));
+    }
+
+    return this.props.connectDragSource(result);
   }
 });
 

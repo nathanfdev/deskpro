@@ -135,18 +135,23 @@ export const setTableSort = createAction(
     trigger(loadFeedbackList(query, sort, order, filters));
   });
 
+export const toggleViewMode = createAction(
+  "FEEDBACK_TOGGLE_VIEW_MODE",
+  (trigger, viewMode) => {
+    trigger(viewMode);
+  });
+
 export const toggleOrder = createAction(
   "FEEDBACK_TOGGLE_ORDER",
   (trigger, query, sort, order, filters) => {
-    trigger();
-    let newOrder = order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
-    trigger(loadFeedbackList(query, sort, newOrder, filters));
+    trigger({order:order});
+    trigger(loadFeedbackList(query, sort, order, filters));
   });
 
 export const toggleSort = createAction(
   "FEEDBACK_TOGGLE_SORT",
-  (trigger, query, sort, sortName, order, filters) => {
-    trigger({sort: sort, sortName: sortName});
+  (trigger, query, sort, order, filters) => {
+    trigger(sort);
     trigger(loadFeedbackList(query, sort, order, filters));
   });
 

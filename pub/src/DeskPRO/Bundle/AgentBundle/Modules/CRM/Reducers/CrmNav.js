@@ -6,21 +6,22 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 export default class CrmNav extends Reducer {
   getInitialState() {
     return {
-      viewMode: constants.VIEW_MODE_TABLE,
-      elements: [],
-      // Display Fields in Table/List view switcher
-      tableViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
-      listViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
-
-      sort: 'date_created', /* Order By ... */
-      sortName: 'Date', /* Label for Order By... */
+      viewModeOptions: [
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
+        {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
+      ],
       order: constants.ORDER_DESC, /* Asc, Desc */
       sortOptions: [/* @ToDo actualize field properties */
-        {field: 'date_created', label: 'Created'},
-        {field: 'name', label: 'Name'},
-        {field: 'date_created', label: 'Last login'},
-        {field: 'date_created', label: 'Organization'}
+        {field: 'date_created', label: 'Created', icon: 'fa-calendar-o', current: true},
+        {field: 'name', label: 'Name', icon: 'fa-calendar-o', current: false}
       ],
+      elements: [],
+      // Display Fields in Table/List view switcher
+      tableViewFields: [
+        {name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 3},
+      ],
+      listViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
+
       labels: {
         person: [/* string */],
         organization: [/* string */]
@@ -58,56 +59,56 @@ export default class CrmNav extends Reducer {
   }
 
   usersTotalCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next       = {...prev};
     next.users.total = payload;
 
     return next;
   }
 
   groupsCountsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next        = {...prev};
     next.users.groups = payload;
 
     return next;
   }
 
   organizationsTotalCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next               = {...prev};
     next.organizations.total = payload;
 
     return next;
   }
 
   agentsTotalCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next        = {...prev};
     next.agents.total = payload;
 
     return next;
   }
 
   teamsCountsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next        = {...prev};
     next.agents.teams = payload;
 
     return next;
   }
 
   personLabelsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next         = {...prev};
     next.labels.person = payload;
 
     return next;
   }
 
   organizationLabelsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next               = {...prev};
     next.labels.organization = payload;
 
     return next;
   }
 
   groupsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next      = {...prev};
     next.groupNames = {};
     payload.forEach(group => next.groupNames[group.id] = group.title);
 
@@ -115,7 +116,7 @@ export default class CrmNav extends Reducer {
   }
 
   teamsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next     = {...prev};
     next.teamNames = {};
     payload.forEach(team => next.teamNames[team.id] = team.name);
 
@@ -123,7 +124,7 @@ export default class CrmNav extends Reducer {
   }
 
   viewModeChanged(prev) {
-    const next = {...prev};
+    const next    = {...prev};
     next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
     return next;
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import { DragSource } from "react-dnd";
+import { DragSource, DropTarget } from "react-dnd";
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
@@ -10,6 +10,15 @@ import DragTypes from "../../../Services/DragTypes.js";
 import Picker from "anytime";
 import Moment from "moment";
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+
+const cardTarget = {
+  drop(props, monitor) {
+    const item = monitor.getItem();
+    if (item.id !== props.task.id) {
+      props.moveCard(item, props.task);
+    }
+  }
+};
 
 const cardSource = {
   beginDrag(props, monitor, component) {
@@ -84,28 +93,6 @@ const TaskCard = React.createClass({
     });
   },
 
-  handleAssigneeChange: function(value) {
-    let task = this.state.task;
-    const assignment = value.target.value;
-
-    task.agents = [];
-    task.teams = [];
-    task.departments = [];
-
-    if (assignment !== 'unassigned') {
-      let assignmentParts = assignment.split('-');
-      task[assignmentParts[0]] = [assignmentParts[1]];
-    }
-
-    this.setState({
-      task: task
-    });
-
-    task.taskId = this.props.task.id;
-
-    this.props.editTask(this.props.source, task);
-  },
-
   toggleMassAction: function(event) {
     this.props.updateMassActions(this.props.task.id);
   },
@@ -171,6 +158,7 @@ const TaskCard = React.createClass({
       agents,
       source,
       connectDragSource,
+      connectDropTarget,
       connectDragPreview
     } = this.props;
 
@@ -194,17 +182,40 @@ const TaskCard = React.createClass({
     }
 
     let assigneeId = "unassigned";
+    let assignee = null;
+    let assigneeName = "Unassigned";
 
     if (task.agents.length > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.agents[0];
       assigneeId = "agents-" + agentId;
+      assignee = agents[agentId];
     } else if (task.teams.length > 0) {
       const teamId = task.teams[0];
       assigneeId = "teams-" + teamId;
+      assignee = teams[teamId];
     } else if (task.departments.length > 0) {
       const departmentId = task.departments[0];
       assigneeId = "departments-" + departmentId;
+      assignee = departments[departmentId];
+    }
+
+    if (assignee) {
+      if (assignee.name) {
+        assigneeName = assignee.name;
+      } else {
+        assigneeName = assignee.title;
+      }
+
+      if (assignee.picture_blob) {
+        assigneeName = <span>
+          <span className="list-icon">
+            <span style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}
+                  className="avatar"/>
+          </span>
+          {assigneeName}
+        </span>
+      }
     }
 
     const dueField = "due-" + task.id;
@@ -212,7 +223,10 @@ const TaskCard = React.createClass({
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
+    const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
+
+    const result = <div>
+      <div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
         <div>
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />
@@ -225,28 +239,8 @@ const TaskCard = React.createClass({
 
           <div className="top-right-box">
             {!task.is_done ?
-              <span className="assignment">
-                <select name="assigned" id="assigned" value={assigneeId} onChange={this.handleAssigneeChange}>
-                  <option value="unassigned">Unassigned</option>
-                  { agents ? <optgroup label="Agents">
-                    { Object.keys(agents).map((key) => {
-                      let agentId = "agents-" + key;
-                      return <option key={agentId} value={agentId}>{agents[key].name}</option>;
-                    })}
-                  </optgroup> : '' }
-                  { teams ? <optgroup label="Teams">
-                    { Object.keys(teams).map((key) => {
-                      let teamId = "teams-" + key;
-                      return <option key={teamId} value={teamId}>{teams[key].name}</option>;
-                    })}
-                  </optgroup> : '' }
-                  { departments ? <optgroup label="Departments">
-                    { Object.keys(departments).map((key) => {
-                      let departmentId = "departments-" + key;
-                      return <option key={departmentId} value={departmentId}>{departments[key].title}</option>;
-                    })}
-                  </optgroup> : '' }
-                </select>
+              <span className="assignment" onClick={this.props.toggleAssignWindow.bind(this, task)}>
+                {assigneeName}
               </span>:
               <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
                 className="fa fa-bars"/></button>}
@@ -295,7 +289,16 @@ const TaskCard = React.createClass({
               </div>
             </div> : '' }
         </div>
-    </div>);
+    </div>
+    <div className={placeHolder} />
+  </div>;
+
+  if (this.props.order === 'list') {
+    return connectDragSource(connectDropTarget(result));
+  }
+
+  return connectDragSource(result);
+
   }
 });
 
@@ -303,4 +306,7 @@ module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
-}))(TaskCard);
+}))(DropTarget(DragTypes.TASK, cardTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver()
+}))(TaskCard));

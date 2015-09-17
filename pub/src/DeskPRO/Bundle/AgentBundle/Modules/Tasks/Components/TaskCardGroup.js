@@ -26,22 +26,43 @@ const listTarget = {
 
 @DropTarget(DragTypes.TASK, listTarget, collect)
 export default class TaskCardGroup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tasks: props.tasks
+    };
+  }
+
+  moveCard(item, targetItem) {
+    const tasks = this.state.tasks ? this.state.tasks : this.props.tasks;
+
+    this.props.moveCard(item, targetItem, tasks, (cards) => {
+      this.setState({
+        tasks: cards
+      });
+    });
+  }
+
   render() {
     const _this = this;
 
     const columnClass = this.props.isOver ? 'list-group-hover' : '';
 
+    const tasks = this.state.tasks ? this.state.tasks : this.props.tasks;
+
     return this.props.connectDropTarget(<div className={columnClass}>
-      { this.props.divider && this.props.tasks && this.props.tasks.length > 0 ?
+      { this.props.divider && this.state.tasks && this.state.tasks.length > 0 ?
         <div className="divider"><hr/><h1><span>{this.props.divider}</span></h1></div> : '' }
-      { this.props.tasks ? this.props.tasks.map((object) => {
+      { tasks ? tasks.map((object) => {
         return <span key={object.id}>
           <TaskCard task={object} projects={this.props.projects} linked_items={this.props.linked_items}
                     departments={this.props.departments} teams={this.props.teams} agents={this.props.agents}
                     toggleDone={this.props.toggleDone.bind(this)} source={this.props.source}
                     dispatch={_this.props.dispatch.bind(_this)} editTask={_this.props.editTask.bind(_this)}
                     updateMassActions={_this.props.updateMassActions.bind(_this)}
-                    selected={_this.props.actionable.indexOf(object.id) !== -1} tickets={this.props.tickets} />
+                    selected={_this.props.actionable.indexOf(object.id) !== -1} tickets={this.props.tickets}
+                    moveCard={this.moveCard.bind(this)} order={this.props.order}
+                    toggleAssignWindow={_this.props.toggleAssignWindow.bind(_this)} />
         </span>
       }) : '' }
     </div>)

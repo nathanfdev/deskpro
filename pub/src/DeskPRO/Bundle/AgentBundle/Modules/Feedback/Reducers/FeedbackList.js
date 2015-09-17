@@ -7,7 +7,16 @@ import { Reducer } from "Ampliflux/reducers";
 export default class FeedbackList extends Reducer {
   getInitialState() {
     return {
-      viewMode: constants.VIEW_MODE_TABLE,
+      viewModeOptions: [
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
+        {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
+      ],
+      order: constants.ORDER_DESC, /* Asc, Desc */
+      sortOptions: [
+        {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
+        {field: 'total_rating', label: 'Rating', icon: 'fa-calendar-o', current: false},
+        {field: 'num_ratings', label: 'Number of votes', icon: 'fa-calendar-o', current: false}
+      ],
       query: {awaiting_validation: 1},
       filters: {
         name: 'type',
@@ -15,14 +24,6 @@ export default class FeedbackList extends Reducer {
         value: ''
       },
       filterValues: [/* string */],
-      sort: 'date_created', /* Order By ... */
-      sortName: 'Date', /* Label for Order By... */
-      order: constants.ORDER_DESC, /* Asc, Desc */
-      sortOptions: [
-        {field: 'date_created', label: 'Date'},
-        {field: 'total_rating', label: 'Rating'},
-        {field: 'num_ratings', label: 'Number of votes'}
-      ],
       listViewFields: [
         {name: 'id', label: 'ID', status: constants.FIELD_REQUIRED, priority: 3},
         {name: 'status', label: 'Status', status: constants.FIELD_REQUIRED, priority: 2},
@@ -156,16 +157,21 @@ export default class FeedbackList extends Reducer {
     return next;
   }
 
-  viewModeChanged(prev) {
-    const next    = {...prev};
-    next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
+  viewModeChanged(prev, {payload}) {
+    const next           = {...prev};
+    next.viewModeOptions = [];
+    prev.viewModeOptions.forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      next.viewModeOptions.push(nextObj);
+    });
     return next;
   }
 
 
-  orderChanged(prev) {
+  orderChanged(prev, {payload}) {
     const next = {...prev};
-    next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
+    next.order = payload.order;
     return next;
   }
 
@@ -205,9 +211,13 @@ export default class FeedbackList extends Reducer {
   }
 
   sortChanged(prev, {payload}) {
-    const next    = {...prev};
-    next.sort     = payload.sort;
-    next.sortName = payload.sortName;
+    const next       = {...prev};
+    next.sortOptions = [];
+    prev.sortOptions.forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      next.sortOptions.push(nextObj);
+    });
     return next;
   }
 
@@ -223,14 +233,13 @@ export default class FeedbackList extends Reducer {
 
   getDisplayFields(prev, {payload}) {
     const next = {...prev};
-    console.log(payload);
     return next;
   }
 
 
   registerHandlers() {
     this
-      .r(AppActions.TOGGLE_VIEW_MODE, this.viewModeChanged)
+      .r(FeedbackListActions.toggleViewMode, this.viewModeChanged)
       .r(FeedbackListActions.changeDisplayFieldsStatus, this.displayFieldsChanged)
       .r(FeedbackListActions.getDisplayFieldsFromPersonSetting, this.getDisplayFields)
       .r(FeedbackListActions.toggleOrder, this.orderChanged)

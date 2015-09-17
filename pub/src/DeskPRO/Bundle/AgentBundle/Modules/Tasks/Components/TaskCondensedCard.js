@@ -1,5 +1,5 @@
 import React from "react";
-import { DragSource } from "react-dnd";
+import { DragSource, DropTarget } from "react-dnd";
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import * as TaskActions from "../Actions/TaskListActions";
@@ -10,6 +10,15 @@ import DragTypes from "../../../Services/DragTypes.js";
 import Picker from "anytime";
 import Moment from "moment";
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+
+const cardTarget = {
+  drop(props, monitor) {
+    const item = monitor.getItem();
+    if (item.id !== props.task.id) {
+      props.moveCard(item, props.task);
+    }
+  }
+};
 
 const cardSource = {
   beginDrag(props, monitor, component) {
@@ -171,7 +180,8 @@ const TaskCondensedCard = React.createClass({
       agents,
       source,
       connectDragSource,
-      connectDragPreview
+      connectDragPreview,
+      connectDropTarget
     } = this.props;
 
     const selected = this.props.selected;
@@ -202,14 +212,15 @@ const TaskCondensedCard = React.createClass({
       assignee = this.props.departments[task.departments[0]].title;
     }
 
-    const taskClass = task.is_done ? "ticket done" : "ticket";
+    let taskClass = task.is_done ? "ticket done" : "ticket";
+        taskClass = this.props.isOver ? taskClass + " is-over" : taskClass;
 
     const dueField = "due-" + task.id;
     const dueButton = "due-button-" + task.id;
 
     const overdue = Moment(task.date_due).isBefore();
 
-    return connectDragSource(<tr key={task.id} className={taskClass}>
+    const result = <tr key={task.id} className={taskClass}>
       <td>
         <span className="checkbox" onClick={this.toggleMassAction}>
           <i className={selected ? "fa fa-check selected" : "fa fa-check"} />
@@ -219,7 +230,12 @@ const TaskCondensedCard = React.createClass({
       <td>{task.project && projects[task.project] ? projects[task.project].title : ''}</td>
       <td>{task.date_due ? Moment(task.date_due).format('DD/MM/YY') : '' }</td>
       <td>{assignee}</td>
-    </tr>);
+    </tr>;
+
+    if (this.props.order === 'list') {
+      return connectDragSource(connectDropTarget(result));
+    }
+    return connectDragSource(result);
   }
 });
 
@@ -227,4 +243,7 @@ module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
-}))(TaskCondensedCard);
+}))(DropTarget(DragTypes.TASK, cardTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver()
+}))(TaskCondensedCard));
