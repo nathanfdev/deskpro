@@ -197,7 +197,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
         $this->assertContains('Entity `news_num_0` parsed successfully!', $output);
         $this->assertContains('Entity `news_num_1` parsed successfully!', $output);
-        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
+        $this->assertContains('[CSVOrganization #Some Organization] Entity parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkDbEmpty();

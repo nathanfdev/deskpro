@@ -147,7 +147,7 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->assertCount(2, $feedback['custom_fields']);
 
         // Checking for organizations
-        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
+        $this->assertContains('[CSVOrganization #some organization] Entity parsed successfully!', $output);
 
         $organization = $this->getContent('1/organizations/organization_some_organization.json');
         $this->assertCount(2, $organization['custom_fields']);
