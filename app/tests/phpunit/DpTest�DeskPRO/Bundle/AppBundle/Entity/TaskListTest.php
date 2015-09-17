@@ -33,100 +33,89 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskList;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DpTest\ApiTestCase;
+use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class LabelTaskTest extends ApiTestCase
+class TaskListTest extends ApiTestCase
 {
     /**
-     * Test that a valid label can be saved
+     * Test valid project member
      */
     public function testValid()
     {
-        $task = $this->getValidTask();
+        $project = $this->getValidProject();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $task_list = new TaskList();
+        $task_list->setProject($project);
+        $task_list->setTitle('test title');
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($task_list);
 
         $this->assertEquals(0, count($errors));
     }
 
     /**
-     * Test what happens when an invalid task is saved
+     * Test what happens when an invalid project is saved
+     */
+    public function testInvalidProject()
+    {
+        $project = $this->getInvalidProject();
+        $validator = $this->getValidator();
+
+        $task_list = new TaskList();
+        $task_list->setProject($project);
+        $task_list->setTitle('test title');
+
+        $errors = $validator->validate($task_list);
+
+        $this->assertGreaterThan(0, count($errors));
+        $constraint = $errors[0]->getConstraint();
+
+        $this->assertEquals('project.title', $errors[0]->getPropertyPath());
+        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
+    }
+
+    /**
+     * Test what happens when no title is saved
      */
     public function testInvalidTitle()
     {
-        $task = $this->getInvalidTask();
+        $project = $this->getInvalidProject();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $task_list = new TaskList();
+        $task_list->setProject($project);
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($task_list);
 
         $this->assertGreaterThan(0, count($errors));
         $constraint = $errors[0]->getConstraint();
 
-        $this->assertEquals('task.title', $errors[0]->getPropertyPath());
+        $this->assertEquals('title', $errors[0]->getPropertyPath());
         $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
-    }
-
-    /**
-     * Test what happens if an invalid label is saved
-     */
-    public function testInvalidLabel()
-    {
-        $task = $this->getValidTask();
-        $validator = $this->getValidator();
-
-        $label = new LabelTask();
-        $label->setTask($task);
-
-        $errors = $validator->validate($label);
-
-        $this->assertGreaterThan(0, count($errors));
-        $constraint = $errors[0]->getConstraint();
-
-        $this->assertEquals('label', $errors[0]->getPropertyPath());
-        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
-    }
-
-    /**
-     * Get an example person
-     * @return mixed
-     */
-    private function getUser() {
-        $person = new Person();
-        $person->setEmail('example@example.com');
-        $person->setName('Test User');
-        return $person;
     }
 
     /**
      * Get an example valid task
-     * @return Task
+     * @return TaskProject
      */
-    private function getValidTask()
+    private function getValidProject()
     {
-        $task = new Task($this->getUser());
-        $task->setTitle('valid task');
+        $project = new TaskProject();
+        $project->setTitle('valid project');
 
-        return $task;
+        return $project;
     }
 
     /**
-     * @return Task
+     * @return TaskProject
      */
-    private function getInvalidTask()
+    private function getInvalidProject()
     {
-        return new Task($this->getUser());
+        return new TaskProject();
     }
 }

@@ -33,27 +33,29 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DpTest\ApiTestCase;
+use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class LabelTaskTest extends ApiTestCase
+class TaskLinkedItemTest extends ApiTestCase
 {
     /**
-     * Test that a valid label can be saved
+     * Test valid assignment
      */
     public function testValid()
     {
         $task = $this->getValidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $item = new TaskLinkedItem();
+        $item->setTask($task);
+        $item->setArticle($this->getArticle());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($item);
 
         $this->assertEquals(0, count($errors));
     }
@@ -61,16 +63,16 @@ class LabelTaskTest extends ApiTestCase
     /**
      * Test what happens when an invalid task is saved
      */
-    public function testInvalidTitle()
+    public function testInvalidTask()
     {
         $task = $this->getInvalidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $item = new TaskLinkedItem();
+        $item->setTask($task);
+        $item->setArticle($this->getArticle());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($item);
 
         $this->assertGreaterThan(0, count($errors));
         $constraint = $errors[0]->getConstraint();
@@ -80,34 +82,22 @@ class LabelTaskTest extends ApiTestCase
     }
 
     /**
-     * Test what happens if an invalid label is saved
-     */
-    public function testInvalidLabel()
-    {
-        $task = $this->getValidTask();
-        $validator = $this->getValidator();
-
-        $label = new LabelTask();
-        $label->setTask($task);
-
-        $errors = $validator->validate($label);
-
-        $this->assertGreaterThan(0, count($errors));
-        $constraint = $errors[0]->getConstraint();
-
-        $this->assertEquals('label', $errors[0]->getPropertyPath());
-        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
-    }
-
-    /**
      * Get an example person
      * @return mixed
      */
-    private function getUser() {
+    private function getUser()
+    {
         $person = new Person();
         $person->setEmail('example@example.com');
         $person->setName('Test User');
         return $person;
+    }
+
+    private function getArticle()
+    {
+        $article = new Article();
+
+        return $article;
     }
 
     /**

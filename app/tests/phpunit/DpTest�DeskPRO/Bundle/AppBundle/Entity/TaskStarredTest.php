@@ -34,69 +34,66 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskStarred;
 use DpTest\ApiTestCase;
+use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class LabelTaskTest extends ApiTestCase
+class TaskStarredTest extends ApiTestCase
 {
     /**
-     * Test that a valid label can be saved
+     * Test that a valid star is saved
      */
     public function testValid()
     {
-        $task = $this->getValidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $starred = new TaskStarred();
+        $starred->setPerson($this->getUser());
+        $starred->setTask($this->getTask());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($starred);
 
         $this->assertEquals(0, count($errors));
     }
 
     /**
-     * Test what happens when an invalid task is saved
+     * Test what happens when no person is attached
      */
-    public function testInvalidTitle()
+    public function testInvalidPerson()
     {
-        $task = $this->getInvalidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $starred = new TaskStarred();
+        $starred->setTask($this->getTask());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($starred);
 
         $this->assertGreaterThan(0, count($errors));
         $constraint = $errors[0]->getConstraint();
 
-        $this->assertEquals('task.title', $errors[0]->getPropertyPath());
-        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
+        $this->assertEquals('person', $errors[0]->getPropertyPath());
+        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotNull', $constraint);
     }
 
     /**
-     * Test what happens if an invalid label is saved
+     * Test what happens when no task is attached
      */
-    public function testInvalidLabel()
+    public function testInvalidTask()
     {
-        $task = $this->getValidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
+        $starred = new TaskStarred();
+        $starred->setPerson($this->getUser());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($starred);
 
         $this->assertGreaterThan(0, count($errors));
         $constraint = $errors[0]->getConstraint();
 
-        $this->assertEquals('label', $errors[0]->getPropertyPath());
-        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
+        $this->assertEquals('task', $errors[0]->getPropertyPath());
+        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotNull', $constraint);
     }
 
     /**
@@ -111,22 +108,13 @@ class LabelTaskTest extends ApiTestCase
     }
 
     /**
-     * Get an example valid task
+     * Get an example task
      * @return Task
      */
-    private function getValidTask()
+    private function getTask()
     {
         $task = new Task($this->getUser());
-        $task->setTitle('valid task');
-
+        $task->setTitle('test task');
         return $task;
-    }
-
-    /**
-     * @return Task
-     */
-    private function getInvalidTask()
-    {
-        return new Task($this->getUser());
     }
 }

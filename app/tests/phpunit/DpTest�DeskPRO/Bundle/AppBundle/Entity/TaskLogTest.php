@@ -34,26 +34,27 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLog;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DpTest\ApiTestCase;
+use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class LabelTaskTest extends ApiTestCase
+class TaskLogTest extends ApiTestCase
 {
     /**
-     * Test that a valid label can be saved
+     * Test valid project member
      */
     public function testValid()
     {
         $task = $this->getValidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $log = new TaskLog();
+        $log->setTask($task);
+        $log->setPerson($this->getUser());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($log);
 
         $this->assertEquals(0, count($errors));
     }
@@ -61,42 +62,42 @@ class LabelTaskTest extends ApiTestCase
     /**
      * Test what happens when an invalid task is saved
      */
-    public function testInvalidTitle()
+    public function testInvalidTask()
     {
         $task = $this->getInvalidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $log = new TaskLog();
+        $log->setTask($task);
+        $log->setPerson($this->getUser());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($log);
 
         $this->assertGreaterThan(0, count($errors));
         $constraint = $errors[0]->getConstraint();
-
+        
         $this->assertEquals('task.title', $errors[0]->getPropertyPath());
         $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
     }
 
     /**
-     * Test what happens if an invalid label is saved
+     * Test what happens when we don't set a user
      */
-    public function testInvalidLabel()
+    public function testInvalidUser()
     {
-        $task = $this->getValidTask();
+        $task = $this->getInvalidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
+        $log = new TaskLog();
+        $log->setTask($task);
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($log);
 
         $this->assertGreaterThan(0, count($errors));
         $constraint = $errors[0]->getConstraint();
 
-        $this->assertEquals('label', $errors[0]->getPropertyPath());
-        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
+        $this->assertEquals('person', $errors[0]->getPropertyPath());
+        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotNull', $constraint);
     }
 
     /**

@@ -34,26 +34,27 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
+use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DpTest\ApiTestCase;
+use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class LabelTaskTest extends ApiTestCase
+class TaskAssignmentTest extends ApiTestCase
 {
     /**
-     * Test that a valid label can be saved
+     * Test valid assignment
      */
     public function testValid()
     {
         $task = $this->getValidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $assignment = new TaskAssignment();
+        $assignment->setTask($task);
+        $assignment->setPerson($this->getUser());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($assignment);
 
         $this->assertEquals(0, count($errors));
     }
@@ -61,41 +62,21 @@ class LabelTaskTest extends ApiTestCase
     /**
      * Test what happens when an invalid task is saved
      */
-    public function testInvalidTitle()
+    public function testInvalidTask()
     {
         $task = $this->getInvalidTask();
         $validator = $this->getValidator();
 
-        $label = new LabelTask();
-        $label->setTask($task);
-        $label->setLabel('test');
+        $assignment = new TaskAssignment();
+        $assignment->setTask($task);
+        $assignment->setPerson($this->getUser());
 
-        $errors = $validator->validate($label);
+        $errors = $validator->validate($assignment);
 
         $this->assertGreaterThan(0, count($errors));
         $constraint = $errors[0]->getConstraint();
 
         $this->assertEquals('task.title', $errors[0]->getPropertyPath());
-        $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
-    }
-
-    /**
-     * Test what happens if an invalid label is saved
-     */
-    public function testInvalidLabel()
-    {
-        $task = $this->getValidTask();
-        $validator = $this->getValidator();
-
-        $label = new LabelTask();
-        $label->setTask($task);
-
-        $errors = $validator->validate($label);
-
-        $this->assertGreaterThan(0, count($errors));
-        $constraint = $errors[0]->getConstraint();
-
-        $this->assertEquals('label', $errors[0]->getPropertyPath());
         $this->assertInstanceOf('\Symfony\Component\Validator\Constraints\NotBlank', $constraint);
     }
 

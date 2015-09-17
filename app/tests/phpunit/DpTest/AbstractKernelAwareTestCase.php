@@ -273,4 +273,12 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
         $template = new TemplateCustom($name, $tt);
         $this->get('templating.email.template_set')->saveTemplate($template);
     }
+
+    /**
+     * @return \Symfony\Component\Validator\ValidatorInterface
+     */
+    public function getValidator()
+    {
+        return $this->getContainer()->get('validator');
+    }
 }
