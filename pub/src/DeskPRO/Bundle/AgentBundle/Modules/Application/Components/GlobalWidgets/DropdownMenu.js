@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
+import $ from "jquery";
 
 export class DropdownMenu extends Component {
 
@@ -55,12 +56,11 @@ export class Option extends Component {
     );
   }
 
-  /** Change sort option (Order By ...)*/
   handleClick(option, event) {
     event.preventDefault();
-    event.stopPropagation();
     const {callback} = this.props;
     callback(option);
+    $(event.target).closest('.dpw-navigation-dropdown').hide();
   }
 }
 

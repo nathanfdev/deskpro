@@ -5,49 +5,64 @@ export class FeedbackCard extends React.Component {
   render() {
     const {feedback} = this.props;
     return (
-      <div className="card feedback-card">
-        <div className="card-status-bar status-bar-left level-8"></div>
-        <div className="card-status-bar status-bar-right level-8"></div>
+      <div className="dpmw--single-card">
 
-        <div className="card-checkbox">
-          <span className="checkbox"><i className="fa fa-check"></i></span>
+        <div className="dpm--card-checkbox">
+          <i className="fa fa-check"></i>
         </div>
 
-        <div className="card-line">
-                  <span className="line-box">
-                    <span className="feedback-id">#{feedback.id}</span>
-                  </span>
-                    <span className="line-box card-feedback-mark">
-                    <i className="fa fa-thumbs-up"></i><span className="feedback-count">{feedback.num_ratings}</span>
-                  </span>
+        <div className="dpw--card-line">
+          <div className="dpw--card-line-left">
+            <div className="dpwd--card-title">
+              <h1>{feedback.title}</h1>
+            </div>
+          </div>
 
-          <h1>{feedback.title}</h1>
-
-          <div className="task-extras">
-            <span className="text">{feedback.status}</span>
+          <div className="dpw--card-line-right">
+            <div className="dpwd--card-assigned">
+              <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}></span>
+            </div>
           </div>
         </div>
 
-        <div className="card-line">
-          <div className="ticket-intro">
-            <p>{feedback.content}</p>
+        <div className="dpw--card-line">
+          <div className="dpw--card-line-left">
+            <div className="dpwd--card-title">
+              <h1>{feedback.content}</h1>
+            </div>
           </div>
         </div>
 
-        <div className="card-line">
-          <div className="task-extras">
-            <span className="text">{feedback.author_name}</span>
-            <span className="chat-avatar" style={{backgroundImage: "url('./img/avatar6.png')"}}></span>
-            <span className="disc"></span>
-            <span className="text">{feedback.num_comments}</span> <i className="fa fa-comment"></i>
+        <div className="dpw--card-line">
+          <div className="dpw--card-line-left">
+
+            <span className="dpwd--card-line-item">
+              <i className="fa fa-calendar-o"></i> Created: {feedback.date_created}
+            </span>
+
+            <span className="dpw--card-disc"></span>
+
+            <span className="dpwd--card-line-item">
+              <i className="fa fa-book"></i> {feedback.category}
+            </span>
+
+            <span className="dpw--card-disc"></span>
+
+            <span className="dpwd--card-line-item">
+              <i className="fa fa-link"></i> <a href="#">Linked ticket</a>
+            </span>
           </div>
 
-          <div className="task-properties">
-            <i className="fa fa-book"></i> <span className="feedback-type">{feedback.type}</span>
-            <span className="disc"></span>
-            <i className="fa fa-book"></i> <span
-            className="feedback-custom-category">{feedback.custom_category}</span>
-            <span className="disc"></span>
+          <div className="dpw--card-line-right">
+            <span className="dpwd--card-line-item">
+              5 <i className="fa fa-comment"></i>
+            </span>
+
+            <span className="dpw--card-disc"></span>
+
+            <span className="dpwd--card-line-item">
+                <div>1/3 <i className="fa fa-folder-open"></i></div>
+            </span>
           </div>
         </div>
       </div>

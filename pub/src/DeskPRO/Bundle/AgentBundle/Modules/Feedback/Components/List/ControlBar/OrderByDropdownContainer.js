@@ -5,8 +5,6 @@ import { OrderSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Co
 import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
 @connect(state => ({
-  sort: state.FeedbackList.sort,
-  sortName: state.FeedbackList.sortName,
   sortOptions: state.FeedbackList.sortOptions,
   order: state.FeedbackList.order,
   filters: state.FeedbackList.filters,
@@ -15,16 +13,17 @@ import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feed
 export class OrderByDropdownContainer extends React.Component {
 
   render() {
-    const { sort, sortOptions, order } = this.props;
+    const { sortOptions, order } = this.props;
+    let currentSort = sortOptions.find((option)=>option.current === true);
 
     return (
       <DropdownMenu dropdownClass="order-dropdown">
         {sortOptions.map((option, index)=>
-            <Option key={index} active={sort === option.field} callback={this.toggleListSort.bind(this)}
+            <Option key={index} active={currentSort.field === option.field} callback={this.toggleListSort.bind(this)}
                     option={option}/>
         )}
         <DropdownMenuFooter>
-          <OrderSwitcher order={order} toggleOrder={toggleOrder.bind(this)}/>
+          <OrderSwitcher order={order} toggleOrder={this.toggleListOrder.bind(this)}/>
         </DropdownMenuFooter>
       </DropdownMenu>
     );
@@ -33,11 +32,12 @@ export class OrderByDropdownContainer extends React.Component {
   /** Change sort option (Order By ...)*/
   toggleListSort(option) {
     const {dispatch, order, query, filters} = this.props;
-    dispatch(toggleSort(query, option.field, option.label, order, filters));
+    dispatch(toggleSort(query, option.field, order, filters));
   }
 
   toggleListOrder(order) {
-    const {dispatch, query, sort, filters} = this.props;
+    const {dispatch, query, sortOptions, filters} = this.props;
+    let sort = sortOptions.find((option)=>option.current === true).field;
     dispatch(toggleOrder(query, sort, order, filters));
   }
 }

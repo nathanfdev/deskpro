@@ -150,8 +150,8 @@ export const toggleOrder = createAction(
 
 export const toggleSort = createAction(
   "FEEDBACK_TOGGLE_SORT",
-  (trigger, query, sort, sortName, order, filters) => {
-    trigger({sort: sort, sortName: sortName});
+  (trigger, query, sort, order, filters) => {
+    trigger(sort);
     trigger(loadFeedbackList(query, sort, order, filters));
   });
 

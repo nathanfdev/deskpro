@@ -6,13 +6,14 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 export default class CrmNav extends Reducer {
   getInitialState() {
     return {
-      viewMode: constants.VIEW_MODE_TABLE,
       viewModeOptions: [
-        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table'}, {
-          field: constants.VIEW_MODE_LIST,
-          label: 'List view',
-          icon: 'fa-list'
-        }
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
+        {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
+      ],
+      order: constants.ORDER_DESC, /* Asc, Desc */
+      sortOptions: [/* @ToDo actualize field properties */
+        {field: 'date_created', label: 'Created', icon: 'fa-calendar-o', current: true},
+        {field: 'name', label: 'Name', icon: 'fa-calendar-o', current: false}
       ],
       elements: [],
       // Display Fields in Table/List view switcher
@@ -21,15 +22,6 @@ export default class CrmNav extends Reducer {
       ],
       listViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
 
-      sort: 'date_created', /* Order By ... */
-      sortName: 'Date', /* Label for Order By... */
-      order: constants.ORDER_DESC, /* Asc, Desc */
-      sortOptions: [/* @ToDo actualize field properties */
-        {field: 'date_created', label: 'Created'},
-        {field: 'name', label: 'Name'},
-        {field: 'date_created', label: 'Last login'},
-        {field: 'date_created', label: 'Organization'}
-      ],
       labels: {
         person: [/* string */],
         organization: [/* string */]

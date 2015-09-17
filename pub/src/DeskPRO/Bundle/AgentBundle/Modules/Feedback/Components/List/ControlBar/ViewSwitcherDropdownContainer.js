@@ -32,7 +32,6 @@ export class ViewSwitcherDropdownContainer extends Component {
     );
   }
 
-  /** Change sort option (Order By ...)*/
   toggleView(newView) {
     const {dispatch} = this.props;
     dispatch(toggleViewMode(newView.field));

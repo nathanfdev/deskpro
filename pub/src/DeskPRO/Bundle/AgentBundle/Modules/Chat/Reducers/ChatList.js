@@ -14,17 +14,17 @@ export default class ChatList extends Reducer {
       listViewFields: [/* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} */],
 
       // list sorting options
-      sort: 'date_created',
-      sortName: 'Date',
       sortOptions: [
-        {field: 'date_created', label: 'Date'},
-        {field: 'total_rating', label: 'Agent'},
-        {field: 'num_ratings', label: 'Department'}
+        {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
+        {field: 'total_rating', label: 'Agent', icon: 'fa-calendar-o', current: false},
+        {field: 'num_ratings', label: 'Department', icon: 'fa-calendar-o', current: false}
       ],
       order: constants.ORDER_DESC,
-
       // view mode (table or list)
-      viewMode: constants.VIEW_MODE_TABLE,
+      viewModeOptions: [
+        {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
+        {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
+      ],
 
       // chats to display
       elements: []

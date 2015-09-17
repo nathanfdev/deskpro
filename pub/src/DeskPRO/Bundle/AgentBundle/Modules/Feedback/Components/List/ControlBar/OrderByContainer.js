@@ -14,12 +14,10 @@ import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feed
 export class OrderByContainer extends React.Component {
 
   render() {
-    const { sort, sortName, sortOptions, order } = this.props;
+    const { sortOptions, order } = this.props;
 
     return (
       <OrderBy
-        sort={sort}
-        sortName={sortName}
         sortOptions={sortOptions}
         order={order}
         />

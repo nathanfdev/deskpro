@@ -30,7 +30,7 @@ export class Radio extends Component {
       'active': type === order
     });
     return (
-      <span className={classes} onClick={this.handleClick.bind(this, toggleOrder, type)}>
+      <span className={classes} onClick={this.handleClick.bind(this, type)}>
         <span className="dpwd-radio-button-disc"></span>
         <span className="radio-button-title">{type.charAt(0).toUpperCase() + type.slice(1)}</span>
       </span>
@@ -38,9 +38,10 @@ export class Radio extends Component {
   }
 
   /** Change sort order (ASC, DESC)*/
-  handleClick(toggleOrder, type, event) {
+  handleClick(type, event) {
     event.preventDefault();
     event.stopPropagation();
+    const {toggleOrder} = this.props;
     toggleOrder(type);
   }
 }

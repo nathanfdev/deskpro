@@ -15,18 +15,18 @@ export class List extends Component {
 
   static propTypes = {
     elements: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired
+    viewModeOptions: PropTypes.array.isRequired
   };
 
 
   render() {
 
-    const { elements, viewMode } = this.props;
+    const { elements, viewModeOptions } = this.props;
 
     return (
       <ListFrame>
         <CrmListControlBar />
-        {viewMode === constants.VIEW_MODE_LIST ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
+        {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_LIST ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
       </ListFrame>
     );
   }

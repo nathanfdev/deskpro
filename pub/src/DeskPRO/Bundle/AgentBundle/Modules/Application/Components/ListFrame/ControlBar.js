@@ -43,6 +43,6 @@ export class ControlButton extends React.Component {
     let elem             = $(event.target),
           buttonPosition = elem.closest('a').offset(),
           dropdown       = $(event.target).closest('.dpwd-navigation-dropdown-top-row').find('.' + dropdownClass);
-    dropdown.css('left', buttonPosition.left).css('top', buttonPosition.bottom).css('width', '200px').css('position', 'fixed').toggle();
+    dropdown.css('left', buttonPosition.left).css('top', buttonPosition.bottom).css('width', '200px').css('position', 'fixed').css('z-index', 200).toggle();
   }
 }
