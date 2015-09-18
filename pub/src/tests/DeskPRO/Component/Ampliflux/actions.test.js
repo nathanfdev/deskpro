@@ -1,6 +1,6 @@
 jest.dontMock('DeskPRO/Component/Ampliflux/actions.js');
 
-describe('old createAction()', () => {
+describe('[deprecated] Ampliflux v1 createAction()', () => {
 
   const createAction = require('DeskPRO/Component/Ampliflux/actions.js').createAction;
 
