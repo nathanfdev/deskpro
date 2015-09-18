@@ -86,6 +86,12 @@ final class Json extends AbstractExporter implements ExporterBatchInterface
             ->setDateModified(new DateTime())
         ;
 
+        if (is_dir($this->getConfig()->getInputPath().DIRECTORY_SEPARATOR.$updated_config->getId())) {
+            $updated_config->setHasRemaining(true);
+        } else {
+            $updated_config->setHasRemaining(false);
+        }
+
         return $updated_config;
     }
 
