@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use League\Url\Url;
@@ -157,6 +158,14 @@ class PortalController extends AbstractController
 
         $lang_changer = $this->get('language_changer');
         $redirect_url = $lang_changer->changeLanguage($new_lang_code, $referer);
+
+        $person = $this->getCurrentPerson();
+        if (!$person instanceof PersonGuest) {
+            if ($lang = $this->get('language_manager')->getLanguage($new_lang_code)) {
+                $person->setLanguage($lang);
+                $this->persistAndFlushEntity($person);
+            }
+        }
 
         return $this->redirect($redirect_url);
     }
