@@ -170,6 +170,18 @@ class PortalController extends AbstractController
         return $this->redirect($redirect_url);
     }
 
+    /**
+     * @Route("/dismiss-lang-alert", name="portal_dismiss_lang_alert")
+     */
+    public function ignoreLangAlert(Request $request)
+    {
+        $this->getSession()->set('ignore_language_warning', true);
+
+        $referer = $request->server->get('HTTP_REFERER');
+
+        return $this->redirect($referer);
+    }
+
     public function removeTrailingSlashAction(Request $request)
     {
         $pathInfo = $request->getPathInfo();

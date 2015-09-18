@@ -1784,7 +1784,7 @@ form {
 
   .pagination {
     margin-left: 10px;
-    a{ 
+    a{
       cursor: pointer;
     }
   }
@@ -2774,6 +2774,65 @@ div.large-title {
     max-width: 160px;
     border: 1px solid $divider-color;
     border-radius: 2px;
+  }
+}
+
+.lang-diff-alert-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  padding: 1px 0;
+  width: 100%;
+  background: #81CEC7;
+  font-size: $font-mid;
+  ul {
+    @include blank-list;
+
+    li {
+      display: inline;
+    }
+  }
+
+  form {
+    display: inline;
+    margin: 0;
+    float:right;
+    button {
+      padding: 10px;
+      margin: 2px;
+    }
+  }
+
+  a {
+    display: block;
+    float: right;
+    margin-left: 1px;
+    padding: 7px 10px;
+    background: #4c4c4c;
+    color: #d2d2d2;
+    text-decoration: none;
+
+    span {
+      color: #a2a2a2;
+      font-weight: 500;
+    }
+
+    &:hover {
+      background: #323232;
+      color: $grey;
+    }
+
+    i {
+      margin-left: 5px;
+      color: #838383;
+    }
+
+    .fa-edit {
+      position: relative;
+      top: 2px;
+      font-size: 1.2em;
+    }
   }
 }
 
