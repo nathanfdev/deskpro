@@ -276,6 +276,26 @@ class BreadcrumbBuilder
         return $this;
     }
 
+    public function addLabelSearch($type, $label)
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_search_labels', array('type' => $type, 'label' => $label)),
+            Breadcrumbs::SEARCH,
+            array('phrase' => 'portal.general.search-labels-section-title')
+        );
+
+        if ($label) {
+            $this->b->add(
+                $this->url_generator->generate('portal_search_labels', array('type' => $type, 'label' => $label)),
+                Breadcrumbs::SEARCH,
+                array('name' => sprintf('"%s"', $label))
+            )
+            ;
+        }
+
+        return $this;
+    }
+
     #####################################################################################################################
     # Feedback
     #####################################################################################################################

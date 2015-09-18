@@ -290,6 +290,15 @@ class PageTitleGenerator
         return (string) $builder;
     }
 
+    public function labelSearch()
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $builder->prependSection($this->phrase('portal.general.search-labels-section-title'));
+
+        return (string) $builder;
+    }
+
     public function createHelpdeskTitleBuilder()
     {
         $builder = new PageTitleBuilder();

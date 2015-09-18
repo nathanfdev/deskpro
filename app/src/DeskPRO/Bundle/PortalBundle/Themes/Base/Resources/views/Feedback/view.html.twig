@@ -52,7 +52,13 @@
                             </li>
                         {% endif %}
                         {% if item.labels|length %}
-                            <li><i class="fa fa-tags"></i>{{ item.labels|join }}</li>
+                            <li>
+                                <i class="fa fa-tags"></i>
+                                {% for l in item.labels %}
+                                    <a
+                                    href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </li>
                         {% endif %}
                     </ul>
                 </div>

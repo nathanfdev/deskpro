@@ -36,7 +36,7 @@
         <ul>
           <li class="tag-list-header"><i class="fa fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
           {% for l in  article.labels %}
-            <li class="tag-list-item"><a href="#">{{ l }}</a></li>
+            <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
           {% endfor %}
         </ul>
       </div>

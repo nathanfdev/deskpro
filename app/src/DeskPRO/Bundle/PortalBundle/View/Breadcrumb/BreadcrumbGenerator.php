@@ -235,6 +235,11 @@ class BreadcrumbGenerator
         return $this->createBuilder()->addSearch($query)->done();
     }
 
+    public function buildLabelSearch($type, $label)
+    {
+        return $this->createBuilder()->addLabelSearch($type, $label)->done();
+    }
+
     #####################################################################################################################
     # Tickets
     #####################################################################################################################

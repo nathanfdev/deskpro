@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContext;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
@@ -161,8 +162,99 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @Route("/search/labels/{type}/{label}", name="portal_search_labels", defaults={"type": "all", "label": ""}, requirements={"label":".*"})
+     * @Route("/search/labels/{type}/{label}", name="user_search_labels", defaults={"type": "all", "label": ""}, requirements={"label":".*"})
+     */
+    public function labelSearchAction(Request $request, $type, $label)
+    {
+        if ($request->getMethod() === 'POST') {
+            $t = $request->request->get('type');
+            $l = $request->request->get('label');
+            if (!in_array($type, array(
+                    'all',
+                    'articles',
+                    'feedback',
+                    'downloads',
+                    'news'))
+            ) {
+                $type = 'all';
+            }
+
+            return $this->redirectToRoute('portal_search_labels', array('type' => $t, 'label' => $l));
+        }
+
+        if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+            $type = 'all';
+        }
+
+        $total = 0;
+        $per_page = 25;
+        $cur_page = $request->query->get('page', 1);
+
+        switch ($type) {
+            case 'all':
+                $search_types = array('article', 'feedback', 'download', 'news');
+                break;
+            case 'articles':
+                $search_types = array('article');
+                break;
+            case 'feedback':
+                $search_types = array('feedback');
+                break;
+            case 'downloads':
+                $search_types = array('download');
+                break;
+            case 'news':
+                $search_types = array('news');
+                break;
+            default:
+                $search_types = array();
+        }
+
+        $results = null;
+        $pageinfo = null;
+        if ($label) {
+            $search_adapter = $this->get('deskpro.search_adapter');
+            $search_adapter->setPersonContext($this->getCurrentPerson());
+            $result_set = $search_adapter->getContentSearcher()->labelled(array($label), $per_page, $cur_page, $search_types);
+            $results = $search_adapter->getResultSetObjects($result_set, true);
+
+            $total = $result_set->totalCount();
+            $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
+        }
+
+        #------------------------------
+        # Make combined search cloud
+        #------------------------------
+
+        $content_cloud = new ContentLabelCloud();
+        $cloud = $content_cloud->getCloud();
+
+        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo ?: array()));
+        $pagination->setMaxPerPage($pageinfo ? (int)$pageinfo['per_page'] : $per_page);
+        $pagination->setCurrentPage($pageinfo ? (int)$pageinfo['curpage'] : $cur_page);
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildLabelSearch($type, $label);
+
+        return $this->renderThemeView(
+            'Theme:Search:search_labels_results.html.twig',
+            array(
+                'pager'       => $pagination,
+                'cloud'       => $cloud,
+                'label'       => $label,
+                'results'     => $results,
+                'type'        => $type,
+                'pageinfo'    => $pageinfo,
+                'num_results' => $total,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->labelSearch(),
+            )
+        );
+    }
+
+    /**
      * @Route("/search/similar/{content_type}", name="portal_search_similar", defaults={"content_type":null})
-     * @Route("/search/similar/{content_type}", name="user_search_similarto")
+     * @Route("/search/similar/{content_type}", name="user_search_similarto", defaults={"content_type":null})
      */
     public function similarToAction(Request $request, $content_type = null)
     {
