@@ -519,6 +519,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'created_at'      => $date1->format('Y-m-d H:i:s'),
                         'user_fields'     => array(),
                         'organization_id' => 1,
+                        'tags'            => array('Tag 1', 'Tag 2'),
                     ),
                     (object)array(
                         'id'              => 2,
@@ -529,6 +530,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'created_at'      => $date2->format('Y-m-d H:i:s'),
                         'user_fields'     => array(),
                         'organization_id' => 1,
+                        'tags'            => array('Tag 2', 'Tag 3'),
                     ),
                     (object)array(
                         'id'              => 3,
@@ -575,6 +577,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
     private function checkDbData()
     {
         $this->checkDbTicketsData();
+        $this->checkDbPeopleData();
     }
 
     private function checkDbTicketsData()
@@ -605,5 +608,24 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertEquals('Ticket 4', $ticket->getTitle());
         $this->assertEquals('awaiting_agent', $ticket->getStatusCode());
         $this->assertTrue($ticket->isHold());
+    }
+
+    private function checkDbPeopleData()
+    {
+        $person = $this->person_repository->findOneByEmail('person1@domain.tld');
+        $labels = array();
+        foreach ($person->labels as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('Tag 1', 'Tag 2'), $labels);
+
+        $person = $this->person_repository->findOneByEmail('person2@domain.tld');
+        $labels = array();
+        foreach ($person->labels as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('Tag 2', 'Tag 3'), $labels);
     }
 }

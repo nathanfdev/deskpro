@@ -145,6 +145,7 @@ final class People extends AbstractParser
             'role'            => TransformerInterface::TYPE_STRING,
             'created_at'      => TransformerInterface::TYPE_DATE,
             'user_fields'     => TransformerInterface::TYPE_ARRAY,
+            'tags'            => TransformerInterface::TYPE_ARRAY,
             'organization_id' => TransformerInterface::TYPE_STRING,
         ));
 
@@ -176,6 +177,10 @@ final class People extends AbstractParser
             case self::ROLE_END_USER:
                 $entity->setAsUser(true);
                 break;
+        }
+
+        foreach ($formatted['tags'] as $tag) {
+            $entity->addLabel($tag);
         }
 
         return $entity;
