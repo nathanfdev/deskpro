@@ -142,6 +142,7 @@ class TaskType extends AbstractType
                     'allow_add' => true,
                     'allow_delete' => true,
                     'delete_empty' => true,
+                    'by_reference' => false,
                     'options' => array(
                         'task' => $options['task'],
                         'required' => false,
