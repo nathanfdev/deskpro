@@ -2,7 +2,6 @@ import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import Immutable from "immutable";
 
 const initialState = {
   viewModeOptions: [
@@ -114,21 +113,17 @@ export default createReducer(initialState, {
   }),
   [actions.feedbackActiveStatus]: async({
     success: (state, payload) =>
-      state
-        .setIn(['statuses', 'active', 'count'], payload.data.count)
-        .setIn(['statuses', 'active', 'nested'], payload.data.nested)
+      state.setIn(['statuses', 'active'], payload.data)
   }),
   [actions.feedbackClosedStatus]: async({
     success: (state, payload) =>
       state
-        .setIn(['statuses', 'closed', 'count'], payload.data.count)
-        .setIn(['statuses', 'closed', 'nested'], payload.data.nested)
+        .setIn(['statuses', 'closed'], payload.data)
   }),
   [actions.feedbackHiddenStatus]: async({
     success: (state, payload) =>
       state
-        .setIn(['statuses', 'hidden', 'count'], payload.data.count)
-        .setIn(['statuses', 'hidden', 'nested'], payload.data.nested)
+        .setIn(['statuses', 'hidden'], payload.data)
   }),
   [actions.getFilterValues]: async({
     success: (state, payload) => {

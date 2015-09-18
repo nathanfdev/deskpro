@@ -6,14 +6,15 @@ import $ from "jquery";
 import { sortingDataSelector } from '../../Selectors/list';
 
 @connect(state => {
-  return({
+  return ({
     query: state.Feedback.nav.get('query'),
     order: state.Feedback.nav.get('order'),
     filters: state.Feedback.nav.get('filters'),
-    statuses:state.Feedback.nav.get('statuses'),
-    types:state.Feedback.nav.get('types'),
-    labels:state.Feedback.nav.get('labels'),
-    customCategories:state.Feedback.nav.get('customCategories'),
+    toValidateCount: state.Feedback.nav.get('toValidateCount'),
+    statuses: state.Feedback.nav.get('statuses').toJS(),
+    types: state.Feedback.nav.get('types'),
+    labels: state.Feedback.nav.get('labels'),
+    customCategories: state.Feedback.nav.get('customCategories'),
     currentSortMode: sortingDataSelector(state)
   });
 })
@@ -38,7 +39,6 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-
     return (
       <Nav
         toValidateCount={this.props.toValidateCount}

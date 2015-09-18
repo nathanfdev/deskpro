@@ -3,17 +3,18 @@ import { connect } from 'react-redux';
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { ViewOptionsSubmenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ViewOptionsSubmenu';
 import { toggleViewMode } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { viewDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  viewModeOptions: state.FeedbackList.viewModeOptions,
-  listViewFields: state.FeedbackList.listViewFields,
-  tableViewFields: state.FeedbackList.tableViewFields
+  viewModeOptions: state.Feedback.nav.get('viewModeOptions'),
+  currentViewMode: viewDataSelector(state),
+  listViewFields: state.Feedback.nav.get('listViewFields'),
+  tableViewFields: state.Feedback.nav.get('tableViewFields')
 }))
 export class ViewSwitcherDropdownContainer extends Component {
 
   render() {
-    const {viewModeOptions, listViewFields, tableViewFields} = this.props;
-    let currentViewMode = viewModeOptions.find((option)=>option.current === true);
+    const {viewModeOptions, listViewFields, tableViewFields, currentViewMode} = this.props;
 
     return (
       <DropdownMenu dropdownClass="view-mode-dropdown">

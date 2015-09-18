@@ -3,23 +3,24 @@ import { connect } from 'react-redux';
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { OrderSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/OrderSwitcher';
 import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { sortingDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  sortOptions: state.FeedbackList.sortOptions,
-  order: state.FeedbackList.order,
-  filters: state.FeedbackList.filters,
-  query: state.FeedbackList.query
+  sortOptions: state.Feedback.nav.get('sortOptions'),
+  order: state.Feedback.nav.get('order'),
+  filters: state.Feedback.nav.get('filters'),
+  query: state.Feedback.nav.get('query'),
+  currentSortMode: sortingDataSelector(state)
 }))
 export class OrderByDropdownContainer extends React.Component {
 
   render() {
-    const { sortOptions, order } = this.props;
-    let currentSort = sortOptions.find((option)=>option.current === true);
+    const { sortOptions, order, currentSortMode } = this.props;
 
     return (
       <DropdownMenu dropdownClass="order-dropdown">
         {sortOptions.map((option, index)=>
-            <Option key={index} active={currentSort.field === option.field} callback={this.toggleListSort.bind(this)}
+            <Option key={index} active={currentSortMode.field === option.field} callback={this.toggleListSort.bind(this)}
                     option={option}/>
         )}
         <DropdownMenuFooter>
