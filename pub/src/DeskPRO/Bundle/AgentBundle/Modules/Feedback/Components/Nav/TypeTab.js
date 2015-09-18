@@ -6,13 +6,12 @@ export class TypeTab extends React.Component {
 
   render() {
     const { types, onClick } = this.props;
-    let itemKey = 0;
 
     return (
       <ul>
-        {types.map(item =>
-            <div key={itemKey++} onClick={onClick.bind(this, {'category':item.title})}>
-              <ListItem key={itemKey++} count={item.value} label={item.title}/>
+        {types.map((item, index) =>
+            <div key={index} onClick={onClick.bind(this, {'category':item.title})}>
+              <ListItem count={item.value} label={item.title}/>
             </div>
         )}
       </ul>

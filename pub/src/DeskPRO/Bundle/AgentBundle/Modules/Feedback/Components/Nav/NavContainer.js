@@ -1,16 +1,28 @@
 import React from 'react';
-import { Nav } from './Nav';
-import * as actions from '../../Actions/FeedbackListActions'
-import $ from "jquery";
-
 import { connect } from 'react-redux';
-@connect(state =>  state.FeedbackList)
+import * as actions from '../../Actions/FeedbackListActions'
+import { Nav } from './Nav';
+import $ from "jquery";
+import { sortingDataSelector } from '../../Selectors/list';
+
+@connect(state => {
+  return({
+    query: state.Feedback.nav.get('query'),
+    order: state.Feedback.nav.get('order'),
+    filters: state.Feedback.nav.get('filters'),
+    statuses:state.Feedback.nav.get('statuses'),
+    types:state.Feedback.nav.get('types'),
+    labels:state.Feedback.nav.get('labels'),
+    customCategories:state.Feedback.nav.get('customCategories'),
+    currentSortMode: sortingDataSelector(state)
+  });
+})
 
 export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    const { dispatch, query, order, filters, sortOptions } = this.props;
+    const { dispatch, query, order, filters, currentSortMode } = this.props;
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());
@@ -20,10 +32,9 @@ export class NavContainer extends React.Component {
     dispatch(actions.feedbackActiveStatus());
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
-    let sort = sortOptions.find((option)=>option.current === true).field;
-    dispatch(actions.loadFeedbackList(query, sort, order, filters));
     dispatch(actions.getFilterValues(filters.alias));
     dispatch(actions.getDisplayFieldsFromPersonSetting());
+    //dispatch(actions.loadFeedbackList(query, currentSortMode.field, order, filters));
   }
 
   render() {
