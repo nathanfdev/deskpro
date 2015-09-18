@@ -3,6 +3,8 @@
 DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
 
 echo ">> Cleaning"
+rm -rf $DIR_ROOT/app/sys/cache/*/
+rm -f $DIR_ROOT/app/src/Application/InstallBundle/Data/schema.php
 rm -rf $DIR_ROOT/app/vendor
 rm -rf $DIR_ROOT/web/app-build
 rm -rf $DIR_ROOT/web/loader-build

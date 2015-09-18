@@ -36,11 +36,11 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskStarred;
-use DpTest\PortalTestCase;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class TaskStarredTest extends PortalTestCase
+class TaskStarredTest extends ApiTestCase
 {
     /**
      * Test that a valid star is saved
@@ -116,13 +116,5 @@ class TaskStarredTest extends PortalTestCase
         $task = new Task($this->getUser());
         $task->setTitle('test task');
         return $task;
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }

@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux";
+import { createAction } from "Ampliflux/actions";
 import { loadUsers } from "DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/UserActions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 

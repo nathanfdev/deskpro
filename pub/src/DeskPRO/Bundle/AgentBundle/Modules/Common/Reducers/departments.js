@@ -1,14 +1,14 @@
 import { createReducer } from 'Ampliflux';
 import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
-import * as DepartmentsActions from '../Actions/departmentsActions';
+import * as departmentsActions from '../Actions/departmentsActions';
 
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    gcAction:               DepartmentsActions.gcDepartments,
-    releaseRecordsAction:   DepartmentsActions.releaseDepartments,
-    releaseRequestAction:   DepartmentsActions.releaseDepartmentsRequest,
-    setRequestRecordAction: DepartmentsActions.setDepartmentsRequest,
-    requestRecordsAction:   DepartmentsActions.loadDepartments
+    gcAction:               departmentsActions.gcDepartments,
+    releaseRecordsAction:   departmentsActions.releaseDepartments,
+    releaseRequestAction:   departmentsActions.releaseDepartmentsRequest,
+    setRequestRecordAction: departmentsActions.setDepartmentsRequest,
+    requestRecordsAction:   departmentsActions.loadDepartments
   })
 );

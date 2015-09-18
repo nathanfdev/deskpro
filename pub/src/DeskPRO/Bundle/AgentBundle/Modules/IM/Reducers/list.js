@@ -1,13 +1,14 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/imListActions.js';
 
-export default class IMList extends Reducer {
+export default class IM_list extends Reducer {
 
     getInitialState() {
         return {
             agents: [],
             teams: [],
-            departments: []
+            departments: [],
+            recentAgents: []
         };
     }
 
@@ -15,6 +16,7 @@ export default class IMList extends Reducer {
         this.r(actions.loadAgents, this.listAgents);
         this.r(actions.loadTeams, this.listTeams);
         this.r(actions.loadDepartments, this.listDepartments);
+        this.r(actions.loadRecentAgents, this.listRecentAgents);
     }
 
     listAgents(prev, {payload}) {
@@ -27,5 +29,9 @@ export default class IMList extends Reducer {
 
     listDepartments(prev, {payload}) {
         return {...prev, departments: payload};
+    }
+
+    listRecentAgents(prev, {payload}) {
+        return {...prev, recentAgents: payload};
     }
 }

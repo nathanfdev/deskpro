@@ -36,11 +36,11 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DpTest\PortalTestCase;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class TaskCommentTest extends PortalTestCase
+class TaskCommentTest extends ApiTestCase
 {
     /**
      * Test that a valid comment can be saved
@@ -129,13 +129,5 @@ class TaskCommentTest extends PortalTestCase
     private function getInvalidTask()
     {
         return new Task($this->getUser());
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }

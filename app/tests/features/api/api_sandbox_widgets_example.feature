@@ -83,7 +83,7 @@ Feature: Sandbox Widgets Example
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "linked" should exist
-    And the JSON node "linked.sandbox_widget" should have 1 element
+    And the JSON node "linked.sandbox_widget" should have 2 elements
     And the JSON node "linked.sandbox_widget.2.id" should be equal to 2
     And the JSON node "data.children[0]" should be equal to 2
     And print last JSON response

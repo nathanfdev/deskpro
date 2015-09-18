@@ -1,13 +1,23 @@
 import { createSelector } from 'reselect';
 
-const chatListStateSelector = state => state.Chat.list;
+const stateSelector = state => state.Chat.list;
 
 export const sortingDataSelector = createSelector(
-  chatListStateSelector,
+  stateSelector,
   list => ({sort: list.get('sort'), order: list.get('order')})
 );
 
 export const currentListParamsSelector = createSelector(
-  chatListStateSelector,
+  stateSelector,
   list => list.get('currentListParams')
+);
+
+export const viewModeSelector = createSelector(
+  stateSelector,
+  list => list.get('viewModeOptions').toJS().find(option => option.current === true).field
+);
+
+export const elementsSelector = createSelector(
+  stateSelector,
+  list => list.get('elements')
 );

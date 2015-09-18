@@ -36,11 +36,11 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DpTest\PortalTestCase;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class TaskAssignmentTest extends PortalTestCase
+class TaskAssignmentTest extends ApiTestCase
 {
     /**
      * Test valid assignment
@@ -109,13 +109,5 @@ class TaskAssignmentTest extends PortalTestCase
     private function getInvalidTask()
     {
         return new Task($this->getUser());
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }

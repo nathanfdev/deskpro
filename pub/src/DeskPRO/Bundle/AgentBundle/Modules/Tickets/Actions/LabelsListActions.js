@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux";
+import { createAction } from "Ampliflux/actions";
 import * as TicketLabels from "DeskPRO/Bundle/AgentBundle/Services/Api/TicketLabels";
 
 export const loadLabels = createAction(

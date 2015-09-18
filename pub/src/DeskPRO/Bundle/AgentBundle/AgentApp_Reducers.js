@@ -7,7 +7,7 @@ import Chat_nav                                           from "./Modules/Chat/R
 import Common_departments                                 from "./Modules/Common/Reducers/departments.js";
 import Common_users                                       from "./Modules/Common/Reducers/users.js";
 import ROOT_FeedbackList                                  from "./Modules/Feedback/Reducers/FeedbackList.js";
-import IM_IMList                                          from "./Modules/IM/Reducers/IMList.js";
+import IM_list                                            from "./Modules/IM/Reducers/list.js";
 import ROOT_PublishList                                   from "./Modules/Publish/Reducers/PublishList.js";
 import ROOT_PublishNav                                    from "./Modules/Publish/Reducers/PublishNav.js";
 import ROOT_agentList                                     from "./Modules/Tasks/Reducers/agentList.js";
@@ -65,7 +65,7 @@ export default {
     "users":                                              Common_users,
   },
   "IM": {
-    "IMList":                                             IM_IMList,
+    "list":                                               IM_list,
   },
   "Test": {
     "test":                                               Test_test,

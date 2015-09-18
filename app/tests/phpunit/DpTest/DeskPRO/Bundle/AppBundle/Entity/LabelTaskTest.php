@@ -36,11 +36,10 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DpTest\PortalTestCase;
-use Symfony\Component\Validator\Validation;
+use DpTest\ApiTestCase;
 use Symfony\Component\Validator\Constraints as Assertions;
 
-class LabelTaskTest extends PortalTestCase
+class LabelTaskTest extends ApiTestCase
 {
     /**
      * Test that a valid label can be saved
@@ -129,13 +128,5 @@ class LabelTaskTest extends PortalTestCase
     private function getInvalidTask()
     {
         return new Task($this->getUser());
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\ValidatorInterface
-     */
-    private function getValidator()
-    {
-        return Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
     }
 }
