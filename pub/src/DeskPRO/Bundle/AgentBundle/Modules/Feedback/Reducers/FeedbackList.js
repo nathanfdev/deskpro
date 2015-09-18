@@ -93,6 +93,7 @@ export default class FeedbackList extends Reducer {
   toValidate(prev, {payload}) {
     const next           = {...prev};
     next.toValidateCount = payload.data.count;
+    console.log('To validate: ', next);
     return next;
   }
 

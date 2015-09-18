@@ -1,96 +1,48 @@
-import { createAction } from "Ampliflux/actions";
-import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
+import { createAction } from "Ampliflux";
 import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 export const feedbackToValidate = createAction(
   "FEEDBACK_TO_VALIDATE",
-  (trigger) => {
-    Feedback.toValidate().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.toValidate().then(value => value.getData()));
 
 export const commentsToReview = createAction(
   "FEEDBACK_COMMENTS_TO_REVIEW",
-  (trigger) => {
-    Feedback.commentsToReview().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.commentsToReview().then(value => value.getData()));
 
 export const feedbackLabels = createAction(
   "FEEDBACK_LABELS",
-  (trigger) => {
-    Feedback.getLabels().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.getLabels().then(value => value.getData()));
 
 export const feedbackTypes = createAction(
   "FEEDBACK_TYPES",
-  (trigger) => {
-    Feedback.getTypes().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.getTypes().then(value => value.getData()));
 
 export const feedbackCustomCategories = createAction(
   "FEEDBACK_CUSTOM_CATEGORIES",
-  (trigger) => {
-    Feedback.getCustomCategories().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.getCustomCategories().then(value => value.getData()));
 
 export const feedbackNew = createAction(
   "FEEDBACK_NEW_STATUS",
-  (trigger) => {
-    Feedback.getNew().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.getNew().then(value => value.getData()));
 
 
 export const feedbackActiveStatus = createAction(
   "FEEDBACK_ACTIVE_STATUS",
-  (trigger) => {
-    Feedback.getActive().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.getActive().then(value => value.getData()));
 
 export const feedbackClosedStatus = createAction(
   "FEEDBACK_CLOSED_STATUS",
-  (trigger) => {
-    Feedback.getClosed().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.getClosed().then(value => value.getData()));
 
 export const feedbackHiddenStatus = createAction(
   "FEEDBACK_HIDDEN_STATUS",
-  (trigger) => {
-    Feedback.getHidden().then(
-      (value) => trigger(value.getData())
-    );
-  }
-);
+  () => dispatch => Feedback.getHidden().then(value => value.getData()));
 
 export const loadFeedbackList = createAction(
   "FEEDBACK_LIST",
-  (trigger, query, filters, sort, order) => {
-    Feedback.getList(query, filters, sort, order).then(
-      (value) => trigger(value.getData())
-    )
+  (query, filters, sort, order) => {
+    Feedback.getList(query, filters, sort, order).then(value => value.getData())
   }
 );
 
@@ -104,10 +56,8 @@ export const changeQueryState = createAction(
 
 export const getFilterValues = createAction(
   "FEEDBACK_SELECT_FILTER",
-  (trigger, filterName) => {
-    Feedback.getFilterValues(filterName).then(
-      (value) => trigger(value.getData())
-    )
+  (filterName) => {
+    Feedback.getFilterValues(filterName).then(value => value.getData())
   }
 );
 
@@ -144,7 +94,7 @@ export const toggleViewMode = createAction(
 export const toggleOrder = createAction(
   "FEEDBACK_TOGGLE_ORDER",
   (trigger, query, sort, order, filters) => {
-    trigger({order:order});
+    trigger({order: order});
     trigger(loadFeedbackList(query, sort, order, filters));
   });
 
@@ -156,19 +106,15 @@ export const toggleSort = createAction(
   });
 
 export const storeDisplayFieldsToPersonSetting = createAction(
-  "FEEDBACK_DISPLAY_FIELD_TO_PERSON_SETTING",
-  (trigger, displayFields) => {
-    Feedback.postDisplayFieldsToPersonSetting('feedback_display_fields', displayFields).then(
-      (value) => trigger(value.getData())
-    )
+  "FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING",
+  (displayFields) => {
+    Feedback.postDisplayFieldsToPersonSetting('feedback_display_fields', displayFields).then(value => value.getData())
   });
 
 export const getDisplayFieldsFromPersonSetting = createAction(
-  "FEEDBACK_DISPLAY_FIELD_TO_PERSON_SETTING",
-  (trigger) => {
-    Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(
-      (value) => trigger(value.getData())
-    )
+  "FEEDBACK_GET_DISPLAY_FIELD_TO_PERSON_SETTING",
+  () => {
+    Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(value => value.getData())
   });
 
 export const changeDisplayFieldsStatus = createAction(
