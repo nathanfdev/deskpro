@@ -9,8 +9,8 @@ const AgentsListItem = React.createClass(
         };
 
         let name = this.props.agent.name;
-        if(this.props.agent.highlight) {
-            const escape = this.props.agent.highlight.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+        if(this.props.highlight) {
+            const escape = this.props.highlight.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
             const tagStr = '<span class="search-matched-word">$&</span>';
             name = name.replace(
                 new RegExp(escape, 'gi'),
