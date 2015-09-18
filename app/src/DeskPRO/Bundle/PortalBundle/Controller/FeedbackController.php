@@ -319,6 +319,8 @@ class FeedbackController extends AbstractController
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
             $form_handler = $this->get('form_handler.comment');
             $comment = new FeedbackComment();
+            $comment->setVisitorId($visitor_id);
+            $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $item, $comment)) {
                 if ($form_result instanceof Response) {

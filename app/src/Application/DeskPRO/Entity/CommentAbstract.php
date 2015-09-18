@@ -70,6 +70,11 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
+    protected $visitor_id;
+
+    /**
+     * @var string
+     */
     protected $email = null;
 
     /**
@@ -341,5 +346,37 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param string $visitor_id
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip_address
+     */
+    public function setIpAddress($ip_address)
+    {
+        $this->setModelField('ip_address', $ip_address);
     }
 }
