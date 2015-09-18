@@ -18,11 +18,20 @@ class TaskType extends AbstractType
      */
     private $task;
 
+    /**
+     * Get the name of the object
+     * @return string
+     */
     public function getName()
     {
         return 'task';
     }
 
+    /**
+     * Build form
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options Form options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->task = $options['task'];
@@ -187,6 +196,10 @@ class TaskType extends AbstractType
             );
     }
 
+    /**
+     * The the default options for the form
+     * @param OptionsResolverInterface $resolver
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
@@ -196,6 +209,11 @@ class TaskType extends AbstractType
         ));
     }
 
+    /**
+     * Code to be executed when the form is submitted
+     * This removes any labels which were not submitted by the form
+     * @param  FormEvent $event The submit event
+     */
     public function onSubmit(FormEvent $event)
     {
         /** @var Task $data */
