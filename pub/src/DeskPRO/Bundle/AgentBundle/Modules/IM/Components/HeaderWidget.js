@@ -22,7 +22,6 @@ export default class HeaderWidget extends React.Component {
             overlayShown: !this.state.overlayShown
         };
         this.setState(newState);
-        console.log(this.props);
     }
 
     render() {
