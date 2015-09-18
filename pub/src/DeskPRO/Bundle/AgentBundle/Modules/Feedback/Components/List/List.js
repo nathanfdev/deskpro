@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrame }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { ListFrame }  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
 import { FeedbackList } from './View/List/FeedbackList';
 import { FeedbackTable } from './View/Table/FeedbackTable';

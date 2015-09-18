@@ -23,7 +23,6 @@ export function toValidate() {
   let query = {
     awaiting_validation: 1
   };
-
   return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
