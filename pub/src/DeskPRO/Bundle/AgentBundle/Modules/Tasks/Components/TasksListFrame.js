@@ -20,6 +20,7 @@ import * as constants from "../../../Constants/Constants";
 import ReactPaginate from "../../Application/Components/Pagination/deskpro-react-paginate";
 import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
 import AssignHover from "../Components/AssignHover";
+import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 
 @connect(state => ({
     taskFrameList: state.taskFrameList,
@@ -466,15 +467,11 @@ export default class TasksListFrame extends React.Component {
             </span>
           </div>
 
-          {this.state.changeView ?
-              <div>
-                  <ul>
-                      <li><a href="#" onClick={this.setView.bind(this, 'list')}>List</a></li>
-                      <li><a href="#" onClick={this.setView.bind(this, 'kanban')}>Kanban</a></li>
-                      <li><a href="#" onClick={this.setView.bind(this, 'condensed')}>Condensed</a></li>
-                      <li><a href="#" onClick={this.setView.bind(this, 'calendar')}>Calendar</a></li>
-                  </ul>
-              </div> : ''}
+          <div>
+            {this.state.changeView ?
+              <TaskControlsViewSwitcher setView={this.setView.bind(this)} />
+            : ''}
+          </div>
 
           {this.state.view === 'kanban' ?
             <div className="kanban-columns">
@@ -540,11 +537,15 @@ export default class TasksListFrame extends React.Component {
               </Formsy.Form>
             </div>
             : (this.state.view === 'calendar') ?
+            <div>
               <TaskCalendar tasks={taskFrameList.taskFrameList}
                             moment={this.state.moment}
                             nextMonth={this.nextMonth.bind(this)}
                             prevMonth={this.prevMonth.bind(this)}
-                            dispatch={_this.props.dispatch.bind(_this)}/>
+                            dispatch={_this.props.dispatch.bind(_this)}
+                            tickets={tickets}
+                            projects={this.projects} />
+            </div>
             :
             <div>
               <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
@@ -584,7 +585,7 @@ export default class TasksListFrame extends React.Component {
           // initialSelected: Current page INDEX (zero-based - i.e. page number minus 1)
         }
 
-        { total_pages > 1 ?
+        { total_pages > 1 && this.state.view !== 'calendar' ?
         <div className="dpw--ticket-pagination">
           <ReactPaginate previousLabel={<i className="fa fa-caret-left" />}
                          nextLabel={<i className="fa fa-caret-right" />}

@@ -1,15 +1,13 @@
-import React, {PropTypes} from "react";
-import Moment from "moment";
-import TaskCalendarCard from "../Components/TaskCalendarCard";
-import Calendar from "../../../Services/Calendar";
-import { connect } from 'react-redux';
-import * as TaskActions from "../Actions/TaskListActions";
+import React from 'react';
+import Moment from 'moment';
+import TaskCalendarCard from '../Components/TaskCalendarCard';
+import * as TaskActions from '../Actions/TaskListActions';
 import { DropTarget } from 'react-dnd';
-import DragTypes from "../../../Services/DragTypes.js";
+import DragTypes from '../../../Services/DragTypes.js';
 
-function collect(connect, monitor) {
+function collect(connector, monitor) {
   return {
-    connectDropTarget: connect.dropTarget(),
+    connectDropTarget: connector.dropTarget(),
     isOver: monitor.isOver()
   };
 }
@@ -21,9 +19,9 @@ const listTarget = {
     moment.year(props.day.year).month(props.day.month).date(props.day.day).endOf('day').utc();
     const dateDue = moment.format();
 
-    let update = {
-      taskId : item.id,
-      date_due : dateDue
+    const update = {
+      taskId: item.id,
+      date_due: dateDue
     };
 
     props.dispatch(TaskActions.editTask(update, 'tasks'));
@@ -32,44 +30,62 @@ const listTarget = {
 
 @DropTarget(DragTypes.TASK, listTarget, collect)
 export default class TaskCalendarCell extends React.Component {
-  render() {
-    const {tasks, day, counts, weekday, moment} = this.props;
+  openCalendarList(tasks, date) {
+    this.props.openCalendarList(tasks, date, event.target);
+  }
 
-    let classes = [];
+  render() {
+    const {tasks, day, weekday, moment} = this.props;
+
+    const today = new Moment();
+    const dayMoment = new Moment(day.year + '-' + (day.month + 1) + '-' + day.day, 'YYYY-M-D');
+
+    const classes = [];
     if (moment.month() !== day.month) {
-      classes.push('non-month');
+      classes.push('dpwd-calendar-past-month');
+    } else if (dayMoment.format('YYYY-MM-DD') < today.format('YYYY-MM-DD')) {
+      classes.push('dpwd-calendar-past-day');
     }
     if (weekday === 1 || weekday === 7) {
       classes.push('weekend');
     }
+
+    const dayClass = dayMoment.format('YYYY-MM-DD') === today.format('YYYY-MM-DD') ? 'dpwd-calendar-day dpwd-calendar-day-today' : 'dpwd-calendar-day';
 
     let cellClass = classes.join(' ');
     cellClass = this.props.isOver ? 'list-group-hover' : cellClass;
 
     const _this = this;
 
-    let additional = 0,
-        i = 0;
+    const additional = [];
+    let i = 0;
 
     return this.props.connectDropTarget(<td className={cellClass}>
-      { day ? <span>
-        <span className="date">{day.day}</span>
-        <ul>
-        {tasks ? tasks.map((task) => {
-          i++;
+      { day ? <div className={dayClass}>
+        <span className="dpwd-calendar-day-mark">{day.day}</span>
+        <div className="dpwd-calendar-tasks">
+          <ul>
+            {tasks ? tasks.map((task) => {
+              i++;
 
-          if (i < 4) {
-            return <TaskCalendarCard key={task.id} task={task}
-                    dispatch={_this.props.dispatch.bind(_this)}/>
-          } else {
-            additional++;
-          }
-        }) : '' }
-        </ul>
-        { additional > 0 ? <span className="additional day-info">+ {additional} more</span> : '' }
-        { counts && counts > 0 ? <span className="completed day-info">{counts} already complete</span> : '' }
-      </span>
+              if (i < 3) {
+                return (<TaskCalendarCard key={task.id} task={task}
+                            dispatch={_this.props.dispatch.bind(_this)}
+                            openHover={_this.props.openHover.bind(_this)}
+                            closeHover={_this.props.closeHover.bind(_this)} />);
+              }
+
+              additional.push(task);
+            }) : '' }
+            { additional.length > 0 ? <li>
+              <a href="#" className="dpwd-calendar-tasks-show-more" onClick={this.openCalendarList.bind(this, additional, dayMoment)}>
+                + {additional.length} tasks <i className="fa fa-sort" />
+              </a>
+            </li> : '' }
+          </ul>
+        </div>
+      </div>
       : '' }
-    </td>)
+    </td>);
   }
 }
