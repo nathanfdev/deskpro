@@ -512,7 +512,6 @@ class Task extends NotifyPropertyChangeEntity
     public function addSubtask(TaskSubtask $subtask)
     {
         $this->subtasks->add($subtask);
-        $this->setModelField('task', $subtask);
     }
 
     /**
@@ -521,12 +520,11 @@ class Task extends NotifyPropertyChangeEntity
     public function addLabel(LabelTask $label)
     {
         $this->labels->add($label);
-        $this->setModelField('label', $label);
     }
 
     public function removeLabel(LabelTask $label)
     {
-        $this->labels->remove($label);
+        $this->labels->removeElement($label);
     }
 
     /**
@@ -535,7 +533,6 @@ class Task extends NotifyPropertyChangeEntity
     public function addComment(TaskComment $comment)
     {
         $this->comments->add($comment);
-        $this->setModelField('comment', $comment);
     }
 
     /**
@@ -544,7 +541,6 @@ class Task extends NotifyPropertyChangeEntity
     public function addAttachment(TaskAttachment $attachment)
     {
         $this->attachments->add($attachment);
-        $this->setModelField('attachment', $attachment);
     }
 
     /**
@@ -553,7 +549,6 @@ class Task extends NotifyPropertyChangeEntity
     public function addLinkedItem(TaskLinkedItem $linked_item)
     {
         $this->linked_items->add($linked_item);
-        $this->setModelField('linked_item', $linked_item);
     }
 
     /**

@@ -82,6 +82,10 @@ class LabelTaskTransformer implements DataTransformerInterface
      */
     public function reverseTransform($label)
     {
+        if ($this->task->getLabels()->contains($label)) {
+            return $label;
+        }
+
         $labelObject = $this->entityManager->getRepository('App:LabelTask')
             ->findOneBy(array('label' => $label, 'task' => $this->task));
 
