@@ -65,7 +65,8 @@
 		"nelmio/api-doc-bundle": "~2.7",
 		"willdurand/hateoas-bundle": "~1.0",
 		"phpspec/prophecy-phpunit": "~1.0",
-	  	"leafo/scssphp": "~0.1.8"
+	  	"leafo/scssphp": "~0.1.8",
+		"willdurand/negotiation": "^1.4"
 	},
 	"preferred-install": "dist"
 }

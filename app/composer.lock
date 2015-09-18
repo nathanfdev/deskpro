@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e7a6414091b001cd119bc7699037c81b",
+    "hash": "78cfcb730dd376f71b88627c90b39d86",
+    "content-hash": "c8db70f2f7e99e2e49e03e252fe274f1",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -586,7 +587,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/d5eecaa6d60af311952f0c92040dc1164d6023d3",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/99fca3c16b5051c24a8d803591477d53888954cb",
                 "reference": "d5eecaa6d60af311952f0c92040dc1164d6023d3",
                 "shasum": ""
             },
@@ -1026,7 +1027,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/e0e7b9ea3592c2c8140a92b61e065add7ee182d3",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/d63be7eb9a95d46720f7d6badac4e5bc2bcff2e3",
                 "reference": "e0e7b9ea3592c2c8140a92b61e065add7ee182d3",
                 "shasum": ""
             },
@@ -1189,7 +1190,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/c5ff0542772102ddd4e2fbe173e9ad40ad67c22f",
+                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/817c2d233fde0fe85cb7e4d25d43fbfcd028aef8",
                 "reference": "c5ff0542772102ddd4e2fbe173e9ad40ad67c22f",
                 "shasum": ""
             },
@@ -1421,7 +1422,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/ce9f840f76e725a4b2701ca10def178142878c6b",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/6f40d16de7a4da2fff883f2de92fdbf17e61d75d",
                 "reference": "ce9f840f76e725a4b2701ca10def178142878c6b",
                 "shasum": ""
             },
@@ -1743,7 +1744,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/ba4a401a62a7f1543a82e908b3c05359cf43f1ab",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/30f38ba57a5e9f2019a626426ab009ba3ba19797",
                 "reference": "ba4a401a62a7f1543a82e908b3c05359cf43f1ab",
                 "shasum": ""
             },
@@ -3280,7 +3281,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/2152b245b376595e9b538ada618c85744dcb343d",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/ba7e0aa0363bdf24e85ff13b3acc65b090f420dc",
                 "reference": "2152b245b376595e9b538ada618c85744dcb343d",
                 "shasum": ""
             },
@@ -6140,7 +6141,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/7177ef70f6b48a8ccd728b80575a9a36b8a608ed",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/e872a43c696a52f4b2d8ecd95697e286a4eae16c",
                 "reference": "7177ef70f6b48a8ccd728b80575a9a36b8a608ed",
                 "shasum": ""
             },
