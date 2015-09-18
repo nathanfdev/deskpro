@@ -83,7 +83,12 @@ class PortalRatingsHelper
             return $content_rating;
         }
 
-        if (!$person && $content_rating = $this->findVisitorRating($content, $visitor_id)) {
+        if ($content_rating = $this->findVisitorRating($content, $visitor_id)) {
+            if ($person) {
+                // if there is no "person" rating, but there IS a visitor rating for this
+                // visitor ID, then we just want to update the existing record.
+                $content_rating->setPerson($person);
+            }
             $this->changeExistingRating($content, $content_rating, $down);
 
             return $content_rating;
