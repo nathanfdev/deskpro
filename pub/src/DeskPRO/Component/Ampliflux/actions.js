@@ -3,7 +3,7 @@ export function createAction(action_type, action = null) {
     action = action_type;
     action_type = "flux-randomaction-" + Math.floor(Math.random() * 1000000000 + 1);
   }
-  console.debug("Ampliflux/actions.js createAction() is deprecated [" + action_type + "]");
+  console.warn("Ampliflux/actions.js createAction() is deprecated [" + action_type + "]");
   let handler = null;
   if(!action) { // Dumb action
     handler = (payload = null) => {

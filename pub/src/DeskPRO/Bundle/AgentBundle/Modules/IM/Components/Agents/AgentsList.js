@@ -11,6 +11,7 @@ const AgentsList = React.createClass(
     {
     getInitialState: function() {
         return {
+            value: false,
             agents: this.filterAgents()
         };
     },
@@ -28,7 +29,7 @@ const AgentsList = React.createClass(
                 </form>
                 <div className="im-list-wrapper">
                     <ul className="im-list">
-                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />) : this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />)}
+                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} highlight={this.state.value}/>) : this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />)}
                     </ul>
                 </div>
             </div>
@@ -37,7 +38,11 @@ const AgentsList = React.createClass(
 
     onChange: function(event)
     {
-        this.setState({agents: this.filterAgents(event.target.value)});
+        const newState = {
+            ...this.state,
+            agents: this.filterAgents(event.target.value), value: event.target.value,
+        }
+        this.setState(newState);
     },
 
     filterAgents: function(value = '')
@@ -47,7 +52,6 @@ const AgentsList = React.createClass(
             this.props.agents.forEach((agent) => {
                 const name = agent.name.toLowerCase();
                 if(name.indexOf(value.toLowerCase()) >= 0) {
-                    agent.highlight = value;
                     newAgents.push(agent);
                 }
             });
