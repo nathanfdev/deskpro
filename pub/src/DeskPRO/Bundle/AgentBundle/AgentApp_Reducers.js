@@ -6,6 +6,7 @@ import Chat_list                                          from "./Modules/Chat/R
 import Chat_nav                                           from "./Modules/Chat/Reducers/nav.js";
 import Common_departments                                 from "./Modules/Common/Reducers/departments.js";
 import Common_users                                       from "./Modules/Common/Reducers/users.js";
+import Feedback_list                                      from "./Modules/Feedback/Reducers/list.js";
 import Feedback_nav                                       from "./Modules/Feedback/Reducers/nav.js";
 import IM_list                                            from "./Modules/IM/Reducers/list.js";
 import ROOT_PublishList                                   from "./Modules/Publish/Reducers/PublishList.js";
@@ -64,6 +65,7 @@ export default {
     "users":                                              Common_users,
   },
   "Feedback": {
+    "list":                                               Feedback_list,
     "nav":                                                Feedback_nav,
   },
   "IM": {

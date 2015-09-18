@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-const stateSelector = state => state.Feedback.nav;
+const stateSelector = state => state.Feedback.list;
 
 export const sortingDataSelector = createSelector(
   stateSelector,

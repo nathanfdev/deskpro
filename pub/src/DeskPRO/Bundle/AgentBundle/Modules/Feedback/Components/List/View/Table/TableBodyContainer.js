@@ -3,8 +3,8 @@ import { TableBody, Row } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/C
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  feedback: state.Feedback.nav.get('feedback').toJS(),
-  tableViewFields: state.Feedback.nav.get('tableViewFields').toJS()
+  feedback: state.Feedback.list.get('feedback').toJS(),
+  tableViewFields: state.Feedback.list.get('tableViewFields').toJS()
 }))
 export class TableBodyContainer extends React.Component {
 

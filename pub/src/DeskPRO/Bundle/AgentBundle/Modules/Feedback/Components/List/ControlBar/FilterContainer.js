@@ -5,10 +5,10 @@ import * as actions from '../../../Actions/FeedbackListActions'
 import $ from "jquery";
 
 @connect(state => ({
-  sortOptions: state.Feedback.nav.get('sortOptions'),
-  order: state.Feedback.nav.get('order'),
-  filters: state.Feedback.nav.get('filters'),
-  filterValues: state.Feedback.nav.get('filterValues'),
+  sortOptions: state.Feedback.list.get('sortOptions'),
+  order: state.Feedback.list.get('order'),
+  filters: state.Feedback.list.get('filters'),
+  filterValues: state.Feedback.list.get('filterValues'),
   query: state.Feedback.nav.get('query')
 }))
 

@@ -6,10 +6,10 @@ import { toggleViewMode } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Acti
 import { viewDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  viewModeOptions: state.Feedback.nav.get('viewModeOptions'),
-  currentViewMode: viewDataSelector(state),
-  listViewFields: state.Feedback.nav.get('listViewFields'),
-  tableViewFields: state.Feedback.nav.get('tableViewFields')
+  viewModeOptions: state.Feedback.list.get('viewModeOptions').toJS(),
+  listViewFields: state.Feedback.list.get('listViewFields'),
+  tableViewFields: state.Feedback.list.get('tableViewFields'),
+  currentViewMode: viewDataSelector(state)
 }))
 export class ViewSwitcherDropdownContainer extends Component {
 
@@ -27,7 +27,7 @@ export class ViewSwitcherDropdownContainer extends Component {
             <a href="#" onClick={this.openOptionsSubmenu.bind(this)}>View Options <i className="fa fa-cog"></i></a>
           </div>
         </DropdownMenuFooter>
-        <ViewOptionsSubmenu viewModeOptions={viewModeOptions}
+        <ViewOptionsSubmenu viewModeOptions={viewModeOptions} currentViewMode={currentViewMode}
                             listViewFields={listViewFields} tableViewFields={tableViewFields}/>
       </DropdownMenu>
     );

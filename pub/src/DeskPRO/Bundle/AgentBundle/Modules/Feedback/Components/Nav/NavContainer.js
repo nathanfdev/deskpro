@@ -8,13 +8,13 @@ import { sortingDataSelector } from '../../Selectors/list';
 @connect(state => {
   return ({
     query: state.Feedback.nav.get('query'),
-    order: state.Feedback.nav.get('order'),
-    filters: state.Feedback.nav.get('filters'),
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     statuses: state.Feedback.nav.get('statuses').toJS(),
     types: state.Feedback.nav.get('types'),
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories'),
+    order: state.Feedback.list.get('order'),
+    filters: state.Feedback.list.get('filters'),
     currentSortMode: sortingDataSelector(state)
   });
 })

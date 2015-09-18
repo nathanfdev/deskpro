@@ -5,12 +5,12 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 export class ViewOptionsSubmenu extends Component {
 
   render() {
-    const {viewModeOptions, listViewFields, tableViewFields, displayFieldsStatus} = this.props;
+    const {viewModeOptions, listViewFields, tableViewFields, displayFieldsStatus, currentViewMode} = this.props;
     return (
       <div className="dpw-navigation-dropdown dpw-navigation-dropdown-secondary">
         <ul>
           {viewModeOptions.map((option, index)=>
-              <ViewConfigOption key={index} active={viewModeOptions.find((option)=>option.current === true).field === option.field} option={option}
+              <ViewConfigOption key={index} active={currentViewMode.field === option.field} option={option}
                                 listViewFields={listViewFields} tableViewFields={tableViewFields}
                                 displayFieldsStatus={displayFieldsStatus}/>
           )}

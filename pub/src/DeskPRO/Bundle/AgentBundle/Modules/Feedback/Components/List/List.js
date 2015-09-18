@@ -17,7 +17,6 @@ export class List extends Component {
   render() {
 
     const { elements, currentViewMode } = this.props;
-    console.log('currentViewMode: ', currentViewMode);
     return (
       <ListFrame>
         <FeedbackListControlBar />

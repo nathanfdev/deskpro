@@ -5,12 +5,12 @@ import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Fe
 import { viewDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  order: state.Feedback.nav.get('order'),
-  filters: state.Feedback.nav.get('filters'),
-  viewModeOptions: state.Feedback.nav.get('viewModeOptions'),
-  currentViewMode: viewDataSelector(state),
-  tableViewFields: state.Feedback.nav.get('tableViewFields'),
-  listViewFields: state.Feedback.nav.get('listViewFields')
+  order: state.Feedback.list.get('order'),
+  filters: state.Feedback.list.get('filters'),
+  viewModeOptions: state.Feedback.list.get('viewModeOptions'),
+  tableViewFields: state.Feedback.list.get('tableViewFields'),
+  listViewFields: state.Feedback.list.get('listViewFields'),
+  currentViewMode: viewDataSelector(state)
 }))
 export class ViewSwitcherContainer extends React.Component {
   render() {

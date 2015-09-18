@@ -6,9 +6,9 @@ import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feed
 import { sortingDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  sortOptions: state.Feedback.nav.get('sortOptions'),
-  order: state.Feedback.nav.get('order'),
-  filters: state.Feedback.nav.get('filters'),
+  sortOptions: state.Feedback.list.get('sortOptions').toJS(),
+  order: state.Feedback.list.get('order'),
+  filters: state.Feedback.list.get('filters'),
   query: state.Feedback.nav.get('query'),
   currentSortMode: sortingDataSelector(state)
 }))
@@ -37,8 +37,7 @@ export class OrderByDropdownContainer extends React.Component {
   }
 
   toggleListOrder(order) {
-    const {dispatch, query, sortOptions, filters} = this.props;
-    let sort = sortOptions.find((option)=>option.current === true).field;
-    dispatch(toggleOrder(query, sort, order, filters));
+    const {dispatch, query, sortOptions, filters, currentSortMode} = this.props;
+    dispatch(toggleOrder(query, currentSortMode.field, order, filters));
   }
 }

@@ -5,8 +5,8 @@ import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feed
 import { sortingDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  sortOptions: state.Feedback.nav.get('sortOptions').toJS(),
-  order: state.Feedback.nav.get('order'),
+  sortOptions: state.Feedback.list.get('sortOptions').toJS(),
+  order: state.Feedback.list.get('order'),
   currentSortMode: sortingDataSelector(state)
 }))
 export class OrderByContainer extends React.Component {
