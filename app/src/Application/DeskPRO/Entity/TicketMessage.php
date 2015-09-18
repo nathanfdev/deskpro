@@ -122,6 +122,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
+    protected $visitor_id;
+
+    /**
+     * @var string
+     */
     protected $hostname = '';
 
     /**
@@ -661,6 +666,38 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param string $visitor_id
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip_address
+     */
+    public function setIpAddress($ip_address)
+    {
+        $this->setModelField('ip_address', $ip_address);
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -693,7 +730,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw', ));
         $metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => true, 'columnName' => 'lang_code', ));
         $metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint', ));
-
+        $metadata->mapField(
+            array(
+                'fieldName' => 'visitor_id',
+                'type' => 'string',
+                'length' => 120,
+                'precision' => 0,
+                'scale' => 0,
+                'nullable' => true,
+                'columnName' => 'visitor_id'
+            )
+        )
+        ;
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));

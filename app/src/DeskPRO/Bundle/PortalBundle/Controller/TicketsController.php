@@ -134,7 +134,7 @@ class TicketsController extends AbstractController
      * @Route("/tickets/{ticket_ref}", name="portal_tickets_view")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
-    public function viewAction(Request $request, $ticket_ref)
+    public function viewAction(Request $request, $ticket_ref, $visitor_id)
     {
         if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
             throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
@@ -148,6 +148,9 @@ class TicketsController extends AbstractController
             'ticket_message' => $message = new TicketMessage(),
             'attachments'    => new ArrayCollection(),
         );
+
+        $message->setVisitorId($visitor_id);
+        $message->setIpAddress($request->getClientIp());
 
         $form = $this->createForm('ticket_reply', $form_data, array(
             'ticket'         => $ticket,

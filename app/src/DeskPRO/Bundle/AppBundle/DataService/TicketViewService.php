@@ -224,8 +224,9 @@ class TicketViewService extends AbstractDataService
                 }
                 $selected = array();
                 foreach ($ids as $id) {
-                    $selected_field = $field_def->getChildById($id);
-                    $selected[]     = $selected_field->title;
+                    if ($selected_field = $field_def->getChildById($id)) {
+                        $selected[] = $selected_field->title;
+                    }
                 }
                 $value = implode(', ', $selected);
                 break;

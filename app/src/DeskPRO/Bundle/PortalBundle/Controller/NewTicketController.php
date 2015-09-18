@@ -51,12 +51,14 @@ class NewTicketController extends AbstractController
      * @Security("is_granted('USE_TICKETS')")
      * @PageHttpCache()
      */
-    public function newTicketAction(Request $request)
+    public function newTicketAction(Request $request, $visitor_id)
     {
         $person = $this->getUser() ?: new PersonGuest();
 
         $ticket = $this->getTicketManager()->createTicket();
         $ticket_message = new TicketMessage();
+        $ticket_message->setVisitorId($visitor_id);
+        $ticket_message->setIpAddress($request->getClientIp());
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);

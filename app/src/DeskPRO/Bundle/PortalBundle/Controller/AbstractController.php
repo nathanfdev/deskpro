@@ -134,6 +134,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
+     */
+    public function getObjectRouter()
+    {
+        return $this->get('object_router');
+    }
+
+    /**
      * @param string $entity_name
      *
      * @return \Doctrine\ORM\EntityRepository
