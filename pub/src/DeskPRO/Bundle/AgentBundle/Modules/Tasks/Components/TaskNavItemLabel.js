@@ -15,7 +15,7 @@ const labelTarget = {
 
       item.dispatch(TaskActions.editTask({
         taskId: item.id,
-        labels: [props.label.label]
+        labels: mergedLabels
       }, item.source));
     }
   }

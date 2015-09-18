@@ -532,7 +532,14 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         $this->validateForm($request, $task, $submitted);
+        $labels = $task->getLabels();
+
         $this->getDoctrine()->getManager()->persist($task);
+
+        foreach ($labels as $label) {
+            $this->getDoctrine()->getManager()->persist($label);
+        }
+
         $this->getDoctrine()->getManager()->flush();
 
         $location = $this->generateUrl('api_tasks_get', array('taskId' => $task->getId()));

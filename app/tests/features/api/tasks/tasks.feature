@@ -68,6 +68,25 @@ Feature: /tasks endpoint
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "New task title"
 
+  Scenario: I add labels to a task
+    When I send a PUT request to "/api/v2/tasks/3" with body:
+    """
+    {
+      "labels": ["test", "labels"]
+    }
+    """
+    Then the response should be in JSON
+    And the response status code should be 204
+    And the response should be empty
+
+  Scenario: I verify that the labels have been added
+    When I send a GET request to "/api/v2/tasks/3"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data.labels" should exist
+    And the JSON node "data.labels[0]" should be equal to "test"
+
   Scenario: I DELETE a single task
     When I send a DELETE request to "/api/v2/tasks/3"
     Then the response should be in JSON

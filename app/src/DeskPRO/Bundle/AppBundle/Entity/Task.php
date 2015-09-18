@@ -163,7 +163,7 @@ class Task extends NotifyPropertyChangeEntity
 
     /**
      * @var LabelTask[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"all"}, orphanRemoval=true)
      */
     protected $labels;
 
