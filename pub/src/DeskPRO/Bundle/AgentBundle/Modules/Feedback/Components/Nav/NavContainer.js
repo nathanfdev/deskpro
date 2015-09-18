@@ -7,12 +7,12 @@ import { sortingDataSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
-    query: state.Feedback.nav.get('query'),
+    query: state.Feedback.nav.get('query').toJS(),
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     statuses: state.Feedback.nav.get('statuses').toJS(),
-    types: state.Feedback.nav.get('types'),
+    types: state.Feedback.nav.get('types').toJS(),
     labels: state.Feedback.nav.get('labels'),
-    customCategories: state.Feedback.nav.get('customCategories'),
+    customCategories: state.Feedback.nav.get('customCategories').toJS(),
     order: state.Feedback.list.get('order'),
     filters: state.Feedback.list.get('filters'),
     currentSortMode: sortingDataSelector(state)
@@ -24,6 +24,7 @@ export class NavContainer extends React.Component {
   constructor(props) {
     super(props);
     const { dispatch, query, order, filters, currentSortMode } = this.props;
+
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());
@@ -35,7 +36,7 @@ export class NavContainer extends React.Component {
     dispatch(actions.feedbackHiddenStatus());
     dispatch(actions.getFilterValues(filters.alias));
     dispatch(actions.getDisplayFieldsFromPersonSetting());
-    //dispatch(actions.loadFeedbackList(query, currentSortMode.field, order, filters));
+    dispatch(actions.loadFeedbackList(query, currentSortMode.field, order, filters));
   }
 
   render() {

@@ -41,9 +41,8 @@ export const feedbackHiddenStatus = createAction(
 
 export const loadFeedbackList = createAction(
   "FEEDBACK_LIST",
-  (query, filters, sort, order) => {
-    Feedback.getList(query, filters, sort, order).then(value => value.getData())
-  }
+  (query, filters, sort, order) =>
+      dispatch => Feedback.getList(query, filters, sort, order).then(value => value.getData())
 );
 
 export const changeQueryState = createAction(
@@ -56,16 +55,12 @@ export const changeQueryState = createAction(
 
 export const getFilterValues = createAction(
   "FEEDBACK_SELECT_FILTER",
-  (filterName) => {
-    Feedback.getFilterValues(filterName).then(value => value.getData())
-  }
+  (filterName) => dispatch => Feedback.getFilterValues(filterName).then(value => value.getData())
 );
 
 export const setFilterValue = createAction(
   "FEEDBACK_SET_FILTER_VALUE",
-  (trigger, filter, value) => {
-    trigger({filter: filter, value: value});
-  }
+  (trigger, filter, value) => dispatch =>    trigger({filter: filter, value: value})
 );
 
 export const resetFilterValue = createAction(
@@ -87,9 +82,8 @@ export const setTableSort = createAction(
 
 export const toggleViewMode = createAction(
   "FEEDBACK_TOGGLE_VIEW_MODE",
-  (trigger, viewMode) => {
-    trigger(viewMode);
-  });
+    viewMode => viewMode
+);
 
 export const toggleOrder = createAction(
   "FEEDBACK_TOGGLE_ORDER",

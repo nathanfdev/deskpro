@@ -5,7 +5,7 @@ import { viewDataSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
-    elements: state.Feedback.list.get('feedback').toJS(),
+    elements: state.Feedback.list.get('feedback'),
     currentViewMode: viewDataSelector(state)
   });
 })

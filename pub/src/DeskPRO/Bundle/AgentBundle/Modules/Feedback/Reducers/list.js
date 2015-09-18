@@ -70,7 +70,24 @@ export default createReducer(initialState, {
     success: (state, payload) => {
       let values = [];
       payload.data.map(item => values.push(item['title']));
-      state.setIn(['filterValues'], values)
+      return state.setIn(['filterValues'], values)
     }
   }),
+  [actions.loadFeedbackList]: async({
+    success: (state, payload) => {
+      console.log('Payload from getList: ', payload);
+      return state.set('feedback', payload.data)
+    }
+  }),
+  [actions.toggleViewMode]: (state, payload) => {
+    let viewModeOptions = [];
+    state.get('viewModeOptions').toJS().forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      viewModeOptions.push(nextObj);
+    });
+    console.log(state.get('viewModeOptions').toJS());
+    return state.set('viewModeOptions', viewModeOptions)
+  }
+
 });
