@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,65 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
  *
- * @category Entities
+ * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-
-/**
- * Storage for the "newer" session data.
- *
- * @property string $sess_id
- * @property string $sess_data
- * @property int $sess_time
- */
-class SessData extends \Application\DeskPRO\Domain\DomainObject
+class Build1442589119 extends AbstractBuild
 {
-    protected $sess_id;
-
-    protected $sess_data;
-
-    protected $sess_time;
-
-    protected $visitor_id;
-
-    protected $person_id;
-
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
-
-    public static function loadMetadata(ClassMetadata $metadata)
+    public function run()
     {
-        $builder = new ClassMetadataBuilder($metadata);
-
-        $builder->setTable('sess_data');
-
-        $builder->createField('sess_id', 'string', array(
-                'nullable'  => false,
-            )
-        )->isPrimaryKey()->build();
-        $builder->addField('sess_time', 'integer', array(
-                'unsigned'  => true,
-                'nullable'  => false,
-            )
-        );
-        $builder->addField('visitor_id', 'string', array(
-                'nullable'  => true,
-            )
-        );
-        $builder->addField('person_id', 'integer', array(
-                'nullable'  => true,
-            )
-        );
-        $builder->addField('sess_data', 'text', array(
-                'nullable' => false,
-            )
-        );
+        $this->out("add visitor/person metadata to sess_data");
+		$this->execMutateSql("ALTER TABLE sess_data ADD visitor_id VARCHAR(255) DEFAULT NULL, ADD person_id INT DEFAULT NULL");
     }
 }

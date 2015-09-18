@@ -27,9 +27,12 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Session;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\DriverException;
 use Doctrine\DBAL\Platforms\SQLServer2008Platform;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * DeskPRO.
@@ -62,18 +65,30 @@ class DbalSessionHandler implements \SessionHandlerInterface
     protected $timeCol;
 
     /**
+     * @var VisitorIdentificationProvider
+     */
+    private $visitor_id_provider;
+
+    /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    /**
      * Constructor.
      *
      * @param Connection $con       A connection
      * @param string     $tableName Table name
      */
-    public function __construct(Connection $con, $tableName = 'session')
+    public function __construct(Connection $con, $tableName = 'session', VisitorIdentificationProvider $visitor_id_provider, TokenStorage $token_storage)
     {
         $this->con     = $con;
         $this->table   = $tableName;
         $this->idCol   = 'sess_id';
         $this->dataCol = 'sess_data';
         $this->timeCol = 'sess_time';
+        $this->visitor_id_provider = $visitor_id_provider;
+        $this->token_storage = $token_storage;
     }
 
     /**
@@ -169,6 +184,15 @@ class DbalSessionHandler implements \SessionHandlerInterface
         $encoded = base64_encode($data);
 
         try {
+            $person_id = null;
+            if ($token = $this->token_storage->getToken()) {
+                if ($person = $token->getUser()) {
+                    if ($person instanceof Person) {
+                        $person_id = $person->getId();
+                    }
+                }
+            }
+            $visitor_id = $this->visitor_id_provider->getVisitorIdentifier();
             // We use a single MERGE SQL query when supported by the database.
             $mergeSql = $this->getMergeSql();
 
@@ -177,17 +201,21 @@ class DbalSessionHandler implements \SessionHandlerInterface
                 $mergeStmt->bindParam(':id', $sessionId, \PDO::PARAM_STR);
                 $mergeStmt->bindParam(':data', $encoded, \PDO::PARAM_STR);
                 $mergeStmt->bindValue(':time', time(), \PDO::PARAM_INT);
+                $mergeStmt->bindValue(':visitor_id', $visitor_id, \PDO::PARAM_STR);
+                $mergeStmt->bindValue(':person_id', $person_id, \PDO::PARAM_INT);
                 $mergeStmt->execute();
 
                 return true;
             }
 
             $updateStmt = $this->con->prepare(
-                "UPDATE $this->table SET $this->dataCol = :data, $this->timeCol = :time WHERE $this->idCol = :id"
+                "UPDATE $this->table SET $this->dataCol = :data, $this->timeCol = :time WHERE $this->idCol = :id, visitor_id = :visitor_id, person_id = :person_id"
             );
             $updateStmt->bindParam(':id', $sessionId, \PDO::PARAM_STR);
             $updateStmt->bindParam(':data', $encoded, \PDO::PARAM_STR);
             $updateStmt->bindValue(':time', time(), \PDO::PARAM_INT);
+            $updateStmt->bindValue(':visitor_id', $visitor_id, \PDO::PARAM_STR);
+            $updateStmt->bindValue(':person_id', $person_id, \PDO::PARAM_INT);
             $updateStmt->execute();
 
             // When MERGE is not supported, like in Postgres, we have to use this approach that can result in
@@ -198,11 +226,13 @@ class DbalSessionHandler implements \SessionHandlerInterface
             if (!$updateStmt->rowCount()) {
                 try {
                     $insertStmt = $this->con->prepare(
-                        "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->timeCol) VALUES (:id, :data, :time)"
+                        "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->timeCol, visitor_id, person_id) VALUES (:id, :data, :time, :visitor_id, :person_id)"
                     );
                     $insertStmt->bindParam(':id', $sessionId, \PDO::PARAM_STR);
                     $insertStmt->bindParam(':data', $encoded, \PDO::PARAM_STR);
                     $insertStmt->bindValue(':time', time(), \PDO::PARAM_INT);
+                    $updateStmt->bindValue(':visitor_id', $visitor_id, \PDO::PARAM_STR);
+                    $updateStmt->bindValue(':person_id', $person_id, \PDO::PARAM_INT);
                     $insertStmt->execute();
                 } catch (\Exception $e) {
                     $driverException = $e->getPrevious();
@@ -240,21 +270,21 @@ class DbalSessionHandler implements \SessionHandlerInterface
 
         switch ($platform) {
             case 'mysql':
-                return "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->timeCol) VALUES (:id, :data, :time) ".
+                return "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->timeCol, visitor_id, person_id) VALUES (:id, :data, :time, :visitor_id, :person_id) ".
                 "ON DUPLICATE KEY UPDATE $this->dataCol = VALUES($this->dataCol), $this->timeCol = VALUES($this->timeCol)";
             case 'oracle':
                 // DUAL is Oracle specific dummy table
                 return "MERGE INTO $this->table USING DUAL ON ($this->idCol = :id) ".
-                "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->timeCol) VALUES (:id, :data, :time) ".
+                "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->timeCol, visitor_id, person_id) VALUES (:id, :data, :time, :visitor_id, :person_id) ".
                 "WHEN MATCHED THEN UPDATE SET $this->dataCol = :data, $this->timeCol = :time";
             case $this->con->getDatabasePlatform() instanceof SQLServer2008Platform:
                 // MERGE is only available since SQL Server 2008 and must be terminated by semicolon
                 // It also requires HOLDLOCK according to http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
                 return "MERGE INTO $this->table WITH (HOLDLOCK) USING (SELECT 1 AS dummy) AS src ON ($this->idCol = :id) ".
-                "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->timeCol) VALUES (:id, :data, :time) ".
+                "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->timeCol, visitor_id, person_id) VALUES (:id, :data, :time, :visitor_id, :person_id) ".
                 "WHEN MATCHED THEN UPDATE SET $this->dataCol = :data, $this->timeCol = :time;";
             case 'sqlite':
-                return "INSERT OR REPLACE INTO $this->table ($this->idCol, $this->dataCol, $this->timeCol) VALUES (:id, :data, :time)";
+                return "INSERT OR REPLACE INTO $this->table ($this->idCol, $this->dataCol, $this->timeCol, visitor_id, person_id) VALUES (:id, :data, :time, :visitor_id, :person_id)";
         }
     }
 }
