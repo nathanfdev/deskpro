@@ -60,11 +60,14 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
+        //
         // Registration "intercept": to implement a registration intercept, don't use this
         // method of creating a person. Instead, make the form work with a PersonGuest,
         // and after the form is valid, use the PersonFactory to turn the guest into a
         // person. Please see NewTicketController to see how it does this exact process
         // to "intercept" new tickets.
+        //
+
         $person = $this->getPersonFactory()->createNewPerson();
 
         // FORM

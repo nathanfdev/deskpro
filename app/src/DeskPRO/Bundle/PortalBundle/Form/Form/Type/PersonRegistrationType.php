@@ -104,13 +104,6 @@ class PersonRegistrationType extends AbstractType
             )
         );
 
-        if ($this->language_manager->isMultiLanguagePortal()) {
-            $builder->add('language_id', 'deskpro_language', array(
-                'view_context' => 'user',
-                'label' => $this->language_manager->phrase('portal.forms.label_language'),
-            ));
-        }
-
         $field_manager   = $this->field_manager;
         $captcha_decider = $this->captcha_decider;
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager, $captcha_decider) {

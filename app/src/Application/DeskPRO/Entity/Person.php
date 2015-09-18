@@ -1478,6 +1478,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this;
     }
 
+    public function setLanguage(Language $language)
+    {
+        $this->setModelField('language', $language);
+    }
+
     /**
      * Get the locale string.
      *
