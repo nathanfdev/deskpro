@@ -200,9 +200,19 @@ class ZenDeskTest extends \DpIntegrationTestCase
         // Checking for people
         $this->helper->seeFileFound('1/people/person_1.json');
         $this->helper->seeInThisFile('Person 1');
+        $this->helper->seeInThisFile('"is_disabled":false');
+        $this->helper->seeInThisFile('"is_deleted":false');
 
         $this->helper->seeFileFound('1/people/person_2.json');
         $this->helper->seeInThisFile('Person 2');
+        $this->helper->seeInThisFile('"is_disabled":false');
+        $this->helper->seeInThisFile('"is_deleted":false');
+
+        $this->helper->seeFileFound('1/people/person_100000.json');
+        $this->helper->seeInThisFile('"oid":"100000"');
+        $this->helper->seeInThisFile('"is_disabled":true');
+        $this->helper->seeInThisFile('"timezone":"Etc\/UTC"');
+        $this->helper->seeInThisFile('"emails":["imported.user.100000@example.com"]');
 
         // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');

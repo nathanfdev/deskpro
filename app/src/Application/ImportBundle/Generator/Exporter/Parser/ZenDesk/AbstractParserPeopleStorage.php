@@ -79,6 +79,7 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
                 'locale'     => 'en-US',
                 'time_zone'  => 'UTC',
                 'role'       => People::ROLE_END_USER,
+                'is_deleted' => true,
             );
         }
 
