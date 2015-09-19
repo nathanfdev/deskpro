@@ -159,7 +159,22 @@ final class DeskProWriter extends AbstractWriter
 
                 // Save related entity mapping
                 foreach ($records->getImportMapEntities() as $oid_map) {
-                    $this->entity_manager->persist($oid_map->createDoctrineImportMapEntity());
+                    $map_entity = $oid_map->getEntity();
+
+                    if ( ! $this->oid_mapper->findRefByOldId($map_entity->getImportMapKey(), $map_entity->getOid())) {
+                        $import_map = $oid_map->createDoctrineImportMapEntity();
+
+                        $this->entity_manager->persist($import_map);
+                        $this->logInfo(sprintf(
+                            'Persisted new import map %s, oid=%s, id=%s',
+                            $import_map->getTypename(), $import_map->getOldId(), $import_map->getNewId()
+                        ));
+                    } else {
+                        $this->logWarning(sprintf(
+                            'Unable to add new import map %s, oid=%s, already exist',
+                            $map_entity->getImportMapKey(), $map_entity->getOid()
+                        ));
+                    }
                 }
 
                 $this->entity_manager->flush();
