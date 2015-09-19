@@ -166,12 +166,12 @@ final class DeskProWriter extends AbstractWriter
 
                         $this->entity_manager->persist($import_map);
                         $this->logInfo(sprintf(
-                            'Persisted new import map %s, oid=%s, id=%s',
+                            'Persisted a new import map %s, oid=%s, id=%s',
                             $import_map->getTypename(), $import_map->getOldId(), $import_map->getNewId()
                         ));
                     } else {
                         $this->logWarning(sprintf(
-                            'Unable to add new import map %s, oid=%s, already exist',
+                            'Unable to add a new import map %s, oid=%s, already exist',
                             $map_entity->getImportMapKey(), $map_entity->getOid()
                         ));
                     }
