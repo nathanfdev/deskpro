@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Doctrine\ORM\EntityManager;
 use Application\ImportBundle\Entity;
 
@@ -74,15 +75,22 @@ final class TicketMessage implements MapperInterface
             if ($entity->getImportMapKey()) {
                 $qb = $this->em->createQueryBuilder();
                 $qb
-                    ->select('tm')
-                    ->from('DeskPRO:TicketMessage', 'tm')
-                    ->join('DeskPRO:ImportMap', 'im', 'tm.id = im.new_id AND typename = :typename')
-                    ->where($qb->expr()->in('im.old_id', ':old_id'))
-                    ->setParameter('typename', $entity->getImportMapKey())
-                    ->setParameter('old_id', $entity->getOid())
+                    ->select('i')
+                    ->from('DeskPRO:ImportMap', 'i')
+                    ->andWhere($qb->expr()->eq('i.typename', '?0'))
+                    ->andWhere($qb->expr()->eq('i.old_id', '?1'))
+                    ->setParameters(array(
+                        $entity->getImportMapKey(),
+                        $entity->getOid()
+                    ))
                 ;
 
-                $record = $qb->getQuery()->getFirstResult();
+                /** @var DeskPROEntity\ImportMap $import_map */
+                $import_map = $qb->getQuery()->getSingleResult();
+                if ($import_map) {
+                    /** @var DeskPROEntity\TicketMessage $record */
+                    $record = $this->em->getRepository('DeskPRO:TicketMessage')->find($import_map->getNewId());
+                }
             }
         }
 
