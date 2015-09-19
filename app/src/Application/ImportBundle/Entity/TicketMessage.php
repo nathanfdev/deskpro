@@ -41,6 +41,11 @@ use Exception;
 final class TicketMessage extends AbstractEntity implements PersonAwareInterface, AttachmentsAwareInterface
 {
     /**
+     * @var Ticket
+     */
+    private $ticket;
+
+    /**
      * @var string
      */
     private $person_email;
@@ -84,6 +89,32 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     public function getType()
     {
         return self::TYPE_TICKET_MESSAGE;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return $this
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOid()
+    {
+        return ($this->ticket ? $this->ticket->getOid() . '-' : '') . parent::getOid();
     }
 
     /**
@@ -252,6 +283,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
             ->addPropertyConstraint('date_created', new Constraints\NotBlank())
             ->addPropertyConstraint('date_created', new Constraints\DateTime())
 
-            ->addGetterConstraint('messageContent', new Constraints\True());
+            ->addGetterConstraint('messageContent', new Constraints\True())
+        ;
     }
 }

@@ -139,8 +139,6 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 $this->entity_manager->flush();
-                $this->entity_manager->clear();
-                $this->entity_watcher->flushUpdatesQuiet();
 
                 foreach ($records->getPersistEntities() as $record) {
                     $this->logDebug(sprintf(
@@ -158,6 +156,15 @@ final class DeskProWriter extends AbstractWriter
                         $this->oid_mapper->saveMapping($entity->getImportMapKey(), $entity->getOid(), $primary_record->getId());
                     }
                 }
+
+                // Save related entity mapping
+                foreach ($records->getImportMapEntities() as $oid_map) {
+                    $this->entity_manager->persist($oid_map->createDoctrineImportMapEntity());
+                }
+
+                $this->entity_manager->flush();
+                $this->entity_manager->clear();
+                $this->entity_watcher->flushUpdatesQuiet();
 
             } catch (Importer\Mapper\MapperException $e) {
                 $this->logWarning(sprintf(

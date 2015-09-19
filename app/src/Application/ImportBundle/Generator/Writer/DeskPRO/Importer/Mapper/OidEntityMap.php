@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 use Application\ImportBundle\Entity\EntityInterface;
+use Application\DeskPRO\Entity as DeskPROEntity;
 
 /**
  * Class OidEntityMap
@@ -71,5 +72,30 @@ class OidEntityMap
     public function getRecord()
     {
         return $this->record;
+    }
+
+    /**
+     * @return DeskPROEntity\ImportMap
+     */
+    public function createDoctrineImportMapEntity()
+    {
+        if ( ! method_exists($this->record, 'getId') || ! $this->record->getId()) {
+            throw new \RuntimeException(sprintf('Unable to get record `%s` id', get_class($this->record)));
+        }
+        if ( ! $this->entity->getImportMapKey()) {
+            throw new \RuntimeException('Empty import map key');
+        }
+        if ( ! $this->entity->getOid()) {
+            throw new \RuntimeException('Empty entity oid');
+        }
+
+        $import_map = new DeskPROEntity\ImportMap();
+        $import_map
+            ->setTypename($this->entity->getImportMapKey())
+            ->setOldId($this->entity->getOid())
+            ->setNewId($this->record->getId())
+        ;
+
+        return $import_map;
     }
 }

@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidEntityMap;
 
 /**
  * DeskPRO ticket importer
@@ -214,6 +215,10 @@ final class Ticket extends AbstractImporter
         $message = $this->updateTicketMessage($entity, new DeskPROEntity\TicketMessage());
         $message->setTicket($ticket);
 
+        if ($entity->getImportMapKey()) {
+            $this->records->addImportMapEntity(new OidEntityMap($entity, $message));
+        }
+
         return $message;
     }
 
@@ -258,15 +263,12 @@ final class Ticket extends AbstractImporter
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
         $email = $entity->getPersonEmail() ? : $person_email;
-        $blob  = $this->blob_adapter->createByBlob($entity);
 
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($blob)
+            ->setBlob($this->blob_adapter->createByBlob($entity))
         ;
-
-        $this->records->addRelatedEntity($blob);
 
         return $attachment;
     }

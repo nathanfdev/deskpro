@@ -579,6 +579,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     public function addMessage(TicketMessage $message)
     {
         $this->messages->attach($message);
+        $message->setTicket($this);
+
         return $this;
     }
 
