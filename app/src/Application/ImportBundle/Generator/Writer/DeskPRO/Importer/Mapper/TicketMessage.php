@@ -86,7 +86,7 @@ final class TicketMessage implements MapperInterface
                 ;
 
                 /** @var DeskPROEntity\ImportMap $import_map */
-                $import_map = $qb->getQuery()->getSingleResult();
+                $import_map = $qb->getQuery()->getOneOrNullResult();
                 if ($import_map) {
                     /** @var DeskPROEntity\TicketMessage $record */
                     $record = $this->em->getRepository('DeskPRO:TicketMessage')->find($import_map->getNewId());
