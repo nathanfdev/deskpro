@@ -43,10 +43,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class ImportMap extends \Application\DeskPRO\Domain\DomainObject
 {
-    const TYPE_ZENDESK_TICKET  = 'zd_ticket';
-    const TYPE_ZENDESK_ARTICLE = 'zd_article';
-    const TYPE_CSV_ARTICLE     = 'csv_article';
-    const TYPE_CSV_TICKET      = 'csv_ticket';
+    const TYPE_ZENDESK_TICKET          = 'zd_ticket';
+    const TYPE_ZENDESK_TICKET_MESSAGE  = 'zd_ticket_message';
+    const TYPE_ZENDESK_ARTICLE         = 'zd_article';
+    const TYPE_CSV_ARTICLE             = 'csv_article';
+    const TYPE_CSV_TICKET              = 'csv_ticket';
 
     /**
      * The type of id/thing/whatever this is mapping.

@@ -157,6 +157,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
             ->attach(new Importer\Mapper\Product($product_repository))
             ->attach(new Importer\Mapper\Ticket($ticket_repository))
+            ->attach(new Importer\Mapper\TicketMessage($entity_manager))
             ->attach(new Importer\Mapper\TicketPriority($ticket_priority_repository))
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
             ->attach(new Importer\Mapper\TicketLabel($ticket_label_repository))
