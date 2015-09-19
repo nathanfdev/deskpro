@@ -76,8 +76,12 @@ final class DeskProWriter extends AbstractWriter
      * @param OidMapper           $oid_mapper
      * @param EntityWatcher       $entity_watcher
      */
-    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager,  OidMapper $oid_mapper, EntityWatcher $entity_watcher)
-    {
+    public function __construct(
+        Importer\Collection $importers,
+        ObjectManager       $entity_manager,
+        OidMapper           $oid_mapper,
+        EntityWatcher       $entity_watcher
+    ) {
         $this->importers      = $importers;
         $this->entity_manager = $entity_manager;
         $this->oid_mapper     = $oid_mapper;
@@ -147,9 +151,12 @@ final class DeskProWriter extends AbstractWriter
                     ));
                 }
 
-                $primary_record = $records->getPrimaryEntity();
-                if ($entity->getImportMapKey() && $primary_record && method_exists($primary_record, 'getId') && null === $entity_id) {
-                    $this->oid_mapper->saveMapping($entity->getImportMapKey(), $entity->getOid(), $primary_record->getId());
+                // Save primary entity oid mapping
+                if ($entity->getImportMapKey()) {
+                    $primary_record = $records->getPrimaryEntity();
+                    if ($primary_record && method_exists($primary_record, 'getId') && null === $entity_id) {
+                        $this->oid_mapper->saveMapping($entity->getImportMapKey(), $entity->getOid(), $primary_record->getId());
+                    }
                 }
 
             } catch (Importer\Mapper\MapperException $e) {
@@ -173,9 +180,7 @@ final class DeskProWriter extends AbstractWriter
      * Returns importer by exported entity
      *
      * @param EntityInterface $entity
-     *
      * @return Importer\Collection
-     * @throws \Exception
      */
     private function getImporters(EntityInterface $entity)
     {
