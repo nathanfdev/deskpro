@@ -53,7 +53,7 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
      */
     protected function loadByIds($ids)
     {
-        $request_ids = $this->storage ? $this->storage->getNotContainsIds($ids) : $ids;
+        $request_ids = $this->storage->getNotContainsIds($ids);
         $result      = $this->reader->getPeopleByIds($request_ids);
 
         $people = array();
@@ -61,7 +61,27 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
             $people[$person['id']] = $person;
         }
 
-        $this->storage->addIgnoreIds($request_ids);
+        $this->storage->addPeople($people);
+
+        // ZD does not keep foreign integrity so create fake profiles for deleted users
+        $deleted_ids = $this->storage->getNotContainsIds($ids);
+        $created_at  = new \DateTime();
+        $created_at  = $created_at->format('c');
+
+        $people = array();
+        foreach ($deleted_ids as $id) {
+            $people[$id] = array(
+                'id'         => $id,
+                'name'       => 'User ' . $id,
+                'email'      => sprintf('imported.user.%s@example.com', $id),
+                'created_at' => $created_at,
+                'updated_at' => $created_at,
+                'locale'     => 'en-US',
+                'time_zone'  => 'UTC',
+                'role'       => People::ROLE_END_USER,
+            );
+        }
+
         $this->storage->addPeople($people);
     }
 }

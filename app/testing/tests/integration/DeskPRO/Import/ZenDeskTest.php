@@ -116,7 +116,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
         $this->assertContains('[ZDTicket #3] Reading comments', $output);
-        $this->assertContains('Read 3 people', $output);
+        $this->assertContains('Read 5 people', $output);
         $this->assertContains('[ZDPerson #3] Skipping exception with person: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
@@ -207,7 +207,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
         $this->helper->seeInThisFile('Ticket 1');
-        $this->helper->seeInThisFile('"participants":["person1@domain.tld"]');
+        $this->helper->seeInThisFile('"participants":["person1@domain.tld","imported.user.100000@example.com"]');
 
         $this->helper->seeFileFound('1/tickets/ticket_2.json');
         $this->helper->seeInThisFile('Ticket 2');
@@ -560,7 +560,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Entity `organization` is not supported', $output);
-        $this->assertContains('Unable to get participant email, id = 100000', $output);
+        $this->assertContains('Unable to set ticket agent, user `imported.user.4@example.com` is not agent', $output);
+        $this->assertContains('Creating new person with email `imported.user.100000@example.com`', $output);
     }
 
     /**
