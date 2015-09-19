@@ -32,9 +32,9 @@ use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
-use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidMapper;
 use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
