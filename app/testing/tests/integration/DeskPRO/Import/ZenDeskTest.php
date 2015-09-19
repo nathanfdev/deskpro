@@ -630,6 +630,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('Tag 1', 'Tag 2'), $labels);
+        $this->assertFalse($person->isDisabled());
+        $this->assertFalse($person->isDeleted());
 
         $person = $this->person_repository->findOneByEmail('person2@domain.tld');
         $labels = array();
@@ -638,5 +640,11 @@ class ZenDeskTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('Tag 2', 'Tag 3'), $labels);
+        $this->assertFalse($person->isDisabled());
+        $this->assertFalse($person->isDeleted());
+
+        $person = $this->person_repository->findOneByEmail('imported.user.100000@example.com');
+        $this->assertTrue($person->isDisabled());
+        $this->assertFalse($person->isDeleted());
     }
 }
