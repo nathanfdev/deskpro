@@ -561,7 +561,9 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @return Collection
+     * Returns ticket messages
+     *
+     * @return TicketMessage[]|Collection
      */
     public function getMessages()
     {
