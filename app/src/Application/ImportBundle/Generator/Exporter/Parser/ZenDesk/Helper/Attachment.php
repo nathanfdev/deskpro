@@ -72,7 +72,7 @@ class Attachment extends AbstractParserFormatterHelper
      * Returns a collection of the ticket message attachments
      *
      * @param array $attachments
-     * @return Entity\Collection
+     * @return Entity\Attachment[]|Entity\Collection
      */
     public function export(array $attachments)
     {
