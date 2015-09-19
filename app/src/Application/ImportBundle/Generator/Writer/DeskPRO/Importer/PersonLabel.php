@@ -55,7 +55,7 @@ final class PersonLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
 
         $oldEntity = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
         $type = 'person';

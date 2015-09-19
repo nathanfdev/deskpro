@@ -132,7 +132,7 @@ final class DeskProWriter extends AbstractWriter
 
                 /** @var ImporterInterface $importer */
                 $records = $importer->getDoctrineEntities($entity, $entity_id);
-                foreach ($records as $record) {
+                foreach ($records->getPersistEntities() as $record) {
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
                     }
@@ -142,7 +142,7 @@ final class DeskProWriter extends AbstractWriter
                 $this->entity_manager->clear();
                 $this->entity_watcher->flushUpdatesQuiet();
 
-                foreach ($records as $record) {
+                foreach ($records->getPersistEntities() as $record) {
                     $this->logDebug(sprintf(
                         "Persisted %s #%s",
 

@@ -55,7 +55,7 @@ final class DownloadLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
 
         $oldEntity = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
         $type = 'download';

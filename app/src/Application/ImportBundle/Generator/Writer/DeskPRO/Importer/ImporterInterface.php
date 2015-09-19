@@ -51,7 +51,7 @@ interface ImporterInterface
      * @param Entity\EntityInterface $entity
      * @param int|null               $entity_id
      *
-     * @return DoctrineEntitiesCollection
+     * @return DoctrineEntities
      * @throws \Exception
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null);

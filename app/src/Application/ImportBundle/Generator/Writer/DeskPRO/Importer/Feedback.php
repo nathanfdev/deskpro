@@ -78,7 +78,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
 
         $feedback = new DeskPROEntity\Feedback();
         $feedback

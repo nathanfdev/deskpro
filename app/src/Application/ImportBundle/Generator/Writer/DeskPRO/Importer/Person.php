@@ -55,7 +55,7 @@ final class Person extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
 
         if ($entity->isAgent()) {
             $this->logAlert(sprintf('Importing agent `%s`', $entity->getFirstEmail()));

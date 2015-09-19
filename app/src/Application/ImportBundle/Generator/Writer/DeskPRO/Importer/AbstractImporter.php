@@ -49,7 +49,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected $mappers;
 
     /**
-     * @var DoctrineEntitiesCollection
+     * @var DoctrineEntities
      */
     protected $records;
 

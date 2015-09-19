@@ -53,7 +53,7 @@ final class ArticleTranslation extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
 
         $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id));
         $this->getObjectLangMapper()->removeBy('article', $article->getId());

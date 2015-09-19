@@ -27,14 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
-use Application\ImportBundle\AbstractCollection;
-
 /**
  * Class DoctrineEntitiesCollection
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-class DoctrineEntitiesCollection extends AbstractCollection
+class DoctrineEntities
 {
+    /**
+     * @var array
+     */
+    private $persist_entities = array();
+
     /**
      * @var mixed
      */
@@ -67,7 +70,7 @@ class DoctrineEntitiesCollection extends AbstractCollection
     public function addRelatedEntity($entity)
     {
         $exist = false;
-        foreach ($this->collection as $existing_entity) {
+        foreach ($this->persist_entities as $existing_entity) {
             if ($entity === $existing_entity) {
                 $exist = true;
                 break;
@@ -75,9 +78,17 @@ class DoctrineEntitiesCollection extends AbstractCollection
         }
 
         if ( ! $exist) {
-            $this->collection[] = $entity;
+            $this->persist_entities[] = $entity;
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPersistEntities()
+    {
+        return $this->persist_entities;
     }
 }

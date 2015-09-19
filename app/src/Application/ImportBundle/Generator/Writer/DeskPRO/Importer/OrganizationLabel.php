@@ -55,7 +55,7 @@ final class OrganizationLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
         $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
         $organization->resetLabels();
 

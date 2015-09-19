@@ -55,7 +55,7 @@ final class FeedbackLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
 
         $oldEntity = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
         $type = 'feedback';

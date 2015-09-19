@@ -81,7 +81,7 @@ final class Ticket extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
+        $this->records = new DoctrineEntities();
 
         $ticket = $this->findOrCreateTicket($entity, $entity_id);
         $ticket
