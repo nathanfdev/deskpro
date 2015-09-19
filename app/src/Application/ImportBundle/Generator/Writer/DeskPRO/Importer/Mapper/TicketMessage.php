@@ -27,8 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\EntityManager;
+use Application\ImportBundle\Entity;
 
 /**
  * Class TicketMessage
@@ -64,17 +64,28 @@ final class TicketMessage implements MapperInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('tm')
-            ->from('DeskPRO:TicketMessage', 'tm')
-            ->join('DeskPRO:ImportMap', 'im', 'tm.id = im.new_id AND typename = :typename')
-            ->where($qb->expr()->in('im.old_id', ':old_id'))
-            ->setParameter('typename', Entity\ImportMap::TYPE_ZENDESK_TICKET_MESSAGE)
-            ->setParameter('old_id', isset($criteria['oid']) ? $criteria['oid'] : 0)
-        ;
+        $record = null;
+        if (isset($criteria['message'])) {
+            $entity = $criteria['message'];
+            if ( ! $entity instanceof Entity\TicketMessage) {
+                throw new \RuntimeException('Criteria `message` should be instance of Entity\TicketMessage');
+            }
 
-        $record = $qb->getQuery()->getFirstResult();
+            if ($entity->getImportMapKey()) {
+                $qb = $this->em->createQueryBuilder();
+                $qb
+                    ->select('tm')
+                    ->from('DeskPRO:TicketMessage', 'tm')
+                    ->join('DeskPRO:ImportMap', 'im', 'tm.id = im.new_id AND typename = :typename')
+                    ->where($qb->expr()->in('im.old_id', ':old_id'))
+                    ->setParameter('typename', $entity->getImportMapKey())
+                    ->setParameter('old_id', $entity->getOid())
+                ;
+
+                $record = $qb->getQuery()->getFirstResult();
+            }
+        }
+
         if ( ! $record && $throw_exception) {
             throw new MapperException('Ticket message not found', $criteria);
         }

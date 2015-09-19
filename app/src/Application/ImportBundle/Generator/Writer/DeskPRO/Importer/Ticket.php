@@ -98,7 +98,6 @@ final class Ticket extends AbstractImporter
             ->setDateResolved($entity->getDateResolved())
             ->setDateArchived($entity->getDateArchived())
             ->setIsHold($entity->isHold())
-            ->resetMessages()
             ->resetParticipants()
             ->resetLabels()
             ->resetCustomData()
@@ -120,14 +119,26 @@ final class Ticket extends AbstractImporter
             }
         }
 
-        foreach ($entity->getMessages() as $message) {
-            $exist_message = $this->getTicketMessageMapper()->findOneBy(array('oid' => $message->getOid()), false);
-            if ($exist_message) {
-                $this->updateTicketMessage($message, $exist_message);
-            } else {
+        if ( ! $entity->getMessages()->hasImportMapKey()) {
+            $ticket->resetMessages();
+            foreach ($entity->getMessages() as $message) {
+                $this->logDebug(sprintf('Creating a new ticket message oid=`%d`', $message->getOid()));
                 $ticket->addMessage($this->createTicketMessage($message, $ticket));
             }
+
+        } else {
+            foreach ($entity->getMessages() as $message) {
+                $exist_message = $this->getTicketMessageMapper()->findOneBy(array('message' => $message), false);
+                if ($exist_message) {
+                    $this->logDebug(sprintf('Found existing ticket message by oid=`%d`', $message->getOid()));
+                    $this->updateTicketMessage($message, $exist_message);
+                } else {
+                    $this->logDebug(sprintf('Creating a new ticket message oid=`%d`', $message->getOid()));
+                    $ticket->addMessage($this->createTicketMessage($message, $ticket));
+                }
+            }
         }
+
         foreach ($entity->getParticipants() as $participant) {
             $ticket->addParticipant($this->createParticipant($participant));
         }
@@ -139,7 +150,6 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($ticket);
-
         return $this->records;
     }
 
