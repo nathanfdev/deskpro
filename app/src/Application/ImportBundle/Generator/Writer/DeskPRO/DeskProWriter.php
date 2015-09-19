@@ -31,10 +31,10 @@ use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
-use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\ImporterInterface;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidMapper;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\SkipDuplicateInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\Util;
@@ -76,8 +76,12 @@ final class DeskProWriter extends AbstractWriter
      * @param OidMapper           $oid_mapper
      * @param EntityWatcher       $entity_watcher
      */
-    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager,  OidMapper $oid_mapper, EntityWatcher $entity_watcher)
-    {
+    public function __construct(
+        Importer\Collection $importers,
+        ObjectManager       $entity_manager,
+        OidMapper           $oid_mapper,
+        EntityWatcher       $entity_watcher
+    ) {
         $this->importers      = $importers;
         $this->entity_manager = $entity_manager;
         $this->oid_mapper     = $oid_mapper;
@@ -128,17 +132,15 @@ final class DeskProWriter extends AbstractWriter
 
                 /** @var ImporterInterface $importer */
                 $records = $importer->reset()->getDoctrineEntities($entity, $entity_id);
-                foreach ($records as $record) {
+                foreach ($records->getPersistEntities() as $record) {
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
                     }
                 }
 
                 $this->entity_manager->flush();
-                $this->entity_manager->clear();
-                $this->entity_watcher->flushUpdatesQuiet();
 
-                foreach ($records as $record) {
+                foreach ($records->getPersistEntities() as $record) {
                     $this->logDebug(sprintf(
                         "Persisted %s #%s",
 
@@ -147,10 +149,37 @@ final class DeskProWriter extends AbstractWriter
                     ));
                 }
 
-                $primary_record = $records->getPrimaryEntity();
-                if ($entity->getImportMapKey() && $primary_record && method_exists($primary_record, 'getId') && null === $entity_id) {
-                    $this->oid_mapper->saveMapping($entity->getImportMapKey(), $entity->getOid(), $primary_record->getId());
+                // Save primary entity oid mapping
+                if ($entity->getImportMapKey()) {
+                    $primary_record = $records->getPrimaryEntity();
+                    if ($primary_record && method_exists($primary_record, 'getId') && null === $entity_id) {
+                        $this->oid_mapper->saveMapping($entity->getImportMapKey(), $entity->getOid(), $primary_record->getId());
+                    }
                 }
+
+                // Save related entity mapping
+                foreach ($records->getImportMapEntities() as $oid_map) {
+                    $map_entity = $oid_map->getEntity();
+
+                    if ( ! $this->oid_mapper->findRefByOldId($map_entity->getImportMapKey(), $map_entity->getOid())) {
+                        $import_map = $oid_map->createDoctrineImportMapEntity();
+
+                        $this->entity_manager->persist($import_map);
+                        $this->logInfo(sprintf(
+                            'Persisted a new import map %s, oid=%s, id=%s',
+                            $import_map->getTypename(), $import_map->getOldId(), $import_map->getNewId()
+                        ));
+                    } else {
+                        $this->logWarning(sprintf(
+                            'Unable to add a new import map %s, oid=%s, already exist',
+                            $map_entity->getImportMapKey(), $map_entity->getOid()
+                        ));
+                    }
+                }
+
+                $this->entity_manager->flush();
+                $this->entity_manager->clear();
+                $this->entity_watcher->flushUpdatesQuiet();
 
             } catch (Importer\Mapper\MapperException $e) {
                 $this->logWarning(sprintf(
@@ -173,9 +202,7 @@ final class DeskProWriter extends AbstractWriter
      * Returns importer by exported entity
      *
      * @param EntityInterface $entity
-     *
      * @return Importer\Collection
-     * @throws \Exception
      */
     private function getImporters(EntityInterface $entity)
     {

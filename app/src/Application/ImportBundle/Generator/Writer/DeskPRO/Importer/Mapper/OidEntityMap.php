@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,96 +25,77 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\Json\NotFoundException;
-use Exception;
-use DateTime;
+use Application\ImportBundle\Entity\EntityInterface;
+use Application\DeskPRO\Entity as DeskPROEntity;
 
 /**
- * Exporter from json files
- *
- * Class Json
- * @package Application\ImportBundle\Generator\Exporter
+ * Class OidEntityMap
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class Json extends AbstractExporter implements ExporterBatchInterface
+class OidEntityMap
 {
     /**
-     * {@inheritdoc}
+     * @var EntityInterface
      */
-    public static function getType()
+    private $entity;
+
+    /**
+     * @var mixed
+     */
+    private $record;
+
+    /**
+     * Constructor
+     *
+     * @param EntityInterface $entity
+     * @param mixed           $record
+     */
+    public function __construct(EntityInterface $entity, $record)
     {
-        return self::TYPE_JSON;
+        $this->entity = $entity;
+        $this->record = $record;
     }
 
     /**
-     * {@inheritdoc}
+     * @return EntityInterface
      */
-    public function getCountByType($type)
+    public function getEntity()
     {
-        try {
-            return parent::getCountByType($type);
+        return $this->entity;
+    }
 
-        } catch (NotFoundException $e) {
-            return 0;
+    /**
+     * @return mixed
+     */
+    public function getRecord()
+    {
+        return $this->record;
+    }
+
+    /**
+     * @return DeskPROEntity\ImportMap
+     */
+    public function createDoctrineImportMapEntity()
+    {
+        if ( ! method_exists($this->record, 'getId') || ! $this->record->getId()) {
+            throw new \RuntimeException(sprintf('Unable to get record `%s` id', get_class($this->record)));
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function exportByType($type)
-    {
-        try {
-            return parent::exportByType($type);
-
-        } catch (NotFoundException $e) {
-            return new Entity\Collection();
+        if ( ! $this->entity->getImportMapKey()) {
+            throw new \RuntimeException('Empty import map key');
         }
-    }
+        if ( ! $this->entity->getOid()) {
+            throw new \RuntimeException('Empty entity oid');
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getUpdatedBatchConfig()
-    {
-        /** @var Parser\Json\BatchConfig $updated_config */
-        $updated_config = clone $this->config->getExporterBatchConfig();
-        $updated_config
-            ->setId($updated_config->getId() + 1)
-            ->setDateModified(new DateTime())
+        $import_map = new DeskPROEntity\ImportMap();
+        $import_map
+            ->setTypename($this->entity->getImportMapKey())
+            ->setOldId($this->entity->getOid())
+            ->setNewId($this->record->getId())
         ;
 
-        if (is_dir($this->getConfig()->getInputPath().DIRECTORY_SEPARATOR.$updated_config->getId())) {
-            $updated_config->setHasRemaining(true);
-        } else {
-            $updated_config->setHasRemaining(false);
-        }
-
-        return $updated_config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultBatchConfig()
-    {
-        return new Parser\Json\BatchConfig();
-    }
-
-    /**
-     * Returns batch config
-     *
-     * @return Parser\Json\BatchConfig
-     * @throws Exception
-     */
-    protected function getBatchConfig()
-    {
-        if ($this->config->getExporterBatchConfig()) {
-            return $this->config->getExporterBatchConfig();
-        }
-
-        throw new Exception('Batch config is not defined');
+        return $import_map;
     }
 }

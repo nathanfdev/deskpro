@@ -4,6 +4,8 @@
   "is_agent": false,
   "is_user": true,
   "is_admin": false,
+  "is_disabled": true,
+  "is_deleted": false,
   "first_name": null,
   "last_name": null,
   "name": "Sergey",

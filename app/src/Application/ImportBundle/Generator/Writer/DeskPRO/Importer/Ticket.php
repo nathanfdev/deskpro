@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidEntityMap;
 
 /**
  * DeskPRO ticket importer
@@ -97,7 +98,6 @@ final class Ticket extends AbstractImporter
             ->setDateResolved($entity->getDateResolved())
             ->setDateArchived($entity->getDateArchived())
             ->setIsHold($entity->isHold())
-            ->resetMessages()
             ->resetParticipants()
             ->resetLabels()
             ->resetCustomData()
@@ -116,10 +116,27 @@ final class Ticket extends AbstractImporter
         } else {
             $ticket->setAgent(null);
         }
-        
-        foreach ($entity->getMessages() as $message) {
-            $ticket->addMessage($this->createTicketMessage($message, $ticket));
+
+        if ( ! $entity->getMessages()->hasImportMapKey()) {
+            $ticket->resetMessages();
+            foreach ($entity->getMessages() as $message) {
+                $this->logDebug(sprintf('Creating a new ticket message oid=`%d`', $message->getOid()));
+                $ticket->addMessage($this->createTicketMessage($message, $ticket));
+            }
+
+        } else {
+            foreach ($entity->getMessages() as $message) {
+                $exist_message = $this->getTicketMessageMapper()->findOneBy(array('message' => $message), false);
+                if ($exist_message) {
+                    $this->logDebug(sprintf('Found existing ticket message by oid=`%d`', $message->getOid()));
+                    $this->updateTicketMessage($message, $exist_message);
+                } else {
+                    $this->logDebug(sprintf('Creating a new ticket message oid=`%d`', $message->getOid()));
+                    $ticket->addMessage($this->createTicketMessage($message, $ticket));
+                }
+            }
         }
+
         foreach ($entity->getParticipants() as $participant) {
             $ticket->addParticipant($this->createParticipant($participant));
         }
@@ -131,7 +148,6 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($ticket);
-
         return $this->records;
     }
 
@@ -193,9 +209,27 @@ final class Ticket extends AbstractImporter
      */
     private function createTicketMessage(Entity\TicketMessage $entity, DeskPROEntity\Ticket $ticket)
     {
-        $message = new DeskPROEntity\TicketMessage();
+        $message = $this->updateTicketMessage($entity, new DeskPROEntity\TicketMessage());
+        $message->setTicket($ticket);
+
+        if ($entity->getImportMapKey()) {
+            $this->records->addImportMapEntity(new OidEntityMap($entity, $message));
+        }
+
+        return $message;
+    }
+
+    /**
+     * Update ticket message
+     *
+     * @param Entity\TicketMessage        $entity
+     * @param DeskPROEntity\TicketMessage $message
+     *
+     * @return DeskPROEntity\TicketMessage
+     */
+    private function updateTicketMessage(Entity\TicketMessage $entity, DeskPROEntity\TicketMessage $message)
+    {
         $message
-            ->setTicket($ticket)
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setDateCreated($entity->getDateCreated())
             ->setAsAgentNote($entity->isNote())
@@ -226,15 +260,12 @@ final class Ticket extends AbstractImporter
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
         $email = $entity->getPersonEmail() ? : $person_email;
-        $blob  = $this->blob_adapter->createByBlob($entity);
 
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($blob)
+            ->setBlob($this->blob_adapter->createByBlob($entity))
         ;
-
-        $this->records->addRelatedEntity($blob);
 
         return $attachment;
     }
@@ -243,9 +274,7 @@ final class Ticket extends AbstractImporter
      * Returns the importing DeskPRO doctrine ticket participant entity
      *
      * @param string $email
-     *
      * @return DeskPROEntity\TicketParticipant
-     * @throws Mapper\MapperException
      */
     private function createParticipant($email)
     {
@@ -261,9 +290,7 @@ final class Ticket extends AbstractImporter
      * Creates a new department if not found
      *
      * @param string $title
-     *
      * @return DeskPROEntity\Department|null
-     * @throws \Exception
      */
     private function findOrCreateTicketDepartment($title)
     {
@@ -292,9 +319,7 @@ final class Ticket extends AbstractImporter
      * Creates a new ticket priority if not found
      *
      * @param Entity\TicketPriority $entity
-     *
      * @return DeskPROEntity\TicketPriority|null
-     * @throws \Exception
      */
     private function findOrCreateTicketPriority(Entity\TicketPriority $entity = null)
     {
@@ -323,9 +348,7 @@ final class Ticket extends AbstractImporter
      * Creates a new ticket category if not found
      *
      * @param string $title
-     *
      * @return DeskPROEntity\TicketCategory|null
-     * @throws \Exception
      */
     private function findOrCreateTicketCategory($title)
     {
@@ -350,9 +373,7 @@ final class Ticket extends AbstractImporter
      * Returns a ticket custom data entity
      *
      * @param Entity\CustomField $entity
-     *
      * @return DeskPROEntity\CustomDataTicket
-     * @throws ImporterException
      */
     private function createTicketCustomData(Entity\CustomField $entity)
     {
@@ -366,7 +387,6 @@ final class Ticket extends AbstractImporter
      * Returns the ticket department mapper
      *
      * @return Mapper\TicketDepartment
-     * @throws \Exception
      */
     private function getTicketDepartmentMapper()
     {
@@ -377,7 +397,6 @@ final class Ticket extends AbstractImporter
      * Returns the ticket priority mapper
      *
      * @return Mapper\TicketPriority
-     * @throws \Exception
      */
     private function getTicketPriorityMapper()
     {
@@ -388,10 +407,19 @@ final class Ticket extends AbstractImporter
      * Returns the ticket category mapper
      *
      * @return Mapper\TicketCategory
-     * @throws \Exception
      */
     private function getTicketCategoryMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_CATEGORY);
+    }
+
+    /**
+     * Returns the ticket message mapper
+     *
+     * @return Mapper\TicketMessage
+     */
+    private function getTicketMessageMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_MESSAGE);
     }
 }

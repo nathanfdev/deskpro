@@ -391,8 +391,9 @@ class TicketManager
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(array(
                     'ticket_id'       => $ticket->getId(),
-                    'is_locked'       => $ticket->getIsLocked(),
+                    'is_locked'       => (bool) $ticket->locked_by_agent,
                     'locked_by'       => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
+                    'locked_by_name'  => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
                     'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
                 ))
             ));

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,96 +25,79 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Doctrine\ORM\EntityManager;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\Json\NotFoundException;
-use Exception;
-use DateTime;
 
 /**
- * Exporter from json files
- *
- * Class Json
- * @package Application\ImportBundle\Generator\Exporter
+ * Class TicketMessage
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class Json extends AbstractExporter implements ExporterBatchInterface
+final class TicketMessage implements MapperInterface
 {
     /**
-     * {@inheritdoc}
+     * @var EntityManager
      */
-    public static function getType()
-    {
-        return self::TYPE_JSON;
-    }
+    private $em;
 
     /**
-     * {@inheritdoc}
-     */
-    public function getCountByType($type)
-    {
-        try {
-            return parent::getCountByType($type);
-
-        } catch (NotFoundException $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function exportByType($type)
-    {
-        try {
-            return parent::exportByType($type);
-
-        } catch (NotFoundException $e) {
-            return new Entity\Collection();
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUpdatedBatchConfig()
-    {
-        /** @var Parser\Json\BatchConfig $updated_config */
-        $updated_config = clone $this->config->getExporterBatchConfig();
-        $updated_config
-            ->setId($updated_config->getId() + 1)
-            ->setDateModified(new DateTime())
-        ;
-
-        if (is_dir($this->getConfig()->getInputPath().DIRECTORY_SEPARATOR.$updated_config->getId())) {
-            $updated_config->setHasRemaining(true);
-        } else {
-            $updated_config->setHasRemaining(false);
-        }
-
-        return $updated_config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultBatchConfig()
-    {
-        return new Parser\Json\BatchConfig();
-    }
-
-    /**
-     * Returns batch config
+     * Constructor
      *
-     * @return Parser\Json\BatchConfig
-     * @throws Exception
+     * @param EntityManager $em
      */
-    protected function getBatchConfig()
+    public function __construct(EntityManager $em)
     {
-        if ($this->config->getExporterBatchConfig()) {
-            return $this->config->getExporterBatchConfig();
+        $this->em = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_TICKET_MESSAGE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        $record = null;
+        if (isset($criteria['message'])) {
+            $entity = $criteria['message'];
+            if ( ! $entity instanceof Entity\TicketMessage) {
+                throw new \RuntimeException('Criteria `message` should be instance of Entity\TicketMessage');
+            }
+
+            if ($entity->getImportMapKey()) {
+                $qb = $this->em->createQueryBuilder();
+                $qb
+                    ->select('i')
+                    ->from('DeskPRO:ImportMap', 'i')
+                    ->andWhere($qb->expr()->eq('i.typename', '?0'))
+                    ->andWhere($qb->expr()->eq('i.old_id', '?1'))
+                    ->setParameters(array(
+                        $entity->getImportMapKey(),
+                        $entity->getOid()
+                    ))
+                ;
+
+                /** @var DeskPROEntity\ImportMap $import_map */
+                $import_map = $qb->getQuery()->getOneOrNullResult();
+                if ($import_map) {
+                    /** @var DeskPROEntity\TicketMessage $record */
+                    $record = $this->em->getRepository('DeskPRO:TicketMessage')->find($import_map->getNewId());
+                }
+            }
         }
 
-        throw new Exception('Batch config is not defined');
+        if ( ! $record && $throw_exception) {
+            throw new MapperException('Ticket message not found', $criteria);
+        }
+
+        return $record;
     }
 }

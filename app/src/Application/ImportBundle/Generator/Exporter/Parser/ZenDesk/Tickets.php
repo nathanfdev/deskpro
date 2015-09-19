@@ -292,6 +292,7 @@ final class Tickets extends AbstractParser
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_ZENDESK_TICKET_MESSAGE)
             ->setPersonEmail($author_email)
             ->setMessageText($formatted['body'])
             ->setAsNote($formatted['public'] === false)
@@ -300,7 +301,6 @@ final class Tickets extends AbstractParser
 
         $attachments = $this->getAttachmentParser()->export($formatted['attachments']);
         foreach ($attachments as $attachment) {
-            /** @var Entity\Attachment $attachment */
             $entity->addAttachment($attachment);
         }
 

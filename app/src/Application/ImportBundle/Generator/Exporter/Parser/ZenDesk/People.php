@@ -135,6 +135,7 @@ final class People extends AbstractParser
             'user_fields'     => TransformerInterface::TYPE_ARRAY,
             'tags'            => TransformerInterface::TYPE_ARRAY,
             'organization_id' => TransformerInterface::TYPE_STRING,
+            'is_deleted'      => TransformerInterface::TYPE_BOOLEAN,
         ));
 
         if ( ! $formatted['email']) {
@@ -152,6 +153,10 @@ final class People extends AbstractParser
             ->setOrganization($this->getOrganizationName($formatted['organization_id']))
             ->setDateCreated($formatted['created_at'])
         ;
+
+        if ($formatted['is_deleted']) {
+            $entity->setAsDisabled(true);
+        }
 
         switch ($data['role']) {
             case self::ROLE_ADMIN:

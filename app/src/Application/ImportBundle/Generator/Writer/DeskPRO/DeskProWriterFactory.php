@@ -32,9 +32,9 @@ use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
-use Application\ImportBundle\Generator\OidMapper;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidMapper;
 use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
@@ -157,6 +157,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
             ->attach(new Importer\Mapper\Product($product_repository))
             ->attach(new Importer\Mapper\Ticket($ticket_repository))
+            ->attach(new Importer\Mapper\TicketMessage($entity_manager))
             ->attach(new Importer\Mapper\TicketPriority($ticket_priority_repository))
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
             ->attach(new Importer\Mapper\TicketLabel($ticket_label_repository))

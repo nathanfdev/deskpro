@@ -34,6 +34,8 @@ use Application\ImportBundle\AbstractCollection;
  *
  * Class Collection
  * @package Application\ImportBundle\Entity
+ *
+ * @property EntityInterface[]|array $collection
  */
 final class Collection extends AbstractCollection
 {
@@ -130,6 +132,20 @@ final class Collection extends AbstractCollection
         }
 
         return $entities;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasImportMapKey()
+    {
+        foreach ($this->collection as $entity) {
+            if ( ! $entity->getImportMapKey()) {
+                return false;
+            }
+        }
+
+        return count($this->collection) > 0;
     }
 
     /**

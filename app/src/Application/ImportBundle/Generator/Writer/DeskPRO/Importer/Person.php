@@ -69,6 +69,8 @@ final class Person extends AbstractImporter
             ->setCanAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin())
             ->setLanguage($entity->getLanguage() ? $this->findLanguage($entity->getLanguage()) : null)
+            ->setIsDisabled($entity->isDisabled())
+            ->setIsDeleted($entity->isDeleted())
             ->setDateCreated($entity->getDateCreated())
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
             ->setOrganizationPosition($entity->getOrganizationPosition())

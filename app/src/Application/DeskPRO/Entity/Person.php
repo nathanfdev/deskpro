@@ -740,6 +740,41 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setIsDisabled($yesno)
+    {
+        $this->setModelField('is_disabled', $yesno);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabled()
+    {
+        return $this->is_disabled;
+    }
+
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setIsDeleted($yesno)
+    {
+        $this->setModelField('is_deleted', $yesno);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
+    }
 
     /**
      * @return bool|int

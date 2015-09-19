@@ -91,6 +91,8 @@ final class People extends AbstractParser
             )),
             'is_agent'              => TransformerInterface::TYPE_BOOLEAN,
             'is_user'               => TransformerInterface::TYPE_BOOLEAN,
+            'is_disabled'           => TransformerInterface::TYPE_BOOLEAN,
+            'is_deleted'            => TransformerInterface::TYPE_BOOLEAN,
             'is_admin'              => TransformerInterface::TYPE_BOOLEAN,
             'first_name'            => TransformerInterface::TYPE_STRING,
             'last_name'             => TransformerInterface::TYPE_STRING,
@@ -119,6 +121,8 @@ final class People extends AbstractParser
             ->setAsAgent($formatted['is_agent'])
             ->setAsUser($formatted['is_user'])
             ->setAsAdmin($formatted['is_admin'])
+            ->setAsDisabled($formatted['is_disabled'])
+            ->setAsDeleted($formatted['is_deleted'])
             ->setFirstName($formatted['first_name'])
             ->setLastName($formatted['last_name'])
             ->setName($formatted['name'])

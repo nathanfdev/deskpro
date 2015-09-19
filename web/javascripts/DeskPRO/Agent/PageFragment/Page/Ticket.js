@@ -246,24 +246,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
-			var ticketId = parseInt(info.ticket_id),
-				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
-				isLocked = info.is_locked;
+      if (self.meta.ticket_id != info.ticket_id) return;
 
-			if (self.meta.ticket_id == ticketId) {
-				if (byAgentId && byAgentId != DESKPRO_PERSON_ID) {
-					// Reload the ticket page
-					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
-					self.closeSelf();
-					return;
-				} else if (!byAgentId) {
-					self.wrapper.find('.lock-overlay').remove();
-					self.getEl('locked_message').hide();
-					self.getEl('locked_message').data('locked-self', false);
-					self.getEl('lock_ticket').show();
-					self.getEl('unlock_ticket').hide();
-				}
-			}
+      if (info.locked_by) {
+
+        self.getEl('locked_message').show();
+
+        if (info.locked_by != DESKPRO_PERSON_ID) {
+          self.wrapper.find('.lock-overlay').show();
+          self.getEl('locked_message_self').hide();
+          self.getEl('locked_message_other').show().children('span').text(info.locked_by_name);
+          self.getEl('locked_message').data('locked-self', 0);
+          self.getEl('lock_ticket').hide();
+          self.getEl('unlock_ticket').show();
+        } else {
+          self.getEl('locked_message_self').show();
+          self.getEl('locked_message_other').hide();
+          self.getEl('locked_message').data('locked-self', 1);
+        }
+
+      } else {
+        self.wrapper.find('.lock-overlay').hide();
+        self.getEl('locked_message').hide();
+        self.getEl('locked_message').data('locked-self', 0);
+        self.getEl('lock_ticket').show();
+        self.getEl('unlock_ticket').hide();
+      }
+
 		}, null, [this.OBJ_ID]);
 
 		this.addEvent('shortcutFocusReply', function(ev) {
