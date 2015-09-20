@@ -54,10 +54,7 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        $categories = $this->reader->getArticlesCategories();
-        $sections   = $this->reader->getArticlesSections();
-
-        return count($categories) + count($sections);
+        return count($this->reader->getArticlesCategories());
     }
 
     /**
@@ -140,7 +137,6 @@ final class ArticleCategories extends AbstractParser
             ->setPrefix('ZDArticleSection')
             ->setRefColumn('id')
             ->setMethod('exportSection')
-            ->setAdvanceProgressbar(true)
         ;
 
         return $this->exportCollection($config);
