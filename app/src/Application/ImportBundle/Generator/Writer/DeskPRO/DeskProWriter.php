@@ -171,7 +171,7 @@ final class DeskProWriter extends AbstractWriter
                         ));
                     } else {
                         $this->logWarning(sprintf(
-                            'Unable to add a new import map %s, oid=%s, already exist',
+                            'Unable to add a new import map %s, oid=%s, already exists',
                             $map_entity->getImportMapKey(), $map_entity->getOid()
                         ));
                     }

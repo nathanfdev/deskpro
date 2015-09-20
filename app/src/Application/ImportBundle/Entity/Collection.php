@@ -135,6 +135,8 @@ final class Collection extends AbstractCollection
     }
 
     /**
+     * Checks if all entities has import map key
+     *
      * @return bool
      */
     public function hasImportMapKey()

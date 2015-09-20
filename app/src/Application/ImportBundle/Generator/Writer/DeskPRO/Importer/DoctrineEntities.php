@@ -51,6 +51,8 @@ class DoctrineEntities
     private $primary_entity;
 
     /**
+     * Returns a primary entity
+     *
      * @return mixed
      */
     public function getPrimaryEntity()
@@ -59,6 +61,8 @@ class DoctrineEntities
     }
 
     /**
+     * Set a primary entity
+     *
      * @param mixed $entity
      * @return $this
      */
@@ -71,6 +75,8 @@ class DoctrineEntities
     }
 
     /**
+     * Add a related entity
+     *
      * @param mixed $entity
      * @return $this
      */
@@ -92,6 +98,8 @@ class DoctrineEntities
     }
 
     /**
+     * Returns a collection of Doctrine entities
+     *
      * @return array
      */
     public function getPersistEntities()
@@ -100,6 +108,8 @@ class DoctrineEntities
     }
 
     /**
+     * Add an import map
+     *
      * @param OidEntityMap $entity_map
      * @return $this
      */
@@ -110,6 +120,8 @@ class DoctrineEntities
     }
 
     /**
+     * Returns a collection of import maps
+     *
      * @return Mapper\OidEntityMap[]
      */
     public function getImportMapEntities()
