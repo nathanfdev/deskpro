@@ -362,7 +362,14 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
 
         if ($result) {
             foreach ($result->sections as $section) {
-                $sections[] = $this->toArray($section);
+                $section = $this->toArray($section);
+                $access  = $this->adapter->doRequest('HelpCenter\SectionAccessPolicyFind', array(
+                    'id' => $section['id'])
+                );
+                $access  = $access ? $this->toArray($access) : null;
+
+                $section = array_merge($section, $access);
+                $sections[] = $section;
             }
         }
 
