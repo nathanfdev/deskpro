@@ -41,6 +41,13 @@ use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
  */
 final class ArticleCategories extends AbstractParser
 {
+    const VIEWABLE_BY_EVERYBODY  = 'everybody';       // all users, signed in or not
+    const VIEWABLE_BY_SIGNED     = 'signed_in_users'; // only authenticated users
+    const VIEWABLE_BY_STAFF      = 'staff';           // only agents and Help Center managers
+
+    const MANAGEABLE_BY_STAFF    = 'staff';	    // agents and managers
+    const MANAGEABLE_BY_MANAGERS = 'managers';	// only Help Center managers
+
     /**
      * {@inheritdoc}
      */
@@ -152,13 +159,22 @@ final class ArticleCategories extends AbstractParser
     protected function exportSection(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'           => TransformerInterface::TYPE_INT,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'            => TransformerInterface::TYPE_INT,
+            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'article_category_',
                 'ref'    => 'category_id',
             )),
-            'name'         => TransformerInterface::TYPE_STRING,
-            'category_id'  => TransformerInterface::TYPE_INT,
+            'name'          => TransformerInterface::TYPE_STRING,
+            'category_id'   => TransformerInterface::TYPE_INT,
+            'access_policy' => TransformerInterface::TYPE_ARRAY,
+        ));
+
+        $access = $this->formatter->format($formatted['access_policy'], array(
+            'viewable_by'                    => TransformerInterface::TYPE_STRING,
+            'manageable_by'                  => TransformerInterface::TYPE_STRING,
+            'restricted_to_group_ids'        => TransformerInterface::TYPE_ARRAY,
+            'restricted_to_organization_ids' => TransformerInterface::TYPE_ARRAY,
+            'required_tags'                  => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity = new Entity\ArticleCategory();
@@ -167,7 +183,8 @@ final class ArticleCategories extends AbstractParser
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['name'])
-            ->addUserGroup('everyone')
+            ->addUserGroup($access['viewable_by'] === self::VIEWABLE_BY_EVERYBODY ? 'everyone' : 'registered')
+            ->setAsAgent($access['viewable_by'] === self::VIEWABLE_BY_STAFF)
         ;
 
         return $entity;
