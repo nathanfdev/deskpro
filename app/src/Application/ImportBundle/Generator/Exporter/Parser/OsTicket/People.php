@@ -109,7 +109,7 @@ final class People extends AbstractParser
      *
      * @return Entity\Collection
      */
-    private function exportStaffCollection()
+    protected function exportStaffCollection()
     {
         $collection = new Entity\Collection();
 
@@ -140,7 +140,7 @@ final class People extends AbstractParser
      * @param array $data
      * @return Entity\Person|null
      */
-    private function exportStaff(array $data)
+    protected function exportStaff(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'staff_id'    => TransformerInterface::TYPE_INT,
@@ -180,7 +180,7 @@ final class People extends AbstractParser
      *
      * @return Entity\Collection
      */
-    private function exportUsersCollection()
+    protected function exportUsersCollection()
     {
         $collection = new Entity\Collection();
 
@@ -211,7 +211,7 @@ final class People extends AbstractParser
      * @param array $data
      * @return Entity\Person|null
      */
-    private function exportUser(array $data)
+    protected function exportUser(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'user_id'     => TransformerInterface::TYPE_INT,

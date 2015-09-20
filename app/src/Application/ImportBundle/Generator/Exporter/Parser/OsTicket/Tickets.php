@@ -108,7 +108,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\Ticket|null
      */
-    private function exportTicket(array $data)
+    protected function exportTicket(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'ticket_id'   => TransformerInterface::TYPE_INT,
@@ -158,7 +158,7 @@ final class Tickets extends AbstractParser
      * @param int $id
      * @return Entity\TicketPriority|null
      */
-    private function exportPriority($id)
+    protected function exportPriority($id)
     {
         if ($id) {
             $data   = $this->reader->findTicketPriority($id);
@@ -183,7 +183,7 @@ final class Tickets extends AbstractParser
      * @param int $ticket_id
      * @return Entity\TicketMessage[]|Entity\Collection
      */
-    private function exportMessages($ticket_id)
+    protected function exportMessages($ticket_id)
     {
         $config = new ExportCollectionConfig();
         $config
@@ -202,7 +202,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\TicketMessage|null
      */
-    private function exportMessage(array $data)
+    protected function exportMessage(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_INT,
@@ -241,7 +241,7 @@ final class Tickets extends AbstractParser
      * @param int $message_id
      * @return Entity\Attachment[]|Entity\Collection
      */
-    private function exportAttachments($message_id)
+    protected function exportAttachments($message_id)
     {
         $config = new ExportCollectionConfig();
         $config
@@ -260,7 +260,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\Attachment|null
      */
-    private function exportAttachment(array $data)
+    protected function exportAttachment(array $data)
     {
         $formatted = $this->formatter->format($data, $configuration = array(
             'file_id'     => TransformerInterface::TYPE_INT,
