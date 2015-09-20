@@ -172,7 +172,7 @@ final class Collection extends AbstractCollection
      */
     public function getMaxOid()
     {
-        return max(
+        return empty($this->collection) ? 0 : max(
             array_map(
                 function(EntityInterface $entity) {
                     return $entity->getOid();
