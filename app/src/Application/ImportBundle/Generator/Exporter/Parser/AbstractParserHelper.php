@@ -76,7 +76,7 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
                     $collection->merge($result);
                     $this->logInfo(sprintf(
                         '[%s #%s (%s)] Entity collection parsed successfully!',
-                        $prefix, $result->getMaxOid(), $result->count() ? $result->getDestinations() : 'empty'));
+                        $prefix, $result->getMaxOid(), $result->count() ? implode(', ', $result->getDestinations()) : 'empty'));
                 } else {
                     throw new \RuntimeException('Unsupported parser result');
                 }
