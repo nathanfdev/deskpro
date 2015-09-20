@@ -209,15 +209,12 @@ final class DeskProWriter extends AbstractWriter
         $importers = $this->importers->getByEntityType($entity->getType());
         foreach ($importers as $importer) {
             if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
-                /** @var GeneratorConfigAwareInterface $importer */
                 $importer->setConfig($this->config);
             }
             if ($this->logger && $importer instanceof LoggerAwareInterface) {
-                /** @var LoggerAwareInterface $importer */
                 $importer->setLogger($this->logger);
             }
             if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
-                /** @var ProgressBarAwareInterface $importer */
                 $importer->setProgressBarHelper($this->progress_bar);
             }
         }
