@@ -124,7 +124,7 @@ final class Tickets extends AbstractParser
             ->setOid($ticket->getId())
             ->setRef($ticket->getRef())
 
-            ->setDepartment($ticket->department->getRealTitle())
+            ->setDepartment($ticket->department ? $ticket->department->getRealTitle() : null)
             ->setPersonEmail($ticket->person ? $ticket->person->getPrimaryEmail()->email : null)
             ->setAgentEmail($ticket->agent ? $ticket->agent->getPrimaryEmail()->email : null)
             ->setAgentTeam($ticket->agent_team['name'])
