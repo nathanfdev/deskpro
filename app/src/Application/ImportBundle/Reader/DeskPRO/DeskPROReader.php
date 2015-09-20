@@ -78,6 +78,14 @@ class DeskPROReader extends AbstractReader
     /**
      * {@inheritdoc}
      */
+    public function checkConfig()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getUsersCount($min_id = 0)
     {
         $query = 'SELECT count(id) FROM people WHERE id > :min_id ORDER BY id ASC';

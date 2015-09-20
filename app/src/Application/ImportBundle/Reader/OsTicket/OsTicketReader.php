@@ -105,6 +105,14 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function checkConfig()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getStaffCount($min_id = 0)
     {
         $query = 'SELECT count(staff_id) FROM ost_staff WHERE staff_id > :min_id ORDER BY staff_id ASC';

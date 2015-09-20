@@ -55,6 +55,14 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function checkConfig()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDirectoryFilesCount(JsonConfig $config)
     {
         $count    = 0;

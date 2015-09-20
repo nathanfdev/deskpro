@@ -54,6 +54,14 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function checkConfig()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getRowsCount(CsvConfig $config)
     {
         $this->detectDelimiter($config);

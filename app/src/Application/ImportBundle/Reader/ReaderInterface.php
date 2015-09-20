@@ -28,13 +28,24 @@
 namespace Application\ImportBundle\Reader;
 
 /**
+ * Importer reader interface
+ *
  * Interface ReaderInterface
  * @package Application\ImportBundle\Reader
  */
 interface ReaderInterface
 {
     /**
+     * Returns the reader config
+     *
      * @return ReaderConfigInterface
      */
     public function getConfig();
+
+    /**
+     * Validates the reader config
+     *
+     * @return bool
+     */
+    public function checkConfig();
 }
