@@ -116,7 +116,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
         $this->assertContains('[ZDTicket #3] Reading comments', $output);
-        $this->assertContains('Read 5 people', $output);
+        $this->assertContains('Read 6 people', $output);
         $this->assertContains('[ZDPerson #3] Skipping exception with ZDPerson: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
@@ -462,6 +462,20 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'draft'       => true,
                         'label_names' => array('Label 1', 'Label 3'),
                     ),
+                    (object)array(
+                        'id'          => 3,
+                        'author_id'   => 200000,
+                        'section_id'  => 1,
+                        'title'       => 'Article 3 (with fake user)',
+                        'body'        => 'Article content',
+                        'created_at'  => $date2->format('Y-m-d H:i:s'),
+                        'updated_at'  => $date3->format('Y-m-d H:i:s'),
+                        'vote_sum'    => 10,
+                        'vote_count'  => 5,
+                        'locale'      => 'en-us',
+                        'draft'       => true,
+                        'label_names' => array('Label 5', 'Label 6'),
+                    ),
                 ),
                 'end_time' => $now->getTimestamp(),
             ))
@@ -497,6 +511,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 )
             ))
+            ->addArticleCommentsFindAllResponse((object)array(
+                'comments' => array()
+            ))
             ->addArticleAttachmentsFindAllResponse((object)array(
                 'article_attachments' => array(
                     (object)array(
@@ -516,6 +533,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
                     ),
                 ),
+            ))
+            ->addArticleAttachmentsFindAllResponse((object)array(
+                'article_attachments' => array()
             ))
             ->addArticleTranslationsFindAllResponse((object)array(
                 'translations' => array(
@@ -534,6 +554,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'draft'  => false,
                     ),
                 ),
+            ))
+            ->addArticleTranslationsFindAllResponse((object)array(
+                'translations' => array(),
             ))
             ->addArticleTranslationsFindAllResponse((object)array(
                 'translations' => array(),
@@ -574,6 +597,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
+            ->addPeopleFindResponse((object)array(
+                'users' => array()
+            ))
             ->addOrganizationFindResponse((object)array(
                 'organization' => (object)array(
                     'id'   => 1,
@@ -591,6 +617,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->assertContains('Entity `organization` is not supported', $output);
         $this->assertContains('Unable to set ticket agent, `imported.user.4@example.com` is not an agent', $output);
+        $this->assertContains('Creating new person with email `imported.user.100000@example.com`', $output);
         $this->assertContains('Creating new person with email `imported.user.100000@example.com`', $output);
     }
 
@@ -664,6 +691,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertFalse($person->isDeleted());
 
         $person = $this->person_repository->findOneByEmail('imported.user.100000@example.com');
+        $this->assertTrue($person->isDisabled());
+        $this->assertFalse($person->isDeleted());
+
+        $person = $this->person_repository->findOneByEmail('imported.user.200000@example.com');
         $this->assertTrue($person->isDisabled());
         $this->assertFalse($person->isDeleted());
     }
