@@ -8,6 +8,7 @@ use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
 use Application\ImportBundle\Command\ImportBatchCommand;
 use Application\ImportBundle\Command\ImportCommand;
+use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\ArticleCategories;
 use Application\ImportBundle\Reader\ZenDesk\Request\JsonMockAdapter;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderMockFactory;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -231,6 +232,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('"is_hold":true');
         $this->helper->seeInThisFile('"status":"awaiting_agent"');
 
+        // Checking for article categories
+        $this->helper->seeFileFound('1/article_categories/article_category_1.json');
+        $this->helper->seeInThisFile('{"oid":1,"import_map_key":"zd_article_category","title":"Category 1","is_agent":false,"is_book":false,"user_groups":["everyone"],"categories":[{"oid":1,"import_map_key":null,"title":"Section 1","is_agent":false,"is_book":false,"user_groups":["registered"],"categories":[]}]}');
+
         // Checking for articles
         $this->helper->seeFileFound('1/articles/article_1.json');
 
@@ -431,6 +436,15 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'updated_at'      => $date2->format('Y-m-d H:i:s'),
                     )
                 )
+            ))
+            ->addArticleSectionAccessPolicyFindResponse((object)array(
+                'access_policy' => (object)array(
+                    'viewable_by'                    => ArticleCategories::VIEWABLE_BY_SIGNED,
+                    'manageable_by'                  => ArticleCategories::VIEWABLE_BY_STAFF,
+                    'restricted_to_group_ids'        => array(),
+                    'restricted_to_organization_ids' => array(),
+                    'required_tags'                  => array(),
+                ),
             ))
             ->addArticlesIncrementalExportResponse((object)array(
                 'articles' => array(

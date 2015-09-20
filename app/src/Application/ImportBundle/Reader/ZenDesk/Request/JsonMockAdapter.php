@@ -185,6 +185,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
+     * Stores an article category access policy response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addArticleSectionAccessPolicyFindResponse($response)
+    {
+        $this->addResponse('HelpCenter\SectionAccessPolicyFind', $response);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function doRequest($helper_class, array $params = array())
