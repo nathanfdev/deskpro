@@ -119,6 +119,7 @@ final class ArticleCategories extends AbstractParser
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['name'])
+            ->addUserGroup('everyone')
         ;
 
         return $entity;
@@ -166,6 +167,7 @@ final class ArticleCategories extends AbstractParser
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['name'])
+            ->addUserGroup('everyone')
         ;
 
         return $entity;
