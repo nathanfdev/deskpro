@@ -201,7 +201,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             }
 
         } catch (\Exception $e) {
-            $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
+            // todo em closed
+            // $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
             throw $e;
         }
     }
