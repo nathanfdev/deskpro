@@ -97,7 +97,9 @@ abstract class PluginAdapter implements AdapterInterface
         $e = null;
         try {
             $expression_language = $this->_getExpressionLang();
-            if ($expression_language->evaluate($this->filter_expression_text, array(
+            // we supress this call because it can produce E_NOTICE's even though
+            // we catch the exception.
+            if (@$expression_language->evaluate($this->filter_expression_text, array(
                 'user' => $raw_info
             ))) {
                 return true; // successfully passed
