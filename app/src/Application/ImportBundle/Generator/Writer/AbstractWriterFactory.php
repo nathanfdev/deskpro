@@ -27,18 +27,26 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+
 /**
- * Generator writer factory interface
- *
- * Interface FactoryInterface
+ * Class AbstractWriterFactory
  * @package Application\ImportBundle\Generator\Writer
  */
-interface FactoryInterface
+abstract class AbstractWriterFactory implements WriterFactoryInterface
 {
     /**
-     * Returns a writer
-     *
-     * @return WriterInterface
+     * @var DeskproContainer
      */
-    public function createWriter();
+    protected $container;
+
+    /**
+     * Constructor
+     *
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 }

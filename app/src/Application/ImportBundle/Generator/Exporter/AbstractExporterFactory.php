@@ -27,24 +27,28 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * Exporter factory interface
+ * Base exporter factory
  *
- * Interface FactoryInterface
+ * Class AbstractExporterFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
-interface FactoryInterface
+abstract class AbstractExporterFactory implements ExporterFactoryInterface
 {
     /**
-     * Creates an exporter instance
-     *
-     * @param ContainerInterface    $container
-     * @param ReaderConfigInterface $config
-     *
-     * @return ExporterInterface
+     * @var DeskproContainer
      */
-    static public function createExporter(ContainerInterface $container, ReaderConfigInterface $config);
+    protected $container;
+
+    /**
+     * Constructor
+     *
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 }

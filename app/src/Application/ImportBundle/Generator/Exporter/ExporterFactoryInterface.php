@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,28 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 
 /**
- * Class AbstractFactory
- * @package Application\ImportBundle\Generator\Writer
+ * Exporter factory interface
+ *
+ * Interface ExporterFactoryInterface
+ * @package Application\ImportBundle\Generator\Exporter
  */
-abstract class AbstractFactory implements FactoryInterface
+interface ExporterFactoryInterface
 {
     /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * Constructor
+     * Creates an exporter instance
      *
-     * @param ContainerInterface $container
+     * @param ReaderConfigInterface $config
+     * @return ExporterInterface
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+     public function createExporter(ReaderConfigInterface $config);
 }

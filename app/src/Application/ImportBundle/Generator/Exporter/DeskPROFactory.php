@@ -27,11 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * DeskPRO data exporter factory
@@ -39,20 +37,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class DeskPROFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
-class DeskPROFactory extends AbstractFactory
+class DeskPROFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
+    public function createExporter(ReaderConfigInterface $config)
     {
         if ( ! $config instanceof DeskPROConfig) {
             throw new \RuntimeException('Config expected to be instance of DeskPROConfig');
         }
 
-        /** @var DeskproContainer $container */
-        $reader  = DeskPROReaderFactory::createReader($config, $container);
-
+        $reader  = DeskPROReaderFactory::createReader($config, $this->container);
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\DeskPRO\People($reader))

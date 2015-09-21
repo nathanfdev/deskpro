@@ -35,7 +35,6 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\EntityRepository;
 use Guzzle\Http\Client;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ZenDesk data exporter factory
@@ -43,12 +42,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class ZenDeskFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
-class ZenDeskFactory extends AbstractFactory
+class ZenDeskFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
+    public function createExporter(ReaderConfigInterface $config)
     {
         if ( ! $config instanceof ZenDeskConfig) {
             throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
@@ -57,9 +56,9 @@ class ZenDeskFactory extends AbstractFactory
         $http_client = new Client();
 
         /** @var ZenDeskReaderFactoryInterface $reader_factory */
-        $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
+        $reader_factory = $this->container->get('deskpro.import.zendesk_reader_factory');
         /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
+        $formatter = $this->container->get('deskpro.import.formatter');
 
         $reader  = $reader_factory->createReader($config);
         $storage = new Parser\PeopleStorage();

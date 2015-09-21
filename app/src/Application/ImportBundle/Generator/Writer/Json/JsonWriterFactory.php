@@ -27,13 +27,13 @@
 
 namespace Application\ImportBundle\Generator\Writer\Json;
 
-use Application\ImportBundle\Generator\Writer\AbstractFactory;
+use Application\ImportBundle\Generator\Writer\AbstractWriterFactory;
 
 /**
  * Class JsonWriterFactory
  * @package Application\ImportBundle\Generator\Writer\Json
  */
-class JsonWriterFactory extends AbstractFactory
+class JsonWriterFactory extends AbstractWriterFactory
 {
     /**
      * {@inheritdoc}

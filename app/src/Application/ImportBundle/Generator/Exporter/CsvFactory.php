@@ -33,7 +33,6 @@ use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReader;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Csv data exporter factory
@@ -41,12 +40,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class CsvFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
-class CsvFactory extends AbstractFactory
+class CsvFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
+    public function createExporter(ReaderConfigInterface $config)
     {
         if ( ! $config instanceof CsvConfig) {
             throw new \RuntimeException('Config expected to be instance of CsvConfig');
@@ -55,7 +54,7 @@ class CsvFactory extends AbstractFactory
         /** @var CsvReaderInterface $reader */
         $reader = new CsvReader($config);
         /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
+        $formatter = $this->container->get('deskpro.import.formatter');
 
         $helpers = new ParserHelperSet();
         $helpers

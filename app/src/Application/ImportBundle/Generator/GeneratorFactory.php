@@ -28,11 +28,12 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\ImportBundle\Generator\Exporter\ExporterFactoryInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Writer\WriterFactoryInterface;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Application\ImportBundle\Generator\Exporter\AbstractFactory as AbstractExporterFactory;
-use Application\ImportBundle\Generator\Writer\AbstractFactory as AbstractWriterFactory;
+use Application\ImportBundle\Generator\Writer\AbstractWriterFactory as AbstractWriterFactory;
 
 /**
  * Generator importer service factory
@@ -52,17 +53,8 @@ class GeneratorFactory
      */
     public static function createGenerator(DeskproContainer $container, GeneratorConfig $config)
     {
-        $exporter_factory = self::getExporterFactory($container, $config);
-        $exporter         = $exporter_factory->createExporter($container, $config->getReaderConfig());
-
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if ( ! $config->getExporterBatchConfig()) {
-                $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-            }
-        }
-
-        $writer_factory = self::getWriterFactory($container, $config);
-        $writer         = $writer_factory ? $writer_factory->createWriter() : null;
+        $exporter = self::createExporter($container, $config);
+        $writer   = self::createWriter($container, $config);
 
         $symfony_validator = $container->get('validator');
         $validators = new Validator\Collection();
@@ -84,15 +76,15 @@ class GeneratorFactory
     }
 
     /**
-     * Returns exporter factory instance
+     * Creates generator exporter instance
      *
      * @param DeskproContainer $container
      * @param GeneratorConfig  $config
      *
-     * @return AbstractExporterFactory
+     * @return ExporterInterface
      * @throws \RuntimeException
      */
-    private static function getExporterFactory(DeskproContainer $container, GeneratorConfig $config)
+    private static function createExporter(DeskproContainer $container, GeneratorConfig $config)
     {
         $factories = array(
             ExporterInterface::TYPE_CSV       => 'Application\ImportBundle\Generator\Exporter\CsvFactory',
@@ -106,11 +98,21 @@ class GeneratorFactory
             throw new \RuntimeException(sprintf('Invalid exporter type `%s`', $config->getExporterType()));
         }
 
-        return new $factories[$config->getExporterType()]($container);
+        /** @var ExporterFactoryInterface $factory */
+        $factory  = new $factories[$config->getExporterType()]($container);
+        $exporter = $factory->createExporter($config->getReaderConfig());
+
+        if ($exporter instanceof Exporter\ExporterBatchInterface) {
+            if ( ! $config->getExporterBatchConfig()) {
+                $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
+            }
+        }
+
+        return $exporter;
     }
 
     /**
-     * Returns writer factory instance
+     * Creates generator writer instance
      *
      * @param DeskproContainer $container
      * @param GeneratorConfig  $config
@@ -118,7 +120,7 @@ class GeneratorFactory
      * @return AbstractWriterFactory
      * @throws \RuntimeException
      */
-    private static function getWriterFactory(DeskproContainer $container, GeneratorConfig $config)
+    private static function createWriter(DeskproContainer $container, GeneratorConfig $config)
     {
         $factories = array(
             WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPRO\DeskProWriterFactory',
@@ -132,6 +134,11 @@ class GeneratorFactory
             throw new \RuntimeException(sprintf('Invalid writer type `%s`', $config->getWriterType()));
         }
 
-        return new $factories[$config->getWriterType()]($container);
+        /** @var WriterFactoryInterface $factory */
+        $factory = new $factories[$config->getWriterType()]($container);
+        $writer  = $factory->createWriter();
+
+        return $writer;
+
     }
 }

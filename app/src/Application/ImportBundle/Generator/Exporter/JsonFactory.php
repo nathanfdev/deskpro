@@ -33,7 +33,6 @@ use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReader;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Json data exporter factory
@@ -41,12 +40,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class JsonFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
-class JsonFactory extends AbstractFactory
+class JsonFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
+    public function createExporter(ReaderConfigInterface $config)
     {
         if ( ! $config instanceof JsonConfig) {
             throw new \RuntimeException('Config expected to be instance of JsonConfig');
@@ -55,7 +54,7 @@ class JsonFactory extends AbstractFactory
         /** @var JsonReaderInterface $reader */
         $reader = new JsonReader($config);
         /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
+        $formatter = $this->container->get('deskpro.import.formatter');
 
         $helpers = new ParserHelperSet();
         $helpers
