@@ -30,7 +30,7 @@ function getPromise(action) {
 }
 
 /**
- * PromiseMiddleware handles promises and dispatches before/after states.
+ * PromiseMiddleware handles promises and dispatches before/after actions.
  *
  * The action payload can either be a promise itself, or an object with a `promise`
  * key. The reason you might want to return an object is because you can pass
