@@ -104,7 +104,7 @@ class TaskCardDragLayer {
 
               {item.details.is_done ?
               <div className="dpw--card-expand">
-                <a href="#">{detailsButtonText} <i className="fa fa-navicon" /></a>
+                <a href="#">Expand <i className="fa fa-navicon" /></a>
               </div>
               :
               assignee && assignee.picture_blob ?
@@ -114,7 +114,7 @@ class TaskCardDragLayer {
             </div>
           </div>
 
-          {!item.details.is_done || this.state.expanded ?
+          {!item.details.is_done ?
           <div className="dpw--card-line">
             <div className="dpw--card-line-left">
               <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'}>
