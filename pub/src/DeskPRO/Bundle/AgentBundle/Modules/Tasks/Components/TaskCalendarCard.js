@@ -1,15 +1,8 @@
-import React from "react";
-import Moment from "moment";
-import { DragSource } from "react-dnd";
-import { connect } from 'react-redux';
+import React from 'react';
+import Moment from 'moment';
+import { DragSource } from 'react-dnd';
 import $ from 'jquery';
-import * as TaskActions from "../Actions/TaskListActions";
-import { IntlMixin, FormattedDate } from "react-intl";
-import Formsy from "formsy-react";
-import FRC from "../../../../../Component/FormComponents/main.js";
-import DragTypes from "../../../Services/DragTypes.js";
-import Picker from "anytime";
-import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+import DragTypes from '../../../Services/DragTypes.js';
 
 const cardSource = {
   beginDrag(props, monitor, component) {
@@ -32,11 +25,22 @@ function collect(connect, monitor) {
 }
 
 const TaskCalendarCard = React.createClass({
-  render: function () {
+  openHover: function(task) {
+    const position = {x: event.x, y: event.y};
+    this.props.openHover(task, position);
+  },
+
+  render: function() {
     const {task, connectDragSource} = this.props;
-    return connectDragSource(<li><a href="#">{task.title}</a></li>);
+    const dueDate = new Moment(task.date_due);
+    const overdueClass = dueDate.isBefore() ? 'urgent' : '';
+    return connectDragSource(<li className={overdueClass}
+      onMouseEnter={this.openHover.bind(this, task)}
+      onMouseLeave={this.props.closeHover.bind(this)}>
+      <a href="#">{task.title}</a>
+    </li>);
   }
-})
+});
 
 module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
