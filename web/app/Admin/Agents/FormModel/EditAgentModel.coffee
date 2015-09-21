@@ -2,17 +2,23 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
   class EditAgentModel
     constructor: (agent, groups, teams, primary_phone_number_region) ->
       @form = {}
-
       #--------------------
       # Basic props
       #--------------------
 
       @form.name = agent.name
-      @form.primary_phone = {
-        region: agent.primary_phone.region || primary_phone_number_region
-        number: agent.primary_phone.number || ''
-        ext: agent.primary_phone.ext || ''
-      }
+      if agent.primary_phone
+        @form.primary_phone = {
+          region: agent.primary_phone.region || primary_phone_number_region
+          number: agent.primary_phone.number || ''
+          ext: agent.primary_phone.ext || ''
+        }
+      else
+        @form.primary_phone = {
+          region:  primary_phone_number_region
+          number:  ''
+          ext: ''
+        }
       @form.primary_team = agent.primary_team
       @form.notification_settings = agent.notification_settings
 
