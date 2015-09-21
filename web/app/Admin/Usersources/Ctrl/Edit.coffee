@@ -18,7 +18,6 @@ define [
     initialLoad: ->
       promise = @Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
         @usersource = result.data.usersource
-        console.log @usersource
       )
       return promise
 

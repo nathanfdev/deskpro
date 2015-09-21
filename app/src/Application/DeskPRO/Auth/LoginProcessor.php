@@ -220,9 +220,12 @@ class LoginProcessor
         $this->person['is_user'] = true;
         $this->person->setLastLoginAt();
 
+        self::tryUsergroupPromotion($this->usersource, $this->person);
         if (self::tryAutoAgent($this->usersource, $this->person)) {
             $this->sendAgentWelcomeEmail();
         }
+
+
 
         $this->persist($em, $this->person);
         $this->persist($em, $this->assoc);
@@ -406,14 +409,23 @@ class LoginProcessor
             if ($agentChecker->addAgentSeat($person)) {
                 $person['is_agent'] = true;
                 $person['can_agent'] = true;
-                if ($usersource->agent_permission_group) {
-                    $person->addUsergroup($usersource->agent_permission_group);
-                }
-
                 return true;
             }
         }
 
         return false;
+    }
+
+    public static function tryUsergroupPromotion(Usersource $usersource, Person $person)
+    {
+        if ($usersource->type == Usersource::TYPE_AGENT) {
+            if ($usersource->agent_permission_group) {
+                $person->addUsergroup($usersource->agent_permission_group);
+            }
+        } elseif ($usersource->type == Usersource::TYPE_USER) {
+            if ($usersource->user_permission_group) {
+                $person->addUsergroup($usersource->user_permission_group);
+            }
+        }
     }
 }

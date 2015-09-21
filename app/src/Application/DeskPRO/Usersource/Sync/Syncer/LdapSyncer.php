@@ -52,6 +52,10 @@ class LdapSyncer extends AbstractSyncer
 
     public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
+        if (!$usersource->isEnabled()) {
+            return;
+        }
+
         if ($cursor->getPhase() == 1) {
             $this->helper->log(Logger::INFO, 'starting phase 1 [' . print_r($cursor, true) . ']', array($cursor));
             $this->runFirstPass($usersource, $cursor, $pause_check);
@@ -148,6 +152,7 @@ class LdapSyncer extends AbstractSyncer
         $counting_saves = 0;
         $skip_state_timer = null;
         $skip_counter = 0;
+        $auth_adapter = $adapter->getAuthAdapter();
         for ($i = 1; $records->valid(); $i++) {
             try {
                 $records->next();
@@ -172,6 +177,21 @@ class LdapSyncer extends AbstractSyncer
             if ($skip_state_timer) {
                 $this->helper->log(Logger::INFO, 'spent ' . ceil(time() - $skip_state_timer) . 's skipping to record ' . $start_location);
                 $skip_state_timer = null;
+            }
+
+            // CHECK FILTER
+            if (!$auth_adapter->doesRawInfoPassFilter($raw_info)) {
+                $this->helper->log(
+                    Logger::INFO,
+                    sprintf('user does not meet filter criteria'),
+                    array($raw_info)
+                )
+                ;
+                $cursor->incrementLocation();
+                if ($pause_check($cursor)) {
+                    return;
+                }
+                continue;
             }
 
             // save record for processing in phase 2
@@ -235,6 +255,19 @@ class LdapSyncer extends AbstractSyncer
         }
 
         if (!$identity instanceof Identity) {
+            return false;
+        }
+
+        // FILTER CHECK
+        $auth_adapter = $ldap_adapter->getAuthAdapter();
+        $raw_info = $identity->getRawData();
+        if (!$auth_adapter->doesRawInfoPassFilter($raw_info)) {
+            $this->helper->log(
+                Logger::INFO,
+                sprintf('user does not meet filter criteria'),
+                array($raw_info)
+            )
+            ;
             return false;
         }
 

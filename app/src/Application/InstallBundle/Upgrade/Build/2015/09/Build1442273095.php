@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,40 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Apps
+ * @subpackage
  */
 
-namespace deskpro_us_ezpublish\Usersource;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\AppInstance;
-use Orb\Util\OptionsArray;
-
-class AppOptionsMapper
+class Build1442273095 extends AbstractBuild
 {
-    /**
-     * @param  array|AppInstance         $app_or_settings
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    public static function getOptions($app_or_settings)
+    public function run()
     {
-        if ($app_or_settings instanceof AppInstance) {
-            $settings = $app_or_settings->getSettings();
-        } else {
-            if (!is_array($app_or_settings)) {
-                throw new \InvalidArgumentException;
-            }
-            $settings = $app_or_settings;
-        }
-
-        $settings = new OptionsArray($settings);
-
-        $options = array();
-        $options['db_dsn'] = $settings->get('db_dsn');
-        $options['db_username'] = $settings->get('db_username');
-        $options['db_password'] = $settings->get('db_password');
-        $options['raw_info_filter'] = $settings->get('raw_info_filter');
-
-        return $options;
+        $this->out("My Upgrade Class");
+		$this->execMutateSql("ALTER TABLE usersources ADD user_permission_group_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C21AF6383 FOREIGN KEY (user_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE INDEX IDX_4E3C994C21AF6383 ON usersources (user_permission_group_id)");
     }
 }
