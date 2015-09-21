@@ -13,7 +13,7 @@ function getInterval(action) {
 }
 
 /**
- * Schedules an action to dispatch given a timout on action.meta.delay.
+ * Schedules an action to dispatch given an interval on action.meta.interval.
  *
  * `dispatch` will return a cancel function.
  *
@@ -21,8 +21,8 @@ function getInterval(action) {
  */
 export default function intervalMiddleware() {
   return next => action => {
-    const delay = getInterval(action);
-    if (!delay) {
+    const interval = getInterval(action);
+    if (!interval) {
       return next(action);
     }
 
@@ -34,5 +34,5 @@ export default function intervalMiddleware() {
     return function cancel() {
       clearInterval(iId);
     };
-  }
+  };
 }
