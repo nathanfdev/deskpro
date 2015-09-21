@@ -42,19 +42,22 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
           if didNotRun && region
             didNotRun = false
             $main.intlTelInput({
-                  defaultCountry: region.toLowerCase(),
-                  autoPlaceholder: true,
-                  allowExtensions: true,
-                  autoFormat: true,
-                  nationalMode: true
+                defaultCountry: region.toLowerCase(),
+                autoPlaceholder: true,
+                autoFormat: true,
+                allowExtensions: true,
+                nationalMode: true
               })
             $main.intlTelInput('utilsLoaded')
             $main.bind('blur keyup change input', () ->
                 $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')}
               )
 
+        didNotRun2 = true
         $attrs.$observe 'startPhoneNumber', (startPhoneNumber) =>
-          $main.intlTelInput("setNumber", startPhoneNumber)
+          if didNotRun2 && startPhoneNumber && startPhoneNumber.trim().length > 0
+            didNotRun2 = false
+            $main.intlTelInput("setNumber", startPhoneNumber)
     }
   ]
 
