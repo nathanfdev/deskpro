@@ -868,3 +868,13 @@ $level-10: #ac2020;
   .dpmw--card-checkbox { top: 3px; }
 }
 
+.moving {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  z-index: 99999;
+  -moz-transform: rotate(-3deg);
+  -webkit-transform: rotate(-3deg);
+  -o-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+  max-width: 370px;
+}

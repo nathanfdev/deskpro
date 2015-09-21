@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
-import DragTypes from '../../../Services/DragTypes';
-import Moment from "moment";
-import { IntlMixin, FormattedDate } from "react-intl";
-import $ from "jquery";
+import Moment from 'moment';
+import { FormattedDate } from 'react-intl';
+import Card from '../../Application/Components/ListFrame/Card';
 
 const layerStyles = {
   position: 'fixed',
@@ -32,97 +31,128 @@ function getItemStyles(props) {
 }
 
 class TaskCardDragLayer {
+  dueIndicator(due) {
+    const dueMoment = new Moment(due);
+
+    let result = '';
+
+    if (dueMoment.isSame(new Moment(), 'day')) {
+      result = 'Today, ';
+    } else if (dueMoment.isSame(new Moment().subtract(1, 'days'))) {
+      result = 'Yesterday, ';
+    } else {
+      result = dueMoment.format('MMM Do YYYY, ');
+    }
+
+    result += dueMoment.format('hh:mm a');
+
+    return result;
+  }
+
   renderItem(type, item) {
     switch (item.subtype) {
       case 'list':
 
-        //return <p>Hello</p>;
+        let cardClass = item.details.is_done ? 'card task-card task-card-completed moving' : 'card task-card moving';
 
-        let cardClass = item.details.is_done ? "card task-card task-card-completed moving" : "card task-card moving";
+        let doneButton = item.details.is_done ? <span>Done <i className="fa fa-check" /></span> : 'Mark Done';
 
-        let doneButton = item.details.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
-
-        let ticket_link = undefined;
-        let ticket_title = 'Linked ticket';
+        let ticketLink = undefined;
+        let ticketTitle = 'Linked ticket';
 
         if (item.details.tickets && item.details.tickets.length > 0) {
-          ticket_title = item.details.tickets[0].subject;
-          ticket_link = '#';
+          ticketTitle = item.details.tickets[0].subject;
+          ticketLink = '#';
         }
 
-        let assignee = "Unassigned";
+        const titleClass = item.details.is_done ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
+
+        let assignee = null;
 
         if (item.details.agents && item.details.agents.length > 0) {
           // We assume one assignment for now, though we will need to support more later
           const agentId = item.details.agents[0];
 
-          assignee = item.agents[agentId].name;
+          assignee = item.agents[agentId];
         } else if (item.details.teams && item.details.teams.length > 0) {
           const teamId = item.details.teams[0];
-          assignee = item.teams[teamId].name;
+          assignee = item.teams[teamId];
         } else if (item.details.departments && item.details.departments.length > 0) {
           const departmentId = item.details.departments[0];
-          assignee = item.departments[departmentId].title;
+          assignee = item.departments[departmentId];
         }
 
         const overdue = Moment(item.details.date_due).isBefore();
 
-        return (<div className={cardClass} key={item.details.id} style={{width: item.width}}>
-          <div>
-            <div className="card-status-bar status-bar-left" />
-            <div className="card-status-bar status-bar-right" />
+        return (<Card statusBars
+              moving
+              cardType="task"
+              task={item.details}>
 
-            <div className="card-checkbox">
-              <span className="checkbox" />
+          <div className="dpm--card-checkbox">
+
+          </div>
+
+          <div className="dpw--card-line">
+            <div className="dpw--card-line-left card-title">
+              <div className={titleClass}>
+                <h1>{item.details.title}</h1>
+              </div>
             </div>
 
-            <div className="top-right-box">
-              {!item.details.is_done ?
-                <span className="assignment">
-                  { assignee }
-                </span>:
-                <button className="task-details-button">Expand <i
-                  className="fa fa-bars"/></button>}
-            </div>
+            <div className="dpw--card-line-right">
 
-            <div className="card-line">
-              <span className="line-box card-task-mark">
-                {doneButton}
+              {item.details.is_done ?
+              <div className="dpw--card-expand">
+                <a href="#">{detailsButtonText} <i className="fa fa-navicon" /></a>
+              </div>
+              :
+              assignee && assignee.picture_blob ?
+              <div className="dpwd--card-assigned">
+                <span className="dpw--avatar-face" style={{backgroundImage: 'url(' + item.details.picture_blob.download_url + ')'}} />
+              </div> : '' }
+            </div>
+          </div>
+
+          {!item.details.is_done || this.state.expanded ?
+          <div className="dpw--card-line">
+            <div className="dpw--card-line-left">
+              <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'}>
+                <i className="fa fa-calendar-o" /> Due: {item.details.date_due ? this.dueIndicator(item.details.date_due) : 'N/A'}
               </span>
 
-              <h1>{item.details.title}</h1>
+              {item.details.project && item.projects[item.details.project] ? <span>
+                <span className="dpw--card-disc" />
+                <span className="dpwd--card-line-item">
+                  <i className="fa fa-book" /> {item.projects[item.details.project].title}
+                </span>
+              </span>
+              : ''}
+
+              {ticketLink ? <span>
+                <span className="dpw--card-disc" />
+
+                <span className="dpwd--card-line-item">
+                  <i className="fa fa-link" /> <a href={ticketLink}>{ticketTitle}</a>
+                </span>
+              </span> : ''}
             </div>
 
-            { !item.details.is_done ?
-              <div className="card-line task-details">
-                <div className="task-extras">
-                  <div>{item.details.comment_count} <i className="fa fa-comment"/></div>
+            <div className="dpw--card-line-right">
+              <span className="dpwd--card-line-item">
+                {item.details.comment_count} <i className="fa fa-comment" />
+              </span>
 
-                  {item.details.subtasks_total > 0 ?
-                  <span><span className="disc" />
-                  <div className="subtask-count">{item.details.subtasks_done}/{item.details.subtasks_total} <i className="fa fa-folder-open"/></div>
-                  </span> : ''}
-                </div>
-
-                <div className="task-properties">
-                  <div className={overdue ? "overdue" : ""}>
-
-                    <i className="fa fa-calendar-o" /> Due: {item.details.date_due ? Moment(item.details.date_due).local().format('MMMM D, YYYY')
-                    : 'N/A' }
-                  </div>
-
-                  {item.details.project && item.projects[item.details.project] ? <span>
-                  <span className="disc" /><i className="fa fa-book"/> {item.projects[item.details.project].title}
-                  </span> : ''}
-
-                  {ticket_link ? <span>
-                  <span className="disc"></span>
-                    <i className="fa fa-link"/><a href={ticket_link}>{ticket_title}</a>
-                  </span> : ''}
-                </div>
-              </div> : '' }
+              {item.details.subtasks_total > 0 ?
+                <span>
+                  <span className="dpw--card-disc" />
+                  <div>{item.details.subtasks_done}/{item.details.subtasks_total} <i className="fa fa-folder-open"/></div>
+                </span>
+              : ''}
+            </div>
           </div>
-        </div>);
+          : '' }
+        </Card>);
         break;
       case 'kanban':
         let assigneeName = '';

@@ -266,9 +266,10 @@ const TaskCard = React.createClass({
                 <a href="#" onClick={this.toggleDetails}>{detailsButtonText} <i className="fa fa-navicon" /></a>
               </div>
               :
+              assignee && assignee.picture_blob ?
               <div className="dpwd--card-assigned" onClick={this.props.toggleAssignWindow.bind(this, task)}>
-                <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}} />
-              </div> }
+                <span className="dpw--avatar-face" style={{backgroundImage: 'url(' + assignee.picture_blob.download_url + ')'}} />
+              </div> : '' }
             </div>
           </div>
 
