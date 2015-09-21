@@ -41,12 +41,12 @@ class GeneratorFactory
      * Creates importer generator instance
      *
      * @param DeskproContainer $container
+     * @param GeneratorConfig  $config
+     *
      * @return Generator
      */
-    public static function createGenerator(DeskproContainer $container)
+    public static function createGenerator(DeskproContainer $container, GeneratorConfig $config)
     {
-        /** @var GeneratorConfig $config */
-        $config   = $container->get('deskpro.import.config');
         $exporter = $config->getExporterFactory($container)->createExporter($container, $config->getReaderConfig());
 
         $writer_factory = $config->getWriterFactory($container);

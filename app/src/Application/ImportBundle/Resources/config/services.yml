@@ -8,13 +8,9 @@ services:
   deskpro.import.zendesk_reader_factory:
     class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
 
-
   deskpro.import:
     class: Application\ImportBundle\Service\Import
     arguments: [@service_container]
-
-  deskpro.import.config:
-    class: Application\ImportBundle\Generator\GeneratorConfig
 
   deskpro.import.generator:
     scope: prototype

@@ -37,7 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 use Application\DeskPRO\HttpFoundation\Request;
-use Application\ImportBundle\Generator\Generator;
+use Application\ImportBundle\Generator;
 use Application\ImportBundle\Service\Import as ImportService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -182,11 +182,8 @@ class ImportersController extends AbstractController implements ProtectedControl
         $importer = $is->getImporter($id);
 
         try {
-            $config = $is->createGeneratorConfig($importer);
-
-            /** @var Generator $generator */
-            $this->container->set('deskpro.import.config', $config);
-            $generator = $this->container->get('deskpro.import.generator');
+            $config    = $is->createGeneratorConfig($importer);
+            $generator = Generator\GeneratorFactory::createGenerator($this->getContainer(), $config);
 
             $res = $this->createJsonResponse(array('result' => $generator->getTotalRecordsCount() > 0));
         } catch (\Exception $e) {
