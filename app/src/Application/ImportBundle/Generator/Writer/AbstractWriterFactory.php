@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Writer;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
+ * Base generator writer factory
+ *
  * Class AbstractWriterFactory
  * @package Application\ImportBundle\Generator\Writer
  */

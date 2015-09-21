@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * Base exporter factory
+ * Base generator exporter factory
  *
  * Class AbstractExporterFactory
  * @package Application\ImportBundle\Generator\Exporter
