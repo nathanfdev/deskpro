@@ -56,7 +56,7 @@ final class Articles extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getArticleReaderConfig());
+        return $this->getReaderCount(self::FILE_ARTICLES);
     }
 
     /**
@@ -66,7 +66,7 @@ final class Articles extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getArticleReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_ARTICLES))
             ->setPrefix('CSVArticle')
             ->setRefColumn('id')
             ->setMethod('exportArticle')
@@ -158,19 +158,8 @@ final class Articles extends AbstractParser
      */
     private function exportArticleCustomFields()
     {
-        $config = $this->getReaderConfig(self::FILE_ARTICLE_CUSTOM_FIELDS);
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(self::FILE_ARTICLE_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::ARTICLE_PREFIX, 'article_id');
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getArticleReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_ARTICLES);
     }
 }

@@ -55,7 +55,7 @@ class Organizations extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getOrganizationReaderConfig());
+        return $this->getReaderCount(self::FILE_ORGANIZATIONS);
     }
 
     /**
@@ -65,7 +65,7 @@ class Organizations extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getOrganizationReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_ORGANIZATIONS))
             ->setPrefix('CSVOrganization')
             ->setRefColumn('name')
             ->setMethod('exportOrganization')
@@ -147,8 +147,7 @@ class Organizations extends AbstractParser
      */
     private function exportOrganizationCustomFields()
     {
-        $config = $this->getReaderConfig(self::FILE_ORGANIZATION_CUSTOM_FIELDS);
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(self::FILE_ORGANIZATION_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::ORGANIZATION_PREFIX, 'organization_id');
     }
@@ -160,19 +159,8 @@ class Organizations extends AbstractParser
      */
     private function exportOrganizationContactData()
     {
-        $config = $this->getReaderConfig(self::FILE_ORGANIZATION_CONTACT_DATA);
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(self::FILE_ORGANIZATION_CONTACT_DATA);
 
         return $this->getMultipleContactDataParser()->export($data, self::ORGANIZATION_PREFIX, 'organization_id');
-    }
-
-    /**
-     * Returns reader config for organization records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getOrganizationReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_ORGANIZATIONS);
     }
 }

@@ -38,6 +38,8 @@ use LimitIterator;
  *
  * Class CsvReader
  * @package Application\ImportBundle\Reader\Csv
+ *
+ * @property CsvConfig $config
  */
 class CsvReader extends AbstractReader implements CsvReaderInterface
 {
@@ -62,10 +64,10 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getRowsCount(CsvConfig $config)
+    public function getRowsCount($entity_type)
     {
-        $this->detectDelimiter($config);
-        $iterator = $this->getIterator($config);
+        $this->detectDelimiter($entity_type);
+        $iterator = $this->getIterator($entity_type);
 
         $count = 0;
         foreach ($iterator as $row) {
@@ -85,10 +87,10 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getData(CsvConfig $config)
+    public function getData($entity_type)
     {
-        $this->detectDelimiter($config);
-        $iterator = $this->getIterator($config);
+        $this->detectDelimiter($entity_type);
+        $iterator = $this->getIterator($entity_type);
 
         $header = null;
         $data   = array();
@@ -128,31 +130,43 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     }
 
     /**
+     * Returns entity type path
+     *
+     * @param string $entity_type
+     * @return string
+     */
+    private function getEntityPath($entity_type)
+    {
+        return rtrim($this->config->getResource(), '/') . '/' . $entity_type;
+    }
+
+    /**
      * Returns spl file object iterator
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      *
      * @return LimitIterator
      * @throws \Exception
      */
-    private function getIterator(CsvConfig $config)
+    private function getIterator($entity_type)
     {
-        if ( ! stream_is_local($config->getResource())) {
-            throw new InvalidResourceException(sprintf('This is not a local file "%s".', $config->getResource()));
-        }
+        $entity_path = $this->getEntityPath($entity_type);
 
-        if ( ! file_exists($config->getResource())) {
-            throw new NotFoundResourceException(sprintf('File "%s" not found.', $config->getResource()));
+        if ( ! stream_is_local($entity_path)) {
+            throw new InvalidResourceException(sprintf('This is not a local file "%s".', $entity_path));
+        }
+        if ( ! file_exists($entity_path)) {
+            throw new NotFoundResourceException(sprintf('File "%s" not found.', $entity_path));
         }
 
         try {
-            $file = new SplFileObject($config->getResource(), 'rb');
+            $file = new SplFileObject($entity_path, 'rb');
         } catch (\RuntimeException $e) {
-            throw new NotFoundResourceException(sprintf('Error opening file "%s".', $config->getResource()), 0, $e);
+            throw new NotFoundResourceException(sprintf('Error opening file "%s".', $entity_path), 0, $e);
         }
 
         $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY);
-        $file->setCsvControl($config->getDelimiter(), $config->getEnclosure(), $config->getEscape());
+        $file->setCsvControl($this->config->getDelimiter(), $this->config->getEnclosure(), $this->config->getEscape());
 
         return new LimitIterator($file);
     }
@@ -160,14 +174,14 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     /**
      * Detect a delimiter
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      */
-    private function detectDelimiter(CsvConfig $config)
+    private function detectDelimiter($entity_type)
     {
-        $delimiters = array_diff(array(';', ','), array($config->getDelimiter()));
+        $delimiters = array_diff(array(';', ','), array($this->config->getDelimiter()));
 
         while (true) {
-            $iterator = $this->getIterator($config);
+            $iterator = $this->getIterator($entity_type);
             $iterator->rewind();
 
             $row = $iterator->current();
@@ -175,7 +189,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
                 return;
             }
 
-            $config->setDelimiter(array_shift($delimiters));
+            $this->config->setDelimiter(array_shift($delimiters));
         }
 
     }

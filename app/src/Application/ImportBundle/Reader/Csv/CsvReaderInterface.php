@@ -40,16 +40,16 @@ interface CsvReaderInterface extends ReaderInterface
     /**
      * Returns rows count of csv file
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      * @return int
      */
-    public function getRowsCount(CsvConfig $config);
+    public function getRowsCount($entity_type);
 
     /**
      * Parse csv file into raw array
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      * @return array
      */
-    public function getData(CsvConfig $config);
+    public function getData($entity_type);
 }

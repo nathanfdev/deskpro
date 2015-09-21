@@ -58,7 +58,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getTicketReaderConfig());
+        return $this->getReaderCount(self::FILE_TICKETS);
     }
 
     /**
@@ -68,7 +68,7 @@ final class Tickets extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getTicketReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_TICKETS))
             ->setPrefix('CSVTicket')
             ->setRefColumn('id')
             ->setMethod('exportTicket')
@@ -156,7 +156,7 @@ final class Tickets extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getTicketMessageReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_TICKET_MESSAGES))
             ->setPrefix('CSVTicketMessage')
             ->setRefColumn('message_id')
             ->setMethod('exportMessage')
@@ -220,8 +220,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicketAttachments()
     {
-        $config = $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(self::FILE_TICKET_ATTACHMENTS);
 
         return $this->getAttachmentParser()->exportAttachments($data, self::MESSAGE_PREFIX, 'message_id');
     }
@@ -233,29 +232,8 @@ final class Tickets extends AbstractParser
      */
     private function exportTicketCustomFields()
     {
-        $config = $this->getReaderConfig(self::FILE_TICKET_CUSTOM_FIELDS);
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(self::FILE_TICKET_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::TICKET_PREFIX, 'ticket_id');
-    }
-
-    /**
-     * Returns reader config for ticket records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getTicketReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_TICKETS);
-    }
-
-    /**
-     * Returns reader config for ticket message records
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getTicketMessageReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_TICKET_MESSAGES);
     }
 }

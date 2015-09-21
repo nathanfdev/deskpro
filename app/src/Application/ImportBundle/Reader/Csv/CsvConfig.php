@@ -76,16 +76,6 @@ class CsvConfig implements ReaderConfigInterface
     }
 
     /**
-     * @param string $resource
-     * @return $this
-     */
-    public function setResource($resource)
-    {
-        $this->resource = $resource;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getDelimiter()

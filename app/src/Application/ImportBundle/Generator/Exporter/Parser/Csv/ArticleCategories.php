@@ -58,7 +58,7 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getArticleCategoryReaderConfig());
+        return $this->getReaderCount(self::FILE_ARTICLE_CATEGORIES);
     }
 
     /**
@@ -68,7 +68,7 @@ final class ArticleCategories extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getArticleCategoryReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_ARTICLE_CATEGORIES))
             ->setPrefix('CSVArticleCategory')
             ->setRefColumn('id')
             ->setMethod('exportCategory')
@@ -200,15 +200,5 @@ final class ArticleCategories extends AbstractParser
         ;
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getArticleCategoryReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_ARTICLE_CATEGORIES);
     }
 }

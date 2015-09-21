@@ -53,7 +53,7 @@ final class News extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getNewsReaderConfig());
+        return $this->getReaderCount(self::FILE_NEWS);
     }
 
     /**
@@ -63,7 +63,7 @@ final class News extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getNewsReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_NEWS))
             ->setPrefix('CSVNews')
             ->setRefColumn('id')
             ->setMethod('exportNews')
@@ -125,15 +125,5 @@ final class News extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getNewsReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_NEWS);
     }
 }

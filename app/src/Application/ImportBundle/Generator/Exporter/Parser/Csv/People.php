@@ -55,7 +55,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getPersonReaderConfig());
+        return $this->getReaderCount(self::FILE_PEOPLE);
     }
 
     /**
@@ -65,7 +65,7 @@ final class People extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getPersonReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_PEOPLE))
             ->setPrefix('CSVPerson')
             ->setRefColumn('email')
             ->setMethod('exportPerson')
@@ -149,8 +149,7 @@ final class People extends AbstractParser
      */
     private function exportPersonCustomFields()
     {
-        $config = $this->getReaderConfig(self::FILE_PEOPLE_CUSTOM_FIELDS);
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(self::FILE_PEOPLE_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
@@ -162,19 +161,8 @@ final class People extends AbstractParser
      */
     private function exportPersonContactData()
     {
-        $config = $this->getReaderConfig(self::FILE_PEOPLE_CONTACT_DATA);
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(self::FILE_PEOPLE_CONTACT_DATA);
 
         return $this->getMultipleContactDataParser()->export($data, self::PERSON_PREFIX, 'person_id');
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getPersonReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_PEOPLE);
     }
 }

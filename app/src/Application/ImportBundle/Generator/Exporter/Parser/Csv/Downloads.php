@@ -55,7 +55,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getDownloadReaderConfig());
+        return $this->getReaderCount(self::FILE_DOWNLOADS);
     }
 
     /**
@@ -65,7 +65,7 @@ final class Downloads extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getDownloadReaderConfig()))
+            ->setData($this->getReaderData(self::FILE_DOWNLOADS))
             ->setPrefix('CSVDownload')
             ->setRefColumn('id')
             ->setMethod('exportDownload')
@@ -126,15 +126,5 @@ final class Downloads extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getDownloadReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_DOWNLOADS);
     }
 }
