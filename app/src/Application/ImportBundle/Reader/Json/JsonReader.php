@@ -39,6 +39,8 @@ use Exception;
  *
  * Class JsonReader
  * @package Application\ImportBundle\Reader\Json
+ *
+ * @property JsonConfig $config
  */
 class JsonReader extends AbstractReader implements JsonReaderInterface
 {
@@ -63,10 +65,10 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getDirectoryFilesCount(JsonConfig $config)
+    public function getDirectoryFilesCount($entity_type, $batch_num)
     {
         $count    = 0;
-        $iterator = $this->getIterator($config->getPath());
+        $iterator = $this->getIterator($this->getEntityPath($entity_type, $batch_num));
 
         foreach ($iterator as $file) {
             /** @var SplFileInfo $file */
@@ -82,10 +84,10 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getData(JsonConfig $config)
+    public function getData($entity_type, $batch_num)
     {
         $data     = array();
-        $iterator = $this->getIterator($config->getPath());
+        $iterator = $this->getIterator($this->getEntityPath($entity_type, $batch_num));
 
         foreach ($iterator as $file) {
             /** @var SplFileInfo $file */
@@ -96,6 +98,19 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
         }
 
         return $data;
+    }
+
+    /**
+     * Returns entity type path
+     *
+     * @param string $entity_type
+     * @param int   $batch_num
+     *
+     * @return string
+     */
+    private function getEntityPath($entity_type, $batch_num)
+    {
+        return sprintf('%s/%d/%s', $this->config->getPath(), $batch_num, $entity_type);
     }
 
     /**

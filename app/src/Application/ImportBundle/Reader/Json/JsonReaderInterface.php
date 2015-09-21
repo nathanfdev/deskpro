@@ -41,17 +41,21 @@ interface JsonReaderInterface extends ReaderInterface
      * Returns count of json files in the dir
      * One record per file
      *
-     * @param JsonConfig $config
+     * @param string $entity_type
+     * @param int    $batch_num
+     *
      * @return int
      */
-    public function getDirectoryFilesCount(JsonConfig $config);
+    public function getDirectoryFilesCount($entity_type, $batch_num);
 
     /**
      * Returns directory files data
      * Reads all directory json files, decode and returns  array
      *
-     * @param JsonConfig $config
+     * @param string $entity_type
+     * @param int    $batch_num
+     *
      * @return array
      */
-    public function getData(JsonConfig $config);
+    public function getData($entity_type, $batch_num);
 }

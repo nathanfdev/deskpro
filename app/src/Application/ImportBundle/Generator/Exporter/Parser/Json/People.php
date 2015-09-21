@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Writer\Json\Destination\DestinationInterface;
 use Application\ImportBundle\Entity;
 
 /**
@@ -54,7 +54,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getPersonReaderConfig());
+        return $this->reader->getDirectoryFilesCount(DestinationInterface::ENTITY_PERSON_PATH, $this->getBatchNum());
     }
 
     /**
@@ -64,7 +64,7 @@ final class People extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->getData($this->getPersonReaderConfig()))
+            ->setData($this->reader->getData(DestinationInterface::ENTITY_PERSON_PATH, $this->getBatchNum()))
             ->setPrefix('JSONPerson')
             ->setRefColumn('oid')
             ->setMethod('exportPerson')
@@ -157,15 +157,5 @@ final class People extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getPersonReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_PERSON_PATH);
     }
 }
