@@ -38,7 +38,7 @@ class Build1442273095 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("My Upgrade Class");
+        $this->out("Add usersources.user_permission_group_id");
 		$this->execMutateSql("ALTER TABLE usersources ADD user_permission_group_id INT DEFAULT NULL");
 		$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C21AF6383 FOREIGN KEY (user_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL");
 		$this->execMutateSql("CREATE INDEX IDX_4E3C994C21AF6383 ON usersources (user_permission_group_id)");
