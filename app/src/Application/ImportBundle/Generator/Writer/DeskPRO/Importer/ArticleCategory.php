@@ -74,7 +74,7 @@ final class ArticleCategory extends AbstractImporter
         $category = $this->findOrCreateArticleCategory($entity_id);
 
         $this->setCategoryProperties($entity, $category, null);
-        $this->createDeepCategories($category, $entity);
+        $this->createOrUpdateDeepCategories($category, $entity);
 
         $this->records->setPrimaryEntity($category);
         return $this->records;
@@ -86,34 +86,41 @@ final class ArticleCategory extends AbstractImporter
      * @param DeskPROEntity\ArticleCategory $parent_category
      * @param Entity\ArticleCategory        $entity
      */
-    private function createDeepCategories(DeskPROEntity\ArticleCategory $parent_category, Entity\ArticleCategory $entity)
+    private function createOrUpdateDeepCategories(DeskPROEntity\ArticleCategory $parent_category, Entity\ArticleCategory $entity)
     {
-        $new_category_names = array();
-        $old_category_names = array();
+        $new_categories = array();
+        $old_categories = array();
 
         foreach ($entity->getCategories() as $new_category) {
-            $new_category_names[] = $new_category->getTitle();
+            $new_categories[$new_category->getTitle()] = $new_category;
         }
         foreach ($parent_category->getChildren() as $old_category) {
-            /** @var DeskPROEntity\ArticleCategory $old_category */
-            $old_category_names[] = $old_category->getRealTitle();
+            $old_categories[$old_category->getRealTitle()] = $old_category;
         }
 
         foreach ($parent_category->getChildren() as $old_category) {
-            if ( ! in_array($old_category->getRealTitle(), $new_category_names)) {
+            $title        = $old_category->getRealTitle();
+            $new_category = isset($new_categories[$title]) ? $new_categories[$title] : null;
+
+            if ($new_category) {
+                $this->setCategoryProperties($new_category, $old_category, $parent_category);
+                $this->createOrUpdateDeepCategories($old_category, $new_category);
+
+                $this->logDebug(sprintf('Updating article category `%s`', $title));
+            } else {
                 $this->entity_manager->remove($old_category);
-                $this->logDebug(sprintf('Removing article category `%s`', $old_category->getRealTitle()));
+                $this->logDebug(sprintf('Removing article category `%s`', $title));
             }
         }
 
         foreach ($entity->getCategories() as $child_entity) {
-            if (in_array($child_entity->getTitle(), $old_category_names)) {
+            if (isset($old_categories[$child_entity->getTitle()])) {
                 continue;
             }
 
-            $category = $this->setCategoryProperties($child_entity, null, $parent_category);
+            $category = $this->setCategoryProperties($child_entity, new DeskPROEntity\ArticleCategory(), $parent_category);
 
-            $this->createDeepCategories($category, $child_entity);
+            $this->createOrUpdateDeepCategories($category, $child_entity);
             $this->records->addRelatedEntity($category);
         }
     }
@@ -127,9 +134,8 @@ final class ArticleCategory extends AbstractImporter
      *
      * @return DeskPROEntity\ArticleCategory
      */
-    private function setCategoryProperties(Entity\ArticleCategory $entity, DeskPROEntity\ArticleCategory $category = null, DeskPROEntity\ArticleCategory $parent_category = null)
+    private function setCategoryProperties(Entity\ArticleCategory $entity, DeskPROEntity\ArticleCategory $category, DeskPROEntity\ArticleCategory $parent_category = null)
     {
-        $category = $category ? : new DeskPROEntity\ArticleCategory();
         $category
             ->setRealTitle($entity->getTitle())
             ->setParent($parent_category)

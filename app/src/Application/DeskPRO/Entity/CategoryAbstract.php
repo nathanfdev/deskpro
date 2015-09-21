@@ -252,7 +252,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|CategoryAbstract[]
      */
     public function getChildren()
     {
