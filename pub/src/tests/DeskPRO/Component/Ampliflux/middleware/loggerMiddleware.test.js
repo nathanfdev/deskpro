@@ -83,9 +83,7 @@ describe('Ampliflux Logger Middleware', () => {
 
           try {
             actionHandler(action);
-          }  catch (e) {
-            // do nothing, calling a lambda to satisfy ESLint no empty blocks
-            (() => {})();
+          }  catch (e) { // eslint-disable-line no-empty
           } finally {
             expect(console.error).toHaveBeenCalled();
             expect(console.error.argsForCall[0][1]).toBe(error);
