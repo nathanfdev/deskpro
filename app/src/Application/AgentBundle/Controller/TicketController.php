@@ -4377,16 +4377,17 @@ class TicketController extends AbstractController
             ));
         }
 
-        $lock_cm = new ClientMessage();
-        $lock_cm->fromArray(array(
-            'channel' => 'agent-notification.tickets.locked',
-            'data' => array(
-                'ticket_id' => $ticket['id'],
-                'agent_id' => $ticket['id'],
-            ),
-            'created_by_client' => 0,
-        ));
-        $this->em->persist($lock_cm);
+//        $lock_cm = new ClientMessage();
+//        $lock_cm->fromArray(array(
+//            'channel' => 'agent-notification.tickets.locked-status',
+//            'data' => array(
+//                'ticket_id'       => $ticket->id,
+//                'is_locked'       => true,
+//                'locked_by'       => $this->person->id,
+//                'via_person'      => $this->person->id,
+//            ),
+//        ));
+//        $this->em->persist($lock_cm);
 
         $ticket->setLockedByAgent($this->person);
         $this->em->flush();

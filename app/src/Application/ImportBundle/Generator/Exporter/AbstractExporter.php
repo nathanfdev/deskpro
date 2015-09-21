@@ -114,11 +114,9 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         $parser->setConfig($this->config);
 
         if ($this->logger && $parser instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $parser */
             $parser->setLogger($this->logger);
         }
         if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $parser */
             $parser->setProgressBarHelper($this->progress_bar);
         }
 
@@ -133,6 +131,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         return array(
             Entity\EntityInterface::TYPE_ORGANIZATION,
             Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_ARTICLE_CATEGORY,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,

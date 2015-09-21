@@ -52,14 +52,28 @@ class GeneratorFactory
         $writer_factory = $config->getWriterFactory($container);
         $writer = $writer_factory ? $writer_factory->createWriter() : null;
 
-        $validator = $container->get('validator');
-
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
             if ( ! $config->getExporterBatchConfig()) {
                 $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
             }
         }
 
-        return new Generator($exporter, $validator, $config, $writer, $container->get('deskpro.import'));
+        $symfony_validator = $container->get('validator');
+        $validators = new Validator\Collection();
+        $validators
+            ->attach(new Validator\Download($symfony_validator))
+            ->attach(new Validator\Feedback($symfony_validator))
+            ->attach(new Validator\Article($symfony_validator))
+            ->attach(new Validator\ArticleCategory($symfony_validator))
+            ->attach(new Validator\News($symfony_validator))
+            ->attach(new Validator\Person($symfony_validator))
+            ->attach(new Validator\Ticket($symfony_validator))
+            ->attach(new Validator\Organization($symfony_validator))
+        ;
+
+        /** @var \Application\ImportBundle\Service\Import $import_service */
+        $import_service = $container->get('deskpro.import');
+
+        return new Generator($exporter, $validators, $config, $import_service, $writer);
     }
 }

@@ -55,6 +55,11 @@ class JsonTest extends \DpIntegrationTestCase
     private $article_repository;
 
     /**
+     * @var EntityRepository\ArticleCategory
+     */
+    private $article_category_repository;
+
+    /**
      * @var EntityRepository\Feedback
      */
     private $feedback_repository;
@@ -105,17 +110,18 @@ class JsonTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->ticket_attachment_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->news_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
-        $this->article_repository             = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
-        $this->feedback_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
-        $this->feedback_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
-        $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
-        $this->organization_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
-        $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
-        $this->object_lang_repository         = $entity_manager->getRepository('Application\DeskPRO\Entity\ObjectLang');
+        $this->ticket_repository              = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository   = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository              = $entity_manager->getRepository('DeskPRO:Person');
+        $this->news_repository                = $entity_manager->getRepository('DeskPRO:News');
+        $this->article_repository             = $entity_manager->getRepository('DeskPRO:Article');
+        $this->article_category_repository    = $entity_manager->getRepository('DeskPRO:ArticleCategory');
+        $this->feedback_repository            = $entity_manager->getRepository('DeskPRO:Feedback');
+        $this->feedback_attachment_repository = $entity_manager->getRepository('DeskPRO:FeedbackAttachment');
+        $this->download_repository            = $entity_manager->getRepository('DeskPRO:Download');
+        $this->organization_repository        = $entity_manager->getRepository('DeskPRO:Organization');
+        $this->blob_repository                = $entity_manager->getRepository('DeskPRO:Blob');
+        $this->object_lang_repository         = $entity_manager->getRepository('DeskPRO:ObjectLang');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
@@ -156,19 +162,44 @@ class JsonTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Entity `ticket_1` parsed successfully!', $output);
-        $this->assertContains('Entity `person_710618382` parsed successfully!', $output);
-        $this->assertContains('Entity `news_1` parsed successfully!', $output);
-        $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
-        $this->assertContains('Entity `article_1` parsed successfully!', $output);
-        $this->assertContains('Entity `article_2` parsed successfully!', $output);
-        $this->assertContains('Entity `download_1` parsed successfully!', $output);
-        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
+        // Checking for tickets
+        $this->assertContains('[JSONTicketMessage #1 (message_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONTicket #1 (ticket_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONTicketMessage #1 (message_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONTicket #2 (ticket_2)] Entity parsed successfully!', $output);
+
+        // Checking for people
+        $this->assertContains('[JSONPerson #710618382 (person_710618382)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONPerson #710618383 (person_710618383)] Entity parsed successfully!', $output);
+
+        // Checking for news
+        $this->assertContains('[JSONNews #1 (news_1)] Entity parsed successfully!', $output);
+
+        // Checking for feedback
+        $this->assertContains('[JSONAttachment #0 (attachment_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONFeedback #1 (feedback_1)] Entity parsed successfully!', $output);
+
+        // Checking for articles
+        $this->assertContains('[JSONCustomField #1 (custom_field_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONAttachment #0 (attachment_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONArticleComment #0 (article_comment_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONTranslation #0 (translation_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONTranslation #1 (translation_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONArticle #1 (article_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONArticle #2 (article_2)] Entity parsed successfully!', $output);
+
+        // Checking for downloads
+        $this->assertContains('[JSONDownload #1 (download_1)] Entity parsed successfully!', $output);
+
+        // Checking for organizations
+        $this->assertContains('[JSONContactData #1 (contact_data_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[JSONOrganization #Some Organization (organization_some_organization)] Entity parsed successfully!', $output);
+
         $this->assertContains('Done. Checking was successful.', $output);
 
-        $this->checkDbEmpty();
-        $this->checkJsonEmpty();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonEmpty();
+        $this->checkDbEmpty();
     }
 
     public function testExport()
@@ -186,9 +217,9 @@ class JsonTest extends \DpIntegrationTestCase
             '--batch'       => true,
         ));
 
-        $this->checkDbEmpty();
-        $this->checkJsonData();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonData();
+        $this->checkDbEmpty();
     }
 
     public function testImport()
@@ -207,9 +238,9 @@ class JsonTest extends \DpIntegrationTestCase
         ));
 
         $this->checkDbWriterOutput($command_tester);
-        $this->checkDbData();
-        $this->checkJsonEmpty();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonEmpty();
+        $this->checkDbData();
     }
 
     public function testImportBatch()
@@ -229,9 +260,9 @@ class JsonTest extends \DpIntegrationTestCase
         ));
 
         $this->checkDbWriterOutput($command_tester);
-        $this->checkDbData();
-        $this->checkJsonData();
         $this->checkNoErrors($command_tester);
+        $this->checkJsonData();
+        $this->checkDbData();
     }
 
     private function checkJsonEmpty()
@@ -263,7 +294,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkJsonFile('/1/news/news1.json', '1/news/news_1.json');
         $this->checkJsonFile('/1/news/news2.json', '1/news/news_2.json');
         $this->checkJsonFile('/1/downloads/download1.json', '1/downloads/download_1.json');
-        $this->checkJsonFile('/1/organization_some_organization.json', '1/organization_some_organization.json');
+        $this->checkJsonFile('/1/organizations/organization_some_organization.json', '1/organizations/organization_some_organization.json');
     }
 
     /**
@@ -286,7 +317,8 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
         $this->assertEquals(3, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
-        $this->assertEquals(2, $this->article_repository->countAll());
+        $this->assertEquals(3, $this->article_repository->countAll());
+        $this->assertEquals(3, $this->article_category_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
@@ -297,16 +329,19 @@ class JsonTest extends \DpIntegrationTestCase
     private function checkDbData()
     {
         $this->checkDbArticleData();
+        $this->checkDbArticleCategoryData();
         $this->checkDbPeopleData();
         $this->checkDbTicketsData();
         $this->checkDbFeedbackData();
         $this->checkDbOrganizationData();
+        $this->checkDbDownloadData();
+        $this->checkDbNewsData();
         $this->checkDbBlobData();
     }
 
     private function checkDbArticleData()
     {
-        $this->assertCount(2, $this->article_repository->findAll());
+        $this->assertCount(3, $this->article_repository->findAll());
 
         /** @var Entity\Article $article */
         $article = $this->article_repository->findOneBy(array('id' => 2));
@@ -316,6 +351,8 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals('Content 1', $article->getContentPlain());
         $this->assertEquals('2-slug-article-1', $article->getUrlSlug());
         $this->assertEquals('published', $article->getStatusCode());
+        $this->assertEquals('Sub Category 1', $article->getCategoryNames(',', false));
+        $this->assertEquals('Category 1 > Sub Category 1', $article->getCategoryNames());
         $this->assertEquals(new \DateTime('2015-01-15 00:00:00'), $article->getDateCreated());
         $this->assertNull($article->getDatePublished());
         $this->assertNull($article->getDateEnd());
@@ -345,6 +382,24 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals('Content 1 (es_ES)', $object_lang_2->getValue());
     }
 
+    private function checkDbArticleCategoryData()
+    {
+        $this->assertCount(4, $this->article_category_repository->findAll());
+
+        /** @var Entity\ArticleCategory $parent_category */
+        $parent_category = $this->article_category_repository->findOneBy(array('title' => 'Category 1'));
+        $this->assertNotNull($parent_category);
+        $this->assertCount(2, $parent_category->getChildren());
+
+        $children_categories = $parent_category->getChildren();
+
+        $children_category = $children_categories[0];
+        $this->assertEquals('Sub Category 1', $children_category->getRealTitle());
+
+        $children_category = $children_categories[1];
+        $this->assertEquals('Sub Category 2', $children_category->getRealTitle());
+    }
+
     private function checkDbPeopleData()
     {
         $this->assertCount(3, $this->person_repository->findAll());
@@ -367,6 +422,9 @@ class JsonTest extends \DpIntegrationTestCase
         /** @var Entity\Ticket $ticket */
         $ticket = $this->ticket_repository->findOneBy(array('ref' => 'AAABBBCCC'));
         $this->assertNotNull($ticket);
+        $this->assertEquals(1, $ticket->getLanguageId());
+        $this->assertNotNull($ticket->getAgent());
+        $this->assertEquals('user@example.com', $ticket->getAgent()->getPrimaryEmail()->getEmail());
 
         $labels = array();
         foreach ($ticket->labels as $label) {
@@ -380,6 +438,17 @@ class JsonTest extends \DpIntegrationTestCase
     {
         $this->assertCount(2, $this->feedback_repository->findAll());
         $this->assertCount(1, $this->feedback_attachment_repository->findAll());
+
+        /** @var Entity\Feedback $feedback */
+        $feedback = $this->feedback_repository->findOneBy(array('title' => 'Feedback 1'));
+        $this->assertNotNull($feedback);
+
+        $labels = array();
+        foreach ($feedback->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('Feedback Label 1'), $labels);
     }
 
     private function checkDbOrganizationData()
@@ -405,6 +474,38 @@ class JsonTest extends \DpIntegrationTestCase
         }
 
         $this->assertEquals(array('label1', 'label2'), $labels);
+    }
+
+    private function checkDbDownloadData()
+    {
+        $this->assertCount(1, $this->download_repository->findAll());
+
+        /** @var Entity\Download $download */
+        $download = $this->download_repository->findOneBy(array('title' => 'Download 1'));
+        $this->assertNotNull($download);
+
+        $labels = array();
+        foreach ($download->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('Label 1'), $labels);
+    }
+
+    private function checkDbNewsData()
+    {
+        $this->assertCount(2, $this->news_repository->findAll());
+
+        /** @var Entity\News $news */
+        $news = $this->news_repository->findOneBy(array('title' => 'News Title 1'));
+        $this->assertNotNull($news);
+
+        $labels = array();
+        foreach ($news->getLabels() as $label) {
+            $labels[] = $label->getLabel();
+        }
+
+        $this->assertEquals(array('News Label 1'), $labels);
     }
 
     private function checkDbBlobData()

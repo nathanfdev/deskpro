@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,54 +25,45 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 
 /**
- * Kb entities validator
- *
- * Class Article
- * @package Application\ImportBundle\Generator\Validator
+ * Class AbstractCustomDefMapper
+ * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class Articles extends AbstractConstraintValidator
+abstract class AbstractCustomDefMapper implements MapperInterface
 {
     /**
-     * {@inheritdoc}
+     * Find a choice custom def entity
+     * We store value for choice custom fields like "A > A1"
+     *
+     * MyField
+     *   Option A
+     *     |- Option A1
+     *     |- Option A2
+     *   Option B
+     *     |- Option B1
+     *     |- Option B2
+     *
+     * @param array|string      $choice_chain
+     * @param CustomDefAbstract $parent
+     *
+     * @return CustomDefAbstract
      */
-    public function getEntityType()
+    public function findChoiceCustomDef($choice_chain, CustomDefAbstract $parent)
     {
-        return Entity\EntityInterface::TYPE_ARTICLE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        if ( ! $entity instanceof Entity\Article) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        if (is_string($choice_chain)) {
+            $choice_chain = explode('>', $choice_chain);
+            $choice_chain = array_map('trim', $choice_chain);
         }
 
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
+        $custom_field_def = $this->findOneBy(array(
+            'title'  => array_shift($choice_chain),
+            'parent' => $parent,
+        ));
 
-        foreach ($entity->getComments() as $comment) {
-            /** @var Entity\ArticleComment $comment */
-            $errors = $this->validator->validate($comment);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
-
-        foreach ($entity->getAttachments() as $attachment) {
-            /** @var Entity\Attachment $attachment */
-            $errors = $this->validator->validate($attachment);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
+        return empty($choice_chain) ? $custom_field_def : $this->findChoiceCustomDef($choice_chain, $custom_field_def);
     }
 }

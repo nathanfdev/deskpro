@@ -54,7 +54,7 @@ final class Collection extends AbstractCollection
      * Returns a new collection contains validators of current type
      *
      * @param string $type
-     * @return Collection
+     * @return ValidatorInterface[]|Collection
      */
     public function getByEntityType($type)
     {

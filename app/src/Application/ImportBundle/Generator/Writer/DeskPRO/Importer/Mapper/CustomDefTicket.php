@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class CustomDefTicket
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class CustomDefTicket implements MapperInterface
+final class CustomDefTicket extends AbstractCustomDefMapper
 {
     /**
      * @var EntityRepository\CustomDefTicket

@@ -29,8 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * People csv file parser
@@ -63,48 +63,40 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $collection    = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getPersonReaderConfig()))
+            ->setPrefix('CSVPerson')
+            ->setRefColumn('email')
+            ->setMethod('exportPerson')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $people        = $this->getReaderData($this->getPersonReaderConfig());
+        $collection    = $this->exportCollection($config);
         $contact_data  = $this->exportPersonContactData();
         $custom_fields = $this->exportPersonCustomFields();
 
-        foreach ($people as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportPerson($num, $data);
-
-                foreach ($contact_data as $contact) {
-                    /** @var Entity\ContactData $contact */
-                    if ($entity->getDestination() === $contact->getDestination()) {
-                        $entity->addContact($contact);
-                    }
+        foreach ($collection as $person) {
+            /** @var Entity\Person $person */
+            foreach ($contact_data as $contact) {
+                if ($person->getDestination() === $contact->getDestination()) {
+                    $person->addContact($contact);
                 }
-                foreach ($custom_fields as $custom_field_entity) {
-                    /** @var Entity\CustomField $custom_field_entity */
-                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                        $entity->addCustomField($custom_field_entity);
-                    }
+            }
+            foreach ($custom_fields as $custom_field_entity) {
+                if ($person->getDestination() === $custom_field_entity->getDestination()) {
+                    $person->addCustomField($custom_field_entity);
                 }
+            }
 
-                $inline_contact_data = $this->getInlineContactDataParser()->export($data, $entity->getDestination());
-                foreach ($inline_contact_data as $contact) {
-                    $entity->addContact($contact);
-                }
+            $inline_contact_data = $this->getInlineContactDataParser()->export($person->getRawData(), $person->getDestination());
+            foreach ($inline_contact_data as $contact) {
+                $person->addContact($contact);
+            }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
-                foreach ($inline_custom_fields as $custom_field_entity) {
-                    $entity->addCustomField($custom_field_entity);
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVPerson', $this->getEntityType(), 'email', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVPerson', $this->getEntityType(), 'email', $e, $data);
+            $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($person->getDestination(), $person->getRawData());
+            foreach ($inline_custom_fields as $custom_field_entity) {
+                $person->addCustomField($custom_field_entity);
             }
         }
 
@@ -114,12 +106,12 @@ final class People extends AbstractParser
     /**
      * Returns a person entity
      *
-     * @param int   $num
      * @param array $person
+     * @param int   $num
      *
-     * @return Entity\Person|null
+     * @return Entity\Person
      */
-    private function exportPerson($num, array $person)
+    protected function exportPerson(array $person, $num)
     {
         $formatted = $this->formatter->format($person, array(
             'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
@@ -153,7 +145,7 @@ final class People extends AbstractParser
     /**
      * Returns a collection of people custom field data
      *
-     * @return Entity\Collection
+     * @return Entity\CustomField[]|Entity\Collection
      */
     private function exportPersonCustomFields()
     {
@@ -166,7 +158,7 @@ final class People extends AbstractParser
     /**
      * Returns a collection of people contact data
      *
-     * @return Entity\Collection
+     * @return Entity\ContactData[]|Entity\Collection
      */
     private function exportPersonContactData()
     {

@@ -60,8 +60,6 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $news = new DeskPROEntity\News();
         $news
             ->setTitle($entity->getTitle())

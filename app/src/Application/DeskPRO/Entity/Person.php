@@ -91,7 +91,7 @@ use Orb\Util\Util;
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
  * @property PhoneNumber[] $phone_numbers
- * @property LabelPerson[] $labels
+ * @property ArrayCollection|LabelPerson[] $labels
  * @property CustomDataPerson[] $custom_data
  * @property PersonContactData[] $contact_data
  * @property Usergroup[] $usergroups
@@ -369,6 +369,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $phone_numbers;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
@@ -739,6 +740,41 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setIsDisabled($yesno)
+    {
+        $this->setModelField('is_disabled', $yesno);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabled()
+    {
+        return $this->is_disabled;
+    }
+
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setIsDeleted($yesno)
+    {
+        $this->setModelField('is_deleted', $yesno);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
+    }
 
     /**
      * @return bool|int
@@ -1316,6 +1352,17 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->getLanguage()->getId();
     }
 
+    /**
+     * Set language
+     *
+     * @param Language|null $language
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+        return $this;
+    }
 
     /**
      * @param int $id
@@ -2092,7 +2139,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Check if hte user belongs to a usergroup
+     * Check if the user belongs to a usergroup
      *
      * @param $usergroup
      * @return bool
@@ -3542,7 +3589,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             array(
                 'fieldName' => 'preferences',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
-                'cascade' => array('remove', 'merge'),
+                'cascade' => array('persist', 'remove', 'merge'),
                 'mappedBy' => 'person',
             )
         );

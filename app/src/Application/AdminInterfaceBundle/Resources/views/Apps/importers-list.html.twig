@@ -9,7 +9,7 @@
                 <li ng-repeat="i in list" dp-state-mark="apps.importers.view.{{ ng_var('i.id') }}">
                     <aside>
                         <a href="{{ ng_href('apps.importers.view', '{id: i.id}') }}">
-                            <img ng-src="/web/images/admin/icons/icon-{{ ng_var('i.id') }}.png" alt="Icon"
+                            <img ng-src="{{ ng_var('i.icon') }}" alt="Icon"
                                  style="width: 40px; height: 40px;"/>
                         </a>
                     </aside>

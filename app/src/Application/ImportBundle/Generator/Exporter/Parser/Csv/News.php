@@ -29,8 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * News csv file parser
@@ -61,37 +61,27 @@ final class News extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $news_list  = $this->getReaderData($this->getNewsReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getNewsReaderConfig()))
+            ->setPrefix('CSVNews')
+            ->setRefColumn('id')
+            ->setMethod('exportNews')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($news_list as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportNews($num, $data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVNews', $this->getEntityType(), 'title', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVNews', $this->getEntityType(), 'title', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * Returns a news entity
      *
-     * @param int   $num
      * @param array $data
+     * @param int   $num
      *
-     * @return Entity\News|null
+     * @return Entity\News
      */
-    private function exportNews($num, array $data)
+    protected function exportNews(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
             'id'             => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(

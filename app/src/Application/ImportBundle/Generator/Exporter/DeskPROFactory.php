@@ -58,6 +58,7 @@ class DeskPROFactory extends AbstractFactory
             ->attach(new Parser\DeskPRO\People($reader))
             ->attach(new Parser\DeskPRO\Tickets($reader, $config->getStartTicketId()))
             ->attach(new Parser\DeskPRO\Articles($reader))
+            ->attach(new Parser\DeskPRO\ArticleCategories($reader))
             ->attach(new Parser\DeskPRO\Downloads($reader))
             ->attach(new Parser\DeskPRO\Feedback($reader))
             ->attach(new Parser\DeskPRO\News($reader))

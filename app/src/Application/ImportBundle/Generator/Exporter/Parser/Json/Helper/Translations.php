@@ -28,10 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class Translations
@@ -55,18 +55,15 @@ class Translations extends AbstractParserFormatterHelper
      */
     public function export(array $translations)
     {
-        $collection = new Entity\Collection();
-        foreach ($translations as $num => $translation) {
-            try {
-                $entity = $this->exportTranslation($translation);
-                $collection->attach($entity);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($translations)
+            ->setPrefix('JSONTranslation')
+            ->setRefColumn('oid')
+            ->setMethod('exportTranslation')
+        ;
 
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTranslation', $this->getEntityType(), 'oid', $e);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**

@@ -55,8 +55,6 @@ final class Person extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         if ($entity->isAgent()) {
             $this->logAlert(sprintf('Importing agent `%s`', $entity->getFirstEmail()));
         }
@@ -70,6 +68,9 @@ final class Person extends AbstractImporter
             ->setIsAgent($entity->isAgent())
             ->setCanAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin())
+            ->setLanguage($entity->getLanguage() ? $this->findLanguage($entity->getLanguage()) : null)
+            ->setIsDisabled($entity->isDisabled())
+            ->setIsDeleted($entity->isDeleted())
             ->setDateCreated($entity->getDateCreated())
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
             ->setOrganizationPosition($entity->getOrganizationPosition())
@@ -79,10 +80,6 @@ final class Person extends AbstractImporter
             ->resetContactData()
             ->resetCustomData()
         ;
-
-        if ($entity->getLanguage()) {
-            $person['language'] = $this->findLanguage($entity->getLanguage());
-        }
 
         if ($entity->isAgent() && ! in_array('agent_all_safe_perms', $entity->getUserGroups(), true)) {
             $entity->addUserGroup('agent_all_safe_perms');
@@ -103,12 +100,9 @@ final class Person extends AbstractImporter
         foreach ($entity->getEmails() as $num => $email) {
             if ($this->getEmailAccountMapper()->findOneByEmail($email, false)) {
                 $this->logWarning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
-            } elseif(!$person->hasEmailAddress($email)) {
+            } elseif ( ! $person->hasEmailAddress($email)) {
                 $person->addEmailAddressString($email);
-                $this->logDebug(sprintf(
-                    $num ? 'Set email `%s`' : 'Set primary email `%s`',
-                    $entity->getFirstEmail()
-                ));
+                $this->logDebug(sprintf($num ? 'Set email `%s`' : 'Set primary email `%s`', $entity->getFirstEmail()));
             }
         }
         foreach ($entity->getUserGroups() as $user_group_name) {
@@ -162,35 +156,6 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns an user group by sys name
-     *
-     * @param string $sys_name
-     *
-     * @return DeskPROEntity\UserGroup|null
-     * @throws \Exception
-     */
-    private function findUserGroup($sys_name)
-    {
-        /** @var Mapper\UserGroup $mapper */
-        $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
-        $user_group = null;
-
-        if ($sys_name) {
-            $user_group = $mapper->findOneBySysName($sys_name, false);
-            if ($user_group) {
-                $this->logDebug(sprintf(
-                    'Found existing user group `%d` with title `%s`',
-                    $user_group->getId(), $user_group->getTitle()
-                ));
-            } else {
-                $this->logWarning(sprintf('No user group `%s`', $sys_name));
-            }
-        }
-
-        return $user_group;
-    }
-
-    /**
      * Returns person contact data entity
      *
      * @param Entity\ContactData $entity
@@ -227,20 +192,10 @@ final class Person extends AbstractImporter
      */
     private function createPersonCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefPerson $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());
-    }
-
-    /**
-     * Returns the person email mapper
-     *
-     * @return Mapper\PersonEmail
-     * @throws \Exception
-     */
-    private function getPersonEmailMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_EMAIL);
     }
 
     /**

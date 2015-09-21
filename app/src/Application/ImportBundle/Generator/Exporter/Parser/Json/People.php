@@ -28,8 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
@@ -62,26 +62,16 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $people     = $this->reader->getData($this->getPersonReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getPersonReaderConfig()))
+            ->setPrefix('JSONPerson')
+            ->setRefColumn('oid')
+            ->setMethod('exportPerson')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($people as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportPerson($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONPerson', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONPerson', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -90,7 +80,7 @@ final class People extends AbstractParser
      * @param array $data
      * @return Entity\Person|null
      */
-    private function exportPerson(array $data)
+    protected function exportPerson(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'                   => TransformerInterface::TYPE_STRING,
@@ -101,6 +91,8 @@ final class People extends AbstractParser
             )),
             'is_agent'              => TransformerInterface::TYPE_BOOLEAN,
             'is_user'               => TransformerInterface::TYPE_BOOLEAN,
+            'is_disabled'           => TransformerInterface::TYPE_BOOLEAN,
+            'is_deleted'            => TransformerInterface::TYPE_BOOLEAN,
             'is_admin'              => TransformerInterface::TYPE_BOOLEAN,
             'first_name'            => TransformerInterface::TYPE_STRING,
             'last_name'             => TransformerInterface::TYPE_STRING,
@@ -129,6 +121,8 @@ final class People extends AbstractParser
             ->setAsAgent($formatted['is_agent'])
             ->setAsUser($formatted['is_user'])
             ->setAsAdmin($formatted['is_admin'])
+            ->setAsDisabled($formatted['is_disabled'])
+            ->setAsDeleted($formatted['is_deleted'])
             ->setFirstName($formatted['first_name'])
             ->setLastName($formatted['last_name'])
             ->setName($formatted['name'])

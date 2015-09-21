@@ -24,6 +24,7 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 		$(this.options.input_selector).each(function () {
 			var input = $(this);
 			var id = input.attr('id');
+			var ext_input = input.parent().find('.dp_phone_ext_hidden');
 
 			if (input.next() && input.next().hasClass('intl-tel-input')) {
 				return;
@@ -39,17 +40,29 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 				defaultCountry: 'auto',
 				autoPlaceholder: true,
 				autoFormat: true,
+				allowExtensions: true,
 				nationalMode: true,
 				utilsScript: window.DP_ASSET_URL + '/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js',
 				geoIpLookup: that.lookupGeoIp
 			});
 
-			if (input.val()) {
+			if (input.val() && ext_input.val()) {
+				phone_input.intlTelInput('setNumber', input.val() + 'x' + ext_input.val());
+			} else if (input.val()) {
 				phone_input.intlTelInput('setNumber', input.val());
 			}
 
-			phone_input.on('input', function () {
-				input.val(phone_input.intlTelInput('getNumber'));
+			phone_input.on('input change', function () {
+				// if there was an extension, but now there is not an extension
+				if (ext_input.val() && !phone_input.intlTelInput('getExtension')) {
+					ext_input.val(phone_input.intlTelInput('getExtension'));
+					phone_input.intlTelInput('setNumber', input.val());
+					// do not change "input" here, since the ext was just removed
+					// intlTelNumber is wonky until further changes are made
+				} else {
+					ext_input.val(phone_input.intlTelInput('getExtension'));
+					input.val(phone_input.intlTelInput('getNumber'));
+				}
 			});
 
 			phone_input.on('blur', function () {

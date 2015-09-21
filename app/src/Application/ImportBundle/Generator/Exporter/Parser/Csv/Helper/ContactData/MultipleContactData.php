@@ -56,7 +56,7 @@ class MultipleContactData extends AbstractParserFormatterHelper
      * @param string $destination_prefix
      * @param string $ref_column
      *
-     * @return Entity\Collection
+     * @return Entity\ContactData[]|Entity\Collection
      */
     public function export(array $data, $destination_prefix, $ref_column)
     {

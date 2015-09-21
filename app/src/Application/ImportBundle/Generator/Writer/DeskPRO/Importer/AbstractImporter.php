@@ -32,7 +32,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\MapperInterface;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\AbstractCustomDefMapper;
 
 /**
  * Abstract DeskPRO importer
@@ -49,7 +49,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected $mappers;
 
     /**
-     * @var DoctrineEntitiesCollection
+     * @var DoctrineEntities
      */
     protected $records;
 
@@ -61,6 +61,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     public function __construct(Mapper\Collection $mappers)
     {
         $this->mappers = $mappers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reset()
+    {
+        $this->records = new DoctrineEntities();
+        return $this;
     }
 
     /**
@@ -137,16 +146,45 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * Returns an user group by sys name
+     *
+     * @param string $sys_name
+     *
+     * @return DeskPROEntity\UserGroup|null
+     * @throws \Exception
+     */
+    protected function findUserGroup($sys_name)
+    {
+        /** @var Mapper\UserGroup $mapper */
+        $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
+        $user_group = null;
+
+        if ($sys_name) {
+            $user_group = $mapper->findOneBySysName($sys_name, false);
+            if ($user_group) {
+                $this->logDebug(sprintf(
+                    'Found existing user group `%d` with title `%s`',
+                    $user_group->getId(), $user_group->getTitle()
+                ));
+            } else {
+                $this->logWarning(sprintf('No user group `%s`', $sys_name));
+            }
+        }
+
+        return $user_group;
+    }
+
+    /**
      * Returns custom def person entity
      *
-     * @param MapperInterface                  $mapper
+     * @param AbstractCustomDefMapper          $mapper
      * @param Entity\CustomField               $entity
      * @param DeskPROEntity\CustomDataAbstract $custom_field
      *
      * @return DeskPROEntity\CustomDataTicket
      * @throws ImporterException
      */
-    protected function createCustomData(MapperInterface $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
+    protected function createCustomData(AbstractCustomDefMapper $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
     {
         $custom_field_def = $mapper->findOneBy(array(
             'title'  => $entity->getKey(),
@@ -183,8 +221,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
-                /** @var DeskPROEntity\CustomDataAbstract $choice */
-                $choice = $this->findChoiceCustomDef($mapper, $entity->getValue(), $custom_field_def);
+                $choice = $mapper->findChoiceCustomDef($entity->getValue(), $custom_field_def);
                 $custom_field
                     ->setField($choice)
                     ->setRootField($custom_field_def)
@@ -202,39 +239,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         }
 
         return $custom_field;
-    }
-
-    /**
-     * Find a choice custom def entity
-     * We store value for choice custom fields like "A > A1"
-     *
-     * MyField
-     *   Option A
-     *     |- Option A1
-     *     |- Option A2
-     *   Option B
-     *     |- Option B1
-     *     |- Option B2
-     *
-     * @param MapperInterface                 $mapper
-     * @param array|string                    $choice_chain
-     * @param DeskPROEntity\CustomDefAbstract $parent
-     *
-     * @return DeskPROEntity\CustomDefAbstract
-     */
-    protected function findChoiceCustomDef(MapperInterface $mapper, $choice_chain, DeskPROEntity\CustomDefAbstract $parent)
-    {
-        if (is_string($choice_chain)) {
-            $choice_chain = explode('>', $choice_chain);
-            $choice_chain = array_map('trim', $choice_chain);
-        }
-
-        $custom_field_def = $mapper->findOneBy(array(
-            'title'  => array_shift($choice_chain),
-            'parent' => $parent,
-        ));
-
-        return empty($choice_chain) ? $custom_field_def : $this->findChoiceCustomDef($mapper, $choice_chain, $custom_field_def);
     }
 
     /**
@@ -353,11 +357,13 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * todo inject
-     * @param DomainObject $entity
+     * Returns the article category mapper
+     *
+     * @return Mapper\ArticleCategory
+     * @throws \Exception
      */
-    protected function removeEntity(DomainObject $entity)
+    protected function getArticleCategoryMapper()
     {
-        App::getOrm()->remove($entity);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
     }
 }

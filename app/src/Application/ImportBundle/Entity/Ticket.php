@@ -561,7 +561,9 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @return Collection
+     * Returns ticket messages
+     *
+     * @return TicketMessage[]|Collection
      */
     public function getMessages()
     {
@@ -577,6 +579,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     public function addMessage(TicketMessage $message)
     {
         $this->messages->attach($message);
+        $message->setTicket($this);
+
         return $this;
     }
 
@@ -679,6 +683,9 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             )))
 
             ->addGetterConstraint('statusValid', new Constraints\True())
+
+            ->addPropertyConstraint('messages', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
         ;
     }
 }

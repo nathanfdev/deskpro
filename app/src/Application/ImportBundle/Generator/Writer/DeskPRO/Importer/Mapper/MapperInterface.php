@@ -42,6 +42,7 @@ interface MapperInterface
     const TYPE_TICKET                  = 'ticket';
     const TYPE_TICKET_CATEGORY         = 'ticket_category';
     const TYPE_TICKET_LABEL            = 'ticket_label';
+    const TYPE_TICKET_MESSAGE          = 'ticket_message';
     const TYPE_TICKET_WORKFLOW         = 'ticket_workflow';
     const TYPE_TICKET_PRIORITY         = 'ticket_priority';
     const TYPE_DEPARTMENT              = 'department';

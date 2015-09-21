@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,59 +25,40 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\AbstractCollection;
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
- * Class DoctrineEntitiesCollection
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
+ * Class ArticleCategories
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
+ *
+ * todo implement
  */
-class DoctrineEntitiesCollection extends AbstractCollection
+final class ArticleCategories extends AbstractParser implements NotSupportedInterface
 {
     /**
-     * @var mixed
+     * {@inheritdoc}
      */
-    private $primary_entity;
-
-    /**
-     * @return mixed
-     */
-    public function getPrimaryEntity()
+    public function getEntityType()
     {
-        return $this->primary_entity;
+        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
     }
 
     /**
-     * @param mixed $entity
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setPrimaryEntity($entity)
+    public function getCount()
     {
-        $this->primary_entity = $entity;
-        $this->addRelatedEntity($entity);
-
-        return $this;
+        return 0;
     }
 
     /**
-     * @param mixed $entity
-     * @return $this
+     * {@inheritdoc}
      */
-    public function addRelatedEntity($entity)
+    public function export()
     {
-        $exist = false;
-        foreach ($this->collection as $existing_entity) {
-            if ($entity === $existing_entity) {
-                $exist = true;
-                break;
-            }
-        }
-
-        if ( ! $exist) {
-            $this->collection[] = $entity;
-        }
-
-        return $this;
+        return new Entity\Collection();
     }
 }

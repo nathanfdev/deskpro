@@ -305,6 +305,7 @@ class GeneratorConfig
             Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_PERSON,
             Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_ARTICLE_CATEGORY,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,
             Entity\EntityInterface::TYPE_NEWS,

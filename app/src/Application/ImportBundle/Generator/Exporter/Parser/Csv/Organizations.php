@@ -29,8 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Organizations csv file parser
@@ -63,48 +63,40 @@ class Organizations extends AbstractParser
      */
     public function export()
     {
-        $collection    = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getOrganizationReaderConfig()))
+            ->setPrefix('CSVOrganization')
+            ->setRefColumn('name')
+            ->setMethod('exportOrganization')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $organizations = $this->getReaderData($this->getOrganizationReaderConfig());
+        $collection    = $this->exportCollection($config);
         $contact_data  = $this->exportOrganizationContactData();
         $custom_fields = $this->exportOrganizationCustomFields();
 
-        foreach ($organizations as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportOrganization($num, $data);
-
-                foreach ($contact_data as $contact) {
-                    /** @var Entity\ContactData $contact */
-                    if ($entity->getDestination() === $contact->getDestination()) {
-                        $entity->addContact($contact);
-                    }
+        foreach ($collection as $organization) {
+            /** @var Entity\Organization $organization */
+            foreach ($contact_data as $contact) {
+                if ($organization->getDestination() === $contact->getDestination()) {
+                    $organization->addContact($contact);
                 }
-                foreach ($custom_fields as $custom_field_entity) {
-                    /** @var Entity\CustomField $custom_field_entity */
-                    if ($entity->getDestination() === $custom_field_entity->getDestination()) {
-                        $entity->addCustomField($custom_field_entity);
-                    }
+            }
+            foreach ($custom_fields as $custom_field_entity) {
+                if ($organization->getDestination() === $custom_field_entity->getDestination()) {
+                    $organization->addCustomField($custom_field_entity);
                 }
+            }
 
-                $inline_contact_data = $this->getInlineContactDataParser()->export($data, $entity->getDestination());
-                foreach ($inline_contact_data as $contact) {
-                    $entity->addContact($contact);
-                }
+            $inline_contact_data = $this->getInlineContactDataParser()->export($organization->getRawData(), $organization->getDestination());
+            foreach ($inline_contact_data as $contact) {
+                $organization->addContact($contact);
+            }
 
-                $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($entity->getDestination(), $data);
-                foreach ($inline_custom_fields as $custom_field_entity) {
-                    $entity->addCustomField($custom_field_entity);
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVOrganization', $this->getEntityType(), 'name', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVOrganization', $this->getEntityType(), 'name', $e, $data);
+            $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($organization->getDestination(), $organization->getRawData());
+            foreach ($inline_custom_fields as $custom_field_entity) {
+                $organization->addCustomField($custom_field_entity);
             }
         }
 
@@ -114,12 +106,12 @@ class Organizations extends AbstractParser
     /**
      * Returns a organization entity
      *
-     * @param int   $num
      * @param array $data
+     * @param int   $num
      *
      * @return Entity\Organization|null
      */
-    private function exportOrganization($num, array $data)
+    protected function exportOrganization(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
             'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
@@ -151,7 +143,7 @@ class Organizations extends AbstractParser
     /**
      * Returns a collection of organization custom field data
      *
-     * @return Entity\Collection
+     * @return Entity\CustomField[]|Entity\Collection
      */
     private function exportOrganizationCustomFields()
     {
@@ -164,7 +156,7 @@ class Organizations extends AbstractParser
     /**
      * Returns a collection of organization contact data
      *
-     * @return Entity\Collection
+     * @return Entity\ContactData[]|Entity\Collection
      */
     private function exportOrganizationContactData()
     {

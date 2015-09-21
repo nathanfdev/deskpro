@@ -28,8 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use Orb\Util\Strings;
@@ -63,26 +63,16 @@ final class Feedback extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $feedback   = $this->reader->getData($this->getFeedbackReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getFeedbackReaderConfig()))
+            ->setPrefix('JSONFeedback')
+            ->setRefColumn('oid')
+            ->setMethod('exportFeedback')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($feedback as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportFeedback($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONFeedback', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONFeedback', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -91,7 +81,7 @@ final class Feedback extends AbstractParser
      * @param array $data
      * @return Entity\Feedback
      */
-    private function exportFeedback(array $data)
+    protected function exportFeedback(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,

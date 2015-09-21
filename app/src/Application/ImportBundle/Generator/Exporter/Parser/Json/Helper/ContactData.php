@@ -29,10 +29,10 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json\Helper;
 
 use Application\ImportBundle\ContactData\ContactDataFactory;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class ContactData
@@ -56,22 +56,15 @@ class ContactData extends AbstractParserFormatterHelper
      */
     public function export(array $contact_data)
     {
-        $collection = new Entity\Collection();
-        foreach ($contact_data as $num => $data) {
-            try {
-                $entity = $this->exportContact($data);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($contact_data)
+            ->setPrefix('JSONContactData')
+            ->setRefColumn('oid')
+            ->setMethod('exportContact')
+        ;
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONContactData', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONContactData', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -93,8 +86,8 @@ class ContactData extends AbstractParserFormatterHelper
             'comment'      => TransformerInterface::TYPE_STRING,
         ));
 
-        $handler   = ContactDataFactory::getHandler($formatted['contact_type']);
-        $entity    = $handler->toEntity($data);
+        $handler = ContactDataFactory::getHandler($formatted['contact_type']);
+        $entity  = $handler->toEntity($data);
         $entity
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])

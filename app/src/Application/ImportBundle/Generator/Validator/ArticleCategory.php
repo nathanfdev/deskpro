@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,83 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
+namespace Application\ImportBundle\Generator\Validator;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Application\ImportBundle\Entity;
 
 /**
- * Oid mapper
- * Uses to link importing and DeskPRO entities in case to update
+ * Article category entities validator
  *
- * Class ImportMap
- * @package Application\ImportBundle\Generator
+ * Class ArticleCategory
+ * @package Application\ImportBundle\Generator\Validator
  */
-class OidMapper
+final class ArticleCategory extends AbstractConstraintValidator
 {
     /**
-     * @var EntityRepository\ImportMap
+     * {@inheritdoc}
      */
-    private $repository;
-
-    /**
-     * @var ObjectManager
-     */
-    private $entity_manager;
-
-    /**
-     * Constructor
-     *
-     * @param EntityRepository\ImportMap $repository
-     * @param ObjectManager              $entity_manager
-     */
-    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager)
+    public function getEntityType()
     {
-        $this->repository     = $repository;
-        $this->entity_manager = $entity_manager;
-    }
-
-    /**
-     * Find a ZenDesk entity mapping
-     *
-     * @param string $type
-     * @param int    $id
-     *
-     * @return string|null
-     */
-    public function findRefByOldId($type, $id)
-    {
-        /** @var Entity\ImportMap $mapping */
-        $mapping = $this->repository->findOneBy(array(
-            'old_id'   => $id,
-            'typename' => $type,
-        ));
-
-        return $mapping ? $mapping->getNewId() : null;
-    }
-
-    /**
-     * Saves a ZenDesk entity mapping
-     *
-     * @param string $type
-     * @param int    $old_id
-     * @param int    $ref
-     *
-     * @return $this
-     */
-    public function saveMapping($type, $old_id, $ref)
-    {
-        $entity = new Entity\ImportMap();
-        $entity
-            ->setTypename($type)
-            ->setOldId($old_id)
-            ->setNewId($ref)
-        ;
-
-        $this->entity_manager->persist($entity);
-        $this->entity_manager->flush();
-
-        return $this;
+        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
     }
 }

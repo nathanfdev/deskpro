@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
@@ -223,6 +224,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         // todo check for progress bar in unattended mode
         $arguments[] = '-vvv';
 
+        if (defined('DPC_SITE_ID')) {
+            $arguments[] = '--dpc-site-id ' . DPC_SITE_ID;
+        }
+
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
         do {
@@ -240,7 +245,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $output->writeln("<info>Done batch</info>");
             $output->writeln("<info>Updating search tables.</info>");
 
-            $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+            /** @var EntityRepository\Ticket $ticket_repository */
+            $ticket_repository = $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket');
+            $ticket_repository->fillSearchTable();
 
             $config          = $this->createGeneratorConfig($input);
             $exporter_config = $config->getExporterBatchConfig();
@@ -512,7 +519,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             if ($input->getOption('config-from-db')) {
                 $importer = $this->getContainer()->get('deskpro.import')->getImporter($input->getArgument('script'));
-                $handler = new Generator\Logger\ImporterHandler($importer, $this->getContainer()->getEm());
+                $handler = new Generator\Logger\ImporterProcessingHandler($importer, $this->getContainer()->getEm());
                 $handler->setFormatter($formatter);
                 $logger->pushHandler($handler);
             }
@@ -598,6 +605,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function checkPhpInfo()
     {
+        if (defined('DPC_SITE_ID')) {
+            return true;
+        }
+
         if (dp_is_php_path_guessed()) {
             $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
 
@@ -617,6 +628,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function checkRequirements()
     {
+        if (defined('DPC_SITE_ID')) {
+            return true;
+        }
+
         $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/check-req.php'));
 
         $process = new Process($cmd, realpath(DP_ROOT));

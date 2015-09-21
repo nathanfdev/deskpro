@@ -208,5 +208,9 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('attachment', new Constraints\Valid())
+        ;
     }
 }
