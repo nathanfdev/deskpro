@@ -38,7 +38,6 @@ define(['cutstring'], function (cutstring) {
       renderSchema: function (schema, val) {
         var types = {
           string: function (val) {
-            console.info(val);
             return val ? (val.value || val.name || val) : val;
           },
           number: function (val) {
