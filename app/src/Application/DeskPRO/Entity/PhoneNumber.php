@@ -82,6 +82,13 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $label;
 
     /**
+     * An extension for the number - optional
+     *
+     * @var string
+     */
+    protected $ext;
+
+    /**
      * The ISO 3166-1 country/region code of the phone number (2 char)
      *
      * @var string
@@ -147,6 +154,42 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    public function getFullFormatted()
+    {
+        $num = $this->getNumberFormatted();
+
+        if ($ext = $this->ext) {
+            $num .= ' ext . ' . $this->ext;
+        }
+
+        return $num;
+    }
+
+    public function getNumberFormatted()
+    {
+        try {
+            return PhoneNumbers::toInternationalFormat($this->number);
+        } catch (\Exception $e) {
+            return $this->number;
+        }
+    }
+
+    /**
+     * @return string|int|null
+     */
+    public function getExt()
+    {
+        return $this->ext;
+    }
+
+    /**
+     * @param string|int|null $ext
+     */
+    public function setExt($ext)
+    {
+        $this->setModelField('ext', $ext);
+    }
+
     /**
      * @return \libphonenumber\PhoneNumber|null
      */
@@ -184,6 +227,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 
         $metadata->mapField(array( 'fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
                                    'scale'     => 0, 'nullable' => false, 'columnName' => 'number', ));
+
+        $metadata->mapField(array( 'fieldName' => 'ext', 'type' => 'string', 'length' => 30, 'precision' => 0,
+                                   'scale'     => 0, 'nullable' => true, 'columnName' => 'ext', ));
 
         $metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 100, 'precision' => 0,
                                    'scale'     => 0, 'nullable' => true, 'columnName' => 'label', ));

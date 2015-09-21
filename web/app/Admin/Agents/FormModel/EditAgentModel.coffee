@@ -8,10 +8,14 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
       #--------------------
 
       @form.name = agent.name
-      @form.primary_phone = agent.primary_phone || {}
-      @form.primary_phone.region = @form.primary_phone.region || primary_phone_number_region
+      @form.primary_phone = {
+        region: agent.primary_phone.region || primary_phone_number_region
+        number: agent.primary_phone.number || ''
+        ext: agent.primary_phone.ext || ''
+      }
       @form.primary_team = agent.primary_team
       @form.notification_settings = agent.notification_settings
+
 
       if agent.override_display_name
         @form.enable_display_name = true
@@ -77,7 +81,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
     getFormData: ->
       formData = {}
       formData.name = @form.name
-      formData.primary_phone = {number: @form.primary_phone.number}
+      formData.primary_phone = {number: @form.primary_phone.number, ext: @form.primary_phone.ext}
       if not formData.primary_phone.number
         formData.primary_phone = null
       formData.notification_settings = @form.notification_settings
