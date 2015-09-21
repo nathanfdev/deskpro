@@ -106,6 +106,7 @@ class ImportersController extends AbstractController implements ProtectedControl
                 'title'       => $importer->getData('title'),
                 'description' => $importer->getData('description'),
                 'status'      => $importer->getData('status'),
+                'icon'        => $this->getIcon($importer),
             );
         }
 
@@ -119,6 +120,7 @@ class ImportersController extends AbstractController implements ProtectedControl
     public function getAction($id)
     {
         $importer = $this->is()->getImporter($id);
+        $importer['icon'] = $this->getIcon($importer);
         return $this->createJsonResponse($importer->getData());
     }
 
@@ -207,5 +209,14 @@ class ImportersController extends AbstractController implements ProtectedControl
     {
         $this->is()->startImport($id);
         return $this->getAction($id);
+    }
+
+    protected function getIcon($importer)
+    {
+        $path = defined('DPC_SITE_DOMAIN')
+            ? '//' . DPC_SITE_DOMAIN . '/web/images/admin/icons/icon-' . $importer->getData('id') . '.png'
+            : (dp_get_config('static_path') ?: '/web') . '/images/admin/icons/icon-' . $importer->getData('id') . '.png';
+
+        return $path;
     }
 }
