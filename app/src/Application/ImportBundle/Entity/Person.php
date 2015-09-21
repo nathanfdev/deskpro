@@ -286,7 +286,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
 
     /**
      * Returns person first name
-     * If property "first_name" is empty tries to parse person name
+     * If property "first_name" is empty then tries to parse person name
      *
      * @return string
      */
@@ -295,11 +295,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
         if ($this->first_name) {
             return $this->first_name;
         }
-        if ($this->getName()) {
-            $names = @explode(' ', $this->getName());
 
-            if (isset($names[0])) {
-                return $names[0];
+        $name = $this->getName();
+        if ($name) {
+            $names = explode(' ', $name);
+
+            if (count($names) > 1) {
+                array_pop($names);
+                return implode(' ', $names);
+            } else {
+                return $name;
             }
         }
 
@@ -320,7 +325,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
 
     /**
      * Returns person last name
-     * If property "last_name" is empty tries to parse person name
+     * If property "last_name" is empty then tries to parse person name
      *
      * @return string
      */
@@ -329,11 +334,13 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
         if ($this->last_name) {
             return $this->last_name;
         }
-        if ($this->getName()) {
-            $names = @explode(' ', $this->getName());
 
-            if (isset($names[1])) {
-                return $names[1];
+        $name = $this->getName();
+        if ($name) {
+            $names = explode(' ', $name);
+
+            if (count($names) > 1) {
+                return array_pop($names);
             }
         }
 

@@ -39,7 +39,7 @@ use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Zend\Ldap\Ldap;
 
-abstract class AbstractLdapBasedAdapter implements Loggable
+abstract class AbstractLdapBasedAdapter extends PluginAdapter implements Loggable
 {
     protected $options;
 

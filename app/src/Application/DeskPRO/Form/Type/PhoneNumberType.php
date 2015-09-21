@@ -60,7 +60,15 @@ class PhoneNumberType extends AbstractType
 				'class' => 'dp_phone_number_hidden',
 			),
 			'constraints' => array(
-				new NotBlank(array('message' => '[phone_number]Phone number is invalid.')),
+				new NotBlank(array('message' => 'Phone number is invalid.')),
+			),
+		));
+
+		$builder->add('ext', 'hidden', array(
+			'required' => false,
+			'label' => false,
+			'attr' => array(
+				'class' => 'dp_phone_ext_hidden',
 			),
 		));
 		$builder->get('number')->addModelTransformer(new PhoneNumberModelTransformer());

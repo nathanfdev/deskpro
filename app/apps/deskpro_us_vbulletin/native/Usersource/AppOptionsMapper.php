@@ -62,6 +62,7 @@ class AppOptionsMapper
         $options['db_username'] = $settings->get('db_username');
         $options['db_password'] = $settings->get('db_password');
         $options['table_prefix'] = $settings->get('table_prefix');
+        $options['raw_info_filter'] = $settings->get('raw_info_filter');
 
         return $options;
     }

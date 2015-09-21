@@ -61,9 +61,9 @@ final class Person extends AbstractImporter
 
         $person = $this->findOrCreatePerson($entity->getEmails());
         $person
-            ->setName($entity->getName())
             ->setFirstName($entity->getFirstName())
             ->setLastName($entity->getLastName())
+            ->setName($entity->getName())
             ->setTimezone($entity->getTimezone())
             ->setIsAgent($entity->isAgent())
             ->setCanAgent($entity->isAgent())

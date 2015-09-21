@@ -140,7 +140,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
      *
      * @return
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         if (!$this->set_username) {
             return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));

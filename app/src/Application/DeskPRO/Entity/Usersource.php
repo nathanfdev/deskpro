@@ -54,6 +54,7 @@ use Orb\Util\Util;
  * @property $is_sso_background
  * @property $auto_agent
  * @property $agent_permission_group
+ * @property $user_permission_group
  * @property $app
  * @property $id
  */
@@ -158,6 +159,13 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
      * @var bool
      */
     protected $agent_permission_group = null;
+
+    /**
+     * Users that login with this usersource will get this group
+     *
+     * @var bool
+     */
+    protected $user_permission_group = null;
 
     /**
      * @var \Application\DeskPRO\Entity\AppInstance|null
@@ -310,6 +318,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'auto_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auto_agent', ));
 
         $metadata->mapManyToOne(array( 'fieldName' => 'agent_permission_group', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_permission_group_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'user_permission_group', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'user_permission_group_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 

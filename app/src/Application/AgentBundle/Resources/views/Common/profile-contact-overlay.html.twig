@@ -6,9 +6,9 @@
 	<div class="overlay-content">
 		{% block list_extra %}{% endblock %}
 
-		{############################################
+		{# ###########################################
 		 # Phone
-		 ############################################}
+		 ########################################### #}
 
 		<div class="row-type phone {% if contact_data.phone_numbers|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.general.phone') }}</h4>
@@ -21,6 +21,7 @@
 							</div>
 							<div class="input">
 								{{ form_widget(phone.number) }}
+								{{ form_widget(phone.ext) }}
 							</div>
 							<div class="label">
 								{{ form_widget(phone.label, { attr: { placeholder: 'Add a label' } }) }}

@@ -23,7 +23,9 @@ tbody.collapse.in { display: table-row-group; }
     margin: 0 !important;
 }
 
-.bootstrap-datetimepicker-widget table th {
-    max-width: 0 !important;
+.bootstrap-datetimepicker-widget table th, .bootstrap-datetimepicker-widget table td {
+    max-width: 13px !important;
+    min-width: 13px !important;
+    width: 13px !important;
     text-align: center !important;
 }

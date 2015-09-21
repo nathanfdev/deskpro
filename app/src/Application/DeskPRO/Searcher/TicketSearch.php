@@ -764,7 +764,24 @@ class TicketSearch extends SearcherAbstract
             $where .= " AND " . implode(" AND ", $ticket_parts['wheres']);
         }
         if (!empty($ticket_parts['wheres_any'])) {
-            $where .= " AND (" . implode(" OR ", $ticket_parts['wheres_any']) . ")";
+            $where .= "AND (";
+            $where .= implode(" OR ", $ticket_parts['wheres_any']);
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $org_parts['wheres_any']);
+            }
+            $where .= ")";
+        } elseif (!empty($user_parts['wheres_any']) || !empty($org_parts['wheres_any'])) {
+            $where .= "AND (";
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $org_parts['wheres_any']);
+            }
+            $where .= ")";
         }
         if (!empty($user_parts['wheres'])) {
             $where .= " AND " . implode(" AND ", $user_parts['wheres']);
@@ -988,7 +1005,24 @@ class TicketSearch extends SearcherAbstract
             $where .= " AND " . implode(" AND ", $ticket_parts['wheres']);
         }
         if (!empty($ticket_parts['wheres_any'])) {
-            $where .= " AND (" . implode(" OR ", $ticket_parts['wheres_any']) . ")";
+            $where .= "AND (";
+            $where .= implode(" OR ", $ticket_parts['wheres_any']);
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $org_parts['wheres_any']);
+            }
+            $where .= ")";
+        } elseif (!empty($user_parts['wheres_any']) || !empty($org_parts['wheres_any'])) {
+            $where .= "AND (";
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= " OR " . implode(" OR ", $org_parts['wheres_any']);
+            }
+            $where .= ")";
         }
         if (!empty($user_parts['wheres'])) {
             $where .= " AND " . implode(" AND ", $user_parts['wheres']);

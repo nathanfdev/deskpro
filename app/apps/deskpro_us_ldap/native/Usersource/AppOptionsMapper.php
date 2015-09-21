@@ -67,6 +67,7 @@ class AppOptionsMapper
         $options['accountFilterFormat']    = $settings->get('account_filter');
         $options['ldapPaging']             = $settings->get('ldap_paging');
         $options['ldapPerPage']            = $settings->get('ldap_per_page');
+        $options['raw_info_filter'] = $settings->get('raw_info_filter');
 
         switch ($settings->get('secure')) {
             case 'ssl':
