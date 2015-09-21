@@ -69,6 +69,91 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         '_profiler',
     );
 
+    public static $legacy_portal_routes = array(
+        'user_admin_rendertpl',
+        'user_comment_form_login_partial',
+        'user_test',
+        'user_saverating',
+        'user_newcomment_finishlogin',
+        'user_accept_upload',
+        'user_validate_email',
+        'user_validate_ticket',
+        'user_jstell_login',
+        'user_login_inline',
+        'user_login_resetpass_send',
+        'user_login_resetpass_newpass',
+        'user_profile_setlang',
+        'user_profile_associate_twitter',
+        'user_profile_twitter_remove',
+        'user_profile_changepassword',
+        'user_profile_emails_new',
+        'user_profile_emails_remove',
+        'user_profile_emails_validate_remove',
+        'user_profile_emails_validate_sendlink',
+        'user_profile_emails_setdefault',
+        'user_search_omnisearch',
+        'user_tickets_new_finishlogin',
+        'user_tickets_new_simple',
+        'user_tickets_new_savestatus',
+        'user_tickets_new_contentsolved_save',
+        'user_tickets_new_contentsolved',
+        'user_tickets_new_thanks',
+        'user_tickets_new_thanks_simple',
+        'user_tickets_view',
+        'user_tickets_addreply',
+        'user_tickets_participants',
+        'user_tickets_participants_add',
+        'user_tickets_participants_remove',
+        'user_tickets_resolve',
+        'user_tickets_unresolve',
+        'user_tickets_feedback',
+        'user_tickets_feedback_save',
+        'user_tickets_feedback_closeticket',
+        'user_articles_article_togglesub',
+        'user_articles_cat_togglesub',
+        'user_articles_unsub_all',
+        'user_articles_article_agent_iframe',
+        'user_articles_newcomment',
+        'user_downloads_file_download',
+        'user_downloads_newcomment',
+        'user_news_newcomment',
+        'user_feedback',
+        'user_feedback_new',
+        'user_feedback_newfeedback_finishlogin',
+        'user_feedback_newcomment',
+        'user_feedback_vote',
+        'user_chat_initsession',
+        'user_chat_widgetisavail',
+        'user_chat_poll',
+        'user_chat_sendmessage',
+        'user_chat_sendmessage_attach',
+        'user_chat_sendusertyping',
+        'user_chat_chatended',
+        'user_chat_chatended_feedback',
+        'user_chatlogs',
+        'user_chatlogs_view',
+        'user_widget_overlay',
+        'user_widget_newticket',
+        'user_widget_newfeedback',
+        'user_widget_chat',
+        'user_long_tweet_view',
+        'agent_ticket_chargeform',
+        'agent_ticket_close_problem',
+        'agent_ticket_reopen_problem',
+        'admin_portaleditor_updateblockorder',
+        'admin_portaleditor_blocktoggle',
+        'admin_portaleditor_custom_block_delete',
+        'admin_portaleditor_custom_sideblock_save',
+        'admin_portaleditor_custom_sideblock_simple_get',
+        'admin_portaleditor_custom_sideblock_simple_save',
+        'admin_portaleditor_custom_sideblock_simple_delete',
+        'admin_portaleditor_toggle',
+        'admin_portaleditor_get_editor',
+        'admin_portaleditor_save_editor',
+        'admin_portaleditor_twitter_oauth',
+        'admin_portaleditor_accept_upload'
+    );
+
     /**
      * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
      */
@@ -105,6 +190,11 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
 
     public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
     {
+        // ignore legacy routes that we delete to prevent random 500s (return a blank string)
+        if (in_array($name, self::$legacy_portal_routes)) {
+            return '';
+        }
+
         $generated = $this->router->generate($name, $parameters, $referenceType);
 
         if (false !== strpos($generated, 'index.php//')) {
