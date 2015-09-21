@@ -3,6 +3,7 @@ import Moment from 'moment';
 import TaskCalendarCell from '../Components/TaskCalendarCell';
 import TaskCalendarList from '../Components/TaskCalendarList';
 import TaskCardGeneric from '../Components/TaskCardGeneric';
+import TaskCalendarYearsDropdown from '../Components/TaskCalendarYearsDropdown';
 import Calendar from '../../../Services/Calendar';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import $ from 'jquery';
@@ -21,6 +22,10 @@ export default class TaskCalendar extends React.Component {
         y: 0
       },
       hoverPosition: {
+        x: 0,
+        y: 0
+      },
+      yearDropdownPosition: {
         x: 0,
         y: 0
       }
@@ -57,7 +62,6 @@ export default class TaskCalendar extends React.Component {
   }
 
   openHover(task, position) {
-
     this.setState({
       task: task,
       showHover: true,
@@ -65,6 +69,24 @@ export default class TaskCalendar extends React.Component {
         x: position.x,
         y: position.y
       }
+    });
+  }
+
+  openYearDropdown(element) {
+    const target = $(element);
+
+    this.setState({
+      showYearDropdown: true,
+      yearDropdownPosition: {
+        x: target[0].target.getBoundingClientRect().left,
+        y: target[0].target.getBoundingClientRect().bottom + 10
+      }
+    });
+  }
+
+  closeYearDropdown() {
+    this.setState({
+      showYearDropdown: false
     });
   }
 
@@ -179,7 +201,9 @@ export default class TaskCalendar extends React.Component {
       <div className="dpwd-calendar-controls">
         <div className="dpwd-calendar-controls-year">
           <span className="dpwd-calendar-controls-year-text">{this.props.moment.format('YYYY')}</span>
-          <span className="dpwd-calendar-controls-year-dropdown"><i className="fa fa-caret-down" /></span>
+          <span className="dpwd-calendar-controls-year-dropdown" onClick={this.openYearDropdown.bind(this)}>
+            <i className="fa fa-caret-down" />
+          </span>
         </div>
 
         <div className="dpwd-calendar-controls-month">
@@ -224,7 +248,19 @@ export default class TaskCalendar extends React.Component {
           <TaskCalendarList tasks={this.state.tasks}
                             dayDate={this.state.dayDate}
                             position={this.state.position}
-                            closeWindow={this.closeWindow.bind(this)} />
+                            closeWindow={this.closeWindow.bind(this)}
+                            openHover={this.openHover.bind(this)}
+                            closeHover={this.closeHover.bind(this)}
+                            dispatch={this.props.dispatch.bind(this)} />
+        </ComponentRootWrapper>
+      </div>
+
+      <div>
+        <ComponentRootWrapper open={this.state.showYearDropdown}>
+          <TaskCalendarYearsDropdown setYear={this.props.setYear.bind(this)}
+                                     position={this.state.yearDropdownPosition}
+                                     openYearDropdown={this.openYearDropdown.bind(this)}
+                                     closeYearDropdown={this.closeYearDropdown.bind(this)} />
         </ComponentRootWrapper>
       </div>
 

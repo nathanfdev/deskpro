@@ -9,6 +9,7 @@
   position: relative;
   transition: border 0.5s ease;
   cursor: pointer;
+  min-width: 350px;
 
   &.dpmw--single-card.minimized { padding: 3px 5px 3px 14px; }// Resize the minimized cards
   a { color: inherit; }

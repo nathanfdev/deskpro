@@ -68,6 +68,7 @@ a { color: $link-color; }
   @import 'dropdown-active-chat';// Ongoing chat with someone
   @import 'dropdown-chat';// Chat controls
   @import 'help-dropdown';// Help stuff
+  @import 'select-dropdown';
 
 @import 'live-search';
 @import 'forms';

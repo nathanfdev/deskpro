@@ -221,6 +221,15 @@ export default class TasksListFrame extends React.Component {
     });
   }
 
+  setYear(year) {
+    let moment = this.state.moment;
+    moment.year(year);
+
+    this.setState({
+      moment: moment
+    });
+  }
+
   massEdit(data) {
     this.props.dispatch(TaskActions.massEditTasks(
       data,
@@ -544,7 +553,8 @@ export default class TasksListFrame extends React.Component {
                             prevMonth={this.prevMonth.bind(this)}
                             dispatch={_this.props.dispatch.bind(_this)}
                             tickets={tickets}
-                            projects={this.projects} />
+                            projects={this.projects}
+                            setYear={this.setYear.bind(this)} />
             </div>
             :
             <div>
