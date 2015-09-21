@@ -31,8 +31,8 @@ use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
@@ -107,30 +107,16 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $tickets    = $this->getTickets();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getTickets())
+            ->setPrefix('ZDTicket')
+            ->setRefColumn('id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $collection = new Entity\Collection();
-        $collection->setExpectedCount(count($tickets));
-
-        foreach ($tickets as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportTicket($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDTicket', $this->getEntityType(), 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDTicket', $this->getEntityType(), 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDTicket', $this->getEntityType(), 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -141,7 +127,7 @@ final class Tickets extends AbstractParser
      * @return Entity\Ticket
      * @throws SkippingException
      */
-    private function exportTicket(array $data)
+    protected function exportTicket(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'               => TransformerInterface::TYPE_STRING,
@@ -260,25 +246,15 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages(array $ticket)
     {
-        $collection = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($ticket['comments'])
+            ->setPrefix('ZDTicketComment')
+            ->setRefColumn('id')
+            ->setMethod('exportMessage')
+        ;
 
-        foreach ($ticket['comments'] as $num => $data) {
-            try {
-                $entity = $this->exportMessage($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDTicketComment', 'ticket message', 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDTicketComment', 'ticket message', 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDTicketComment', 'ticket message', 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -287,7 +263,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\TicketMessage|null
      */
-    private function exportMessage(array $data)
+    protected function exportMessage(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_STRING,

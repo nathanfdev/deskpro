@@ -77,9 +77,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntities();
-
-        $blob     = $this->blob_adapter->createByBlob($entity->getAttachment());
         $download = new DeskPROEntity\Download();
         $download
             ->setTitle($entity->getTitle())
@@ -87,7 +84,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setSlug($entity->getSlug())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setLanguage($this->findLanguage($entity->getLanguage()))
-            ->setBlob($blob)
+            ->setBlob($this->blob_adapter->createByBlob($entity->getAttachment()))
             ->setCategory($this->findOrCreateDownloadCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
@@ -96,8 +93,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
         ;
 
         $this->records->setPrimaryEntity($download);
-        $this->records->addRelatedEntity($blob);
-
         return $this->records;
     }
 

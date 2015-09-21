@@ -29,8 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use DateTimeZone;
 
 /**
@@ -109,34 +109,25 @@ final class People extends AbstractParser
      *
      * @return Entity\Collection
      */
-    private function exportStaffCollection()
+    protected function exportStaffCollection()
     {
         $collection = new Entity\Collection();
 
         do {
-            $batch = $this->reader->findStaff($this->getReaderBatchSize(), $this->getCurrentStaffMinId());
+            $batch  = $this->reader->findStaff($this->getReaderBatchSize(), $this->getCurrentStaffMinId());
+            $config = new ExportCollectionConfig();
+            $config
+                ->setData($batch)
+                ->setPrefix('OSStaff')
+                ->setRefColumn('staff_id')
+                ->setMethod('exportStaff')
+                ->setAdvanceProgressbar(true)
+            ;
 
-            foreach ($batch as $num => $data) {
-                $this->advanceProgressBar();
-
-                try {
-                    $entity = $this->exportStaff($data);
-
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-                } catch (TransformerException $e) {
-                    $this->logTransformerException('OSStaff', $this->getEntityType(), 'oid', $e);
-                } catch (\Exception $e) {
-                    $this->logUnknownException('OSStaff', $this->getEntityType(), 'oid', $e, $data);
-                }
-
-                if (isset($data['staff_id'])) {
-                    $this->staff_min_id = $data['staff_id'];
-                }
-            }
+            $collection->merge($this->exportCollection($config));
 
             $this->entities_loaded += count($batch);
+            $this->staff_min_id    = max($this->staff_min_id, $collection->getMaxOid());
 
         } while (count($batch) > 0);
 
@@ -149,7 +140,7 @@ final class People extends AbstractParser
      * @param array $data
      * @return Entity\Person|null
      */
-    private function exportStaff(array $data)
+    protected function exportStaff(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'staff_id'    => TransformerInterface::TYPE_INT,
@@ -189,34 +180,25 @@ final class People extends AbstractParser
      *
      * @return Entity\Collection
      */
-    private function exportUsersCollection()
+    protected function exportUsersCollection()
     {
         $collection = new Entity\Collection();
 
         do {
             $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+            $config = new ExportCollectionConfig();
+            $config
+                ->setData($batch)
+                ->setPrefix('OSUser')
+                ->setRefColumn('user_id')
+                ->setMethod('exportUser')
+                ->setAdvanceProgressbar(true)
+            ;
 
-            foreach ($batch as $num => $data) {
-                $this->advanceProgressBar();
-
-                try {
-                    $entity = $this->exportUser($data);
-
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-                } catch (TransformerException $e) {
-                    $this->logTransformerException('OSUser', $this->getEntityType(), 'oid', $e);
-                } catch (\Exception $e) {
-                    $this->logUnknownException('OSUser', $this->getEntityType(), 'oid', $e, $data);
-                }
-
-                if (isset($data['user_id'])) {
-                    $this->users_min_id = $data['user_id'];
-                }
-            }
+            $collection->merge($this->exportCollection($config));
 
             $this->entities_loaded += count($batch);
+            $this->users_min_id    = max($this->users_min_id, $collection->getMaxOid());
 
         } while (count($batch) > 0);
 
@@ -229,7 +211,7 @@ final class People extends AbstractParser
      * @param array $data
      * @return Entity\Person|null
      */
-    private function exportUser(array $data)
+    protected function exportUser(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'user_id'     => TransformerInterface::TYPE_INT,

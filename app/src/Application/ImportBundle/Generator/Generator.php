@@ -33,7 +33,6 @@ use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
 use Application\ImportBundle\Service\Import as ImportService;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Symfony\Component\Validator\ValidatorInterface as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
@@ -70,32 +69,23 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Constructor
      *
      * @param Exporter\ExporterInterface $exporter
-     * @param SymfonyValidator           $validator
+     * @param Validator\Collection       $validators
      * @param GeneratorConfig            $config
-     * @param Writer\WriterInterface     $writer
      * @param ImportService              $importer
+     * @param Writer\WriterInterface     $writer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
-        SymfonyValidator           $validator,
+        Validator\Collection       $validators,
         GeneratorConfig            $config,
-        Writer\WriterInterface     $writer = null,
-        ImportService              $importer
+        ImportService              $importer,
+        Writer\WriterInterface     $writer = null
     ) {
         $this->config     = $config;
         $this->exporter   = $exporter;
         $this->writer     = $writer;
         $this->importer   = $importer;
-        $this->validators = new Validator\Collection();
-        $this->validators
-            ->attach(new Validator\Download($validator))
-            ->attach(new Validator\Feedback($validator))
-            ->attach(new Validator\Articles($validator))
-            ->attach(new Validator\News($validator))
-            ->attach(new Validator\Person($validator))
-            ->attach(new Validator\Ticket($validator))
-            ->attach(new Validator\Organization($validator))
-        ;
+        $this->validators = $validators;
     }
 
     /**
@@ -149,12 +139,9 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                         $exceptions = $this->validateExportingCollection($type, $entities);
 
                         if (count($exceptions) > 0) {
-                            /** @var ValidatorExceptionInterface[] $exceptions */
                             foreach ($exceptions as $exception) {
                                 // Removing broken entities
                                 $collection->detach($exception->getEntity());
-
-                                /** @var Validator\ValidatorConstraintException $exception */
                                 $this->logAlert(sprintf(
                                     "Validator failure for %s on record #%s: %s",
 
@@ -189,8 +176,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
                         foreach ($entities as $entity) {
                             $this->advanceProgressBar();
-
-                            /** @var Entity\EntityInterface $entity */
                             $outputWriter->writeData($entity);
                         }
                     }
@@ -211,7 +196,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             }
 
         } catch (\Exception $e) {
-            $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
+            // todo em closed
+            // $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
             throw $e;
         }
     }
@@ -270,15 +256,12 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     private function setHelpers($handler)
     {
         if ($this->config && $handler instanceof GeneratorConfigAwareInterface) {
-            /** @var GeneratorConfigAwareInterface $handler */
             $handler->setConfig($this->config);
         }
         if ($this->logger && $handler instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $handler */
             $handler->setLogger($this->logger);
         }
         if ($this->progress_bar && $handler instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $handler */
             $handler->setProgressBarHelper($this->progress_bar);
         }
     }
@@ -289,7 +272,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * @param string            $type
      * @param Entity\Collection $collection
      *
-     * @return ExceptionCollection
+     * @return ExceptionCollection|ValidatorExceptionInterface[]
      */
     private function validateExportingCollection($type, Entity\Collection $collection)
     {
@@ -301,7 +284,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
             foreach ($validators as $validator) {
                 try {
-                    /** @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
 
                 } catch (ValidatorExceptionInterface $e) {

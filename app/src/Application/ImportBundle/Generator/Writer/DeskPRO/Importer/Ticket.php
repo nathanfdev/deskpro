@@ -82,8 +82,6 @@ final class Ticket extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntities();
-
         $ticket = $this->findOrCreateTicket($entity, $entity_id);
         $ticket
             ->disableAutoTicketProcess()
@@ -95,6 +93,7 @@ final class Ticket extends AbstractImporter
             ->setPriority($this->findOrCreateTicketPriority($entity->getPriority()))
             ->setCategory($this->findOrCreateTicketCategory($entity->getCategory()))
             ->setStatus($entity->getStatus())
+            ->setLanguage($entity->getLanguage() ? $this->findLanguage($entity->getLanguage()) : null)
             ->setDateCreated($entity->getDateCreated())
             ->setDateResolved($entity->getDateResolved())
             ->setDateArchived($entity->getDateArchived())
@@ -104,20 +103,18 @@ final class Ticket extends AbstractImporter
             ->resetCustomData()
         ;
 
-        if ($entity->getLanguage()) {
-            $ticket['language'] = $this->findLanguage($entity->getLanguage());
-        }
-
         if ($entity->getAgentEmail()) {
             $agent = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
+
             if ($agent && $agent->isAgent()) {
-                $ticket['agent'] = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
+                $ticket->setAgent($agent);
             } else {
-                $this->logWarning(sprintf(
-                    'Unable to set ticket agent, user `%s` is not agent',
-                    $entity->getAgentEmail()
-                ));
+                $this->logWarning(sprintf('Unable to set ticket agent, `%s` is not an agent', $entity->getAgentEmail()));
+                $ticket->setAgent(null);
             }
+
+        } else {
+            $ticket->setAgent(null);
         }
 
         if ( ! $entity->getMessages()->hasImportMapKey()) {
@@ -335,7 +332,8 @@ final class Ticket extends AbstractImporter
                 $priority = new DeskPROEntity\TicketPriority();
                 $priority
                     ->setRealTitle($entity->getTitle())
-                    ->setPriority($entity->getValue());
+                    ->setPriority($entity->getValue())
+                ;
 
                 $this->records->addRelatedEntity($priority);
                 $this->logNotice(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
@@ -379,6 +377,7 @@ final class Ticket extends AbstractImporter
      */
     private function createTicketCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefTicket $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataTicket());

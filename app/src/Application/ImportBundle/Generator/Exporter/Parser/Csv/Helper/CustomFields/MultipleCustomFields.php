@@ -27,10 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class MultipleCustomFields
@@ -53,25 +53,22 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
      * @param string    $destination_prefix
      * @param string    $ref_column
      *
-     * @return Entity\Collection
+     * @return Entity\CustomField[]|Entity\Collection
      */
     public function export(array $data, $destination_prefix, $ref_column)
     {
-        $collection = new Entity\Collection();
+        $that   = $this;
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($data)
+            ->setPrefix('CSVCustomField')
+            ->setRefColumn($ref_column)
+            ->setMethod(function($data, $num) use($that, $destination_prefix, $ref_column) {
+                return $that->exportCustomField($num, $destination_prefix, $data, $ref_column);
+            })
+        ;
 
-        foreach ($data as $num => $custom_field) {
-            try {
-                $entity = $this->exportCustomField($num, $destination_prefix, $custom_field, $ref_column);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVCustomField', $this->getEntityType(), 'field_name', $e);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -82,9 +79,9 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
      * @param array  $data
      * @param string $ref_column
      *
-     * @return Entity\CustomField|null
+     * @return Entity\CustomField
      */
-    protected function exportCustomField($num, $destination_prefix, array $data, $ref_column)
+    public function exportCustomField($num, $destination_prefix, array $data, $ref_column)
     {
         if (isset($data[$ref_column])) {
             $data['destination'] = $destination_prefix . $data[$ref_column];

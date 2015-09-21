@@ -8,6 +8,7 @@ use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
 use Application\ImportBundle\Command\ImportBatchCommand;
 use Application\ImportBundle\Command\ImportCommand;
+use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\ArticleCategories;
 use Application\ImportBundle\Reader\ZenDesk\Request\JsonMockAdapter;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderMockFactory;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -67,9 +68,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->ticket_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->ticket_repository            = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository            = $entity_manager->getRepository('DeskPRO:Person');
 
         $this->output_path = dp_get_data_dir() . '/import/zendesk/export';
         if ( ! is_dir($this->output_path)) {
@@ -107,17 +108,17 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Read 4 tickets', $output);
-        $this->assertContains('[ZDTicket #3] Skipping exception with ticket: Unable to get submitter email by id #3', $output);
+        $this->assertContains('[ZDTicket #3] Skipping exception with ZDTicket: Unable to get submitter email by id #3', $output);
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
-        $this->assertContains('[ZDTicketComment #3] Skipping exception with ticket message: Comment without author_id, skipping', $output);
-        $this->assertContains('[ZDTicketComment #4] Skipping exception with ticket message: Unable to get comment author, skipping', $output);
-        $this->assertContains('[ZDAttachment #2] Skipping exception with attachment: Inline attachment, skipping', $output);
-        $this->assertContains('[ZDAttachment #3] Skipping exception with attachment: Unable to download attachment', $output);
+        $this->assertContains('[ZDTicketComment #3] Skipping exception with ZDTicketComment: Comment without author_id, skipping', $output);
+        $this->assertContains('[ZDTicketComment #4] Skipping exception with ZDTicketComment: Unable to get comment author, skipping', $output);
+        $this->assertContains('[ZDAttachment #2] Skipping exception with ZDAttachment: Inline attachment, skipping', $output);
+        $this->assertContains('[ZDAttachment #3] Skipping exception with ZDAttachment: Unable to download attachment', $output);
 
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
         $this->assertContains('[ZDTicket #3] Reading comments', $output);
-        $this->assertContains('Read 5 people', $output);
-        $this->assertContains('[ZDPerson #3] Skipping exception with person: Person without email, skipping', $output);
+        $this->assertContains('Read 6 people', $output);
+        $this->assertContains('[ZDPerson #3] Skipping exception with ZDPerson: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkNoErrors($command_tester);
@@ -231,6 +232,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('"is_hold":true');
         $this->helper->seeInThisFile('"status":"awaiting_agent"');
 
+        // Checking for article categories
+        $this->helper->seeFileFound('1/article_categories/article_category_1.json');
+        $this->helper->seeInThisFile('{"oid":1,"import_map_key":"zd_article_category","title":"Category 1","is_agent":false,"is_book":false,"user_groups":["everyone"],"categories":[{"oid":1,"import_map_key":null,"title":"Section 1","is_agent":false,"is_book":false,"user_groups":["registered"],"categories":[]}]}');
+
         // Checking for articles
         $this->helper->seeFileFound('1/articles/article_1.json');
 
@@ -239,6 +244,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->helper->seeInThisFile('Title (de)');
         $this->helper->seeInThisFile('Content (de)');
+        $this->helper->seeInThisFile('"categories":["Category 1 > Section 1"]');
     }
 
     private function checkDbEmpty()
@@ -393,6 +399,53 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
             ))
+            ->addArticleCategoriesFindAll((object)array(
+                'categories' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'name'            => 'Category 1',
+                        'description'     => 'Category description',
+                        'locale'          => 'en-gb',
+                        'source_locale'   => 'ru',
+                        'url'             => 'http://url.com/',
+                        'html_url'        => 'http://url.com/',
+                        'category_id'     => 1,
+                        'outdated'        => false,
+                        'position'        => 0,
+                        'translation_ids' => array(),
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
+                    )
+                )
+            ))
+            ->addArticleSectionsFindAll((object)array(
+                'sections' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'name'            => 'Section 1',
+                        'description'     => 'Section description',
+                        'locale'          => 'en-gb',
+                        'source_locale'   => 'ru',
+                        'url'             => 'http://url.com/',
+                        'html_url'        => 'http://url.com/',
+                        'category_id'     => 1,
+                        'outdated'        => false,
+                        'position'        => 0,
+                        'translation_ids' => array(),
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
+                    )
+                )
+            ))
+            ->addArticleSectionAccessPolicyFindResponse((object)array(
+                'access_policy' => (object)array(
+                    'viewable_by'                    => ArticleCategories::VIEWABLE_BY_SIGNED,
+                    'manageable_by'                  => ArticleCategories::VIEWABLE_BY_STAFF,
+                    'restricted_to_group_ids'        => array(),
+                    'restricted_to_organization_ids' => array(),
+                    'required_tags'                  => array(),
+                ),
+            ))
             ->addArticlesIncrementalExportResponse((object)array(
                 'articles' => array(
                     (object)array(
@@ -422,6 +475,20 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'locale'      => 'en-us',
                         'draft'       => true,
                         'label_names' => array('Label 1', 'Label 3'),
+                    ),
+                    (object)array(
+                        'id'          => 3,
+                        'author_id'   => 200000,
+                        'section_id'  => 1,
+                        'title'       => 'Article 3 (with fake user)',
+                        'body'        => 'Article content',
+                        'created_at'  => $date2->format('Y-m-d H:i:s'),
+                        'updated_at'  => $date3->format('Y-m-d H:i:s'),
+                        'vote_sum'    => 10,
+                        'vote_count'  => 5,
+                        'locale'      => 'en-us',
+                        'draft'       => true,
+                        'label_names' => array('Label 5', 'Label 6'),
                     ),
                 ),
                 'end_time' => $now->getTimestamp(),
@@ -458,6 +525,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 )
             ))
+            ->addArticleCommentsFindAllResponse((object)array(
+                'comments' => array()
+            ))
             ->addArticleAttachmentsFindAllResponse((object)array(
                 'article_attachments' => array(
                     (object)array(
@@ -477,6 +547,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
                     ),
                 ),
+            ))
+            ->addArticleAttachmentsFindAllResponse((object)array(
+                'article_attachments' => array()
             ))
             ->addArticleTranslationsFindAllResponse((object)array(
                 'translations' => array(
@@ -499,24 +572,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addArticleTranslationsFindAllResponse((object)array(
                 'translations' => array(),
             ))
-            ->addArticleCategoriesFindAll((object)array(
-                'sections' => array(
-                    (object)array(
-                        'id'              => 1,
-                        'name'            => 'Section 1',
-                        'description'     => 'Section description',
-                        'locale'          => 'en-gb',
-                        'source_locale'   => 'ru',
-                        'url'             => 'http://url.com/',
-                        'html_url'        => 'http://url.com/',
-                        'category_id'     => 1,
-                        'outdated'        => false,
-                        'position'        => 0,
-                        'translation_ids' => array(),
-                        'created_at'      => $date1->format('Y-m-d H:i:s'),
-                        'updated_at'      => $date2->format('Y-m-d H:i:s'),
-                    )
-                ),
+            ->addArticleTranslationsFindAllResponse((object)array(
+                'translations' => array(),
             ))
             ->addPeopleFindResponse((object)array(
                 'users' => array(
@@ -554,6 +611,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
+            ->addPeopleFindResponse((object)array(
+                'users' => array()
+            ))
             ->addOrganizationFindResponse((object)array(
                 'organization' => (object)array(
                     'id'   => 1,
@@ -570,7 +630,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Entity `organization` is not supported', $output);
-        $this->assertContains('Unable to set ticket agent, user `imported.user.4@example.com` is not agent', $output);
+        $this->assertContains('Unable to set ticket agent, `imported.user.4@example.com` is not an agent', $output);
+        $this->assertContains('Creating new person with email `imported.user.100000@example.com`', $output);
         $this->assertContains('Creating new person with email `imported.user.100000@example.com`', $output);
     }
 
@@ -644,6 +705,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertFalse($person->isDeleted());
 
         $person = $this->person_repository->findOneByEmail('imported.user.100000@example.com');
+        $this->assertTrue($person->isDisabled());
+        $this->assertFalse($person->isDeleted());
+
+        $person = $this->person_repository->findOneByEmail('imported.user.200000@example.com');
         $this->assertTrue($person->isDisabled());
         $this->assertFalse($person->isDeleted());
     }

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -85,7 +86,88 @@ class ArticleCategory extends CategoryAbstract
      */
     protected $template_suffix = '';
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->children   = new ArrayCollection();
+        $this->usergroups = new ArrayCollection();
+    }
 
+    /**
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
+
+    /**
+     * @param bool $is_agent
+     * @return $this
+     */
+    public function setIsAgent($is_agent)
+    {
+        $this->setModelField('is_agent', (bool)$is_agent);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBook()
+    {
+        return $this->is_book;
+    }
+
+    /**
+     * @param bool $is_book
+     * @return $this
+     */
+    public function setIsBook($is_book)
+    {
+        $this->setModelField('is_book', (bool)$is_book);
+        return $this;
+    }
+
+    /**
+     * Check if the category belongs to an user group
+     *
+     * @param $user_group
+     * @return bool
+     */
+    public function hasUserGroup(Usergroup $user_group)
+    {
+        return $this->usergroups->contains($user_group);
+    }
+
+    /**
+     * Add a new user group
+     *
+     * @param Usergroup $user_group
+     * @return $this
+     */
+    public function addUserGroup(Usergroup $user_group)
+    {
+        if ( ! $this->hasUserGroup($user_group)) {
+            $this->usergroups->add($user_group);
+            $this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove all user groups
+     *
+     * @return $this
+     */
+    public function resetUserGroups()
+    {
+        $this->usergroups->clear();
+        return $this;
+    }
 
     ############################################################################
     # Doctrine Metadata

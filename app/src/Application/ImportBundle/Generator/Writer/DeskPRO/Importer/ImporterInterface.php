@@ -46,6 +46,13 @@ interface ImporterInterface
     public function getEntityType();
 
     /**
+     * Clears doctrine records
+     *
+     * @return $this
+     */
+    public function reset();
+
+    /**
      * Returns a collection of the importing DeskPRO doctrine entities
      *
      * @param Entity\EntityInterface $entity

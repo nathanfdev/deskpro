@@ -43,6 +43,7 @@ class JsonWriterFactory extends AbstractFactory
         $mapping = new Destination\Collection();
         $mapping
             ->attach(new Destination\Article())
+            ->attach(new Destination\ArticleCategory())
             ->attach(new Destination\Download())
             ->attach(new Destination\Feedback())
             ->attach(new Destination\News())

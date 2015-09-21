@@ -131,7 +131,7 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 /** @var ImporterInterface $importer */
-                $records = $importer->getDoctrineEntities($entity, $entity_id);
+                $records = $importer->reset()->getDoctrineEntities($entity, $entity_id);
                 foreach ($records->getPersistEntities() as $record) {
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
@@ -171,7 +171,7 @@ final class DeskProWriter extends AbstractWriter
                         ));
                     } else {
                         $this->logWarning(sprintf(
-                            'Unable to add a new import map %s, oid=%s, already exist',
+                            'Unable to add a new import map %s, oid=%s, already exists',
                             $map_entity->getImportMapKey(), $map_entity->getOid()
                         ));
                     }
@@ -209,15 +209,12 @@ final class DeskProWriter extends AbstractWriter
         $importers = $this->importers->getByEntityType($entity->getType());
         foreach ($importers as $importer) {
             if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
-                /** @var GeneratorConfigAwareInterface $importer */
                 $importer->setConfig($this->config);
             }
             if ($this->logger && $importer instanceof LoggerAwareInterface) {
-                /** @var LoggerAwareInterface $importer */
                 $importer->setLogger($this->logger);
             }
             if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
-                /** @var ProgressBarAwareInterface $importer */
                 $importer->setProgressBarHelper($this->progress_bar);
             }
         }

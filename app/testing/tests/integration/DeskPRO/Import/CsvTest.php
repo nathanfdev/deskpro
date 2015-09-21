@@ -55,6 +55,11 @@ class CsvTest extends \DpIntegrationTestCase
     private $article_repository;
 
     /**
+     * @var EntityRepository\ArticleCategory
+     */
+    private $article_category_repository;
+
+    /**
      * @var EntityRepository\Feedback
      */
     private $feedback_repository;
@@ -125,22 +130,23 @@ class CsvTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository                    = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->ticket_attachment_repository         = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository                    = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->news_repository                      = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
-        $this->article_repository                   = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
-        $this->feedback_repository                  = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
-        $this->feedback_attachment_repository       = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
-        $this->download_repository                  = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
-        $this->organization_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
-        $this->organization_contact_data_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\OrganizationContactData');
-        $this->blob_repository                      = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
-        $this->custom_data_ticket_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataTicket');
-        $this->custom_data_person_repository        = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataPerson');
-        $this->custom_data_feedback_repository      = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataFeedback');
-        $this->custom_data_article_repository       = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataArticle');
-        $this->custom_data_organization_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataOrganization');
+        $this->ticket_repository                    = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository         = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository                    = $entity_manager->getRepository('DeskPRO:Person');
+        $this->news_repository                      = $entity_manager->getRepository('DeskPRO:News');
+        $this->article_repository                   = $entity_manager->getRepository('DeskPRO:Article');
+        $this->article_category_repository          = $entity_manager->getRepository('DeskPRO:ArticleCategory');
+        $this->feedback_repository                  = $entity_manager->getRepository('DeskPRO:Feedback');
+        $this->feedback_attachment_repository       = $entity_manager->getRepository('DeskPRO:FeedbackAttachment');
+        $this->download_repository                  = $entity_manager->getRepository('DeskPRO:Download');
+        $this->organization_repository              = $entity_manager->getRepository('DeskPRO:Organization');
+        $this->organization_contact_data_repository = $entity_manager->getRepository('DeskPRO:OrganizationContactData');
+        $this->blob_repository                      = $entity_manager->getRepository('DeskPRO:Blob');
+        $this->custom_data_ticket_repository        = $entity_manager->getRepository('DeskPRO:CustomDataTicket');
+        $this->custom_data_person_repository        = $entity_manager->getRepository('DeskPRO:CustomDataPerson');
+        $this->custom_data_feedback_repository      = $entity_manager->getRepository('DeskPRO:CustomDataFeedback');
+        $this->custom_data_article_repository       = $entity_manager->getRepository('DeskPRO:CustomDataArticle');
+        $this->custom_data_organization_repository  = $entity_manager->getRepository('DeskPRO:CustomDataOrganization');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
@@ -178,20 +184,45 @@ class CsvTest extends \DpIntegrationTestCase
 
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Attachment of entity `message_0` parsed successfully!', $output);
-        $this->assertContains('Entity `message_1` parsed successfully!', $output);
-        $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
-        $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
-        $this->assertContains('Custom field of entity `ticket_144` parsed successfully!', $output);
-        $this->assertContains('Entity `person_1` parsed successfully!', $output);
-        $this->assertContains('Entity `person_6` parsed successfully!', $output);
-        $this->assertContains('Entity `article_1` parsed successfully!', $output);
-        $this->assertContains('Entity `article_2` parsed successfully!', $output);
-        $this->assertContains('Entity `download_num_0` parsed successfully!', $output);
-        $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
-        $this->assertContains('Entity `news_num_0` parsed successfully!', $output);
-        $this->assertContains('Entity `news_num_1` parsed successfully!', $output);
-        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
+        // Checking for tickets
+        $this->assertContains('[CSVAttachment #0 (message_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicketMessage #1 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #144 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #145 (ticket_145)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #0 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #1 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #2 (ticket_145)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #3 (ticket_145)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #4 (ticket_145)] Entity parsed successfully!', $output);
+
+        // Checking for people
+        $this->assertContains('[CSVPerson #1 (person_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #6 (person_6)] Entity parsed successfully!', $output);
+
+        // Checking for article categories
+        $this->assertContains('[CSVArticleCategory #num_0 (article_category_num_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticleCategory #num_1 (article_category_num_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticleCategory #num_2 (article_category_num_2)] Entity parsed successfully!', $output);
+
+        $this->assertContains('[CSVArticle #1 (article_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticle #2 (article_2)] Entity parsed successfully!', $output);
+
+        // Checking for downloads
+        $this->assertContains('[CSVDownload #num_0 (download_num_0)] Entity parsed successfully!', $output);
+
+        // Checking for feedback
+        $this->assertContains('[CSVFeedback #1 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('CSVAttachment #0 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #0 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #1 (feedback_1)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #2 (feedback_1)] Entity parsed successfully!', $output);
+
+        // Checking for news
+        $this->assertContains('[CSVNews #num_0 (news_num_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVNews #num_1 (news_num_1)] Entity parsed successfully!', $output);
+
+        // Checking for organizations
+        $this->assertContains('[CSVOrganization #num_0 (organization_some_organization)] Entity parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkDbEmpty();
@@ -309,6 +340,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals(1, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
         $this->assertEquals(1, $this->article_repository->countAll());
+        $this->assertEquals(1, $this->article_category_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
@@ -325,6 +357,7 @@ class CsvTest extends \DpIntegrationTestCase
     private function checkDbData()
     {
         $this->checkDbArticleData();
+        $this->checkDbArticleCategoryData();
         $this->checkDbPeopleData();
         $this->checkDbTicketsData();
         $this->checkDbFeedbackData();
@@ -397,6 +430,23 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals('Content 1', $article->getContentPlain());
         $this->assertEquals('published', $article->getStatusCode());
         $this->assertEquals('Category 1', $article->getPrimaryCategory());
+    }
+
+    private function checkDbArticleCategoryData()
+    {
+        $this->assertEquals(5, $this->article_category_repository->countAll());
+
+        $category_1 = $this->article_category_repository->findOneBy(array('title' => 'Category 1', 'parent' => null));
+        $this->assertNotNull($category_1);
+
+        $category_2 = $this->article_category_repository->findOneBy(array('title' => 'Sub Category 1', 'parent' => $category_1));
+        $this->assertNotNull($category_2);
+
+        $category_3 = $this->article_category_repository->findOneBy(array('title' => 'Sub Category 2', 'parent' => $category_2));
+        $this->assertNotNull($category_3);
+
+        $category_4 = $this->article_category_repository->findOneBy(array('title' => 'Sub Category 3', 'parent' => $category_3));
+        $this->assertNotNull($category_4);
     }
 
     private function checkDbOrganizationData()

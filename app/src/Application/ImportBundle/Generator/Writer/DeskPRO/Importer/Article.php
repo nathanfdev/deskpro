@@ -76,8 +76,6 @@ final class Article extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntities();
-
         $article = $this->findOrCreateArticle($entity_id);
         $article
             ->setTitle($entity->getTitle())
@@ -123,7 +121,7 @@ final class Article extends AbstractImporter
     }
 
     /**
-     * Returns an article by title
+     * Returns an article by oid
      * Creates a new article if not found
      *
      * @param int $entity_id
@@ -222,20 +220,10 @@ final class Article extends AbstractImporter
      */
     private function createArticleCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefArticle $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ARTICLE);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataArticle());
-    }
-
-    /**
-     * Returns the article category mapper
-     *
-     * @return Mapper\ArticleCategory
-     * @throws \Exception
-     */
-    private function getArticleCategoryMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
     }
 
     /**

@@ -28,8 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
@@ -62,26 +62,16 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $articles   = $this->reader->getData($this->getArticleReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getArticleReaderConfig()))
+            ->setPrefix('JSONArticle')
+            ->setRefColumn('oid')
+            ->setMethod('exportArticle')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($articles as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportArticle($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONArticle', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONArticle', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -90,7 +80,7 @@ final class Articles extends AbstractParser
      * @param array $data
      * @return Entity\Article|null
      */
-    private function exportArticle(array $data)
+    protected function exportArticle(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
@@ -189,22 +179,15 @@ final class Articles extends AbstractParser
      */
     private function exportComments(array $comments)
     {
-        $collection = new Entity\Collection();
-        foreach ($comments as $num => $data) {
-            try {
-                $entity = $this->exportComment($data);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($comments)
+            ->setPrefix('JSONArticleComment')
+            ->setRefColumn('oid')
+            ->setMethod('exportComment')
+        ;
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONArticleComment', 'ticket message', 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONArticleComment', 'ticket message', 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -213,7 +196,7 @@ final class Articles extends AbstractParser
      * @param array $data
      * @return Entity\ArticleComment
      */
-    private function exportComment(array $data)
+    protected function exportComment(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,

@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
@@ -244,7 +245,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $output->writeln("<info>Done batch</info>");
             $output->writeln("<info>Updating search tables.</info>");
 
-            $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+            /** @var EntityRepository\Ticket $ticket_repository */
+            $ticket_repository = $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket');
+            $ticket_repository->fillSearchTable();
 
             $config          = $this->createGeneratorConfig($input);
             $exporter_config = $config->getExporterBatchConfig();
@@ -516,7 +519,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             if ($input->getOption('config-from-db')) {
                 $importer = $this->getContainer()->get('deskpro.import')->getImporter($input->getArgument('script'));
-                $handler = new Generator\Logger\ImporterHandler($importer, $this->getContainer()->getEm());
+                $handler = new Generator\Logger\ImporterProcessingHandler($importer, $this->getContainer()->getEm());
                 $handler->setFormatter($formatter);
                 $logger->pushHandler($handler);
             }

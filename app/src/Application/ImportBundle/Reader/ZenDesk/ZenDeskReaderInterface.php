@@ -180,11 +180,24 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getArticleTranslations($id);
 
     /**
-     * Returns a collection of article categories
-     * Merges help center categories and sections
+     * Returns article category path like "Category Name > Section Name"
      *
      * @param int $section_id
+     * @return string
+     */
+    public function getArticleCategoryPath($section_id);
+
+    /**
+     * Returns a collection of article categories
+     *
      * @return array
      */
-    public function getArticleCategory($section_id);
+    public function getArticlesCategories();
+
+    /**
+     * Returns a collection of article sub categories
+     *
+     * @return array
+     */
+    public function getArticlesSections();
 }

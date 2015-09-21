@@ -84,6 +84,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     protected $num_downloads = 0;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
@@ -104,6 +105,9 @@ class Download extends ContentAbstract implements HighlightableModelInterface
      */
     protected $date_updated;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -323,6 +327,14 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return \Application\DeskPRO\Entity\LabelDownload[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
      * Set downloads count
      *
      * @param int $num_downloads
@@ -358,7 +370,9 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);

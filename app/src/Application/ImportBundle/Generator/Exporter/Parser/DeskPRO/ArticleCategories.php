@@ -25,54 +25,40 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
- * Kb entities validator
+ * Class ArticleCategories
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  *
- * Class Article
- * @package Application\ImportBundle\Generator\Validator
+ * todo implement
  */
-final class Articles extends AbstractConstraintValidator
+final class ArticleCategories extends AbstractParser implements NotSupportedInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_ARTICLE;
+        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validate(Entity\EntityInterface $entity)
+    public function getCount()
     {
-        if ( ! $entity instanceof Entity\Article) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
-        }
+        return 0;
+    }
 
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
-
-        foreach ($entity->getComments() as $comment) {
-            /** @var Entity\ArticleComment $comment */
-            $errors = $this->validator->validate($comment);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
-
-        foreach ($entity->getAttachments() as $attachment) {
-            /** @var Entity\Attachment $attachment */
-            $errors = $this->validator->validate($attachment);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
     }
 }

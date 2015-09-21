@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class CustomDefFeedback
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class CustomDefFeedback implements MapperInterface
+final class CustomDefFeedback extends AbstractCustomDefMapper
 {
     /**
      * @var EntityRepository\CustomDefFeedback

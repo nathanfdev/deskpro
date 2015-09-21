@@ -44,27 +44,4 @@ final class Person extends AbstractConstraintValidator
     {
         return Entity\EntityInterface::TYPE_PERSON;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        if ( ! $entity instanceof Entity\Person) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
-        }
-
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
-
-        foreach ($entity->getCustomFields() as $custom_field) {
-            /** @var Entity\CustomField $custom_field */
-            $errors = $this->validator->validate($custom_field);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
-    }
 }

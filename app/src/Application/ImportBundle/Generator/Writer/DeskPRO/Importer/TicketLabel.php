@@ -55,34 +55,18 @@ final class TicketLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntities();
-
         $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
         $ticket->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $ticket->addLabel($this->createTicketLabel($label));
-            $this->logInfo(sprintf(
-                'Creating a new label `%s` for ticket with oid `%d`',
-                $label, $ticket->getId()
-            ));
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelTicket();
+            $label->setLabel($label_name);
+
+            $ticket->addLabel($label);
+            $this->logInfo(sprintf('Creating a new label `%s` for ticket with oid `%d`', $label_name, $ticket->getId()));
         }
 
         $this->records->setPrimaryEntity($ticket);
         return $this->records;
-    }
-
-    /**
-     * Returns a new ticket label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelTicket
-     */
-    private function createTicketLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelTicket();
-        $entity->setLabel($label);
-
-        return $entity;
     }
 }

@@ -72,8 +72,7 @@ final class Organization extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntities();
-        $organization  = $this->findOrCreateOrganization($entity->getName());
+        $organization = $this->findOrCreateOrganization($entity->getName());
         $organization
             ->setImportance($entity->getImportance())
             ->setDateCreated($entity->getDateCreated())
@@ -141,6 +140,7 @@ final class Organization extends AbstractImporter
      */
     private function createOrganizationCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefOrganization $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ORGANIZATION);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataOrganization());

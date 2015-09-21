@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class CustomDefPeople
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class CustomDefPerson implements MapperInterface
+final class CustomDefPerson extends AbstractCustomDefMapper
 {
     /**
      * @var EntityRepository\CustomDefPerson

@@ -30,8 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Orb\Util\Strings;
 
 /**
@@ -62,7 +62,7 @@ final class Tickets extends AbstractParser
      */
     public function getCurrentTicketsMinId()
     {
-        return $this->tickets_min_id ? : $this->getBatchConfig()->getTicketsMinId();
+        return max($this->tickets_min_id, $this->getBatchConfig()->getTicketsMinId());
     }
 
     /**
@@ -82,29 +82,20 @@ final class Tickets extends AbstractParser
         $collection = new Entity\Collection();
 
         do {
-            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $config = new ExportCollectionConfig();
+            $config
+                ->setData($batch)
+                ->setPrefix('OSTicket')
+                ->setRefColumn('ticket_id')
+                ->setMethod('exportTicket')
+                ->setAdvanceProgressbar(true)
+            ;
 
-            foreach ($batch as $num => $data) {
-                $this->advanceProgressBar();
-
-                try {
-                    $entity = $this->exportTicket($data);
-
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-                } catch (TransformerException $e) {
-                    $this->logTransformerException('OSTicket', $this->getEntityType(), 'oid', $e);
-                } catch (\Exception $e) {
-                    $this->logUnknownException('OSTicket', $this->getEntityType(), 'oid', $e, $data);
-                }
-
-                if (isset($data['ticket_id'])) {
-                    $this->tickets_min_id = $data['ticket_id'];
-                }
-            }
+            $collection->merge($this->exportCollection($config));
 
             $this->entities_loaded += count($batch);
+            $this->tickets_min_id   = max($this->tickets_min_id, $collection->getMaxOid());
 
         } while (count($batch) > 0);
 
@@ -117,7 +108,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\Ticket|null
      */
-    private function exportTicket(array $data)
+    protected function exportTicket(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'ticket_id'   => TransformerInterface::TYPE_INT,
@@ -155,7 +146,6 @@ final class Tickets extends AbstractParser
 
         $messages = $this->exportMessages($formatted['ticket_id']);
         foreach ($messages as $message) {
-            /** @var Entity\TicketMessage $message */
             $entity->addMessage($message);
         }
 
@@ -168,7 +158,7 @@ final class Tickets extends AbstractParser
      * @param int $id
      * @return Entity\TicketPriority|null
      */
-    private function exportPriority($id)
+    protected function exportPriority($id)
     {
         if ($id) {
             $data   = $this->reader->findTicketPriority($id);
@@ -191,28 +181,19 @@ final class Tickets extends AbstractParser
      * Returns a collection of the ticket messages
      *
      * @param int $ticket_id
-     * @return Entity\Collection
+     * @return Entity\TicketMessage[]|Entity\Collection
      */
-    private function exportMessages($ticket_id)
+    protected function exportMessages($ticket_id)
     {
-        $messages   = $this->reader->findMessages($ticket_id);
-        $collection = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->findMessages($ticket_id))
+            ->setPrefix('OSTicketMessage')
+            ->setRefColumn('id')
+            ->setMethod('exportMessage')
+        ;
 
-        foreach ($messages as $num => $data) {
-            try {
-                $entity = $this->exportMessage($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('OSTicketMessage', 'ticket message', 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('OSTicketMessage', 'ticket message', 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -221,7 +202,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\TicketMessage|null
      */
-    private function exportMessage(array $data)
+    protected function exportMessage(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_INT,
@@ -248,7 +229,6 @@ final class Tickets extends AbstractParser
 
         $attachments = $this->exportAttachments($formatted['id']);
         foreach ($attachments as $attachment) {
-            /** @var Entity\Attachment $attachment */
             $entity->addAttachment($attachment);
         }
 
@@ -259,28 +239,19 @@ final class Tickets extends AbstractParser
      * Returns a collection of the ticket message attachments
      *
      * @param int $message_id
-     * @return Entity\Collection
+     * @return Entity\Attachment[]|Entity\Collection
      */
-    private function exportAttachments($message_id)
+    protected function exportAttachments($message_id)
     {
-        $collection  = new Entity\Collection();
-        $attachments = $this->reader->findMessageAttachments($message_id);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->findMessageAttachments($message_id))
+            ->setPrefix('OSTicketAttachment')
+            ->setRefColumn('file_id')
+            ->setMethod('exportAttachment')
+        ;
 
-        foreach ($attachments as $num => $data) {
-            try {
-                $entity = $this->exportAttachment($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('OSTicketAttachment', 'ticket message attachment', 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('OSTicketAttachment', 'ticket message attachment', 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -289,7 +260,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\Attachment|null
      */
-    private function exportAttachment(array $data)
+    protected function exportAttachment(array $data)
     {
         $formatted = $this->formatter->format($data, $configuration = array(
             'file_id'     => TransformerInterface::TYPE_INT,

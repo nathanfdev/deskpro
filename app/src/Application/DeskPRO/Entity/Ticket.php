@@ -1913,6 +1913,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $l ? $l->getId() : 0;
     }
 
+    /**
+     * Set language
+     *
+     * @param Language|null $language
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+        return $this;
+    }
+
+    /**
+     * Set language by id
+     *
+     * @param int $id
+     * @return $this
+     */
     public function setLanguageId($id)
     {
         if ($id) {
@@ -2027,6 +2045,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @return Person|null
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @return int|mixed
+     */
     public function getAgentId()
     {
         if (!$this->agent) {
@@ -2036,24 +2065,39 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->agent['id'];
     }
 
-    public function setAgentId($id)
+    /**
+     * Set ticket agent
+     *
+     * @param Person|null $agent
+     * @return $this
+     */
+    public function setAgent(Person $agent = null)
     {
-
-        if ($id) {
-            $agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
-            if (!$agent['is_agent']) {
-                throw new \InvalidArgumentException("$id is not an agent");
+        if ($agent) {
+            if ( ! $agent->isAgent()) {
+                throw new \InvalidArgumentException(sprintf('%s is not an agent', $agent->getId()));
             }
 
-            $this['agent'] = $agent;
             // Do we need to update the first assign date?
             if (is_null($this->date_first_agent_assign)) {
                 $this['date_first_agent_assign'] = new \DateTime();
             }
-
-        } else {
-            $this['agent'] = null;
         }
+
+        $this->setModelField('agent', $agent);
+        return $this;
+    }
+
+    /**
+     * Set ticket agent by id
+     *
+     * @param int $id
+     * @return $this
+     */
+    public function setAgentId($id)
+    {
+        $agent = $id ? App::getOrm()->getRepository('DeskPRO:Person')->find($id) : null;
+        return $this->setAgent($agent);
     }
 
     public function getAgentTeamId()

@@ -81,7 +81,7 @@ final class GenerateCollection extends AbstractCollection
      *
      * @param string $type
      *
-     * @return Entity\Collection
+     * @return Entity\Collection|Entity\EntityInterface[]
      * @throws \Exception
      */
     public function getByEntityType($type)

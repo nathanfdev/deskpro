@@ -28,10 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Helper;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\LocaleMapper;
 
@@ -57,21 +57,15 @@ class Translations extends AbstractParserFormatterHelper
      */
     public function export(array $translations)
     {
-        $collection = new Entity\Collection();
-        foreach ($translations as $num => $translation) {
-            try {
-                /** @var Entity\Collection $translation_entities */
-                $translation_entities = $this->exportTranslation($translation);
-                $collection->merge($translation_entities);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($translations)
+            ->setPrefix('ZDTranslation')
+            ->setRefColumn('id')
+            ->setMethod('exportTranslation')
+        ;
 
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDTranslation', $this->getEntityType(), 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDTranslation', $this->getEntityType(), 'id', $e);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**

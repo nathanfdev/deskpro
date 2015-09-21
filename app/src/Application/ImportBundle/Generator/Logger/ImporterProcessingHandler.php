@@ -3,11 +3,16 @@
 namespace Application\ImportBundle\Generator\Logger;
 
 use Application\DeskPRO\Entity\DataStore;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
 use Orb\Util\Strings;
 
-class ImporterHandler extends AbstractProcessingHandler
+/**
+ * Class ImporterProcessingHandler
+ * @package Application\ImportBundle\Generator\Logger
+ */
+class ImporterProcessingHandler extends AbstractProcessingHandler
 {
     /**
      * @var EntityManager
@@ -30,12 +35,18 @@ class ImporterHandler extends AbstractProcessingHandler
     protected $count = 0;
 
     /**
-     * @param DataStore $importer
+     * Constructor
+     *
+     * @param DataStore     $importer
      * @param EntityManager $em
+     * @param int           $level
+     * @param bool          $bubble
      */
-    public function __construct(DataStore $importer, EntityManager $em)
+    public function __construct(DataStore $importer, EntityManager $em, $level = Logger::DEBUG, $bubble = true)
     {
-        $this->em = $em;
+        parent::__construct($level, $bubble);
+
+        $this->em       = $em;
         $this->importer = $importer;
     }
 

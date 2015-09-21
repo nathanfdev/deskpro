@@ -135,6 +135,8 @@ final class Collection extends AbstractCollection
     }
 
     /**
+     * Checks if all entities has import map key
+     *
      * @return bool
      */
     public function hasImportMapKey()
@@ -146,5 +148,37 @@ final class Collection extends AbstractCollection
         }
 
         return count($this->collection) > 0;
+    }
+
+    /**
+     * Returns containing entity destinations
+     *
+     * @return array
+     */
+    public function getDestinations()
+    {
+        return array_map(
+            function(EntityInterface $entity) {
+                return $entity->getDestination();
+            },
+            $this->collection
+        );
+    }
+
+    /**
+     * Returns the max oid
+     *
+     * @return mixed
+     */
+    public function getMaxOid()
+    {
+        return empty($this->collection) ? 0 : max(
+            array_map(
+                function(EntityInterface $entity) {
+                    return $entity->getOid();
+                },
+                $this->collection
+            )
+        );
     }
 }

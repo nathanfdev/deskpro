@@ -32,6 +32,8 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
+ * Exporting article comment entity
+ *
  * Class ArticleComment
  * @package Application\ImportBundle\Entity
  */

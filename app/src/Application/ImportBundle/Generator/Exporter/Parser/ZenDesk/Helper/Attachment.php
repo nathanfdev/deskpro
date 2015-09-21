@@ -29,10 +29,10 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Helper;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Client as HttpClient;
@@ -76,25 +76,15 @@ class Attachment extends AbstractParserFormatterHelper
      */
     public function export(array $attachments)
     {
-        $collection = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($attachments)
+            ->setPrefix('ZDAttachment')
+            ->setRefColumn('id')
+            ->setMethod('exportAttachment')
+        ;
 
-        foreach ($attachments as $num => $data) {
-            try {
-                $entity = $this->exportAttachment($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDAttachment', 'attachment', 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDAttachment', 'attachment', 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDAttachment', 'attachment', 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**

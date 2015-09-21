@@ -31,6 +31,7 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class Attachment
@@ -53,30 +54,22 @@ class Attachment extends AbstractParserFormatterHelper
      * @param string $destination_prefix
      * @param string $ref_column
      *
-     * @return Entity\Collection
+     * @return Entity\Attachment[]|Entity\Collection
      */
     public function exportAttachments(array $data, $destination_prefix, $ref_column)
     {
-        $collection = new Entity\Collection();
-        foreach ($data as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
+        $that   = $this;
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($data)
+            ->setPrefix('CSVAttachment')
+            ->setRefColumn($ref_column)
+            ->setMethod(function($data, $num) use($that, $destination_prefix, $ref_column) {
+                return $that->exportAttachment($num, $destination_prefix, $data, $ref_column);
+            })
+        ;
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf(
-                    'Attachment of entity `%s%s` parsed successfully!',
-                    $destination_prefix, $entity->getOid())
-                );
-
-            } catch (\Exception $e) {
-                $this->logWarning(sprintf(
-                    'Invalid attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -87,7 +80,7 @@ class Attachment extends AbstractParserFormatterHelper
      * @param array  $data
      * @param string $ref_column
      *
-     * @return Entity\Attachment|null
+     * @return Entity\Attachment
      */
     public function exportAttachment($num, $destination_prefix, array $data, $ref_column)
     {

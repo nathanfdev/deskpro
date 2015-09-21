@@ -284,6 +284,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
             ->addPropertyConstraint('date_created', new Constraints\DateTime())
 
             ->addGetterConstraint('messageContent', new Constraints\True())
+            ->addPropertyConstraint('attachments', new Constraints\Valid())
         ;
     }
 }

@@ -55,16 +55,14 @@ final class ArticleLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntities();
-
         $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id));
         $article->resetLabels();
 
         foreach ($entity->getLabels() as $label_name) {
-            $entity = new DeskPROEntity\LabelArticle();
-            $entity->setLabel($label_name);
+            $label = new DeskPROEntity\LabelArticle();
+            $label->setLabel($label_name);
 
-            $article->addLabel($entity);
+            $article->addLabel($label);
             $this->logDebug(sprintf('Creating a new label `%s` for article with oid `%d`', $label_name, $article->getId()));
         }
 
