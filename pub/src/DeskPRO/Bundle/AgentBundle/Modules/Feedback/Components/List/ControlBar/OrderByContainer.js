@@ -12,12 +12,14 @@ import { sortingDataSelector } from '../../../Selectors/list';
 export class OrderByContainer extends React.Component {
 
   render() {
-    const { sortOptions, order, currentSortMode } = this.props;
+    const { sortOptions, order, currentSortMode, toggleDropdown } = this.props;
+
     return (
       <OrderBy
         sortOptions={sortOptions}
         currentSortMode={currentSortMode}
         order={order}
+        toggleDropdown={toggleDropdown}
         />
     );
   }

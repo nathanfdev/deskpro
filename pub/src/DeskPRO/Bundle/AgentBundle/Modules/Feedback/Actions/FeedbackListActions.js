@@ -87,9 +87,9 @@ export const toggleViewMode = createAction(
 
 export const toggleOrder = createAction(
   "FEEDBACK_TOGGLE_ORDER",
-  (trigger, query, sort, order, filters) => {
-    trigger({order: order});
-    trigger(loadFeedbackList(query, sort, order, filters));
+  (query, sort, order, filters) => (dispatch) => {
+    order => order;
+    dispatch(loadFeedbackList(query, sort, order, filters));
   });
 
 export const toggleSort = createAction(

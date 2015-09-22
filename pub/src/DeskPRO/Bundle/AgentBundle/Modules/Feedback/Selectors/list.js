@@ -9,5 +9,5 @@ export const sortingDataSelector = createSelector(
 
 export const viewDataSelector = createSelector(
   stateSelector,
-    list => list.get('viewModeOptions').toJS().find(option => option.current === true)
+    list => list.get('viewModeOptions').toJS().find(option=> option.current === true)
 );

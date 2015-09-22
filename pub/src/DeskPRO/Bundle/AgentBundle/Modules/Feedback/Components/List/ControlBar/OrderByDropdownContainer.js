@@ -15,12 +15,13 @@ import { sortingDataSelector } from '../../../Selectors/list';
 export class OrderByDropdownContainer extends React.Component {
 
   render() {
-    const { sortOptions, order, currentSortMode } = this.props;
+    const { sortOptions, order, currentSortMode, offset } = this.props;
 
     return (
-      <DropdownMenu dropdownClass="order-dropdown">
+      <DropdownMenu  offset={offset}>
         {sortOptions.map((option, index)=>
-            <Option key={index} active={currentSortMode.field === option.field} callback={this.toggleListSort.bind(this)}
+            <Option key={index} active={currentSortMode.field === option.field}
+                    callback={this.toggleListSort.bind(this)}
                     option={option}/>
         )}
         <DropdownMenuFooter>

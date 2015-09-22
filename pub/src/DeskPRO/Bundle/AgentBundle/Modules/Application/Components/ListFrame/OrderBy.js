@@ -10,12 +10,12 @@ export class OrderBy extends Component {
   };
 
   render() {
-    const { order, currentSortMode } = this.props;
+    const { order, currentSortMode, toggleDropdown } = this.props;
+
     let label = `${currentSortMode.label} (${order})`;
     return (
       <li>
-        <ControlButton title="Order by:" icon={currentSortMode.icon} dropdownClass="order-dropdown"
-                       label={label}/>
+        <ControlButton title="Order by:" icon={currentSortMode.icon} label={label} toggleDropdown={toggleDropdown}/>
       </li>
     );
   }

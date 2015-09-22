@@ -5,11 +5,10 @@ import $ from "jquery";
 export class DropdownMenu extends Component {
 
   render() {
-    const {dropdownClass} = this.props;
-    var classes = classNames('dpw-navigation-dropdown', dropdownClass);
+    const {offset} = this.props;
 
     return (
-      <div className={classes}>
+      <div className={'dpw-navigation-dropdown'} style={{left:offset.left, top:offset.bottom}}>
         <ul>
           {this.props.children}
         </ul>

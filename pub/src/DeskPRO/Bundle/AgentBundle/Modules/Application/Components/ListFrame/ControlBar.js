@@ -26,10 +26,13 @@ export class ControlButton extends React.Component {
   render() {
     const { title, label, icon } = this.props;
     var classes = classNames('fa', icon);
+
     return (
-      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.toggleDropdown.bind(this)}>
+      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.handleClick.bind(this)}>
         <span
-          className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">{title}</span>
+          className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
+          {title}
+        </span>
         <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className={classes}></i></span>
         <span className="dpwd-navigation-dropdown-top-row-button-text">{label}</span>
         <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className="fa fa-caret-down"></i></span>
@@ -37,12 +40,11 @@ export class ControlButton extends React.Component {
     );
   }
 
-  toggleDropdown(event) {
-    event.preventDefault();
-    const {dropdownClass} = this.props;
-    let elem             = $(event.target),
-          buttonPosition = elem.closest('a').offset(),
-          dropdown       = $(event.target).closest('.dpwd-navigation-dropdown-top-row').find('.' + dropdownClass);
-    dropdown.css('left', buttonPosition.left).css('top', buttonPosition.bottom).css('width', '200px').css('position', 'fixed').css('z-index', 200).toggle();
+  handleClick(e) {
+    e.preventDefault();
+    const {toggleDropdown} = this.props;
+    let offset = $(e.target).closest('a').position();
+    toggleDropdown(offset);
   }
+
 }

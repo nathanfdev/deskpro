@@ -8,14 +8,13 @@ export class ViewModeSwitcher extends Component {
   };
 
   render() {
-    const {viewModeOptions, currentViewMode} = this.props;
-
+    const { currentViewMode, toggleDropdown } = this.props;
     let label = currentViewMode.label.substring(0, currentViewMode.label.indexOf(' '));
 
     return (
       <li>
-        <ControlButton title="View:" icon={currentViewMode.icon} dropdownClass="view-mode-dropdown"
-                       label={label}/>
+        <ControlButton title="View:" icon={currentViewMode.icon}
+                       label={label} toggleDropdown={toggleDropdown}/>
       </li>
     );
   }

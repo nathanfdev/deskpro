@@ -75,7 +75,6 @@ export default createReducer(initialState, {
   }),
   [actions.loadFeedbackList]: async({
     success: (state, payload) => {
-      console.log('Payload from getList: ', payload);
       return state.set('feedback', payload.data)
     }
   }),
@@ -86,8 +85,7 @@ export default createReducer(initialState, {
       nextObj.current = obj.field === payload;
       viewModeOptions.push(nextObj);
     });
-    console.log(state.get('viewModeOptions').toJS());
-    return state.set('viewModeOptions', viewModeOptions)
+    return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions))
   }
 
 });

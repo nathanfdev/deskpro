@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import $ from "jquery";
 import classNames from 'classnames';
 
 export class OrderSwitcher extends Component {

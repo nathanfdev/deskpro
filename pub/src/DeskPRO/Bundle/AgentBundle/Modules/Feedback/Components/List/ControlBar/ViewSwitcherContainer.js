@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { viewDataSelector } from '../../../Selectors/list';
+import { ViewSwitcherDropdownContainer } from './ViewSwitcherDropdownContainer.js';
 
 @connect(state => ({
   order: state.Feedback.list.get('order'),
