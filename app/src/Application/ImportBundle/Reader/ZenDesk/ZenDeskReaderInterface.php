@@ -74,6 +74,14 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getPeopleEndTime(DateTime $start_time = null);
 
     /**
+     * Returns an user by id
+     *
+     * @param array $id
+     * @return array
+     */
+    public function getPersonById($id);
+
+    /**
      * Returns a batch of the users collection of certain ids
      *
      * @param array $ids

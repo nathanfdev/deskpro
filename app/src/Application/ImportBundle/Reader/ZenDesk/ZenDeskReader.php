@@ -116,6 +116,16 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getPersonById($id)
+    {
+        $result = $this->adapter->doRequest('CoreAPI\PeopleFind', array('id' => $id));
+
+        return $result ? $this->toArray($result->user) : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPeopleByIds(array $ids)
     {
         $people    = array();

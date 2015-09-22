@@ -20,7 +20,7 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								{{ form_widget(phone.number) }}
+								{{ form_widget(phone.number, { attr: {  style: "width: 200px" } }) }}
 								{{ form_widget(phone.ext) }}
 							</div>
 							<div class="label">
@@ -41,10 +41,11 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-				 {{ form_widget(contact_data.phone_numbers.vars.prototype.number) }}
+				{{ form_widget(contact_data.phone_numbers.vars.prototype.number) }}
+				{{ form_widget(contact_data.phone_numbers.vars.prototype.ext) }}
 					</div>
 					<div class="label">
-				 {{ form_widget(contact_data.phone_numbers.vars.prototype.label, { attr: { placeholder: 'Add a label' } }) }}
+				{{ form_widget(contact_data.phone_numbers.vars.prototype.label, { attr: { placeholder: 'Add a label' } }) }}
 					</div>
 					<br class="clear" />
 				</li>

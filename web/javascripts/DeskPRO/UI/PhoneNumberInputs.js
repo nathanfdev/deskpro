@@ -52,6 +52,8 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 				phone_input.intlTelInput('setNumber', input.val());
 			}
 
+			phone_input.width('300px');
+
 			phone_input.on('input change', function () {
 				// if there was an extension, but now there is not an extension
 				if (ext_input.val() && !phone_input.intlTelInput('getExtension')) {
