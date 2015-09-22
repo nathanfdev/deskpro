@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Reader\Csv;
 
 use Application\ImportBundle\Reader\AbstractReader;
+use Application\ImportBundle\Reader\NotFoundException;
 use SplFileObject;
 use LimitIterator;
 
@@ -56,7 +57,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      */
     public function checkConfig()
     {
-        return true;
+        return is_dir($this->config->getResource());
     }
 
     /**
@@ -120,14 +121,6 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function isReady()
-    {
-        return true;
-    }
-
-    /**
      * Returns entity type path
      *
      * @param string $entity_type
@@ -150,11 +143,11 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     {
         $entity_path = $this->getEntityPath($entity_type);
 
+        if ( ! file_exists($entity_path)) {
+            throw new NotFoundException(sprintf('File "%s" not found.', $entity_path));
+        }
         if ( ! stream_is_local($entity_path)) {
             throw new \RuntimeException(sprintf('This is not a local file "%s".', $entity_path));
-        }
-        if ( ! file_exists($entity_path)) {
-            throw new \RuntimeException(sprintf('File "%s" not found.', $entity_path));
         }
 
         try {

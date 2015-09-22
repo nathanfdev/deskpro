@@ -25,13 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\Json;
+namespace Application\ImportBundle\Reader;
 
 /**
  * Class NotFoundException
- * @package Application\ImportBundle\Reader\Json
+ * @package Application\ImportBundle\Reader
  */
-final class NotFoundException extends \Exception
+final class NotFoundException extends \RuntimeException
 {
 
 }

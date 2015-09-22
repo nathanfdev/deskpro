@@ -28,11 +28,11 @@
 namespace Application\ImportBundle\Reader\Json;
 
 use Application\ImportBundle\Reader\AbstractReader;
+use Application\ImportBundle\Reader\NotFoundException;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Finder\Iterator\SortableIterator;
 use Symfony\Component\Finder\SplFileInfo;
-use Exception;
 
 /**
  * Json data parser
@@ -119,7 +119,7 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
      * @param string $path
      *
      * @return RecursiveIteratorIterator
-     * @throws Exception
+     * @throws NotFoundException
      */
     private function getIterator($path)
     {

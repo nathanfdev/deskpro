@@ -33,7 +33,7 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 use Application\ImportBundle\Entity;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
+use Application\ImportBundle\Reader\NotFoundException;
 
 /**
  * Abstract csv parser
@@ -81,7 +81,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         try {
             return $this->reader->getRowsCount($entity_type);
 
-        } catch (NotFoundResourceException $e) {
+        } catch (NotFoundException $e) {
             $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getResource(), $entity_type));
         }
 
@@ -107,7 +107,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
             return $data;
 
-        } catch (NotFoundResourceException $e) {
+        } catch (NotFoundException $e) {
             $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getResource(), $entity_type));
 
         } catch (CsvReaderException $e) {

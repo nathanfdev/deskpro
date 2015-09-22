@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\Json\NotFoundException;
+use Application\ImportBundle\Reader\NotFoundException;
 use Exception;
 use DateTime;
 
