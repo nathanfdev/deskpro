@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\ImportBundle\Generator;
-use Application\ImportBundle\Service\Import as ImportService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -52,28 +51,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * @var ImportService
-     */
-    protected $is;
-
-    /**
      * {@inheritDoc}
      */
     public function getPermissionStrategy()
     {
         return new UserTypePermission(UserTypePermission::ADMIN);
-    }
-
-    /**
-     * @return ImportService
-     */
-    protected function is()
-    {
-        if (!$this->is) {
-            $this->is = $this->get('deskpro.import');
-        }
-
-        return $this->is;
     }
 
     /**
@@ -85,7 +67,7 @@ class ImportersController extends AbstractController implements ProtectedControl
         $repository = $this->em->getRepository('DeskPRO:DataStore');
         $importers  = $repository->getByPrefix('importers.');
 
-        $is = $this->is();
+        $is = $this->get('deskpro.import');
 
         if (count($importers) !== count($is::$allowed)) {
             $importers = array();
@@ -121,7 +103,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function getAction($id)
     {
-        $importer = $this->is()->getImporter($id);
+        $importer = $this->get('deskpro.import')->getImporter($id);
         $importer['icon'] = $this->getIcon($importer);
         return $this->createJsonResponse($importer->getData());
     }
@@ -132,7 +114,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function downloadLogAction($id)
     {
-        $importer = $this->is()->getImporter($id);
+        $importer = $this->get('deskpro.import')->getImporter($id);
         $logfile  = $importer->getData('logfile');
 
         if ($logfile && is_file($logfile) && is_readable($logfile)) {
@@ -165,7 +147,7 @@ class ImportersController extends AbstractController implements ProtectedControl
             throw new BadRequestHttpException;
         }
 
-        $is = $this->is();
+        $is = $this->get('deskpro.import');
         $importer = $is->getImporter($id);
         $importer->setData('config', @$data['config']);
         $this->em->flush($importer);
@@ -182,13 +164,14 @@ class ImportersController extends AbstractController implements ProtectedControl
     /**
      * test if import ready to start
      *
-     * @param $id
+     * @param string  $id
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function testAction($id, Request $request)
     {
-        $is       = $this->is();
+        $is       = $this->get('deskpro.import');
         $importer = $is->getImporter($id);
 
         try {
@@ -206,13 +189,14 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @param $id
+     * @param string  $id
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function startAction($id, Request $request)
     {
-        $this->is()->startImport($id);
+        $this->get('deskpro.import')->startImport($id);
         return $this->getAction($id);
     }
 
