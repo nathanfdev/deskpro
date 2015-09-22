@@ -5,11 +5,7 @@ import { TableHeader, Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  order: state.Feedback.list.get('order'),
-  filters: state.Feedback.list.get('filters'),
-  tableViewFields: state.Feedback.list.get('tableViewFields').toJS(),
-  feedback: state.Feedback.list.get('feedback'),
-  query: state.Feedback.nav.get('query')
+  tableViewFields: state.Feedback.list.get('tableViewFields').toJS()
 }))
 
 export class TableHeaderContainer extends React.Component {

@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
-import $ from "jquery";
 
 export class DropdownMenu extends Component {
 

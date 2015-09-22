@@ -96,5 +96,15 @@ export default createReducer(initialState, {
     });
     return state.set('sortOptions', Immutable.fromJS(sortOptions))
   },
+  [actions.setTableSort]: (state, payload) => {
+    console.log(payload);
+    let tableViewFields = [];
+    state.get('tableViewFields').toJS().forEach(obj=> {
+      const nextObj = {...obj};
+      nextObj.order = nextObj.name === payload.sort ? payload.order : false;
+      tableViewFields.push(nextObj);
+    });
+    return state.set('tableViewFields', Immutable.fromJS(tableViewFields))
+  },
   [actions.toggleOrder]: setFullPayload('order')
 });

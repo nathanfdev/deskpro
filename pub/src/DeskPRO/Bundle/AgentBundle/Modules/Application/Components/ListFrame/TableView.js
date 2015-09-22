@@ -1,9 +1,8 @@
 import React from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import $ from "jquery";
+import classNames from 'classnames';
 
 export class TableView extends React.Component {
-
 
   render() {
     return (
@@ -43,32 +42,36 @@ export class TableHeader extends React.Component {
 export class Th extends React.Component {
 
   render() {
-    const { field, sortTable } = this.props;
+    const { field } = this.props;
+    var classes = classNames('sortable', field.className);
     return (
-      <th className={'sortable '+ field.className}
-          onClick={this.handleClick.bind(this, field.name, sortTable)}>
+      <th className={classes}
+          onClick={this.handleClick.bind(this, field.name)}>
         {field.label}
+        {this.renderCaret(field)}
       </th>
     );
   }
 
-  handleClick(param, sortTable, event) {
+  renderCaret(field) {
+    if (field.order) {
+      var classes = classNames('fa', {
+        'fa-caret-down': field.order === constants.ORDER_DESC,
+        'fa-caret-up': field.order === constants.ORDER_ASC
+      });
+      return (
+        <span className="sort-direction"><i className={classes}></i></span>
+      );
+    }
+  }
+
+  handleClick(param, event) {
     event.preventDefault();
     event.stopPropagation();
-    let elem = $(event.target),
-      siblings = elem.siblings('th'),
-      caret = elem.find('i.fa');
-    let order = elem.data('order') === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
-    siblings.find('span.sort-direction').remove();
-    siblings.data('order', '');
-    elem.data('order', order);
-    if (caret.length > 0) {
-      caret.toggleClass('fa-caret-down').toggleClass('fa-caret-up');
-    }
-    else {
-      elem.append('<span class="sort-direction"><i class="fa fa-caret-down"></i></span>')
-    }
+    const {sortTable, field} = this.props;
+    let order = field.order === constants.ORDER_ASC ? constants.ORDER_DESC : constants.ORDER_ASC;
     sortTable(param, order);
+    this.setState({'order': order});
   }
 
 }
@@ -146,4 +149,3 @@ export class Td extends React.Component {
   }
 
 }
-
