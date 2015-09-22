@@ -164,12 +164,10 @@ class ImportersController extends AbstractController implements ProtectedControl
     /**
      * test if import ready to start
      *
-     * @param string  $id
-     * @param Request $request
-     *
+     * @param string $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function testAction($id, Request $request)
+    public function testAction($id)
     {
         $is       = $this->get('deskpro.import');
         $importer = $is->getImporter($id);
@@ -189,12 +187,10 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @param string  $id
-     * @param Request $request
-     *
+     * @param string $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function startAction($id, Request $request)
+    public function startAction($id)
     {
         $this->get('deskpro.import')->startImport($id);
         return $this->getAction($id);
