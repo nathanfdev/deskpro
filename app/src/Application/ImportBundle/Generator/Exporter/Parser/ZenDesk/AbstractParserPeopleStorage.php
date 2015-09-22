@@ -70,17 +70,23 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
 
         $people = array();
         foreach ($deleted_ids as $id) {
-            $people[$id] = array(
-                'id'         => $id,
-                'name'       => 'User ' . $id,
+            $person = $this->reader->getPersonById($id);
+            if ( ! $person) {
+                $person = array(
+                    'id'         => $id,
+                    'name'       => 'User ' . $id,
+                    'created_at' => $created_at,
+                    'updated_at' => $created_at,
+                    'locale'     => 'en-US',
+                    'time_zone'  => 'UTC',
+                    'role'       => People::ROLE_END_USER,
+                );
+            }
+
+            $people[$id] = array_merge($person, array(
                 'email'      => sprintf('imported.user.%s@example.com', $id),
-                'created_at' => $created_at,
-                'updated_at' => $created_at,
-                'locale'     => 'en-US',
-                'time_zone'  => 'UTC',
-                'role'       => People::ROLE_END_USER,
                 'is_deleted' => true,
-            );
+            ));
         }
 
         $this->storage->addPeople($people);

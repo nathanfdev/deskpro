@@ -79,7 +79,7 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param array $id
      * @return array
      */
-    public function getPersonById(array $id);
+    public function getPersonById($id);
 
     /**
      * Returns a batch of the users collection of certain ids
