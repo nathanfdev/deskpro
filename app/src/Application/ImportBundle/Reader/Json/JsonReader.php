@@ -59,7 +59,35 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
      */
     public function checkConfig()
     {
-        return true;
+        $paths = array(
+            self::ENTITY_ARTICLE_PATH,
+            self::ENTITY_ARTICLE_CATEGORY_PATH,
+            self::ENTITY_DOWNLOAD_PATH,
+            self::ENTITY_FEEDBACK_PATH,
+            self::ENTITY_NEWS_PATH,
+            self::ENTITY_PERSON_PATH,
+            self::ENTITY_TICKET_PATH,
+            self::ENTITY_ORGANIZATION_PATH,
+        );
+
+        if ( ! is_dir($this->config->getPath())) {
+            return false;
+        }
+
+        foreach ($paths as $path) {
+            try {
+                $this->getIterator($path);
+                return true;
+
+            } catch (NotFoundException $e) {
+                // File not found, continue...
+
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     /**
