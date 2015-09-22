@@ -64,7 +64,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
         parent::__construct($config);
         $this->container = $container;
 
-        $em = $container->getEm();
+        $em       = $container->getEm();
         $this->em = $em->create(
             DriverManager::getConnection(array(
                 'dbname'   => $config->getDatabase(),
@@ -82,7 +82,14 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function checkConfig()
     {
-        return true;
+        try {
+            return $this->em->getConnection()->connect();
+
+        } catch (\Exception $e) {
+
+        }
+
+        return false;
     }
 
     /**
