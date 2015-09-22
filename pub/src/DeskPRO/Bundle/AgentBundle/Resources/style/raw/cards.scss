@@ -870,11 +870,17 @@ $level-10: #ac2020;
 
 .moving {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  z-index: 99999;
+  z-index: 9999999;
   -moz-transform: rotate(-3deg);
   -webkit-transform: rotate(-3deg);
   -o-transform: rotate(-3deg);
   -ms-transform: rotate(-3deg);
   transform: rotate(-3deg);
   max-width: 370px;
+}
+
+.floating {
+  width: 370px;
+  z-index: 999;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }

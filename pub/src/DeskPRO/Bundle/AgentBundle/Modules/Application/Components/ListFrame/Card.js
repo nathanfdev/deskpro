@@ -25,6 +25,10 @@ export default class Card extends React.Component {
       }
     }
 
+    if (cardType && cardType === 'float') {
+      classes.push('floating');
+    }
+
     return (
       <div className={classes.join(' ')}>
         { cardType && cardType === 'task' ?

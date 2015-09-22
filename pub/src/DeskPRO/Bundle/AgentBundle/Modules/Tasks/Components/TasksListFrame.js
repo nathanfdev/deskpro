@@ -553,7 +553,11 @@ export default class TasksListFrame extends React.Component {
                             prevMonth={this.prevMonth.bind(this)}
                             dispatch={_this.props.dispatch.bind(_this)}
                             tickets={tickets}
+                            teams={this.teams}
                             projects={this.projects}
+                            linked_items={linked_items}
+                            departments={this.departments}
+                            agents={this.agents}
                             setYear={this.setYear.bind(this)} />
             </div>
             :
