@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Reader\Csv;
 
 use Application\ImportBundle\Reader\AbstractReader;
-use Symfony\Component\Translation\Exception\InvalidResourceException;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use SplFileObject;
 use LimitIterator;
 
@@ -146,23 +144,23 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      * @param string $entity_type
      *
      * @return LimitIterator
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     private function getIterator($entity_type)
     {
         $entity_path = $this->getEntityPath($entity_type);
 
         if ( ! stream_is_local($entity_path)) {
-            throw new InvalidResourceException(sprintf('This is not a local file "%s".', $entity_path));
+            throw new \RuntimeException(sprintf('This is not a local file "%s".', $entity_path));
         }
         if ( ! file_exists($entity_path)) {
-            throw new NotFoundResourceException(sprintf('File "%s" not found.', $entity_path));
+            throw new \RuntimeException(sprintf('File "%s" not found.', $entity_path));
         }
 
         try {
             $file = new SplFileObject($entity_path, 'rb');
         } catch (\RuntimeException $e) {
-            throw new NotFoundResourceException(sprintf('Error opening file "%s".', $entity_path), 0, $e);
+            throw new \RuntimeException(sprintf('Error opening file "%s".', $entity_path), 0, $e);
         }
 
         $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY);
