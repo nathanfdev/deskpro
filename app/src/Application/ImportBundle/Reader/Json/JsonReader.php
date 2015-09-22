@@ -65,10 +65,10 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getDirectoryFilesCount($entity_type, $batch_num)
+    public function getDirectoryFilesCount($entity_path, $batch_num)
     {
         $count    = 0;
-        $iterator = $this->getIterator($this->getEntityPath($entity_type, $batch_num));
+        $iterator = $this->getIterator($this->getEntityPath($entity_path, $batch_num));
 
         foreach ($iterator as $file) {
             /** @var SplFileInfo $file */
@@ -84,10 +84,10 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getData($entity_type, $batch_num)
+    public function getData($entity_path, $batch_num)
     {
         $data     = array();
-        $iterator = $this->getIterator($this->getEntityPath($entity_type, $batch_num));
+        $iterator = $this->getIterator($this->getEntityPath($entity_path, $batch_num));
 
         foreach ($iterator as $file) {
             /** @var SplFileInfo $file */

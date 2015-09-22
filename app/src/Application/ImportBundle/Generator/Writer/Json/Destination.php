@@ -25,31 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
-
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Writer\Json;
 
 /**
- * Download entity destination
- *
- * Class Download
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class Destination
+ * @package Application\ImportBundle\Generator\Writer\Json
  */
-final class Download implements DestinationInterface
+class Destination
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function getEntityType()
+    private $entity_type;
+
+    /**
+     * @var string
+     */
+    private $entity_path;
+
+    /**
+     * Constructor
+     *
+     * @param $entity_type
+     * @param $entity_path
+     */
+    public function __construct($entity_type, $entity_path)
     {
-        return Entity\EntityInterface::TYPE_DOWNLOAD;
+        $this->entity_type = $entity_type;
+        $this->entity_path = $entity_path;
     }
 
     /**
-     * {@inheritdoc}
+     * Referred entity type
+     *
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return $this->entity_type;
+    }
+
+    /**
+     * Relative entity output path
+     *
+     * @return string
      */
     public function getEntityOutputPath()
     {
-        return self::ENTITY_DOWNLOAD_PATH;
+        return $this->entity_path;
     }
 }

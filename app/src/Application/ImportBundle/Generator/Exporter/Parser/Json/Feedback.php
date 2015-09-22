@@ -30,8 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Generator\Writer\Json\Destination\DestinationInterface;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Orb\Util\Strings;
 
 /**
@@ -55,7 +55,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount(DestinationInterface::ENTITY_FEEDBACK_PATH, $this->getBatchNum());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_FEEDBACK_PATH, $this->getBatchNum());
     }
 
     /**
@@ -65,7 +65,7 @@ final class Feedback extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->getData(DestinationInterface::ENTITY_FEEDBACK_PATH, $this->getBatchNum()))
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_FEEDBACK_PATH, $this->getBatchNum()))
             ->setPrefix('JSONFeedback')
             ->setRefColumn('oid')
             ->setMethod('exportFeedback')

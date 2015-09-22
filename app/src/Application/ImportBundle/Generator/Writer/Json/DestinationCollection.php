@@ -25,31 +25,44 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Writer\Json;
 
-use Application\ImportBundle\Entity;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Feedback entity destination
+ * Collection of the supported json writer entities
  *
- * Class Feedback
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class Collection
+ * @package Application\ImportBundle\Generator\Writer\Json
  */
-final class Feedback implements DestinationInterface
+final class DestinationCollection extends AbstractCollection
 {
     /**
-     * {@inheritdoc}
+     * Attach a destination configuration
+     *
+     * @param Destination $destination
+     * @return $this
      */
-    public function getEntityType()
+    public function attach(Destination $destination)
     {
-        return Entity\EntityInterface::TYPE_FEEDBACK;
+        $this->collection[$destination->getEntityType()] = $destination;
+        return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a destination by entity type
+     *
+     * @param string $type
+     *
+     * @return Destination
+     * @throws \RuntimeException
      */
-    public function getEntityOutputPath()
+    public function getByEntityType($type)
     {
-        return self::ENTITY_FEEDBACK_PATH;
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
+        }
+
+        throw new \RuntimeException(sprintf('Destination `%s` not found', $type));
     }
 }
