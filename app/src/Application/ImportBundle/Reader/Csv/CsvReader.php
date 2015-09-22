@@ -58,6 +58,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     public function checkConfig()
     {
         $primary_files = array(
+            self::FILE_ARTICLE_CATEGORIES,
             self::FILE_ARTICLES,
             self::FILE_DOWNLOADS,
             self::FILE_FEEDBACK,
