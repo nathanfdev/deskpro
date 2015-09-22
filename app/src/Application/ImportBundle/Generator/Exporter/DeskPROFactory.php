@@ -51,10 +51,13 @@ class DeskPROFactory extends AbstractExporterFactory
         /** @var DeskPROConfig $config */
         $config = $reader->getConfig();
 
+        $people_storage = new Parser\PeopleStorage();
+        $ticket_people  = new Parser\DeskPRO\TicketPeopleStorage($reader, $people_storage);
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\DeskPRO\People($reader))
-            ->attach(new Parser\DeskPRO\Tickets($reader, $config->getStartTicketId()))
+            ->attach(new Parser\DeskPRO\People($reader, $people_storage))
+            ->attach(new Parser\DeskPRO\Tickets($reader, $ticket_people, $config->getStartTicketId()))
             ->attach(new Parser\DeskPRO\Articles($reader))
             ->attach(new Parser\DeskPRO\ArticleCategories($reader))
             ->attach(new Parser\DeskPRO\Downloads($reader))

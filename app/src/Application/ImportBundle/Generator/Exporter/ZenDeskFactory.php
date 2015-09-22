@@ -53,7 +53,6 @@ class ZenDeskFactory extends AbstractExporterFactory
 
         $http_client = new Client();
         $formatter   = $this->container->get('deskpro.import.formatter');
-        $storage     = new Parser\PeopleStorage();
 
         $helpers = new ParserHelperSet();
         $helpers
@@ -61,8 +60,9 @@ class ZenDeskFactory extends AbstractExporterFactory
             ->attach(new Parser\ZenDesk\Helper\Translations($formatter))
         ;
 
-        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $storage);
-        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $storage);
+        $people_storage = new Parser\PeopleStorage();
+        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $people_storage);
+        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $people_storage);
 
         // Parsers collection
         $parsers = new Parser\Collection();
@@ -72,7 +72,7 @@ class ZenDeskFactory extends AbstractExporterFactory
             ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
             ->attach(new Parser\ZenDesk\ArticleCategories($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
-            ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
+            ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $people_storage))
             ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people))
             ->attach(new Parser\ZenDesk\Organizations($reader, $formatter, $helpers))
         ;

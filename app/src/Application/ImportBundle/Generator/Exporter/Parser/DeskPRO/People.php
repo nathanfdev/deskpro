@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 use Application\DeskPRO\Entity\Person;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\PeopleStorage;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
 /**
  * DeskPRO people parser
@@ -43,6 +45,23 @@ final class People extends AbstractParser
      * @var int
      */
     private $users_min_id = 0;
+
+    /**
+     * @var PeopleStorage
+     */
+    private $people_storage;
+
+    /**
+     * Constructor
+     *
+     * @param DeskPROReaderInterface $reader
+     * @param PeopleStorage          $people_storage
+     */
+    public function __construct(DeskPROReaderInterface $reader, PeopleStorage $people_storage)
+    {
+        parent::__construct($reader);
+        $this->people_storage = $people_storage;
+    }
 
     /**
      * {@inheritdoc}

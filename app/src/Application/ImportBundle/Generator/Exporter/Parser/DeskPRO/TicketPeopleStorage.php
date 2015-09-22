@@ -27,78 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
-
 /**
- * Abstract DeskPRO parser
- *
- * Class AbstractParser
+ * Class TicketPeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
-    const MAX_BATCH_SIZE = 1000;
-
     /**
-     * @var DeskPROReaderInterface
+     * {@inheritdoc}
      */
-    protected $reader;
-
-    /**
-     * @var int
-     */
-    protected $entities_loaded = 0;
-
-    /**
-     * Constructor
-     *
-     * @param DeskPROReaderInterface $reader
-     */
-    public function __construct(DeskPROReaderInterface $reader)
+    protected function getPeopleIds($data)
     {
-        $this->reader = $reader;
-    }
 
-    /**
-     * Returns reader batch size
-     *
-     * @return int
-     */
-    protected function getReaderBatchSize()
-    {
-        $batch_size = self::MAX_BATCH_SIZE;
-        if ($this->getBatchConfig()->getBatchSize() < $batch_size) {
-            $batch_size = $this->getBatchConfig()->getBatchSize();
-        }
-        if ($this->getEntitiesLeftToLoad() < $batch_size) {
-            $batch_size = $this->getEntitiesLeftToLoad();
-        }
-
-        return $batch_size;
-    }
-
-    /**
-     * Returns count of entities to load in a batch
-     *
-     * @return int
-     */
-    protected function getEntitiesLeftToLoad()
-    {
-        return $this->getBatchConfig()->getBatchSize() - $this->entities_loaded;
-    }
-
-    /**
-     * Returns batch config
-     *
-     * @return BatchConfig
-     * @throws \RuntimeException
-     */
-    protected function getBatchConfig()
-    {
-        if ($this->config->getExporterBatchConfig()) {
-            return $this->config->getExporterBatchConfig();
-        }
-
-        throw new \RuntimeException('Batch config is not defined');
     }
 }

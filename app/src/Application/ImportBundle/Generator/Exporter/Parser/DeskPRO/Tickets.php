@@ -30,7 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 use Orb\Util\Strings;
 
 /**
@@ -44,17 +45,25 @@ final class Tickets extends AbstractParser
     /**
      * @var int
      */
-    private $tickets_min_id;
+    private $tickets_min_id = 0;
+
+    /**
+     * @var ParserPeopleStorageInterface
+     */
+    private $people_storage;
 
     /**
      * Constructor
      *
-     * @param DeskPROReader $reader
-     * @param int           $min_id
+     * @param DeskPROReaderInterface       $reader
+     * @param ParserPeopleStorageInterface $people_storage
+     * @param int                          $min_id
      */
-    public function __construct(DeskPROReader $reader, $min_id = 0)
+    public function __construct(DeskPROReaderInterface $reader, ParserPeopleStorageInterface $people_storage, $min_id = 0)
     {
         parent::__construct($reader);
+
+        $this->people_storage = $people_storage;
         $this->tickets_min_id = (int)$min_id;
     }
 
