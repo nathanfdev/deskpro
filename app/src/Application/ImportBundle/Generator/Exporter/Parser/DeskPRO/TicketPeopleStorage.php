@@ -26,6 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
  * Class TicketPeopleStorage
@@ -38,6 +39,17 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
      */
     protected function getPeopleIds($data)
     {
+        $people_ids = array();
 
+        foreach ($data as $ticket) {
+            /** @var Ticket $ticket */
+            $people_ids[] = $ticket->person->getId();
+
+            if ($ticket->agent) {
+                $people_ids[] = $ticket->agent->getId();
+            }
+        }
+
+        return array_unique($people_ids);
     }
 }

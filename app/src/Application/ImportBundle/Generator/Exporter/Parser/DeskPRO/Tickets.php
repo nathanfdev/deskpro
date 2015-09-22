@@ -103,6 +103,8 @@ final class Tickets extends AbstractParser
 
         do {
             $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $this->people_storage->loadBy($batch);
+
             $config = new ExportCollectionConfig();
             $config
                 ->setData($batch)

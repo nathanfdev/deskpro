@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
 use Doctrine\Common\Collections\Criteria;
 
@@ -59,11 +60,12 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
         $criteria = new Criteria();
         $criteria->andWhere($criteria->expr()->in('id', $ids));
 
+        /** @var Entity\Person[] $result */
         $result = $this->reader->findUsersByCriteria($criteria);
         $people = array();
 
         foreach ($result as $person) {
-            $people[$person['id']] = $person;
+            $people[$person->getId()] = $person;
         }
 
         $this->storage->addIgnoreIds($request_ids);
