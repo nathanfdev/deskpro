@@ -1,8 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
-import $ from "jquery";
 
 export class DropdownMenu extends Component {
+
+  static propTypes = {
+    offset: PropTypes.object.isRequired
+  };
 
   render() {
     const {offset} = this.props;

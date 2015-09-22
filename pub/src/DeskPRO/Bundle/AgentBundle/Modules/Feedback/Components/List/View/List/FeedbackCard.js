@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 
-export class FeedbackCard extends React.Component {
+export class FeedbackCard extends Component {
+
+  static propTypes = {
+    feedback: PropTypes.object.isRequired
+  };
 
   render() {
     const {feedback} = this.props;

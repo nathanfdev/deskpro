@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { FeedbackCard } from './FeedbackCard';
 
-export class FeedbackList extends React.Component {
+export class FeedbackList extends Component {
+
+  static propTypes = {
+    elements: PropTypes.array.isRequired
+  };
 
   render() {
+    const {elements} = this.props;
+
     return (
       <div>
-        {this.props.elements.map((element, index) => <FeedbackCard key={index} feedback={element} />)}
+        {elements.map((element, index) => <FeedbackCard key={index} feedback={element}/>)}
       </div>
     );
   }
