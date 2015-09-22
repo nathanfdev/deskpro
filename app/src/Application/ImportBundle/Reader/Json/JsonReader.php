@@ -76,7 +76,7 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
 
         foreach ($paths as $path) {
             try {
-                $this->getIterator($path);
+                $this->getIterator($this->getEntityPath($path, 1));
                 return true;
 
             } catch (NotFoundException $e) {
