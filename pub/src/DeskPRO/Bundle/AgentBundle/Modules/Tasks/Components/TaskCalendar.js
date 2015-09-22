@@ -268,8 +268,11 @@ export default class TaskCalendar extends React.Component {
         <ComponentRootWrapper open={this.state.showHover}>
           <div style={{position: 'absolute', top: this.state.hoverPosition.y, left: this.state.hoverPosition.x}}>
             <TaskCardGeneric task={this.state.task}
-                             massActionable={false}
                              projects={this.props.projects}
+                             linkedItems={this.props.linkedItems}
+                             departments={this.props.departments}
+                             teams={this.props.teams}
+                             agents={this.props.agents}
                              position={this.state.hoverPosition}
                              tickets={this.props.tickets} />
           </div>

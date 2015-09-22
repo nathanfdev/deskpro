@@ -196,7 +196,6 @@ const TaskCard = React.createClass({
     }
 
     let assignee = null;
-    let assigneeName = 'Unassigned';
 
     if (task.agents.length > 0) {
       // We assume one assignment for now, though we will need to support more later
@@ -208,24 +207,6 @@ const TaskCard = React.createClass({
     } else if (task.departments.length > 0) {
       const departmentId = task.departments[0];
       assignee = departments[departmentId];
-    }
-
-    if (assignee) {
-      if (assignee.name) {
-        assigneeName = assignee.name;
-      } else {
-        assigneeName = assignee.title;
-      }
-
-      if (assignee.picture_blob) {
-        assigneeName = (<span>
-          <span className="list-icon">
-            <span style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}
-                  className="avatar"/>
-          </span>
-          {assigneeName}
-        </span>);
-      }
     }
 
     const titleClass = task.is_done ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
@@ -304,9 +285,8 @@ const TaskCard = React.createClass({
               </span>
 
               {task.subtasks_total > 0 ?
-                <span>
-                  <span className="dpw--card-disc" />
-                  <div>{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/></div>
+                <span className="dpwd--card-line-item">
+                  <div><span className="dpw--card-disc" /> {task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/></div>
                 </span>
               : ''}
             </div>
