@@ -34,11 +34,13 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1442418182 extends AbstractBuild
+class Build1442938090 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("add extension to phone numbers");
-		$this->execMutateSql("ALTER TABLE phone_numbers ADD ext VARCHAR(30) DEFAULT NULL");
+        $this->out("Add usersources.user_permission_group_id");
+		$this->execMutateSql("ALTER TABLE usersources ADD user_permission_group_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C21AF6383 FOREIGN KEY (user_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE INDEX IDX_4E3C994C21AF6383 ON usersources (user_permission_group_id)");
     }
 }
