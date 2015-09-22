@@ -3,6 +3,10 @@ import classNames from 'classnames';
 
 export class DropdownMenu extends Component {
 
+  static propTypes = {
+    offset: PropTypes.object.isRequired
+  };
+
   render() {
     const {offset} = this.props;
 

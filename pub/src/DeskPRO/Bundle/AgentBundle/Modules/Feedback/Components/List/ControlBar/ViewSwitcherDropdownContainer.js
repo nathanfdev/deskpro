@@ -13,6 +13,10 @@ import { viewDataSelector } from '../../../Selectors/list';
 }))
 export class ViewSwitcherDropdownContainer extends Component {
 
+  static propTypes = {
+    offset: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -50,6 +54,7 @@ export class ViewSwitcherDropdownContainer extends Component {
   }
 
   toggleOptionsSubmenu = (e) => {
+    e.preventDefault();
     this.setState({
       optionsIsExpanded: !this.state.optionsIsExpanded
     });
@@ -59,13 +64,6 @@ export class ViewSwitcherDropdownContainer extends Component {
   toggleView(newView) {
     const {dispatch} = this.props;
     dispatch(toggleViewMode(newView.field));
-  }
-
-  openOptionsSubmenu(event) {
-    event.stopPropagation();
-    var controlButton = $(event.target).closest('.control-button');
-    controlButton.find('.dpw-navigation-dropdown').not('.dpw-navigation-dropdown-secondary').hide();
-    controlButton.find('.dpw-navigation-dropdown-secondary').show();
   }
 
 }

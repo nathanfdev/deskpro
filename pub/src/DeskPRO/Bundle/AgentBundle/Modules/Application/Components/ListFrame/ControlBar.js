@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import $ from "jquery";
 import classNames from 'classnames';
 
-export class ControlBar extends React.Component {
+export class ControlBar extends Component {
   render() {
     return (
       <div className="dpwd-navigation-dropdown-top-row">
@@ -12,7 +12,7 @@ export class ControlBar extends React.Component {
   }
 }
 
-export class ControlButtonsRow extends React.Component {
+export class ControlButtonsRow extends Component {
   render() {
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
@@ -22,7 +22,14 @@ export class ControlButtonsRow extends React.Component {
   }
 }
 
-export class ControlButton extends React.Component {
+export class ControlButton extends Component {
+
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    icon: PropTypes.string.isRequired
+  };
+
   render() {
     const { title, label, icon } = this.props;
     var classes = classNames('fa', icon);

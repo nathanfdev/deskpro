@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { OrderSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/OrderSwitcher';
@@ -8,11 +8,13 @@ import { sortingDataSelector } from '../../../Selectors/list';
 @connect(state => ({
   sortOptions: state.Feedback.list.get('sortOptions').toJS(),
   order: state.Feedback.list.get('order'),
-  filters: state.Feedback.list.get('filters'),
-  query: state.Feedback.nav.get('query'),
   currentSortMode: sortingDataSelector(state)
 }))
-export class OrderByDropdownContainer extends React.Component {
+export class OrderByDropdownContainer extends Component {
+
+  static propTypes = {
+    offset: PropTypes.object.isRequired
+  };
 
   render() {
     const { sortOptions, order, currentSortMode, offset } = this.props;
