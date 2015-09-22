@@ -10,8 +10,7 @@ import Immutable from 'immutable';
  * - {Object}                   action   The full action. Note that action.payload === payload.
  *
  * @param {Object} initialState  The initial state
- * @param {Map}    handlers      A map of actionType => handlerFn
- * @param {Map}    handlers...   A map of actionType => handlerFn
+ * @param {Map}    handlerGroups A map of actionType => handlerFn
  * @returns {Function} Your reducer
  */
 export default function createReducer(initialState, ...handlerGroups) {
