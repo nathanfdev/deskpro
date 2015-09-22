@@ -213,7 +213,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('"oid":"100000"');
         $this->helper->seeInThisFile('"name":"Person 100000"');
         $this->helper->seeInThisFile('"is_disabled":true');
-        $this->helper->seeInThisFile('"timezone":"Europe\/Paris"');
+        $this->helper->seeInThisFile('"timezone":"America\/Los_Angeles"');
         $this->helper->seeInThisFile('"emails":["imported.user.100000@example.com"]');
 
         // Checking for tickets
@@ -617,7 +617,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     'id'              => 100000,
                     'name'            => 'Person 100000',
                     'email'           => null,
-                    'time_zone'       => 'Paris',
+                    'time_zone'       => 'America/Los_Angeles',
                     'role'            => 'end-user',
                     'created_at'      => $date1->format('Y-m-d H:i:s'),
                     'user_fields'     => array(),
@@ -736,6 +736,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $person = $this->person_repository->findOneByEmail('imported.user.100000@example.com');
         $this->assertTrue($person->isDisabled());
         $this->assertFalse($person->isDeleted());
+        $this->assertEquals('America/Los_Angeles', $person->getTimezone());
 
         $person = $this->person_repository->findOneByEmail('imported.user.200000@example.com');
         $this->assertTrue($person->isDisabled());

@@ -142,6 +142,12 @@ final class People extends AbstractParser
             throw new SkippingException('Person without email, skipping', $formatted);
         }
 
+        try {
+            $time_zone = TimeZoneMapper::getTimeZoneName($formatted['time_zone']);
+        } catch (\RuntimeException $e) {
+            $time_zone = $formatted['time_zone'];
+        }
+
         $entity = new Entity\Person();
         $entity
             ->setRawData($data)
@@ -149,7 +155,7 @@ final class People extends AbstractParser
             ->setOid($formatted['id'])
             ->addEmail($formatted['email'])
             ->setName($formatted['name'])
-            ->setTimezone(new DateTimeZone(TimeZoneMapper::getTimeZoneName($formatted['time_zone'])))
+            ->setTimezone(new DateTimeZone($time_zone))
             ->setOrganization($this->getOrganizationName($formatted['organization_id']))
             ->setDateCreated($formatted['created_at'])
         ;
