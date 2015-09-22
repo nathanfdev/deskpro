@@ -13,7 +13,6 @@ import { viewDataSelector } from '../../Selectors/list';
 export class ListContainer extends React.Component {
   render() {
     const {elements, currentViewMode} = this.props;
-    console.log(currentViewMode);
     return (
       <List elements={elements} currentViewMode={currentViewMode}/>
     );

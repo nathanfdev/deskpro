@@ -134,7 +134,7 @@ export function getList(params) {
   if (params.filters.value && params.filters.value.length > 0) {
     paramsEncoded.push(params.filters.alias + '=' + params.filters.value.replace(/\s/g, "%20"));
   }
-  console.log('DP_API/feedback/?' + paramsEncoded.join('&'));
+  //console.log('DP_API/feedback/?' + paramsEncoded.join('&'));
   return DpApi.sendGet('DP_API/feedback/?' + paramsEncoded.join('&'));
 }
 /**

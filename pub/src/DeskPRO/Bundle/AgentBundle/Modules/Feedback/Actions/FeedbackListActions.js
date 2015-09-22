@@ -5,16 +5,17 @@ import { sortingDataSelector } from '../Selectors/list';
 
 export const loadFeedbackList = createAction(
   "FEEDBACK_LIST",
-  () => (dispatch, getState)=> {
+  (overwriteParams = {}) => (dispatch, getState)=> {
     const state             = getState();
     const feedbackListState = state.Feedback.list.toJS();
     const feedbackNavState  = state.Feedback.nav.toJS();
-    const params            = {
+    const currentParams     = {
       query: feedbackNavState.query,
       filters: feedbackListState.filters,
       sort: sortingDataSelector(state).field,
       order: feedbackListState.order
     };
+    const params            = {...currentParams, ...overwriteParams};
     return dispatch => Feedback.getList(params).then(value => value.getData())
   }
 );
@@ -58,7 +59,10 @@ export const feedbackHiddenStatus = createAction(
 
 export const changeQueryState = createAction(
   "FEEDBACK_CHANGE_QUERY",
-    query =>  loadFeedbackList()
+    query =>   dispatch => {
+      dispatch(loadFeedbackList({query: query}));
+      return query;
+    }
 );
 
 export const getFilterValues = createAction(
@@ -96,9 +100,9 @@ export const toggleViewMode = createAction(
 export const toggleOrder = createAction(
   "FEEDBACK_TOGGLE_ORDER",
     order => dispatch => {
-      dispatch(loadFeedbackList());
-      return order;
-    }
+    dispatch(loadFeedbackList({order: order}));
+    return order;
+  }
 );
 
 export const toggleSort = createAction(
