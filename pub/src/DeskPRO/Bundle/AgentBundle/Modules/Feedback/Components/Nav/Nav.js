@@ -19,7 +19,7 @@ export class Nav extends Component {
 
   render() {
     const { groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;
-
+console.log('Types: ',types);
     return (
       <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
         <NavFrameHeader icon="fa-thumbs-up" dispatch={dispatch.bind(this)}>Feedback</NavFrameHeader>

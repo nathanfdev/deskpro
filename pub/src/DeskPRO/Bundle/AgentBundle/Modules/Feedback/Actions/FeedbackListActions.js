@@ -107,10 +107,11 @@ export const toggleOrder = createAction(
 
 export const toggleSort = createAction(
   "FEEDBACK_TOGGLE_SORT",
-  (trigger, query, sort, order, filters) => {
-    trigger(sort);
-    trigger(loadFeedbackList());
-  });
+  sort =>  dispatch => {
+    dispatch(loadFeedbackList({sort: sort}));
+    return sort;
+  }
+);
 
 export const storeDisplayFieldsToPersonSetting = createAction(
   "FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING",

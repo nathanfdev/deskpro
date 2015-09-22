@@ -59,7 +59,6 @@ export class Option extends Component {
     event.preventDefault();
     const {callback} = this.props;
     callback(option);
-    $(event.target).closest('.dpw-navigation-dropdown').hide();
   }
 }
 

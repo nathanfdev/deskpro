@@ -41,12 +41,14 @@ export default createReducer(initialState, {
       state.setIn(['labels'], payload.data)
   }),
   [actions.feedbackTypes]: async({
-    success: (state, payload) =>
-      state.setIn(['feedbackTypes'], payload.data)
+    success: (state, payload) => {
+      console.log(payload);
+      return state.set('types', Immutable.fromJS(payload.data))
+    }
   }),
   [actions.feedbackCustomCategories]: async({
     success: (state, payload) =>
-      state.setIn(['feedbackCustomCategories'], payload.data.nested)
+      state.setIn(['customCategories'], Immutable.fromJS(payload.data.nested))
   }),
   [actions.feedbackNew]: async({
     success: (state, payload) =>

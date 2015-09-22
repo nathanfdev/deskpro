@@ -33,8 +33,8 @@ export class OrderByDropdownContainer extends React.Component {
 
   /** Change sort option (Order By ...)*/
   toggleListSort(option) {
-    const {dispatch, order, query, filters} = this.props;
-    dispatch(toggleSort(query, option.field, order, filters));
+    const {dispatch} = this.props;
+    dispatch(toggleSort(option.field));
   }
 
   toggleListOrder(order) {

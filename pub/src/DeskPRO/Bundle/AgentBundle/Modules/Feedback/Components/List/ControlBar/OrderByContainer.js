@@ -24,5 +24,4 @@ export class OrderByContainer extends React.Component {
     );
   }
 
-
 }

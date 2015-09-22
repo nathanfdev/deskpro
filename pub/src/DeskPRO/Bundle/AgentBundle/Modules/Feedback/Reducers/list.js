@@ -87,5 +87,14 @@ export default createReducer(initialState, {
     });
     return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions))
   },
+  [actions.toggleSort]: (state, payload) => {
+    let sortOptions = [];
+    state.get('sortOptions').toJS().forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      sortOptions.push(nextObj);
+    });
+    return state.set('sortOptions', Immutable.fromJS(sortOptions))
+  },
   [actions.toggleOrder]: setFullPayload('order')
 });
