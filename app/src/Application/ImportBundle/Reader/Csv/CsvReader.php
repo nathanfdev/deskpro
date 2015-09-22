@@ -68,7 +68,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
             self::FILE_ORGANIZATIONS,
         );
 
-        if ( ! is_dir($this->config->getResource())) {
+        if ( ! is_dir($this->config->getPath())) {
             return false;
         }
 
@@ -156,7 +156,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      */
     private function getEntityPath($entity_file)
     {
-        return rtrim($this->config->getResource(), '/') . '/' . $entity_file;
+        return rtrim($this->config->getPath(), '/') . '/' . $entity_file;
     }
 
     /**

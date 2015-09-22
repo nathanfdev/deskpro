@@ -40,7 +40,7 @@ class CsvConfig implements ReaderConfigInterface
     /**
      * @var string
      */
-    private $resource;
+    private $path;
 
     /**
      * @var string
@@ -60,19 +60,19 @@ class CsvConfig implements ReaderConfigInterface
     /**
      * Constructor
      *
-     * @param string $resource
+     * @param string $path
      */
-    public function __construct($resource)
+    public function __construct($path)
     {
-        $this->resource = $resource;
+        $this->path = $path;
     }
 
     /**
      * @return string
      */
-    public function getResource()
+    public function getPath()
     {
-        return $this->resource;
+        return $this->path;
     }
 
     /**

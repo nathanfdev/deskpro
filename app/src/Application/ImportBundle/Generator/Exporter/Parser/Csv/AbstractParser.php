@@ -82,7 +82,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             return $this->reader->getRowsCount($entity_type);
 
         } catch (NotFoundException $e) {
-            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getResource(), $entity_type));
+            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getPath(), $entity_type));
         }
 
         return 0;
@@ -102,18 +102,18 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         try {
             $data = $this->reader->getData($entity_type);
             if (count($data) === 0) {
-                $this->logWarning(sprintf('No records found in resource `%s/%s`', $config->getResource(), $entity_type));
+                $this->logWarning(sprintf('No records found in resource `%s/%s`', $config->getPath(), $entity_type));
             }
 
             return $data;
 
         } catch (NotFoundException $e) {
-            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getResource(), $entity_type));
+            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getPath(), $entity_type));
 
         } catch (CsvReaderException $e) {
             $this->logWarning(sprintf(
                 'Csv reader throws an exception while reading `%s/%s`. Reason: %s',
-                $config->getResource(), $entity_type, $e->getMessage()
+                $config->getPath(), $entity_type, $e->getMessage()
             ));
         }
 
