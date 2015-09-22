@@ -7,7 +7,6 @@ import { sortingDataSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
-    query: state.Feedback.nav.get('query').toJS(),
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     statuses: state.Feedback.nav.get('statuses').toJS(),
     types: state.Feedback.nav.get('types').toJS(),
@@ -23,7 +22,7 @@ export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    const { dispatch, query, order, filters, currentSortMode } = this.props;
+    const { dispatch, filters } = this.props;
 
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
@@ -36,7 +35,7 @@ export class NavContainer extends React.Component {
     dispatch(actions.feedbackHiddenStatus());
     dispatch(actions.getFilterValues(filters.alias));
     dispatch(actions.getDisplayFieldsFromPersonSetting());
-    dispatch(actions.loadFeedbackList(query, currentSortMode.field, order, filters));
+    dispatch(actions.loadFeedbackList());
   }
 
   render() {
@@ -59,8 +58,7 @@ export class NavContainer extends React.Component {
     event.stopPropagation();
     $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
     $(event.target).closest('a').addClass('active');
-    const {dispatch, sortOptions, order, filters } = this.props;
-    let sort = sortOptions.find((option)=>option.current === true).field;
-    dispatch(actions.changeQueryState(params, sort, order, filters));
+    const {dispatch } = this.props;
+    dispatch(actions.changeQueryState(params));
   }
 }

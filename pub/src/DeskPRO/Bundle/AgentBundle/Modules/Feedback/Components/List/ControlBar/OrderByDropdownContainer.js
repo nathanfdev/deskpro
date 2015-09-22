@@ -18,7 +18,7 @@ export class OrderByDropdownContainer extends React.Component {
     const { sortOptions, order, currentSortMode, offset } = this.props;
 
     return (
-      <DropdownMenu  offset={offset}>
+      <DropdownMenu offset={offset}>
         {sortOptions.map((option, index)=>
             <Option key={index} active={currentSortMode.field === option.field}
                     callback={this.toggleListSort.bind(this)}
@@ -38,7 +38,7 @@ export class OrderByDropdownContainer extends React.Component {
   }
 
   toggleListOrder(order) {
-    const {dispatch, query, sortOptions, filters, currentSortMode} = this.props;
-    dispatch(toggleOrder(query, currentSortMode.field, order, filters));
+    const {dispatch} = this.props;
+    dispatch(toggleOrder(order));
   }
 }

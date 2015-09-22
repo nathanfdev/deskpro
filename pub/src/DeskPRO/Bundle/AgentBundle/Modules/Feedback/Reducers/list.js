@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
@@ -86,6 +86,6 @@ export default createReducer(initialState, {
       viewModeOptions.push(nextObj);
     });
     return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions))
-  }
-
+  },
+  [actions.toggleOrder]: setFullPayload('order')
 });

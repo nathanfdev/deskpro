@@ -24,7 +24,7 @@ export class OrderSwitcher extends Component {
 
 export class Radio extends Component {
   render() {
-    const {type, order, toggleOrder}=this.props;
+    const {type, order}=this.props;
     var classes = classNames('dpwd-radio-button', {
       'active': type === order
     });

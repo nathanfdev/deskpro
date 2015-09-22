@@ -1,6 +1,23 @@
 import { createAction } from "Ampliflux";
 import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import { sortingDataSelector } from '../Selectors/list';
+
+export const loadFeedbackList = createAction(
+  "FEEDBACK_LIST",
+  () => (dispatch, getState)=> {
+    const state             = getState();
+    const feedbackListState = state.Feedback.list.toJS();
+    const feedbackNavState  = state.Feedback.nav.toJS();
+    const params            = {
+      query: feedbackNavState.query,
+      filters: feedbackListState.filters,
+      sort: sortingDataSelector(state).field,
+      order: feedbackListState.order
+    };
+    return dispatch => Feedback.getList(params).then(value => value.getData())
+  }
+);
 
 export const feedbackToValidate = createAction(
   "FEEDBACK_TO_VALIDATE",
@@ -39,18 +56,9 @@ export const feedbackHiddenStatus = createAction(
   "FEEDBACK_HIDDEN_STATUS",
   () => dispatch => Feedback.getHidden().then(value => value.getData()));
 
-export const loadFeedbackList = createAction(
-  "FEEDBACK_LIST",
-  (query, filters, sort, order) =>
-      dispatch => Feedback.getList(query, filters, sort, order).then(value => value.getData())
-);
-
 export const changeQueryState = createAction(
   "FEEDBACK_CHANGE_QUERY",
-  (trigger, query, sort, order, filters) => {
-    trigger(query);
-    trigger(loadFeedbackList(query, sort, order, filters));
-  }
+    query =>  loadFeedbackList()
 );
 
 export const getFilterValues = createAction(
@@ -77,7 +85,7 @@ export const setTableSort = createAction(
   "FEEDBACK_SET_TABLE_SORT",
   (trigger, query, sort, order, filters) => {
     trigger({sort: sort, order: order});
-    trigger(loadFeedbackList(query, sort, order, filters));
+    trigger(loadFeedbackList());
   });
 
 export const toggleViewMode = createAction(
@@ -87,16 +95,17 @@ export const toggleViewMode = createAction(
 
 export const toggleOrder = createAction(
   "FEEDBACK_TOGGLE_ORDER",
-  (query, sort, order, filters) => (dispatch) => {
-    order => order;
-    dispatch(loadFeedbackList(query, sort, order, filters));
-  });
+    order => dispatch => {
+      dispatch(loadFeedbackList());
+      return order;
+    }
+);
 
 export const toggleSort = createAction(
   "FEEDBACK_TOGGLE_SORT",
   (trigger, query, sort, order, filters) => {
     trigger(sort);
-    trigger(loadFeedbackList(query, sort, order, filters));
+    trigger(loadFeedbackList());
   });
 
 export const storeDisplayFieldsToPersonSetting = createAction(
@@ -106,7 +115,7 @@ export const storeDisplayFieldsToPersonSetting = createAction(
   });
 
 export const getDisplayFieldsFromPersonSetting = createAction(
-  "FEEDBACK_GET_DISPLAY_FIELD_TO_PERSON_SETTING",
+  "FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING",
   () => {
     Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(value => value.getData())
   });
@@ -116,5 +125,5 @@ export const changeDisplayFieldsStatus = createAction(
   (trigger, type, field, status, query, sort, order, filters, listViewFields, tableViewFields) => {
     trigger({type: type, field: field, status: status});
     trigger(storeDisplayFieldsToPersonSetting([{listViewFields: listViewFields, tableViewFields: tableViewFields}]));
-    trigger(loadFeedbackList(query, sort, order, filters));
+    trigger(loadFeedbackList());
   });
