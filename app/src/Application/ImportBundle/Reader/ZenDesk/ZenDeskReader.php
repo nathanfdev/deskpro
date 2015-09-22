@@ -73,6 +73,16 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getSettings()
+    {
+        $result = $this->adapter->doRequest('CoreAPI\SettingsFindAll');
+
+        return $this->toArray($result->settings);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPeopleCount(DateTime $start_time = null)
     {
         $result = $this->adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
