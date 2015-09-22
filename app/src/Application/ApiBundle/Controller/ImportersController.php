@@ -200,7 +200,11 @@ class ImportersController extends AbstractController implements ProtectedControl
         return $this->getAction($id);
     }
 
-    protected function getIcon($importer)
+    /**
+     * @param Entity\DataStore $importer
+     * @return string
+     */
+    protected function getIcon(Entity\DataStore $importer)
     {
         $path = defined('DPC_SITE_DOMAIN')
             ? '//' . DPC_SITE_DOMAIN . '/web/images/admin/icons/icon-' . $importer->getData('id') . '.png'
