@@ -32,8 +32,8 @@ use Application\ImportBundle\Generator\Exporter\ExporterFactoryInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Writer\WriterFactoryInterface;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Application\ImportBundle\Generator\Writer\AbstractWriterFactory as AbstractWriterFactory;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * Generator importer service factory
@@ -76,6 +76,21 @@ class GeneratorFactory
     }
 
     /**
+     * Creates generator reader instance
+     *
+     * @param DeskproContainer $container
+     * @param GeneratorConfig  $config
+     *
+     * @return ReaderInterface
+     */
+    public static function createReader(DeskproContainer $container, GeneratorConfig $config)
+    {
+        /** @var ReaderFactoryInterface $factory */
+        $factory = $container->get(sprintf('deskpro.import.%s_reader_factory', $config->getExporterType()));
+        return $factory->createReader($config->getReaderConfig());
+    }
+
+    /**
      * Creates generator exporter instance
      *
      * @param DeskproContainer $container
@@ -100,7 +115,7 @@ class GeneratorFactory
 
         /** @var ExporterFactoryInterface $factory */
         $factory  = new $factories[$config->getExporterType()]($container);
-        $exporter = $factory->createExporter($config->getReaderConfig());
+        $exporter = $factory->createExporter(self::createReader($container, $config));
 
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
             if ( ! $config->getExporterBatchConfig()) {
@@ -117,7 +132,7 @@ class GeneratorFactory
      * @param DeskproContainer $container
      * @param GeneratorConfig  $config
      *
-     * @return AbstractWriterFactory
+     * @return WriterInterface
      * @throws \RuntimeException
      */
     private static function createWriter(DeskproContainer $container, GeneratorConfig $config)

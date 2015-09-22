@@ -27,13 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
-use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\EntityRepository;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Guzzle\Http\Client;
 
 /**
@@ -47,21 +45,15 @@ class ZenDeskFactory extends AbstractExporterFactory
     /**
      * {@inheritdoc}
      */
-    public function createExporter(ReaderConfigInterface $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        if ( ! $config instanceof ZenDeskConfig) {
-            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        if ( ! $reader instanceof ZenDeskReaderInterface) {
+            throw new \RuntimeException('Reader expected to be instance of ZenDeskReaderInterface');
         }
 
         $http_client = new Client();
-
-        /** @var ZenDeskReaderFactoryInterface $reader_factory */
-        $reader_factory = $this->container->get('deskpro.import.zendesk_reader_factory');
-        /** @var FormatterInterface $formatter */
-        $formatter = $this->container->get('deskpro.import.formatter');
-
-        $reader  = $reader_factory->createReader($config);
-        $storage = new Parser\PeopleStorage();
+        $formatter   = $this->container->get('deskpro.import.formatter');
+        $storage     = new Parser\PeopleStorage();
 
         $helpers = new ParserHelperSet();
         $helpers

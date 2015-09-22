@@ -27,12 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
-use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Application\ImportBundle\Reader\Json\JsonConfig;
-use Application\ImportBundle\Reader\Json\JsonReader;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * Json data exporter factory
@@ -45,15 +42,12 @@ class JsonFactory extends AbstractExporterFactory
     /**
      * {@inheritdoc}
      */
-    public function createExporter(ReaderConfigInterface $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        if ( ! $config instanceof JsonConfig) {
-            throw new \RuntimeException('Config expected to be instance of JsonConfig');
+        if ( ! $reader instanceof JsonReaderInterface) {
+            throw new \RuntimeException('Config expected to be instance of JsonReaderInterface');
         }
 
-        /** @var JsonReaderInterface $reader */
-        $reader = new JsonReader($config);
-        /** @var FormatterInterface $formatter */
         $formatter = $this->container->get('deskpro.import.formatter');
 
         $helpers = new ParserHelperSet();

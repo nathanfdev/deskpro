@@ -38,6 +38,8 @@ use Application\ImportBundle\Reader\AbstractReader;
 /**
  * Class DeskPROReader
  * @package Application\ImportBundle\Reader\DeskPRO
+ *
+ * @property DeskPROConfig $config
  */
 class DeskPROReader extends AbstractReader
 {

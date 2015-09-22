@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\CategoryLoader;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\SectionLoader;
@@ -44,13 +46,17 @@ use DateTime;
  * Class ZenDeskReaderFactory
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
+class ZenDeskReaderFactory implements ReaderFactoryInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function createReader(ZenDeskConfig $config)
+    public function createReader(ReaderConfigInterface $config)
     {
+        if ( ! $config instanceof ZenDeskConfig) {
+            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        }
+
         return new ZenDeskReader(new Request\RequestCacheAdapter(self::createClientAdapter($config)), $config);
     }
 

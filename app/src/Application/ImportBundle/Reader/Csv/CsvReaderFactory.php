@@ -25,44 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Reader\Csv;
 
-use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
-use Application\ImportBundle\Reader\ReaderInterface;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 
 /**
- * DeskPRO data exporter factory
- *
- * Class DeskPROFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class CsvReaderFactory
+ * @package Application\ImportBundle\Reader\Csv
  */
-class DeskPROFactory extends AbstractExporterFactory
+class CsvReaderFactory implements ReaderFactoryInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function createExporter(ReaderInterface $reader)
+    public function createReader(ReaderConfigInterface $config)
     {
-        if ( ! $reader instanceof DeskPROReader) {
-            throw new \RuntimeException('Config expected to be instance of DeskPROReader');
+        if ( ! $config instanceof CsvConfig) {
+            throw new \RuntimeException('Config expected to be instance of CsvConfig');
         }
 
-        /** @var DeskPROConfig $config */
-        $config = $reader->getConfig();
-
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\DeskPRO\People($reader))
-            ->attach(new Parser\DeskPRO\Tickets($reader, $config->getStartTicketId()))
-            ->attach(new Parser\DeskPRO\Articles($reader))
-            ->attach(new Parser\DeskPRO\ArticleCategories($reader))
-            ->attach(new Parser\DeskPRO\Downloads($reader))
-            ->attach(new Parser\DeskPRO\Feedback($reader))
-            ->attach(new Parser\DeskPRO\News($reader))
-            ->attach(new Parser\DeskPRO\Organizations($reader))
-        ;
-
-        return new DeskPRO($parsers, $reader);
+        return new CsvReader($config);
     }
 }

@@ -27,10 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
-use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * OsTicket data exporter factory
@@ -43,14 +41,12 @@ class OsTicketFactory extends AbstractExporterFactory
     /**
      * {@inheritdoc}
      */
-    public function createExporter(ReaderConfigInterface $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        if ( ! $config instanceof OsTicketConfig) {
-            throw new \RuntimeException('Config expected to be instance of OsTicketConfig');
+        if ( ! $reader instanceof OsTicketReaderInterface) {
+            throw new \RuntimeException('Config expected to be instance of OsTicketReaderInterface');
         }
 
-        $reader = OsTicketReaderFactory::createReader($config);
-        /** @var FormatterInterface $formatter */
         $formatter = $this->container->get('deskpro.import.formatter');
 
         $parsers = new Parser\Collection();

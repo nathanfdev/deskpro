@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * Exporter factory interface
@@ -40,8 +40,8 @@ interface ExporterFactoryInterface
     /**
      * Creates an exporter instance
      *
-     * @param ReaderConfigInterface $config
+     * @param ReaderInterface $reader
      * @return ExporterInterface
      */
-     public function createExporter(ReaderConfigInterface $config);
+     public function createExporter(ReaderInterface $reader);
 }

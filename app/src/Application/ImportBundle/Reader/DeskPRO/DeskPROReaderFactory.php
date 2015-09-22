@@ -3,6 +3,8 @@
 namespace Application\ImportBundle\Reader\DeskPRO;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
@@ -11,19 +13,33 @@ use Symfony\Component\DependencyInjection\Container;
  * Class DeskPROReaderFactory
  * @package Application\ImportBundle\Reader\DeskPRO
  */
-class DeskPROReaderFactory
+class DeskPROReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * Create os ticket reader using deskpro config
-     *
-     * @param DeskPROConfig    $config
-     * @param DeskproContainer $container
-     *
-     * @return DeskPROReader
+     * @var DeskproContainer
      */
-    public static function createReader(DeskPROConfig $config, DeskproContainer $container)
+    private $container;
+
+    /**
+     * Constructor
+     *
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
     {
-        return new DeskPROReader($config, $container);
+        $this->container = $container;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createReader(ReaderConfigInterface $config)
+    {
+        if ( ! $config instanceof DeskPROConfig) {
+            throw new \RuntimeException('Config expected to be instance of DeskPROConfig');
+        }
+
+        return new DeskPROReader($config, $this->container);
     }
 
     /**

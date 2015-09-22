@@ -2,6 +2,8 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 use Exception;
 
 /**
@@ -10,19 +12,17 @@ use Exception;
  * Class OsTicketReaderFactory
  * @package Application\ImportBundle\Reader\OsTicket
  */
-class OsTicketReaderFactory
+class OsTicketReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * Create OsTicket reader using DeskPRO config
-     *
-     * @param OsTicketConfig $config
-     *
-     * @return OsTicketReader
-     * @throws Exception
+     * {@inheritdoc}
      */
-    public static function createReader(OsTicketConfig $config)
+    public function createReader(ReaderConfigInterface $config)
     {
         $config = $config ? : self::getDefaultConfig();
+        if ( ! $config instanceof OsTicketConfig) {
+            throw new \RuntimeException('Config expected to be instance of OsTicketConfig');
+        }
 
         return new OsTicketReader($config);
     }
