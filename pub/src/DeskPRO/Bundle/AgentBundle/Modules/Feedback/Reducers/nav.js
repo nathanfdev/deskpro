@@ -4,7 +4,12 @@ import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 const initialState = {
-  query: {awaiting_validation: 1},
+  groups: [
+    {name: 'awaiting_validation', value: 1, current: true},
+    {name: 'status', value: '', current: false},
+    {name: 'category', value: '', current: false},
+    {name: 'custom_category', value: '', current: false}
+  ],
   toValidateCount: 0,
   commentsToReviewCount: 0,
   labels: [/* string */],
@@ -65,5 +70,13 @@ export default createReducer(initialState, {
       state
         .setIn(['statuses', 'hidden'], payload.data)
   }),
-  [actions.changeQueryState]: setFullPayload('query')
+  [actions.changeGroupState]: (state, payload) => {
+    let groups = [];
+    state.get('groups').toJS().forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      groups.push(nextObj);
+    });
+    return state.set('groups', Immutable.fromJS(groups))
+  }
 });

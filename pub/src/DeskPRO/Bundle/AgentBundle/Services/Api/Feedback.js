@@ -128,9 +128,12 @@ export function getDisplayFieldsFromPersonSetting(settingName) {
  */
 export function getList(params) {
   let paramsEncoded = [];
-  paramsEncoded.push(compileParams(params.query));
   paramsEncoded.push('sort=' + params.sort);
   paramsEncoded.push('order=' + params.order);
+  console.log(params.group);
+  if(params.group){
+    paramsEncoded.push(params.group.name + '=' + params.group.value);
+  }
   if (params.filters.value && params.filters.value.length > 0) {
     paramsEncoded.push(params.filters.alias + '=' + params.filters.value.replace(/\s/g, "%20"));
   }

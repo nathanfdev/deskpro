@@ -2,17 +2,26 @@ import React, { Component, PropTypes } from 'react';
 import { Section, SectionHeader, ListItem }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
-export class Pending extends React.Component {
+export class Pending extends Component {
+
+  static propTypes = {
+    toValidateCount: PropTypes.number.isRequired,
+    commentsToReviewCount: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired,
+    currentGroup: PropTypes.object.isRequired
+  };
 
   render() {
-    const { toValidateCount, commentsToReviewCount, onClick } = this.props;
+    const { toValidateCount, commentsToReviewCount, onClick, currentGroup } = this.props;
 
     return (
       <Section>
         <SectionHeader>Pending</SectionHeader>
         <ul>
           <div onClick={onClick.bind(this, {'awaiting_validation':1})}>
-            <ListItem count={toValidateCount} label="Feedback to Validate"/>
+            <ListItem count={toValidateCount} label="Feedback to Validate"
+                      active={currentGroup.name === 'awaiting_validation'}
+              />
           </div>
           <ListItem count={commentsToReviewCount} label="Comments to Review"/>
         </ul>

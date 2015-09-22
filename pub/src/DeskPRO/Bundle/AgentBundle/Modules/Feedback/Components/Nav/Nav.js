@@ -11,6 +11,7 @@ export class Nav extends Component {
   static propTypes = {
     groupChoice: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
+    currentGroup: PropTypes.object.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.array.isRequired,
     types: PropTypes.array.isRequired,
@@ -18,7 +19,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;
+    const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;
     return (
       <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
         <NavFrameHeader icon="fa-thumbs-up" dispatch={dispatch.bind(this)}>Feedback</NavFrameHeader>
@@ -26,12 +27,12 @@ export class Nav extends Component {
         <SectionsPane>
 
           <Pending toValidateCount={toValidateCount} commentsToReviewCount={commentsToReviewCount}
-                   onClick={groupChoice.bind(this)}/>
+                   currentGroup={currentGroup} onClick={groupChoice.bind(this)} />
 
           <Section>
             <TabsPane>
               <Tab title="Status">
-                <StatusTab statuses={statuses} onClick={groupChoice.bind(this)}/>
+                <StatusTab currentGroup={currentGroup} statuses={statuses} onClick={groupChoice.bind(this)}/>
               </Tab>
 
               <Tab title="Labels">
@@ -41,10 +42,10 @@ export class Nav extends Component {
 
             <TabsPane>
               <Tab title="Type">
-                <TypeTab types={types} onClick={groupChoice.bind(this)}/>
+                <TypeTab currentGroup={currentGroup} types={types} onClick={groupChoice.bind(this)}/>
               </Tab>
               <Tab title="Categories">
-                <CategoryTab customCategories={customCategories} onClick={groupChoice.bind(this)}/>
+                <CategoryTab currentGroup={currentGroup} customCategories={customCategories} onClick={groupChoice.bind(this)}/>
               </Tab>
             </TabsPane>
 

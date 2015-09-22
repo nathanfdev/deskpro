@@ -1,21 +1,28 @@
 import React, { Component, PropTypes } from 'react';
-import { ListItem }
-    from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
 
 export class CategoryTab extends React.Component {
 
-    render() {
-        const { customCategories, onClick } = this.props;
+  static propTypes = {
+    currentGroup: PropTypes.object.isRequired,
+    customCategories: PropTypes.array.isRequired,
+    onClick: PropTypes.func.isRequired
+  };
 
-        return (
-            <ul>
-                {customCategories.map((item, index) =>
-                        <div key={index}
-                             onClick={onClick.bind(this, {'custom_category':item.group})}>
-                            <ListItem count={item.count} label={item.group}/>
-                        </div>
-                )}
-            </ul>
-        );
-    }
+  render() {
+    const { customCategories, onClick, currentGroup } = this.props;
+
+    return (
+      <ul>
+        {customCategories.map((item, index) =>
+            <div key={index}
+                 onClick={onClick.bind(this, {'custom_category':item.group})}>
+              <ListItem count={item.count} label={item.group}
+                        active={currentGroup.name === 'custom_category' && currentGroup.value === item.title}
+                />
+            </div>
+        )}
+      </ul>
+    );
+  }
 }

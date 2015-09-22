@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions'
 import { Nav } from './Nav';
 import $ from "jquery";
-import { sortingDataSelector } from '../../Selectors/list';
-import { filterDataSelector } from '../../Selectors/list';
+import { sortingDataSelector, filterDataSelector } from '../../Selectors/list';
+import { groupDataSelector } from '../../Selectors/nav';
 
 @connect(state => {
   return ({
@@ -13,10 +13,8 @@ import { filterDataSelector } from '../../Selectors/list';
     types: state.Feedback.nav.get('types').toJS(),
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
-    order: state.Feedback.list.get('order'),
-    filters: state.Feedback.list.get('filters'),
-    currentSortMode: sortingDataSelector(state),
-    currentFilterMode: filterDataSelector(state)
+    currentFilterMode: filterDataSelector(state),
+    currentGroup: groupDataSelector(state)
   });
 })
 
@@ -50,17 +48,16 @@ export class NavContainer extends React.Component {
         labels={this.props.labels}
         types={this.props.types}
         customCategories={this.props.customCategories}
+        currentGroup={this.props.currentGroup}
         />
     );
   }
 
 
-  groupChoice(params, event) {
+  groupChoice(group, event) {
     event.preventDefault();
     event.stopPropagation();
-    $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
-    $(event.target).closest('a').addClass('active');
     const {dispatch } = this.props;
-    dispatch(actions.changeQueryState(params));
+    dispatch(actions.changeGroupState(group));
   }
 }

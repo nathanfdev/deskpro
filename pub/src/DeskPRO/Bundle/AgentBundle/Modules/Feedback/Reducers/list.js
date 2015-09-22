@@ -97,7 +97,6 @@ export default createReducer(initialState, {
     return state.set('sortOptions', Immutable.fromJS(sortOptions))
   },
   [actions.setTableSort]: (state, payload) => {
-    console.log(payload);
     let tableViewFields = [];
     state.get('tableViewFields').toJS().forEach(obj=> {
       const nextObj = {...obj};

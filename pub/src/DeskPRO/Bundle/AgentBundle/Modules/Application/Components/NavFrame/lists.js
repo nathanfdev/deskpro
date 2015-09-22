@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 
-class BaseList extends React.Component {
+class BaseList extends Component {
   renderCount(count) {
     if ((count !== 0) && !count) {
       return;
@@ -16,14 +17,24 @@ class BaseList extends React.Component {
 }
 
 export class ListItem extends BaseList {
+
+  static propTypes = {
+    count: PropTypes.number.isRequired,
+    label: PropTypes.string.isRequired,
+    active: PropTypes.bool.isRequired
+  };
+
   render() {
-    const {count, label } = this.props;
-    const onClick = this.props.onClick ? this.props.onClick : () => {};
+    const {count, label, active } = this.props;
+    const onClick = this.props.onClick ? this.props.onClick : () => {
+    };
+
+    var classes = classNames('item', {'active': active});
 
     return (
       <li>
         {this.renderCount(count)}
-        <a href="#" className="item" onClick={onClick}>{label}</a>
+        <a href="#" className={classes} onClick={onClick}>{label}</a>
 
         {this.props.children}
       </li>
@@ -45,10 +56,10 @@ export class NestedList extends BaseList {
   }
 
   render() {
-    const depth = this.props.depth || 1;
+    const depth     = this.props.depth || 1;
     const className = depth > 1
-                    ? 'with-connectors depth-' + (depth - 1)
-                    : '';
+      ? 'with-connectors depth-' + (depth - 1)
+      : '';
 
     return (
       <ul className={className}>
@@ -103,7 +114,7 @@ export class NestedList extends BaseList {
   }
 
   toggleExpanded(group) {
-    return function(e) {
+    return function (e) {
       e.preventDefault();
 
       let expanded = [...this.state.expanded];
