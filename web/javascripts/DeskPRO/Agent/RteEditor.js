@@ -507,7 +507,7 @@ DeskPRO.Agent.RteEditor = {
           var parent = me.parent();
 
           // Only count text nodes
-          if (!parent.is('p, div, span, em, strong, i, b, font, a')) {
+          if (!parent.is('span, em, strong, i, b, font, a')) {
             return;
           }
 
