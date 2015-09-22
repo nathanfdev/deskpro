@@ -30,7 +30,7 @@ export default class Positioned extends React.Component {
     $('body').prepend(this.node);
 
     // Manipulate the DOM here
-    this.renderDialogContent();
+    this.renderContent();
   }
 
   /**
@@ -40,7 +40,7 @@ export default class Positioned extends React.Component {
    */
   componentWillReceiveProps(newProps) {
     // Re-render the dialog box with the new properties when there's a change
-    this.renderDialogContent(newProps);
+    this.renderContent(newProps);
   }
 
   /**
@@ -59,7 +59,7 @@ export default class Positioned extends React.Component {
    * @param  {Object} element DOM element to move
    * @return {void}
    */
-  updatePosition(element) {
+  updatePosition() {
     const placement = this.props.position || {
       my: 'top left',
       at: 'bottom right',
@@ -83,9 +83,7 @@ export default class Positioned extends React.Component {
         console.error('No position target specified');
       }
 
-      // console.log(this.refs.toRender);
-
-      $(this.node).position(placement);
+      $(this.node).css('position', 'absolute').position(placement);
     }
   }
 
@@ -94,20 +92,15 @@ export default class Positioned extends React.Component {
    * @param  {Object} props The props to use
    * @return {void}
    */
-  renderDialogContent(props) {
-    const nodeProps = props || this.props;
-
-    // Put the element inside a div that we can position
-    const rendering = (<div style={{position: 'absolute'}}>nodeProps.children</div>);
-
+  renderContent() {
     // Render the component with react, or don't if the prop changes
-    if (nodeProps.isOpen) {
-      React.render(rendering, this.node);
+    if (this.props.isOpen) {
+      // Put the element inside a div that we can position
+      React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
+      this.updatePosition();
     } else {
-      React.render(<div/>, this.node);
+      React.render(<div />, this.node);
     }
-
-    this.updatePosition(rendering);
   }
 
   /**

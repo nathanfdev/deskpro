@@ -209,3 +209,11 @@ $kanban-frame-width: 800px;
 
   }
 }
+
+.positioned-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  visibility: none;
+}
