@@ -6,6 +6,7 @@ export class OrderBy extends Component {
 
   static propTypes = {
     currentSortMode: PropTypes.object.isRequired,
+    toggleDropdown: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired
   };
 

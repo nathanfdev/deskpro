@@ -4,6 +4,7 @@ import { OrderByContainer } from './OrderByContainer';
 import { FilterContainer } from './FilterContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
 import { OrderByDropdownContainer } from './OrderByDropdownContainer';
+import { FilterByDropdownContainer } from './FilterByDropdownContainer';
 import { ViewSwitcherDropdownContainer } from './ViewSwitcherDropdownContainer';
 
 export class FeedbackListControlBar extends React.Component {
@@ -12,6 +13,7 @@ export class FeedbackListControlBar extends React.Component {
     super(props);
     this.state = {
       orderByDropdownIsExpanded: false,
+      filterByDropdownIsExpanded: false,
       viewModeDropdownIsExpanded: false,
       dropdownOffset: {left: 0, top: 0}
     }
@@ -25,13 +27,14 @@ export class FeedbackListControlBar extends React.Component {
           <li>
             <hr/>
           </li>
-          <FilterContainer />
+          <FilterContainer toggleDropdown={this.toggleFilterByDropdown}/>
           <li>
             <hr/>
           </li>
           <ViewSwitcherContainer toggleDropdown={this.toggleViewModeDropdown}/>
         </ControlButtonsRow>
         {this.renderOrderByDropdown()}
+        {this.renderFilterByDropdown()}
         {this.renderViewModeDropdown()}
       </ControlBar>
     );
@@ -41,6 +44,14 @@ export class FeedbackListControlBar extends React.Component {
     if (this.state.orderByDropdownIsExpanded) {
       return (
         <OrderByDropdownContainer offset={this.state.dropdownOffset}/>
+      );
+    }
+  }
+
+  renderFilterByDropdown() {
+    if (this.state.filterByDropdownIsExpanded) {
+      return (
+        <FilterByDropdownContainer offset={this.state.dropdownOffset}/>
       );
     }
   }
@@ -57,6 +68,16 @@ export class FeedbackListControlBar extends React.Component {
     this.setState({
       orderByDropdownIsExpanded: !this.state.orderByDropdownIsExpanded,
       viewModeDropdownIsExpanded: false,
+      filterByDropdownIsExpanded: false,
+      dropdownOffset: offset
+    });
+  };
+
+  toggleFilterByDropdown = (offset) => {
+    this.setState({
+      filterByDropdownIsExpanded: !this.state.filterByDropdownIsExpanded,
+      orderByDropdownIsExpanded: false,
+      viewModeDropdownIsExpanded: false,
       dropdownOffset: offset
     });
   };
@@ -65,6 +86,7 @@ export class FeedbackListControlBar extends React.Component {
     this.setState({
       viewModeDropdownIsExpanded: !this.state.viewModeDropdownIsExpanded,
       orderByDropdownIsExpanded: false,
+      filterByDropdownIsExpanded: false,
       dropdownOffset: offset
     });
   };
