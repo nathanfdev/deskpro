@@ -116,7 +116,7 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getAction($id)
@@ -127,30 +127,36 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @return BinaryFileResponse|Response
      */
     public function downloadLogAction($id)
     {
-        $importer = $this->is()->getImporter($id, $this->container);
+        $importer = $this->is()->getImporter($id);
+        $logfile  = $importer->getData('logfile');
 
-        if (($logfile = $importer->getData('logfile')) && is_file($logfile) && is_readable($logfile)) {
+        if ($logfile && is_file($logfile) && is_readable($logfile)) {
             $response = new BinaryFileResponse($logfile, 200);
             $response->headers->set('Content-Type', 'text/plain');
             $response->setContentDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
                 'importlog.txt'
             );
+
             return $response;
+
         } else {
             $response = new Response($importer->getData('log'), 200);
             $response->headers->set('Content-Type', 'text/plain');
+
             return $response;
         }
     }
 
     /**
-     * @param $id
+     * @param string  $id
+     * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function saveAction($id, Request $request)
