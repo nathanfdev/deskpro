@@ -184,10 +184,10 @@ class ImportersController extends AbstractController implements ProtectedControl
         $importer = $is->getImporter($id);
 
         try {
-            $config    = $is->createGeneratorConfig($importer);
-            $generator = Generator\GeneratorFactory::createGenerator($this->getContainer(), $config);
+            $config = $is->createGeneratorConfig($importer);
+            $reader = Generator\GeneratorFactory::createReader($this->getContainer(), $config);
 
-            $res = $this->createJsonResponse(array('result' => $generator->getTotalRecordsCount() > 0));
+            $res = $this->createJsonResponse(array('result' => $reader->checkConfig()));
         } catch (\Exception $e) {
             $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
         }
