@@ -202,10 +202,10 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     protected function getIcon(Entity\DataStore $importer)
     {
-        $path = defined('DPC_SITE_DOMAIN')
-            ? '//' . DPC_SITE_DOMAIN . '/web/images/admin/icons/icon-' . $importer->getData('id') . '.png'
-            : (dp_get_config('static_path') ?: '/web') . '/images/admin/icons/icon-' . $importer->getData('id') . '.png';
+        if (defined('DPC_SITE_DOMAIN')) {
+            return '//' . DPC_SITE_DOMAIN . '/web/images/admin/icons/icon-' . $importer->getData('id') . '.png';
+        }
 
-        return $path;
+        return (dp_get_config('static_path') ? : '/web') . '/images/admin/icons/icon-' . $importer->getData('id') . '.png';
     }
 }
