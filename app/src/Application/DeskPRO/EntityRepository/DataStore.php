@@ -34,35 +34,55 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
+use Application\DeskPRO\Entity;
 
+/**
+ * Class DataStore
+ * @package Application\DeskPRO\EntityRepository
+ */
 class DataStore extends AbstractEntityRepository
 {
+    /**
+     * Get data by code
+     *
+     * @param string $code
+     * @param string $type
+     *
+     * @return null|object
+     */
     public function getByCode($code, $type = null)
     {
-        $info = DataStoreEntity::getPartsFromCode($code);
-        if (!$info) return null;
+        $info = Entity\DataStore::getPartsFromCode($code);
+        if (!$info) {
+            return null;
+        }
 
-        $tmpdata = $this->find($info['id']);
-        if ($tmpdata['auth'] != $info['auth']) return null;
+        $tmp_data = $this->find($info['id']);
+        if ($tmp_data['auth'] != $info['auth']) {
+            return null;
+        }
+        if ($type AND $tmp_data->getType() != $type) {
+            return null;
+        }
 
-        if ($type AND $tmpdata->getType() != $type) return null;
-        return $tmpdata;
+        return $tmp_data;
     }
 
 
     /**
      * Get data by its unique name
      *
-     * @param  string          $name
-     * @return DataStoreEntity
+     * @param string $name
+     * @param bool   $create_unset
+     *
+     * @return Entity\DataStore
      */
     public function getByName($name, $create_unset = false)
     {
         $ds = $this->findOneBy(array('name' => $name));
 
         if (!$ds && $create_unset) {
-            $ds = new DataStoreEntity();
+            $ds = new Entity\DataStore();
             $ds->name = $name;
         }
 
@@ -71,12 +91,17 @@ class DataStore extends AbstractEntityRepository
 
     /**
      * Get data by prefix
+     *
      * @param $prefix
-     * @return array
+     * @return Entity\DataStore[]
      */
     public function getByPrefix($prefix)
     {
-        return $this->getEntityManager()->createQuery('SELECT d FROM DeskPRO:DataStore d WHERE d.name LIKE :prefix')
-            ->setParameter('prefix', $prefix . '%')->getResult();
+        return $this
+            ->getEntityManager()
+            ->createQuery('SELECT d FROM DeskPRO:DataStore d WHERE d.name LIKE :prefix')
+            ->setParameter('prefix', $prefix . '%')
+            ->getResult()
+        ;
     }
 }

@@ -154,6 +154,10 @@ class Import
                 $title = 'ZenDesk';
                 $desc  = 'Import from a ZenDesk helpdesk.';
                 break;
+            case ExporterInterface::TYPE_DESKPRO:
+                $title = 'DeskPRO';
+                $desc  = 'Import from a DeskPRO helpdesk.';
+                break;
             default:
                 $title = ucfirst($id);
                 $desc  = "Import from $title";

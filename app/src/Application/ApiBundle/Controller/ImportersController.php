@@ -35,7 +35,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
-use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\ImportBundle\Generator;
 use Application\ImportBundle\Service\Import as ImportService;
@@ -80,7 +81,10 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function listAction()
     {
-        $importers = $this->em->getRepository('DeskPRO:DataStore')->getByPrefix('importers.');
+        /** @var EntityRepository\DataStore $repository */
+        $repository = $this->em->getRepository('DeskPRO:DataStore');
+        $importers  = $repository->getByPrefix('importers.');
+
         $is = $this->is();
 
         if (count($importers) !== count($is::$allowed)) {
@@ -93,8 +97,6 @@ class ImportersController extends AbstractController implements ProtectedControl
         $ret = array();
 
         foreach ($importers as $importer) {
-            /** @var $importer DataStoreEntity */
-
             // TODO: remove when these are ready
             if (
                 $importer['name'] === 'importers.osticket'
