@@ -162,6 +162,10 @@ final class People extends AbstractParser
 
         if ($formatted['is_deleted']) {
             $entity->setAsDisabled(true);
+
+            if (in_array($data['role'], array(self::ROLE_ADMIN, self::ROLE_AGENT))) {
+                $entity->setAsDeleted(true);
+            }
         }
 
         switch ($data['role']) {
