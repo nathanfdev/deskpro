@@ -48,6 +48,13 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
             if ($ticket->agent) {
                 $people_ids[] = $ticket->agent->getId();
             }
+
+            foreach ($ticket->messages as $message) {
+                $people_ids[] = $message->person->getId();
+            }
+            foreach ($ticket->participants as $participant) {
+                $people_ids[] = $participant->getPerson()->getId();
+            }
         }
 
         return array_unique($people_ids);

@@ -170,7 +170,7 @@ final class Tickets extends AbstractParser
             $entity->setPriority($ticket_priority);
         }
 
-        foreach ($ticket->messages as $num => $message) {
+        foreach ($ticket->messages as $message) {
             $entity->addMessage($this->exportMessage($message));
         }
         foreach ($ticket->labels as $label) {

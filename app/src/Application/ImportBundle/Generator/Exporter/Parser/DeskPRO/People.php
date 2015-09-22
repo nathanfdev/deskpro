@@ -94,31 +94,48 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $this->entities_loaded = 0;
-        $collection = new Entity\Collection();
+        if (count($this->people_storage->getPeople()) > 0) {
+            $collection = $this->exportBatch($this->people_storage->getPeople());
+        } else {
+            $collection = new Entity\Collection();
+            $this->entities_loaded = 0;
 
-        do {
-            $batch  = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
-            $config = new ExportCollectionConfig();
-            $config
-                ->setData($batch)
-                ->setPrefix('DPUser')
-                ->setRefColumn('id')
-                ->setMethod('exportUser')
-                ->setAdvanceProgressbar(true)
-            ;
+            do {
+                $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+                $collection->merge($this->exportBatch($batch));
 
-            $collection->merge($this->exportCollection($config));
+                $this->users_min_id     = max($this->users_min_id, $collection->getMaxOid());
+                $this->entities_loaded += count($batch);
 
-            $this->entities_loaded += count($batch);
-            $this->users_min_id     = max($this->users_min_id, $collection->getMaxOid());
-
-        } while (count($batch) > 0);
+            } while (count($batch) > 0);
+        }
 
         return $collection;
     }
 
     /**
+     * Returns a collection of people entities
+     *
+     * @param array|\Traversable $data
+     * @return Entity\Collection
+     */
+    protected function exportBatch($data)
+    {
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($data)
+            ->setPrefix('DPUser')
+            ->setRefColumn('id')
+            ->setMethod('exportUser')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * Returns a person entity
+     *
      * @param Person $person
      * @return Entity\Person
      */
