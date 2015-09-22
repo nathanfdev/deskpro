@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 @connect(state => ({
   order: state.Feedback.list.get('order'),
   filters: state.Feedback.list.get('filters'),
-  tableViewFields: state.Feedback.list.get('tableViewFields'),
+  tableViewFields: state.Feedback.list.get('tableViewFields').toJS(),
   feedback: state.Feedback.list.get('feedback'),
   query: state.Feedback.nav.get('query')
 }))
@@ -22,7 +22,7 @@ export class TableHeaderContainer extends React.Component {
   }
 
   sortTable(param, order) {
-    const {dispatch, query, filters} = this.props;
-    dispatch(setTableSort(query, param, order, filters));
+    const {dispatch} = this.props;
+    dispatch(setTableSort(param, order));
   }
 }

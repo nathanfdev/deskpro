@@ -87,9 +87,9 @@ export const resetFilters = createAction(
 
 export const setTableSort = createAction(
   "FEEDBACK_SET_TABLE_SORT",
-  (trigger, query, sort, order, filters) => {
-    trigger({sort: sort, order: order});
-    trigger(loadFeedbackList());
+  (sort, order) => dispatch => {
+    dispatch(loadFeedbackList({sort: sort, order: order}));
+    return {sort, order}
   });
 
 export const toggleViewMode = createAction(
