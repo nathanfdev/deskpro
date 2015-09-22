@@ -67,7 +67,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
      */
     public function checkConfig()
     {
-        return true;
+        return (bool)$this->getSettings();
     }
 
     /**
