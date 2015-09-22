@@ -57,7 +57,34 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      */
     public function checkConfig()
     {
-        return is_dir($this->config->getResource());
+        $primary_files = array(
+            self::FILE_ARTICLES,
+            self::FILE_DOWNLOADS,
+            self::FILE_FEEDBACK,
+            self::FILE_NEWS,
+            self::FILE_PEOPLE,
+            self::FILE_TICKETS,
+            self::FILE_ORGANIZATIONS,
+        );
+
+        if ( ! is_dir($this->config->getResource())) {
+            return false;
+        }
+
+        foreach ($primary_files as $file) {
+            try {
+                $this->getIterator($file);
+                return true;
+
+            } catch (NotFoundException $e) {
+                // File not found, continue...
+
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -86,10 +113,10 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getData($entity_type)
+    public function getData($entity_file)
     {
-        $this->detectDelimiter($entity_type);
-        $iterator = $this->getIterator($entity_type);
+        $this->detectDelimiter($entity_file);
+        $iterator = $this->getIterator($entity_file);
 
         $header = null;
         $data   = array();
@@ -123,12 +150,12 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     /**
      * Returns entity type path
      *
-     * @param string $entity_type
+     * @param string $entity_file
      * @return string
      */
-    private function getEntityPath($entity_type)
+    private function getEntityPath($entity_file)
     {
-        return rtrim($this->config->getResource(), '/') . '/' . $entity_type;
+        return rtrim($this->config->getResource(), '/') . '/' . $entity_file;
     }
 
     /**
@@ -165,14 +192,14 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     /**
      * Detect a delimiter
      *
-     * @param string $entity_type
+     * @param string $entity_file
      */
-    private function detectDelimiter($entity_type)
+    private function detectDelimiter($entity_file)
     {
         $delimiters = array_diff(array(';', ','), array($this->config->getDelimiter()));
 
         while (true) {
-            $iterator = $this->getIterator($entity_type);
+            $iterator = $this->getIterator($entity_file);
             $iterator->rewind();
 
             $row = $iterator->current();

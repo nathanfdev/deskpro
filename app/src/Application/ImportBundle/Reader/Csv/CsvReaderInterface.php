@@ -68,8 +68,8 @@ interface CsvReaderInterface extends ReaderInterface
     /**
      * Parse csv file into raw array
      *
-     * @param string $entity_type
+     * @param string $entity_file
      * @return array
      */
-    public function getData($entity_type);
+    public function getData($entity_file);
 }
