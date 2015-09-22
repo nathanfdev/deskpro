@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import $ from "jquery";
 import classNames from 'classnames';
 
 export class OrderSwitcher extends Component {
@@ -25,7 +24,7 @@ export class OrderSwitcher extends Component {
 
 export class Radio extends Component {
   render() {
-    const {type, order, toggleOrder}=this.props;
+    const {type, order}=this.props;
     var classes = classNames('dpwd-radio-button', {
       'active': type === order
     });

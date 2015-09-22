@@ -14,16 +14,15 @@ export class NestedList extends React.Component {
   }
 
   renderChildren(nested, onClick, status) {
-    let itemKey = 0;
     if (nested.length === 0) {
       return;
     }
 
     return (
       <ul className="with-connectors">
-        {nested.map(item =>
+        {nested.map((item, index) =>
             <li onClick={onClick.bind(this, {'status':status,'status_category':item.group})}
-                key={itemKey++}>
+                key={index}>
               {this.renderCount(item.count)}
               <a href="#" className="item">{item.group}</a></li>
         )}

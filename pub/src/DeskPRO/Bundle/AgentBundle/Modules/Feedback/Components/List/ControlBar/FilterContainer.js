@@ -4,7 +4,13 @@ import { FilterBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compone
 import * as actions from '../../../Actions/FeedbackListActions'
 import $ from "jquery";
 
-@connect(state => state.FeedbackList)
+@connect(state => ({
+  sortOptions: state.Feedback.list.get('sortOptions'),
+  order: state.Feedback.list.get('order'),
+  filters: state.Feedback.list.get('filters'),
+  filterValues: state.Feedback.list.get('filterValues'),
+  query: state.Feedback.nav.get('query')
+}))
 
 export class FilterContainer extends React.Component {
 
@@ -12,10 +18,10 @@ export class FilterContainer extends React.Component {
     event.preventDefault();
     event.stopPropagation();
     const {dispatch,query, sort, order, filters} = this.props;
-    let elem = $(event.target),
-      target = elem.closest('a.ticket-control-button').find('span.filter-name'),
-      filterName = elem.text(),
-      filterAlias = elem.data('filter');
+    let elem          = $(event.target),
+          target      = elem.closest('a.ticket-control-button').find('span.filter-name'),
+          filterName  = elem.text(),
+          filterAlias = elem.data('filter');
     target.text(filterName);
     target.data('filter', filterAlias);
     dispatch(actions.resetFilters(filterAlias, filterName));
@@ -28,9 +34,9 @@ export class FilterContainer extends React.Component {
     event.preventDefault();
     event.stopPropagation();
     const {dispatch, query, filters, sort, order} = this.props;
-    let elem = $(event.target),
-      value = elem.text(),
-      filter = elem.closest('a.ticket-control-button').find('span.filter-name').data('filter');
+    let elem     = $(event.target),
+          value  = elem.text(),
+          filter = elem.closest('a.ticket-control-button').find('span.filter-name').data('filter');
     dispatch(actions.setFilterValue(filter, value));
     dispatch(actions.loadFeedbackList(query, sort, order, filters));
     $('div.dropdown-choice').hide();
@@ -52,11 +58,11 @@ export class FilterContainer extends React.Component {
         <div className="filter-choice dropdown-choice">
           <ul>
             {query.hasOwnProperty('status') ? '' :
-              <li onClick={this.filterChosen.bind(this)} data-filter='status'>Status</li>}
+             <li onClick={this.filterChosen.bind(this)} data-filter='status'>Status</li>}
             {query.hasOwnProperty('category') ? '' :
-              <li onClick={this.filterChosen.bind(this)} data-filter='category'>Type</li>}
+             <li onClick={this.filterChosen.bind(this)} data-filter='category'>Type</li>}
             {query.hasOwnProperty('custom_category') ? '' :
-              <li onClick={this.filterChosen.bind(this)} data-filter='custom_category'>Category</li>}
+             <li onClick={this.filterChosen.bind(this)} data-filter='custom_category'>Category</li>}
           </ul>
         </div>
 

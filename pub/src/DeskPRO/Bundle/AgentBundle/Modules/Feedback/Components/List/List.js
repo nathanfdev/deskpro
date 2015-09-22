@@ -10,18 +10,18 @@ export class List extends Component {
 
   static propTypes = {
     elements: PropTypes.array.isRequired,
-    viewModeOptions: PropTypes.array.isRequired
+    currentViewMode: PropTypes.object.isRequired
   };
 
 
   render() {
 
-    const { elements, viewModeOptions } = this.props;
+    const { elements, currentViewMode } = this.props;
 
     return (
       <ListFrame>
         <FeedbackListControlBar />
-        {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_LIST ?
+        {currentViewMode.field === constants.VIEW_MODE_LIST ?
          <FeedbackList elements={elements}/> : <FeedbackTable elements={elements}/>}
       </ListFrame>
     );

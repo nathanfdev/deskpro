@@ -3,23 +3,25 @@ import { connect } from 'react-redux';
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { OrderSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/OrderSwitcher';
 import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { sortingDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  sortOptions: state.FeedbackList.sortOptions,
-  order: state.FeedbackList.order,
-  filters: state.FeedbackList.filters,
-  query: state.FeedbackList.query
+  sortOptions: state.Feedback.list.get('sortOptions').toJS(),
+  order: state.Feedback.list.get('order'),
+  filters: state.Feedback.list.get('filters'),
+  query: state.Feedback.nav.get('query'),
+  currentSortMode: sortingDataSelector(state)
 }))
 export class OrderByDropdownContainer extends React.Component {
 
   render() {
-    const { sortOptions, order } = this.props;
-    let currentSort = sortOptions.find((option)=>option.current === true);
+    const { sortOptions, order, currentSortMode, offset } = this.props;
 
     return (
-      <DropdownMenu dropdownClass="order-dropdown">
+      <DropdownMenu offset={offset}>
         {sortOptions.map((option, index)=>
-            <Option key={index} active={currentSort.field === option.field} callback={this.toggleListSort.bind(this)}
+            <Option key={index} active={currentSortMode.field === option.field}
+                    callback={this.toggleListSort.bind(this)}
                     option={option}/>
         )}
         <DropdownMenuFooter>
@@ -31,13 +33,12 @@ export class OrderByDropdownContainer extends React.Component {
 
   /** Change sort option (Order By ...)*/
   toggleListSort(option) {
-    const {dispatch, order, query, filters} = this.props;
-    dispatch(toggleSort(query, option.field, order, filters));
+    const {dispatch} = this.props;
+    dispatch(toggleSort(option.field));
   }
 
   toggleListOrder(order) {
-    const {dispatch, query, sortOptions, filters} = this.props;
-    let sort = sortOptions.find((option)=>option.current === true).field;
-    dispatch(toggleOrder(query, sort, order, filters));
+    const {dispatch} = this.props;
+    dispatch(toggleOrder(order));
   }
 }

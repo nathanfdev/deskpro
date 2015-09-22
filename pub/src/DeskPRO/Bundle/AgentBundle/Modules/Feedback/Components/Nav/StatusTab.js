@@ -7,7 +7,6 @@ export class StatusTab extends React.Component {
 
   render() {
     const { statuses, onClick } = this.props;
-
     return (
       <ul>
         <div onClick={onClick.bind(this, {'status':'new'})}>

@@ -2,14 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { viewDataSelector } from '../../../Selectors/list';
+import { ViewSwitcherDropdownContainer } from './ViewSwitcherDropdownContainer.js';
 
 @connect(state => ({
-  sort: state.FeedbackList.sort,
-  order: state.FeedbackList.order,
-  filters: state.FeedbackList.filters,
-  viewModeOptions: state.FeedbackList.viewModeOptions,
-  tableViewFields: state.FeedbackList.tableViewFields,
-  listViewFields: state.FeedbackList.listViewFields
+  order: state.Feedback.list.get('order'),
+  filters: state.Feedback.list.get('filters'),
+  viewModeOptions: state.Feedback.list.get('viewModeOptions'),
+  tableViewFields: state.Feedback.list.get('tableViewFields'),
+  listViewFields: state.Feedback.list.get('listViewFields'),
+  currentViewMode: viewDataSelector(state)
 }))
 export class ViewSwitcherContainer extends React.Component {
   render() {

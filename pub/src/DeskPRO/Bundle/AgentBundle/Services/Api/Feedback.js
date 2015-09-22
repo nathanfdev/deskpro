@@ -2,20 +2,6 @@ import DpApi from "../DpApi";
 import { compileParams } from '../ApiHelpers';
 
 /**
- * Load a generic API endpoint. Only use when you need to get the address from the action
- * @param address
- * @param params
- * @return Promise
- */
-export function loadAddress(address, params = {}) {
-  if (params.length > 0) {
-    address = address + '?' + compileParams(params);
-  }
-
-  return DpApi.sendGet('DP_API/' + address);
-}
-
-/**
  * Feedback counts
  * @return Promise
  */
@@ -140,16 +126,16 @@ export function getDisplayFieldsFromPersonSetting(settingName) {
  * Get list of filtered feedback
  * @return Promise
  */
-export function getList(query, sort, order, filters) {
-  let params = [];
-  params.push(compileParams(query));
-  params.push('sort=' + sort);
-  params.push('order=' + order);
-  if (filters.value && filters.value.length > 0) {
-    params.push(filters.alias + '=' + filters.value.replace(/\s/g, "%20"));
+export function getList(params) {
+  let paramsEncoded = [];
+  paramsEncoded.push(compileParams(params.query));
+  paramsEncoded.push('sort=' + params.sort);
+  paramsEncoded.push('order=' + params.order);
+  if (params.filters.value && params.filters.value.length > 0) {
+    paramsEncoded.push(params.filters.alias + '=' + params.filters.value.replace(/\s/g, "%20"));
   }
-  //console.log('DP_API/feedback/?' + params.join('&'));
-  return DpApi.sendGet('DP_API/feedback/?' + params.join('&'));
+  //console.log('DP_API/feedback/?' + paramsEncoded.join('&'));
+  return DpApi.sendGet('DP_API/feedback/?' + paramsEncoded.join('&'));
 }
 /**
  * Get values for chosen filter

@@ -5,18 +5,17 @@ import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Co
 export class OrderBy extends Component {
 
   static propTypes = {
-    sortOptions: PropTypes.array.isRequired,
+    currentSortMode: PropTypes.object.isRequired,
     order: PropTypes.string.isRequired
   };
 
   render() {
-    const { order, sortOptions } = this.props;
-    let currentSortMode = sortOptions.find((option)=>option.current === true);
-    let label           = `${currentSortMode.label} (${order})`;
+    const { order, currentSortMode, toggleDropdown } = this.props;
+
+    let label = `${currentSortMode.label} (${order})`;
     return (
       <li>
-        <ControlButton title="Order by:" icon={currentSortMode.icon} dropdownClass="order-dropdown"
-                       label={label}/>
+        <ControlButton title="Order by:" icon={currentSortMode.icon} label={label} toggleDropdown={toggleDropdown}/>
       </li>
     );
   }
