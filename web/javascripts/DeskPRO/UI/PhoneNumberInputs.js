@@ -47,7 +47,7 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 			});
 
 			if (input.val() && ext_input.val()) {
-				phone_input.intlTelInput('setNumber', input.val() + 'x' + ext_input.val());
+				phone_input.intlTelInput('setNumber', input.val() + ' ext. ' + ext_input.val());
 			} else if (input.val()) {
 				phone_input.intlTelInput('setNumber', input.val());
 			}
@@ -55,15 +55,21 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 			phone_input.width('300px');
 
 			phone_input.on('input change', function () {
-				// if there was an extension, but now there is not an extension
-				if (ext_input.val() && !phone_input.intlTelInput('getExtension')) {
-					ext_input.val(phone_input.intlTelInput('getExtension'));
-					phone_input.intlTelInput('setNumber', input.val());
-					// do not change "input" here, since the ext was just removed
-					// intlTelNumber is wonky until further changes are made
-				} else {
-					ext_input.val(phone_input.intlTelInput('getExtension'));
-					input.val(phone_input.intlTelInput('getNumber'));
+				// we have to check if the string " ext. " is in the actual input with
+				// no extension present. if so, strip it out or we have bugs.
+				var raw_input = phone_input.val().split(" ext. ");
+				if (raw_input.length > 1 && raw_input[1].length == 0) {
+					phone_input.val(raw_input[0]);
+				}
+
+				ext_input.val(phone_input.intlTelInput('getExtension'));
+				console.log(phone_input.val());
+				input.val(phone_input.intlTelInput('getNumber').split(" ext. ")[0] || phone_input.intlTelInput('getNumber'));
+				if (!phone_input.intlTelInput('isValidNumber')) {
+					var str = phone_input.val();
+					if (str.indexOf('398', str.length - 3) !== -1) {
+						phone_input.intlTelInput('setNumber', str.substring(0, str.length - 3));
+					}
 				}
 			});
 
