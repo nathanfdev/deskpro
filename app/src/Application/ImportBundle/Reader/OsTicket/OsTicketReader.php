@@ -136,7 +136,12 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
                 'ost_ticket_priority',
             );
 
-            return array_intersect($tables, $check_tables) == $tables;
+            $exist_tables = array_intersect($tables, $check_tables);
+
+            sort($exist_tables);
+            sort($check_tables);
+
+            return $exist_tables == $check_tables;
 
         } catch (\Exception $e) {
 
