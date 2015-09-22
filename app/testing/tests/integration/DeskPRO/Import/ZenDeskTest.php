@@ -211,8 +211,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->helper->seeFileFound('1/people/person_100000.json');
         $this->helper->seeInThisFile('"oid":"100000"');
+        $this->helper->seeInThisFile('"name":"Person 100000"');
         $this->helper->seeInThisFile('"is_disabled":true');
-        $this->helper->seeInThisFile('"timezone":"Etc\/UTC"');
+        $this->helper->seeInThisFile('"timezone":"Europe\/Paris"');
         $this->helper->seeInThisFile('"emails":["imported.user.100000@example.com"]');
 
         // Checking for tickets
@@ -612,7 +613,35 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 ),
             ))
             ->addPeopleFindResponse((object)array(
+                'user' => array(
+                    'id'              => 100000,
+                    'name'            => 'Person 100000',
+                    'email'           => null,
+                    'time_zone'       => 'Paris',
+                    'role'            => 'end-user',
+                    'created_at'      => $date1->format('Y-m-d H:i:s'),
+                    'user_fields'     => array(),
+                    'organization_id' => 1,
+                    'tags'            => array(),
+                ),
+            ))
+            ->addPeopleFindResponse((object)array(
+                'user' => array(
+                    'id'              => 4,
+                    'name'            => 'Person 4',
+                    'email'           => null,
+                    'time_zone'       => 'Paris',
+                    'role'            => 'end-user',
+                    'created_at'      => $date1->format('Y-m-d H:i:s'),
+                    'user_fields'     => array(),
+                    'organization_id' => 1,
+                    'tags'            => array(),
+                ),
+            ))
+            ->addPeopleFindResponse((object)array(
                 'users' => array()
+            ))
+            ->addPeopleFindResponse((object)array(
             ))
             ->addOrganizationFindResponse((object)array(
                 'organization' => (object)array(
