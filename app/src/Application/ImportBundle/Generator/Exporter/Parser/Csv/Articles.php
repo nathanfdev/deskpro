@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Articles csv file parser
@@ -56,7 +57,7 @@ final class Articles extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount(self::FILE_ARTICLES);
+        return $this->getReaderCount(CsvReaderInterface::FILE_ARTICLES);
     }
 
     /**
@@ -66,7 +67,7 @@ final class Articles extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_ARTICLES))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_ARTICLES))
             ->setPrefix('CSVArticle')
             ->setRefColumn('id')
             ->setMethod('exportArticle')
@@ -158,7 +159,7 @@ final class Articles extends AbstractParser
      */
     private function exportArticleCustomFields()
     {
-        $data = $this->getReaderData(self::FILE_ARTICLE_CUSTOM_FIELDS);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_ARTICLE_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::ARTICLE_PREFIX, 'article_id');
     }

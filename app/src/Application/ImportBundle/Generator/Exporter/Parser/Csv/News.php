@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * News csv file parser
@@ -53,7 +54,7 @@ final class News extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount(self::FILE_NEWS);
+        return $this->getReaderCount(CsvReaderInterface::FILE_NEWS);
     }
 
     /**
@@ -63,7 +64,7 @@ final class News extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_NEWS))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_NEWS))
             ->setPrefix('CSVNews')
             ->setRefColumn('id')
             ->setMethod('exportNews')

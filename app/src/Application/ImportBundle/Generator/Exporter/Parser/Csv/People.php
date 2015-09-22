@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * People csv file parser
@@ -55,7 +56,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount(self::FILE_PEOPLE);
+        return $this->getReaderCount(CsvReaderInterface::FILE_PEOPLE);
     }
 
     /**
@@ -65,7 +66,7 @@ final class People extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_PEOPLE))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_PEOPLE))
             ->setPrefix('CSVPerson')
             ->setRefColumn('email')
             ->setMethod('exportPerson')
@@ -149,7 +150,7 @@ final class People extends AbstractParser
      */
     private function exportPersonCustomFields()
     {
-        $data = $this->getReaderData(self::FILE_PEOPLE_CUSTOM_FIELDS);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_PEOPLE_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
@@ -161,7 +162,7 @@ final class People extends AbstractParser
      */
     private function exportPersonContactData()
     {
-        $data = $this->getReaderData(self::FILE_PEOPLE_CONTACT_DATA);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_PEOPLE_CONTACT_DATA);
 
         return $this->getMultipleContactDataParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }

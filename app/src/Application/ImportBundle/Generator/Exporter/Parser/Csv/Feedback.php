@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Feedback csv file parser
@@ -55,7 +56,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount(self::FILE_FEEDBACK);
+        return $this->getReaderCount(CsvReaderInterface::FILE_FEEDBACK);
     }
 
     /**
@@ -65,7 +66,7 @@ final class Feedback extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_FEEDBACK))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_FEEDBACK))
             ->setPrefix('CSVFeedback')
             ->setRefColumn('id')
             ->setMethod('exportFeedback')
@@ -160,7 +161,7 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackAttachments()
     {
-        $data = $this->getReaderData(self::FILE_FEEDBACK_ATTACHMENTS);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_FEEDBACK_ATTACHMENTS);
 
         return $this->getAttachmentParser()->exportAttachments($data, self::FEEDBACK_PREFIX, 'feedback_id');
     }
@@ -172,7 +173,7 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackCustomFields()
     {
-        $data = $this->getReaderData(self::FILE_FEEDBACK_CUSTOM_FIELDS);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_FEEDBACK_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::FEEDBACK_PREFIX, 'feedback_id');
     }

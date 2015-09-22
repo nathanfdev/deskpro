@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Article categories csv file parser
@@ -58,7 +59,7 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount(self::FILE_ARTICLE_CATEGORIES);
+        return $this->getReaderCount(CsvReaderInterface::FILE_ARTICLE_CATEGORIES);
     }
 
     /**
@@ -68,7 +69,7 @@ final class ArticleCategories extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_ARTICLE_CATEGORIES))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_ARTICLE_CATEGORIES))
             ->setPrefix('CSVArticleCategory')
             ->setRefColumn('id')
             ->setMethod('exportCategory')

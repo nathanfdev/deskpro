@@ -37,6 +37,26 @@ use Application\ImportBundle\Reader\ReaderInterface;
  */
 interface CsvReaderInterface extends ReaderInterface
 {
+    const FILE_ARTICLES                   = 'articles.csv';
+    const FILE_ARTICLE_CATEGORIES         = 'article_categories.csv';
+    const FILE_ARTICLE_CUSTOM_FIELDS      = 'article_custom_fields.csv';
+    const FILE_DOWNLOADS                  = 'downloads.csv';
+    const FILE_DOWNLOAD_ATTACHMENTS       = 'downloads_attachments.csv';
+    const FILE_FEEDBACK                   = 'feedback.csv';
+    const FILE_FEEDBACK_ATTACHMENTS       = 'feedback_attachments.csv';
+    const FILE_FEEDBACK_CUSTOM_FIELDS     = 'feedback_custom_fields.csv';
+    const FILE_NEWS                       = 'news.csv';
+    const FILE_PEOPLE                     = 'people.csv';
+    const FILE_PEOPLE_CONTACT_DATA        = 'people_contact_data.csv';
+    const FILE_PEOPLE_CUSTOM_FIELDS       = 'people_custom_fields.csv';
+    const FILE_TICKETS                    = 'tickets.csv';
+    const FILE_TICKET_MESSAGES            = 'ticket_messages.csv';
+    const FILE_TICKET_ATTACHMENTS         = 'ticket_attachments.csv';
+    const FILE_TICKET_CUSTOM_FIELDS       = 'ticket_custom_fields.csv';
+    const FILE_ORGANIZATIONS              = 'organizations.csv';
+    const FILE_ORGANIZATION_CONTACT_DATA  = 'organization_contact_data.csv';
+    const FILE_ORGANIZATION_CUSTOM_FIELDS = 'organization_custom_fields.csv';
+
     /**
      * Returns rows count of csv file
      *

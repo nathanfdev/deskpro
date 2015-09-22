@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Organizations csv file parser
@@ -55,7 +56,7 @@ class Organizations extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount(self::FILE_ORGANIZATIONS);
+        return $this->getReaderCount(CsvReaderInterface::FILE_ORGANIZATIONS);
     }
 
     /**
@@ -65,7 +66,7 @@ class Organizations extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_ORGANIZATIONS))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_ORGANIZATIONS))
             ->setPrefix('CSVOrganization')
             ->setRefColumn('name')
             ->setMethod('exportOrganization')
@@ -147,7 +148,7 @@ class Organizations extends AbstractParser
      */
     private function exportOrganizationCustomFields()
     {
-        $data = $this->getReaderData(self::FILE_ORGANIZATION_CUSTOM_FIELDS);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_ORGANIZATION_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::ORGANIZATION_PREFIX, 'organization_id');
     }
@@ -159,7 +160,7 @@ class Organizations extends AbstractParser
      */
     private function exportOrganizationContactData()
     {
-        $data = $this->getReaderData(self::FILE_ORGANIZATION_CONTACT_DATA);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_ORGANIZATION_CONTACT_DATA);
 
         return $this->getMultipleContactDataParser()->export($data, self::ORGANIZATION_PREFIX, 'organization_id');
     }

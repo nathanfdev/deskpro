@@ -32,6 +32,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 use Orb\Util\Strings;
 
 /**
@@ -58,7 +59,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount(self::FILE_TICKETS);
+        return $this->getReaderCount(CsvReaderInterface::FILE_TICKETS);
     }
 
     /**
@@ -68,7 +69,7 @@ final class Tickets extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_TICKETS))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_TICKETS))
             ->setPrefix('CSVTicket')
             ->setRefColumn('id')
             ->setMethod('exportTicket')
@@ -156,7 +157,7 @@ final class Tickets extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData(self::FILE_TICKET_MESSAGES))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_TICKET_MESSAGES))
             ->setPrefix('CSVTicketMessage')
             ->setRefColumn('message_id')
             ->setMethod('exportMessage')
@@ -220,7 +221,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicketAttachments()
     {
-        $data = $this->getReaderData(self::FILE_TICKET_ATTACHMENTS);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_TICKET_ATTACHMENTS);
 
         return $this->getAttachmentParser()->exportAttachments($data, self::MESSAGE_PREFIX, 'message_id');
     }
@@ -232,7 +233,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicketCustomFields()
     {
-        $data = $this->getReaderData(self::FILE_TICKET_CUSTOM_FIELDS);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_TICKET_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::TICKET_PREFIX, 'ticket_id');
     }
