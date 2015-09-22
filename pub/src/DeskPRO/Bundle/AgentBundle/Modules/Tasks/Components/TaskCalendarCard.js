@@ -25,8 +25,8 @@ function collect(connect, monitor) {
 }
 
 const TaskCalendarCard = React.createClass({
-  openHover: function(task) {
-    const position = {x: event.x, y: event.y};
+  openHover: function(task, event) {
+    const position = {x: event.clientX, y: event.clientY};
     this.props.openHover(task, position);
   },
 

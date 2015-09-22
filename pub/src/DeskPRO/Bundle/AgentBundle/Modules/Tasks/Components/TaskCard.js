@@ -1,15 +1,14 @@
-import React from "react";
-import { DragSource, DropTarget } from "react-dnd";
-import { connect } from 'react-redux';
+import React from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
 import $ from 'jquery';
-import * as TaskActions from "../Actions/TaskListActions";
-import { IntlMixin, FormattedDate } from "react-intl";
-import Formsy from "formsy-react";
-import FRC from "../../../../../Component/FormComponents/main.js";
-import DragTypes from "../../../Services/DragTypes.js";
-import Picker from "anytime";
-import Moment from "moment";
+import Formsy from 'formsy-react';
+import FRC from 'DeskPRO/Component/FormComponents/main.js';
+import DragTypes from '../../../Services/DragTypes.js';
+import Picker from 'anytime';
+import Moment from 'moment';
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+
+import Card from '../../Application/Components/ListFrame/Card';
 
 const cardTarget = {
   drop(props, monitor) {
@@ -40,10 +39,10 @@ const cardSource = {
   }
 };
 
-function collect(connect, monitor) {
+function collect(connector, monitor) {
   return {
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview()
+    connectDragSource: connector.dragSource(),
+    connectDragPreview: connector.dragPreview()
   };
 }
 
@@ -52,13 +51,13 @@ const TaskCard = React.createClass({
     require('react-onclickoutside')
   ],
 
-  handleClickOutside: function(evt) {
+  handleClickOutside: function() {
     if (this.state.editing === true) {
       this.setState({
         editing: false
       });
 
-      let task = this.state.task;
+      const task = this.state.task;
       task.taskId = this.props.task.id;
 
       this.props.editTask(this.props.source, task);
@@ -73,52 +72,52 @@ const TaskCard = React.createClass({
     };
   },
 
-  toggleDetails: function () {
+  toggleDetails: function() {
     this.setState({
       expanded: !this.state.expanded
     });
   },
 
-  editMode: function () {
+  editMode: function() {
     this.setState({
       editing: true
     });
   },
 
-  handleTitleChange: function (name, value) {
-    let task = this.state.task;
+  handleTitleChange: function(name, value) {
+    const task = this.state.task;
     task.title = value;
     this.setState({
       task: task
     });
   },
 
-  toggleMassAction: function(event) {
+  toggleMassAction: function() {
     this.props.updateMassActions(this.props.task.id);
   },
 
   componentDidMount: function() {
-    const dueField = "due-" + this.props.task.id;
+    const dueField = 'due-' + this.props.task.id;
 
     // Check if the due field actually exists before we try and add a date picker (e.g. on done tasks)
     if (typeof (this.refs[dueField]) !== 'undefined') {
-      const dueButton = "due-button-" + this.props.task.id;
+      const dueButton = 'due-button-' + this.props.task.id;
 
       // Get the date for the task, and format it nicely
       const initial = this.props.task.date_due ? Moment(this.props.task.date_due).format() : null;
 
       // Create the picker
-      let picker = new Picker({
+      const picker = new Picker({
         input: React.findDOMNode(this.refs[dueField]),
         button: React.findDOMNode(this.refs[dueButton]),
         initialValue: initial,
-        format: "hh:mm, MMMM D, YYYY"
+        format: 'hh:mm, MMMM D, YYYY'
       });
       picker.render();
 
       // Change the component state and submit the edit when the date is changed
       picker.on('change', (newDate) => {
-        let task = this.state.task;
+        const task = this.state.task;
         task.date_due = newDate ? Moment(newDate).format() : null;
         this.setState({
           task: task
@@ -149,7 +148,25 @@ const TaskCard = React.createClass({
     };
   },
 
-  render: function () {
+  dueIndicator: function(due) {
+    const dueMoment = new Moment(due);
+
+    let result = '';
+
+    if (dueMoment.isSame(new Moment(), 'day')) {
+      result = 'Today, ';
+    } else if (dueMoment.isSame(new Moment().subtract(1, 'days'))) {
+      result = 'Yesterday, ';
+    } else {
+      result = dueMoment.format('MMM Do YYYY, ');
+    }
+
+    result += dueMoment.format('hh:mm a');
+
+    return result;
+  },
+
+  render: function() {
     const { task,
       projects,
       linked_items,
@@ -164,39 +181,32 @@ const TaskCard = React.createClass({
 
     const selected = this.props.selected;
 
-    let cardClass = task.is_done ? "card task-card task-card-completed" : "card task-card";
-    let detailsButtonText = this.state.expanded ? "Collapse" : "Expand";
+    const detailsButtonText = this.state.expanded ? 'Collapse' : 'Expand';
 
-    let doneButton = task.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
-
-    let ticket_link = undefined;
-    let ticket_title = 'Linked ticket';
+    let ticketLink = undefined;
+    let ticketTitle = 'Linked ticket';
 
     if (task.linked_items.length > 0) {
       task.linked_items.forEach((item) => {
         if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
-          ticket_link = '#' + linked_items[item].ticket;
-          ticket_title = this.props.tickets[linked_items[item].ticket].subject;
+          ticketLink = '#' + linked_items[item].ticket;
+          ticketTitle = this.props.tickets[linked_items[item].ticket].subject;
         }
       });
     }
 
-    let assigneeId = "unassigned";
     let assignee = null;
-    let assigneeName = "Unassigned";
+    let assigneeName = 'Unassigned';
 
     if (task.agents.length > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.agents[0];
-      assigneeId = "agents-" + agentId;
       assignee = agents[agentId];
     } else if (task.teams.length > 0) {
       const teamId = task.teams[0];
-      assigneeId = "teams-" + teamId;
       assignee = teams[teamId];
     } else if (task.departments.length > 0) {
       const departmentId = task.departments[0];
-      assigneeId = "departments-" + departmentId;
       assignee = departments[departmentId];
     }
 
@@ -208,105 +218,117 @@ const TaskCard = React.createClass({
       }
 
       if (assignee.picture_blob) {
-        assigneeName = <span>
+        assigneeName = (<span>
           <span className="list-icon">
             <span style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}
                   className="avatar"/>
           </span>
           {assigneeName}
-        </span>
+        </span>);
       }
     }
 
-    const dueField = "due-" + task.id;
-    const dueButton = "due-button-" + task.id;
+    const titleClass = task.is_done ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
+
+    const dueField = 'due-' + task.id;
+    const dueButton = 'due-button-' + task.id;
 
     const overdue = Moment(task.date_due).isBefore();
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
 
-    const result = <div>
-      <div className={cardClass} key={task.id} style={this.getStyles(this.props)}>
-        <div>
-          <div className="card-status-bar status-bar-left" />
-          <div className="card-status-bar status-bar-right" />
+    const result = (<div key={task.id}>
+        <Card statusBars
+              cardType="task"
+              doneAction={this.props.toggleDone.bind(this, task, source)}
+              task={task}>
 
-          <div className="card-checkbox">
-            <span className="checkbox" onClick={this.toggleMassAction}>
-              {selected ? <i className="fa fa-check" /> : '' }
-            </span>
+          <div className="dpm--card-checkbox" onClick={this.toggleMassAction}>
+            {selected ? <i className="fa fa-check" /> : '' }
           </div>
 
-          <div className="top-right-box">
-            {!task.is_done ?
-              <span className="assignment" onClick={this.props.toggleAssignWindow.bind(this, task)}>
-                {assigneeName}
-              </span>:
-              <button className="task-details-button" onClick={this.toggleDetails}>{detailsButtonText} <i
-                className="fa fa-bars"/></button>}
+          <div className="dpw--card-line">
+            <div className="dpw--card-line-left card-title">
+              <div className={titleClass}>
+                { !this.state.editing ?
+                <h1 onDoubleClick={this.editMode}>{task.title}</h1> :
+                  <Formsy.Form className="inline-form">
+                  <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange} /></h1>
+                  </Formsy.Form>
+                }
+              </div>
+            </div>
+
+            <div className="dpw--card-line-right">
+
+              {task.is_done ?
+              <div className="dpw--card-expand">
+                <a href="#" onClick={this.toggleDetails}>{detailsButtonText} <i className="fa fa-navicon" /></a>
+              </div>
+              :
+              assignee && assignee.picture_blob ?
+              <div className="dpwd--card-assigned" onClick={this.props.toggleAssignWindow.bind(this, task)}>
+                <span className="dpw--avatar-face" style={{backgroundImage: 'url(' + assignee.picture_blob.download_url + ')'}} />
+              </div> : '' }
+            </div>
           </div>
 
-          <div className="card-line">
-              <span className="line-box card-task-mark" onClick={this.props.toggleDone.bind(this, task, source)}>
-                {doneButton}
+          {!task.is_done || this.state.expanded ?
+          <div className="dpw--card-line">
+            <div className="dpw--card-line-left">
+              <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'} ref={dueButton}>
+                <i className="fa fa-calendar-o" /> Due: {task.date_due ? this.dueIndicator(task.date_due) : 'N/A'}
+                <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
               </span>
 
-            { !this.state.editing ?
-            <h1 onDoubleClick={this.editMode}>{task.title}</h1> :
-              <Formsy.Form className="inline-form">
-              <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange} /></h1>
-              </Formsy.Form>
-            }
+              {task.project && projects[task.project] ? <span>
+                <span className="dpw--card-disc" />
+                <span className="dpwd--card-line-item">
+                  <i className="fa fa-book" /> {projects[task.project].title}
+                </span>
+              </span>
+              : ''}
+
+              {ticketLink ? <span>
+                <span className="dpw--card-disc" />
+
+                <span className="dpwd--card-line-item">
+                  <i className="fa fa-link" /> <a href={ticketLink}>{ticketTitle}</a>
+                </span>
+              </span> : ''}
+            </div>
+
+            <div className="dpw--card-line-right">
+              <span className="dpwd--card-line-item">
+                {task.comment_count} <i className="fa fa-comment" />
+              </span>
+
+              {task.subtasks_total > 0 ?
+                <span>
+                  <span className="dpw--card-disc" />
+                  <div>{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/></div>
+                </span>
+              : ''}
+            </div>
           </div>
+          : '' }
+        </Card>
+        <div className={placeHolder} />
+      </div>);
 
-          { this.state.expanded || !task.is_done ?
-            <div className="card-line task-details">
-              <div className="task-extras">
-                <div>{task.comment_count} <i className="fa fa-comment"/></div>
+    if (this.props.order === 'list') {
+      return connectDragSource(connectDropTarget(result));
+    }
 
-                {task.subtasks_total > 0 ?
-                  <span><span className="disc" />
-            <div className="subtask-count">{task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/>
-            </div></span> : ''}
-              </div>
-
-              <div className="task-properties">
-                <div className={overdue ? "overdue" : ""} ref={dueButton} >
-
-                  <i className="fa fa-calendar-o" /> Due: {task.date_due ? Moment(task.date_due).format('MMMM D, YYYY')
-                  : 'N/A' }
-                  <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
-                </div>
-
-                {task.project && projects[task.project] ? <span>
-                  <span className="disc" /><i className="fa fa-book"/> {projects[task.project].title}
-                </span> : ''}
-
-                {ticket_link ? <span>
-                <span className="disc" />
-                  <i className="fa fa-link"/><a href={ticket_link}>{ticket_title}</a>
-                </span> : ''}
-              </div>
-            </div> : '' }
-        </div>
-    </div>
-    <div className={placeHolder} />
-  </div>;
-
-  if (this.props.order === 'list') {
-    return connectDragSource(connectDropTarget(result));
-  }
-
-  return connectDragSource(result);
-
+    return connectDragSource(result);
   }
 });
 
-module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  connectDragPreview: connect.dragPreview(),
+module.exports = DragSource(DragTypes.TASK, cardSource, (connector, monitor) => ({
+  connectDragSource: connector.dragSource(),
+  connectDragPreview: connector.dragPreview(),
   isDragging: monitor.isDragging()
-}))(DropTarget(DragTypes.TASK, cardTarget, (connect, monitor) => ({
-  connectDropTarget: connect.dropTarget(),
+}))(DropTarget(DragTypes.TASK, cardTarget, (connector, monitor) => ({
+  connectDropTarget: connector.dropTarget(),
   isOver: monitor.isOver()
 }))(TaskCard));

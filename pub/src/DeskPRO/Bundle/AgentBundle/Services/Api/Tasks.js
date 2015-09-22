@@ -1,4 +1,19 @@
-import DpApi from "../DpApi";
+import DpApi from '../DpApi';
+
+/**
+ * Compile parameters into a URL string
+ * @param params
+ * @returns {string}
+ */
+export function compileParams(params) {
+  let compiled = [];
+
+  for (let key of Object.keys(params)) {
+    compiled.push(key + '=' + String(params[key]));
+  }
+
+  return compiled.join('&');
+}
 
 /**
  * Load a generic API endpoint. Only use when you need to get the address from the action
@@ -7,15 +22,19 @@ import DpApi from "../DpApi";
  * @return Promise
  */
 export function loadAddress(address, params = {}) {
+  params.count = 50;
+
+  let url = address;
+
   if (params !== {}) {
     if (address.indexOf('?') === -1) {
-      address = address + '?' + compileParams(params);
+      url = address + '?' + compileParams(params);
     } else {
-      address = address + '&' + compileParams(params);
+      url = address + '&' + compileParams(params);
     }
   }
 
-  return DpApi.sendGet('DP_API/' + address);
+  return DpApi.sendGet('DP_API/' + url);
 }
 
 /**
@@ -182,17 +201,3 @@ export function loadLists(projectId) {
   return DpApi.sendGet('DP_API/projects/' + projectId + '/lists');
 }
 
-/**
- * Compile parameters into a URL string
- * @param params
- * @returns {string}
- */
-export function compileParams(params) {
-  let compiled = [];
-
-  for (let key of Object.keys(params)) {
-    compiled.push(key + '=' + String(params[key]));
-  }
-
-  return compiled.join('&');
-}

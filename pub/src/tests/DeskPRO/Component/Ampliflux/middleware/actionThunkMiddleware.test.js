@@ -18,6 +18,18 @@ describe('Ampliflux Thunk Middleware', () => {
     });
 
     describe('Action handler', () => {
+      it('should pass action to next handler when neither action nor its\' payload is a function', () => {
+        const dummyAction = {type: 'test', payload: 'is not a function'};
+        const actionHandler = nextHandler((action) => expect(action).toBe(dummyAction));
+        actionHandler(dummyAction);
+      });
+
+      it('should return value of next when neither action nor its\' payload is a function', () => {
+        const dummyAction = {type: 'test', payload: 'is not a function'};
+        const actionHandler = nextHandler(() => 'test');
+        expect(actionHandler(dummyAction)).toEqual('test');
+      });
+
       describe('Function actions handling', () => {
         it('should call the received action function with dispatch and getState arguments', () => {
           const actionHandler = nextHandler();
@@ -27,22 +39,11 @@ describe('Ampliflux Thunk Middleware', () => {
           });
         });
 
-        it('should pass action to next handler when action is not a function', () => {
-          const dummyAction = {};
-          const actionHandler = nextHandler((action) => expect(action).toBe(dummyAction));
-          actionHandler(dummyAction);
-        });
-
         it('should return action function result', () => {
           const action = () => 'test';
           const actionHandler = nextHandler(val => val);
           const result = actionHandler(action);
           expect(result).toEqual('test');
-        });
-
-        it('should return value of next when action is not a function', () => {
-          const actionHandler = nextHandler(() => 'test');
-          expect(actionHandler({})).toEqual('test');
         });
       });
 
@@ -56,23 +57,11 @@ describe('Ampliflux Thunk Middleware', () => {
           actionHandler(action);
         });
 
-        it('should pass action to next handler when neither action nor its\' payload is a function', () => {
-          const dummyAction = {type: 'test', payload: 'is not a function'};
-          const actionHandler = nextHandler((action) => expect(action).toBe(dummyAction));
-          actionHandler(dummyAction);
-        });
-
         it('should return action with the payload value set to the payload function result', () => {
           const action = createAction('TEST', () => 'test');
           const actionHandler = nextHandler(val => val);
           const result = actionHandler(action);
           expect(result.payload).toEqual('test');
-        });
-
-        it('should return value of next when neither action nor its\' payload is a function', () => {
-          const dummyAction = {type: 'test', payload: 'is not a function'};
-          const actionHandler = nextHandler(() => 'test');
-          expect(actionHandler(dummyAction)).toEqual('test');
         });
       });
     });
