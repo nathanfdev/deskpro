@@ -4,6 +4,7 @@ import * as actions from '../../Actions/FeedbackListActions'
 import { Nav } from './Nav';
 import $ from "jquery";
 import { sortingDataSelector } from '../../Selectors/list';
+import { filterDataSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
@@ -14,7 +15,8 @@ import { sortingDataSelector } from '../../Selectors/list';
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
     order: state.Feedback.list.get('order'),
     filters: state.Feedback.list.get('filters'),
-    currentSortMode: sortingDataSelector(state)
+    currentSortMode: sortingDataSelector(state),
+    currentFilterMode: filterDataSelector(state)
   });
 })
 
@@ -22,7 +24,7 @@ export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    const { dispatch, filters } = this.props;
+    const { dispatch, currentFilterMode } = this.props;
 
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
@@ -33,7 +35,7 @@ export class NavContainer extends React.Component {
     dispatch(actions.feedbackActiveStatus());
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
-    dispatch(actions.getFilterValues(filters.alias));
+    dispatch(actions.getFilterValues(currentFilterMode.name));
     dispatch(actions.getDisplayFieldsFromPersonSetting());
     dispatch(actions.loadFeedbackList());
   }

@@ -15,11 +15,11 @@ const initialState = {
     {field: 'total_rating', label: 'Rating', icon: 'fa-calendar-o', current: false},
     {field: 'num_ratings', label: 'Number of votes', icon: 'fa-calendar-o', current: false}
   ],
-  filters: {
-    name: 'type',
-    alias: 'category',
-    value: ''
-  },
+  filterOptions: [
+    {field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true},
+    {field: 'status', label: 'Status', icon: 'fa-calendar-o', value: '', current: false},
+    {field: 'custom_category', label: 'Category', icon: 'fa-calendar-o', value: '', current: false}
+  ],
   filterValues: [/* string */],
   listViewFields: [
     {name: 'id', label: 'ID', status: constants.FIELD_REQUIRED, priority: 3},

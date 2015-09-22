@@ -2,6 +2,7 @@ import { createAction } from "Ampliflux";
 import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { sortingDataSelector } from '../Selectors/list';
+import { filterDataSelector } from '../Selectors/list';
 
 export const loadFeedbackList = createAction(
   "FEEDBACK_LIST",
@@ -11,8 +12,8 @@ export const loadFeedbackList = createAction(
     const feedbackNavState  = state.Feedback.nav.toJS();
     const currentParams     = {
       query: feedbackNavState.query,
-      filters: feedbackListState.filters,
       sort: sortingDataSelector(state).field,
+      filters: filterDataSelector(state).field,
       order: feedbackListState.order
     };
     const params            = {...currentParams, ...overwriteParams};
