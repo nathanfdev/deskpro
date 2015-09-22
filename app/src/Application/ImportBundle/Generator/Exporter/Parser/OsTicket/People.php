@@ -28,9 +28,12 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\PeopleStorage;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
 use DateTimeZone;
 
 /**
@@ -50,6 +53,24 @@ final class People extends AbstractParser
      * @var int
      */
     private $users_min_id = 0;
+
+    /**
+     * @var PeopleStorage
+     */
+    private $people_storage;
+
+    /**
+     * Constructor
+     *
+     * @param OsTicketReaderInterface $reader
+     * @param FormatterInterface      $formatter
+     * @param PeopleStorage           $people_storage
+     */
+    public function __construct(OsTicketReaderInterface $reader, FormatterInterface $formatter, PeopleStorage $people_storage)
+    {
+        parent::__construct($reader, $formatter);
+        $this->people_storage = $people_storage;
+    }
 
     /**
      * {@inheritdoc}

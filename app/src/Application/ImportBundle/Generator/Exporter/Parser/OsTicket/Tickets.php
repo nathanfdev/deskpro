@@ -29,9 +29,11 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
 use Orb\Util\Strings;
 
 /**
@@ -46,6 +48,24 @@ final class Tickets extends AbstractParser
      * @var int
      */
     private $tickets_min_id;
+
+    /**
+     * @var TicketPeopleStorage
+     */
+    private $tickets_people;
+
+    /**
+     * Constructor
+     *
+     * @param OsTicketReaderInterface $reader
+     * @param FormatterInterface      $formatter
+     * @param TicketPeopleStorage     $tickets_people
+     */
+    public function __construct(OsTicketReaderInterface $reader, FormatterInterface $formatter, TicketPeopleStorage $tickets_people)
+    {
+        parent::__construct($reader, $formatter);
+        $this->tickets_people = $tickets_people;
+    }
 
     /**
      * {@inheritdoc}
@@ -83,6 +103,8 @@ final class Tickets extends AbstractParser
 
         do {
             $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $this->tickets_people->loadBy($batch);
+
             $config = new ExportCollectionConfig();
             $config
                 ->setData($batch)

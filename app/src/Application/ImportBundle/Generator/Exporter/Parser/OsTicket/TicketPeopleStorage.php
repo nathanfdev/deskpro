@@ -25,45 +25,19 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
-
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
-use Application\ImportBundle\Reader\ReaderInterface;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 /**
- * OsTicket data exporter factory
- *
- * Class OsTicketFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class TicketPeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class OsTicketFactory extends AbstractExporterFactory
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
     /**
      * {@inheritdoc}
      */
-    public function createExporter(ReaderInterface $reader)
+    protected function getPeopleIds($data)
     {
-        if ( ! $reader instanceof OsTicketReaderInterface) {
-            throw new \RuntimeException('Config expected to be instance of OsTicketReaderInterface');
-        }
 
-        $formatter = $this->container->get('deskpro.import.formatter');
-
-        $people_storage = new Parser\PeopleStorage();
-        $ticket_people  = new Parser\OsTicket\TicketPeopleStorage($reader, $people_storage);
-
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader, $formatter))
-            ->attach(new Parser\OsTicket\Feedback($reader, $formatter))
-            ->attach(new Parser\OsTicket\Articles($reader, $formatter))
-            ->attach(new Parser\OsTicket\ArticleCategories($reader, $formatter))
-            ->attach(new Parser\OsTicket\News($reader, $formatter))
-            ->attach(new Parser\OsTicket\People($reader, $formatter, $people_storage))
-            ->attach(new Parser\OsTicket\Tickets($reader, $formatter, $ticket_people))
-            ->attach(new Parser\OsTicket\Organizations($reader, $formatter))
-        ;
-
-        return new OsTicket($parsers, $reader);
     }
 }

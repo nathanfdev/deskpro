@@ -50,20 +50,20 @@ final class Tickets extends AbstractParser
     /**
      * @var ParserPeopleStorageInterface
      */
-    private $people_storage;
+    private $tickets_people;
 
     /**
      * Constructor
      *
      * @param DeskPROReaderInterface       $reader
-     * @param ParserPeopleStorageInterface $people_storage
+     * @param ParserPeopleStorageInterface $tickets_people
      * @param int                          $min_id
      */
-    public function __construct(DeskPROReaderInterface $reader, ParserPeopleStorageInterface $people_storage, $min_id = 0)
+    public function __construct(DeskPROReaderInterface $reader, ParserPeopleStorageInterface $tickets_people, $min_id = 0)
     {
         parent::__construct($reader);
 
-        $this->people_storage = $people_storage;
+        $this->tickets_people = $tickets_people;
         $this->tickets_min_id = (int)$min_id;
     }
 
@@ -103,7 +103,7 @@ final class Tickets extends AbstractParser
 
         do {
             $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
-            $this->people_storage->loadBy($batch);
+            $this->tickets_people->loadBy($batch);
 
             $config = new ExportCollectionConfig();
             $config

@@ -55,12 +55,12 @@ final class People extends AbstractParser
      * Constructor
      *
      * @param DeskPROReaderInterface $reader
-     * @param PeopleStorage          $people_storage
+     * @param PeopleStorage          $tickets_people
      */
-    public function __construct(DeskPROReaderInterface $reader, PeopleStorage $people_storage)
+    public function __construct(DeskPROReaderInterface $reader, PeopleStorage $tickets_people)
     {
         parent::__construct($reader);
-        $this->people_storage = $people_storage;
+        $this->people_storage = $tickets_people;
     }
 
     /**

@@ -25,15 +25,11 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
-
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 /**
  * Class AbstractParserPeopleStorage
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
- *
- * @property ZenDeskReaderInterface $reader
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
 abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
 {
@@ -51,42 +47,6 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
      */
     protected function loadByIds($ids)
     {
-        $request_ids = $this->storage->getNotContainsIds($ids);
-        $result      = $this->reader->getPeopleByIds($request_ids);
 
-        $people = array();
-        foreach ($result as $person) {
-            $people[$person['id']] = $person;
-        }
-
-        $this->storage->addPeople($people);
-
-        // ZD does not keep foreign integrity so create fake profiles for deleted users
-        $deleted_ids = $this->storage->getNotContainsIds($ids);
-        $created_at  = new \DateTime();
-        $created_at  = $created_at->format('c');
-
-        $people = array();
-        foreach ($deleted_ids as $id) {
-            $person = $this->reader->getPersonById($id);
-            if ( ! $person) {
-                $person = array(
-                    'id'         => $id,
-                    'name'       => 'User ' . $id,
-                    'created_at' => $created_at,
-                    'updated_at' => $created_at,
-                    'locale'     => 'en-US',
-                    'time_zone'  => 'UTC',
-                    'role'       => People::ROLE_END_USER,
-                );
-            }
-
-            $people[$id] = array_merge($person, array(
-                'email'      => sprintf('imported.user.%s@example.com', $id),
-                'is_deleted' => true,
-            ));
-        }
-
-        $this->storage->addPeople($people);
     }
 }
