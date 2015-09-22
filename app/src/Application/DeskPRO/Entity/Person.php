@@ -2617,8 +2617,17 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
-
         return $this;
+    }
+
+    /**
+     * Date created
+     *
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     public function getTimezone()

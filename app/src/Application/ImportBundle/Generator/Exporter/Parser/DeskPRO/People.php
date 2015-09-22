@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity\Person;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * DeskPRO people parser
@@ -78,19 +79,20 @@ final class People extends AbstractParser
         $collection = new Entity\Collection();
 
         do {
-            $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+            $batch  = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+            $config = new ExportCollectionConfig();
+            $config
+                ->setData($batch)
+                ->setPrefix('DPUser')
+                ->setRefColumn('id')
+                ->setMethod('exportUser')
+                ->setAdvanceProgressbar(true)
+            ;
 
-            foreach ($batch as $num => $person) {
-                $this->advanceProgressBar();
-
-                $entity = $this->exportUser($person);
-                $collection->attach($entity);
-
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                $this->users_min_id = $person->getId();
-            }
+            $collection->merge($this->exportCollection($config));
 
             $this->entities_loaded += count($batch);
+            $this->users_min_id     = max($this->users_min_id, $collection->getMaxOid());
 
         } while (count($batch) > 0);
 
@@ -101,7 +103,7 @@ final class People extends AbstractParser
      * @param Person $person
      * @return Entity\Person
      */
-    private function exportUser(Person $person)
+    protected function exportUser(Person $person)
     {
         $entity = new Entity\Person();
         $entity
@@ -116,15 +118,15 @@ final class People extends AbstractParser
             ->setAsUser( ! $person['is_agent'])
             ->setAsAdmin((bool)$person['can_admin'])
 
-            ->setOrganization($person->organization['name'])
+            ->setOrganization($person->organization ? $person->organization['name'] : null)
             ->setOrganizationPosition($person['organization_position'])
 
             ->setLanguage($person->language ? $person->language['title'] : null)
             ->setPassword($person['password'])
             ->setPasswordScheme(Entity\Person::PASSWORD_SCHEME_BCRYPT)
 
-            ->setTimezone(new \DateTimeZone($person->timezone))
-            ->setDateCreated($person['date_created'])
+            ->setTimezone($person->getDateTimezone())
+            ->setDateCreated($person->getDateCreated())
         ;
 
         foreach ($person->emails as $email) {

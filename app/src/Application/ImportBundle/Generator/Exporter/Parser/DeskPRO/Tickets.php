@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
 use Orb\Util\Strings;
 
@@ -92,19 +93,20 @@ final class Tickets extends AbstractParser
         $collection = new Entity\Collection();
 
         do {
-            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $config = new ExportCollectionConfig();
+            $config
+                ->setData($batch)
+                ->setPrefix('DPTicket')
+                ->setRefColumn('id')
+                ->setMethod('exportTicket')
+                ->setAdvanceProgressbar(true)
+            ;
 
-            foreach ($batch as $num => $ticket) {
-                $this->advanceProgressBar();
-
-                $entity = $this->exportTicket($ticket);
-                $collection->attach($entity);
-
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                $this->tickets_min_id = $ticket->getId();
-            }
+            $collection->merge($this->exportCollection($config));
 
             $this->entities_loaded += count($batch);
+            $this->tickets_min_id   = max($this->tickets_min_id, $collection->getMaxOid());
 
         } while (count($batch) > 0);
 
@@ -115,7 +117,7 @@ final class Tickets extends AbstractParser
      * @param DeskPROEntity\Ticket $ticket
      * @return Entity\Ticket
      */
-    private function exportTicket(DeskPROEntity\Ticket $ticket)
+    protected function exportTicket(DeskPROEntity\Ticket $ticket)
     {
         $entity = new Entity\Ticket();
         $entity
