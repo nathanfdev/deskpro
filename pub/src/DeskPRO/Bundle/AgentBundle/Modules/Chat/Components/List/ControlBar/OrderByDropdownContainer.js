@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { OrderSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/OrderSwitcher';
 import { changeSort, toggleOrder } from '../../../Actions/chatListActions';
-import { sortingDataSelector } from '../../../Selectors/list';
+import { currentSortOptionSelector } from '../../../Selectors/list';
 
 @connect(state => ({
   sortOptions: state.Chat.list.get('sortOptions').toJS(),
   order: state.Chat.list.get('order'),
-  currentSortMode: sortingDataSelector(state)
+  currentSortMode: currentSortOptionSelector(state)
 }))
 export class OrderByDropdownContainer extends Component {
 

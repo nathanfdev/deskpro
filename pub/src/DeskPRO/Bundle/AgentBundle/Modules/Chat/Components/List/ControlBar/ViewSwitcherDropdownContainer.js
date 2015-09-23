@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
 import { ViewOptionsSubmenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ViewOptionsSubmenu';
 import { toggleViewMode } from '../../../Actions/chatListActions';
-import { viewDataSelector } from '../../../Selectors/list';
+import { currentViewModeOptionSelector } from '../../../Selectors/list';
 
 @connect(state => ({
   viewModeOptions: state.Chat.list.get('viewModeOptions').toJS(),
   listViewFields: state.Chat.list.get('listViewFields'),
   tableViewFields: state.Chat.list.get('tableViewFields'),
-  currentViewMode: viewDataSelector(state)
+  currentViewMode: currentViewModeOptionSelector(state)
 }))
 export class ViewSwitcherDropdownContainer extends Component {
 
