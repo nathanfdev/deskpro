@@ -20,6 +20,7 @@ $list-view-border-color: #e1e1e1;
 
     tr {
       th {
+        border-right: 1px solid $list-view-border-color;
         padding-top: 7px;
         padding-bottom: 7px;
         color: #939393;

@@ -4,7 +4,7 @@ const stateSelector = state => state.Chat.list;
 
 export const sortingDataSelector = createSelector(
   stateSelector,
-  list => ({sort: list.get('sort'), order: list.get('order')})
+    list => list.get('sortOptions').toJS().find(option => option.current === true)
 );
 
 export const currentListParamsSelector = createSelector(
@@ -12,9 +12,9 @@ export const currentListParamsSelector = createSelector(
   list => list.get('currentListParams')
 );
 
-export const viewModeSelector = createSelector(
+export const viewDataSelector = createSelector(
   stateSelector,
-  list => list.get('viewModeOptions').toJS().find(option => option.current === true).field
+  list => list.get('viewModeOptions').toJS().find(option => option.current === true)
 );
 
 export const elementsSelector = createSelector(

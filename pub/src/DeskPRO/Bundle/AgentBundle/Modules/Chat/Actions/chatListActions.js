@@ -7,7 +7,7 @@ export const load = createAction(
   (filters = {}) =>
     (dispatch, getState) => {
       const sorting = sortingDataSelector(getState());
-      const params = {...sorting, ...filters};
+      const params  = {...sorting, ...filters};
       dispatch(updateCurrentListParams(params));
 
       return loadChats(params).then(promise => promise.getData().data);
@@ -19,7 +19,7 @@ export const reLoad = createAction(
   (overwriteParams = {}) =>
     (dispatch, getState) => {
       const currentParams = currentListParamsSelector(getState());
-      const params = {...currentParams, ...overwriteParams};
+      const params        = {...currentParams, ...overwriteParams};
       dispatch(updateCurrentListParams(params));
 
       return loadChats(params).then(promise => promise.getData().data);
@@ -28,14 +28,28 @@ export const reLoad = createAction(
 
 export const updateCurrentListParams = createAction(
   'CHAT_LIST_UPDATE_CURRENT_LIST_PARAMS',
-  params => params
+    params => params
 );
 
 export const changeSort = createAction(
   'CHAT_LIST_CHANGE_SORT',
-  sort => dispatch => {
+    sort => dispatch => {
     dispatch(reLoad({sort}));
 
     return sort;
   }
+);
+
+export const toggleOrder = createAction(
+  'CHAT_LIST_TOGGLE_ORDER',
+    order => dispatch => {
+      dispatch(reLoad({order: order}));
+
+      return order;
+    }
+);
+
+export const toggleViewMode = createAction(
+  'CHAT_LIST_TOGGLE_VIEW_MODE',
+    viewMode => viewMode
 );
