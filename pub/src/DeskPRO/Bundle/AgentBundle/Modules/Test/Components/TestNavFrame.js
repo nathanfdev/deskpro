@@ -1,9 +1,10 @@
 import React from 'react';
 import * as TestActions from '../Actions/TestActions';
 import { connect } from 'react-redux';
-import { createUserRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/userSelectors';
+import { createPeopleRequestSelectors }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 
-const testAppUserSel = createUserRequestSelectors('testApp');
+const testAppUserSel = createPeopleRequestSelectors('testApp');
 
 console.log(testAppUserSel);
 

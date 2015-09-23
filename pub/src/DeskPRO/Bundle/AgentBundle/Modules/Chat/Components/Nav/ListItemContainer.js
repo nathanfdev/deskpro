@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { createUserRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/userSelectors';
+import { createPeopleRequestSelectors }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 import { createDepartmentsRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/departmentsSelectors';
 
-const chatNavUsersSelector = createUserRequestSelectors('chatNav');
+const chatNavUsersSelector = createPeopleRequestSelectors('chatNav');
 const chatNavDepartmentsSelector = createDepartmentsRequestSelectors('chatNav');
 
 /**
