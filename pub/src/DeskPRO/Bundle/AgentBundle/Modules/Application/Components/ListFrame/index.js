@@ -6,6 +6,7 @@ import { OrderBy } from './OrderBy';
 import { OrderSwitcher } from './OrderSwitcher';
 import { FilterBy } from './FilterBy';
 import { TableView, TableBody, TableHeader, Th, Row, Td } from './TableView';
+import { Card } from './Card';
 import { Pagination } from './Pagination';
 
 export default {
@@ -15,5 +16,6 @@ export default {
   TableView, TableBody, TableHeader, Th, Row, Td,
   OrderBy, OrderSwitcher,
   Pagination,
-  FilterBy
+  FilterBy,
+  Card
 };
