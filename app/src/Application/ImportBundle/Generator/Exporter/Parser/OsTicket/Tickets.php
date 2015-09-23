@@ -98,28 +98,16 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $this->entities_loaded = 0;
-        $collection = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getTickets())
+            ->setPrefix('OSTicket')
+            ->setRefColumn('ticket_id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        do {
-            $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
-            $config = new ExportCollectionConfig();
-            $config
-                ->setData($batch)
-                ->setPrefix('OSTicket')
-                ->setRefColumn('ticket_id')
-                ->setMethod('exportTicket')
-                ->setAdvanceProgressbar(true)
-            ;
-
-            $collection->merge($this->exportCollection($config));
-
-            $this->entities_loaded += count($batch);
-            $this->tickets_min_id   = max($this->tickets_min_id, $collection->getMaxOid());
-
-        } while (count($batch) > 0);
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -146,6 +134,7 @@ final class Tickets extends AbstractParser
             'priority_id' => TransformerInterface::TYPE_INT,
             'isanswered'  => TransformerInterface::TYPE_BOOLEAN,
             'closed'      => TransformerInterface::TYPE_BOOLEAN,
+            'messages'    => TransformerInterface::TYPE_ARRAY,
         ));
 
         $this->tickets_people->loadBy($formatted);
@@ -166,7 +155,7 @@ final class Tickets extends AbstractParser
             ->setPriority($this->exportPriority($formatted['priority_id']))
         ;
 
-        $messages = $this->exportMessages($formatted['ticket_id']);
+        $messages = $this->exportMessages($formatted['messages']);
         foreach ($messages as $message) {
             $entity->addMessage($message);
         }
@@ -345,5 +334,33 @@ final class Tickets extends AbstractParser
         }
 
         return $email;
+    }
+
+    /**
+     * Returns tickets
+     * Loads from osTicket database
+     *
+     * @return array
+     */
+    private function getTickets()
+    {
+        $tickets = array();
+
+        do {
+            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $this->entities_loaded += count($batch);
+
+            foreach ($batch as &$ticket) {
+                if (isset($ticket['ticket_id'])) {
+                    $ticket['messages'] = $this->reader->findMessages($ticket['ticket_id']);
+                    $this->tickets_min_id = max($this->tickets_min_id, $ticket['ticket_id']);
+                }
+            }
+
+            $tickets = array_merge($tickets, $batch);
+
+        } while (count($batch) > 0);
+
+        return $tickets;
     }
 }
