@@ -44,7 +44,7 @@ use Orb\Log\Logger;
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local extends PluginAdapter implements FormLoginInterface, Loggable
+class Local extends PluginAdapter implements FormLoginInterface, Loggable, EntityManagerAwareInterface
 {
     /**
      * Entity manager.
