@@ -108,47 +108,52 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
      */
     public function checkConfig()
     {
-        try {
-            $stmt = $this->getConnection()->prepare('SHOW TABLES');
-            if ($stmt->execute() === false) {
-                throw new OsTicketReaderException('Unable to get a list of tables', $stmt->errorCode(), $stmt->errorInfo());
-            }
-
-            $tables = array();
-            $result = $stmt->fetchAll(PDO::FETCH_NUM);
-
-            foreach ($result as $table_info) {
-                $tables[] = $table_info[0];
-            }
-
-            $check_tables = array(
-                'ost_staff',
-                'ost_user',
-                'ost_ticket',
-                'ost_ticket_thread',
-                'ost_ticket_attachment',
-                'ost_department',
-                'ost_organization',
-                'ost_groups',
-                'ost_user_email',
-                'ost_team',
-                'ost_file_chunk',
-                'ost_timezone',
-                'ost_ticket_priority',
-            );
-
-            $exist_tables = array_intersect($tables, $check_tables);
-
-            sort($exist_tables);
-            sort($check_tables);
-
-            return $exist_tables == $check_tables;
-
-        } catch (\Exception $e) {
-
+        $stmt = $this->getConnection()->prepare('SHOW TABLES');
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get a list of tables', $stmt->errorCode(), $stmt->errorInfo());
         }
 
-        return false;
+        $tables = array();
+        $result = $stmt->fetchAll(PDO::FETCH_NUM);
+
+        foreach ($result as $table_info) {
+            $tables[] = $table_info[0];
+        }
+
+        $check_tables = array(
+            'ost_staff',
+            'ost_user',
+            'ost_ticket',
+            'ost_ticket_thread',
+            'ost_ticket_attachment',
+            'ost_department',
+            'ost_organization',
+            'ost_groups',
+            'ost_user_email',
+            'ost_team',
+            'ost_file_chunk',
+            'ost_timezone',
+            'ost_ticket_priority',
+        );
+
+        $exist_tables = array_intersect($tables, $check_tables);
+
+        sort($exist_tables);
+        sort($check_tables);
+
+        if ($exist_tables != $check_tables) {
+            throw new \RuntimeException(sprintf(
+                'Not all required tables found, please check for: %s.',
+                implode(', ', array_map(
+                    function($table) {
+                        return '`' . $table . '`';
+                    },
+                    array_diff($check_tables, $exist_tables)
+                ))
+            ));
+        }
+
+        return true;
     }
 
     /**
