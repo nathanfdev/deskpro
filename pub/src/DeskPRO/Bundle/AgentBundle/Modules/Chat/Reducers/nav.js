@@ -27,11 +27,6 @@ export default createReducer(initialState, {
            .setIn(['lists', payload.list, 'items'], payload.counts.nested)
   }),
 
-
-  [actions.loadDepartmentName]: async({
-    success: (state, payload) => state.mergeIn(['departmentNames'], {[payload.id]: payload.name})
-  }),
-
   [actions.toggleListGroupingVisibility]: (state, payload) => {
     const target = ['lists', payload, 'isGroupingControlVisible'];
     return state.setIn(target, !state.getIn(target));
