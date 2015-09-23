@@ -239,11 +239,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
-    public function setPerson(Person $person = null)
-    {
-        $this->setModelField('person', $person);
-    }
-
     /**
      * @return string
      */

@@ -1530,11 +1530,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this;
     }
 
-    public function setLanguage(Language $language)
-    {
-        $this->setModelField('language', $language);
-    }
-
     /**
      * Get the locale string.
      *
@@ -3889,7 +3884,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         'nullable' => true,
                         'onDelete' => 'set null',
                     )
-                    )
                 ),
             )
         );
@@ -3898,10 +3892,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function clear()
     {
         if ($this->_permissions_manager) {
-        $this->_permissions_manager->clear();
+            $this->_permissions_manager->clear();
         }
         if ($this->_person_logger) {
-        $this->_person_logger->clear();
+            $this->_person_logger->clear();
+        }
     }
 
     /**

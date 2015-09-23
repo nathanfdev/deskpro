@@ -1434,7 +1434,7 @@ class Arrays
         if ($k === null) {
             return;
         }
-
+    }
 
 
 
@@ -1563,7 +1563,7 @@ class Arrays
                     return false;
                 }
             }
-
+        }
 
         if ($all) {
             return true;
@@ -1675,10 +1675,10 @@ class Arrays
     public static function lowercaseKeys($array, $dupe_mode = LOWERKEY_DUPE_OVERWRITE)
     {
         foreach ($array as $key => $value) {
-
-
+            $lower_key = strtolower($key);
+            if ($lower_key == $key) {
                 continue;
-            } // already lowercase
+            }
 
             unset($array[$key]);
 
@@ -2030,7 +2030,7 @@ class Arrays
 
         $count = count($array);
 
-        $page  = max(0, $page);
+        $page = max(0, $page);
         $start = ($page - 1) * $per_page;
 
         // Invalid page
@@ -2038,6 +2038,8 @@ class Arrays
             return array();
         }
 
+        return array_slice($array, $start, $per_page);
+    }
 
 
 

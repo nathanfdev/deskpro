@@ -684,11 +684,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
-    public function setAgent(Person $agent = null)
-    {
-        $this->setModelField('agent', $agent);
-    }
-
     /**
      * @return string
      */
@@ -3254,11 +3249,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $display_name = $to_user ? $this->person->getDisplayNameUser() : $this->person->getDisplayName();
 
-        $repl = array_merge(array(
-            'user.name'                   => $display_name,
-            'user.email'                  => $this->person->getPrimaryEmailAddress(),
-            'user.organization_position'  => $this->person->organization_position,
-
         $repl = array_merge(
             array(
                 'user.name' => $display_name,
@@ -3775,7 +3765,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
-        $metadata->addLifecycleCallback('_ensureSubject', 'prePersist');
         $metadata->addLifecycleCallback('_setOriginalId', 'postLoad');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');

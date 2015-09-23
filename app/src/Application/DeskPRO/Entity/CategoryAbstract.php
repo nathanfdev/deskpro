@@ -299,15 +299,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * @return string
-     */
-    public function getUrlSlug()
-    {
-        return $this->id . '-' . Strings::slugifyTitle($this->title);
-    }
-
-
-    /**
      * Return a unique ID that we can use to look up translations for this object.
      *
      * @param string $property If supplied, the property on the object we want to translate.
