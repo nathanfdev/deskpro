@@ -5,8 +5,8 @@ export class Card extends Component {
 
   static propTypes = {
     type: PropTypes.string.isRequired,
-    moving: PropTypes.string,
-    minimized: PropTypes.string
+    moving: PropTypes.bool,
+    minimized: PropTypes.bool
   };
 
   render() {
