@@ -33,28 +33,14 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Departments;
 
+use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
-use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
-
-use FOS\RestBundle\Controller\Annotations\Post;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Delete;
+
 
 class DepartmentsController extends BaseController
 {
@@ -83,8 +69,9 @@ class DepartmentsController extends BaseController
      * )
      *
      * @Get("/departments", name="api_departments")
+     * @return View
      */
-    public function cgetAction(Request $request)
+    public function cgetAction()
     {
         $repo = $this->getEm()->getRepository('DeskPRO:Department');
         return View::create(
@@ -95,12 +82,12 @@ class DepartmentsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get a filter",
+     *      description="get a department",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the filter",
+     *              "description"="the id of the department",
      *              "dataType"="integer"
      *          }
      *      },
@@ -108,10 +95,13 @@ class DepartmentsController extends BaseController
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     *      output="Application\DeskPRO\Entity\Department"
      * )
      *
      * @Get("/departments/{id}", name="api_departments_get")
+     * @throws NotFoundHttpException
+     * @param integer $id
+     * @return View
      */
     public function getAction($id)
     {
@@ -125,6 +115,46 @@ class DepartmentsController extends BaseController
 
         return View::create(
             $this->DataSerialize($department),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get agents belongs to department",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the department",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="Application\DeskPRO\Entity\Department"
+     * )
+     * @Get("/departments/{id}/agents", name="api_departments_get_agents")
+     * @throws NotFoundHttpException
+     * @param integer $id
+     * @return View
+     */
+    public function getAgentsAction($id)
+    {
+        $repo = $this->getEm()->getRepository('DeskPRO:Department');
+        $findings = $repo->findBy(['id' => $id]);
+
+        if (!$findings || count($findings) < 1) {
+            throw $this->createNotFoundException();
+        }
+        /** @var Department $department */
+        $department = $findings[0];
+
+
+        return View::create(
+            $this->DataSerialize($department->getPersonList()),
             Response::HTTP_OK
         );
     }

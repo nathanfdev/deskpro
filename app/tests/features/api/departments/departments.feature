@@ -22,3 +22,9 @@ Feature: /departments endpoint
     And the response status code should be 200
     And the JSON node "data.id" should be equal to "1"
     And the JSON node "data.title" should be equal to "sales"
+
+  Scenario: I get a single department agents list
+    When I send a GET request to "/api/v2/departments/1/agents"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
