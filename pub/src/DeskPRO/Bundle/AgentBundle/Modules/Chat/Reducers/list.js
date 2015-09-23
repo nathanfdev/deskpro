@@ -17,12 +17,10 @@ const initialState = {
 
   // list sorting options
   order: constants.ORDER_DESC,
-  sort: 'date_created',
-  sortName: 'Date',
   sortOptions: [
-    {field: 'date_created', label: 'Date', current: true},
-    {field: 'agent', label: 'Agent', current: false},
-    {field: 'department', label: 'Department', current: false}
+    {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
+    {field: 'agent', label: 'Agent', icon: 'fa-calendar-o', current: false},
+    {field: 'department', label: 'Department', icon: 'fa-calendar-o', current: false}
   ],
 
   // chats to display
@@ -39,11 +37,26 @@ export default createReducer(initialState, {
 
   [actions.updateCurrentListParams]: setFullPayload('currentListParams'),
 
-  [actions.changeSort]: setFullPayload('sort'),
+  [actions.changeSort]: (state, payload) => {
+    let sortOptions = [];
+    state.get('sortOptions').toJS().forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      sortOptions.push(nextObj);
+    });
+    return state.set('sortOptions', Immutable.fromJS(sortOptions))
+  },
 
-  [AppActions.TOGGLE_ORDER]: state =>
-    state.set(
-      'order',
-      state.get('order') === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC
-    ),
+  [actions.toggleViewMode]: (state, payload) => {
+    let viewModeOptions = [];
+    state.get('viewModeOptions').toJS().forEach(obj=> {
+      const nextObj   = {...obj};
+      nextObj.current = obj.field === payload;
+      viewModeOptions.push(nextObj);
+    });
+    return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions))
+  },
+
+  [actions.toggleOrder]: setFullPayload('order')
+
 });
