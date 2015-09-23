@@ -103,8 +103,6 @@ final class Tickets extends AbstractParser
 
         do {
             $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
-            $this->tickets_people->loadBy($batch);
-
             $config = new ExportCollectionConfig();
             $config
                 ->setData($batch)
@@ -149,6 +147,8 @@ final class Tickets extends AbstractParser
             'isanswered'  => TransformerInterface::TYPE_BOOLEAN,
             'closed'      => TransformerInterface::TYPE_BOOLEAN,
         ));
+
+        $this->tickets_people->loadBy($formatted);
 
         $entity = new Entity\Ticket();
         $entity
@@ -238,6 +238,8 @@ final class Tickets extends AbstractParser
             'created'     => TransformerInterface::TYPE_DATE,
             'body'        => TransformerInterface::TYPE_STRING,
         ));
+
+        $this->tickets_people->loadBy($formatted);
 
         $entity = new Entity\TicketMessage();
         $entity

@@ -27,9 +27,13 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
+
 /**
  * Class AbstractParserPeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
+ *
+ * @property OsTicketReaderInterface $reader
  */
 abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
 {
@@ -47,6 +51,40 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
      */
     protected function loadByIds($ids)
     {
+        $request_ids = $this->storage->getNotContainsIds(array_keys($ids));
+        if (empty($request_ids)) {
+            return;
+        }
 
+        $this->storage->addIgnoreIds($request_ids);
+
+        $user_ids  = array();
+        $staff_ids = array();
+
+        foreach ($request_ids as $key => $id) {
+            if (preg_match('/^user_(\d+)$/', $key)) {
+                $user_ids[]  = (int)$id;
+            } elseif (preg_match('/^staff_(\d+)$/', $key)) {
+                $staff_ids[] = (int)$id;
+            }
+        }
+
+        $people = array();
+
+        if ( ! empty($user_ids)) {
+            $result = $this->reader->findUsersByIds($user_ids);
+            foreach ($result as $person) {
+                $people['user_' . $person['user_id']] = $person;
+            }
+        }
+
+        if ( ! empty($staff_ids)) {
+            $result = $this->reader->findStaffByIds($staff_ids);
+            foreach ($result as $person) {
+                $people['staff_' . $person['staff_id']] = $person;
+            }
+        }
+
+        $this->storage->addPeople($people);
     }
 }

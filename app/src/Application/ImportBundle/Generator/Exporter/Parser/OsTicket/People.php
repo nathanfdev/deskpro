@@ -148,7 +148,7 @@ final class People extends AbstractParser
             $collection->merge($this->exportCollection($config));
 
             $this->entities_loaded += count($batch);
-            $this->staff_min_id    = max($this->staff_min_id, $collection->getMaxOid());
+            $this->staff_min_id     = max($this->staff_min_id, $collection->getMaxOid());
 
         } while (count($batch) > 0);
 

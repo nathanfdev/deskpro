@@ -46,7 +46,7 @@ interface ParserPeopleStorageInterface
     /**
      * Returns person email or null if it was not loaded
      *
-     * @param int $id
+     * @param mixed $id
      * @return string|null
      */
     public function getPersonEmail($id);

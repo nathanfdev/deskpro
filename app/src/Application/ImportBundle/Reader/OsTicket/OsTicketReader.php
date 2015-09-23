@@ -218,6 +218,27 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function findStaffByIds(array $ids)
+    {
+        if (empty($ids)) {
+            throw new OsTicketReaderException('Empty ids list');
+        }
+
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        $query = 'SELECT * FROM ost_staff WHERE staff_id IN ('.$marks.') ORDER BY staff_id ASC';
+
+        $stmt  = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute($ids) === false) {
+            throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function findUsers($limit, $min_id = 0)
     {
         $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id > :min_id ORDER BY u.id ASC LIMIT :limit';
@@ -226,6 +247,27 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
         $stmt->bindValue(':min_id', (int)$min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findUsersByIds(array $ids)
+    {
+        if (empty($ids)) {
+            throw new OsTicketReaderException('Empty ids list');
+        }
+
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id IN ('.$marks.') ORDER BY u.id ASC';
+
+        $stmt  = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute($ids) === false) {
             throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
         }
 

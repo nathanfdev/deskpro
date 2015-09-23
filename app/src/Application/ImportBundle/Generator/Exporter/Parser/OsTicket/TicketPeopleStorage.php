@@ -38,6 +38,12 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
      */
     protected function getPeopleIds($data)
     {
+        $user_id  = $data['user_id'];
+        $staff_id = $data['staff_id'];
 
+        return array(
+            'user_' . $user_id   => $user_id,
+            'staff_' . $staff_id => $staff_id,
+        );
     }
 }

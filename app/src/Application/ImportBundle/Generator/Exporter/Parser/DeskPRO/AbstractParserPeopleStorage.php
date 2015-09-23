@@ -28,14 +28,14 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 use Doctrine\Common\Collections\Criteria;
 
 /**
  * Class AbstractParserPeopleStorage
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  *
- * @property DeskPROReader $reader
+ * @property DeskPROReaderInterface $reader
  */
 abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
 {
