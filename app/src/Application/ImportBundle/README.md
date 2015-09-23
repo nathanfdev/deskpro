@@ -1121,6 +1121,7 @@ Add `zendesk_import` configuration to `config.php`
 ```php
 $DP_CONFIG['deskpro_import'] = array(
     'db_host'         => 'host',
+    'db_port'         => 3306, // (ignore if default value)
     'db_name'         => 'dbname',
     'db_username'     => 'dbuser',
     'db_password'     => 'dbpassword',

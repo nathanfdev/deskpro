@@ -55,6 +55,7 @@ class DeskPROReaderFactory implements ReaderFactoryInterface
 
         return new DeskPROConfig(
             $config['db_host'],
+            isset($config['db_port']) ? $config['db_port'] : null,
             $config['db_name'],
             $config['db_username'],
             $config['db_password'],

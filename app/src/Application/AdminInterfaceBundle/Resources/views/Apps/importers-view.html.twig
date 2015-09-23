@@ -262,49 +262,61 @@
                         <div ng-if="'deskpro' === id">
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Host
+                                    MySQL Database Host
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="text" class="form-control" ng-model="importer.config.host"/>
 
-                                    <p class="help-block">Host</p>
+                                    <p class="help-block">Enter the hostname or IP address of the DeskPRO database.</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Database
+                                    MySQL Database Port
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.port"/>
+
+                                    <p class="help-block">Enter the port of the DeskPRO database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Name
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="text" class="form-control" ng-model="importer.config.db"/>
 
-                                    <p class="help-block">Database</p>
+                                    <p class="help-block">Enter the name of the database used for DeskPRO.</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Username
+                                    MySQL Username
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="text" class="form-control" ng-model="importer.config.user"/>
 
-                                    <p class="help-block">Username</p>
+                                    <p class="help-block">Enter a MySQL user who can use the database.</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Password
+                                    MySQL Password
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="password" class="form-control" ng-model="importer.config.password"/>
 
-                                    <p class="help-block">Password</p>
+                                    <p class="help-block">Enter the password for the above MySQL user.</p>
                                 </div>
                             </div>
 
