@@ -21,3 +21,17 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
     });
   });
 }
+
+/**
+ * Reduces map of objects {id: {...}} to map of objects' property {id: property}.
+ *
+ * @param {String} property The selected property
+ * @param {Object} map      Objects map
+ * @return {Object} {id: property}
+ */
+export function reduceMapToProperty(property, map) {
+  const reduced = {};
+  Object.keys(map).forEach(key => reduced[key] = map[key][property]);
+
+  return reduced;
+}
