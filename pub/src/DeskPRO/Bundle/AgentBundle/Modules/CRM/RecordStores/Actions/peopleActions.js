@@ -13,10 +13,25 @@ export const setPeopleRequest = createAction('SET_PEOPLE',             recordSto
 export const loadPeople       = createAction(
   'LOAD_PEOPLE',
   recordStoreActions.requestRecords(
-    ['Common', 'people'],
-    missingIds => new Promise((resolve, reject) =>
-      DpApi.sendGet('DP_API/people?ids=' + missingIds.toArray().join(','))
-           .success(data => resolve(Immutable.fromJS(mapKeyedFromArray(data.data, 'id'))))
-           .error(res => reject(res)))
+    ['RecordStores', 'people'],
+    missingIds => new Promise(
+      (resolve, reject) => {
+        console.error('loading people');
+        DpApi.sendGet('DP_API/people?ids=' + missingIds.toArray().join(','))
+          .success(data => resolve(Immutable.fromJS(mapKeyedFromArray(data.data, 'id'))))
+          .error(res => reject(res));
+      }
+    )
+  )
+);
+export const loadAgents       = createAction(
+  loadPeople.type,
+  recordStoreActions.createRecordsRequest(
+    ['RecordStores', 'people'],
+    'agents',
+    () => new Promise((resolve, reject) =>
+      DpApi.sendGet('DP_API/agents')
+           .success(response => resolve(response.data))
+           .error(response => reject(response)))
   )
 );

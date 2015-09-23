@@ -1,5 +1,6 @@
 import objGet from 'lodash/object/get';
 import Immutable from 'immutable';
+import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 export const MODE_APPEND = 'append';
 export const MODE_SET = 'set';
@@ -116,6 +117,47 @@ export function requestRecords(stateKey, loaderFn, defaultMode = MODE_APPEND) {
             records: records,
             ids: ids,
             mode: mode
+          });
+        }
+      })
+    };
+  };
+}
+
+/**
+ * (Action creator builder) Used to create a records request within the store. If request isn't yet loaded/created,
+ * it'll be fulfilled with records array resolved from loaderFn().
+ *
+ * @param {String}   stateKey    The key in the store that is being used for the record-store. Use an array to denote hierarchy.
+ * @param {String}   requestId   Request ID used to store the loaded records within the record-sore.
+ * @param {Function} loaderFn    Your function will accept an Immutable.Set of IDs the reqestor wants to load.
+ * @param {String}   defaultMode Specify the default mode (MODE_APPEND or MODE_SET).
+ * @return {Function} action creator
+ */
+export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode = MODE_APPEND) {
+  return (mode = defaultMode) => (dispatch, getState) => {
+    const state   = objGet(getState(), stateKey) || Immutable.fromJS({records: {}, requests: []});
+    const records = state.get('records');
+    const requests = state.get('requests');
+
+    return {
+      requestId: requestId,
+      promise: new Promise((resolve) => {
+        if (requests.has(requestId)) {
+          resolve({
+            requestId: requestId,
+            records: records,
+            ids: requests.get(requestId),
+            mode: mode
+          });
+        } else {
+          loaderFn().then(newRecords => {
+            resolve({
+              requestId: requestId,
+              records: records.merge(mapKeyedFromArray(newRecords, 'id')),
+              ids: newRecords.map(record => record.id),
+              mode: mode
+            });
           });
         }
       })
