@@ -82,14 +82,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function checkConfig()
     {
-        try {
-            return $this->em->getConnection()->connect();
-
-        } catch (\Exception $e) {
-
-        }
-
-        return false;
+        return $this->em->getConnection()->connect();
     }
 
     /**
