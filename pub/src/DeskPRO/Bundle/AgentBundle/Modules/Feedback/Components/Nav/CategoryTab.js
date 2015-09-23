@@ -4,8 +4,8 @@ import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compone
 export class CategoryTab extends React.Component {
 
   static propTypes = {
-    currentGroup: PropTypes.object.isRequired,
     customCategories: PropTypes.array.isRequired,
+    currentGroup: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired
   };
 
@@ -18,7 +18,7 @@ export class CategoryTab extends React.Component {
             <div key={index}
                  onClick={onClick.bind(this, {name:'custom_category', value:item.group})}>
               <ListItem count={item.count} label={item.group}
-                        active={currentGroup.name === 'custom_category' && currentGroup.value === item.title}
+                        active={currentGroup.name === 'custom_category' && currentGroup.value === item.group}
                 />
             </div>
         )}
