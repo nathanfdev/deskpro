@@ -23,6 +23,8 @@ services:
 
   deskpro.import:
     class: Application\ImportBundle\Service\Import
+    factory_class: Application\ImportBundle\Service\ImportFactory
+    factory_method: create
     arguments: [@service_container]
 
   deskpro.import.batch_exporter:

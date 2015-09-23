@@ -27,8 +27,9 @@
 
 namespace Application\ImportBundle\Service;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\ImporterProgressBar;
@@ -37,7 +38,9 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
+use Orb\Zip\Zip;
 
 /**
  * Class Import
@@ -61,30 +64,37 @@ class Import
     const STATUS_DONE        = 'done';
 
     /**
-     * @var DeskproContainer
-     */
-    protected $c;
-
-    /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $em;
+    protected $entity_manager;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\DataStore
+     * @var EntityRepository\DataStore
      */
-    protected $rep;
+    protected $data_store_repository;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    protected $blob_storage;
+
+    /**
+     * @var Zip
+     */
+    protected $zipper;
 
     /**
      * Constructor
      *
-     * @param DeskproContainer $container
+     * @param EntityManager      $entity_manager
+     * @param DeskproBlobStorage $blob_storage
+     * @param Zip                $zipper
      */
-    public function __construct(DeskproContainer $container)
+    public function __construct(EntityManager $entity_manager, DeskproBlobStorage $blob_storage, Zip $zipper)
     {
-        $this->c = $container;
-        $this->em = $container->getEm();
-        $this->rep = $container->getEm()->getRepository('DeskPRO:DataStore');
+        $this->entity_manager        = $entity_manager;
+        $this->blob_storage          = $blob_storage;
+        $this->data_store_repository = $this->entity_manager->getRepository('DeskPRO:DataStore');
     }
 
     /**
@@ -93,7 +103,7 @@ class Import
      */
     public function getCurrentName()
     {
-        if (!$data = $this->rep->getByName('importers.main')) {
+        if (!$data = $this->data_store_repository->getByName('importers.main')) {
             return null;
         }
 
@@ -106,14 +116,14 @@ class Import
      */
     public function setCurrentName($name)
     {
-        if (!$data = $this->rep->getByName('importers.main')) {
+        if (!$data = $this->data_store_repository->getByName('importers.main')) {
             $data = new DataStore();
             $data['name'] = 'importers.main';
-            $this->em->persist($data);
+            $this->entity_manager->persist($data);
         }
 
         $data->setData('current', $name);
-        $this->em->flush($data);
+        $this->entity_manager->flush($data);
     }
 
     /**
@@ -131,7 +141,7 @@ class Import
         }
 
         $name = 'importers.' . $id;
-        $importer = $this->rep->getByName($name);
+        $importer = $this->data_store_repository->getByName($name);
 
         if ($importer) {
            return $importer;
@@ -171,8 +181,9 @@ class Import
             $importer->setData('config', $data);
         }
 
-        $this->em->persist($importer);
-        $this->em->flush($importer);
+        $this->entity_manager->persist($importer);
+        $this->entity_manager->flush($importer);
+
         return $importer;
     }
 
@@ -226,7 +237,7 @@ class Import
         if (!$tmp = @$config['temp']) {
             $tmp = dp_get_tmp_dir().'/importer-'.time();
             $config['temp'] = $tmp;
-            $this->em->flush($importer);
+            $this->entity_manager->flush($importer);
         }
         if (!file_exists($tmp)) {
             mkdir($tmp.'/in', 0777, true);
@@ -236,19 +247,15 @@ class Import
              * copy blobs to temp dir
              */
             if (@$config['blobs']) {
-
-                $storage = $this->c->getBlobStorage();
-
                 foreach ($config['blobs'] as $blobData) {
-                    if (!$blob = $this->em->find('DeskPRO:Blob', $blobData['id'])) {
+                    if (!$blob = $this->entity_manager->find('DeskPRO:Blob', $blobData['id'])) {
                         continue;
                     }
-                    $storage->copyBlobRecordToFile($tmp.'/in/'.$blob['filename'], $blob);
+
+                    $this->blob_storage->copyBlobRecordToFile($tmp.'/in/'.$blob['filename'], $blob);
 
                     if ('application/zip' === $blob['content_type']) {
-                        /** @var \Orb\Zip\Zip $zipper */
-                        $zipper = $this->c->getSystemService('zipper');
-                        $zipper->decompressZip($tmp.'/in/'.$blob['filename'], $tmp.'/in');
+                        $this->zipper->decompressZip($tmp.'/in/'.$blob['filename'], $tmp.'/in');
                     }
                 }
             }
@@ -263,7 +270,7 @@ class Import
         }
 
         $importer->setData('config', $config);
-        $this->em->flush($importer);
+        $this->entity_manager->flush($importer);
 
         return $importer;
     }
@@ -279,7 +286,7 @@ class Import
         $importer = $this->getImporter($id);
         $importer->setData('status', $state);
         $importer->setData('updated', time());
-        $this->em->flush($importer);
+        $this->entity_manager->flush($importer);
     }
 
     /**
@@ -332,7 +339,7 @@ class Import
                 : exec("rm -rf {$tmp}");
 
             unset($readerConfigData['temp']);
-            $this->em->flush($importer);
+            $this->entity_manager->flush($importer);
         }
 
         $importer->setData('status', null);
@@ -342,7 +349,7 @@ class Import
         $importer->setData('progress_step', null);
         $importer->setData('progress_max', null);
 
-        $this->em->flush($importer);
+        $this->entity_manager->flush($importer);
     }
 
     /**
@@ -352,6 +359,6 @@ class Import
     public function createProgressBar($total_count)
     {
         $importer = $this->getImporter($this->getCurrentName());
-        return new ImporterProgressBar($importer, $this->em, $total_count);
+        return new ImporterProgressBar($importer, $this->entity_manager, $total_count);
     }
 }
