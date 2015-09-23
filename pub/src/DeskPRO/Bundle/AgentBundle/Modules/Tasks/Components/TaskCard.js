@@ -8,7 +8,7 @@ import Picker from 'anytime';
 import Moment from 'moment';
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
-import Card from '../../Application/Components/ListFrame/Card';
+import { Card } from '../../Application/Components/ListFrame/Card';
 
 const cardTarget = {
   drop(props, monitor) {
@@ -51,20 +51,20 @@ const TaskCard = React.createClass({
     require('react-onclickoutside')
   ],
 
-  handleClickOutside: function() {
+  handleClickOutside: function () {
     if (this.state.editing === true) {
       this.setState({
         editing: false
       });
 
-      const task = this.state.task;
+      const task  = this.state.task;
       task.taskId = this.props.task.id;
 
       this.props.editTask(this.props.source, task);
     }
   },
 
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       expanded: false,
       editing: false,
@@ -72,19 +72,19 @@ const TaskCard = React.createClass({
     };
   },
 
-  toggleDetails: function() {
+  toggleDetails: function () {
     this.setState({
       expanded: !this.state.expanded
     });
   },
 
-  editMode: function() {
+  editMode: function () {
     this.setState({
       editing: true
     });
   },
 
-  handleTitleChange: function(name, value) {
+  handleTitleChange: function (name, value) {
     const task = this.state.task;
     task.title = value;
     this.setState({
@@ -92,11 +92,11 @@ const TaskCard = React.createClass({
     });
   },
 
-  toggleMassAction: function() {
+  toggleMassAction: function () {
     this.props.updateMassActions(this.props.task.id);
   },
 
-  componentDidMount: function() {
+  componentDidMount: function () {
     const dueField = 'due-' + this.props.task.id;
 
     // Check if the due field actually exists before we try and add a date picker (e.g. on done tasks)
@@ -117,14 +117,14 @@ const TaskCard = React.createClass({
 
       // Change the component state and submit the edit when the date is changed
       picker.on('change', (newDate) => {
-        const task = this.state.task;
+        const task    = this.state.task;
         task.date_due = newDate ? Moment(newDate).format() : null;
         this.setState({
           task: task
         });
 
         picker.updateInput();
-        task.taskId = this.props.task.id;
+        task.taskId   = this.props.task.id;
 
         this.props.editTask(this.props.source, task);
       });
@@ -137,7 +137,7 @@ const TaskCard = React.createClass({
     });
   },
 
-  getStyles: function(props) {
+  getStyles: function (props) {
     const { isDragging } = props;
 
     return {
@@ -148,7 +148,7 @@ const TaskCard = React.createClass({
     };
   },
 
-  dueIndicator: function(due) {
+  dueIndicator: function (due) {
     const dueMoment = new Moment(due);
 
     let result = '';
@@ -166,30 +166,30 @@ const TaskCard = React.createClass({
     return result;
   },
 
-  render: function() {
+  render: function () {
     const { task,
-      projects,
-      linked_items,
-      departments,
-      teams,
-      agents,
-      source,
-      connectDragSource,
-      connectDropTarget,
-      connectDragPreview
-    } = this.props;
+            projects,
+            linked_items,
+            departments,
+            teams,
+            agents,
+            source,
+            connectDragSource,
+            connectDropTarget,
+            connectDragPreview
+            } = this.props;
 
     const selected = this.props.selected;
 
     const detailsButtonText = this.state.expanded ? 'Collapse' : 'Expand';
 
-    let ticketLink = undefined;
+    let ticketLink  = undefined;
     let ticketTitle = 'Linked ticket';
 
     if (task.linked_items.length > 0) {
       task.linked_items.forEach((item) => {
         if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
-          ticketLink = '#' + linked_items[item].ticket;
+          ticketLink  = '#' + linked_items[item].ticket;
           ticketTitle = this.props.tickets[linked_items[item].ticket].subject;
         }
       });
@@ -200,18 +200,18 @@ const TaskCard = React.createClass({
     if (task.agents.length > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.agents[0];
-      assignee = agents[agentId];
+      assignee      = agents[agentId];
     } else if (task.teams.length > 0) {
       const teamId = task.teams[0];
-      assignee = teams[teamId];
+      assignee     = teams[teamId];
     } else if (task.departments.length > 0) {
       const departmentId = task.departments[0];
-      assignee = departments[departmentId];
+      assignee           = departments[departmentId];
     }
 
     const titleClass = task.is_done ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
 
-    const dueField = 'due-' + task.id;
+    const dueField  = 'due-' + task.id;
     const dueButton = 'due-button-' + task.id;
 
     const overdue = Moment(task.date_due).isBefore();
@@ -219,82 +219,99 @@ const TaskCard = React.createClass({
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
 
     const result = (<div key={task.id}>
-        <Card statusBars
-              cardType="task"
-              doneAction={this.props.toggleDone.bind(this, task, source)}
-              task={task}>
-
-          <div className="dpm--card-checkbox" onClick={this.toggleMassAction}>
-            {selected ? <i className="fa fa-check" /> : '' }
+      <Card minimized={task.is_done} type="task">
+        {
+          task.is_done ?
+          <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized"
+               onClick={this.props.toggleDone.bind(this, task, source)}>
+            <span>Done</span>
+            <i className="fa fa-check"/>
           </div>
+            :
+          <div className="dpw--single-card-mark-done" onClick={this.props.toggleDone.bind(this, task, source)}>
+            <i className="fa fa-check"/>
+            <span>Mark Done</span>
+          </div>
+        }
+        <span>
+            <div className="dpw--card-status-bar dpw--status-bar-left level-5"/>
+            <div className="dpw--card-status-bar dpw--status-bar-right level-5"/>
+        </span>
 
-          <div className="dpw--card-line">
-            <div className="dpw--card-line-left card-title">
-              <div className={titleClass}>
-                { !this.state.editing ?
+        <div className="dpm--card-checkbox" onClick={this.toggleMassAction}>
+          {selected ? <i className="fa fa-check"/> : '' }
+        </div>
+
+        <div className="dpw--card-line">
+          <div className="dpw--card-line-left card-title">
+            <div className={titleClass}>
+              { !this.state.editing ?
                 <h1 onDoubleClick={this.editMode}>{task.title}</h1> :
-                  <Formsy.Form className="inline-form">
-                  <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange} /></h1>
-                  </Formsy.Form>
-                }
-              </div>
-            </div>
-
-            <div className="dpw--card-line-right">
-
-              {task.is_done ?
-              <div className="dpw--card-expand">
-                <a href="#" onClick={this.toggleDetails}>{detailsButtonText} <i className="fa fa-navicon" /></a>
-              </div>
-              :
-              assignee && assignee.picture_blob ?
-              <div className="dpwd--card-assigned" onClick={this.props.toggleAssignWindow.bind(this, task)}>
-                <span className="dpw--avatar-face" style={{backgroundImage: 'url(' + assignee.picture_blob.download_url + ')'}} />
-              </div> : '' }
+                <Formsy.Form className="inline-form">
+                  <h1><FRC.Input type="text" name="title" value={task.title} onChange={this.handleTitleChange}/></h1>
+                </Formsy.Form>
+              }
             </div>
           </div>
 
-          {!task.is_done || this.state.expanded ?
-          <div className="dpw--card-line">
-            <div className="dpw--card-line-left">
+          <div className="dpw--card-line-right">
+
+            {task.is_done ?
+             <div className="dpw--card-expand">
+               <a href="#" onClick={this.toggleDetails}>{detailsButtonText} <i className="fa fa-navicon"/></a>
+             </div>
+              :
+             assignee && assignee.picture_blob ?
+             <div className="dpwd--card-assigned" onClick={this.props.toggleAssignWindow.bind(this, task)}>
+               <span className="dpw--avatar-face"
+                     style={{backgroundImage: 'url(' + assignee.picture_blob.download_url + ')'}}/>
+             </div> : '' }
+          </div>
+        </div>
+
+        {!task.is_done || this.state.expanded ?
+         <div className="dpw--card-line">
+           <div className="dpw--card-line-left">
               <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'} ref={dueButton}>
-                <i className="fa fa-calendar-o" /> Due: {task.date_due ? this.dueIndicator(task.date_due) : 'N/A'}
-                <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled" />
+                <i className="fa fa-calendar-o"/> Due: {task.date_due ? this.dueIndicator(task.date_due) : 'N/A'}
+                <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled"/>
               </span>
 
-              {task.project && projects[task.project] ? <span>
-                <span className="dpw--card-disc" />
+             {task.project && projects[task.project] ? <span>
+                <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-book" /> {projects[task.project].title}
+                  <i className="fa fa-book"/> {projects[task.project].title}
                 </span>
               </span>
-              : ''}
+               : ''}
 
-              {ticketLink ? <span>
-                <span className="dpw--card-disc" />
+             {ticketLink ? <span>
+                <span className="dpw--card-disc"/>
 
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-link" /> <a href={ticketLink}>{ticketTitle}</a>
+                  <i className="fa fa-link"/> <a href={ticketLink}>{ticketTitle}</a>
                 </span>
               </span> : ''}
-            </div>
+           </div>
 
-            <div className="dpw--card-line-right">
+           <div className="dpw--card-line-right">
               <span className="dpwd--card-line-item">
-                {task.comment_count} <i className="fa fa-comment" />
+                {task.comment_count} <i className="fa fa-comment"/>
               </span>
 
-              {task.subtasks_total > 0 ?
-                <span className="dpwd--card-line-item">
-                  <div><span className="dpw--card-disc" /> {task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/></div>
+             {task.subtasks_total > 0 ?
+              <span className="dpwd--card-line-item">
+                  <div><span className="dpw--card-disc"/> {task.subtasks_done}/{task.subtasks_total} <i
+                    className="fa fa-folder-open"/></div>
                 </span>
-              : ''}
-            </div>
-          </div>
+               : ''}
+           </div>
+         </div>
           : '' }
-        </Card>
-        <div className={placeHolder} />
-      </div>);
+      </Card>
+
+      <div className={placeHolder}/>
+    </div>);
 
     if (this.props.order === 'list') {
       return connectDragSource(connectDropTarget(result));

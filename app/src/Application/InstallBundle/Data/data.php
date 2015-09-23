@@ -7,13 +7,15 @@
 ################################################################################
 
 ##BEGIN:locale.language##
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `languages`
         (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`, `has_agent`, `has_admin`)
     VALUES
         (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1)
     ;
-");
+"
+);
 
 ################################################################################
 # Departments
@@ -117,19 +119,34 @@ if (!$IMPORT_INSTALL) {
 # Feedback
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
 INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
 (1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
 (2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
 (3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
-");
+"
+);
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `labels_feedback` (`feedback_id`, `label`) VALUES
+(1, 'label1'),
+(1, 'label2'),
+(2, 'label1'),
+(3, 'another');
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
 INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
 (1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1);
-");
+"
+);
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
 INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
 (1, 'active', 'Gathering Feedback', 0),
 (2, 'active', 'Planning', 0),
@@ -138,9 +155,11 @@ INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display
 (5, 'closed', 'Completed', 0),
 (6, 'closed', 'Duplicate', 0),
 (7, 'closed', 'Declined', 0);
-");
+"
+);
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
 INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`) VALUES
 (1, 5, 1, 1, NULL, 'validating', NULL, 0, 'example-suggestion', 'Example Suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-08-13 11:33:33', '2015-08-13 11:33:33'),
 (2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-08-01 00:00:00', NULL),
@@ -149,15 +168,18 @@ INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, 
 (5, 1, 1, 1, NULL, 'spam', NULL, 0, 'Test feedback 4', 'Slug to feedback 4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL),
 (6, 5, 1, 1, NULL, 'validating', NULL, 0, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-08-05 00:00:00', NULL),
 (7, 1, 2, 1, NULL, 'validating', NULL, 15, 'Test feedback 6', 'Slug to feedback 6', 'I''m trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (it''s the client''s wish, and I can''t change that.)', 0, 3, 0, 1, 'new', '2015-08-10 00:00:00', NULL);
-");
+"
+);
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
 INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`) VALUES
 (1, 1, 1, NULL, 0, 'Windows'),
 (2, 2, 1, NULL, 0, 'Linux'),
 (3, 3, 1, NULL, 0, 'Linux'),
 (4, 4, 1, NULL, 0, 'Mac');
-");
+"
+);
 
 ################################################################################
 # Portal Blocks
@@ -282,7 +304,8 @@ $em->flush();
 
 // Permissions for ND group
 $ugid = $AGENTGROUP_ALL_ND->getId();
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `permissions` (`usergroup_id`, `person_id`, `value`, `name`)
     VALUES
         ($ugid, NULL, '1', 'agent_tickets.use'),
@@ -366,7 +389,8 @@ $em->getConnection()->executeUpdate("
         ($ugid, NULL, '1', 'agent_publish.validate'),
         ($ugid, NULL, '1', 'agent_general.signature'),
         ($ugid, NULL, '1', 'agent_general.signature_rte')
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: People
@@ -408,20 +432,23 @@ $em->flush();
 # TEMPORARY TEST DATA: Organizations
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `organizations`
         (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
     VALUES
         (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
         (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00')
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: Groups
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `usergroups`
         (`title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
     VALUES
@@ -441,13 +468,15 @@ $em->getConnection()->executeUpdate("
         (3, 3),
         (4, 4)
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: Chats
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `chat_conversations`
         (`department_id`, `agent_id`, `subject`, `status`, `person_name`, `person_email`, `rating_comment`,
          `is_agent`, `is_window`, `date_created`, `should_send_transcript`, `total_to_ended`, `ended_by`)
@@ -460,13 +489,15 @@ $em->getConnection()->executeUpdate("
         (2, 2, 'Test chat 4', 'test', 'test', 'test', '', 1, 1, '2015-08-04 10:19:00', 1, 1, 'test'),
         (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: Articles, News, Downloads and their Categories
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `articles`
         (`id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
          `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
@@ -570,13 +601,15 @@ $em->getConnection()->executeUpdate("
         (7, 2, 3, '7', 'Test Download #7', 'Test Download #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL, 0),
         (8, 9, 3, '8', 'Test Download #8', 'Test Download #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00', 0)
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: Glossary
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `glossary_word_definitions`
         (`id`, `definition`)
     VALUES
@@ -590,26 +623,30 @@ $em->getConnection()->executeUpdate("
         (1, 1, 'Word 1'),
         (2, 1, 'Word 2')
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: ArticlePendingCreate
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `article_pending_create`
         (`person_id`, `ticket_id`, `ticket_message_id`, `comment`, `date_created`, `assigned_person_id`)
     VALUES
         (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
         (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: Comments
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `article_comments`
         (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
     VALUES
@@ -633,24 +670,28 @@ $em->getConnection()->executeUpdate("
         (2, 1, 2, '', NULL, NULL, NULL, 'Download comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
         (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: Blobs
 ################################################################################
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `blobs`
         (`id`, `original_blob_id`, `sys_name`, `storage_loc`, `storage_loc_pref`, `storage_loc_specific`, `save_path`, `file_url`, `filename`, `filesize`, `content_type`, `authcode`, `blob_hash`, `is_media_upload`, `title`, `dim_w`, `dim_h`, `date_created`, `is_temp`)
     VALUES
         (1, NULL, NULL, 'db', NULL, NULL, '1/1WCRRCQJQMCXWXMJ0', NULL, 'app_256.png', 55189, 'image/png', '1WCRRCQJQMCXWXMJ0', '9ace9725e1eddb81702043db2522374c', 0, '', 256, 256, '2015-07-07 11:11:47', 0);
-");
+"
+);
 
 
 ################################################################################
 # TEMPORARY TEST DATA: Projects
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `task_projects`
         (`id`, `title`)
     VALUES
@@ -678,13 +719,15 @@ $em->getConnection()->executeUpdate("
         (2, NULL, 1, NULL, 2),
         (3, NULL, NULL, 1, 3)
     ;
-");
+"
+);
 
 ################################################################################
 # TEMPORARY TEST DATA: Tasks
 ################################################################################
 
-$em->getConnection()->executeUpdate("
+$em->getConnection()->executeUpdate(
+    "
     INSERT INTO `tasks_new`
         (`id`, `creator_person_id`, `project_id`, `list_id`, `title`, `percent_complete`, `date_created`, `task_type`, `date_due`, `date_event_start`, `date_event_end`, `visibility`, `urgency`, `is_done`, `date_done`, `display_order`)
     VALUES
@@ -760,5 +803,6 @@ $em->getConnection()->executeUpdate("
         (1, 1, 1, NULL, NULL),
         (2, 2, NULL, NULL, 1)
     ;
-");
+"
+);
 
