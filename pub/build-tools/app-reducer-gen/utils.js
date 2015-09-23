@@ -8,13 +8,13 @@ var sprintf = require("sprintf-js").sprintf;
  * Read all reducers in XyzBundle app dir
  *
  * @param {String} appName       The app name ('Xyz' in 'XyzBundle')
- * @param {String} bundlepath    The full path to the bundle
+ * @param {String} bundlePath    The full path to the bundle
  * @param {Array}  readReducers  An array that will contain the files read
  */
 function handleBundle(appName, bundlePath, readReducers) {
   var iter = function(moduleName, modulePath, pathParts) {
-    var files = glob.sync('')
-  }
+    var files = glob.sync('');
+  };
 
   /*
     hierarchy is:
@@ -35,7 +35,7 @@ function handleBundle(appName, bundlePath, readReducers) {
     readReducers = [];
   }
 
-  glob.sync("**/Modules/*/", { cwd: bundlePath, root: bundlePath }).forEach(function(d) {
+  glob.sync('{**/Modules/*/,**/Modules/*/RecordStores/}', { cwd: bundlePath, root: bundlePath }).forEach(function(d) {
     var modulePath = bundlePath + '/' + d;
     var moduleName = path.basename(modulePath);
 
