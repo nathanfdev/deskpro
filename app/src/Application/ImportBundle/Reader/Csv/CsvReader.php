@@ -69,7 +69,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
         );
 
         if ( ! is_dir($this->config->getPath())) {
-            return false;
+            throw new \RuntimeException(sprintf('`%s` is not a directory', $this->config->getPath()));
         }
 
         foreach ($primary_files as $file) {
@@ -80,12 +80,18 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
             } catch (NotFoundException $e) {
                 // File not found, continue...
 
-            } catch (\Exception $e) {
-                return false;
             }
         }
 
-        return false;
+        throw new \RuntimeException(sprintf(
+            'No required files found in directory `%s`. Expected one of %s.',
+            $this->config->getPath(), implode(', ', array_map(
+                function($file) {
+                    return '`' . $file . '`';
+                },
+                $primary_files
+            ))
+        ));
     }
 
     /**
