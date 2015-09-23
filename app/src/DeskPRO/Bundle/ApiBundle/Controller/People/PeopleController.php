@@ -82,7 +82,6 @@ class PeopleController extends BaseController implements ClassResourceInterface
      * )
      * @Get("/people", name="api_people")
      * @param Request $request
-     * @todo perhaps we need some method to take all agents just in one touch
      * @return View
      */
     public function cgetAction(Request $request)
@@ -109,6 +108,26 @@ class PeopleController extends BaseController implements ClassResourceInterface
 
         return View::create(
             $this->DataSerialize($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get a list of all agents w/o pagination",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/agents", name="api_agents")
+     * @return View
+     */
+    public function getAllAgentsAction()
+    {
+        $agents = $this->getRepository(Person::class)->findBy(['is_agent' => true]);
+
+        return View::create(
+            $this->DataSerialize($agents),
             Response::HTTP_OK
         );
     }
