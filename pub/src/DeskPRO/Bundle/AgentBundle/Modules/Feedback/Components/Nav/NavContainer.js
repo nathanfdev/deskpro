@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions'
 import { Nav } from './Nav';
 import $ from "jquery";
-import { sortingDataSelector } from '../../Selectors/list';
-import { filterDataSelector } from '../../Selectors/list';
+import { sortingDataSelector, filterDataSelector } from '../../Selectors/list';
+import { groupDataSelector } from '../../Selectors/nav';
 
 @connect(state => {
   return ({
@@ -13,10 +13,8 @@ import { filterDataSelector } from '../../Selectors/list';
     types: state.Feedback.nav.get('types').toJS(),
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
-    order: state.Feedback.list.get('order'),
-    filters: state.Feedback.list.get('filters'),
-    currentSortMode: sortingDataSelector(state),
-    currentFilterMode: filterDataSelector(state)
+    currentFilterMode: filterDataSelector(state),
+    currentGroup: groupDataSelector(state)
   });
 })
 
@@ -41,26 +39,26 @@ export class NavContainer extends React.Component {
   }
 
   render() {
+    const {statuses, toValidateCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
+
     return (
       <Nav
-        toValidateCount={this.props.toValidateCount}
+        toValidateCount={toValidateCount}
+        dispatch={dispatch}
+        statuses={statuses}
+        labels={labels}
+        types={types}
+        customCategories={customCategories}
+        currentGroup={currentGroup}
         groupChoice={this.groupChoice.bind(this)}
-        dispatch={this.props.dispatch}
-        statuses={this.props.statuses}
-        labels={this.props.labels}
-        types={this.props.types}
-        customCategories={this.props.customCategories}
         />
     );
   }
 
-
-  groupChoice(params, event) {
+  groupChoice(group, event) {
     event.preventDefault();
     event.stopPropagation();
-    $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
-    $(event.target).closest('a').addClass('active');
     const {dispatch } = this.props;
-    dispatch(actions.changeQueryState(params));
+    dispatch(actions.changeGroupState(group));
   }
 }

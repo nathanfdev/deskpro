@@ -260,11 +260,6 @@ class FeedbackDataService extends AbstractDataService
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            /*->select('f.id', 'f.status', 'f.hidden_status', 'statusCategory.id as status_category_id',
-                'category.title as type', 'person.name as author_name', 'language.id as language_id', 'f.title', 'f.slug',
-                'f.date_created', 'f.date_published', 'f.view_count', 'f.total_rating', 'f.num_ratings', 'f.num_comments',
-                'f.validating', 'f.popularity', 'f.content', 'customCat.input as custom_category')
-            */
             ->select('f')
             ->from('DeskPRO:Feedback', 'f')
             ->leftJoin('f.status_category', 'statusCategory')

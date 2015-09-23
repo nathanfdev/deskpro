@@ -1,17 +1,16 @@
 import { createAction } from "Ampliflux";
 import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
-import { sortingDataSelector } from '../Selectors/list';
-import { filterDataSelector } from '../Selectors/list';
+import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
+import { groupDataSelector } from '../Selectors/nav';
 
 export const loadFeedbackList = createAction(
   "FEEDBACK_LIST",
   (overwriteParams = {}) => (dispatch, getState)=> {
     const state             = getState();
     const feedbackListState = state.Feedback.list.toJS();
-    const feedbackNavState  = state.Feedback.nav.toJS();
     const currentParams     = {
-      query: feedbackNavState.query,
+      group: groupDataSelector(state),
       sort: sortingDataSelector(state).field,
       filters: filterDataSelector(state).field,
       order: feedbackListState.order
@@ -58,12 +57,12 @@ export const feedbackHiddenStatus = createAction(
   "FEEDBACK_HIDDEN_STATUS",
   () => dispatch => Feedback.getHidden().then(value => value.getData()));
 
-export const changeQueryState = createAction(
-  "FEEDBACK_CHANGE_QUERY",
-    query =>   dispatch => {
-      dispatch(loadFeedbackList({query: query}));
-      return query;
-    }
+export const changeGroupState = createAction(
+  "FEEDBACK_CHANGE_GROUP",
+    group =>   dispatch => {
+    dispatch(loadFeedbackList({group: group}));
+    return group;
+  }
 );
 
 export const getFilterValues = createAction(
@@ -71,20 +70,9 @@ export const getFilterValues = createAction(
   (filterName) => dispatch => Feedback.getFilterValues(filterName).then(value => value.getData())
 );
 
-export const setFilterValue = createAction(
-  "FEEDBACK_SET_FILTER_VALUE",
-  (trigger, filter, value) => dispatch =>    trigger({filter: filter, value: value})
-);
-
 export const resetFilterValue = createAction(
   "FEEDBACK_RESET_FILTER_VALUE"
 );
-
-export const resetFilters = createAction(
-  "FEEDBACK_RESET_FILTERS",
-  (trigger, filterAlias, filterName) => {
-    trigger({alias: filterAlias, name: filterName, value: ''});
-  });
 
 export const setTableSort = createAction(
   "FEEDBACK_SET_TABLE_SORT",
@@ -108,7 +96,7 @@ export const toggleOrder = createAction(
 
 export const toggleSort = createAction(
   "FEEDBACK_TOGGLE_SORT",
-  sort =>  dispatch => {
+    sort =>  dispatch => {
     dispatch(loadFeedbackList({sort: sort}));
     return sort;
   }
@@ -126,10 +114,23 @@ export const getDisplayFieldsFromPersonSetting = createAction(
     Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(value => value.getData())
   });
 
+
+/** @ToDo migrate to Ampliflux v2 after FilterBy block design */
+export const setFilterValue = createAction(
+  "FEEDBACK_SET_FILTER_VALUE",
+  (trigger, filter, value) => dispatch => trigger({filter: filter, value: value})
+);
+
 export const changeDisplayFieldsStatus = createAction(
   "FEEDBACK_DISPLAY_FIELD_STATUS",
   (trigger, type, field, status, query, sort, order, filters, listViewFields, tableViewFields) => {
     trigger({type: type, field: field, status: status});
     trigger(storeDisplayFieldsToPersonSetting([{listViewFields: listViewFields, tableViewFields: tableViewFields}]));
     trigger(loadFeedbackList());
+  });
+
+export const resetFilters = createAction(
+  "FEEDBACK_RESET_FILTERS",
+  (trigger, filterAlias, filterName) => {
+    trigger({alias: filterAlias, name: filterName, value: ''});
   });

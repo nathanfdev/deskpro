@@ -128,13 +128,16 @@ export function getDisplayFieldsFromPersonSetting(settingName) {
  */
 export function getList(params) {
   let paramsEncoded = [];
-  paramsEncoded.push(compileParams(params.query));
   paramsEncoded.push('sort=' + params.sort);
   paramsEncoded.push('order=' + params.order);
+  console.log(params.group);
+  if(params.group){
+    paramsEncoded.push(params.group.name + '=' + String(params.group.value).replace(/\s/g, "%20"));
+  }
   if (params.filters.value && params.filters.value.length > 0) {
     paramsEncoded.push(params.filters.alias + '=' + params.filters.value.replace(/\s/g, "%20"));
   }
-  //console.log('DP_API/feedback/?' + paramsEncoded.join('&'));
+  console.log('DP_API/feedback/?' + paramsEncoded.join('&'));
   return DpApi.sendGet('DP_API/feedback/?' + paramsEncoded.join('&'));
 }
 /**
