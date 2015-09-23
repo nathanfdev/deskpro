@@ -3220,9 +3220,11 @@ class TicketController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
         if ($other_ticket_id) {
-            $other_ticket = $this->getTicketOr404($other_ticket_id, 'modify_merge');
+            $other_ticket = $this->getTicketOr404($other_ticket_id, 'view');
             $other_custom_fields = $field_manager->getDisplayArrayForObject($other_ticket);
+            $can_merge = $this->person->PermissionsManager->TicketChecker->canMerge($ticket, $other_ticket);
         } else {
+            $can_merge = null;
             $other_ticket = false;
             $other_custom_fields = false;
         }
@@ -3231,7 +3233,8 @@ class TicketController extends AbstractController
             'ticket' => $ticket,
             'custom_fields' => $custom_fields,
             'other_ticket' => $other_ticket,
-            'other_custom_fields' => $other_custom_fields
+            'other_custom_fields' => $other_custom_fields,
+            'can_merge' => $can_merge
         ));
     }
 

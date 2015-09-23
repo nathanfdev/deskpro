@@ -50,6 +50,10 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
               })
             $main.intlTelInput('utilsLoaded')
             $main.bind('blur keyup change input', () ->
+                raw_input = $main.val().split(" ext. ");
+                if (raw_input.length > 1 && raw_input[1].length == 0)
+                  $main.val(raw_input[0])
+
                 $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')}
               )
 
