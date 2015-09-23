@@ -137,8 +137,6 @@ final class Tickets extends AbstractParser
             'messages'    => TransformerInterface::TYPE_ARRAY,
         ));
 
-        $this->tickets_people->loadBy($formatted);
-
         $entity = new Entity\Ticket();
         $entity
             ->setRawData($data)
@@ -227,8 +225,6 @@ final class Tickets extends AbstractParser
             'created'     => TransformerInterface::TYPE_DATE,
             'body'        => TransformerInterface::TYPE_STRING,
         ));
-
-        $this->tickets_people->loadBy($formatted);
 
         $entity = new Entity\TicketMessage();
         $entity
@@ -361,6 +357,7 @@ final class Tickets extends AbstractParser
 
         } while (count($batch) > 0);
 
+        $this->tickets_people->loadBy($tickets);
         return $tickets;
     }
 }

@@ -38,12 +38,28 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
      */
     protected function getPeopleIds($data)
     {
-        $user_id  = $data['user_id'];
-        $staff_id = $data['staff_id'];
+        $people_ids = array();
 
-        return array(
-            'user_' . $user_id   => $user_id,
-            'staff_' . $staff_id => $staff_id,
-        );
+        foreach ($data as $ticket) {
+            if (isset($ticket['user_id']) && $ticket['user_id'] > 0) {
+                $people_ids['user_' . $ticket['user_id']] = $ticket['user_id'];
+            }
+            if (isset($ticket['staff_id']) && $ticket['staff_id'] > 0) {
+                $people_ids['staff_' . $ticket['staff_id']] = $ticket['staff_id'];
+            }
+
+            if ( ! empty($ticket['messages'])) {
+                foreach ($ticket['messages'] as $message) {
+                    if (isset($message['user_id']) && $message['user_id'] > 0) {
+                        $people_ids['user_' . $message['user_id']] = $message['user_id'];
+                    }
+                    if (isset($message['staff_id']) && $message['staff_id'] > 0) {
+                        $people_ids['staff_' . $message['staff_id']] = $message['staff_id'];
+                    }
+                }
+            }
+        }
+
+        return array_unique($people_ids);
     }
 }
