@@ -84,6 +84,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
     protected $importance = 0;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -220,7 +221,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * Find an existing data record for a field id.
      *
      * @param int $field_id
-     *
      * @return CustomDataOrganization
      */
     public function getCustomDataForField($field_id)
@@ -252,19 +252,27 @@ class Organization extends DomainObject implements HighlightableModelInterface
      */
     public function addContactData(OrganizationContactData $contact_data)
     {
-        $em = App::getOrm();
-
         $this['contact_data']->add($contact_data);
-
         $contact_data['organization'] = $this;
-        $em->persist($contact_data);
+
         $this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
+    }
+
+    /**
+     * Reset contact data
+     * todo add onPropertyChanged() if change tracking is needed
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        $this->contact_data->clear();
+        return $this;
     }
 
     /**
      * @param null $type
      *
-     * @return array
+     * @return Entity\OrganizationContactData[]
      */
     public function getContactData($type = null)
     {
@@ -282,6 +290,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
         return $ret;
     }
+
 
     public function removeCustomDataForField(CustomDefOrganization $field)
     {
@@ -345,6 +354,17 @@ class Organization extends DomainObject implements HighlightableModelInterface
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
         return $custom_data;
+    }
+
+    /**
+     * Reset custom data
+     * todo add onPropertyChanged() if change tracking is needed
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+        return $this;
     }
 
     /**
@@ -424,6 +444,18 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Set organization picture
+     *
+     * @param Blob|null $blob
+     * @return $this
+     */
+    public function setPicture(Blob $blob = null)
+    {
+        $this->setModelField('picture_blob', $blob);
+        return $this;
+    }
+
+    /**
      * Gets the URL to a picture for the org. If there is no picture for the org, a default one
      * will be rendered. Use hasPicture if you need to know if a picture exists.
      *
@@ -489,6 +521,29 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+        return $this;
+    }
+
+    /**
+     * @return Entity\LabelOrganization[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
      * Add a label.
      *
      * @param Entity\LabelOrganization $label
@@ -507,6 +562,18 @@ class Organization extends DomainObject implements HighlightableModelInterface
         }
 
         return $this->_label_manager;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
     }
 
     public function __toString()
@@ -555,7 +622,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * Get Elasticsearch highlight data.
      *
      * @param null $field
-     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)

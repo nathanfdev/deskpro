@@ -1424,7 +1424,7 @@ class Arrays
      * </code>
      *
      * @param int $num The nth key to get (starts from 0)
-     *
+
      * @return mixed NULL if the nth item doesn't exist
      */
     public static function getNthItem($array, $num = 0)
@@ -1435,8 +1435,8 @@ class Arrays
             return;
         }
 
-        return $array[$k];
-    }
+
+
 
     /**
      * Get the first key of an array.
@@ -1478,7 +1478,7 @@ class Arrays
      * Get the last item of an array.
      *
      * @param array $array
-     *
+
      * @return mixed
      */
     public static function getLastItem($array)
@@ -1542,7 +1542,7 @@ class Arrays
      * @param array $keys  The keys to search for
      * @param array $array The array to search in
      * @param bool  $all   Search for all (true) or just any (false)
-     *
+
      * @return bool
      */
     public static function isKeyIn($keys, $array, $all = false)
@@ -1563,7 +1563,7 @@ class Arrays
                     return false;
                 }
             }
-        }
+
 
         if ($all) {
             return true;
@@ -1629,7 +1629,7 @@ class Arrays
      * @param array    $array
      * @param callback $callback
      * @param mixed    $default
-     *
+
      * @return mixed
      */
     public static function findKey($array, $callback, $default = null)
@@ -1669,14 +1669,14 @@ class Arrays
      *
      * @param array $array     The array to work on
      * @param int   $dupe_mode What to do when a lowercased key already exists (i.e., MyKey and mykey were in the original array)
-     *
+
      * @return array
      */
     public static function lowercaseKeys($array, $dupe_mode = LOWERKEY_DUPE_OVERWRITE)
     {
         foreach ($array as $key => $value) {
-            $lower_key = strtowloer($key);
-            if ($lower_key == $key) {
+
+
                 continue;
             } // already lowercase
 
@@ -1735,7 +1735,7 @@ class Arrays
      * data would generate the same hash.
      *
      * @param array $array
-     *
+
      * @return string
      */
     public static function generateHash(array $array, $keys_significant = true)
@@ -2018,7 +2018,7 @@ class Arrays
      * @param array $array
      * @param int   $page
      * @param int   $per_page
-     *
+
      * @return array
      */
     public static function getPageChunk(array $array, $page, $per_page)
@@ -2038,8 +2038,8 @@ class Arrays
             return array();
         }
 
-        return array_slice($array, $start, $per_page);
-    }
+
+
 
     /**
      * Use a key in an array of arrays as a grouping variable.
@@ -2069,7 +2069,7 @@ class Arrays
      * @param string   $group_key        The key in the array that serves as the grouping value
      * @param bool     $preserve_keys    True to preserve keys when grouping
      * @param callback $mutator_callback A callback function to call on the group to normalize the group value
-     *
+
      * @return array
      */
     public static function groupItems($array, $group_key, $preserve_keys = false, $mutator_callback = null)
@@ -2360,7 +2360,7 @@ class Arrays
      *
      * @param array    $array
      * @param callback $fn
-     *
+
      * @return array
      */
     public static function filter(array $array, $fn)

@@ -76,7 +76,6 @@ class NewTicket extends AbstractType
         $builder->add('billing_hours', 'hidden', array('required' => false));
         $builder->add('billing_minutes', 'hidden', array('required' => false));
         $builder->add('billing_seconds', 'hidden', array('required' => false));
-        $builder->add('billing_comment', 'hidden', array('required' => false));
 
         $builder->add('add_cc_person', 'collection', array(
             'type'         => 'hidden',

@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperInterface;
 use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Psr\Log\LoggerInterface;
@@ -58,6 +59,11 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private $logger;
 
     /**
+     * @var bool
+     */
+    private $was_request = false;
+
+    /**
      * Constructor
      *
      * @param API\Client      $client
@@ -74,41 +80,19 @@ final class RequestClientAdapter implements RequestAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function doPeopleIncrementalExportRequest(array $params = array())
+    public function doRequest($helper_class, array $params = array())
     {
-        return $this->doRequest(new ClientHelper\PeopleIncrementalExport($params));
-    }
+        $helper_class = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\' . $helper_class;
+        if ( ! class_exists($helper_class)) {
+            throw new \RuntimeException(sprintf('ZenDesk reader helper class `%s` not found', $helper_class));
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function doPeopleFindRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\PeopleFind($params));
-    }
+        $helper = new $helper_class($params);
+        if ( ! $helper instanceof ClientHelperInterface) {
+            throw new \RuntimeException('Helper is not instance of ClientHelperInterface');
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function doOrganizationFindRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\OrganizationFind($params));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketsIncrementalExportRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\TicketsIncrementalExport($params));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketCommentsFindAllRequest(array $params = array())
-    {
-        return $this->doRequest(new ClientHelper\TicketCommentsFindAll($params));
+        return $this->doApiRequest($helper);
     }
 
     /**
@@ -122,11 +106,15 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
+    private function doApiRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);
-            return $request->request($this->client);
+
+            $response = $request->request($this->client);
+            $this->was_request = true;
+
+            return $response;
 
         } catch (API\ResponseException $e) {
             if ($this->client->getDebug()) {
@@ -156,6 +144,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
                             $timeout
                         );
 
+                    case ZenDeskReaderInterface::CODE_NOT_FOUND:
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do
 
@@ -180,6 +169,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
             return $this->retry($request, $retry_attempt, $e);
         }
 
+        $this->was_request = true;
         return null;
     }
 
@@ -198,13 +188,23 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
     {
-        if ($retry_attempt++ < 4) {
+        // Retry attempt timeouts (in seconds)
+        $retry_timeouts = array(2, 5, 10, 30);
+
+        if ($this->was_request && $retry_attempt++ < 10) {
+            if ($timeout < 1) {
+                $timeout = isset($retry_timeouts[$retry_attempt]) ? $retry_timeouts[$retry_attempt] : 60;
+            }
             if ($this->logger) {
-                $this->logger->error("Retry api request, attempt = $retry_attempt.");
+                $this->logger->error(sprintf(
+                    "Retry api request, attempt = %d, timeout = %d.",
+                    $retry_attempt, $timeout
+                ));
             }
 
-            sleep($timeout > 0 ? $timeout : 2 + $retry_attempt);
-            return $this->doRequest($request, $retry_attempt);
+            sleep($timeout);
+
+            return $this->doApiRequest($request, $retry_attempt);
         }
 
         throw $exception;

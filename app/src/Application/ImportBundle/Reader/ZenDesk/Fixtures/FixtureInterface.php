@@ -62,7 +62,7 @@ interface FixtureInterface
      * @param DateTime $initial_time
      * @param DateTime $end_time
      *
-     * @return bool
+     * @return void
      * @throws \Zendesk\API\ResponseException
      */
     public function create($offset, DateTime $initial_time, DateTime $end_time);

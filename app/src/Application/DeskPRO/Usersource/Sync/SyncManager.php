@@ -76,13 +76,19 @@ class SyncManager implements SyncerInterface
      */
     private $um;
 
-    public function __construct(array $syncers, EntityManager $em, JobQueue $queue, UsersourceManager $um)
+    /**
+     * @var SyncerHelper
+     */
+    private $sync_helper;
+
+    public function __construct(array $syncers, EntityManager $em, JobQueue $queue, UsersourceManager $um, SyncerHelper $sync_helper)
     {
         $this->syncers = $syncers;
         $this->log_repo = $em->getRepository('DeskPRO:UsersourceSyncLog');
         $this->em = $em;
         $this->queue = $queue;
         $this->um = $um;
+        $this->sync_helper = $sync_helper;
     }
 
     /**
@@ -116,7 +122,7 @@ class SyncManager implements SyncerInterface
         return false;
     }
 
-    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         if ($this->isSyncable($usersource) && $syncer = $this->getSyncerForUsersource($usersource)) {
             return $syncer->refreshAll($usersource, $cursor, $pause_check);
@@ -331,5 +337,21 @@ class SyncManager implements SyncerInterface
         } else {
             $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array());
         }
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEm()
+    {
+        return $this->em;
+    }
+
+    /**
+     * @return SyncerHelper
+     */
+    public function getSyncHelper()
+    {
+        return $this->sync_helper;
     }
 }

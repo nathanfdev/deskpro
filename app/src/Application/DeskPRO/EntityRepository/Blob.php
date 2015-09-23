@@ -89,4 +89,36 @@ class Blob extends AbstractEntityRepository
     {
         return $this->findOneBy(array('sys_name' => $sys_name));
     }
+
+    /**
+     * Counts rows in blobs_storage that have no parent blob existing.
+     * Note: intensive.
+     *
+     * @return int
+     */
+    public function countDanglingBlobStorageRows()
+    {
+        return $this->_em->getConnection()->fetchColumn("
+            SELECT COUNT(*)
+            FROM blobs_storage
+            LEFT JOIN blobs ON blobs.id = blobs_storage.blob_id
+            WHERE blobs.id IS NULL
+        ");
+    }
+
+    /**
+     * DELETE's rows in blob_storage that have no parent blob record.
+     * Note: intensive.
+     *
+     * @return int
+     */
+    public function cleanDanglingBlobStorageRows()
+    {
+        return $this->_em->getConnection()->executeUpdate("
+            DELETE blobs_storage
+            FROM blobs_storage
+            LEFT JOIN blobs ON blobs.id = blobs_storage.blob_id
+            WHERE blobs.id IS NULL
+        ");
+    }
 }

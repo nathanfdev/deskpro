@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * The abstract controller sets up some default objects.
@@ -88,7 +89,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * @param string $name
      * @param string $field_name
-     *
      * @return bool
      */
     public function checkRequestToken($name = '', $field_name = '_dp_security_token')
@@ -138,6 +138,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->checkRequestToken('request_token', '_rt');
     }
 
+
     /**
      * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
      * returns true.
@@ -170,6 +171,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return true;
     }
 
+
     /**
      * Just like checkRequestToken but this shows an error for you if its bad.
      *
@@ -183,6 +185,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
     }
 
+
     /**
      * Just like checkRequestToken but this shows an error for you if its bad.
      *
@@ -194,12 +197,12 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->ensureRequestToken('request_token', '_rt');
     }
 
+
     /**
      * Checks a request token $token.
      *
      * @param string $name
      * @param string $token
-     *
      * @return bool
      */
     public function checkAuthToken($name, $token)
@@ -210,6 +213,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         return $this->session->getEntity()->checkSecurityToken($name, $token);
     }
+
 
     /**
      * Just like checkAuthToken but this shows an error for you if its bad.
@@ -224,6 +228,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
     }
 
+
     /**
      * Just enables 'smart view resoltion' when the at sign is used.
      *
@@ -234,7 +239,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      * @param string                                     $view
      * @param array                                      $parameters
      * @param \Symfony\Component\HttpFoundation\Response $response
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function render($view, array $parameters = array(), Response $response = null)
@@ -292,7 +296,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * @param bool                  $has_just_logged_out
      * @param AuthInterfaceSettings $authInterfaceSettings
-     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function checkAuthSystemForResponse(
@@ -306,7 +309,16 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-                $return = $this->request->getReturnParam();
+                if (!$return = $this->request->getReturnParam()) {
+                    try {
+                        $return = $this->generateUrl(
+                            $this->request->attributes->get('_route'),
+                            $this->request->attributes->get('_route_params'),
+                            UrlGeneratorInterface::ABSOLUTE_URL);
+                    } catch (\Exception $e) {
+                        $return = null;
+                    }
+                }
                 $this->session->set('auth_return', $return);
                 $this->session->save();
 

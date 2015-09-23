@@ -1,4 +1,29 @@
 <?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at https://www.deskpro.com/eula/                            |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
 
 namespace Application\ImportBundle\Entity;
 
@@ -160,20 +185,20 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setStatus($status)
     {
-        $this->status = $status;
+        $this->status = $status ? : 'hidden.' . ContentAbstract::HIDDEN_STATUS_UNPUBLISHED;
         return $this;
     }
 
     /**
-     * Checks if status is valid
+     * Returns a list of available statuses
      *
-     * @return bool
+     * @return array
      */
-    public function isStatusValid()
+    public static function getValidStatuses()
     {
         $hidden_prefix = 'hidden.';
 
-        $statuses = array(
+        return array(
             ContentAbstract::STATUS_PUBLISHED,
             ContentAbstract::STATUS_ARCHIVED,
             ContentAbstract::STATUS_HIDDEN,
@@ -186,8 +211,16 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             $hidden_prefix . ContentAbstract::HIDDEN_STATUS_DRAFT,
             $hidden_prefix . ContentAbstract::HIDDEN_STATUS_TEMP,
         );
+    }
 
-        return in_array($this->status, $statuses, true);
+    /**
+     * Checks if status is valid
+     *
+     * @return bool
+     */
+    public function isStatusValid()
+    {
+        return in_array($this->status, static::getValidStatuses(), true);
     }
 
     /**
@@ -286,7 +319,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     /**
      * {@inheritdoc}
      */
-    public function setDatePublished(DateTime $date_published)
+    public function setDatePublished(DateTime $date_published = null)
     {
         $this->date_published = $date_published;
         return $this;
@@ -309,7 +342,9 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
                 'pattern' => '/^[a-z0-9-]+$/',
             )))
 
-            ->addGetterConstraint('statusValid', new Constraints\True())
+            ->addGetterConstraint('statusValid', new Constraints\True(array(
+                'message' => sprintf('Value is not valid, use one of (%s): ', implode(', ', self::getValidStatuses()))
+            )))
         ;
     }
 }

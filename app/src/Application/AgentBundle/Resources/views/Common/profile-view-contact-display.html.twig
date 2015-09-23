@@ -50,14 +50,18 @@
 	{% endif %}
 
 	{% if not show_only or show_only.phone %}
-	{% for phone in contact_data.phone_numbers if phone.vars.data %}
-		<li class="{{ 1 == phone.vars.data.guessed_type ? 'mobile' : 'phone' }}{% if phone.vars.data.label %} tipped{% endif %}"{% if phone.vars.data.label %} title="{{ phone.vars.data.label }}"{% endif %}>
-			<span class="number">{{ phone.vars.data.number }}</span>
-			{% if phone.vars.data.label %}
-				<strong>{{ phone.vars.data.label }}</strong>
-			{% endif %}
-		</li>
-	{% endfor %}
+		{# phone.number will be blank is it failed form validation #}
+		{% for phone in person.phone_numbers if phone.number|trim|length > 0 %}
+			<li class="{{ 1 == phone.guessed_type ? 'mobile' : 'phone' }}{% if phone.label %} tipped{% endif %}"{% if phone.label %} title="{{ phone.label }}"{% endif %}>
+				<span class="number">{{ phone.getNumberFormatted() }}</span>
+				{% if phone.ext %}
+				<span class="ext">ext. {{ phone.ext }}</span>
+				{% endif %}
+				{% if phone.label %}
+					<strong>{{ phone.label }}</strong>
+				{% endif %}
+			</li>
+		{% endfor %}
 	{% endif %}
 
 	{% if not show_only or show_only.instant_message %}
@@ -76,7 +80,7 @@
 	<div class="addresses">
 		<ul>
 			{% for contact in contact_data.address %}
-				<li class="address tipped" data-tipped='{% if contact.rec.comment %}{{ contact.rec.comment }}<br />{% endif %}<img src="{{ contact.map_url }}" width="200" height="200" />' data-tipped-options="hook: 'leftmiddle'">
+				<li class="address tipped" data-tipped='{% if contact.rec.comment %}{{ contact.rec.comment }}<br />{% endif %}<img src="{{ contact.map_url }}" width="200" height="200" />' data-tipped-options="hook: 'leftmiddle'" data-as-html="true">
 					{{ contact.address_html|raw }} <br/>{% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 				</li>
 			{% endfor %}

@@ -107,6 +107,7 @@ class ServerChecks
         return false;
     }
 
+
     /**
      * Are there any fatal errors?
      *
@@ -122,6 +123,7 @@ class ServerChecks
 
         return false;
     }
+
 
     /**
      * Are there any fatal server (pre-db checks) errors?
@@ -159,17 +161,18 @@ class ServerChecks
         return false;
     }
 
+
     /**
      * Check if a speciifc error occurred.
      *
      * @param string $type
-     *
      * @return bool
      */
     public function hasErrorType($type)
     {
         return isset($this->server_errors[$type]);
     }
+
 
     /**
      * @return array
@@ -178,6 +181,7 @@ class ServerChecks
     {
         return $this->server_errors;
     }
+
 
     /**
      * Get only fatal errors.
@@ -213,6 +217,7 @@ class ServerChecks
         return $ret;
     }
 
+
     /**
      * @return array
      */
@@ -220,6 +225,7 @@ class ServerChecks
     {
         return array_keys($this->server_errors);
     }
+
 
     /**
      * Runs through basic server checks.
@@ -233,12 +239,12 @@ class ServerChecks
         #------------------------------
 
         if ($type == 'php_version' || $type == 'all') {
-            $this->getLogger()->log("[CHECK] Checking PHP version >= 5.3.2", Logger::DEBUG);
+            $this->getLogger()->log("[CHECK] Checking PHP version >= 5.3.9", Logger::DEBUG);
             if (deskpro_install_check_version()) {
                 $this->getLogger()->log("[OK] PHP version of ".phpversion()." is OK", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg                           = "[FATAL] Install PHP 5.3.2 or newer. You currently have ".phpversion();
+                $msg = "[FATAL] Install PHP 5.3.9 or newer. You currently have ".phpversion();
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['php_version'] = array(
                     'message' => $msg,
@@ -566,7 +572,6 @@ class ServerChecks
         #------------------------------
         # LDAP check
         #------------------------------
-
         if ($type == 'ldap_check' || $type == 'all') {
             $this->getLogger()->log("[CHECK] Checking if LDAP is available", Logger::DEBUG);
             if (function_exists('ldap_connect')) {
@@ -576,8 +581,27 @@ class ServerChecks
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['ldap_check'] = array(
                     'message' => $msg,
-                    'level'   => 'recommended',
+                    'level' => 'recommended'
                 );
+            }
+        }
+
+        #------------------------------
+        # LDAP max links check
+        #------------------------------
+
+        if ($type == 'ldap_max_limit' || $type == 'all') {
+            $this->getLogger()->log("[CHECK] Checking if LDAP ldap.max_links setting is low", Logger::DEBUG);
+            $ldap_conn_limit = @ini_get('ldap.max_links');
+            if ($ldap_conn_limit != '-1' && (int)$ldap_conn_limit < 5) {
+                $msg = "We recommend changing the ldap.max_links setting to \"-1\" or to a value above 5.";
+                $this->getLogger()->log("$msg", Logger::INFO);
+                $this->server_errors['ldap_max_limit'] = array(
+                    'message' => $msg,
+                    'level' => 'recommended'
+                );
+            } else {
+                $this->getLogger()->log("[OK] LDAP max links is not too low", Logger::DEBUG);
             }
         }
 
@@ -797,7 +821,6 @@ class ServerChecks
      * Checks the database to make sure details are correct and version etc is ok.
      *
      * @param array $db_conf If null, will use config data and try to conect through App::getDb
-     *
      * @return bool
      */
     public function checkDatabase(array $db_conf = null, $should_be_empty = false)

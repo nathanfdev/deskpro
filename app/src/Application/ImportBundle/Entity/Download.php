@@ -183,6 +183,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
         return array(
             'oid'            => $this->oid,
             'person'         => $this->person_email,
+            'import_map_key' => $this->import_map_key,
             'title'          => $this->title,
             'content'        => $this->content,
             'language'       => $this->language,
@@ -207,5 +208,9 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('attachment', new Constraints\Valid())
+        ;
     }
 }

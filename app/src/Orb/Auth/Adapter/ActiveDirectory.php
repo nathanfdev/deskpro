@@ -36,12 +36,11 @@ namespace Orb\Auth\Adapter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
+class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInterface
 {
     const OPT_HOST               = 'host';
     const OPT_PORT               = 'port';
@@ -134,9 +133,9 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      *
      * @return Result
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
-        $res = $this->doAuthenticate();
+        $res = $this->doAdAuthenticate();
 
         if (!$res->isValid() && strpos($this->set_username, '@')) {
             $record = $this->findRecordViaEmail();
@@ -267,11 +266,11 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
             }
 
         } catch (\Exception $e) {
-            $raw_info['dp_error'] = "Error when fetching node";
-            $raw_info['exception_type'] = get_class($e);
-            $raw_info['exception_message'] = $e->getMessage();
-            $raw_info['exception_code'] = $e->getCode();
-            $raw_info['exception_trace'] = KernelErrorHandler::formatBacktrace($e->getTrace());
+            if ($this->logger) {
+                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
+            }
+
+            throw $e;
         }
 
 
@@ -286,7 +285,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      *
      * @return Result
      */
-    public function doAuthenticate()
+    public function doAdAuthenticate()
     {
         if (!$this->set_username) {
             if ($this->logger) {
@@ -338,9 +337,17 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         $raw_info = array();
         $raw_info['identity_friendly'] = $result->getIdentity();
 
+        try {
         $identity = $this->getIdentityForDn($result->getIdentity());
 
         return new Result(Result::SUCCESS, $identity);
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
+            }
+
+            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+        }
     }
 
 
@@ -476,7 +483,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
     /**
      * @param \Orb\Log\Logger $logger
      */
-    public function setLogger(\Orb\Log\Logger $logger)
+    public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
     }

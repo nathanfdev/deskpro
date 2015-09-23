@@ -232,27 +232,6 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        $executor_context = $this->getTicketManager()->createUserExecutorContext(
-            $this->person,
-            'newticket',
-            'email'
-        );
-
-        $executor_context->setEmailContext($this->reader);
-        $executor_context->getVars()->set('ticket_email', $this->ticket_email);
-
-        if ($this->ticket_email->is_bounce) {
-            $executor_context->getVars()->set('is_bounce_message', true);
-        }
-        if ($this->reader->isFromRobot()) {
-            $executor_context->getVars()->set('is_robot_message', true);
-        }
-
-        if ($this->logger) {
-            $orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
-            $executor_context->getLogger()->pushHandler($orb_logger_adapter);
-        }
-
         #------------------------------
         # Create the ticket
         #------------------------------
@@ -345,6 +324,38 @@ class ProcessNew extends ProcessAbstract
         #------------------------------
         # Process new ticket
         #------------------------------
+
+        // User is an agent and the ticket owner isn't the person who submitted
+        // the email. Means the agent used the #user action code and is
+        // creting a ticket on behalf of someone else
+        if ($this->person->is_agent && $ticket->person !== $this->person) {
+            $executor_context = $this->getTicketManager()->createAgentExecutorContext(
+                $this->person,
+                'newticket',
+                'email'
+            );
+        } else {
+            $executor_context = $this->getTicketManager()->createUserExecutorContext(
+                $this->person,
+                'newticket',
+                'email'
+            );
+        }
+
+        $executor_context->setEmailContext($this->reader);
+        $executor_context->getVars()->set('ticket_email', $this->ticket_email);
+
+        if ($this->ticket_email->is_bounce) {
+            $executor_context->getVars()->set('is_bounce_message', true);
+        }
+        if ($this->reader->isFromRobot()) {
+            $executor_context->getVars()->set('is_robot_message', true);
+        }
+
+        if ($this->logger) {
+            $orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
+            $executor_context->getLogger()->pushHandler($orb_logger_adapter);
+        }
 
         App::getDb()->beginTransaction();
 

@@ -290,6 +290,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $message = App::getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', array(
                     'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                    'ticket' => array('subject' => $this->reader->getSubject()->getSubjectUtf8()),
                     'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
                 ));
                 $message->setTo($this->reader->getFromAddress()->getEmail());
@@ -427,7 +428,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($ticket && $person) {
             App::$container->getTicketManager()->markAsManaged($ticket);
-
             return $this->runReply($ticket_email);
         } else {
             return $this->runNew($ticket_email, $reply_as_new);
@@ -435,6 +435,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
+     * Create a publicly visible reply to a ticket from an email.
+     *
      * @param  TicketIncomingEmail                            $ticket_email
      * @return \Application\DeskPRO\Entity\TicketMessage|null
      */
@@ -568,6 +570,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
                     'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                    'ticket' => array('subject' => $this->reader->getSubject()->getSubjectUtf8()),
                     'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
                 ));
                 $message->setTo($this->reader->getFromAddress()->getEmail());

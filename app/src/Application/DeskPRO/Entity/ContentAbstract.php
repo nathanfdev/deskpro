@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\App;
 use DateTime;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -94,14 +95,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * View counts.
      *
-     * @var string
+     * @var int
      */
     protected $view_count = 0;
 
     /**
      * Total rating: This is a tally and must be updated when a rating is added.
      *
-     * @var string
+     * @var int
      */
     protected $total_rating = 0;
 
@@ -115,7 +116,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Total rating.
      *
-     * @var string
+     * @var int
      */
     protected $num_ratings = 0;
 
@@ -241,6 +242,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @param Language $language
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+        return $this;
     }
 
     public function getLanguage()

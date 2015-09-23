@@ -28,39 +28,21 @@
 namespace Application\ImportBundle\Reader\Json;
 
 /**
- * Directory json files filter.
+ * Directory json files filter
  *
  * Class DirectoryIteratorFilter
+ * @package Application\ImportBundle\Reader\Json
  */
 class DirectoryIteratorFilter extends \RecursiveFilterIterator
 {
     /**
-     * @var bool
-     */
-    private $exclude_done = false;
-
-    /**
-     * Constructor.
+     * Constructor
      *
      * @param \RecursiveIterator $iterator
-     * @param boolean            $exclude_done
      */
-    public function __construct(\RecursiveIterator $iterator, $exclude_done)
+    public function __construct(\RecursiveIterator $iterator)
     {
         parent::__construct($iterator);
-        $this->setExcludeDone($exclude_done);
-    }
-
-    /**
-     * @param boolean $exclude_done
-     *
-     * @return $this
-     */
-    public function setExcludeDone($exclude_done)
-    {
-        $this->exclude_done = (bool) $exclude_done;
-
-        return $this;
     }
 
     /**
@@ -73,11 +55,6 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
 
         // Invalid type
         if ($current->isDir() === false && $current->getExtension() !== 'json') {
-            return false;
-        }
-
-        // Already done
-        if ($this->exclude_done && file_exists($current->getPath().'.done')) {
             return false;
         }
 

@@ -431,9 +431,12 @@ class DatabaseSourceMapper implements SourceMapperInterface
         if (isset($source['log_blob_id'])) {
             try {
                 $old_log_blob = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($source['log_blob_id']));
-                $exist_log    = $this->bs->copyBlobRowToString($old_log_blob);
-            } catch (\Exception $e) {
-            }
+                if ($old_log_blob) {
+                    $exist_log = $this->bs->copyBlobRowToString($old_log_blob);
+                } else {
+                    $exist_log = null;
+                }
+            } catch (\Exception $e) {}
 
             if ($exist_log) {
                 $log_text = $exist_log."\n\n\n".str_repeat('#', 72)."\n\n\n".$log_text;

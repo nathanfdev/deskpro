@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -108,23 +109,32 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->id;
     }
 
-    public function setParent(CategoryAbstract $cat = null)
+    /**
+     * @param CategoryAbstract|null $category
+     * @return $this
+     */
+    public function setParent(CategoryAbstract $category = null)
     {
-        if ($cat && $cat->getId() && $this->getId() && $cat->getId() == $this->getId()) {
+        if ($category && $category->getId() && $this->getId() && $category->getId() == $this->getId()) {
             throw new \InvalidArgumentException("Cannot set parent to self");
         }
 
-        $this->setModelField('parent', $cat);
+        $this->setModelField('parent', $category);
 
-        if ($cat) {
-            $this->setModelField('root', $cat->root ? $cat->root : $cat->id);
-            $this->setModelField('depth', $cat->depth + 1);
+        if ($category) {
+            $this->setModelField('root', $category->root ? $category->root : $category->id);
+            $this->setModelField('depth', $category->depth + 1);
         } else {
             $this->setModelField('root', null);
             $this->setModelField('depth', 0);
         }
+
+        return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getParentId()
     {
         if ($this->parent) {
@@ -146,6 +156,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return $this->title;
@@ -200,7 +213,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      * by $sep. Example: Category > Subcategory.
      *
      * @param string $sep
-     *
      * @return string
      */
     public function getFullTitle($sep = ' > ')
@@ -235,14 +247,13 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      * Get all IDs of this tree, from this node and downwards.
      *
      * @param bool $including_this Include this nodes ID in the array of ids
-     *
      * @return array
      */
     public function getTreeIds($including_this = true)
     {
         if (!isset($this->_structure['all_child_ids'])) {
             $all_ids = array();
-            $r       = function ($cat) use (&$r, &$all_ids) {
+            $r = function (CategoryAbstract $cat) use (&$r, &$all_ids) {
                 foreach ($cat->getChildren() as $c) {
                     $all_ids[] = $c->id;
                     if ($c->getChildren()) {
@@ -264,7 +275,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * @return CategoryAbstract[]
+     * @return ArrayCollection|CategoryAbstract[]
      */
     public function getChildren()
     {
@@ -275,6 +286,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->children;
     }
 
+    /**
+     * @return int|mixed
+     */
     public function getParent()
     {
         if ($this->structure_helper) {
@@ -285,10 +299,18 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
+     * @return string
+     */
+    public function getUrlSlug()
+    {
+        return $this->id . '-' . Strings::slugifyTitle($this->title);
+    }
+
+
+    /**
      * Return a unique ID that we can use to look up translations for this object.
      *
      * @param string $property If supplied, the property on the object we want to translate.
-     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -306,7 +328,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      * Get the default value phrase for the object.
      *
      * @param string $property If supplied, the property on the object we want to translate.
-     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)
@@ -318,6 +339,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->title;
     }
 
+    /**
+     * @return string
+     */
     public function getSelectTitle()
     {
         if ($this->depth) {
@@ -327,6 +351,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function __toString()
     {
         return $this->getFullTitle();

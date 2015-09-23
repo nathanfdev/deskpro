@@ -70,14 +70,21 @@ class AppOptionsMapper
         $options['accountFilterFormat']    = $settings->get('filter');
         $options['disableLdapPaging']      = $settings->get('disable_ldap_paging');
         $options['ldapPerPage']            = $settings->get('ldap_per_page');
+        $options['raw_info_filter']        = $settings->get('raw_info_filter');
 
         switch ($settings->get('secure')) {
             case 'ssl':
                 $options['useSsl'] = true;
+                $options['useStartTls'] = false;
                 break;
             case 'tls':
                 $options['useStartTls'] = true;
+                $options['useSsl'] = false;
                 break;
+            default:
+                $options['useStartTls'] = false;
+                $options['useSsl'] = false;
+
         }
 
         if (!$options['port']) {

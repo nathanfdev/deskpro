@@ -38,20 +38,42 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Orb\Auth\Identity;
+use Orb\Log\Logger;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Validator\Constraints\EmailValidator;
 
 class DbTableSyncer extends AbstractSyncer
 {
-    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
+        if (!$usersource->isEnabled()) {
+            return;
+        }
+
         /** @var \Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck $adapter */
         $adapter = $this->getAdapter($usersource);
         /** @var \Orb\Auth\Identity[] $identities */
         $offset = $cursor->getLocation() - 1; // location starts at 1, but offset starts at 0
         $identities = $adapter->findAllIdentities($offset);
 
+        $auth_adapter = $adapter->getAuthAdapter();
         foreach ($identities as $identity) {
+            // FILTER CHECK
+            $raw_info = $identity->getRawData();
+            if (!$auth_adapter->doesRawInfoPassFilter($raw_info)) {
+                $this->helper->log(
+                    Logger::INFO,
+                    sprintf('user does not meet filter criteria'),
+                    array($raw_info)
+                )
+                ;
+                $cursor->incrementLocation();
+                if ($pause_check($cursor)) {
+                    return;
+                }
+
+                continue;
+            }
             $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
 
             $cursor->incrementLocation();
@@ -88,6 +110,19 @@ class DbTableSyncer extends AbstractSyncer
                 $identity_or_email,
                 $usersource
             );
+        }
+
+        // FILTER CHECK
+        $auth_adapter = $db_adapter->getAuthAdapter();
+        $raw_info = $identity->getRawData();
+        if (!$auth_adapter->doesRawInfoPassFilter($raw_info)) {
+            $this->helper->log(
+                Logger::INFO,
+                sprintf('user does not meet filter criteria'),
+                array($raw_info)
+            )
+            ;
+            return false;
         }
 
         $this->syncIdentityWithUsersource($usersource, $identity, $identity_or_email);
@@ -139,6 +174,11 @@ class DbTableSyncer extends AbstractSyncer
 
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
+
+        // detach
+        $person->clear();
+        $this->helper->getEm()->detach($person);
+        $this->helper->getEm()->detach($assoc);
 
         return true;
     }

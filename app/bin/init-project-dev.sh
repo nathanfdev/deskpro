@@ -11,6 +11,20 @@ rm -rf $DIR_ROOT/web/node_modules
 echo ".. done"
 echo
 
+echo ">> Cleaning caches"
+rm -rf $DIR_ROOT/app/sys/cache/*
+git checkout $DIR_ROOT/app/sys/cache
+rm -rf $DIR_ROOT/data/tmp/*
+git checkout $DIR_ROOT/data/tmp/index.html
+echo ".. done"
+echo
+
+echo ">> Resetting permissions"
+chmod -R 0777 $DIR_ROOT/app/sys/cache
+chmod -R 0777 $DIR_ROOT/data/index.html
+echo ".. done"
+echo
+
 echo ">> Installing vendors with composer"
 cd $DIR_ROOT/app
 composer install --ignore-platform-reqs -o

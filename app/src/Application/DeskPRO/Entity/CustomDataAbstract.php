@@ -85,6 +85,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function __construct()
     {
         $this->input = '';
+        return $this;
     }
 
     /**
@@ -93,6 +94,16 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $input
+     * @return $this
+     */
+    public function setInput($input)
+    {
+        $this->setModelField('input', $input);
+        return $this;
     }
 
     /**
@@ -113,6 +124,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
                 return $this->value ? $this->value : $this->input;
         }
     }
+
 
     /**
      * Set the value or input (use the individual methods if you don't want auto detection).
@@ -143,6 +155,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return $this->field->getId();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);

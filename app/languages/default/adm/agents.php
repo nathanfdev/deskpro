@@ -10,6 +10,7 @@
     'adm.agents.perm_title_publish'                               => 'Publish',
     'adm.agents.perm_title_profile'                               => 'Profile',
     'adm.agents.perm_title_tasks'                                 => 'Tasks',
+    'adm.agents.perm_title_problems'                              => 'Problems',
 
     'adm.agents.perm_ticket_use'                                  => 'Can use the ticket system',
     'adm.agents.perm_ticket_create'                               => 'Can create new tickets',
@@ -33,6 +34,7 @@
     'adm.agents.perm_ticket_modify_others'                        => 'Can modify tickets assigned to others',
     'adm.agents.perm_ticket_modify_messages_others'               => 'Can edit and delete messages in tickets assigned to others',
     'adm.agents.perm_ticket_delete_others'                        => 'Can delete and spam tickets assigned to others',
+
     'adm.agents.perm_people_use'                                  => 'Can use the CRM system',
     'adm.agents.perm_people_create'                               => 'Can create new user profiles',
     'adm.agents.perm_people_edit'                                 => 'Can edit user profiles',
@@ -68,6 +70,11 @@
     'adm.agents.perm_general_picture'                             => 'Can set their own picture',
     'adm.agents.perm_general_signature'                           => 'Can set their own signature',
     'adm.agents.perm_tasks_use'                                   => 'Can use tasks',
+    'adm.agents.perm_problems_view'                               => 'Can view problems',
+    'adm.agents.perm_problems_create'                             => 'Can create problems',
+    'adm.agents.perm_problems_close'                              => 'Can close problems',
+    'adm.agents.perm_problems_reopen'                             => 'Can reopen problems',
+    'adm.agents.perm_problems_delete'                             => 'Can delete problems',
 
     'adm.agents.perm_ticket_modify_department'                    => 'Modify department',
     'adm.agents.perm_ticket_modify_fields'                        => 'Modify fields',
@@ -86,6 +93,8 @@
     'adm.agents.perm_ticket_modify_set_unresolved'                => 'Can unresolve ticket',
     'adm.agents.perm_ticket_modify_billing'                       => 'Can modify billing and time log records',
     'adm.agents.perm_ticket_create_labels'                        => 'Can create new ticket labels',
+    'adm.agents.perm_ticket_associate_problem'                    => 'Can associate a ticket to a Problems',
+    'adm.agents.perm_ticket_disassociate_problem'                 => 'Can disassociate a ticket with a Problems',
 
     'adm.agents.import_title'                                     => 'Bulk Invite Agents',
     'adm.agents.import_textarea_title'                            => 'Copy/Paste a list of Email Addresses',

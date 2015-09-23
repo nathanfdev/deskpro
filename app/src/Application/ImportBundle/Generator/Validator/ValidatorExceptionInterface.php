@@ -27,9 +27,26 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
+use Application\ImportBundle\Entity;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+
 /**
- * Interface ValidatorExceptionInterface.
+ * Interface ValidatorExceptionInterface
+ * @package Application\ImportBundle\Generator\Validator
  */
 interface ValidatorExceptionInterface
 {
+    /**
+     * Returns the fail entity
+     *
+     * @return Entity\EntityInterface
+     */
+    public function getEntity();
+
+    /**
+     * Returns a collection of the errors
+     *
+     * @return ConstraintViolationListInterface
+     */
+    public function getErrors();
 }

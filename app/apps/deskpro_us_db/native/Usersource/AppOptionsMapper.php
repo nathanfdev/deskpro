@@ -138,6 +138,7 @@ class AppOptionsMapper
         }
 
         $options['password_php'] = $settings->get('php_code');
+        $options['raw_info_filter'] = $settings->get('raw_info_filter');
 
         return $options;
     }

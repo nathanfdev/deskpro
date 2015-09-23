@@ -98,8 +98,10 @@ class RunnerExecSource
     {
         if (!$this->reader) {
             $this->logger->logDebug('No reader set, creating it from raw source');
+            $ts = microtime(true);
             $this->reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
             $this->reader->setRawSource($this->source['raw_source']);
+            $this->logger->logDebug(sprintf('Reader created in %.3fs', microtime(true) - $ts));
         }
 
         if (!$this->reader->hasProperty('email_source')) {

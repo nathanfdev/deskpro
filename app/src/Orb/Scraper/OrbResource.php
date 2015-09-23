@@ -102,7 +102,7 @@ class OrbResource extends AbstractScraper
 
         $data = @json_decode($http_result->getBody(), true);
         if (!$data) {
-            throw \UnexpectedValueException('Invalid JSON returned from service');
+            throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
         $item = new \Orb\Scraper\Item($data['identity'], $data['identity_friendly'], $data['data']);

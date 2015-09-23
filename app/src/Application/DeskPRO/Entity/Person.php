@@ -95,7 +95,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
  * @property PhoneNumber[] $phone_numbers
- * @property LabelPerson[] $labels
+ * @property ArrayCollection|LabelPerson[] $labels
  * @property CustomDataPerson[] $custom_data
  * @property PersonContactData[] $contact_data
  * @property Usergroup[] $usergroups
@@ -376,10 +376,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $phone_numbers;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -645,12 +647,30 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->getPermissionsManager()->hasPerm($name);
     }
 
+
     public function getCustomDataCollection()
     {
         return $this->cdc = ($this->cdc ?: new CustomDataCollection(
             $this->custom_data ? $this->custom_data : new ArrayCollection(), $this
         ));
     }
+
+    /**
+     * @param string $type 'agent' or 'user'
+     * @return bool
+     */
+    public function hasDeskproUsersource($type)
+    {
+        foreach ($this->usersource_assoc as $assoc) {
+            $us = $assoc->usersource;
+            if ($us->type == $type && $us->source_type == 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * Try to guess an org name based on profile info.
@@ -753,7 +773,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             return false;
         }
 
-        return (bool) $primary->isValidated();
+        return (bool)$primary->isValidated();
     }
 
     /**
@@ -765,7 +785,18 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function isAgentValidated()
     {
-        return (bool) $this->is_agent_confirmed;
+        return (bool)$this->is_agent_confirmed;
+    }
+
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setIsDisabled($yesno)
+    {
+        $this->setModelField('is_disabled', $yesno);
+
+        return $this;
     }
 
     /**
@@ -773,16 +804,16 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      *
      * @return bool
      */
+    public function isDisabled()
+    {
+        return $this->is_disabled;
+    }
+
     public function isAgent()
     {
         return $this->is_agent;
     }
 
-    /**
-     * Is agent.
-     *
-     * @return bool
-     */
     public function isAdmin()
     {
         return $this->can_admin;
@@ -805,20 +836,26 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this;
     }
 
-
     /**
      * @param bool $yesno
      *
      * @return $this
      */
-    public function setCanAdmin($yesno)
+    public function setIsDeleted($yesno)
     {
-        if ($yesno) {
-            $this['can_reports'] = true;
-        }
+        $this->setModelField('is_deleted', $yesno);
 
-        $this->setModelField('can_admin', $yesno);
         return $this;
+    }
+
+    /**
+     * @return bool
+     *
+     * @return $this
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
     }
 
     /**
@@ -828,6 +865,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function setCanAgent($yesno)
     {
         $this->setModelField('can_agent', $yesno);
+
         return $this;
     }
 
@@ -845,7 +883,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
         return $this->can_billing;
     }
-
 
 
     /**
@@ -996,7 +1033,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getDisplayName($id_fallback = true)
     {
-        if ($this['first_name'] and $this['last_name']) {
+        if ($this['first_name'] AND $this['last_name']) {
             return $this['first_name'] . ' ' . $this['last_name'];
         } elseif ($this['name']) {
             return $this['name'];
@@ -1202,6 +1239,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             return $this->getDisplayName();
         }
     }
+
 
     /**
      * Set the importance of this user.
@@ -1427,6 +1465,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $ret;
     }
 
+
     /**
      * Get the real language. This might be null if there is no preference for the user.
      *
@@ -1459,6 +1498,19 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function getLanguageId()
     {
         return $this->getLanguage()->getId();
+    }
+
+    /**
+     * Set language
+     *
+     * @param Language|null $language
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+
+        return $this;
     }
 
     /**
@@ -1537,13 +1589,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Get the value of a usergroup permission.
      *
      * @param string $name The permission name
-     *
      * @return mixed
      */
     public function getPermission($name)
     {
         return $this->getPermissionsManager()->Usergroups->getPermission($name);
     }
+
 
     /**
      * Get an array of usergroup ID's this user belongs to.
@@ -1591,9 +1643,20 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * @param null $type
-     *
-     * @return array
+     * Reset contact data
+     * todo add onPropertyChanged() if change tracking is needed
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        $this->contact_data->clear();
+
+        return $this;
+    }
+
+    /**
+     * @param  null $type
+     * @return PersonContactData[]
      */
     public function getContactData($type = null)
     {
@@ -1615,7 +1678,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Find an existing data record for a field id.
      *
-     * @param int $field_id
+     * @param  int $field_id
      * @return CustomDataPerson
      */
     public function getCustomDataForField($field_id)
@@ -1641,12 +1704,29 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $parent_id = $field->parent['id'];
         }
 
+        $change = false;
         foreach ($this->custom_data as $data) {
             if ($data['field_id'] == $field_id or $data['field_id'] == $parent_id) {
+                $change = true;
                 $this->custom_data->removeElement($data);
-                $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
             }
         }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        }
+    }
+
+    public function removeCustomData(CustomDataPerson $data)
+    {
+        $this->custom_data->removeElement($data);
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -1663,7 +1743,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
         if (!$custom_data) {
             if ($value === null) {
-                return;
+                return null;
             }
 
             $is_new = true;
@@ -1676,9 +1756,24 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $custom_data['field'] = $field;
         }
 
+        $field = $custom_data->field;
+        if ($field->parent) {
+            foreach ($this->custom_data as $d) {
+                if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
+                    $this->custom_data->removeElement($d);
+                }
+            }
+        }
+
+        $this->custom_data->removeElement($custom_data);
+
         if ($value === null) {
             $this->custom_data->removeElement($custom_data);
-            $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+
+            return null;
+        }
+
+        if ($field->getTypeName() == 'choice') {
 
             return;
         }
@@ -1688,6 +1783,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         if ($is_new) {
             $this->addCustomData($custom_data);
         }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
 
         return $custom_data;
     }
@@ -1702,10 +1799,33 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         if ($this->custom_data === null) {
             $this->custom_data = new ArrayCollection();
         }
+        $data->setPerson($this);
 
-        $this->custom_data->add($data);
-        $data->person = $this;
-        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+        $field = $data->field;
+        $parent_id = null;
+        $field_id = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
+
+        if ($parent_id) {
+            $this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
+        } else {
+            $this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
+     * Reset custom data
+     * todo add onPropertyChanged() if change tracking is needed
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+        return $this;
     }
 
     /**
@@ -1926,10 +2046,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * @return array
      */
-    public function getEmailAddresses()
+    public function getEmailAddresses($skipPrimary = false)
     {
         $arr = array();
         foreach ($this->emails as $email) {
+            if ($skipPrimary && $email->email === $this->primary_email->email) {
+                continue;
+            }
             if ($email->is_validated) {
                 $arr[] = $email->email;
             }
@@ -2094,11 +2217,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 if (!$next_email) {
                     $next_email = $email;
                 }
-                if (!$next_valid_email and $email['is_validated']) {
+                if (!$next_valid_email AND $email['is_validated']) {
                     $next_valid_email = $email;
                 }
 
-                if ($next_email and $next_valid_email) {
+                if ($next_email AND $next_valid_email) {
                     break;
                 }
             }
@@ -2118,15 +2241,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Reset emails collection.
-     *
+     * Reset emails collection
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetEmails()
     {
-        $this->emails = new ArrayCollection();
-        $this->_onPropertyChanged('emails', null, $this->emails);
-
+        $this->emails->clear();
         return $this;
     }
 
@@ -2186,7 +2307,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Remove usergroup.
      *
      * @param Usergroup $usergroup
-     *
      * @return bool
      */
     public function removeUsergroup(Usergroup $usergroup)
@@ -2198,20 +2318,18 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Remove all usergroups.
-     *
+     * Remove all usergroups
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetUsergroups()
     {
-        $this->usergroups = new ArrayCollection();
-        $this->_onPropertyChanged('usergroups', null, $this->usergroups);
-
+        $this->usergroups->clear();
         return $this;
     }
 
     /**
-     * Check if hte user belongs to a usergroup.
+     * Check if the user belongs to a usergroup
      *
      * @param $usergroup
      *
@@ -2226,12 +2344,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Add a label.
      *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
+     * @return $this
      */
     public function addLabel(LabelPerson $label)
     {
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+
+        return $this;
     }
 
     public function removeLabelByString($l)
@@ -2254,9 +2375,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
-        $this->_onPropertyChanged('labels', null, $this->labels);
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
 
+        $this->_onPropertyChanged('labels', null, $this->labels);
         return $this;
     }
 
@@ -2371,11 +2494,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
         $url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';
         if ($size != 80) {
-            $url .= '&s=' . $size;
+            $url .= '&s='.$size;
         }
 
         if ($this->organization && $this->organization->hasPicture()) {
-            $url .= "&d=" . urlencode($this->organization->getPictureUrl($size, $secure));
+            $url .= "&d=".urlencode($this->organization->getPictureUrl($size, $secure));
         } else {
             if ($this->is_agent) {
                 $url .= '&d=mm';
@@ -2508,7 +2631,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function setFirstName($name)
     {
         $this->setModelField('first_name', $name);
-        $this->setModelField('name', $name . ' ' . $this->last_name);
+        $this->setModelField('name', $name.' '.$this->last_name);
 
         return $this;
     }
@@ -2516,7 +2639,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function setLastName($name)
     {
         $this->setModelField('last_name', $name);
-        $this->setModelField('name', $this->first_name . ' ' . $name);
+        $this->setModelField('name', $this->first_name.' '.$name);
 
         return $this;
     }
@@ -2544,12 +2667,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
     }
 
+
     /**
      * Get a Person ID from some parameter that might be a person, already a
      * person ID, or some object that knows about a person ID.
      *
      * @param mixed $person
-     *
      * @return int
      */
     public static function smartPersonId($person)
@@ -2591,6 +2714,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->_permissions_manager;
     }
 
+
     public function getHelperManager()
     {
         if ($this->_helper_manager === null) {
@@ -2609,7 +2733,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function _savePersonLogs()
     {
-        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) {
+            return;
+        }
 
         if ($this->_person_logger) {
             $this->_person_logger->done();
@@ -2633,7 +2759,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function _presavePerson()
     {
-        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) {
+            return;
+        }
 
         // If we're loaded, then set default timezone from setting
         if (!$this->timezone && class_exists('Application\\DeskPRO\\App')) {
@@ -2753,7 +2881,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             if (!$reason) {
                 $reason = 'Unknown';
             }
-            $reason .= ' (' . date('M j Y @ H:i') . ' UTC)';
+            $reason .= ' ('.date('M j Y @ H:i').' UTC)';
             $this->setModelField('disable_autoresponses_log', $reason);
         }
     }
@@ -2790,7 +2918,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getRememberMeCookieCode()
     {
-        return \Orb\Util\Util::generateStaticSecurityToken(sha1(App::getAppSecret() . $this->secret_string));
+        return \Orb\Util\Util::generateStaticSecurityToken(sha1(App::getAppSecret().$this->secret_string));
     }
 
     /**
@@ -2800,7 +2928,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function validateRememberMeCookieCode($code)
     {
-        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret() . $this->secret_string));
+        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret().$this->secret_string));
     }
 
     public function _postPersist()
@@ -2830,7 +2958,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                      'title_prefix',
                      'creation_system',
                      'organization_position'
-                 ) as $key) {
+                 ) AS $key) {
             $data[$key] = $this->$key;
         }
         $data['date_created'] = $this->date_created->getTimestamp();
@@ -3061,7 +3189,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Get Elasticsearch highlight data.
      *
-     * @param null $field
+     * @param  null $field
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -3090,10 +3218,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             array(
                 'name' => 'people',
                 'indexes' => array(
-                    'is_agent_idx' => array('columns' => array(0 => 'is_agent')),
-                    'was_agent_idx' => array('columns' => array(0 => 'was_agent')),
-                    'is_confirmed_idx' => array('columns' => array(0 => 'is_confirmed')),
-                ),
+                    'is_agent_idx' => array('columns' => array(0 => 'is_agent',),),
+                    'was_agent_idx' => array('columns' => array(0 => 'was_agent',),),
+                    'is_confirmed_idx' => array('columns' => array(0 => 'is_confirmed',),),
+                )
             )
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -3109,7 +3237,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 $metadata->addEntityListener(
                     $event,
                     'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
-                    'on' . ucfirst($event)
+                    'on'.ucfirst($event)
                 );
             }
         }
@@ -3132,7 +3260,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'gravatar_url'
+                'columnName' => 'gravatar_url',
             )
         );
         $metadata->mapField(
@@ -3142,7 +3270,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'disable_picture'
+                'columnName' => 'disable_picture',
             )
         );
         $metadata->mapField(
@@ -3152,7 +3280,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_contact'
+                'columnName' => 'is_contact',
             )
         );
         $metadata->mapField(
@@ -3162,7 +3290,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_user'
+                'columnName' => 'is_user',
             )
         );
         $metadata->mapField(
@@ -3172,7 +3300,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_agent'
+                'columnName' => 'is_agent',
             )
         );
         $metadata->mapField(
@@ -3182,7 +3310,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'was_agent'
+                'columnName' => 'was_agent',
             )
         );
         $metadata->mapField(
@@ -3192,7 +3320,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'can_agent'
+                'columnName' => 'can_agent',
             )
         );
         $metadata->mapField(
@@ -3202,7 +3330,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'can_admin'
+                'columnName' => 'can_admin',
             )
         );
         $metadata->mapField(
@@ -3212,7 +3340,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'can_billing'
+                'columnName' => 'can_billing',
             )
         );
         $metadata->mapField(
@@ -3222,7 +3350,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'can_reports'
+                'columnName' => 'can_reports',
             )
         );
         $metadata->mapField(
@@ -3232,7 +3360,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_vacation_mode'
+                'columnName' => 'is_vacation_mode',
             )
         );
         $metadata->mapField(
@@ -3242,7 +3370,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'disable_autoresponses'
+                'columnName' => 'disable_autoresponses',
             )
         );
         $metadata->mapField(
@@ -3252,7 +3380,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'disable_autoresponses_log'
+                'columnName' => 'disable_autoresponses_log',
             )
         );
         $metadata->mapField(
@@ -3262,7 +3390,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_confirmed'
+                'columnName' => 'is_confirmed',
             )
         );
         $metadata->mapField(
@@ -3272,7 +3400,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_agent_confirmed'
+                'columnName' => 'is_agent_confirmed',
             )
         );
         $metadata->mapField(
@@ -3282,7 +3410,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_deleted'
+                'columnName' => 'is_deleted',
             )
         );
         $metadata->mapField(
@@ -3292,7 +3420,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'is_disabled'
+                'columnName' => 'is_disabled',
             )
         );
         $metadata->mapField(
@@ -3302,7 +3430,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'importance'
+                'columnName' => 'importance',
             )
         );
         $metadata->mapField(
@@ -3313,7 +3441,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'creation_system'
+                'columnName' => 'creation_system',
             )
         );
         $metadata->mapField(
@@ -3323,7 +3451,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'name'
+                'columnName' => 'name',
             )
         );
         $metadata->mapField(
@@ -3333,7 +3461,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'first_name'
+                'columnName' => 'first_name',
             )
         );
         $metadata->mapField(
@@ -3343,7 +3471,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'last_name'
+                'columnName' => 'last_name',
             )
         );
         $metadata->mapField(
@@ -3364,7 +3492,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'title_prefix'
+                'columnName' => 'title_prefix',
             )
         );
         $metadata->mapField(
@@ -3375,7 +3503,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'override_display_name'
+                'columnName' => 'override_display_name',
             )
         );
         $metadata->mapField(
@@ -3385,7 +3513,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'summary'
+                'columnName' => 'summary',
             )
         );
         $metadata->mapField(
@@ -3398,7 +3526,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'nullable' => false,
                 'columnName' => 'secret_string',
                 'dpqlAccess' => false,
-                'dpApi' => false
+                'dpApi' => false,
             )
         );
         $metadata->mapField(
@@ -3409,7 +3537,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'organization_position'
+                'columnName' => 'organization_position',
             )
         );
         $metadata->mapField(
@@ -3419,7 +3547,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'organization_manager'
+                'columnName' => 'organization_manager',
             )
         );
         $metadata->mapField(
@@ -3430,7 +3558,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'timezone'
+                'columnName' => 'timezone',
             )
         );
         $metadata->mapField(
@@ -3443,7 +3571,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'nullable' => true,
                 'columnName' => 'password',
                 'dpqlAccess' => false,
-                'dpApi' => false
+                'dpApi' => false,
             )
         );
         $metadata->mapField(
@@ -3456,7 +3584,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'nullable' => true,
                 'columnName' => 'password_scheme',
                 'dpqlAccess' => false,
-                'dpApi' => false
+                'dpApi' => false,
             )
         );
         $metadata->mapField(
@@ -3469,7 +3597,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'nullable' => false,
                 'columnName' => 'salt',
                 'dpqlAccess' => false,
-                'dpApi' => false
+                'dpApi' => false,
             )
         );
         $metadata->mapField(
@@ -3479,7 +3607,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'date_created'
+                'columnName' => 'date_created',
             )
         );
         $metadata->mapField(
@@ -3489,7 +3617,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'date_last_login'
+                'columnName' => 'date_last_login',
             )
         );
         $metadata->mapField(
@@ -3499,7 +3627,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'date_password_set'
+                'columnName' => 'date_password_set',
             )
         );
         $metadata->mapField(
@@ -3509,7 +3637,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'date_picture_check'
+                'columnName' => 'date_picture_check',
             )
         );
         $metadata->mapField(
@@ -3530,7 +3658,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'browser'
+                'columnName' => 'browser',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
@@ -3547,8 +3675,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         'referencedColumnName' => 'id',
                         'nullable' => true,
                         'onDelete' => 'set null',
-                        'columnDefinition' => null
-                    )
+                        'columnDefinition' => null,
+                    ),
                 ),
                 'dpApi' => true
             )
@@ -3558,6 +3686,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'fieldName' => 'language',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
                 'mappedBy' => null,
+                'cascade' => array('persist'),
                 'inversedBy' => null,
                 'joinColumns' => array(
                     0 => array(
@@ -3565,8 +3694,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         'referencedColumnName' => 'id',
                         'nullable' => true,
                         'onDelete' => 'set null',
-                        'columnDefinition' => null
-                    )
+                        'columnDefinition' => null,
+                    ),
                 )
             )
         );
@@ -3583,13 +3712,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         'referencedColumnName' => 'id',
                         'nullable' => true,
                         'onDelete' => 'set null',
-                        'columnDefinition' => null
-                    )
+                        'columnDefinition' => null,
+                    ),
                 ),
                 'dpApi' => true
             )
         );
-        $metadata->mapManyToOne(
+        $metadata->mapOneToOne(
             array(
                 'fieldName' => 'primary_email',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
@@ -3604,9 +3733,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         'unique' => true,
                         'nullable' => true,
                         'onDelete' => 'set null',
-                        'columnDefinition' => null
-                    )
-                )
+                        'columnDefinition' => null,
+                    ),
+                ),
             )
         );
         $metadata->mapOneToMany(
@@ -3662,8 +3791,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                             'referencedColumnName' => 'id',
                             'nullable' => true,
                             'onDelete' => 'cascade',
-                            'columnDefinition' => null
-                        )
+                            'columnDefinition' => null,
+                        ),
                     ),
                     'inverseJoinColumns' => array(
                         0 => array(
@@ -3671,9 +3800,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                             'referencedColumnName' => 'id',
                             'nullable' => true,
                             'onDelete' => 'cascade',
-                            'columnDefinition' => null
-                        )
-                    )
+                            'columnDefinition' => null,
+                        ),
+                    ),
                 ),
                 'dpApi' => true
             )
@@ -3682,22 +3811,23 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             array(
                 'fieldName' => 'preferences',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy' => 'person'
+                'cascade' => array('persist', 'remove', 'merge'),
+                'mappedBy' => 'person',
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'usersource_assoc',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc',
-                'mappedBy' => 'person'
+                'mappedBy' => 'person',
+                'cascade' => array('persist', 'remove')
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'twitter_users',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser',
-                'mappedBy' => 'person'
+                'mappedBy' => 'person',
             )
         );
         $metadata->mapManyToMany(
@@ -3759,6 +3889,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         'nullable' => true,
                         'onDelete' => 'set null',
                     )
+                    )
                 ),
             )
         );
@@ -3766,7 +3897,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function clear()
     {
+        if ($this->_permissions_manager) {
         $this->_permissions_manager->clear();
+        }
+        if ($this->_person_logger) {
         $this->_person_logger->clear();
     }
 

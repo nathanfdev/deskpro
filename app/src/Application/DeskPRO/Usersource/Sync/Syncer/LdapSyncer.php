@@ -40,6 +40,7 @@ use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Doctrine\DBAL\Connection;
 use Orb\Auth\Identity;
+use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Validator\Constraints\EmailValidator;
@@ -49,24 +50,37 @@ class LdapSyncer extends AbstractSyncer
 {
     const TMP_DATA_NAME = 'LdapSyncer_synced_raw_info';
 
-    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
+        if (!$usersource->isEnabled()) {
+            return;
+        }
+
         if ($cursor->getPhase() == 1) {
+            $this->helper->log(Logger::INFO, 'starting phase 1 [' . print_r($cursor, true) . ']', array($cursor));
             $this->runFirstPass($usersource, $cursor, $pause_check);
+            if ($cursor->getPhase() > 1) {
+                $this->helper->log(Logger::INFO, 'pausing phase 1 [' . print_r($cursor, true) . ']', array($cursor));
+            }
         }
 
         if ($cursor->getPhase() == 2) {
+            $this->helper->log(Logger::INFO, 'starting phase 2 [' . print_r($cursor, true) . ']', array($cursor));
             $this->runSecondPass($usersource, $cursor, $pause_check);
+            if ($cursor->getPhase() > 1) {
+                $this->helper->log(Logger::INFO, 'pausing phase 2 [' . print_r($cursor, true) . ']', array($cursor));
+            }
         }
 
         $this->helper->getEm()->flush();
 
         if ($cursor->getPhase() == 3) {
+            $this->helper->log(Logger::INFO, 'finished syncing this usersource, marking it as completed  [' . print_r($cursor, true) . ']', array($cursor));
             $cursor->markCompleted();
         }
     }
 
-    public function runSecondPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function runSecondPass(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         // here we fetch data from tmp_data and actually update/create the person record
 
@@ -74,6 +88,8 @@ class LdapSyncer extends AbstractSyncer
         $conn = $this->helper->getEm()->getConnection();
         $tmp_ids_to_remove = array();
         $rows = $conn->fetchAll('SELECT * FROM tmp_data WHERE name = :name', array('name' => self::TMP_DATA_NAME));
+        $total = count($rows);
+        $this->helper->log(Logger::INFO, 'counted ' . $total . ' left to process in phase 2, starting');
         foreach ($rows as $row) {
             $data = unserialize($row['data']);
             if (isset($data['raw_info'])) {
@@ -86,7 +102,9 @@ class LdapSyncer extends AbstractSyncer
             $tmp_ids_to_remove[] = $row['id'];
             $cursor->incrementLocation();
             if ($pause_check($cursor)) {
-                // get rid of the tmp dat we dealt with in this round
+                $finished = count($tmp_ids_to_remove);
+                $this->helper->log(Logger::INFO, 'time to pause. finished processing ' . $finished . ' of ' . $total . ' records.');
+                // get rid of the tmp data we dealt with in this round
                 $conn->executeQuery(
                     'DELETE FROM tmp_data WHERE id IN (:ids)',
                     array('ids' => $tmp_ids_to_remove),
@@ -96,6 +114,7 @@ class LdapSyncer extends AbstractSyncer
             }
         }
 
+        $this->helper->log(Logger::INFO, 'finished processing all remaining ('. $total .') records');
         $conn->executeQuery(
             'DELETE FROM tmp_data WHERE name = :name',
             array('name' => self::TMP_DATA_NAME)
@@ -105,7 +124,7 @@ class LdapSyncer extends AbstractSyncer
         $cursor->setPhase(3);
     }
 
-    public function runFirstPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function runFirstPass(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         // here we are doing a first pass on the data by fetching it from ldap and putting it into tmp_data
 
@@ -119,23 +138,60 @@ class LdapSyncer extends AbstractSyncer
 
         // ensure we start with a fresh set of tmp_data
         if ($start_location <= 1) {
+            $this->helper->log(Logger::INFO, 'deleting all usersource sync temp data from tmp_data table, starting fresh');
             $this->helper->getEm()->getConnection()->executeQuery(
                 'DELETE FROM tmp_data WHERE name = :name',
                 array('name' => self::TMP_DATA_NAME)
             );
         }
 
+        $this->helper->log(Logger::INFO, 'LDAP: starting a paged search');
         $records->executePagedSearch();
+        $this->helper->log(Logger::INFO, 'LDAP: paged search completed');
+        $this->helper->log(Logger::INFO, 'LDAP: starting to iterate results');
+        $counting_saves = 0;
+        $skip_state_timer = null;
+        $skip_counter = 0;
+        $auth_adapter = $adapter->getAuthAdapter();
         for ($i = 1; $records->valid(); $i++) {
             try {
                 $records->next();
             } catch (LdapException $e) {
             }
             if ($i < $start_location) {
+                if (null === $skip_state_timer) {
+                    $skip_state_timer = time();
+                }
+                $skip_counter++;
+                if (0 === $skip_counter % 100) {
+                    // log the time it takes for every 100 skipped records
+                    $this->helper->log(Logger::INFO, 'at record ' . $i . ', but skipping to record ' . $start_location);
+                }
                 continue; // save us from hitting the LDAP server if we've already visited this record before
             }
             if (!$raw_info = $records->current()) {
+                $this->helper->log(Logger::INFO, 'finished iterating over the LDAP rows, exiting loop');
                 break;
+            }
+
+            if ($skip_state_timer) {
+                $this->helper->log(Logger::INFO, 'spent ' . ceil(time() - $skip_state_timer) . 's skipping to record ' . $start_location);
+                $skip_state_timer = null;
+            }
+
+            // CHECK FILTER
+            if (!$auth_adapter->doesRawInfoPassFilter($raw_info)) {
+                $this->helper->log(
+                    Logger::INFO,
+                    sprintf('user does not meet filter criteria'),
+                    array($raw_info)
+                )
+                ;
+                $cursor->incrementLocation();
+                if ($pause_check($cursor)) {
+                    return;
+                }
+                continue;
             }
 
             // save record for processing in phase 2
@@ -152,11 +208,13 @@ class LdapSyncer extends AbstractSyncer
                 $tmp->name = self::TMP_DATA_NAME;
                 $this->helper->getEm()->persist($tmp);
                 $cursor->incrementLocation();
+                $counting_saves++;
             } else {
                 // no email found - abort this record
                 $cursor->incrementLocation();
                 if ($pause_check($cursor)) {
                     $this->helper->getEm()->flush();
+                    $this->helper->log(Logger::INFO, 'flushed ' . $counting_saves . ' tmp records');
                     return;
                 }
                 continue;
@@ -164,21 +222,31 @@ class LdapSyncer extends AbstractSyncer
 
             if ($pause_check($cursor)) {
                 $this->helper->getEm()->flush();
+                $this->helper->log(Logger::INFO, 'flushed ' . $counting_saves . ' tmp records');
                 return;
             }
         }
 
+        $this->helper->getEm()->flush();
+        $this->helper->log(Logger::INFO, 'flushed ' . $counting_saves . ' tmp records');
         $cursor->setPhase(2);
         $cursor->setLocation(1);
     }
 
     public function refreshIdentity(Usersource $usersource, $identity_or_email)
     {
+        $curTime = microtime(true);
+        $this->helper->log(Logger::INFO, 'attempting to refresh the following identity directly [' . $identity_or_email . ', usersource=' . $usersource->getId() . ']');
         $ldap_adapter = $this->getAdapter($usersource);
         $identity = $ldap_adapter->findIdentityByInput($identity_or_email);
+        $timeConsumed = round(microtime(true) - $curTime, 3) * 1000;
+        if ($timeConsumed >= 5) {
+            // only log if it took 1 second or more
+            $this->helper->log(Logger::INFO, 'finished looking for identity [' . $identity_or_email . ', usersource=' . $usersource->getId() . '] time (took ' . $timeConsumed . 'ms) result=' . ($identity ? 'FOUND' : 'FAILED'));
+        }
 
         // if the id doesn't exist in the ldap, we make a last-ditch effort to
-        // find the usersource assocation via email
+        // find the usersource association via email
         if (!$identity instanceof Identity && StringEmail::isValueValid($identity_or_email)) {
             $person = $this->helper->getPersonFromEmail($identity_or_email);
             if ($assoc = $this->helper->getAssociation($usersource, $person)) {
@@ -187,15 +255,20 @@ class LdapSyncer extends AbstractSyncer
         }
 
         if (!$identity instanceof Identity) {
-            throw new SyncException(
-                sprintf(
-                    'could not find remote identity for identity=%s at usersource id=%s',
-                    $identity_or_email,
-                    $usersource->getId()
-                ),
-                $identity_or_email,
-                $usersource
-            );
+            return false;
+        }
+
+        // FILTER CHECK
+        $auth_adapter = $ldap_adapter->getAuthAdapter();
+        $raw_info = $identity->getRawData();
+        if (!$auth_adapter->doesRawInfoPassFilter($raw_info)) {
+            $this->helper->log(
+                Logger::INFO,
+                sprintf('user does not meet filter criteria'),
+                array($raw_info)
+            )
+            ;
+            return false;
         }
 
         if (!$this->syncIdentityWithUsersource($usersource, $identity, $identity_or_email)) {
@@ -229,6 +302,8 @@ class LdapSyncer extends AbstractSyncer
      */
     protected function syncIdentityWithUsersource(Usersource $usersource, Identity $identity, $email)
     {
+        $curTime = microtime(true);
+        $this->helper->log(Logger::INFO, 'syncing the following identity [' . $identity->getIdentity() . ', usersource=' . $usersource->getId() . ']');
         // get an array of info passed to us from remote usersource
         $user_info = $this->getAdapter($usersource)->getFieldsFromIdentity($identity);
 
@@ -248,6 +323,8 @@ class LdapSyncer extends AbstractSyncer
 
         $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person, $usersource);
         if (!$person || !$person->getPrimaryEmailAddress() || !$person->getPrimaryEmail()->email) {
+            $timeConsumed = round(microtime(true) - $curTime, 3) * 1000;
+            $this->helper->log(Logger::INFO, 'unable to sync this identity [' . $identity->getIdentity() . ', usersource=' . $usersource->getId() . '] (took '.$timeConsumed.'ms)');
             return false;
         }
         $assoc = $this->helper->updateOrCreateAssociation($usersource, $person, $identity);
@@ -256,8 +333,15 @@ class LdapSyncer extends AbstractSyncer
         $this->helper->saveAssociation($assoc);
 
         // detach
+        $person->clear();
         $this->helper->getEm()->detach($person);
         $this->helper->getEm()->detach($assoc);
+
+        $timeConsumed = round(microtime(true) - $curTime, 3) * 1000;
+        if ($timeConsumed >= 5) {
+            // only log if it took 1 second or more
+            $this->helper->log(Logger::INFO, 'synced identity ['.$identity->getIdentity().', usersource=' . $usersource->getId() . '] directly (took ' . $timeConsumed . 'ms)');
+        }
 
         return true;
     }

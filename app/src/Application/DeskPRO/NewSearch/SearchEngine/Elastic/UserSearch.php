@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\NewSearch\SearchEngine\Elastic;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
@@ -39,6 +40,7 @@ class UserSearch implements UserSearchInterface
 {
     const MAX_LEN = 315;
     const MAX_LEN_CONTENT = 2000;
+    const LIMIT = 20;
 
     /**
      * @var \Elastica\Index
@@ -152,8 +154,17 @@ class UserSearch implements UserSearchInterface
         $bool_query->addShould($sticky_match);
 
         $filtered_query = new Query\Filtered($qs, $filter);
-        $res            = $search->search($filtered_query, array('limit' => 500));
+        $res = $search->search($filtered_query, array('limit' => self::LIMIT));
         $objects        = $this->transformer->transform($res->getResults());
+
+        if ($context->getPerson() && !$context->getPerson()->is_agent) {
+            $objects = array_filter($objects, function($ticket) {
+                if ($ticket instanceof Ticket && !($ticket->date_last_agent_reply || $ticket->date_last_user_reply)) {
+                    return false;
+                }
+                return true;
+            });
+        }
 
         return new ResultSet($objects);
     }
@@ -226,7 +237,7 @@ class UserSearch implements UserSearchInterface
         $like_query->setMinDocFrequency(1);
 
         $filtered_query = new Query\Filtered($like_query, $filter);
-        $res = $search->search($filtered_query, array('limit' => 500));
+        $res = $search->search($filtered_query, array('limit' => self::LIMIT));
         $objects = $this->transformer->transform($res->getResults());
 
         return new ResultSet($objects);

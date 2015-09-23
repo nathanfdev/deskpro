@@ -120,7 +120,7 @@ class FeedbackController extends AbstractController
         $sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($feedback);
 
         $related_finder  = new RelatedContentFinder($this->person, $feedback);
-        $related_content = $related_finder->getRelatedEntities();
+        $related_content = $related_finder->getRelatedEntities(true);
 
         $rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('feedback', $feedback['id'], 'counted');
 

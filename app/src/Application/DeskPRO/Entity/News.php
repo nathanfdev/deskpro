@@ -67,6 +67,8 @@ class News extends ContentAbstract implements HighlightableModelInterface
     protected $revisions;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     *
      * SWG\Property(name="labels", type="array", SWG\Items("string"))
      */
     protected $labels;
@@ -167,18 +169,51 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+        return $this;
+    }
+
+    /**
+     * @param LabelNews $label
+     * @return $this
+     */
     public function addLabel(LabelNews $label)
     {
         $label['news'] = $this;
         $this->labels->add($label);
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\LabelNews[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
     }
 
     public function _invalidatePageCache()
     {
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_news(-|_view_' . intval($this->getId()) . '-|_\d+)/');
+        $cache->invalidateRegex('/_news(-|_view_'.intval($this->getId()).'-|_\d+)/');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -208,7 +243,6 @@ class News extends ContentAbstract implements HighlightableModelInterface
      * Get Elasticsearch highlight data.
      *
      * @param null $field
-     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -249,9 +283,9 @@ class News extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name' => 'news',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
+                    'date_published_idx' => array('columns' => array(0 => 'date_published',),),
                     'status_idx' => array('columns' => array('status')),
-                ),
+                )
             )
         );
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
@@ -264,7 +298,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'scale' => 0,
                 'nullable' => false,
                 'columnName' => 'id',
-                'id' => true
+                'id' => true,
             )
         );
         $metadata->mapField(
@@ -287,7 +321,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'title'
+                'columnName' => 'title',
             )
         );
         $metadata->mapField(
@@ -297,7 +331,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'content'
+                'columnName' => 'content',
             )
         );
         $metadata->mapField(
@@ -307,7 +341,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'view_count'
+                'columnName' => 'view_count',
             )
         );
         $metadata->mapField(
@@ -317,7 +351,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'total_rating'
+                'columnName' => 'total_rating',
             )
         );
         $metadata->mapField(
@@ -327,7 +361,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'num_comments'
+                'columnName' => 'num_comments',
             )
         );
         $metadata->mapField(
@@ -337,7 +371,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'num_ratings'
+                'columnName' => 'num_ratings',
             )
         );
         $metadata->mapField(
@@ -348,7 +382,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'status'
+                'columnName' => 'status',
             )
         );
         $metadata->mapField(
@@ -359,7 +393,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'hidden_status'
+                'columnName' => 'hidden_status',
             )
         );
         $metadata->mapField(
@@ -369,7 +403,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => false,
-                'columnName' => 'date_created'
+                'columnName' => 'date_created',
             )
         );
         $metadata->mapField(
@@ -379,11 +413,11 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'precision' => 0,
                 'scale' => 0,
                 'nullable' => true,
-                'columnName' => 'date_published'
+                'columnName' => 'date_published',
             )
         );
         $metadata->mapField(
-            array('fieldName' => 'date_end', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'date_end')
+            array('fieldName' => 'date_end', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'date_end',)
         );
         $metadata->mapField(
             array(
@@ -391,7 +425,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'type' => 'string',
                 'length' => 10,
                 'nullable' => true,
-                'columnName' => 'end_action'
+                'columnName' => 'end_action',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
@@ -407,8 +441,8 @@ class News extends ContentAbstract implements HighlightableModelInterface
                         'referencedColumnName' => 'id',
                         'nullable' => true,
                         'onDelete' => 'cascade',
-                        'columnDefinition' => null
-                    )
+                        'columnDefinition' => null,
+                    ),
                 ),
                 'dpApi' => true
             )
@@ -417,17 +451,17 @@ class News extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName' => 'revisions',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsRevision',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy' => 'news'
+                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
+                'mappedBy' => 'news',
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'labels',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelNews',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
                 'mappedBy' => 'news',
-                'orphanRemoval' => true
+                'orphanRemoval' => true,
             )
         );
         $metadata->mapManyToOne(
@@ -442,8 +476,8 @@ class News extends ContentAbstract implements HighlightableModelInterface
                         'referencedColumnName' => 'id',
                         'nullable' => true,
                         'onDelete' => 'set null',
-                        'columnDefinition' => null
-                    )
+                        'columnDefinition' => null,
+                    ),
                 ),
                 'dpApi' => true
             )
@@ -460,8 +494,8 @@ class News extends ContentAbstract implements HighlightableModelInterface
                         'referencedColumnName' => 'id',
                         'nullable' => true,
                         'onDelete' => 'cascade',
-                        'columnDefinition' => null
-                    )
+                        'columnDefinition' => null,
+                    ),
                 ),
                 'dpApi' => true
             )

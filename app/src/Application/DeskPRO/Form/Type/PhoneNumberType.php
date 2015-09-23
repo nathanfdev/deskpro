@@ -59,6 +59,14 @@ class PhoneNumberType extends AbstractType
 				new NotBlank(array('message' => 'Phone number is invalid.')),
 			),
 		));
+
+		$builder->add('ext', 'hidden', array(
+			'required' => false,
+			'label' => false,
+			'attr' => array(
+				'class' => 'dp_phone_ext_hidden',
+			),
+		));
 		$builder->get('number')->addModelTransformer(new PhoneNumberModelTransformer());
 
 		if ($options['show_phone_label']) {

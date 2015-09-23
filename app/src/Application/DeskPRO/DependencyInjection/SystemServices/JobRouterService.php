@@ -39,7 +39,6 @@ use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\ImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
@@ -113,8 +112,6 @@ class JobRouterService
         }
 
         $router->addProcessor(new UsersImportProcessor($container));
-
-        $router->addProcessor(new ImportProcessor($container));
 
         return $router;
     }

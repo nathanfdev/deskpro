@@ -206,6 +206,7 @@ class TicketFilter extends AbstractEntityRepository
         return $filters;
     }
 
+
     /**
      * Gets an array of all team filters, grouped by agent team id.
      *
@@ -269,6 +270,7 @@ class TicketFilter extends AbstractEntityRepository
 
         return $grouped_filters;
     }
+
 
     /**
      * @param  $type
@@ -375,6 +377,8 @@ class TicketFilter extends AbstractEntityRepository
 
         if (is_int($var) or ctype_digit($var)) {
             $ticket_filter_id = (int) $var;
+        } elseif (is_string($var)) {
+            return $this->findOneBy(array('sys_name' => $var));
         } elseif (\is_object($var)) {
             if ($var instanceof Entity\TicketFilter) {
                 return $var;

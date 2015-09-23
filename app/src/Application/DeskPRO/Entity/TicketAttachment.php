@@ -105,7 +105,7 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set blob data.
+     * Set blob entity
      *
      * @param Blob $blob
      *
@@ -114,7 +114,6 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
     public function setBlob(Blob $blob)
     {
         $this->setModelField('blob', $blob);
-
         return $this;
     }
 

@@ -51,6 +51,19 @@
         'is_managed' => true
     ),
 
+    'english_gb' => array(
+        'id'         => 'english_gb',
+        'lang_code'  => 'eng',
+        'title'      => 'English (UK)',
+        'locale'     => 'en_GB',
+        'flag_image' => 'gb.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => true
+    ),
+
     'finnish' => array(
         'id'         => 'finnish',
         'lang_code'  => 'fin',
@@ -176,7 +189,7 @@
         'flag_image' => 'pl.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
     ),

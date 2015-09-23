@@ -58,6 +58,8 @@ class TicketChecker extends AbstractChecker
         'set_unresolved',
         'followed',
         'billing',
+        'associate_problem',
+        'disassociate_problem',
     );
 
     /**
@@ -108,6 +110,7 @@ class TicketChecker extends AbstractChecker
         # Can't view certain deps
         #------------------------------
 
+        $this->person->loadHelper('AgentPermissions');
         if ($ticket->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($ticket->department)) {
             return false;
         }
@@ -422,5 +425,71 @@ class TicketChecker extends AbstractChecker
         }
 
         return true;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return bool
+     */
+    public function canAssociateProblem(Ticket $ticket)
+    {
+        return $this->doCheck($ticket, 'associate_problem');
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return bool
+     */
+    public function canDisassociateProblem(Ticket $ticket)
+    {
+        return $this->doCheck($ticket, 'disassociate_problem');
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param $perm
+     * @return bool
+     */
+    protected function doCheck(Ticket $ticket, $perm)
+    {
+        if (!$this->canView($ticket)) {
+            return false;
+        }
+
+        // own
+        if ($this->person->hasPerm('agent_tickets.'.$perm.'_own')) {
+            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+                return true;
+            }
+
+            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+                return true;
+            }
+        }
+
+        // unassigned
+        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.'.$perm.'_unassigned')) {
+            return true;
+        }
+
+        // assigned
+        if ($ticket->agent && $this->person->hasPerm('agent_tickets.'.$perm.'_assigned')) {
+            return true;
+        }
+
+        // others
+        if ($ticket->agent && $this->person->hasPerm('agent_tickets.'.$perm.'_others')) {
+            return true;
+        }
+
+        // followed
+        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm(
+                'agent_tickets.'.$perm.'_followed'
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

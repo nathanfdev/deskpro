@@ -42,7 +42,7 @@ interface ValidatorInterface
      *
      * @return string
      */
-    public function getRecordType();
+    public function getEntityType();
 
     /**
      * Returns true on success or false if data is not valid.

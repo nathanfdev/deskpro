@@ -798,9 +798,9 @@ class TemplatingExtension extends \Twig_Extension
         return implode('', $new_format);
     }
 
-    public function timeLength($length, $max_unit = null)
+    public function timeLength($length, $max_unit = null, $as_html = false)
     {
-        return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit);
+        return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit, $as_html);
     }
 
     public function momentJsFormat($format)
@@ -1900,7 +1900,7 @@ HTML;
         return $html;
     }
 
-    public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
+    public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = array())
     {
         // Simple string, cant be a template so dont waste time evaluating it
         if (strpos($string, '{{') === false && strpos($string, '{%') === false) {
@@ -1909,7 +1909,6 @@ HTML;
 
         $vars = array(
             'performer'     => $context->getPersonContext(),
-            'ticket'        => $ticket,
             'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
             'site_name'     => $this->getContainer()->getSetting('core.site_name'),
             'user_vars'     => $context->getUserVars(),
@@ -1917,6 +1916,10 @@ HTML;
 
         if ($extra_vars) {
             $vars = array_merge($vars, $extra_vars);
+        }
+
+        if (!isset($vars['ticket'])) {
+            $vars['ticket'] = $ticket->toApiData();
         }
 
         try {

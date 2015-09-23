@@ -51,17 +51,34 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         $this->setName('dp:install');
         $this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Unused (exists for legacy)");
-        $this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "The initial admin email");
-        $this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "The initial admin password");
+        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, "The initial admin email");
+        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, "The initial admin password");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        try {
+            $ret = $this->doExecute($input, $output);
+            $this->sendInstallReport();
+            return $ret;
+        } catch (\Exception $e) {
+            $this->sendInstallReport($e);
+        }
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->ensureNotInstalled()) {
             exit;
         }
 
-        if (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
+        $is_user = true;
+        if (!$input->getOption('admin-email') && !$input->getOption('admin-password')) {
+            $input->setOption('admin-email', 'admin@example.com');
+            $input->setOption('admin-password', Strings::random());
+            $is_user = false;
+
+        } elseif (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
             echo "Please specify --admin-email and --admin-password\n";
 
             return 1;
@@ -158,6 +175,14 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $this->getOrm()->persist($agent);
         $this->getOrm()->flush();
+
+        if (!$is_user) {
+            $label = new Entity\LabelPerson();
+            $label['label'] = 'not_user';
+            $agent->addLabel($label);
+            $this->getOrm()->persist($label);
+            $this->getOrm()->flush();
+        }
 
         $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
 
@@ -318,5 +343,54 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     public function getOrm()
     {
         return App::getOrm();
+    }
+
+    protected function sendInstallReport($exception = null)
+    {
+        if ($exception) {
+            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+            unset($errinfo['exception']);
+        } else {
+            $errinfo = 0;
+        }
+
+        $install_time = 0;
+        try {
+            $install_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+        } catch (\Exception $e){}
+        if (!$install_time) {
+            $install_time = 0.0;
+        }
+
+        if (!defined('DP_BUILD_TIME')) {
+            if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+                require_once(DP_ROOT.'/sys/config/build-time.php');
+            }
+        }
+        if (!defined('DP_BUILD_NUM')) {
+            if (file_exists(DP_ROOT.'/sys/config/build-num.php')) {
+                require(DP_ROOT.'/sys/config/build-num.php');
+            }
+        }
+
+        $data = array(
+            'source_type'     => 'install.web',
+            'log'             => @file_get_contents($this->getContainer()->getLogDir() . '/install.log'),
+            'errinfo'         => $errinfo,
+            'install_token'   => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+            'nostats'         => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
+            'total_time'      => $install_time,
+            'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'build_num'       => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0
+        );
+
+        if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {
+            try {
+                $stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+                $data = array_merge($data, $stats_fetcher->getStats());
+            } catch (\Exception $e) {}
+        }
+
+        \Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
     }
 }

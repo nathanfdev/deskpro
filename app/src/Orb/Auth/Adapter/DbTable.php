@@ -43,7 +43,7 @@ use Orb\Log\Loggable;
 
 use Doctrine\DBAL\Connection;
 
-class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggable
+class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetchableInterface, Loggable
 {
     const OPT_TABLE              = 'table';
     const OPT_FIELD_ID           = 'field_id';
@@ -144,7 +144,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
         $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
     }
 
-    public function authenticate()
+    public function doAuthenticate()
     {
         if (!$this->set_username) {
             if ($this->logger) $this->logger->logDebug("Missing username");

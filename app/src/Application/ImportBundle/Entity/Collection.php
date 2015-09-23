@@ -30,9 +30,12 @@ namespace Application\ImportBundle\Entity;
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Exporting collection of entities.
+ * Exporting collection of entities
  *
  * Class Collection
+ * @package Application\ImportBundle\Entity
+ *
+ * @property EntityInterface[]|array $collection
  */
 final class Collection extends AbstractCollection
 {
@@ -72,21 +75,35 @@ final class Collection extends AbstractCollection
      * Add an entity
      *
      * @param EntityInterface $entity
-     *
      * @return $this
      */
     public function attach(EntityInterface $entity)
     {
         $this->collection[] = $entity;
+        return $this;
+    }
+
+    /**
+     * Remove an entity
+     *
+     * @param EntityInterface $entity
+     * @return $this
+     */
+    public function detach(EntityInterface $entity)
+    {
+        $key = array_search($entity, $this->collection, true);
+
+        if ($key !== false) {
+            unset($this->collection[$key]);
+        }
 
         return $this;
     }
 
     /**
-     * Merge another entity collection.
+     * Merge another entity collection
      *
      * @param Collection $collection
-     *
      * @return $this
      */
     public function merge(Collection $collection)
@@ -94,10 +111,74 @@ final class Collection extends AbstractCollection
         $this->expected_count += $collection->getExpectedCount();
 
         foreach ($collection as $entity) {
-            /* @var EntityInterface $entity */
+            /** @var EntityInterface $entity */
             $this->attach($entity);
         }
 
         return $this;
+    }
+
+    /**
+     * Converts collection's entities to array
+     *
+     * @return array
+     */
+    public function entitiesToArray()
+    {
+        $entities = array();
+        foreach ($this->collection as $entity) {
+            /** @var EntityInterface $entity */
+            $entities[] = $entity->toArray();
+        }
+
+        return $entities;
+    }
+
+    /**
+     * Checks if all entities has import map key
+     *
+     * @return bool
+     */
+    public function hasImportMapKey()
+    {
+        foreach ($this->collection as $entity) {
+            if ( ! $entity->getImportMapKey()) {
+                return false;
+            }
+        }
+
+        return count($this->collection) > 0;
+    }
+
+    /**
+     * Returns containing entity destinations
+     *
+     * @return array
+     */
+    public function getDestinations()
+    {
+        return array_map(
+            function(EntityInterface $entity) {
+                return $entity->getDestination();
+            },
+            $this->collection
+        );
+    }
+
+    /**
+     * Returns the max oid
+     *
+     * @return mixed
+     */
+    public function getMaxOid()
+    {
+        return empty($this->collection) ? 0 : max(
+            array_map(
+                function(EntityInterface $entity) {
+                    return $entity->getOid();
+                },
+                $this->collection
+            )
+        );
     }
 }

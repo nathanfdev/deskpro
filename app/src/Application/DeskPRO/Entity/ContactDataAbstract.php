@@ -136,6 +136,218 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * Set a contact type
+     *
+     * @param string $contact_type
+     * @return $this
+     */
+    public function setContactType($contact_type)
+    {
+        $this->setModelField('contact_type', (string)$contact_type);
+        return $this;
+    }
+
+    /**
+     * Set a comment
+     *
+     * @param $comment
+     * @return $this
+     */
+    public function setComment($comment = '')
+    {
+        $this->setModelField('comment', (string)$comment);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $field_1
+     * @return $this
+     */
+    public function setField1($field_1 = '')
+    {
+        $this->setModelField('field_1', (string)$field_1);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField1()
+    {
+        return $this->field_1;
+    }
+
+    /**
+     * @param string $field_2
+     * @return $this
+     */
+    public function setField2($field_2 = '')
+    {
+        $this->setModelField('field_2', (string)$field_2);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField2()
+    {
+        return $this->field_2;
+    }
+
+    /**
+     * @param string $field_3
+     * @return $this
+     */
+    public function setField3($field_3 = '')
+    {
+        $this->setModelField('field_3', (string)$field_3);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField3()
+    {
+        return $this->field_3;
+    }
+
+    /**
+     * @param string $field_4
+     * @return $this
+     */
+    public function setField4($field_4 = '')
+    {
+        $this->setModelField('field_4', (string)$field_4);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField4()
+    {
+        return $this->field_4;
+    }
+
+    /**
+     * @param string $field_5
+     * @return $this
+     */
+    public function setField5($field_5 = '')
+    {
+        $this->setModelField('field_5', (string)$field_5);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField5()
+    {
+        return $this->field_5;
+    }
+
+    /**
+     * @param string $field_6
+     * @return $this
+     */
+    public function setField6($field_6 = '')
+    {
+        $this->setModelField('field_6', (string)$field_6);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField6()
+    {
+        return $this->field_6;
+    }
+
+    /**
+     * @param string $field_7
+     * @return $this
+     */
+    public function setField7($field_7 = '')
+    {
+        $this->setModelField('field_7', (string)$field_7);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField7()
+    {
+        return $this->field_7;
+    }
+
+    /**
+     * @param string $field_8
+     * @return $this
+     */
+    public function setField8($field_8 = '')
+    {
+        $this->setModelField('field_8', (string)$field_8);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField8()
+    {
+        return $this->field_8;
+    }
+
+    /**
+     * @param string $field_9
+     * @return $this
+     */
+    public function setField9($field_9 = '')
+    {
+        $this->setModelField('field_9', (string)$field_9);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField9()
+    {
+        return $this->field_9;
+    }
+
+    /**
+     * @param string $field_10
+     * @return $this
+     */
+    public function setField10($field_10 = '')
+    {
+        $this->setModelField('field_10', (string)$field_10);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField10()
+    {
+        return $this->field_10;
+    }
+
+    /**
      * Get the DeskPRO form field object that knows how to render data etc.
      *
      * @return \Application\DeskPRO\ContactData\AbstractContactData
@@ -178,7 +390,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      *
      * @return mixed
      */
-    public function getSearchString()
+    public function getSearchString($prevent = false)
     {
         $pieces = array();
         for ($i = 1; $i <= 10; $i++) {
@@ -189,8 +401,10 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         }
 
         $pieces = implode(',', $pieces);
+        if (!$prevent) {
         $pieces = preg_replace('#\s#', '', $pieces);
         $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
+        }
 
         return $pieces;
     }

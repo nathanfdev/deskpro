@@ -30,26 +30,18 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * News entities validator.
+ * News entities validator
  *
  * Class News
+ * @package Application\ImportBundle\Generator\Validator
  */
 final class News extends AbstractConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_NEWS;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @var Entity\News
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
     }
 }

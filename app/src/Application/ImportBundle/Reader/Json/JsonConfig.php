@@ -27,14 +27,15 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 
 /**
- * Json data parser configuration.
+ * Json data parser configuration
  *
  * Class JsonConfig
+ * @package Application\ImportBundle\Reader\Json
  */
-class JsonConfig extends BaseConfig
+class JsonConfig implements ReaderConfigInterface
 {
     /**
      * @var string
@@ -42,12 +43,7 @@ class JsonConfig extends BaseConfig
     private $path;
 
     /**
-     * @var bool
-     */
-    private $exclude_done = false;
-
-    /**
-     * Constructor.
+     * Constructor
      *
      * @param string $path
      */
@@ -66,38 +62,19 @@ class JsonConfig extends BaseConfig
 
     /**
      * @param string $path
-     *
      * @return $this
      */
     public function setPath($path)
     {
         $this->path = $path;
-
         return $this;
     }
 
     /**
-     * @return boolean
+     * {@inheritdoc}
      */
-    public function isExcludeDone()
+    public static function fromArray(array $data)
     {
-        return $this->exclude_done;
-    }
-
-    /**
-     * @param boolean $exclude_done
-     *
-     * @return $this
-     */
-    public function setExcludeDone($exclude_done)
-    {
-        $this->exclude_done = $exclude_done;
-
-        return $this;
-    }
-
-    static public function fromArray(array $data)
-    {
-
+        // todo implement?
     }
 }

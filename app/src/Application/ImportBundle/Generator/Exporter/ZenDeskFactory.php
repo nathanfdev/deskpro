@@ -27,11 +27,15 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\EntityRepository;
 use Guzzle\Http\Client;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ZenDesk data exporter factory
@@ -44,29 +48,42 @@ class ZenDeskFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(BaseConfig $config)
+    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
     {
-        /** @var ZenDeskReaderInterface $reader */
-        $reader = ZenDeskReaderFactory::createReader($config);
-        $storage = new Parser\ZenDesk\PeopleStorage();
+        if ( ! $config instanceof ZenDeskConfig) {
+            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        }
 
-        // People parser
-        $people = new Parser\ZenDesk\People($reader);
-        $people->setPeopleStorage($storage);
+        $http_client = new Client();
 
-        // Tickets parser
-        $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader);
-        $ticket_people->setPeopleStorage($storage);
+        /** @var ZenDeskReaderFactoryInterface $reader_factory */
+        $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
+        /** @var FormatterInterface $formatter */
+        $formatter = $container->get('deskpro.import.formatter');
+
+        $reader  = $reader_factory->createReader($config);
+        $storage = new Parser\PeopleStorage();
+
+        $helpers = new ParserHelperSet();
+        $helpers
+            ->attach(new Parser\ZenDesk\Helper\Attachment($formatter, $http_client))
+            ->attach(new Parser\ZenDesk\Helper\Translations($formatter))
+        ;
+
+        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $storage);
+        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $storage);
 
         // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\ZenDesk\Downloads($reader))
-            ->attach(new Parser\ZenDesk\Feedback($reader))
-            ->attach(new Parser\ZenDesk\Articles($reader))
-            ->attach(new Parser\ZenDesk\News($reader))
-            ->attach($people)
-            ->attach(new Parser\ZenDesk\Tickets($reader, $ticket_people, new Client()))
+            ->attach(new Parser\ZenDesk\Downloads($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
+            ->attach(new Parser\ZenDesk\ArticleCategories($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
+            ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people))
+            ->attach(new Parser\ZenDesk\Organizations($reader, $formatter, $helpers))
         ;
 
         return new ZenDesk($parsers, $reader);

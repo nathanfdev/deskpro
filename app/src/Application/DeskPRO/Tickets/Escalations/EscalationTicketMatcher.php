@@ -141,7 +141,7 @@ class EscalationTicketMatcher
                         $user_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
                         $has_user_terms = true;
                     } elseif (strpos($term['type'], 'org_') === 0) {
-                        $org_searcher->addTerm($term['type'], $term['op'], $term['options']);
+                        $org_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
                         $has_org_terms = true;
                     } else {
                         $searcher->addAnyTerm($term['type'], $term['op'], $term['options']);

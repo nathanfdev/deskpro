@@ -71,6 +71,11 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     protected $all_labels;
 
+    /*
+     * @var array
+     */
+    protected $all_problems;
+
     /**
      * @var array
      */
@@ -188,6 +193,36 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_labels;
     }
 
+    public function getAllProblems()
+    {
+        if ($this->all_problems !== null) {
+            return $this->all_problems;
+        }
+
+        if (!$this->ticket_count) {
+            $this->all_problems = array();
+
+            return $this->all_problems;
+        }
+
+        $ticket_ids = implode(',', $this->ticket_ids);
+
+        $this->all_problems = $this->db->fetchAllGrouped(
+            "
+            SELECT pt.ticket_id, p.id, p.title
+            FROM problem2tickets pt
+            JOIN problems p ON p.id = pt.problem_id
+            WHERE pt.ticket_id IN ($ticket_ids)
+        ",
+            array(),
+            'ticket_id',
+            null,
+            'title'
+        );
+
+        return $this->all_problems;
+    }
+
     /**
      * @return array
      */
@@ -217,6 +252,7 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_user_field_data;
     }
 
+
     /**
      * @param Ticket $ticket
      *
@@ -228,6 +264,7 @@ class TicketResultsDisplay implements PersonContextInterface
 
         return isset($this->all_user_field_data[$person->getId()]) ? $this->all_user_field_data[$person->getId()] : array();
     }
+
 
     /**
      * @return array
@@ -274,7 +311,6 @@ class TicketResultsDisplay implements PersonContextInterface
      * Get an array of labels applied to a ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
-     *
      * @return array
      */
     public function getTicketLabels(Ticket $ticket)
@@ -283,6 +319,14 @@ class TicketResultsDisplay implements PersonContextInterface
 
         return empty($this->all_labels[$ticket->id]) ? array() : $this->all_labels[$ticket->id];
     }
+
+    public function getTicketProblems(Ticket $ticket)
+    {
+        $this->getAllProblems();
+
+        return empty($this->all_problems[$ticket->id]) ? array() : $this->all_problems[$ticket->id];
+    }
+
 
     /**
      * Check if a ticket has labels.
@@ -377,6 +421,7 @@ class TicketResultsDisplay implements PersonContextInterface
         return new \DateTime('@'.min($times));
     }
 
+
     /**
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      *
@@ -405,6 +450,7 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->people[$ticket->agent->getId()];
     }
 
+
     /**
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      *
@@ -422,6 +468,7 @@ class TicketResultsDisplay implements PersonContextInterface
 
         return $this->dep_names[$ticket->department->getId()];
     }
+
 
     /**
      * Gets array of previews for each ticket.
@@ -541,7 +588,6 @@ class TicketResultsDisplay implements PersonContextInterface
      * Get an array of ticket message previews.
      *
      * @param Ticket $ticket
-     *
      * @return array
      */
     public function getTicketPreview($ticket)

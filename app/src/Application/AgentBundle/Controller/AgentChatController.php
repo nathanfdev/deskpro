@@ -109,7 +109,7 @@ class AgentChatController extends AbstractController
         $sessions = $this->em->createQuery("
             SELECT s,p
             FROM DeskPRO:Session s
-            LEFT JOIN s.person p
+            JOIN s.person p
             WHERE p.is_agent = true AND s.date_last > ?1
             GROUP BY p.id
             ORDER BY s.id DESC

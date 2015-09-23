@@ -31,7 +31,8 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
-use Symfony\Component\Validator\Validator as SymfonyValidator;
+use Application\ImportBundle\Service\Import as ImportService;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
@@ -45,7 +46,7 @@ use Exception;
 final class Generator extends AbstractGenerator implements GeneratorInterface, ExporterAwareInterface
 {
     /**
-     * @var Exporter\ExporterInterface
+     * @var Exporter\AbstractExporter
      */
     private $exporter;
 
@@ -60,39 +61,31 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     private $writer;
 
     /**
+     * @var ImportService
+     */
+    protected $importer;
+
+    /**
      * Constructor
      *
      * @param Exporter\ExporterInterface $exporter
-     * @param Writer\WriterInterface     $writer
-     * @param SymfonyValidator           $validator
+     * @param Validator\Collection       $validators
      * @param GeneratorConfig            $config
+     * @param ImportService              $importer
+     * @param Writer\WriterInterface     $writer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
-        Writer\WriterInterface     $writer = null,
-        SymfonyValidator           $validator,
-        GeneratorConfig            $config
+        Validator\Collection       $validators,
+        GeneratorConfig            $config,
+        ImportService              $importer,
+        Writer\WriterInterface     $writer = null
     ) {
         $this->config     = $config;
         $this->exporter   = $exporter;
         $this->writer     = $writer;
-        $this->validators = new Validator\Collection();
-        $this->validators
-            ->attach(new Validator\Download($validator))
-            ->attach(new Validator\Feedback($validator))
-            ->attach(new Validator\Articles($validator))
-            ->attach(new Validator\News($validator))
-            ->attach(new Validator\Person($validator))
-            ->attach(new Validator\Ticket($validator))
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfig()
-    {
-        return $this->config;
+        $this->importer   = $importer;
+        $this->validators = $validators;
     }
 
     /**
@@ -103,7 +96,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $count    = 0;
         $exporter = $this->getExporter();
 
-        foreach ($this->config->getEntityTypes() as $record_type) {
+        foreach ($this->getRequiredExportersOrderedEntityTypes() as $record_type) {
             $count += $exporter->getCountByType($record_type);
         }
 
@@ -115,58 +108,97 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      */
     public function generate()
     {
-        $exporter     = $this->getExporter();
-        $outputWriter = $this->getWriter();
-        $collection   = new GenerateCollection();
+        try {
+            $exporter     = $this->getExporter();
+            $outputWriter = $this->getWriter();
+            $collection   = new GenerateCollection();
 
-        // Exports data to a collection of entities
-        foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
-            $this->exporterLogHeader($type);
-            $collection->attach($type, $exporter->exportByType($type));
-        }
+            $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
 
-        // Writes batch config (even no entities to write to support "retry-after" timeout)
-        // Writes batch config before validation to skip broken batches
+            // Exports data to a collection of entities
+            foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
+                $this->exporterLogHeader($type);
+                $collection->attach($type, $exporter->exportByType($type));
+            }
 
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            $outputWriter->setBatchConfig($exporter->getUpdatedBatchConfig());
-            $outputWriter->writeBatchConfig();
-        }
+            // Writes batch config (even no entities to support "retry-after" timeout)
+            // Writes batch config before validation to skip broken batches
 
-        if ($collection->hasEntities()) {
-            // Validate the collection of entities
-            foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
-                if ($collection->hasEntitiesByType($type)) {
-                    $entities   = $collection->getByEntityType($type);
-                    $exceptions = $this->validateExportingCollection($type, $entities);
+            if ($exporter instanceof Exporter\ExporterBatchInterface) {
+                $outputWriter->setBatchConfig($exporter->getUpdatedBatchConfig());
+                $outputWriter->writeBatchConfig();
+            }
 
-                    if (count($exceptions) > 0) {
-                        throw new GeneratorException($exceptions);
+            if ($collection->hasEntities()) {
+                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
+
+                // Validate the collection of entities
+                foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
+                    if ($collection->hasEntitiesByType($type)) {
+                        $entities   = $collection->getByEntityType($type);
+                        $exceptions = $this->validateExportingCollection($type, $entities);
+
+                        if (count($exceptions) > 0) {
+                            foreach ($exceptions as $exception) {
+                                // Removing broken entities
+                                $collection->detach($exception->getEntity());
+                                $this->logAlert(sprintf(
+                                    "Validator failure for %s on record #%s: %s",
+
+                                    get_class($exception->getEntity()),
+                                    $exception->getEntity()->getOid(),
+                                    $exception->getErrors())
+                                );
+
+                                $this->logInfo(json_encode($exception->getEntity()->toArray()));
+
+                                $raw_data = $exception->getEntity()->getRawData();
+                                if ($raw_data) {
+                                    foreach (explode("\n", KernelErrorHandler::varToString($raw_data, 2)) as $line) {
+                                        $this->logInfo($line);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_IMPORT);
+
+                // Writes entities to a storage
+                $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
+                $outputWriter->prepare();
+
+                foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
+                    if ($collection->hasEntitiesByType($type)) {
+                        $this->writerLogHeader($type);
+                        $entities = $collection->getByEntityType($type);
+
+                        foreach ($entities as $entity) {
+                            $this->advanceProgressBar();
+                            $outputWriter->writeData($entity);
+                        }
                     }
                 }
             }
 
-            // Writes entities to a storage
-            $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
-            $outputWriter->prepare();
-
-            foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
-                if ($collection->hasEntitiesByType($type)) {
-                    $this->writerLogHeader($type);
-                    $entities = $collection->getByEntityType($type);
-
-                    foreach ($entities as $entity) {
-                        $this->advanceProgressBar();
-
-                        /** @var Entity\EntityInterface $entity */
-                        $outputWriter->writeData($entity);
-                    }
-                }
+            if ($this->progress_bar && $collection->getSkippedCount()) {
+                $this->progress_bar->advance($collection->getSkippedCount() * 2);
             }
-        }
 
-        if ($this->progress_bar && $collection->getSkippedCount()) {
-            $this->progress_bar->advance($collection->getSkippedCount() * 2);
+            if ($exporter instanceof Exporter\ExporterBatchInterface) {
+                if ( ! $exporter->getUpdatedBatchConfig()->getHasRemaining()) {
+                    $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+                }
+
+            } else {
+                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+            }
+
+        } catch (\Exception $e) {
+            // todo em closed
+            // $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
+            throw $e;
         }
     }
 
@@ -178,7 +210,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $exporter   = $this->getExporter();
         $exceptions = new ExceptionCollection();
 
-        foreach ($this->config->getEntityTypes() as $type) {
+        foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
             $this->exporterLogHeader($type);
 
             $collection = $exporter->exportByType($type);
@@ -195,7 +227,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     /**
      * Get exporter by configuration type
      *
-     * @return Exporter\ExporterInterface
+     * @return Exporter\AbstractExporter
      * @throws Exception
      */
     public function getExporter()
@@ -224,15 +256,12 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     private function setHelpers($handler)
     {
         if ($this->config && $handler instanceof GeneratorConfigAwareInterface) {
-            /** @var GeneratorConfigAwareInterface $handler */
             $handler->setConfig($this->config);
         }
         if ($this->logger && $handler instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $handler */
             $handler->setLogger($this->logger);
         }
         if ($this->progress_bar && $handler instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $handler */
             $handler->setProgressBarHelper($this->progress_bar);
         }
     }
@@ -243,19 +272,18 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * @param string            $type
      * @param Entity\Collection $collection
      *
-     * @return ExceptionCollection
+     * @return ExceptionCollection|ValidatorExceptionInterface[]
      */
     private function validateExportingCollection($type, Entity\Collection $collection)
     {
         $exceptions = new ExceptionCollection();
-        $validators = $this->validators->getByRecordType($type);
+        $validators = $this->validators->getByEntityType($type);
 
         foreach ($collection as $entity) {
             $this->advanceProgressBar();
 
             foreach ($validators as $validator) {
                 try {
-                    /** @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
 
                 } catch (ValidatorExceptionInterface $e) {
@@ -329,18 +357,13 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             throw new Exception('Generator configuration is not defined');
         }
 
-        $_types = array();
+        $allowed_types = array();
         foreach ($types as $type) {
             if ($this->config->hasEntityType($type)) {
-                $_types[] = $type;
+                $allowed_types[] = $type;
             }
         }
 
-        return $_types;
-    }
-
-    public function isReady()
-    {
-        return $this->getExporter()->isReady();
+        return $allowed_types;
     }
 }

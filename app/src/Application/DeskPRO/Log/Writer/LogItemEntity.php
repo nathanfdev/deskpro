@@ -36,6 +36,21 @@ use DeskPRO\Kernel\KernelErrorHandler;
 
 class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
 {
+    private $rows_info = array();
+    private $auto_flush_at = 50;
+
+    /**
+     * @return int
+     */
+    private function getMaxSize()
+    {
+        static $max_size = null;
+        if ($max_size === null) {
+            $max_size = App::getDb()->getMaxPacketSize();
+        }
+        return $max_size;
+    }
+
     public function _write(\Orb\Log\LogItem $log_item)
     {
         try {
@@ -45,7 +60,7 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
             $data     = $log_item->getExtra() ? serialize($log_item->getExtra()) : null;
             $data_len = $data ? strlen($data) : 0;
 
-            $max_size = App::getDb()->getMaxPacketSize();
+            $max_size = $this->getMaxSize();
             if (($message_len + $data_len) * 2 >= $max_size) {
                 $message     = substr($message, 0, ($max_size - 50) /2);
                 $message_len = strlen($message);
@@ -55,7 +70,7 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
                 }
             }
 
-            App::getDb()->insert('log_items', array(
+            $this->rows_info[] = array('size' => $data_len+$message_len, 'row' => array(
                 'log_name'         => $log_item->getLogName(),
                 'session_name'     => $log_item->getSessionName(),
                 'message'          => $message,
@@ -65,6 +80,40 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
                 'flag'             => $log_item->getFlag() ?: null,
                 'data'             => $data,
             ));
+
+            if (isset($this->rows_info[$this->auto_flush_at])) {
+                $this->flush();
+            }
+        } catch (\Exception $e) {
+            KernelErrorHandler::logException($e, false);
+        }
+    }
+
+    public function flush()
+    {
+        try {
+            $max_size = $this->getMaxSize();
+
+            $rows = array_reverse($this->rows_info);
+            $this->rows_info = array();
+
+            while ($rows) {
+                $size = 0;
+                $count = 0;
+                $batch = array();
+                do {
+                    $r = array_pop($rows);
+                    if (!$r) break;
+                    $batch[] = $r['row'];
+                    ++$count;
+                    $size += $r['size'];
+                } while (($size + ($count*255)) < $max_size && $count <= 60);
+
+                if ($batch) {
+                    App::getDb()->batchInsert('log_items', $batch);
+                }
+            }
+
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e, false);
         }

@@ -131,7 +131,7 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 						var count = $('li', this.resultsEl).length;
 
 						if (count > 6) {
-							var remainCount = count - 6;
+							var remainCount = count - 5;
 							$('.count', this.moreLink).text(remainCount);
 							this.moreLink.show();
 

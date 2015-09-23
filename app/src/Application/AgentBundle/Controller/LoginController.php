@@ -35,6 +35,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -76,6 +77,35 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
             $url = App::getSetting('core.deskpro_url') . ($this->request->isIndexIncluded() ? 'index.php/' : '') . 'agent/';
             return $this->redirect($url);
+        }
+
+        /**
+         * If I am not already logged in
+         * If `core.setup_initial` is not set (this is how we know if you're going to /start)
+         * If there is only 1 user in the db
+         * And if that user has is_user=false
+         * auto-start a session for that user
+         */
+        if (!$this->settings->get('core.setup_initial')) {
+            $persons = $this->em->getRepository('DeskPRO:Person')->findBy(array(), array(), 2);
+
+            if (count($persons) === 1) {
+                /** @var Person $person */
+                $person = reset($persons);
+
+                if ($person->getLabelManager()->hasLabel('not_user')) {
+                    $this->session->invalidate();
+                    $this->session->set('auth_person_id', $person['id']);
+                    $this->session->set('dp_interface', DP_INTERFACE);
+                    $this->session->setFlash('is_from_login', 'yes');
+                    $this->session->save();
+                    App::setCurrentPerson($person);
+
+                    if ($return) {
+                        return $this->redirect($return);
+                    }
+                }
+            }
         }
 
         $has_done_reset = false;

@@ -128,7 +128,7 @@ class DateTime extends HandlerAbstract
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if ($data && !is_scalar($data)) {
-            return $this->makeErrorArray(array('invalid_input'));
+            return $this->makeErrorArray(array('date_invalid'));
         }
 
         // Timestamp value
@@ -159,7 +159,7 @@ class DateTime extends HandlerAbstract
         if ($data) {
             $date = \DateTime::createFromFormat('Y-m-d H:i', $data, App::getCurrentPerson()->getDateTimezone());
             if (!$date) {
-                return $this->makeErrorArray(array('invalid_input'));
+                return $this->makeErrorArray(array('date_invalid'));
             }
         } else {
             return array();
@@ -183,7 +183,7 @@ class DateTime extends HandlerAbstract
         // Days of week
         if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
             if (!in_array($dow, $valid_dow)) {
-                return $this->makeErrorArray(array('invalid_date_dow'));
+                return $this->makeErrorArray(array('date_invalid_dow'));
             }
         }
 
@@ -197,7 +197,7 @@ class DateTime extends HandlerAbstract
                 $d1->setTime(0, 0, 0);
 
                 if ($date_admin < $d1) {
-                    return $this->makeErrorArray(array('invalid_date_range'));
+                    return $this->makeErrorArray(array('date_invalid_range'));
                 }
             }
             if ($d2) {
@@ -205,7 +205,7 @@ class DateTime extends HandlerAbstract
                 $d2->setTime(23, 59, 59);
 
                 if ($date_admin > $d2) {
-                    return $this->makeErrorArray(array('invalid_date_range'));
+                    return $this->makeErrorArray(array('date_invalid_range'));
                 }
             }
 
@@ -230,7 +230,7 @@ class DateTime extends HandlerAbstract
             $d2->setTime(23, 59, 59);
 
             if ($date_admin < $d1 || $date_admin > $d2) {
-                return $this->makeErrorArray(array('invalid_date_range'));
+                return $this->makeErrorArray(array('date_invalid_range'));
             }
         }
 

@@ -85,12 +85,17 @@ function deskpro_install_check_reqs()
         $errors['ldap_check'] = 'recommended';
     }
 
+    $ldap_conn_limit = @ini_get('ldap.max_links');
+    if ($ldap_conn_limit != '-1' && (int) $ldap_conn_limit < 5) {
+        $errors['ldap_max_limit'] = 'recommended';
+    }
+
     return $errors;
 }
 
 function deskpro_install_check_version()
 {
-    return version_compare(phpversion(), '5.3.2', '>=');
+    return version_compare(phpversion(), '5.3.9', '>=');
 }
 
 function deskpro_install_check_pcre()

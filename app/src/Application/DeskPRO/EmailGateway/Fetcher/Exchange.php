@@ -26,15 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Storage;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 
 /**
- * Fetches mail from an exchange server.
+ * Fetches mail from an exchange server
  */
 class Exchange extends AbstractFetcher
 {
@@ -64,42 +68,40 @@ class Exchange extends AbstractFetcher
     protected $storage;
 
     /**
-     * Messages retrieved in the current fetch.
+     * Messages retrieved in the current fetch
      *
      * @var Array An array of messages
      */
     protected $messages;
 
     /**
-     * Mailbox name to move messages after processing.
-     *
+     * Mailbox name to move messages after processing
      * @var String Mailbox name
      */
     private $archive_mailbox;
 
     /**
-     * Mailbox name to read messages from.
-     *
+     * Mailbox name to read messages from
      * @var String Mailbox name
      */
     private $read_mailbox;
 
     /**
-     * Max number of email IDs to fetch in one go.
-     *
+     * Max number of email IDs to fetch in one go
      * @var int
      */
     protected $fetch_limit = 100;
 
     /**
-     * Next Message index to read.
+     * Next Message index to read
      *
      * @var int
      */
     protected $next_index = 0;
 
+
     /**
-     * Initiates the connection.
+     * Initiates the connection
      *
      * @return \Zend\Mail\Storage\Pop3
      */
@@ -107,10 +109,12 @@ class Exchange extends AbstractFetcher
     {
         $options = array();
 
-        switch ($this->account->incoming_account->getType()) {
+        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+
+        switch ($incoming_account->getType()) {
             case 'exchange':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $exchange_config */
-                $exchange_config = $this->account->incoming_account;
+                $exchange_config = $incoming_account;
 
                 $options['host']         = $exchange_config->host;
                 $options['port']         = $exchange_config->port;
@@ -126,10 +130,10 @@ class Exchange extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
+                throw new \InvalidArgumentException("Unknown account type: " . $incoming_account->getType());
         }
 
-        $this->mode            = $options['mode'];
+        $this->mode = $options['mode'];
         $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
         $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
@@ -147,7 +151,7 @@ class Exchange extends AbstractFetcher
         }
 
         $unread_only = false;
-        $folder      = null;
+        $folder = null;
 
         if ($this->mode == self::MODE_READ) {
             $unread_only = true;
@@ -166,8 +170,9 @@ class Exchange extends AbstractFetcher
         return $this->storage;
     }
 
+
     /**
-     * Gets the message storage.
+     * Gets the message storage
      *
      * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
      */
@@ -176,9 +181,10 @@ class Exchange extends AbstractFetcher
         return $this->storage;
     }
 
+
     /**
      * Gets the next message
-     * Iterates over the fetched IDs and retrieves the next message in list.
+     * Iterates over the fetched IDs and retrieves the next message in list
      *
      * @return object
      */
@@ -187,9 +193,9 @@ class Exchange extends AbstractFetcher
         return $this->storage->getEmailParts($this->messages[$this->next_index]);
     }
 
+
     /**
      * {@inheritdoc}
-     *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
@@ -209,10 +215,10 @@ class Exchange extends AbstractFetcher
         $message = $this->storage->getEmailProps($message_id);
 
         if (!$message) {
-            return;
+            return null;
         }
 
-        $raw_message       = new RawMessage();
+        $raw_message = new RawMessage();
         $raw_message->id   = $message_id;
         $raw_message->uid  = $message_id;
         $raw_message->size = $message->Size;
@@ -238,14 +244,14 @@ class Exchange extends AbstractFetcher
 
         // Reads and formats the Message header
         // To be compatible with the RawMessage
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL . $EOL)) {
+            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers, ) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -255,7 +261,7 @@ class Exchange extends AbstractFetcher
 
     /**
      * Processes the message after reading it.
-     * Moves it to the DP_Mailbox folder marking it "read".
+     * Moves it to the DP_Mailbox folder marking it "read"
      *
      * @param int $id ID of the message
      */

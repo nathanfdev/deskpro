@@ -61,6 +61,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     private $is_admin = false;
 
     /**
+     * @var bool
+     */
+    private $is_disabled = false;
+
+    /**
+     * @var bool
+     */
+    private $is_deleted = false;
+
+    /**
      * @var string
      */
     private $first_name;
@@ -133,6 +143,11 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     private $user_groups = array();
 
     /**
+     * @var ContactData[]
+     */
+    private $contact_data;
+
+    /**
      * @var Collection
      */
     private $custom_fields;
@@ -142,6 +157,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
      */
     public function __construct()
     {
+        $this->contact_data  = new Collection();
         $this->custom_fields = new Collection();
     }
 
@@ -186,7 +202,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set person as user
+     * Mark person as user
      * If password is empty then initial password will be set up
      *
      * @param boolean $is_user
@@ -209,7 +225,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set person as admin
+     * Mark person as admin
      *
      * @param boolean $is_admin
      * @return $this
@@ -217,12 +233,60 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     public function setAsAdmin($is_admin)
     {
         $this->is_admin = (bool)$is_admin;
+        if ($this->is_admin) {
+            $this->is_agent = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Is disabled?
+     *
+     * @return boolean
+     */
+    public function isDisabled()
+    {
+        return $this->is_disabled;
+    }
+
+    /**
+     * Mark person as disabled
+     *
+     * @param boolean $is_disabled
+     * @return $this
+     */
+    public function setAsDisabled($is_disabled)
+    {
+        $this->is_disabled = (bool)$is_disabled;
+        return $this;
+    }
+
+    /**
+     * Is deleted?
+     *
+     * @return boolean
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
+    }
+
+    /**
+     * Mark person as deleted
+     *
+     * @param boolean $is_deleted
+     * @return $this
+     */
+    public function setAsDeleted($is_deleted)
+    {
+        $this->is_deleted = (bool)$is_deleted;
         return $this;
     }
 
     /**
      * Returns person first name
-     * If property "first_name" is empty tries to parse person name
+     * If property "first_name" is empty then tries to parse person name
      *
      * @return string
      */
@@ -231,11 +295,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
         if ($this->first_name) {
             return $this->first_name;
         }
-        if ($this->getName()) {
-            $names = @explode(' ', $this->getName());
 
-            if (isset($names[0])) {
-                return $names[0];
+        $name = $this->getName();
+        if ($name) {
+            $names = explode(' ', $name);
+
+            if (count($names) > 1) {
+                array_pop($names);
+                return implode(' ', $names);
+            } else {
+                return $name;
             }
         }
 
@@ -256,7 +325,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
 
     /**
      * Returns person last name
-     * If property "last_name" is empty tries to parse person name
+     * If property "last_name" is empty then tries to parse person name
      *
      * @return string
      */
@@ -265,11 +334,13 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
         if ($this->last_name) {
             return $this->last_name;
         }
-        if ($this->getName()) {
-            $names = @explode(' ', $this->getName());
 
-            if (isset($names[1])) {
-                return $names[1];
+        $name = $this->getName();
+        if ($name) {
+            $names = explode(' ', $name);
+
+            if (count($names) > 1) {
+                return array_pop($names);
             }
         }
 
@@ -411,10 +482,10 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     /**
      * Set time zone
      *
-     * @param DateTimeZone $timezone
+     * @param DateTimeZone|null $timezone
      * @return $this
      */
-    public function setTimezone(DateTimeZone $timezone)
+    public function setTimezone(DateTimeZone $timezone = null)
     {
         $this->timezone = $timezone;
         return $this;
@@ -504,6 +575,22 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
+     * Checking for person's organization info
+     *
+     * @return bool
+     */
+    public function isOrganizationValid()
+    {
+        if ($this->getOrganizationPosition()) {
+            if ( ! $this->getOrganization()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Returns person emails
      *
      * @return array
@@ -575,6 +662,28 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
+     * Returns person contact data
+     *
+     * @return Collection|ContactData[]
+     */
+    public function getContactData()
+    {
+        return $this->contact_data;
+    }
+
+    /**
+     * Add an person contact data
+     *
+     * @param ContactData $contact
+     * @return $this
+     */
+    public function addContact(ContactData $contact)
+    {
+        $this->contact_data->attach($contact);
+        return $this;
+    }
+
+    /**
      * Returns a collection of person custom fields
      *
      * @return Collection
@@ -605,24 +714,21 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             throw new \Exception('Date created is not set up');
         }
 
-        $custom_fields = array();
-        foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
-            $custom_fields[] = $custom_field->toArray();
-        }
-
         return array(
             'oid'                   => $this->oid,
+            'import_map_key'        => $this->import_map_key,
             'is_agent'              => $this->is_agent,
             'is_user'               => $this->is_user,
             'is_admin'              => $this->is_admin,
+            'is_disabled'           => $this->is_disabled,
+            'is_deleted'            => $this->is_deleted,
             'first_name'            => $this->first_name,
             'last_name'             => $this->last_name,
             'name'                  => $this->name,
             'override_display_name' => $this->override_display_name,
             'password'              => $this->password,
             'password_scheme'       => $this->password_scheme,
-            'timezone'              => $this->timezone->getName(),
+            'timezone'              => $this->timezone ? $this->timezone->getName() : null,
             'date_created'          => $this->date_created->format('Y-m-d H:i:s'),
             'language'              => $this->language,
             'organization'          => $this->organization,
@@ -630,7 +736,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             'emails'                => $this->emails,
             'labels'                => $this->labels,
             'user_groups'           => $this->user_groups,
-            'custom_fields'         => $custom_fields,
+            'contact_data'          => $this->contact_data->entitiesToArray(),
+            'custom_fields'         => $this->custom_fields->entitiesToArray(),
         );
     }
 
@@ -654,7 +761,18 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
                 ),
             )))
 
+            ->addPropertyConstraint('user_groups', new Constraints\All(array(
+                'constraints' => array(
+                    new Constraints\NotBlank(),
+                ),
+            )))
+
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
-            ->addGetterConstraint('firstEmail', new Constraints\Email());
+            ->addGetterConstraint('firstEmail', new Constraints\Email())
+            ->addGetterConstraint('organizationValid', new Constraints\True())
+
+            ->addPropertyConstraint('contact_data', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
+        ;
     }
 }

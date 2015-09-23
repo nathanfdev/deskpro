@@ -245,6 +245,7 @@ class Ticket extends AbstractEntityRepository
         return $ticket;
     }
 
+
     /**
      * Get tickets by specific ids.
      *
@@ -382,7 +383,6 @@ class Ticket extends AbstractEntityRepository
      *
      * @param array $people
      * @param null  $limit
-     *
      * @return array
      */
     public function getTicketsForPeople(array $people, $limit = null)
@@ -432,7 +432,6 @@ class Ticket extends AbstractEntityRepository
      *
      * @param \Application\DeskPRO\Entity\Person $person
      * @param null                               $status
-     *
      * @return int
      */
     public function countTicketsForPerson(Entity\Person $person, $status = null)
@@ -455,9 +454,11 @@ class Ticket extends AbstractEntityRepository
             $count = App::getDb()->fetchColumn("
                 SELECT SUM(count)
                 FROM (
-                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? ".($status ? " AND tickets.status IN ($status) " : '')."
+                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . " AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     UNION
-                    SELECT COUNT(*) AS count FROM tickets_participants WHERE tickets_participants.person_id = ? ".($status ? " AND tickets.status IN ($status) " : '')."
+                    SELECT COUNT(*) AS count FROM tickets_participants
+                    LEFT JOIN tickets ON (tickets.id = tickets_participants.ticket_id)
+                    WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . " AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                 ) a
             ", array($person->id, $person->id));
         }
@@ -472,7 +473,6 @@ class Ticket extends AbstractEntityRepository
      *
      * @param \Application\DeskPRO\Entity\Person $person
      * @param null                               $status
-     *
      * @return array
      */
     public function getCountInfoForPerson(Entity\Person $person, $status = null)
@@ -500,6 +500,7 @@ class Ticket extends AbstractEntityRepository
                     WHERE
                         tickets.organization_id = ? ".($status ? " AND tickets.status IN ($status) " : '')."
                         AND tickets.department_id IN (".implode(',', $allowed_ids).")
+                        AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                 ", array($person->getOrganizationId()));
             }
         }
@@ -560,7 +561,6 @@ class Ticket extends AbstractEntityRepository
      *
      * @param \Application\DeskPRO\Entity\Organization $org
      * @param null                                     $status
-     *
      * @return int
      */
     public function countTicketsForOrganization(Entity\Organization $org, $status = null)
@@ -587,7 +587,6 @@ class Ticket extends AbstractEntityRepository
      *
      * @param \Application\DeskPRO\Entity\Person $person
      * @param int                                $max    The max number of results
-     *
      * @return array
      */
     public function getLatestByUser(Entity\Person $person, $max = 20, $only_open = false)
@@ -646,7 +645,6 @@ class Ticket extends AbstractEntityRepository
      *
      * @param \Application\DeskPRO\Entity\TicketMessage $message
      * @param int                                       $secs_ago
-     *
      * @return bool|mixed
      */
     public function checkDupeTicket($ticket = null, $secs_ago = 10800 /* 3 hours */)
@@ -813,7 +811,6 @@ class Ticket extends AbstractEntityRepository
      * Find all linked tickets.
      *
      * @param TicketEntity $parent_ticket
-     *
      * @return array
      */
     public function getLinkedTickets(TicketEntity $parent_ticket)
@@ -950,7 +947,8 @@ class Ticket extends AbstractEntityRepository
                         'ticket_id'       => $id,
                         'is_locked'       => false,
                         'locked_by'       => null,
-                        'via_person'      => null,
+                        'locked_by_name'  => null,
+                        'via_person'      => null
                     )),
                 );
             }

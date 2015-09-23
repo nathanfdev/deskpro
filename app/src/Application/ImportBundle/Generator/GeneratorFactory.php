@@ -29,30 +29,51 @@ namespace Application\ImportBundle\Generator;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
+/**
+ * Generator importer service factory
+ *
+ * Class GeneratorFactory
+ * @package Application\ImportBundle\Generator
+ */
 class GeneratorFactory
 {
-    static public function createGenerator(DeskproContainer $container)
+    /**
+     * Creates importer generator instance
+     *
+     * @param DeskproContainer $container
+     * @return Generator
+     */
+    public static function createGenerator(DeskproContainer $container)
     {
         /** @var GeneratorConfig $config */
-        $config = $container->get('deskpro.import.config');
+        $config   = $container->get('deskpro.import.config');
+        $exporter = $config->getExporterFactory($container)->createExporter($container, $config->getReaderConfig());
 
-        $exporter = $config->getExporterFactory($container)->createExporter($config->getReaderConfig());
+        $writer_factory = $config->getWriterFactory($container);
+        $writer = $writer_factory ? $writer_factory->createWriter() : null;
+
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if (!$config->getExporterBatchConfig()) {
+            if ( ! $config->getExporterBatchConfig()) {
                 $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
             }
         }
 
-        $wf = $config->getWriterFactory($container);
-        $writer = $wf
-            ? $writer = $wf->createWriter()
-            : null;
+        $symfony_validator = $container->get('validator');
+        $validators = new Validator\Collection();
+        $validators
+            ->attach(new Validator\Download($symfony_validator))
+            ->attach(new Validator\Feedback($symfony_validator))
+            ->attach(new Validator\Article($symfony_validator))
+            ->attach(new Validator\ArticleCategory($symfony_validator))
+            ->attach(new Validator\News($symfony_validator))
+            ->attach(new Validator\Person($symfony_validator))
+            ->attach(new Validator\Ticket($symfony_validator))
+            ->attach(new Validator\Organization($symfony_validator))
+        ;
 
-        return new Generator(
-            $exporter,
-            $writer,
-            $container->get('validator'),
-            $config
-        );
+        /** @var \Application\ImportBundle\Service\Import $import_service */
+        $import_service = $container->get('deskpro.import');
+
+        return new Generator($exporter, $validators, $config, $import_service, $writer);
     }
 }

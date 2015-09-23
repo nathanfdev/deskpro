@@ -34,9 +34,10 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Abstract generator methods
- * Split into traits when php version >= 5.4.
+ * Split into traits when php version >= 5.4
  *
  * Class AbstractGenerator
+ * @package Application\ImportBundle\Generator
  */
 abstract class AbstractGenerator
     implements GeneratorConfigAwareInterface, LoggerAwareInterface, ProgressBarAwareInterface
@@ -81,11 +82,18 @@ abstract class AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
-
         return $this;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -94,12 +102,21 @@ abstract class AbstractGenerator
     public function setProgressBarHelper(ProgressBar $progress_bar)
     {
         $this->progress_bar = $progress_bar;
-
         return $this;
     }
 
     /**
-     * Advance progress bar if it's defined.
+     * @return ProgressBar
+     */
+    public function getProgressBarHelper()
+    {
+        return $this->progress_bar;
+    }
+
+    /**
+     * Advance progress bar if it's defined
+     *
+     * @return void
      */
     protected function advanceProgressBar()
     {
@@ -111,7 +128,7 @@ abstract class AbstractGenerator
     }
 
     /**
-     * Log info message if logger is defined.
+     * Log info message if logger is defined
      *
      * @param string $message
      */
@@ -207,7 +224,7 @@ abstract class AbstractGenerator
     }
 
     /**
-     * Log notice message if logger is defined.
+     * Log notice message if logger is defined
      *
      * @param string $message
      */
@@ -219,7 +236,7 @@ abstract class AbstractGenerator
     }
 
     /**
-     * Log warning message if logger is defined.
+     * Log warning message if logger is defined
      *
      * @param string $message
      */
@@ -231,7 +248,7 @@ abstract class AbstractGenerator
     }
 
     /**
-     * Log alert message if logger is defined.
+     * Log alert message if logger is defined
      *
      * @param string $message
      */
@@ -243,7 +260,7 @@ abstract class AbstractGenerator
     }
 
     /**
-     * Log error message if logger is defined.
+     * Log error message if logger is defined
      *
      * @param string $message
      */
@@ -255,7 +272,7 @@ abstract class AbstractGenerator
     }
 
     /**
-     * Log critical message if logger is defined.
+     * Log critical message if logger is defined
      *
      * @param string $message
      */

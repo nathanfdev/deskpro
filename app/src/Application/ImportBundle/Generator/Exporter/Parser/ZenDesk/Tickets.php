@@ -29,12 +29,16 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
-use Guzzle\Http\Client as HttpClient;
 use Orb\Util\Strings;
 
 /**
@@ -64,23 +68,21 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
-     * @var HttpClient
-     */
-    private $http_client;
-
-    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
-     * @param TicketPeopleStorageInterface $people_storage
-     * @param HttpClient                   $http_client
+     * @param FormatterInterface           $formatter
+     * @param ParserHelperSet              $helpers
+     * @param ParserPeopleStorageInterface $people_storage
      */
-    public function __construct(ZenDeskReaderInterface $reader, TicketPeopleStorageInterface $people_storage, HttpClient $http_client)
-    {
-        parent::__construct($reader);
-
+    public function __construct(
+        ZenDeskReaderInterface       $reader,
+        FormatterInterface           $formatter,
+        ParserHelperSet              $helpers,
+        ParserPeopleStorageInterface $people_storage
+    ) {
+        parent::__construct($reader, $formatter, $helpers);
         $this->tickets_people = $people_storage;
-        $this->http_client    = $http_client;
     }
 
     /**
@@ -96,8 +98,8 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        // We could read data from ZD reader twice because of ZD reader cache support
-        return count($this->getTickets());
+        // We can read data from ZD reader twice because of ZD reader cache support
+        return count($this->getTickets(true));
     }
 
     /**
@@ -105,98 +107,100 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $tickets    = $this->getTickets();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getTickets())
+            ->setPrefix('ZDTicket')
+            ->setRefColumn('id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $collection = new Entity\Collection();
-        $collection->setExpectedCount(count($tickets));
-
-        foreach ($tickets as $num => $ticket) {
-            $this->advanceProgressBar();
-            $tid = @$ticket['id'] ?: '?';
-
-            try {
-                $entity = $this->exportTicket($ticket);
-                if ($entity) {
-                    $collection->attach($entity);
-                } else {
-                    $this->logDebugInfo(sprintf("[ZDTicket #%s] Invalid ticket entity", $tid), $ticket);
-                    $this->logWarning(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Could not create entity', $tid));
-                }
-
-            } catch (SkippingException $e) {
-                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): %s', $tid, $e->getMessage()));
-
-            } catch (\Exception $e) {
-                $this->logDebugException(sprintf("Exception with ticket %d", $tid), $e, $ticket);
-                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Unknown error: %s', $tid, $e->getMessage()));
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * Returns a ticket entity
      *
-     * @param array $ticket
+     * @param array $data
      *
      * @return Entity\Ticket
      * @throws SkippingException
      */
-    private function exportTicket(array $ticket)
+    protected function exportTicket(array $data)
     {
-        if ($this->isTicketValid($ticket)) {
-            $person_email = $this->tickets_people->getPersonEmail($ticket['submitter_id']);
-            $agent_email  = $this->tickets_people->getPersonEmail($ticket['assignee_id']);
+        $formatted = $this->formatter->format($data, array(
+            'id'               => TransformerInterface::TYPE_STRING,
+            'destination'      => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'ticket_',
+                'ref'    => 'id',
+            )),
+            'requester_id'     => TransformerInterface::TYPE_STRING,
+            'assignee_id'      => TransformerInterface::TYPE_STRING,
+            'collaborator_ids' => TransformerInterface::TYPE_ARRAY,
+            'subject'          => TransformerInterface::TYPE_STRING,
+            'description'      => TransformerInterface::TYPE_STRING,
+            'status'           => TransformerInterface::TYPE_STRING,
+            'priority'         => TransformerInterface::TYPE_STRING,
+            'organization_id'  => TransformerInterface::TYPE_STRING,
+            'created_at'       => TransformerInterface::TYPE_DATE,
+            'custom_fields'    => TransformerInterface::TYPE_ARRAY,
+            'tags'             => TransformerInterface::TYPE_ARRAY,
+            'comments'         => TransformerInterface::TYPE_ARRAY,
+        ));
 
-            if ( ! $person_email) {
-                throw new SkippingException(sprintf('Unable to get submitter email by id %s', $ticket['submitter_id']));
-            }
+        $person_email = $this->tickets_people->getPersonEmail($formatted['requester_id']);
+        $agent_email  = $this->tickets_people->getPersonEmail($formatted['assignee_id']);
 
-            $ref = $this->getBatchConfig()->getTicketRef($ticket['id']);
-            if ( ! $ref) {
-                $ref = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
-                $this->getBatchConfig()->addTicketRef($ticket['id'], $ref);
-            }
-
-            $entity = new Entity\Ticket();
-            $entity
-                ->setRawData($ticket)
-                ->setDestination('ticket_' . $ticket['id'])
-                ->setOid($ticket['id'])
-                ->setRef($ref)
-                ->setPersonEmail($person_email)
-                ->setAgentEmail($agent_email)
-                ->setSubject($ticket['subject'] ? : 'No subject')
-                ->setStatus($this->getStatus($ticket['status']))
-                ->setOrganization($this->getOrganizationName($ticket['organization_id']))
-                ->setPriority($this->exportPriority($ticket['priority']))
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
-            ;
-
-            switch ($ticket['status']) {
-                case self::STATUS_HOLD:
-                    $entity->setAsHold(true);
-                    break;
-                case self::STATUS_SOLVED:
-                    $entity->setDateResolved(new DateTime());
-                    break;
-                case self::STATUS_CLOSED:
-                    $entity->setDateArchived(new DateTime());
-                    break;
-            }
-
-            foreach ($ticket['tags'] as $label) {
-                $entity->addLabel($label);
-            }
-            foreach ($this->exportMessages($ticket) as $message) {
-                $entity->addMessage($message);
-            }
-
-            return $entity;
+        if ( ! $person_email) {
+            throw new SkippingException(sprintf('Unable to get submitter email by id #%s', $formatted['requester_id']), $formatted);
         }
 
-        return null;
+        $entity = new Entity\Ticket();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_ZENDESK_TICKET)
+            ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
+            ->setPersonEmail($person_email)
+            ->setAgentEmail($agent_email)
+            ->setSubject($formatted['subject'] ? : 'No subject')
+            ->setStatus($this->getStatus($formatted['status']))
+            ->setOrganization($this->getOrganizationName($formatted['organization_id']))
+            ->setPriority($this->exportPriority($formatted['priority']))
+            ->setDateCreated($formatted['created_at'])
+            ->setLogMessage(sprintf('Imported from ZenDesk (old ticket ID #%s)', $formatted['id']))
+        ;
+
+        switch ($formatted['status']) {
+            case self::STATUS_HOLD:
+                $entity->setAsHold(true);
+                break;
+            case self::STATUS_SOLVED:
+                $entity->setDateResolved(new DateTime());
+                break;
+            case self::STATUS_CLOSED:
+                $entity->setDateArchived(new DateTime());
+                break;
+        }
+
+        foreach ($formatted['tags'] as $label) {
+            $entity->addLabel($label);
+        }
+        foreach ($formatted['collaborator_ids'] as $collaborator_id) {
+            $participant_email = $this->tickets_people->getPersonEmail($collaborator_id);
+            if ($participant_email) {
+                $entity->addParticipant($participant_email);
+            } else {
+                $this->logWarning(sprintf('Unable to get participant email, id = %s', $collaborator_id));
+            }
+        }
+        foreach ($this->exportMessages($formatted) as $message) {
+            $entity->addMessage($message);
+        }
+
+        return $entity;
     }
 
     /**
@@ -208,10 +212,10 @@ final class Tickets extends AbstractParser
     private function exportPriority($priority)
     {
         $mapping = array(
-            self::PRIORITY_URGENT => 100,
-            self::PRIORITY_HIGH   => 50,
-            self::PRIORITY_NORMAL => 20,
-            self::PRIORITY_LOW    => 10,
+            self::PRIORITY_URGENT => 10,
+            self::PRIORITY_HIGH   => 5,
+            self::PRIORITY_NORMAL => 2,
+            self::PRIORITY_LOW    => 1,
         );
 
         if ($priority) {
@@ -235,163 +239,119 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket message entity
-     *
-     * @param array  $ticket
-     * @param string $person_email
-     *
-     * @return Entity\TicketMessage
-     */
-    public function exportMessage(array $ticket, $person_email)
-    {
-        $entity = new Entity\TicketMessage();
-        $entity
-            ->setDestination('message_' . $ticket['id'])
-            ->setOid($ticket['id'])
-            ->setPersonEmail($person_email)
-            ->setMessageText($ticket['description'])
-            ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']));
-
-        return $entity;
-    }
-
-    /**
-     * Returns a ticket comments entity
+     * Returns a ticket comments entity collection
      *
      * @param array $ticket
      * @return Entity\TicketMessage[]
      */
     private function exportMessages(array $ticket)
     {
-        $comments = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($ticket['comments'])
+            ->setPrefix('ZDTicketComment')
+            ->setRefColumn('id')
+            ->setMethod('exportMessage')
+        ;
 
-        foreach ($ticket['comments'] as $comment) {
-            if (empty($comment['author_id'])) {
-                $this->logError(sprintf('No comment author'));
-                continue;
-            }
-            $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
-            if ( ! $author_email) {
-                $this->logError(sprintf('Unable to get comment author #%d', $ticket['author_id']));
-                continue;
-            }
-
-            $entity = new Entity\TicketMessage();
-            $entity
-                ->setDestination('message_' . $ticket['id'])
-                ->setOid($comment['id'])
-                ->setPersonEmail($author_email)
-                ->setMessageText($comment['body'])
-                ->setAsNote($comment['public'] === false)
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
-            ;
-
-            $attachments = $this->exportAttachments($comment['attachments']);
-            foreach ($attachments as $attachment) {
-                /** @var Entity\Attachment $attachment */
-                $entity->addAttachment($attachment);
-            }
-
-            $comments->attach($entity);
-        }
-
-        return $comments;
+        return $this->exportCollection($config);
     }
 
     /**
-     * Returns a collection of the ticket message attachments
+     * Returns a ticket comments entity
      *
-     * @param array $attachments
-     * @return Entity\Collection
+     * @param array $data
+     * @return Entity\TicketMessage|null
      */
-    private function exportAttachments(array $attachments)
+    protected function exportMessage(array $data)
     {
-        $collection = new Entity\Collection();
+        $formatted = $this->formatter->format($data, array(
+            'id'          => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'message_',
+                'ref'    => 'id',
+            )),
+            'author_id'   => TransformerInterface::TYPE_STRING,
+            'body'        => TransformerInterface::TYPE_STRING,
+            'public'      => TransformerInterface::TYPE_BOOLEAN,
+            'created_at'  => TransformerInterface::TYPE_DATE,
+            'attachments' => TransformerInterface::TYPE_ARRAY,
+        ));
 
-        foreach ($attachments as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($attachment);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
-                }
-
-            } catch (NoColumnException $e) {
-                $this->logError(sprintf(
-                    'Invalid ticket message attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
+        if (empty($formatted['author_id'])) {
+            throw new SkippingException('Comment without author_id, skipping', $formatted);
         }
 
-        return $collection;
-    }
-
-    /**
-     * Returns an attachment entity
-     *
-     * @param array $attachment
-     * @return Entity\Attachment|null
-     */
-    private function exportAttachment(array $attachment)
-    {
-        if ($this->isAttachmentValid($attachment)) {
-            $http_request = $this->http_client->get($attachment['content_url']);
-
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination('attachment_' . $attachment['id'])
-                ->setOid($attachment['id'])
-                ->setBlobData(base64_encode($http_request->send()->getBody(true)))
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-            ;
-
-            return $entity;
+        $author_email = $this->tickets_people->getPersonEmail($formatted['author_id']);
+        if ( ! $author_email) {
+            throw new SkippingException('Unable to get comment author, skipping', $formatted);
         }
 
-        return null;
+        $entity = new Entity\TicketMessage();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setImportMapKey(DeskPROEntity\ImportMap::TYPE_ZENDESK_TICKET_MESSAGE)
+            ->setPersonEmail($author_email)
+            ->setMessageText($formatted['body'])
+            ->setAsNote($formatted['public'] === false)
+            ->setDateCreated($formatted['created_at'])
+        ;
+
+        $attachments = $this->getAttachmentParser()->export($formatted['attachments']);
+        foreach ($attachments as $attachment) {
+            $entity->addAttachment($attachment);
+        }
+
+        return $entity;
     }
 
     /**
      * Returns tickets
      * Loads data from ZenDesk reader
      *
+     * @param boolean $count_only
+     *
      * @return array
      * @throws Exception
      */
-    private function getTickets()
+    private function getTickets($count_only = false)
     {
         $this->logDebugTimeStart('getTickets', "Reading tickets batch");
 
-        $tickets = array();
-        if ($this->getBatchConfig()->getTicketsEndTime() < new DateTime('-5 minutes')) {
-            if ($this->getBatchConfig()->getTicketsEndTime()) {
-                $this->logDebug(sprintf("Reading from time: %s", $this->getBatchConfig()->getTicketsEndTime()->format('Y-m-d H:i:s')));
+        $tickets    = array();
+        $start_time = $this->getBatchConfig()->getTicketsEndTime();
+
+        if ($start_time < new DateTime('-5 minutes')) {
+            if ($start_time) {
+                $this->logDebug(sprintf("Reading from time: %s", $start_time->format('Y-m-d H:i:s')));
             } else {
                 $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
             }
 
-            $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
-            if (count($tickets)) {
-                // ZenDesk API does not allow to get ticket comments in a single request
+            $response = $this->reader->getTickets($start_time);
+
+            if (count($response)) {
+                // ZenDesk API does not allow to get ticket comments in a single request due to huge response (could be up to ~20 MB)
                 // We have to load comments for each ticket separately
-                foreach ($tickets as &$ticket) {
+                foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
-                        $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
-                        $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
+                        if ( ! $count_only) {
+                            $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
+                            $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
+                        }
+
+                        $tickets[] = $ticket;
                     } else {
-                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping comments', $ticket['id']));
-                        $ticket['comments'] = array();
+                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping', $ticket['id']));
                     }
                 }
 
-                $this->tickets_people->loadByTickets($tickets);
+                $this->tickets_people->loadBy($tickets);
 
-                $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
-                if ($this->end_time == $this->getBatchConfig()->getTicketsEndTime()) {
+                $this->end_time = $this->reader->getTicketsEndTime($start_time);
+                if ($this->end_time == $start_time) {
                     $this->end_time->modify('+1 second');
                 }
 
@@ -412,54 +372,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Check if ticket has all required columns
-     *
-     * @param array $ticket
-     * @return bool
-     */
-    private function isTicketValid(array $ticket)
-    {
-        $columns = array(
-            'id',
-            'submitter_id',
-            'subject',
-            'description',
-            'status',
-            'priority',
-            'organization_id',
-            'created_at',
-            'custom_fields',
-            'tags',
-            'comments',
-        );
-
-        return $this->hasRequiredColumns($ticket, $columns)
-            && $this->isArrayColumn($ticket, 'custom_fields')
-            && $this->isArrayColumn($ticket, 'tags')
-            && $this->isArrayColumn($ticket, 'comments');
-    }
-
-    /**
-     * Check if ticket message attachment has all required columns
-     *
-     * @param array $attachment
-     * @return bool
-     */
-    private function isAttachmentValid(array $attachment)
-    {
-        $columns = array(
-            'id',
-            'file_name',
-            'content_type',
-            'content_url',
-            'inline',
-        );
-
-        return $this->hasRequiredColumns($attachment, $columns) && $attachment['inline'] === false;
-    }
-
-    /**
-     * Get DeskPro status by ZenDesk status
+     * Returns DeskPRO status by ZenDesk status
      *
      * @param string $status
      *
@@ -471,8 +384,8 @@ final class Tickets extends AbstractParser
         $map = array(
             self::STATUS_NEW     => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_OPEN    => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
-            self::STATUS_PENDING => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
-            self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
+            self::STATUS_PENDING => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
+            self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
             self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
             self::STATUS_DELETED => DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,

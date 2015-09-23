@@ -75,35 +75,45 @@ class CheckSlaStatus extends AbstractTriggerTerm
         $check_status   = $options->get('sla_status');
         $check_complete = $options->get('is_complete');
 
-        $passing = true;
+        $has_any = false;
+        $any_complete = false;
+        $any_match_status = false;
         foreach ($options->get('sla_ids') as $sla_id) {
             if (!isset($map[$sla_id])) {
                 continue;
             }
 
-            if ($check_status) {
-                if ($ticket_sla->sla_status != $check_status) {
-                    $passing = false;
-                    break;
+            $ticket_sla = $map[$sla_id];
+            $has_any = true;
+
+            if ($check_status && $ticket_sla->sla_status == $check_status) {
+                $any_match_status = true;
                 }
-            }
-            if ($check_complete) {
-                if ($ticket_sla->is_completed != $check_status) {
-                    $passing = false;
-                    break;
-                }
+            if ($ticket_sla->is_completed) {
+                $any_complete = true;
             }
         }
 
         switch ($this->getTermOperator()) {
             case 'is':
             case 'contains':
-                return $passing;
+                if ($has_any) {
+                    if ($check_complete && !$any_complete) {
+                        return false;
+                    }
+                    if ($check_status && !$any_match_status) {
+                        return false;
+                    }
+
+                    return true;
+                } else {
+                    return false;
+                }
                 break;
 
             case 'not':
             case 'notcontains':
-                return !$passing;
+                return !$has_any;
                 break;
         }
 

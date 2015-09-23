@@ -56,6 +56,11 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $date_end;
 
     /**
+     * @var DateTime
+     */
+    private $date_updated;
+
+    /**
      * @var array
      */
     private $categories = array();
@@ -64,6 +69,37 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      * @var array
      */
     private $labels = array();
+
+    /**
+     * @var CustomField[]
+     */
+    private $custom_fields;
+
+    /**
+     * @var Attachment[]
+     */
+    private $attachments;
+
+    /**
+     * @var ArticleComment[]
+     */
+    private $comments;
+
+    /**
+     * @var ObjectLang[]
+     */
+    private $translations;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->custom_fields = new Collection();
+        $this->attachments   = new Collection();
+        $this->comments      = new Collection();
+        $this->translations  = new Collection();
+    }
 
     /**
      * {@inheritdoc}
@@ -159,9 +195,27 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      * @param DateTime $date_end
      * @return $this
      */
-    public function setDateEnd(DateTime $date_end)
+    public function setDateEnd(DateTime $date_end = null)
     {
         $this->date_end = $date_end;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->date_updated = $date_updated;
         return $this;
     }
 
@@ -205,6 +259,95 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * @return Collection
+     */
+    public function getCustomFields()
+    {
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param CustomField $custom_field
+     * @return $this
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields->attach($custom_field);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addAttachment(Attachment $attachment)
+    {
+        $this->attachments->attach($attachment);
+        return $this;
+    }
+
+    /**
+     * Returns article comments
+     *
+     * @return ArticleComment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Add an article comment
+     *
+     * @param ArticleComment $comment
+     * @return $this
+     */
+    public function addComment(ArticleComment $comment)
+    {
+        $this->comments->attach($comment);
+        return $this;
+    }
+
+    /**
+     * Returns article translations
+     *
+     * @return ObjectLang[]
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * Returns article translations grouped by language
+     *
+     * @return ObjectLang[]
+     */
+    public function getUniqueTranslations()
+    {
+        return ObjectLang::getUniqueCollection($this->translations);
+    }
+
+    /**
+     * Add an article property translation
+     *
+     * @param ObjectLang $translation
+     * @return $this
+     */
+    public function addTranslation(ObjectLang $translation)
+    {
+        $this->translations->attach($translation);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -215,6 +358,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
 
         return array(
             'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
             'title'          => $this->title,
             'content'        => $this->content,
@@ -227,10 +371,15 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'view_count'     => $this->view_count,
             'status'         => $this->status,
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_updated'   => $this->date_updated ? $this->date_updated->format('Y-m-d H:i:s') : null,
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
             'date_end'       => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
             'categories'     => $this->categories,
             'labels'         => $this->labels,
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
+            'attachments'    => $this->attachments->entitiesToArray(),
+            'comments'       => $this->comments->entitiesToArray(),
+            'translations'   => $this->translations->entitiesToArray(),
         );
     }
 
@@ -241,6 +390,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
 
-        $metadata->addGetterConstraint('endActionValid', new Constraints\True());
+        $metadata
+            ->addPropertyConstraint('person_email', new Constraints\NotBlank())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
+            ->addPropertyConstraint('comments', new Constraints\Valid())
+            ->addPropertyConstraint('attachments', new Constraints\Valid())
+            ->addPropertyConstraint('translations', new Constraints\Valid())
+        ;
     }
 }

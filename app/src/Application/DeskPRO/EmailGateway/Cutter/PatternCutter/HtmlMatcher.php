@@ -346,6 +346,7 @@ class HtmlMatcher
                 // Check entire contents
                 $html = $branch->innerHTML();
                 $text = str_replace(array('<br />', '<br/>', '<br>'), "\n", $html);
+                $text = str_replace("\n", ' ', $text);
                 $text = strip_tags($text);
                 $text = trim($text);
 

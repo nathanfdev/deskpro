@@ -49,12 +49,14 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->options           = array(
             'app_key'    => $app->getSetting('consumer_key'),
             'app_secret' => $app->getSetting('consumer_secret'),
+            'raw_info_filter' => $app->getSetting('raw_info_filter') ?: null,
         );
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Twitter';
 
         $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
 
         $em->persist($us);
         $em->persist($app);

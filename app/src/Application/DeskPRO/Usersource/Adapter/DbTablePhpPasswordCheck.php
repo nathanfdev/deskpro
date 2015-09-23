@@ -108,7 +108,10 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 
         $identities = array();
         foreach ($user_infos as $info) {
+            // CHECK FILTER
+            if ($adapter->doesRawInfoPassFilter($info)) {
             $identities[] = $adapter->getIdentityFromUserInfo($info);
+        }
         }
 
         return $identities;

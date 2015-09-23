@@ -39,7 +39,7 @@ use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
 
-class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterface,
+class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterface, Adapter\CookieLoginInterface,
     Adapter\JsSsoInterface, Adapter\UserInfoFetchableInterface, Loggable
 {
     /**
@@ -90,7 +90,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
         $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
     }
 
-    public function authenticate()
+    public function doAuthenticate()
     {
         if (!$this->set_username) {
             return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));

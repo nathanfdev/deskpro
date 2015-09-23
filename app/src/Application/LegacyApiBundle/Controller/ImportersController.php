@@ -37,15 +37,24 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 use Application\DeskPRO\HttpFoundation\Request;
-use Application\DeskPRO\JobQueue\Processor\ImportProcessor;
 use Application\ImportBundle\Generator\Generator;
+use Application\ImportBundle\Service\Import as ImportService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+/**
+ * Class ImportersController
+ * @package Application\ApiBundle\Controller
+ */
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {
+    /**
+     * @var ImportService
+     */
+    protected $is;
+
     /**
      * {@inheritDoc}
      */
@@ -55,26 +64,49 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
+     * @return ImportService
+     */
+    protected function is()
+    {
+        if (!$this->is) {
+            $this->is = $this->get('deskpro.import');
+        }
+
+        return $this->is;
+    }
+
+    /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function listAction()
     {
         $importers = $this->em->getRepository('DeskPRO:DataStore')->getByPrefix('importers.');
+        $is = $this->is();
 
-        if (count($importers) !== count(ImportProcessor::$allowed)) {
+        if (count($importers) !== count($is::$allowed)) {
             $importers = array();
-            foreach (ImportProcessor::$allowed as $type) {
-                $importers[] = ImportProcessor::getImporter($type, $this->container);
+            foreach ($is::$allowed as $type) {
+                $importers[] = $is->getImporter($type);
             }
         }
 
+        $ret = array();
+
         foreach ($importers as $importer) {
             /** @var $importer DataStoreEntity */
+
+            // TODO: remove when these are ready
+            if (
+                $importer['name'] === 'importers.osticket'
+            ) {
+                continue;
+            }
             $ret[] = array(
                 'id' => str_replace('importers.', '', $importer['name']),
                 'title' => $importer->getData('title'),
-                'status' => $importer->getData('status'),
                 'description' => $importer->getData('description'),
+                'status'      => $importer->getData('status'),
+                'icon'        => $this->getIcon($importer),
             );
         }
 
@@ -87,8 +119,8 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function getAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
-
+        $importer = $this->is()->getImporter($id);
+        $importer['icon'] = $this->getIcon($importer);
         return $this->createJsonResponse($importer->getData());
     }
 
@@ -98,7 +130,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function downloadLogAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
+        $importer = $this->is()->getImporter($id, $this->container);
 
         if (($logfile = $importer->getData('logfile')) && is_file($logfile) && is_readable($logfile)) {
             $response = new BinaryFileResponse($logfile, 200);
@@ -125,20 +157,16 @@ class ImportersController extends AbstractController implements ProtectedControl
             throw new BadRequestHttpException;
         }
 
-        $importer = ImportProcessor::getImporter($id, $this->container);
-
+        $is = $this->is();
+        $importer = $is->getImporter($id);
         $importer->setData('config', @$data['config']);
-        $importer->setData('status', @$data['status']);
+        $this->em->flush($importer);
 
+        $importer->getData('status');
         if ($request->get('reset')) {
-            $importer->setData('status', null);
-            $importer->setData('log', null);
-            $importer->setData('progress_start', null);
-            $importer->setData('progress_step', null);
-            $importer->setData('progress_max', null);
+            $is->cleanup($importer);
         }
 
-        $this->em->flush($importer);
 
         return $this->getAction($id);
     }
@@ -152,19 +180,22 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function testAction($id, Request $request)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
-        $config = ImportProcessor::createGeneratorConfig($importer, $this->container);
+        $is       = $this->is();
+        $importer = $is->getImporter($id);
+
+        try {
+            $config = $is->createGeneratorConfig($importer);
+
         /** @var Generator $generator */
         $this->container->set('deskpro.import.config', $config);
         $generator = $this->container->get('deskpro.import.generator');
 
-        try {
-            $res = $this->createJsonResponse(array('result' => $generator->isReady()));
+            $res = $this->createJsonResponse(array('result' => $generator->getTotalRecordsCount() > 0));
         } catch (\Exception $e) {
             $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
         }
 
-        ImportProcessor::cleanup($importer, $this->container);
+        $is->cleanup($importer);
 
         return $res;
     }
@@ -176,16 +207,16 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function startAction($id, Request $request)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
-        $importer->setData('status', 'pending');
-
-        $queue = $this->container->getJobQueue();
-        $queue->add(ImportProcessor::JOB_TYPE, array('id' => $id));
-
-        $this->em->flush();
-
+        $this->is()->startImport($id);
         return $this->getAction($id);
     }
 
+    protected function getIcon($importer)
+    {
+        $path = defined('DPC_SITE_DOMAIN')
+            ? '//' . DPC_SITE_DOMAIN . '/web/images/admin/icons/icon-' . $importer->getData('id') . '.png'
+            : (dp_get_config('static_path') ?: '/web') . '/images/admin/icons/icon-' . $importer->getData('id') . '.png';
 
+        return $path;
+    }
 }

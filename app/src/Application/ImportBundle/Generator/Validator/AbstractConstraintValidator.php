@@ -27,7 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
-use Symfony\Component\Validator\Validator;
+use Symfony\Component\Validator\ValidatorInterface as SymfonyValidator;
+use Application\ImportBundle\Entity;
 
 /**
  * A symfony constraint validator.
@@ -37,17 +38,28 @@ use Symfony\Component\Validator\Validator;
 abstract class AbstractConstraintValidator implements ValidatorInterface
 {
     /**
-     * @var Validator
+     * @var SymfonyValidator
      */
     protected $validator;
 
     /**
      * Constructor.
      *
-     * @param Validator $validator
+     * @param SymfonyValidator $validator
      */
-    public function __construct(Validator $validator)
+    public function __construct(SymfonyValidator $validator)
     {
         $this->validator = $validator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validate(Entity\EntityInterface $entity)
+    {
+        $errors = $this->validator->validate($entity);
+        if (count($errors) > 0) {
+            throw new ValidatorConstraintException($entity, $errors);
+        }
     }
 }

@@ -67,6 +67,11 @@ class IndexController extends AbstractController
         );
         $rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();
 
+        $is_first_load = !$this->settings->get('admin_has_loaded');
+        if ($is_first_load) {
+            $this->settings->setSetting('admin_has_loaded', 1);
+        }
+
         return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
             'api_token'             => $token,
             'session'               => $this->session->getEntity(),
@@ -75,6 +80,7 @@ class IndexController extends AbstractController
             'rjs_apps_config'       => $rjs_apps_config,
             'redirect_license'      => defined('DP_BILLING_ERROR'),
             'license_server'        => rtrim(License::getSecureLicServer(), '/'),
+            'is_first_load'         => $is_first_load,
         ));
     }
 }

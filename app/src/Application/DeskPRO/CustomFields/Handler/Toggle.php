@@ -80,11 +80,12 @@ class Toggle extends HandlerAbstract
             $opt_prefix = 'agent_';
         }
 
-        $options = array(
-            'required' => $this->field_def->getOption($opt_prefix.'required'),
-        );
+        $options = array();
+        if ('required' === $this->field_def->getOption($opt_prefix.'validation_type')) {
+            $options['required'] = true;
+        }
 
-        if ($options['required']) {
+        if (@$options['required']) {
             if (!$data || $data != '1') {
                 return $this->makeErrorArray(array('required'));
             }

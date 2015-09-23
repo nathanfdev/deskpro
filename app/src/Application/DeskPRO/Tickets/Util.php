@@ -35,6 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAccessCode;
+use Doctrine\DBAL\Driver\Connection;
 use Orb\Util\Arrays;
 
 class Util
@@ -131,5 +132,27 @@ class Util
 
             return $tac;
         }
+    }
+
+
+    /**
+     * Deletes attachments related to a ticket.
+     *
+     * Note: This actually just marks the blobs as is_temp, so they are cleaned up
+     * as part of usual cleanup routines. E.g., the cleanup routine
+     * will do the necessary work to delete the real file from wherever it is stored
+     * (s3, filesystem, etc).
+     *
+     * @param int $ticket_id
+     * @param Connection $db
+     */
+    public static function deleteTicketAttachments($ticket_id, Connection $db)
+    {
+        $db->executeUpdate("
+            UPDATE blobs
+            LEFT JOIN tickets_attachments ON (tickets_attachments.blob_id = blobs.id)
+            SET blobs.is_temp = 1
+            WHERE tickets_attachments.ticket_id = ?
+        ", array($ticket_id));
     }
 }

@@ -210,6 +210,23 @@ class TicketPermissions implements PermissionValueInterface
     /** @var bool  */
     public $create_labels                        = false;
 
+    /** @var bool  */
+    public $associate_problem_own = false;
+    /** @var bool  */
+    public $disassociate_problem_own = false;
+    /** @var bool  */
+    public $associate_problem_followed = false;
+    /** @var bool  */
+    public $disassociate_problem_followed = false;
+    /** @var bool  */
+    public $associate_problem_unassigned = false;
+    /** @var bool  */
+    public $disassociate_problem_unassigned = false;
+    /** @var bool  */
+    public $associate_problem_others = false;
+    /** @var bool  */
+    public $disassociate_problem_others = false;
+
     public function getNames()
     {
         return array(
@@ -228,7 +245,8 @@ class TicketPermissions implements PermissionValueInterface
             'modify_department_others', 'modify_fields_others', 'modify_assign_agent_others', 'modify_assign_team_others', 'modify_assign_self_others',
             'modify_cc_others', 'modify_merge_others', 'modify_labels_others', 'modify_slas_others', 'modify_notes_others', 'modify_set_hold_others',
             'modify_set_awaiting_user_others', 'modify_set_awaiting_agent_others', 'modify_set_resolved_others', 'modify_set_unresolved_others', 'modify_messages_others', 'delete_others', 'modify_billing_others',
-            'create_labels'
+            'create_labels', 'associate_problem_own', 'associate_problem_followed', 'associate_problem_unassigned', 'associate_problem_others',
+            'disassociate_problem_own', 'disassociate_problem_followed', 'disassociate_problem_unassigned', 'disassociate_problem_others',
         );
     }
 

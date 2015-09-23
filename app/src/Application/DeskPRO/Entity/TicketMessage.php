@@ -252,11 +252,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
-    public function setPerson(Person $person)
-    {
-        $this->setModelField('person', $person);
-    }
-
     public function setTicketId($id)
     {
         $this->setModelField('ticket', App::getEntityRepository('DeskPRO:Ticket')->find($id));
@@ -265,6 +260,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function getTicketId()
     {
         return $this->ticket['id'];
+    }
+
+    /**
+     * @param Person $person
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+        return $this;
     }
 
     public function setPersonId($id)
@@ -312,9 +317,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
         $message = Strings::standardEol($message);
         $message = str_replace(array('<br/>', '<br>', '<br />', '<p>', '</p>'), "\n", $message);
-        $message = strip_tags($message);
+        $message = Strings::stripTags($message);
         $message = Strings::decodeHtmlEntities($message);
-        $message = preg_replace('#\s+#', ' ', $message);
+        $message = Strings::decodeWhitespaceHtmlEntities($message);
+        $message = preg_replace('#\s+#u', ' ', $message);
         $message = trim($message);
 
         if ($max_length && isset($message[$max_length])) {
@@ -663,6 +669,36 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             $this->ticket->count_agent_replies++;
         } else {
             $this->ticket->count_user_replies++;
+        }
+    }
+
+    /**
+     * Are there any CCed users?
+     * @return boolean
+     */
+    public function numCcedParticipants()
+    {
+        return count($this->ticket->getUserParticipants());
+    }
+
+    /**
+     * A nice and easy way to retrieve all participants in the ticket. Mainly for display.
+     * @return array the list of participants as an array of strings.
+     */
+    public function getCcedParticipants()
+    {
+        if (!$this->ticket) {
+            return array();
+        }
+
+        if ($this->numCcedParticipants() > 0) {
+            return array_map(function($p) {
+                    return $p->getDisplayContact();
+                },
+                $this->ticket->getUserParticipants()
+            );
+        } else {
+            return array();
         }
     }
 

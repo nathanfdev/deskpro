@@ -118,7 +118,7 @@ class AgentReplyCodes implements Loggable
 
             $text = Strings::standardEol($text);
             $text = str_replace("\n", ' ', $text);
-            $text = preg_replace('#<br/?>#', "<br/>\n", $text);
+            $text = preg_replace('#<br\s*/?>#', "<br/>\n", $text);
             $text = preg_replace('#(<div[^>]+>)#', "$1\n", $text);
             $text = preg_replace('#(<p[^>]+>)#', "$1\n", $text);
             $text = preg_replace('#</div>#', "</div>\n", $text);
@@ -280,6 +280,12 @@ class AgentReplyCodes implements Loggable
             case 'isnote':
             $this->getLogger()->logDebug('[AgentReplyCodes] Message is a note');
                 $this->props['is_note'] = true;
+                break;
+
+            case 'reply':
+            case 'isreply':
+                $this->getLogger()->logDebug('[AgentReplyCodes] Message is a reply');
+                $this->props['is_reply'] = true;
                 break;
 
             case 'assign':
@@ -480,12 +486,12 @@ class AgentReplyCodes implements Loggable
 
             default:
                 // check if its a ticket field
-                $fields = App::getSystemService('ticket_fields_manager');
+                $fields = App::getSystemService('ticket_fields_manager')->getFields();
                 $field  = null;
                 foreach ($fields as $test_field) {
-                    $test_name = $test_field->name;
-                    $test_name = preg_replace('#[^a-z0-9]#i', '', $test_name);
+                    $test_name = $test_field->title;
                     $test_name = strtolower($test_name);
+                    $test_name = preg_replace('#[^a-z0-9]#i', '', $test_name);
 
                     if ($code == "field{$test_field->id}" || $code == $test_name) {
                         $field = $test_field;
@@ -505,14 +511,14 @@ class AgentReplyCodes implements Loggable
                 // Choice fields means we need to find the actual option...
                 if ($field->isChoiceType()) {
                     $child_opt = $this->_findObjFromCollection(
-                        $fields->children,
+                        $field->children,
                         'title',
                         $param
                     );
 
                     if ($child_opt) {
                         $set   = isset($this->props['ticket_fields'][$field->id]) ? $this->props['ticket_fields'][$field->id] : array();
-                        $set[] = $child_opt;
+                        $set[] = $child_opt->id;
                         $set   = array_unique($set);
 
                         $this->props['ticket_fields'][$field->id] = $set;

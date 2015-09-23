@@ -393,7 +393,10 @@ class EzcReader extends AbstractReader
         $raw_parts = array();
 
         foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
-            if ($part->subType == 'html') {
+            if (
+                $part->subType == 'html'
+                && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
+            ) {
                 $originalCharset = $part->originalCharset;
                 if (!$originalCharset) {
                     $originalCharset = 'us-ascii';

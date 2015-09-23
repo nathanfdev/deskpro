@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ReaderInterface;
 use DateTime;
 
 /**
@@ -35,11 +36,12 @@ use DateTime;
  * Interface ZenDeskReaderInterface
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-interface ZenDeskReaderInterface
+interface ZenDeskReaderInterface extends ReaderInterface
 {
     const CODE_UNAUTHORIZED          = 401;
     const CODE_UN_PROCESSABLE_ENTITY = 422;
     const CODE_TOO_MANY_REQUESTS     = 429;
+    const CODE_NOT_FOUND             = 404;
 
     /**
      * Returns a batch count of users
@@ -70,6 +72,14 @@ interface ZenDeskReaderInterface
      * @throws RetryAfterException
      */
     public function getPeopleEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns an user by id
+     *
+     * @param array $id
+     * @return array
+     */
+    public function getPersonById($id);
 
     /**
      * Returns a batch of the users collection of certain ids
@@ -126,4 +136,76 @@ interface ZenDeskReaderInterface
      * @throws RetryAfterException
      */
     public function getTicketsEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a batch count of articles
+     *
+     * @param DateTime|null $start_time
+     * @return int
+     */
+    public function getArticlesCount(DateTime $start_time = null);
+
+    /**
+     * Returns a batch of the articles collection
+     *
+     * @param DateTime|null $start_time
+     * @return array
+     */
+    public function getArticles(DateTime $start_time = null);
+
+    /**
+     * Returns a batch end time of the articles collection
+     *
+     * @param DateTime $start_time
+     *
+     * @return DateTime
+     * @throws RetryAfterException
+     */
+    public function getArticlesEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a collection of article comments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getArticleComments($id);
+
+    /**
+     * Returns a collection of article attachments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getArticleAttachments($id);
+
+    /**
+     * Returns a collection of article translations
+     *
+     * @param $id
+     * @return array
+     */
+    public function getArticleTranslations($id);
+
+    /**
+     * Returns article category path like "Category Name > Section Name"
+     *
+     * @param int $section_id
+     * @return string
+     */
+    public function getArticleCategoryPath($section_id);
+
+    /**
+     * Returns a collection of article categories
+     *
+     * @return array
+     */
+    public function getArticlesCategories();
+
+    /**
+     * Returns a collection of article sub categories
+     *
+     * @return array
+     */
+    public function getArticlesSections();
 }

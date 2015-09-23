@@ -5,6 +5,7 @@
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=1.0" id="dp_meta_viewport" />
+	<meta name="google" content="notranslate" />
 	<script type="text/javascript">
 		(function() {
 			var h = 'device-height';
@@ -276,6 +277,13 @@
 </style>
 <![endif]-->
 
+{% if not app.getSetting('core.agent_enable_kb_shortcuts') %}
+<style>
+	#create-menu kbd {
+		display: none !important;
+	}
+</style>
+{% endif %}
 <ul id="create-menu" class="btn-menu">
     {% if app.user.hasPerm('agent_tickets.create') %}
         <li id="create_ticket_btn"><a><div class="wrap"><i class="icon-dp-ticket"></i></div>{{ phrase('agent.chrome.create_new-ticket') }} <kbd>t</kbd></a></li>

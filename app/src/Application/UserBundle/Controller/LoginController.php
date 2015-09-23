@@ -41,6 +41,7 @@ use Application\DeskPRO\Form\Captcha\Recaptcha;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
+use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\Person;
@@ -481,6 +482,11 @@ HTML;
 
         $person = $identity['person'];
 
+        $lang = $this->container->getTranslator()->getLanguage();
+        if ($lang->getId() && !($lang instanceof SystemLanguage)) {
+            $person->language = $lang;
+        }
+
         if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
             $this->session->set('account_disabled', $person->id);
             $this->session->save();
@@ -739,8 +745,11 @@ HTML;
 
                 // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
-
-                $return = $this->request->getReturnParam();
+                if (!$return = $this->request->getReturnParam()) {
+                    if (!$return = $this->request->server->get('HTTP_REFERER')) {
+                        $return = null;
+                    }
+                }
                 $this->session->set('auth_return', $return);
 
                 if ($this->in->getString('js_tell')) {
@@ -1046,10 +1055,12 @@ HTML;
                     'email' => $email
                 );
 
+                $this->container->getTranslator()->setDefaultPersonContext($person);
                 $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
                 $message->setTo($email, $person->getDisplayName());
                 $this->container->getMailer()->send($message);
+                $this->container->getTranslator()->setDefaultPersonContext($this->person);
 
                 if ($_format == 'json') {
                     return $this->createJsonResponse(array('success' => 1));
@@ -1076,10 +1087,14 @@ HTML;
             'interface' => DP_INTERFACE
         );
 
+        $this->container->getTranslator()->setDefaultPersonContext($person);
         $message = $this->container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
         $message->setTo($email, $person->getDisplayName());
-
+        $this->container->getTranslator()->setDefaultPersonContext($person);
+        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+            $message->prepare();
+        });
         $this->container->getMailer()->send($message);
 
         if ($_format == 'json') {
@@ -1181,11 +1196,12 @@ HTML;
 
     public function inlineLoginAction()
     {
+        if (!$lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
         $result = $this->authLocalInput();
-
         $this->ensureStandardRequestToken();
+        }
 
-        if (!$result->isValid()) {
+        if ($lockTime || !$result->isValid()) {
             $html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));
 
             return $this->createJsonResponse(array(

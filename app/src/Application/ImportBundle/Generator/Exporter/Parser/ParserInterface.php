@@ -28,31 +28,24 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
- * Exporter parser interface.
+ * Exporter parser interface
  *
  * Interface EntityExporterInterface
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-interface ParserInterface extends GeneratorConfigAwareInterface
+interface ParserInterface extends ParserHelperInterface
 {
     /**
-     * Referred entity type.
-     *
-     * @return string
-     */
-    public function getEntityType();
-
-    /**
-     * Returns count of records to be exported.
+     * Returns count of records to be exported
      *
      * @return int
      */
     public function getCount();
 
     /**
-     * Returns the collection of exporting entities.
+     * Returns the collection of exporting entities
      *
      * @return Entity\Collection
      */

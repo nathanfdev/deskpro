@@ -1038,7 +1038,7 @@
             ]
         },
         {
-            "path": "/tickets/{ticket_id}/log",
+            "path": "/tickets/{ticket_id}/logs",
             "operations": [
                 {
                     "method": "GET",

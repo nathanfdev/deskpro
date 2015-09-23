@@ -947,7 +947,14 @@ define [
         last_name: data.person.last_name
         name: data.person.name
       format = (item) ->
-        "#{item['name']} (#{item.email || ''})"
+        if item.name and item.email
+          "#{item['name'] || ''} (#{item.email || ''})"
+        else if item.name
+          "#{item['name'] || ''}"
+        else if item.email
+          "#{item.email || ''}"
+        else
+          ""
       options.inputOptions =
         formatResult: format
         formatSelection: format
@@ -1075,7 +1082,7 @@ define [
 
     getCheckOrgId: (options = {}) ->
       options.propName = 'id'
-      options.operators = ['is', 'not']
+      options.operators = ['is', 'not', 'isset', 'not_isset']
       options.url = '/organizations'
       options.map = (data) ->
         id: data.organization?.id

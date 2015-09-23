@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
@@ -36,6 +37,7 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -56,6 +58,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Process\Process;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use Application\ImportBundle\Service\Import as ImportService;
 
 /**
  * Base export command
@@ -73,7 +76,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $this
             ->addArgument(
                 'script',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'The target script to use'
             )
             ->addOption(
@@ -118,6 +121,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 InputOption::VALUE_NONE,
                 'Shows memory usage'
             )
+            ->addOption(
+                'config-from-db',
+                'c',
+                InputOption::VALUE_NONE,
+                'Whether to load config from DB'
+            )
         ;
     }
 
@@ -126,18 +135,62 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('config-from-db')) {
+            /** @var ImportService $is */
+            $is = $this->getContainer()->get('deskpro.import');
+            $input->setArgument('script', $is->getCurrentName());
+        }
+
+        $allowed = array(
+            ExporterInterface::TYPE_CSV,
+            ExporterInterface::TYPE_JSON,
+            ExporterInterface::TYPE_OS_TICKET,
+            ExporterInterface::TYPE_ZENDESK,
+            ExporterInterface::TYPE_DESKPRO,
+        );
+
+        if (!in_array($input->getArgument('script'), $allowed)) {
+            throw new RuntimeException(sprintf(
+                'Unknown source type `%s`, expected: (%s)',
+                $input->getArgument('script'),
+                implode(', ', $allowed)
+            ));
+        }
+
         $GLOBALS['DP_IS_IMPORTING'] = true;
         $GLOBALS['DP_NOSQL_LOG'] = true;
 
         @ini_set('memory_limit', -1);
+        @set_time_limit(0);
+
         $em = App::getOrm();
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         if ($input->getOption('batch')) {
-            return $this->executeBatchRun($input, $output);
+            $pid = dp_get_data_dir() . '/importer.pid';
+            $fh  = @fopen($pid, 'a');
+
+            if ( ! $fh) {
+                throw new \RuntimeException(sprintf('Unable to create lock file: %s', $pid));
+            }
+            if ( ! @flock($fh, LOCK_EX | LOCK_NB)) {
+                $output->writeln('Another instance is running...');
+                return 0;
+            }
+
+            $exit_code = $this->executeBatchRun($input, $output);
+
+            @flock($fh, LOCK_UN);
+            @fclose($fh);
+
         } else {
-            return $this->executeUnattendedRun($input, $output);
+            $exit_code = $this->executeUnattendedRun($input, $output);
         }
+
+        unset($GLOBALS['DP_IS_IMPORTING']);
+        $GLOBALS['DP_NOSQL_LOG'] = false;
+
+        return $exit_code;
     }
 
     /**
@@ -171,6 +224,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         // todo check for progress bar in unattended mode
         $arguments[] = '-vvv';
 
+        if (defined('DPC_SITE_ID')) {
+            $arguments[] = '--dpc-site-id ' . DPC_SITE_ID;
+        }
+
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
         do {
@@ -186,14 +243,16 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             }
 
             $output->writeln("<info>Done batch</info>");
-
             $output->writeln("<info>Updating search tables.</info>");
-            $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
-            $config          = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            /** @var EntityRepository\Ticket $ticket_repository */
+            $ticket_repository = $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket');
+            $ticket_repository->fillSearchTable();
+
+            $config          = $this->createGeneratorConfig($input);
             $exporter_config = $config->getExporterBatchConfig();
 
-            if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
+            if ($exporter_config instanceof Generator\Exporter\Parser\AbstractBatchConfig) {
                 $rerun = $exporter_config->getHasRemaining();
                 if ($rerun) {
                     $output->writeln("<info>Running next batch</info>");
@@ -220,7 +279,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         try {
-            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $config = $this->createGeneratorConfig($input);
             $logger = $this->createLogger($config, $input, $output);
 
             if ($config->isSilent()) {
@@ -232,32 +291,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 $this->doExecute($config, $logger, $input, $output);
             }
 
-            return 0;
-
-        } catch (Generator\GeneratorException $e) {
-            if (isset($logger)) {
-                foreach ($e->getExceptions() as $exception) {
-                    /** @var Generator\Validator\ValidatorConstraintException $exception */
-                    $logger->alert(sprintf(
-                        "Validator failure for %s on record #%s: %s",
-
-                        get_class($exception->getEntity()),
-                        $exception->getEntity()->getOid(),
-                        $exception->getErrors())
-                    );
-
-                    if ($r = $exception->getEntity()->getRawData()) {
-                        foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
-                            $output->writeln("  [info] " . $l);
-                        }
-                    }
-                }
-            }
-            if (isset($logger)) {
-                $logger->critical($e);
-            }
-
-            // Mark batch as successful even an error has occurred
             return 0;
 
         } catch (\Exception $e) {
@@ -306,12 +339,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * The export is executing in the order of the entity type collection
      *
      * @param InputInterface $input
-     * @param array          $supported_types
      *
      * @return GeneratorConfig
      * @throws RuntimeException
      */
-    protected function createGeneratorConfig(InputInterface $input, array $supported_types)
+    protected function createGeneratorConfig(InputInterface $input)
     {
         $config = new GeneratorConfig();
 
@@ -319,30 +351,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $this->setParamsByInputInterface($config, $input);
         $this->setBatchConfigByInputInterface($config, $input);
 
-        foreach ($supported_types as $type) {
-            $config->addEntityType($type);
-        }
-
         $this->checkConfiguration($config);
 
         return $config;
-    }
-
-    /**
-     * Returns a list of supported entity types
-     *
-     * @return string[]
-     */
-    protected function getSupportedEntityTypes()
-    {
-        return array(
-            Entity\EntityInterface::TYPE_TICKET,
-            Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_ARTICLE,
-            Entity\EntityInterface::TYPE_DOWNLOAD,
-            Entity\EntityInterface::TYPE_FEEDBACK,
-            Entity\EntityInterface::TYPE_NEWS,
-        );
     }
 
     /**
@@ -362,9 +373,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * Use cli to set generator config params up
      *
      * @param GeneratorConfig $config
-     * @param InputInterface  $input
-     *
-     * @throws RuntimeException
+     * @param InputInterface $input
+     * @throws \Exception
      */
     protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
@@ -374,35 +384,51 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             throw new RuntimeException('Source type argument is not defined');
         }
 
+        $readerConfig = null;
+
+        if ($input->getOption('config-from-db')) {
+            /** @var ImportService $is */
+            $is = $this->getContainer()->get('deskpro.import');
+            $importer = $is->getImporter($input->getArgument('script'));
+            $configData = $importer->getData('config');
+            if (!@$configData['temp']) {
+                throw new \Exception('Importer directory is not defined');
+            }
+            $input->setOption('input-path', $configData['temp'] . '/in');
+            $input->setOption('output-path', $configData['temp'] . '/out/');
+
+            $readerConfig = $is->getReaderConfig($input->getArgument('script'));
+            $logfile      = $importer->getData('logfile');
+
+            if ($logfile) {
+                $config->setLogPath($logfile);
+            }
+        }
+
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 
-        switch ($config->getExporterType()) {
-            case ExporterInterface::TYPE_CSV:
-                $readerConfig = new CsvConfig($input->getOption('input-path'));
-                break;
-            case ExporterInterface::TYPE_JSON:
-                $readerConfig = new JsonConfig($input->getOption('input-path'));
-                break;
-            case ExporterInterface::TYPE_ZENDESK:
-                $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
-                break;
-            case ExporterInterface::TYPE_OS_TICKET:
-                $readerConfig = OsTicketReaderFactory::getDefaultConfig();
-                break;
-            default:
-                throw new RuntimeException(sprintf(
-                    'Unknown source type `%s`, expected: (%s)',
-
-                    $config->getExporterType(),
-                    implode(', ', array(
-                        ExporterInterface::TYPE_CSV,
-                        ExporterInterface::TYPE_JSON,
-                        ExporterInterface::TYPE_OS_TICKET,
-                        ExporterInterface::TYPE_ZENDESK,
-                    ))
-                ));
+        if (!$readerConfig) {
+            switch ($config->getExporterType()) {
+                case ExporterInterface::TYPE_CSV:
+                    $readerConfig = new CsvConfig($input->getOption('input-path'));
+                    break;
+                case ExporterInterface::TYPE_JSON:
+                    $readerConfig = new JsonConfig($input->getOption('input-path'));
+                    break;
+                case ExporterInterface::TYPE_ZENDESK:
+                    $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
+                    break;
+                case ExporterInterface::TYPE_OS_TICKET:
+                    $readerConfig = OsTicketReaderFactory::getDefaultConfig();
+                    break;
+                case ExporterInterface::TYPE_DESKPRO:
+                    $readerConfig = DeskPROReaderFactory::getDefaultConfig();
+                    break;
+                default:
+                    throw new \RuntimeException('No reader config defined');
+            }
         }
 
         $config->setReaderConfig($readerConfig);
@@ -490,6 +516,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $handler->setFormatter($formatter);
 
             $logger->pushHandler($handler);
+
+            if ($input->getOption('config-from-db')) {
+                $importer = $this->getContainer()->get('deskpro.import')->getImporter($input->getArgument('script'));
+                $handler = new Generator\Logger\ImporterProcessingHandler($importer, $this->getContainer()->getEm());
+                $handler->setFormatter($formatter);
+                $logger->pushHandler($handler);
+            }
         }
         if ($config->isConsoleOutputEnabled()) {
             $formatter = new ConsoleFormatter();
@@ -536,20 +569,23 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      *
      * @return ProgressBar|null
      */
-    protected function createAndSetProgressBar(Generator\Generator $generator, OutputInterface $output)
+    protected function createAndSetProgressBar(Generator\Generator $generator, InputInterface $input, OutputInterface $output)
     {
-        if ($generator->getConfig()->isProgressbarEnabled()) {
-            $total_count = $generator->getTotalRecordsCount();
-            $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
-
-            $progress_bar = new ProgressBar($output, $total_count);
-            $progress_bar->start();
-
-            $generator->setProgressBarHelper($progress_bar);
-            return $progress_bar;
+        if (!$generator->getConfig()->isProgressbarEnabled()) {
+            return null;
         }
 
-        return null;
+        $total_count = $generator->getTotalRecordsCount();
+        $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
+
+        $progress_bar = $input->getOption('config-from-db')
+            ? $this->getContainer()->get('deskpro.import')->createProgressBar($total_count)
+            : new ProgressBar($output, $total_count);
+
+        $progress_bar->start();
+
+        $generator->setProgressBarHelper($progress_bar);
+        return $progress_bar;
     }
 
     /**
@@ -569,13 +605,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function checkPhpInfo()
     {
-        if (dp_is_php_path_guessed()) {
-            $cmd = sprintf(
-                "%s %s",
+        if (defined('DPC_SITE_ID')) {
+            return true;
+        }
 
-                dp_get_php_path(),
-                escapeshellarg('bin/phpinfo.php')
-            );
+        if (dp_is_php_path_guessed()) {
+            $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
 
             $process = new Process($cmd, realpath(DP_ROOT));
             $process->run();
@@ -587,18 +622,17 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Make sure PHP we have passes requirements
+     * Make sure we have passes requirements
      *
      * @return bool|string
      */
     protected function checkRequirements()
     {
-        $cmd = sprintf(
-            "%s %s",
+        if (defined('DPC_SITE_ID')) {
+            return true;
+        }
 
-            dp_get_php_path(),
-            escapeshellarg('bin/check-req.php')
-        );
+        $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/check-req.php'));
 
         $process = new Process($cmd, realpath(DP_ROOT));
         $process->run();

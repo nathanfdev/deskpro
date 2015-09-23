@@ -272,6 +272,7 @@ abstract class AbstractDbSet implements DataSetInterface
         } else {
             $this->installDatabase();
             $this->installSet();
+                $this->getContainer()->getSettingsHandler()->reloadSettings();
 
             if ($this->cache_dir) {
                 $this->dumpToCache();

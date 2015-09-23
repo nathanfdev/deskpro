@@ -23,28 +23,45 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
   ###
   Admin_Main_Directive_DpPhoneNumber = [ '$rootScope', '$timeout', ($rootScope, $timeout) ->
     return {
-      require: 'ngModel',
       restrict: 'A',
       scope: {
-        region: '@dpPhoneNumber'
+        defaultRegion: '@',
+        startPhoneNumber: '@',
+        phone: '='
       },
-      link: (scope, element, attr, ngModel) ->
-        # when we get the dpPhoneNumber attribute value, setup intlTelInput
-        attr.$observe 'dpPhoneNumber', (reg) ->
-          element.intlTelInput({
-              autoPlaceholder: true,
-              autoFormat: true,
-              nationalMode: true,
-              defaultCountry: reg.toLowerCase(),
-          })
-          element.intlTelInput("setNumber", element.val())
-          element.intlTelInput('utilsLoaded')
-          element.bind('blur keyup change input', () ->
-            scope.$apply(() ->
-              ngModel.$setViewValue(element.intlTelInput('getNumber'))
-            )
-          )
+      template: '<div><input type="tel" class=".user_input" style="min-width: 250px" class="form-control" name="primary_phone" style="width:80%" /><input type="hidden" class=".hidden_ext" ng-model="phone.ext"><input type="hidden" class=".hidden_number" ng-model="phone.number"></div>',
+      replace: true,
+      link: ($scope, $element, $attrs) ->
+        $elements = $element.find('input');
+        $main = $($elements[0]);
+        $ext = $($elements[1]);
+        $num = $($elements[2]);
 
+        didNotRun = true
+        $attrs.$observe 'defaultRegion', (region) =>
+          if didNotRun && region
+            didNotRun = false
+            $main.intlTelInput({
+                defaultCountry: region.toLowerCase(),
+                autoPlaceholder: true,
+                autoFormat: true,
+                allowExtensions: true,
+                nationalMode: true
+              })
+            $main.intlTelInput('utilsLoaded')
+            $main.bind('blur keyup change input', () ->
+                raw_input = $main.val().split(" ext. ");
+                if (raw_input.length > 1 && raw_input[1].length == 0)
+                  $main.val(raw_input[0])
+
+                $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')}
+              )
+
+        didNotRun2 = true
+        $attrs.$observe 'startPhoneNumber', (startPhoneNumber) =>
+          if didNotRun2 && startPhoneNumber && startPhoneNumber.trim().length > 0
+            didNotRun2 = false
+            $main.intlTelInput("setNumber", startPhoneNumber)
     }
   ]
 

@@ -36,37 +36,12 @@ use Symfony\Component\Validator\Constraints;
  * Class Attachment
  * @package Application\ImportBundle\Entity
  */
-final class Attachment extends AbstractEntity implements PersonAwareInterface
+final class Attachment extends AbstractBlob implements PersonAwareInterface
 {
     /**
      * @var string
      */
     private $person_email;
-
-    /**
-     * @var string
-     */
-    private $blob_data;
-
-    /**
-     * @var string
-     */
-    private $blob_url;
-
-    /**
-     * @var string
-     */
-    private $blob_path;
-
-    /**
-     * @var string
-     */
-    private $file_name;
-
-    /**
-     * @var string
-     */
-    private $content_type;
 
     /**
      * @var bool
@@ -99,116 +74,6 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Blob data
-     *
-     * @return string
-     */
-    public function getBlobData()
-    {
-        return $this->blob_data;
-    }
-
-    /**
-     * Set blob data
-     *
-     * @param string $blob_data
-     * @return $this
-     */
-    public function setBlobData($blob_data)
-    {
-        $this->blob_data = $blob_data;
-        return $this;
-    }
-
-    /**
-     * Blob url
-     *
-     * @return string
-     */
-    public function getBlobUrl()
-    {
-        return $this->blob_url;
-    }
-
-    /**
-     * Set a blob url
-     *
-     * @param string $blob_url
-     * @return $this
-     */
-    public function setBlobUrl($blob_url)
-    {
-        $this->blob_url = $blob_url;
-        return $this;
-    }
-
-    /**
-     * Blob path
-     *
-     * @return string
-     */
-    public function getBlobPath()
-    {
-        return $this->blob_path;
-    }
-
-    /**
-     * Set a blob path
-     *
-     * @param string $blob_path
-     * @return $this
-     */
-    public function setBlobPath($blob_path)
-    {
-        $this->blob_path = $blob_path;
-        return $this;
-    }
-
-    /**
-     * File name
-     *
-     * @return string
-     */
-    public function getFileName()
-    {
-        return $this->file_name;
-    }
-
-    /**
-     * Set file name
-     *
-     * @param string $file_name
-     * @return $this
-     */
-    public function setFileName($file_name)
-    {
-        $this->file_name = $file_name;
-        return $this;
-    }
-
-    /**
-     * Content type
-     *
-     * @return string
-     */
-    public function getContentType()
-    {
-        return $this->content_type;
-    }
-
-    /**
-     * Set content type
-     *
-     * @param string $content_type
-     * @return $this
-     */
-    public function setContentType($content_type)
-    {
-        $this->content_type = $content_type;
-        return $this;
-    }
-
-    /**
      * @return boolean
      */
     public function isInline()
@@ -231,16 +96,10 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
      */
     public function toArray()
     {
-        return array(
-            'oid'          => $this->oid,
-            'person'       => $this->person_email,
-            'blob_data'    => $this->blob_data,
-            'blob_url'     => $this->blob_url,
-            'blob_path'    => $this->blob_path,
-            'file_name'    => $this->file_name,
-            'content_type' => $this->content_type,
-            'is_inline'    => $this->is_inline,
-        );
+        return array_merge(parent::toArray(), array(
+            'person'    => $this->person_email,
+            'is_inline' => $this->is_inline,
+        ));
     }
 
     /**
@@ -248,11 +107,10 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        AbstractEntity::loadValidatorMetadata($metadata);
+       parent::loadValidatorMetadata($metadata);
 
         $metadata
-            ->addPropertyConstraint('person_email', new Constraints\Email())
             ->addPropertyConstraint('file_name', new Constraints\NotBlank())
-            ->addPropertyConstraint('content_type', new Constraints\NotBlank());
+        ;
     }
 }

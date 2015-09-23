@@ -34,8 +34,10 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\EventListener\ProblemListener;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\HttpFoundation\Session as HttpSession;
+use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 
 class ClientMessage extends AbstractEntityRepository
 {
@@ -266,7 +268,6 @@ class ClientMessage extends AbstractEntityRepository
             $channels[] = 'agent-notify.tickets';
             $channels[] = 'agent-notify.tasks';
             $channels[] = 'agent.ticket-updated';
-            $channels[] = 'agent.ticket-sla-updated';
             $channels[] = 'agent.ticket-draft-updated';
             $channels[] = 'agent.tweet-added';
             $channels[] = 'agent.tweet-updated';
@@ -283,6 +284,10 @@ class ClientMessage extends AbstractEntityRepository
             $channels[] = 'chat.ended';
             $channels[] = 'chat.depchange';
             $channels[] = 'chat.invited';
+
+            $channels[] = SlaClientMessageSender::CHANNEL;
+            $channels[] = ProblemListener::CHANNEL_NEW;
+            $channels[] = ProblemListener::CHANNEL_UPDATE;
         }
 
         // They're automatically subscribed to their own chats of course

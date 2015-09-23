@@ -28,15 +28,21 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
- * Articles csv file parser.
+ * Articles csv file parser
  *
  * Class Articles
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class Articles extends AbstractParser
 {
+    const ARTICLE_PREFIX = 'article_';
+
     /**
      * {@inheritdoc}
      */
@@ -50,7 +56,7 @@ final class Articles extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getConfig());
+        return $this->getReaderCount($this->getArticleReaderConfig());
     }
 
     /**
@@ -58,25 +64,29 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $articles   = $this->getReaderData($this->getConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData($this->getArticleReaderConfig()))
+            ->setPrefix('CSVArticle')
+            ->setRefColumn('id')
+            ->setMethod('exportArticle')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($articles as $num => $article) {
-            $this->advanceProgressBar();
+        $collection    = $this->exportCollection($config);
+        $custom_fields = $this->exportArticleCustomFields();
 
-            try {
-                $entity = $this->exportArticle($num, $article);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid article record `%d` found (Skipping)', $num));
+        foreach ($collection as $article) {
+            /** @var Entity\Article $article */
+            foreach ($custom_fields as $custom_field_entity) {
+                if ($article->getDestination() === $custom_field_entity->getDestination()) {
+                    $article->addCustomField($custom_field_entity);
                 }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid article record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+            }
+
+            $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($article->getDestination(), $article->getRawData());
+            foreach ($inline_custom_fields as $custom_field_entity) {
+                $article->addCustomField($custom_field_entity);
             }
         }
 
@@ -84,71 +94,82 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns an article entity.
+     * Returns an article entity
      *
+     * @param array $data
      * @param int   $num
-     * @param array $article
      *
      * @return Entity\Article|null
      */
-    private function exportArticle($num, array $article)
+    protected function exportArticle(array $data, $num)
     {
-        if ($this->isArticleValid($article)) {
-            $entity = new Entity\Article();
-            $entity
-                ->setDestination('article_'.$num)
-                ->setOid($num)
-                ->setPersonEmail($article['person'])
-                ->setTitle($article['title'])
-                ->setContent($article['content'])
-                ->setSlug($article['slug'])
-                ->setLanguage($article['language'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']))
-                ->setStatus($article['status']);
+        $formatted = $this->formatter->format($data, array(
+            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => self::ARTICLE_PREFIX,
+                'ref'    => 'id',
+            )),
+            'person'       => TransformerInterface::TYPE_STRING,
+            'title'        => TransformerInterface::TYPE_STRING,
+            'content'      => TransformerInterface::TYPE_STRING,
+            'slug'         => TransformerInterface::TYPE_STRING,
+            'language'     => TransformerInterface::TYPE_STRING,
+            'status'       => TransformerInterface::TYPE_STRING,
+            'category'     => TransformerInterface::TYPE_STRING,
+            'label'        => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+        ));
 
-            if ($article['label']) {
-                $entity->addLabel($article['label']);
-            }
-            if ($article['category']) {
-                $entity->addCategory($article['category']);
-            }
+        $entity = new Entity\Article();
+        $entity
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setPersonEmail($formatted['person'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setLanguage($formatted['language'])
+            ->setDateCreated($formatted['date_created'])
+            ->setStatus($formatted['status'])
+        ;
 
-            return $entity;
+        // Set import key if it's real oid only
+        if (strpos($entity->getOid(), 'num_') !== 0) {
+            $entity->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_ARTICLE);
         }
 
-        return;
+        if ($formatted['label']) {
+            $entity->addLabel($formatted['label']);
+        }
+        if ($formatted['category']) {
+            $entity->addCategory($formatted['category']);
+        }
+
+        return $entity;
     }
 
     /**
-     * Check if article has all required columns.
+     * Returns a collection of articles custom field data
      *
-     * @param array $article
-     *
-     * @return bool
+     * @return Entity\CustomField[]|Entity\Collection
      */
-    private function isArticleValid(array $article)
+    private function exportArticleCustomFields()
     {
-        $columns = array(
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'status',
-            'category',
-            'label',
-            'date_created',
-        );
+        $config = $this->getReaderConfig(self::FILE_ARTICLE_CUSTOM_FIELDS);
+        $data   = $this->getReaderData($config);
 
-        return $this->hasRequiredColumns($article, $columns);
+        return $this->getMultipleCustomFieldsParser()->export($data, self::ARTICLE_PREFIX, 'article_id');
     }
 
     /**
-     * Returns record type reader config.
+     * Returns record type reader config
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getConfig()
+    private function getArticleReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_ARTICLES);
     }

@@ -40,6 +40,7 @@ class TicketContextData implements DataInterface
         $deps   = App::getDb()->fetchAll("SELECT * FROM departments ORDER BY id ASC");
         $teams  = App::getDb()->fetchAll("SELECT * FROM agent_teams ORDER BY id ASC");
         $groups = App::getDb()->fetchAll("SELECT * FROM usergroups ORDER BY id ASC");
+        $email_accounts = App::getDb()->fetchAll("SELECT id, account_type, is_enabled, address, other_addresses, date_created FROM email_accounts ORDER BY id ASC");
         $agents = array();
         foreach (App::$container->getAgentData()->getAgents() as $a) {
             $agents[] = $a->toBasicApiData();
@@ -51,6 +52,7 @@ class TicketContextData implements DataInterface
         $data['agent_teams'] = $teams;
         $data['usergroups']  = $groups;
         $data['usergroups']  = $groups;
+        $data['email_accounts']  = $email_accounts;
 
         return $data;
     }

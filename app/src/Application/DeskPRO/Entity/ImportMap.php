@@ -26,8 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
  *
+ * @package DeskPRO
  * @category Entities
  */
 
@@ -37,13 +38,20 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A general map that maps old IDs to new IDs.
+ * A general map that maps old IDs to new IDs
+ *
  */
 class ImportMap extends \Application\DeskPRO\Domain\DomainObject
 {
+    const TYPE_ZENDESK_TICKET           = 'zd_ticket';
+    const TYPE_ZENDESK_TICKET_MESSAGE   = 'zd_ticket_message';
+    const TYPE_ZENDESK_ARTICLE          = 'zd_article';
+    const TYPE_ZENDESK_ARTICLE_CATEGORY = 'zd_article_category';
+    const TYPE_CSV_ARTICLE              = 'csv_article';
+    const TYPE_CSV_TICKET               = 'csv_ticket';
+
     /**
      * The type of id/thing/whatever this is mapping.
-     *
      * @var string
      */
     protected $typename;
@@ -58,6 +66,73 @@ class ImportMap extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $new_id = 0;
 
+    /**
+     * Returns mapping type
+     *
+     * @return string
+     */
+    public function getTypename()
+    {
+        return $this->typename;
+    }
+
+    /**
+     * Set mapping type
+     *
+     * @param string $typename
+     * @return $this
+     */
+    public function setTypename($typename)
+    {
+        $this->setModelField('typename', $typename);
+        return $this;
+    }
+
+    /**
+     * Returns external entity id
+     *
+     * @return string
+     */
+    public function getOldId()
+    {
+        return $this->old_id;
+    }
+
+    /**
+     * Set external entity id
+     *
+     * @param string $old_id
+     * @return $this
+     */
+    public function setOldId($old_id)
+    {
+        $this->setModelField('old_id', $old_id);
+        return $this;
+    }
+
+    /**
+     * Returns entity id
+     *
+     * @return string
+     */
+    public function getNewId()
+    {
+        return $this->new_id;
+    }
+
+    /**
+     * Set entity id
+     *
+     * @param string $new_id
+     * @return $this
+     */
+    public function setNewId($new_id)
+    {
+        $this->setModelField('new_id', $new_id);
+        return $this;
+    }
+
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -66,10 +141,10 @@ class ImportMap extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ImportMap';
-        $metadata->setPrimaryTable(array( 'name' => 'import_map'));
+        $metadata->setPrimaryTable(array( 'name' => 'import_map', ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'old_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'new_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_id'));
+        $metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'old_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'new_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_id', ));
     }
 }

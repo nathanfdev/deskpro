@@ -42,9 +42,21 @@ class CheckAgentTest extends AbstractTicketEntityCheckTest
         return 'agent';
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function createEntityObject($id)
+    {
+        $object = parent::createEntityObject($id);
+        $object->setIsAgent(true);
+
+        return $object;
+    }
+
     public function testTouched()
     {
         $agent = new Person();
+        $agent->setIsAgent(true);
 
         $ticket = new Ticket();
         $ticket->agent = $agent;
@@ -60,6 +72,7 @@ class CheckAgentTest extends AbstractTicketEntityCheckTest
     public function testNotTouched()
     {
         $agent = new Person();
+        $agent->setIsAgent(true);
 
         $ticket = new Ticket();
         $ticket->agent = $agent;

@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\AbstractReader;
 use Zendesk\API;
 use DateTime;
 
@@ -40,18 +40,15 @@ use DateTime;
  *
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
+ *
+ * @property ZenDeskConfig $config
  */
-class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
+class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
 {
     /**
      * @var Request\RequestAdapterInterface
      */
     private $adapter;
-
-    /**
-     * @var DateTime
-     */
-    private $initial_time;
 
     /**
      * Constructor
@@ -62,9 +59,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function __construct(Request\RequestAdapterInterface $adapter, ZenDeskConfig $config)
     {
         parent::__construct($config);
-
-        $this->adapter      = $adapter;
-        $this->initial_time = $config->getInitialTime();
+        $this->adapter = $adapter;
     }
 
     /**
@@ -72,7 +67,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getPeopleCount(DateTime $start_time = null)
     {
-        $result = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $result = $this->adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -85,7 +80,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function getPeople(DateTime $start_time = null)
     {
         $people = array();
-        $result = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $result = $this->adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -103,11 +98,21 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getPeopleEndTime(DateTime $start_time = null)
     {
-        $request = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $request = $this->adapter->doRequest('CoreAPI\PeopleIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
         return $this->getIncrementalEndDateTime($request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPersonById($id)
+    {
+        $result = $this->adapter->doRequest('CoreAPI\PeopleFind', array('id' => $id));
+
+        return $result ? $this->toArray($result->user) : null;
     }
 
     /**
@@ -119,7 +124,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
         $chunk_ids = array_chunk($ids, 100);
 
         foreach ($chunk_ids as $chunk_ids_batch) {
-            $result = $this->adapter->doPeopleFindRequest(array('id' => $chunk_ids_batch));
+            $result = $this->adapter->doRequest('CoreAPI\PeopleFind', array('id' => $chunk_ids_batch));
 
             if (is_array($result->users)) {
                 foreach ($result->users as $person) {
@@ -136,10 +141,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getOrganizationById($id)
     {
-        $result = $this->adapter->doOrganizationFindRequest(array(
-            'id' => $id,
-        ));
-
+        $result = $this->adapter->doRequest('CoreAPI\OrganizationFind', array('id' => $id));
         return $this->toArray($result->organization);
     }
 
@@ -148,7 +150,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getTicketsCount(DateTime $start_time = null)
     {
-        $result = $this->adapter->doTicketsIncrementalExportRequest(array(
+        $result = $this->adapter->doRequest('CoreAPI\TicketsIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -161,7 +163,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function getTickets(DateTime $start_time = null)
     {
         $tickets = array();
-        $result  = $this->adapter->doTicketsIncrementalExportRequest(array(
+        $result  = $this->adapter->doRequest('CoreAPI\TicketsIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -180,9 +182,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function getTicketComments($id)
     {
         $comments = array();
-        $result   = $this->adapter->doTicketCommentsFindAllRequest(array(
-            'ticket_id' => $id,
-        ));
+        $result   = $this->adapter->doRequest('CoreAPI\TicketCommentsFindAll', array('ticket_id' => $id));
 
         if ($result) {
             foreach ($result->comments as $comment) {
@@ -198,7 +198,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     public function getTicketsEndTime(DateTime $start_time = null)
     {
-        $request = $this->adapter->doTicketsIncrementalExportRequest(array(
+        $request = $this->adapter->doRequest('CoreAPI\TicketsIncrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
@@ -206,14 +206,195 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticleCategoryPath($section_id)
+    {
+        $response_categories = $this->adapter->doRequest('HelpCenter\CategoriesFindAll');
+        $response_categories = $this->toArray($response_categories->categories);
+
+        $response_sections   = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+        $response_sections   = $this->toArray($response_sections->sections);
+
+        $categories = array();
+        foreach ($response_categories as $category) {
+            $categories[$category['id']] = $category;
+        }
+
+        $sections = array();
+        foreach ($response_sections as $category) {
+            $sections[$category['id']] = $category;
+        }
+
+        if (isset($sections[$section_id])) {
+            $section = $sections[$section_id];
+        } else {
+            $response_section = $this->adapter->doRequest('HelpCenter\SectionFind', array('id' => $section_id));
+            $section = $this->toArray($response_section->section);
+        }
+
+        if ( ! empty($section)) {
+            if (isset($categories[$section['category_id']])) {
+                $category = $categories[$section['category_id']];
+            } else {
+                $response_section = $this->adapter->doRequest('HelpCenter\CategoryFind', array('id' => $section['category_id']));
+                $category = $this->toArray($response_section->category);
+            }
+
+            if ( ! empty($category)) {
+                return $category['name'] . ' > ' . $section['name'];
+            } else {
+                return $section['name'];
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesCount(DateTime $start_time = null)
+    {
+        $result = $this->adapter->doRequest('HelpCenter\ArticleIncrementalExport', array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $result ? $result->count : 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticles(DateTime $start_time = null)
+    {
+        $articles = array();
+        $result  = $this->adapter->doRequest('HelpCenter\ArticleIncrementalExport', array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        if ($result) {
+            foreach ($result->articles as $article) {
+                $articles[] = $this->toArray($article);
+            }
+        }
+
+        return $articles;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesEndTime(DateTime $start_time = null)
+    {
+        $request = $this->adapter->doRequest('HelpCenter\ArticleIncrementalExport', array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $this->getIncrementalEndDateTime($request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticleComments($id)
+    {
+        $comments = array();
+        $result   = $this->adapter->doRequest('HelpCenter\ArticleCommentsFindAll', array('id' => $id));
+
+        if ($result) {
+            foreach ($result->comments as $comment) {
+                $comments[] = $this->toArray($comment);
+            }
+        }
+
+        return $comments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticleAttachments($id)
+    {
+        $attachments = array();
+        $result      = $this->adapter->doRequest('HelpCenter\ArticleAttachmentsFindAll', array('id' => $id));
+
+        if ($result) {
+            foreach ($result->article_attachments as $attachment) {
+                $attachments[] = $this->toArray($attachment);
+            }
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticleTranslations($id)
+    {
+        $translations = array();
+        $result       = $this->adapter->doRequest('HelpCenter\ArticleTranslationsFindAll', array('id' => $id));
+
+        if ($result) {
+            foreach ($result->translations as $translation) {
+                $translations[] = $this->toArray($translation);
+            }
+        }
+
+        return $translations;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesCategories()
+    {
+        $categories = array();
+        $result     = $this->adapter->doRequest('HelpCenter\CategoriesFindAll');
+
+        if ($result) {
+            foreach ($result->categories as $category) {
+                $categories[] = $this->toArray($category);
+            }
+        }
+
+        return $categories;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesSections()
+    {
+        $sections = array();
+        $result   = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+
+        if ($result) {
+            foreach ($result->sections as $section) {
+                $section = $this->toArray($section);
+                $access  = $this->adapter->doRequest('HelpCenter\SectionAccessPolicyFind', array(
+                    'id' => $section['id'])
+                );
+                $access  = $access ? $this->toArray($access) : null;
+
+                $section = array_merge($section, $access);
+                $sections[] = $section;
+            }
+        }
+
+        return $sections;
+    }
+
+    /**
      * Converts stdClass to array
      *
-     * @param \stdClass $object
+     * @param mixed $object
      * @return array
      */
-    private function toArray(\stdClass $object)
+    private function toArray($object)
     {
-        return @json_decode(json_encode($object), true);
+        return json_decode(json_encode($object), true);
     }
 
     /**
@@ -224,11 +405,12 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     private function getStartTimeTimestamp(DateTime $start_time = null)
     {
-        if ($start_time && $start_time > $this->initial_time) {
+        $initial_time = $this->config->getInitialTime();
+        if ($start_time && $start_time > $initial_time) {
             return $start_time->getTimestamp();
         }
 
-        return $this->initial_time->getTimestamp();
+        return $initial_time->getTimestamp();
     }
 
     /**
@@ -247,13 +429,5 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
         }
 
         return 0;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isReady()
-    {
-        return null !== $this->getPeopleCount();
     }
 }

@@ -1,0 +1,8 @@
+name,email,custom "Text field",custom "Radio button field",facebook,im,phone,linkedin
+Joe Smith,joe.smith@example.com,some text 1,Choice 1,http://facebook.com/facebook_id,im_id,+447700900315,linkedin_url
+Angry Customer,angry.customer@example.com,some text 2,Choice 2,facebook_id,im_id,+447700900315,linkedin_url
+Some Customer,some@email.tld,some text 3,Choice 1,facebook_id,im_id,+447700900315,linkedin_url
+Another Customer,another@email.tld,some text 4,Choice 1,facebook_id,im_id,+447700900315,linkedin_url
+Some Agent,agent@email.tld,some text 5,Choice 2,facebook_id,im_id,+447700900315,linkedin_url
+Some Agent 2,agent2@email.tld,some text 6,Choice 2,facebook_id,im_id,+12025550156,linkedin_url
+Some Agent 3,agent3@email.tld,some text 7,Choice 1,facebook_id,im_id,+12025550156,linkedin_url

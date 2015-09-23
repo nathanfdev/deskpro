@@ -163,7 +163,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      * Find an existing data record for a field id.
      *
      * @param int $field_id
-     *
      * @return CustomDataFeedback
      */
     public function getCustomDataForField($field_id)
@@ -181,6 +180,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return;
     }
 
+
     /**
      * @param CustomDataFeedback $data
      */
@@ -189,6 +189,17 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->custom_data->add($data);
         $data['feedback'] = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+    }
+
+    /**
+     * Reset custom data
+     * todo add onPropertyChanged() if change tracking is needed
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+        return $this;
     }
 
     /**
@@ -277,6 +288,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('status', $this->status, $status);
         $this->status = $status;
 
+        // there is no STATUS_NEW anymore
+        //if ($status == 'approve') {
+        //    $status = self::STATUS_NEW;
+        //}
+
         switch ($status) {
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
@@ -358,11 +374,42 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
-    public function addLabel($label)
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+        return $this;
+    }
+
+    /**
+     * @param LabelFeedback $label
+     *
+     * @return $this
+     */
+    public function addLabel(LabelFeedback $label)
     {
         $label['feedback'] = $this;
         $this->labels->add($label);
+
+        return $this;
     }
+
+    /**
+     * @return \Application\DeskPRO\Entity\LabelFeedback[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
 
     /**
      * @return \Application\DeskPRO\Labels\LabelManager
@@ -422,7 +469,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      * Get Elasticsearch highlight data.
      *
      * @param null $field
-     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -452,6 +498,32 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function setStatusCategory(FeedbackStatusCategory $status_category = null)
     {
         $this->setModelField('status_category', $status_category);
+    }
+
+    /**
+     * @param $field
+     */
+    public function removeCustomDataForField($field)
+    {
+        $parent_id = null;
+        $field_id = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
+
+        $change = false;
+        foreach ($this->custom_data as $data) {
+            if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+                $change = true;
+                $this->custom_data->removeElement($data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
+            }
+        }
     }
 
     public function getCustomDataCollection()

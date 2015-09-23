@@ -27,96 +27,16 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
-use DateTime;
-
 /**
- * Abstract generator exporter parser.
+ * Abstract generator exporter parser
  *
  * Class AbstractParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+abstract class AbstractParser extends AbstractParserHelper implements ParserInterface
 {
     /**
-     * Check if a record has all required columns.
-     *
-     * @param array   $record
-     * @param array   $columns
-     * @param boolean $throw_exception
-     *
-     * @throws NoColumnException
-     * @return bool
-     *
+     * @var ParserHelperSet
      */
-    protected function hasRequiredColumns(array $record, array $columns, $throw_exception = true)
-    {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                if ($throw_exception) {
-                    throw new NoColumnException(sprintf('Column `%s` not found', $column));
-                }
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if a record column is array.
-     *
-     * @param array  $record
-     * @param string $column
-     * @param bool   $throw_exception
-     *
-     * @throws NoColumnException
-     * @throws NotArrayException
-     * @return bool
-     *
-     */
-    protected function isArrayColumn(array $record, $column, $throw_exception = true)
-    {
-        if (array_key_exists($column, $record) === false) {
-            if ($throw_exception) {
-                throw new NoColumnException(sprintf('Column `%s` not found', $column));
-            }
-
-            return false;
-        }
-
-        if (is_array($record[$column]) === false) {
-            if ($throw_exception) {
-                throw new NotArrayException(sprintf('Column `%s` is not array', $column));
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns date time object from string or current date time if the format is empty.
-     *
-     * @param string $format
-     *
-     * @return DateTime
-     */
-    protected function getFromStringOrCurrentDateTime($format)
-    {
-        return $format ? new DateTime($format) : new DateTime();
-    }
-
-    /**
-     * Returns true if value is "true" or intval of value = 1.
-     *
-     * @param int|string $value
-     *
-     * @return bool
-     */
-    protected function isBooleanTrue($value)
-    {
-        return $value === 'true' || (int) $value === 1;
-    }
+    protected $helpers;
 }

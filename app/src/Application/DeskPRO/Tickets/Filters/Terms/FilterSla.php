@@ -48,7 +48,7 @@ class FilterSla extends AbstractFilterTerm
     protected function getOptionsDef()
     {
         $options = new CheckedOptionsArray();
-        $options->addRequiredNames('sla_ids');
+        $options->addRequiredNames('sla_id');
 
         return $options;
     }

@@ -32,6 +32,11 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\CustomFields\CustomDataPersister;
+use Application\DeskPRO\CustomFields\FieldDisplayArray;
+use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
@@ -39,6 +44,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -48,6 +54,13 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     protected $allowed = array(
         'owner'   => array('ticket', 'person'),
         'context' => array('person', 'organization'),
+    );
+
+    static public $allowed_common = array(
+        'person' => 'Person',
+        'org' => 'Organization',
+        'ticket' => 'Ticket',
+        'billing' => 'TicketCharge',
     );
 
     /**
@@ -341,5 +354,92 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         }
 
         throw new BadRequestHttpException;
+    }
+
+    /**
+     * @param $objectType
+     * @param $objectId
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function getCommonFieldsAction($objectType, $objectId, Request $request)
+    {
+        if (!isset(self::$allowed_common[$objectType])) {
+            throw new BadRequestHttpException;
+        }
+
+        if (!$object = $this->em->find('DeskPRO:'.self::$allowed_common[$objectType], $objectId)) {
+            throw new NotFoundHttpException;
+        }
+
+        /** @var FieldManager $manager */
+        $manager = $this->container->getSystemService($objectType.'_fields_manager');
+        $array = $manager->getDisplayArrayForObject($object);
+        $ret = array();
+        foreach ($array as $display_array) {
+            /** @var $field FieldDisplayArray */
+            if ($display_array instanceof FormView) {
+                continue;
+            }
+
+            /** @var HandlerAbstract $handler */
+            $handler = $display_array['handler'];
+
+            if (is_object($display_array)) {
+                $display_array = $display_array->toArray();
+            }
+
+            $data = array(
+                'id' => $display_array['id'],
+                'title' => $display_array['title'],
+                'type' => $display_array['field_handler'],
+                'value' => trim($handler->renderText($display_array['value'], $display_array)),
+            );
+
+            if ($handler instanceof Choice && @$display_array['value']['children']) {
+                $data['children'] = $display_array['value']['children'];
+            }
+
+            $ret[] = $data;
+        }
+
+        return $this->createApiResponse($ret, 200);
+    }
+
+    /**
+     * @param $objectType
+     * @param $objectId
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function setCommonFieldAction($objectType, $objectId, Request $request)
+    {
+        if (!isset(self::$allowed_common[$objectType])) {
+            throw new BadRequestHttpException;
+        }
+
+        if (!$id = $request->get('id')) {
+            throw new BadRequestHttpException;
+        }
+
+        if (!$object = $this->em->find('DeskPRO:'.self::$allowed_common[$objectType], $objectId)) {
+            throw new NotFoundHttpException;
+        }
+
+        /** @var FieldManager $manager */
+        $manager = $this->container->getSystemService($objectType.'_fields_manager');
+        $data = array(
+            'field_'.$id => $request->get('value'),
+        );
+
+        $manager->saveFormToObject($data, $object);
+
+        return $this->createSuccessResponse();
     }
 }

@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Html\Html2Text;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 class Message extends \Orb\Mail\Message
@@ -214,12 +215,37 @@ class Message extends \Orb\Mail\Message
             $body = $this->replaceEmbeds($body);
             $this->setBody($body, 'text/html');
 
+            if (
+                !$this->set_to_person
+                || ($this->set_to_person && !$this->set_to_person->is_agent)
+                || ($this->set_to_person && $this->set_to_person->is_agent && $this->set_to_person->getPref('agent.enable_plaintext_email'))
+            ) {
+                $plaintext = $body;
+                $plaintext = str_replace('<!--DP_NEWMSG_AS_NOTE-->', '[DP_NEWMSG_AS_NOTE]', $plaintext);
+                $plaintext = str_replace('<!--DP_NEWMSG_AS_REPLY-->', '[DP_NEWMSG_AS_REPLY]', $plaintext);
+
+                $start_pos = strpos($plaintext, '<!--DP_PREVIEW_TEXT_BEGIN-->');
+                $end_pos   = strpos($plaintext, '<!--DP_PREVIEW_TEXT_END-->');
+                if ($start_pos && $end_pos) {
+                    $end_pos_len = strlen('<!--DP_PREVIEW_TEXT_END-->');
+                    $plaintext = Strings::cut($plaintext, $start_pos, $end_pos+$end_pos_len);
+                }
+
             // This is a slow process and can crash on complex documents so
             // prevent running on really long messages
             if (strlen($body) < 512000) {
                 try {
                     try {
-                        $plaintext = Html2Text::convertHtml($body);
+                            $h2t = new Html2Text();
+                            $h2t->addElementProcessor('a', function($node) {
+                                $classname = $node->getAttribute("class");
+                                if (strpos($classname, 'dp-reply-help-link') === false) {
+                                    return null;
+                                }
+
+                                return 'deskpro.com/go/reply';
+                            });
+                            $plaintext = $h2t->convert($plaintext);
                     } catch (\Exception $e) {
                         $plaintext = null;
                     }
@@ -231,12 +257,14 @@ class Message extends \Orb\Mail\Message
 
             // fallback on just simple strip tags
             } else {
-                $plaintext = str_replace("\n", '', $body);
+                    $plaintext = str_replace("\n", '', $plaintext);
                 $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
-                $plaintext = strip_tags($plaintext);
+                    $plaintext = preg_replace('#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#', 'deskpro.com/go/reply', $plaintext);
+                    $plaintext = Strings::stripTags($plaintext);
                 if ($plaintext) {
                     $this->addPart($plaintext, 'text/plain');
                 }
+            }
             }
         } else {
             if ($this->getContentType() == 'text/html') {

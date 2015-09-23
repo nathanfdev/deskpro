@@ -170,13 +170,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
                     $g = $agent_groups->getGroup($ugid);
-                    if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
-                        $loader = App::$container->getSystemService('AgentPermissionNamesLoader');
-                        if ($g->sys_name == 'agent_all_perms') {
-                            $set_perms = $loader->getNames();
-                        } else {
-                            $set_perms = $loader->getSafeNames();
-                        }
+                    if ($set_perms = self::loadDynamicPerms($g)) {
                         foreach ($set_perms as $n) {
                             $this->dynamic_perms[$n] = true;
                         }
@@ -206,5 +200,36 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     protected function unserializeData(array $data)
     {
         $this->perms = $data['perms'];
+    }
+
+    /**
+     * @param Entity\Usergroup $g
+     * @return null|array
+     */
+    protected static function loadDynamicPerms(Entity\Usergroup $g)
+    {
+        static $set_perms_by_group = array();
+
+        if (!$g->sys_name) {
+            return null;
+        }
+
+        if (isset($set_perms_by_group[$g->sys_name])) {
+            return $set_perms_by_group[$g->sys_name];
+        }
+
+        $set_perms = array();
+        if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+            $loader = App::$container->getSystemService('AgentPermissionNamesLoader');
+            if ($g->sys_name == 'agent_all_perms') {
+                $set_perms = $loader->getNames();
+            } else {
+                $set_perms = $loader->getSafeNames();
+            }
+        }
+
+        $set_perms_by_group[$g->sys_name] = $set_perms;
+
+        return $set_perms_by_group[$g->sys_name];
     }
 }

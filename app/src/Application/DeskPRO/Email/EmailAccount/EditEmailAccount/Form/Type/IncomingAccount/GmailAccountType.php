@@ -40,7 +40,7 @@ class GmailAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('user',     'email',    array('required' => true));
-        $builder->add('password', 'password', array('required' => false));
+        $builder->add('password', 'dp_enc_password', array('required' => false));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

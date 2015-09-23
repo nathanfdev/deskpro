@@ -352,11 +352,11 @@ define [
                   if not model.date2 then model.date2 = new Date()
                   value.options.date2 = parseInt(model.date2.getTime() / 1000)
               else
-                if (model.op == 'lte' || model.op == 'between') and model.date1_relative
+                if (model.op == 'lte' || model.op == 'gte' || model.op == 'between') and model.date1_relative
                   d1 = model.date1_relative || [1, 'days']
                   value.options.date1_relative = d1[0]
                   value.options.date1_relative_type = d1[1]
-                if (model.op == 'gte' || model.op == 'between') and model.date2_relative
+                if (model.op == 'between') and model.date2_relative
                   d2 = model.date2_relative || [1, 'days']
                   value.options.date2_relative = d2[0]
                   value.options.date2_relative_type = d2[1]

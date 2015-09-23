@@ -26,32 +26,33 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage LowUtil
  */
 
 /**
- * Makes a request or downloads a file.
+ * Makes a request or downloads a file
  */
 interface DeskPRO_LowUtil_Requester
 {
     /**
-     * Download a remote file to the fs.
+     * Download a remote file to the fs
      *
-     * @param string $url       The URL to fetch
-     * @param string $save_path The path to save to
-     * @param int    $timeout   Timeout
-     *
-     * @return int Filesize
+     * @param  string $url       The URL to fetch
+     * @param  string $save_path The path to save to
+     * @param  int    $timeout   Timeout
+     * @return int    Filesize
      */
     public function download($url, $save_path, $timeout = 15);
 
     /**
-     * Make a web request.
+     * Make a web request
      *
-     * @param string $url       The URL to fetch
-     * @param string $save_path The path to save to
-     * @param int    $timeout   Timeout
-     *
+     * @param  string $url       The URL to fetch
+     * @param  string $save_path The path to save to
+     * @param  int    $timeout   Timeout
      * @return string
      */
     public function request($url, array $data = array(), $method = 'GET', $timeout = 15);
@@ -60,7 +61,7 @@ interface DeskPRO_LowUtil_Requester
 ########################################################################################################################
 
 /**
- * Fetcher that uses any supported fetcher to do actual work.
+ * Fetcher that uses any supported fetcher to do actual work
  */
 class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
 {
@@ -94,7 +95,6 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
 
     /**
      * @static
-     *
      * @return DeskPRO_LowUtil_RemoteRequester
      */
     public static function create()
@@ -114,7 +114,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
         } elseif (in_array(ini_get('allow_url_fopen'), array('1', 'On'))) {
             return 'native';
         } else {
-            return;
+            return null;
         }
     }
 
@@ -126,6 +126,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
         return $this->requester;
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -133,6 +134,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
     {
         return $this->requester->download($url, $save_path, $timeout);
     }
+
 
     /**
      * {@inheritdoc}
@@ -154,6 +156,23 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         }
     }
 
+    private function setCaBundle($ch)
+    {
+        if (!defined('DP_CURL_USE_SYS_CA_BUNDLE')) {
+            if (defined('DP_ROOT') && file_exists(DP_ROOT.'/sys/Resources/ca-bundle.crt')) {
+                if (@curl_setopt($ch, CURLOPT_CAINFO, DP_ROOT.'/sys/Resources/ca-bundle.crt')) {
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                } else {
+                    error_log("Could not set DeskPRO CA Bundle");
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                }
+            } else {
+                error_log("Could not set DeskPRO CA Bundle");
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            }
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -169,6 +188,8 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $this->setCaBundle($ch);
         curl_exec($ch);
         fflush($fp);
         fclose($fp);
@@ -188,6 +209,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
 
         return filesize($save_path);
     }
+
 
     /**
      * {@inheritdoc}
@@ -214,6 +236,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
         }
 
+        $this->setCaBundle($ch);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
@@ -248,19 +271,20 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function download($url, $save_path, $timeout = 15)
     {
         $context = stream_context_create(array(
-            'http' => array('timeout' => $timeout),
+            'http' => array('timeout' => $timeout)
         ));
         $res = @copy($url, $save_path, $context);
 
         if (!$res) {
             $e = error_get_last();
-            throw new DeskPRO_LowUtil_Fetch_Exception("Failed downloading remote file: ".@$e['message'], DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception("Failed downloading remote file: " . @$e['message'], DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
         }
 
         if (!$this->isSuccessResponse($http_response_header)) {
@@ -270,11 +294,13 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
         return filesize($save_path);
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function request($url, array $data = array(), $method = 'GET', $timeout = 15)
     {
+
         $method = strtoupper($method);
         if ($method == 'GET') {
             if ($data) {
@@ -290,7 +316,7 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
             $context = stream_context_create(array(
                 'http' => array(
                     'timeout'  => $timeout,
-                ),
+                )
             ));
         } else {
             $context = stream_context_create(array(
@@ -298,8 +324,8 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
                     'timeout'  => $timeout,
                     'method'   => 'POST',
                     'header'   => 'Content-type: application/x-www-form-urlencoded',
-                    'content'  => http_build_query($data, null, '&'),
-                ),
+                    'content'  => http_build_query($data, null, '&')
+                )
             ));
         }
 

@@ -61,6 +61,9 @@ app/sys/Resources/agent-perm-names.php
 /data/log-analytics.sqlite
 /data/languages.cache
 /data/twitter.pid
+data/can-disable-encryption.txt
+data/encryption-key.bin
+data/encryption-key.bin.*
 /data/logs/*
 /data/logs/emails/*
 /data/debug/*
@@ -75,6 +78,7 @@ app/sys/Resources/agent-perm-names.php
 /data/files/*
 /data/manuals
 /data/emailstore
+/data/import/csv/export/*
 
 /web/build
 /web/app/build/*/build.js

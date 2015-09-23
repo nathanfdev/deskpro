@@ -67,11 +67,17 @@ final class Feedback extends AbstractContentEntity
     private $attachments;
 
     /**
+     * @var Collection
+     */
+    private $custom_fields;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->attachments = new Collection();
+        $this->attachments   = new Collection();
+        $this->custom_fields = new Collection();
     }
 
     /**
@@ -178,6 +184,24 @@ final class Feedback extends AbstractContentEntity
     }
 
     /**
+     * @return Collection
+     */
+    public function getCustomFields()
+    {
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param CustomField $custom_field
+     * @return $this
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields->attach($custom_field);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isStatusValid()
@@ -201,14 +225,9 @@ final class Feedback extends AbstractContentEntity
             throw new \Exception('Date created is not set up');
         }
 
-        $attachments = array();
-        foreach ($this->attachments as $attachment) {
-            /** @var Attachment $attachment */
-            $attachments[] = $attachment->toArray();
-        }
-
         return array(
             'oid'            => $this->oid,
+            'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
             'language'       => $this->language,
             'title'          => $this->title,
@@ -224,7 +243,8 @@ final class Feedback extends AbstractContentEntity
             'labels'         => $this->labels,
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
-            'attachments'    => $attachments,
+            'attachments'    => $this->attachments->entitiesToArray(),
+            'custom_fields'  => $this->custom_fields->entitiesToArray(),
         );
     }
 
@@ -234,5 +254,10 @@ final class Feedback extends AbstractContentEntity
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('attachments', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
+        ;
     }
 }

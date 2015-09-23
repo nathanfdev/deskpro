@@ -27,9 +27,10 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\AbstractReader;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
+use Symfony\Component\Finder\Iterator\SortableIterator;
 use Symfony\Component\Finder\SplFileInfo;
 use Exception;
 
@@ -38,8 +39,13 @@ use Exception;
  *
  * Class JsonReader
  */
-class JsonReader extends BaseReader implements JsonReaderInterface
+class JsonReader extends AbstractReader implements JsonReaderInterface
 {
+    /**
+     * Constructor
+     *
+     * @param JsonConfig $config
+     */
     public function __construct(JsonConfig $config)
     {
         parent::__construct($config);
@@ -51,7 +57,8 @@ class JsonReader extends BaseReader implements JsonReaderInterface
     public function getDirectoryFilesCount(JsonConfig $config)
     {
         $count    = 0;
-        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
+        $iterator = $this->getIterator($config->getPath());
+
         foreach ($iterator as $file) {
             /* @var SplFileInfo $file */
             $content = @json_decode($file->getContents(), true);
@@ -69,7 +76,8 @@ class JsonReader extends BaseReader implements JsonReaderInterface
     public function getData(JsonConfig $config)
     {
         $data     = array();
-        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
+        $iterator = $this->getIterator($config->getPath());
+
         foreach ($iterator as $file) {
             /* @var SplFileInfo $file */
             $content = @json_decode($file->getContents(), true);
@@ -85,27 +93,28 @@ class JsonReader extends BaseReader implements JsonReaderInterface
      * Returns directory json files iterator.
      *
      * @param string $path
-     * @param bool   $exclude_done
      *
      * @throws Exception
      * @return RecursiveIteratorIterator
      *
      */
-    public function getIterator($path, $exclude_done)
+    private function getIterator($path)
     {
         if (is_dir($path) === false) {
             throw new NotFoundException(sprintf('Path `%s` not found', $path));
         }
 
-        return new RecursiveIteratorIterator(
+        return new SortableIterator(
+            new RecursiveIteratorIterator(
             new DirectoryIteratorFilter(
                 new RecursiveDirectoryIterator(
                     $path,
                     RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
-                ),
-                $exclude_done
+                    )
             ),
             RecursiveIteratorIterator::SELF_FIRST | RecursiveIteratorIterator::LEAVES_ONLY
+            ),
+            SortableIterator::SORT_BY_NAME
         );
     }
 }

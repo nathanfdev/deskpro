@@ -524,6 +524,7 @@ class FieldManager
 
             if (isset($data_keys[$def['id']])) {
                 $item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
+                $item['title'] = $def['title'];
             }
 
             if (isset($this->field_to_children[$def->getId()])) {

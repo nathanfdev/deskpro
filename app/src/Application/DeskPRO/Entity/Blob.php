@@ -226,6 +226,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+
     public function setFilename($filename)
     {
         if ($filename[0] == '.') {
@@ -245,6 +246,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+
     /**
      * Get the file extension.
      *
@@ -259,6 +261,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
         return substr($this->filename, $pos+1);
     }
+
 
     /**
      * Is the file an image?
@@ -308,6 +311,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return Numbers::filesizeDisplay($this->filesize);
     }
 
+
     /**
      * Get the id-auth combo typically used in urls.
      *
@@ -351,9 +355,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function getEmbedCode($for_ticket = false, $type = 'image')
     {
         if ($for_ticket) {
-            return '[attach:'.$type.':'.$this->getAuthId().':'.$this->filename.']';
+            return '[attach:' . $type . ':' . $this->getAuthId() . ':' . $this->getFilenameSafe() . ']';
         } else {
-            return '[attach:'.$this->getAuthId().':'.$this->filename.']';
+            return '[attach:' . $this->getAuthId() . ':' . $this->getFilenameSafe() . ']';
         }
     }
 
@@ -362,7 +366,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param int  $size
      * @param bool $absolute
-     *
      * @return string
      */
     public function getThumbnailUrl($size = 50, $absolute = false)
@@ -405,6 +408,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $namehash;
     }
 
+
     /**
      * @return string
      */
@@ -435,6 +439,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('storage_loc_pref', $storage_loc);
         }
     }
+
 
     /**
      * @param string $storage_loc

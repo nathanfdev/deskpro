@@ -198,7 +198,6 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
         }
 
         try {
-
             if (empty($callback_data['jwt'])) {
                 throw new \InvalidArgumentException("Missing `jwt` (token) in callback data");
             }

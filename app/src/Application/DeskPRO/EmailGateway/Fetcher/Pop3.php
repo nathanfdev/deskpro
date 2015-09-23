@@ -26,16 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
- * Fetches mail from a pop3 server.
+ * Fetches mail from a pop3 server
  */
 class Pop3 extends AbstractFetcher
 {
@@ -86,18 +89,20 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Initiates the connection.
+     * Initiates the connection
      *
      * @return \Zend\Mail\Storage\Pop3
      */
     protected function _initConnection()
     {
         $options = array();
+        
+        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
 
-        switch ($this->account->incoming_account->getType()) {
+        switch ($incoming_account->getType()) {
             case 'pop3':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3_config */
-                $pop3_config = $this->account->incoming_account;
+                $pop3_config = $incoming_account;
 
                 $options['host']     = $pop3_config->host;
                 $options['port']     = $pop3_config->port;
@@ -117,7 +122,7 @@ class Pop3 extends AbstractFetcher
 
             case 'gmail':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-                $gmail_config = $this->account->incoming_account;
+                $gmail_config = $incoming_account;
 
                 $options['host']     = 'pop.gmail.com';
                 $options['port']     = 995;
@@ -132,7 +137,7 @@ class Pop3 extends AbstractFetcher
 
             case 'office365':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
-                $config = $this->account->incoming_account;
+                $config = $incoming_account;
 
                 $options['host']     = 'outlook.office365.com';
                 $options['port']     = 995;
@@ -146,7 +151,7 @@ class Pop3 extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
+                throw new \InvalidArgumentException("Unknown account type: " . $incoming_account->getType());
         }
 
         $options['logger'] = $this->logger;
@@ -183,15 +188,14 @@ class Pop3 extends AbstractFetcher
         if ($can === null) {
             try {
                 $can = $this->getStorage()->canUniqueId();
-            } catch (\Exception $e) {
-            }
+            } catch(\Exception $e) {}
         }
 
         return $can;
     }
 
     /**
-     * Get a list of message IDs.
+     * Get a list of message IDs
      */
     protected function _initMessageList($reload = false)
     {
@@ -209,8 +213,8 @@ class Pop3 extends AbstractFetcher
                 }
                 $this->logger->log("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
 
-                $e                      = new \InvalidArgumentException("Email account does not support uniqueid");
-                $einfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $e = new \InvalidArgumentException("Email account does not support uniqueid");
+                $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
                 \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 
@@ -221,14 +225,14 @@ class Pop3 extends AbstractFetcher
 
             $id_to_num = array_flip($this->getStorage()->getUniqueId());
 
-            $this->logger->log("Server has ".count($id_to_num)." messages", 'debug');
+            $this->logger->log("Server has " . count($id_to_num) . " messages", 'debug');
 
             if (count($id_to_num) > 2500) {
                 $this->logger->log("Server has >= 2500 messages, breaking", 'ERR');
                 $this->message_list = array();
 
-                $e                      = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
-                $einfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $e = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
+                $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
                 \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 
@@ -241,7 +245,7 @@ class Pop3 extends AbstractFetcher
                 WHERE email_account_id = ?
             ", array($this->account->getId()));
 
-            $this->logger->log("System has ".count($read_ids)." tracked IDs", 'debug');
+            $this->logger->log("System has " . count($read_ids) . " tracked IDs", 'debug');
 
             foreach ($read_ids as $id) {
                 if (isset($id_to_num[$id])) {
@@ -261,7 +265,8 @@ class Pop3 extends AbstractFetcher
                 }
             }
 
-            $this->logger->log("Message list contains ".count($this->message_list)." new messages", 'debug');
+            $this->logger->log("Message list contains " . count($this->message_list) . " new messages", 'debug');
+
         } else {
             $list = $this->getStorage()->getSize();
 
@@ -270,12 +275,12 @@ class Pop3 extends AbstractFetcher
                 $this->message_list[] = array('num' => $num, 'size' => $size, 'uid' => null);
             }
 
-            $this->logger->log("Message list contains ".count($this->message_list)." messages", 'debug');
+            $this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
         }
     }
 
     /**
-     * Reads the next message in the inbox.
+     * Reads the next message in the inbox
      *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
@@ -291,7 +296,7 @@ class Pop3 extends AbstractFetcher
 
         $next = array_shift($this->message_list);
         if (!$next) {
-            return;
+            return null;
         }
 
         $message_size = $next['size'];
@@ -310,26 +315,25 @@ class Pop3 extends AbstractFetcher
         if (!$message_id && $this->canUniqueId()) {
             try {
                 $message_id = $this->getStorage()->getProtocol()->uniqueid($message_num);
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         $start_time = microtime(true);
 
         $this->logger->log("Fetching message #$message_num", 'debug');
 
-        $raw_message       = new RawMessage();
+        $raw_message = new RawMessage();
         $raw_message->id   = $message_num;
         $raw_message->uid  = $message_id;
         $raw_message->size = $message_size;
 
         if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
-            $raw_message->content = $this->getStorage()->getProtocol()->top($message_num)."\n\n";
+            $raw_message->content = $this->getStorage()->getProtocol()->top($message_num) . "\n\n";
         } else {
             if ($memory_protection) {
                 $this->logger->logInfo('Memory protected enabled');
-                $content_file = dp_get_backup_dir().'/eml-'.uniqid('', true).'.eml';
-                $fp           = fopen($content_file, 'w');
+                $content_file = dp_get_backup_dir() . '/eml-' . uniqid('', true) . '.eml';
+                $fp = fopen($content_file, 'w');
                 if ($fp) {
                     $this->getStorage()->getProtocol()->retrieveToStream($message_num, $fp);
                     fclose($fp);
@@ -341,13 +345,13 @@ class Pop3 extends AbstractFetcher
                     $this->resetConnection();
                 } else {
                     $memory_protection = false;
-                    $e                 = new \RuntimeException("Could not save email backup file to {$raw_message->content_file}");
+                    $e = new \RuntimeException("Could not save email backup file to {$raw_message->content_file}");
                     KernelErrorHandler::logException($e, false);
                 }
 
-                $this->logger->logInfo('Message source saved to: '.$content_file);
+                $this->logger->logInfo('Message source saved to: ' . $content_file);
                 $raw_message->content = file_get_contents($content_file);
-                $this->backup_file    = $content_file;
+                $this->backup_file = $content_file;
             }
 
             if (!$memory_protection) {
@@ -363,14 +367,14 @@ class Pop3 extends AbstractFetcher
         }
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL . $EOL)) {
+            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers, ) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -421,11 +425,10 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Tests the connection and returns the number of messages on success.
+     * Tests the connection and returns the number of messages on success
      *
-     * @throws \Exception
      * @return bool
-     *
+     * @throws \Exception
      */
     public function test()
     {

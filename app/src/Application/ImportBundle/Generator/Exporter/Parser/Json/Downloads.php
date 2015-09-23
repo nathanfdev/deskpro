@@ -27,16 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use DateTime;
+use Application\ImportBundle\Entity;
 
 /**
- * Downloads json file parser.
+ * Downloads json file parser
  *
  * Class Downloads
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class Downloads extends AbstractParser
 {
@@ -61,149 +62,90 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $downloads  = $this->reader->getData($this->getDownloadReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData($this->getDownloadReaderConfig()))
+            ->setPrefix('JSONDownload')
+            ->setRefColumn('oid')
+            ->setMethod('exportDownload')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($downloads as $num => $download) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportDownload($download);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid download record found (Skipping): %d', $num));
-                }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid download record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid download record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
-     * Returns a download entity.
+     * Returns a download entity
      *
-     * @param array $download
-     *
+     * @param array $data
      * @return Entity\Download|null
      */
-    private function exportDownload(array $download)
+    protected function exportDownload(array $data)
     {
-        if ($this->isValidDownload($download)) {
-            $entity = new Entity\Download();
-            $entity
-                ->setDestination('download_'.$download['oid'])
-                ->setOid($download['oid'])
-                ->setPersonEmail($download['person'])
-                ->setTitle($download['title'])
-                ->setContent($download['content'])
-                ->setSlug($download['slug'])
-                ->setLanguage($download['language'])
-                ->setTotalRating($download['total_rating'])
-                ->setNumComments($download['num_comments'])
-                ->setNumRatings($download['num_ratings'])
-                ->setNumDownloads($download['num_downloads'])
-                ->setViewCount($download['view_count'])
-                ->setCategory($download['category'])
-                ->setStatus($download['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
+        $formatted = $this->formatter->format($data, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'download_',
+                'ref'    => 'oid',
+            )),
+            'person'         => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'slug'           => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'total_rating'   => TransformerInterface::TYPE_STRING,
+            'num_comments'   => TransformerInterface::TYPE_INT,
+            'num_ratings'    => TransformerInterface::TYPE_INT,
+            'num_downloads'  => TransformerInterface::TYPE_INT,
+            'view_count'     => TransformerInterface::TYPE_INT,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null' => true,
+            )),
+            'attachment'     => TransformerInterface::TYPE_ARRAY,
+            'labels'         => TransformerInterface::TYPE_ARRAY,
+        ));
 
-            if ($download['date_published']) {
-                $entity->setDatePublished(new DateTime($download['date_published']));
-            }
-            if ($download['attachment']) {
-                $entity->setAttachment($this->exportDownloadAttachment($download['attachment']));
-            } else {
-                $this->logWarning(sprintf('No download attachment record found: %d', $download['oid']));
-            }
+        $entity = new Entity\Download();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setImportMapKey($formatted['import_map_key'])
+            ->setDestination($formatted['destination'])
+            ->setPersonEmail($formatted['person'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setLanguage($formatted['language'])
+            ->setTotalRating($formatted['total_rating'])
+            ->setNumComments($formatted['num_comments'])
+            ->setNumRatings($formatted['num_ratings'])
+            ->setNumDownloads($formatted['num_downloads'])
+            ->setViewCount($formatted['view_count'])
+            ->setCategory($formatted['category'])
+            ->setStatus($formatted['status'])
+            ->setDateCreated($formatted['date_created'])
+            ->setDatePublished($formatted['date_published'])
+            ->setAttachment($this->getAttachmentParser()->exportAttachment($formatted['attachment']))
+        ;
 
-            foreach ($download['labels'] as $label) {
-                $entity->addLabel($label);
-            }
-
-            return $entity;
+        foreach ($formatted['labels'] as $label) {
+            $entity->addLabel($label);
         }
 
-        return;
+        return $entity;
     }
 
     /**
-     * Returns download attachment entity on success or null on failure.
-     *
-     * @param array $attachment
-     *
-     * @return Entity\Attachment|null
-     */
-    private function exportDownloadAttachment(array $attachment)
-    {
-        try {
-            $entity = $this->exportAttachment($attachment);
-            if ($entity) {
-                return $entity;
-            } else {
-                $this->logError('Invalid download attachment record found');
-            }
-        } catch (NoColumnException $e) {
-            $this->logError(sprintf(
-                'Invalid download attachment record found (Skipping): %s',
-                $e->getMessage()
-            ));
-        }
-
-        return;
-    }
-
-    /**
-     * Returns record type reader config.
+     * Returns record type reader config
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
     private function getDownloadReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_DOWNLOAD_PATH);
-    }
-
-    /**
-     * Check if download has all required columns.
-     *
-     * @param array $download
-     *
-     * @return bool
-     */
-    private function isValidDownload(array $download)
-    {
-        $columns = array(
-            'oid',
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'total_rating',
-            'num_comments',
-            'num_ratings',
-            'num_downloads',
-            'view_count',
-            'category',
-            'status',
-            'attachment',
-            'date_created',
-            'labels',
-        );
-
-        return $this->hasRequiredColumns($download, $columns)
-            && $this->isArrayColumn($download, 'labels')
-            && (empty($download['attachment']) === false ? $this->isArrayColumn($download, 'attachment')  : true);
     }
 }

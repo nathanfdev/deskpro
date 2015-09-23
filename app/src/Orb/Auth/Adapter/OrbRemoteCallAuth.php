@@ -66,7 +66,7 @@ use Orb\Auth\Result;
  * - error_code: Any error code. Usually numeric, but doesn't have to be
  * - error_message: An English explanation of the error
  */
-class OrbRemoteCallAuth implements AdapterInterface
+class OrbRemoteCallAuth extends PluginAdapter
 {
     const ERR_SERVICE_ERR = -11;
 
@@ -145,7 +145,7 @@ class OrbRemoteCallAuth implements AdapterInterface
      *
      * @return
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         $http = $this->getHttpClient();
         $http->resetParameters();
@@ -166,7 +166,7 @@ class OrbRemoteCallAuth implements AdapterInterface
 
         $data = @json_decode($http_result->getBody(), true);
         if (!$userdata) {
-            throw \UnexpectedValueException('Invalid JSON returned from service');
+            throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
         if (isset($data['is_error'])) {

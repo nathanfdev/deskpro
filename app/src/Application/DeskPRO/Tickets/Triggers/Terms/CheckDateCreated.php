@@ -54,7 +54,8 @@ class CheckDateCreated extends AbstractTriggerTerm
     protected function getOptionsDef()
     {
         $options = new CheckedOptionsArray();
-        $options->addValidNames('date1', 'date2', 'date1_relative', 'date2_relative', 'date1_relative_type', 'date2_relative_type');
+        $options->addValidNames('date1', 'date2', 'date1_relative', 'date2_relative', 'date1_relative_type', 'date2_relative_type', 'value');
+        // 'value' is a UI artefact; it is not actually used
 
         return $options;
     }

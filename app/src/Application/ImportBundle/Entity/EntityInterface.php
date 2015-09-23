@@ -28,22 +28,29 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Exporting entity interface.
+ * Exporting entity interface
  *
  * Interface EntityInterface
+ * @package Application\ImportBundle\Entity
  */
 interface EntityInterface
 {
-    const TYPE_PERSON         = 'person';
-    const TYPE_TICKET         = 'ticket';
-    const TYPE_TICKET_MESSAGE = 'ticket_message';
-    const TYPE_TICKET_PRIORITY = 'ticket_priority';
-    const TYPE_ATTACHMENT     = 'attachment';
-    const TYPE_CUSTOM_FIELD   = 'custom_field';
-    const TYPE_DOWNLOAD       = 'download';
-    const TYPE_NEWS           = 'news';
-    const TYPE_ARTICLE        = 'article';
-    const TYPE_FEEDBACK       = 'feedback';
+    const TYPE_PERSON           = 'person';
+    const TYPE_TICKET           = 'ticket';
+    const TYPE_TICKET_MESSAGE   = 'ticket_message';
+    const TYPE_TICKET_PRIORITY  = 'ticket_priority';
+    const TYPE_BLOB             = 'blob';
+    const TYPE_ATTACHMENT       = 'attachment';
+    const TYPE_CUSTOM_FIELD     = 'custom_field';
+    const TYPE_DOWNLOAD         = 'download';
+    const TYPE_NEWS             = 'news';
+    const TYPE_ARTICLE          = 'article';
+    const TYPE_ARTICLE_CATEGORY = 'article_category';
+    const TYPE_ARTICLE_COMMENT  = 'article_comment';
+    const TYPE_FEEDBACK         = 'feedback';
+    const TYPE_ORGANIZATION     = 'organization';
+    const TYPE_CONTACT_DATA     = 'contact_data';
+    const TYPE_OBJECT_LANG      = 'object_lang';
 
     /**
      * @return array
@@ -56,28 +63,39 @@ interface EntityInterface
     public function setRawData($raw_data);
 
     /**
-     * Get entity type.
+     * @return string
+     */
+    public function getImportMapKey();
+
+    /**
+     * @param string $import_map_key
+     * @return $this
+     */
+    public function setImportMapKey($import_map_key);
+
+    /**
+     * Get entity type
      *
      * @return string
      */
     public function getType();
 
     /**
-     * Get entity oid.
+     * Get entity oid
      *
-     * @return int
+     * @return int|string
      */
     public function getOid();
 
     /**
-     * Get entity destination.
+     * Get entity destination
      *
      * @return string
      */
     public function getDestination();
 
     /**
-     * Convert to array.
+     * Convert to array
      *
      * @return array
      */

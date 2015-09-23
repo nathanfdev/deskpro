@@ -542,6 +542,16 @@
      */
     'core_tickets.fwd_use_agent_address' => false,
 
+    /**
+     * True to add email replies as notes instead of ticket replies.
+     */
+    'core_tickets.email_reply_as_note' => true,
+
+    /**
+     * True to add replies in fwd as notes instaed of replies
+     */
+    'core_tickets.email_fwd_reply_as_note' => true,
+
     ####################################################################################################################
     # portal
     ####################################################################################################################
