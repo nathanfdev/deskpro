@@ -146,7 +146,7 @@ class AgentChatParticipant extends DomainObject
     public function getPersonList()
     {
         if($this->person) {
-            return array($this->person);
+            return array($this->getPerson());
         } elseif($this->team) {
             return $this->team->getPersonList();
         } elseif($this->department) {

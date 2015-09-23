@@ -10,6 +10,7 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 
 class AgentChatTransformer extends AbstractDataSerializerTransformer
 {
@@ -19,12 +20,24 @@ class AgentChatTransformer extends AbstractDataSerializerTransformer
             'id',
             'date_created',
             'date_last_message',
-            'participants',
         ];
     }
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var AgentChat $entity */
+        $entity = $transformation_request->getDataToBeTransformed();
+        $persons = $entity->getPersonList();
+        $participants = [];
+        foreach($persons as $person) {
+            $participants[$person->getId()] = [
+                'id' => $person->getId(),
+                'avatar' => $person->getGravatarUrl(),
+                'name' => $person->getDisplayName(),
+            ];
+        }
+        return [
+            'participants' => $participants,
+        ];
     }
 }
