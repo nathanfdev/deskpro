@@ -64,4 +64,25 @@ class AgentTeamsController extends BaseController
             Response::HTTP_OK
         );
     }
+
+    /**
+     * @ApiDoc(
+     *      description="Return agents from team",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request"
+     *      }
+     * )
+     * @Get("/agent_teams/{id}/agents", name="api_agent_teams_agents")
+     */
+    public function getAgentsAction($id)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService $service */
+        $service = $this->get('data.agent_teams');
+
+        return View::create(
+            $this->dataSerialize($service->getAgentsFromTeam((int)$id)),
+            Response::HTTP_OK
+        );
+    }
 }

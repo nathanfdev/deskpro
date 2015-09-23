@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\AgentTeams;
 
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use Application\DeskPRO\Entity\AgentTeam;
 
 /**
  * Class AgentTeamsDataService
@@ -62,5 +63,13 @@ class AgentTeamsDataService extends AbstractDataService
         }
 
         return $count;
+    }
+
+    public function getAgentsFromTeam($teamId)
+    {
+        $repo = $this->em->getRepository('DeskPRO:AgentTeam');
+        /** @var AgentTeam $team */
+        $team = $repo->find($teamId);
+        return $team->getPersonList();
     }
 }
