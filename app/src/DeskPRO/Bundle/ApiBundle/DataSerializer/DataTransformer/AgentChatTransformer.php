@@ -32,12 +32,12 @@ class AgentChatTransformer extends AbstractDataSerializerTransformer
         foreach($persons as $person) {
             $participants[$person->getId()] = [
                 'id' => $person->getId(),
-                'avatar' => $person->getGravatarUrl(),
+                'gravatar_url' => $person->getGravatarUrl(),
                 'name' => $person->getDisplayName(),
             ];
         }
         return [
-            'participants' => $participants,
+            'participants' => array_values($participants),
         ];
     }
 }

@@ -30,21 +30,16 @@ export const loadDepartments = createAction(
 export const loadRecentAgents = createAction(
     'IM_LIST_LOAD_RECENT_AGENTS',
     (trigger) => {
-
         IM.loadLatest().then(
                 promise => {
                     let chats = promise.getData().data;
-                    let ids = [];
+                    let agents = [];
                     chats.forEach(function(chat) {
                         chat.participants.forEach(function(participant){
-                            ids.push(participant);
+                            agents[participant.id] = participant;
                         });
                     });
-                    DpApi.sendGet('DP_API/people?is_agent=1&ids=' + ids.join(',')).then(
-                            promise => {
-                                trigger(promise.getData().data)
-                            }
-                    );
+                    trigger(agents);
                 }
         );
 
