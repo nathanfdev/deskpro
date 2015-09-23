@@ -3,8 +3,9 @@ import React from 'react';
 export class LabelsDictionary extends React.Component {
   render() {
     const grouped = this.groupByFirstLetter(this.props.labels);
-    const onClick = this.props.onClick ? this.props.onClick : () => {};
-    let groupKey = 0, labelKey = 0;
+    const onClick = this.props.onClick ? this.props.onClick : () => {
+    };
+    let groupKey  = 0, labelKey = 0;
 
     return (
       <section className="sidebar-list sidebar-list-labels tasks-nav-labels">
@@ -15,7 +16,7 @@ export class LabelsDictionary extends React.Component {
                 <span className="labelCharacter">{group.letter}</span>
                 <ul>
                   {group.labels.map(label =>
-                    <li key={labelKey++} onClick={onClick.bind(this, {'label':label})}>
+                    <li key={labelKey++} onClick={onClick.bind(this, {name:'label', value:label})}>
                       <a href="#" className="item-label">{label}</a>
                     </li>)}
                 </ul>
@@ -31,7 +32,7 @@ export class LabelsDictionary extends React.Component {
     const dictionary = {};
 
     for (let i = 0, label, letter; i < labels.length; i++) {
-      label = labels[i];
+      label  = labels[i];
       letter = label[0].toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
         dictionary[letter] = [];

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions'
 import { Nav } from './Nav';
-import $ from "jquery";
 import { sortingDataSelector, filterDataSelector } from '../../Selectors/list';
 import { groupDataSelector } from '../../Selectors/nav';
 
