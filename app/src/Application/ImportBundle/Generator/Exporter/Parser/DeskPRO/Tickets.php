@@ -90,7 +90,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getTicketsCount($this->getCurrentTicketsMinId());
+        return count($this->getTickets());
     }
 
     /**
@@ -98,30 +98,16 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $this->entities_loaded = 0;
-        $collection = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getTickets())
+            ->setPrefix('DPTicket')
+            ->setRefColumn('id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        do {
-            $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
-            $this->tickets_people->loadBy($batch);
-
-            $config = new ExportCollectionConfig();
-            $config
-                ->setData($batch)
-                ->setPrefix('DPTicket')
-                ->setRefColumn('id')
-                ->setMethod('exportTicket')
-                ->setAdvanceProgressbar(true)
-            ;
-
-            $collection->merge($this->exportCollection($config));
-
-            $this->entities_loaded += count($batch);
-            $this->tickets_min_id   = max($this->tickets_min_id, $collection->getMaxOid());
-
-        } while (count($batch) > 0);
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -228,5 +214,36 @@ final class Tickets extends AbstractParser
         ;
 
         return $entity;
+    }
+
+    /**
+     * Returns tickets
+     * Loads from osTicket database
+     *
+     * @return array
+     */
+    private function getTickets()
+    {
+        $this->entities_loaded = 0;
+
+        $tickets = array();
+        $min_id  = $this->getBatchConfig()->getTicketsMinId();
+
+        do {
+            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $min_id);
+            $this->entities_loaded += count($batch);
+
+            foreach ($batch as $ticket) {
+                $min_id = max($min_id, $ticket->getId());
+            }
+
+            $tickets = array_merge($tickets, $batch->toArray());
+
+        } while (count($batch) > 0);
+
+        $this->tickets_people->loadBy($tickets);
+        $this->tickets_min_id = $min_id;
+
+        return $tickets;
     }
 }

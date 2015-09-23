@@ -340,6 +340,8 @@ final class Tickets extends AbstractParser
      */
     private function getTickets()
     {
+        $this->entities_loaded = 0;
+
         $tickets = array();
         $min_id  = $this->getBatchConfig()->getTicketsMinId();
 

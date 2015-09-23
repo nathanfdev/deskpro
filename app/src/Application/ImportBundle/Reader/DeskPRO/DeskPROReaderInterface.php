@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Reader\DeskPRO;
 
 use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 
 /**
@@ -76,7 +77,7 @@ interface DeskPROReaderInterface
      * @param int $limit
      * @param int $min_id
      *
-     * @return Entity\Ticket[]
+     * @return ArrayCollection|Entity\Ticket[]
      */
     public function findTickets($limit, $min_id = 0);
 

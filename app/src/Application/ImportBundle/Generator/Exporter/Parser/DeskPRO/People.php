@@ -86,6 +86,10 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
+        if ($this->people_storage->getPeople()) {
+            return count($this->people_storage->getPeople());
+        }
+
         return $this->reader->getUsersCount($this->getCurrentUsersMinId());
     }
 
