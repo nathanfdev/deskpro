@@ -79,7 +79,6 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
 
             } catch (NotFoundException $e) {
                 // File not found, continue...
-
             }
         }
 

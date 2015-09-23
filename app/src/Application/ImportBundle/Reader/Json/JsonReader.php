@@ -71,7 +71,7 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
         );
 
         if ( ! is_dir($this->config->getPath())) {
-            return false;
+            throw new \RuntimeException(sprintf('`%s` is not a directory', $this->config->getPath()));
         }
 
         foreach ($paths as $path) {
@@ -81,13 +81,18 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
 
             } catch (NotFoundException $e) {
                 // File not found, continue...
-
-            } catch (\Exception $e) {
-                return false;
             }
         }
 
-        return false;
+        throw new \RuntimeException(sprintf(
+            'No json files found in directory `%s`. Checked in sub directories: %s.',
+            $this->config->getPath(), implode(', ', array_map(
+                function($path) {
+                    return '`' . $path . '`';
+                },
+                $paths
+            ))
+        ));
     }
 
     /**
