@@ -95,11 +95,12 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
     {
         parent::__construct($config);
 
-        $this->connection_wrapper = new LazyConnectionWrapper(
-            sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost()),
-            $config->getUser(),
-            $config->getPassword()
-        );
+        $dsn = sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost());
+        if ($config->getPort()) {
+            $dsn .= sprintf(';port=%s', $config->getPort());
+        }
+
+        $this->connection_wrapper = new LazyConnectionWrapper($dsn, $config->getUser(), $config->getPassword());
     }
 
     /**

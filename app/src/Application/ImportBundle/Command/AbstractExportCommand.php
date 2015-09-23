@@ -366,7 +366,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
-            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'));
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'))
+        ;
     }
 
     /**
