@@ -3,8 +3,11 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"], ($, intlTelInput, u
     # Description
     # -----------
     #
-    # This turns an input into an intl-tel-input:
+    # This turns an input into an intl-tel-input (no phone extension support):
     # https://github.com/Bluefieldscom/intl-tel-input
+    #
+    # For phone extension support, see the DpPhoneNumber directive. This directive exists
+    # for simple cases where an extension is not desired (to SMS text message someone, for example).
     #
     # You can pass in the default selected 2 character country code.
     #
