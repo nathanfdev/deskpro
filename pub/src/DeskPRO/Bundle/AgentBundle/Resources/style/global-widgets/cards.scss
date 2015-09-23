@@ -1,34 +1,47 @@
-.dpmw--single-card {// Single card
+.dpmw--single-card {
+  // Single card
   background: #fff;
   border: 1px solid #d5d5d5;
   border-radius: 2px;
-  margin: 5px;
-  margin-left: 0;
-  margin-right: 0;
+  margin: 5px 5px 5px 12px;
   padding: 6px 5px 7px 14px;
   position: relative;
   transition: border 0.5s ease;
   cursor: pointer;
 
-  &.dpmw--single-card.minimized { padding: 3px 5px 3px 14px; }// Resize the minimized cards
-  a { color: inherit; }
+  &.dpmw--single-card.minimized {
+    padding: 3px 5px 3px 14px;
+  }
+  // Resize the minimized cards
+  a {
+    color: inherit;
+  }
 }
 
 .dpmw--single-card:hover {
   border: 1px solid #4681b2;
-  h1 { color: #4681b2; }
-  .dpw--card-status-bar { transition: all 0.5s ease; opacity: 0; }
+  h1 {
+    color: #4681b2;
+  }
+  .dpw--card-status-bar {
+    transition: all 0.5s ease;
+    opacity: 0;
+  }
 }
 
 .dpw--card-line {
+  overflow: hidden;
   margin-bottom: 6px;
 
-  &:last-child { margin-bottom: 2px; }
+  &:last-child {
+    margin-bottom: 2px;
+  }
 
-  &:after { // Clearfix
-    content:"";
-    display:table;
-    clear:both;
+  &:after {
+    // Clearfix
+    content: "";
+    display: table;
+    clear: both;
   }
 
   .dpw--card-line-left {
@@ -70,14 +83,10 @@
     margin-right: 2px;
   }
 
-  i.fa-calendar-o { top: -1px; }
+  i.fa-calendar-o {
+    top: -1px;
+  }
 }
-
-
-
-
-
-
 
 .dpw--card-expand {
   a {
@@ -94,7 +103,9 @@
     position: relative;
     top: 2px;
 
-    i { margin-left: 2px; }
+    i {
+      margin-left: 2px;
+    }
   }
 
   a:hover {
@@ -104,16 +115,16 @@
 }
 
 .dpwd--card-title {
-  display: block;
+  display: inline;
 
   h1 {
     margin: 0;
     padding: 0;
     font-size: 13px;
     font-weight: normal;
-    display: block;
+    display: inline;
     vertical-align: middle;
-    white-space: nowrap;// Cut off too long text
+    white-space: nowrap; // Cut off too long text
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -150,7 +161,10 @@
     top: 2px;
   }
 }
+
 // Reposition the checkbox on minimized cards
 .dpmw--single-card.minimized {
-  .dpmw--card-checkbox { top: 3px; }
+  .dpmw--card-checkbox {
+    top: 3px;
+  }
 }
