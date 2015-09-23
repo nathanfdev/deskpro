@@ -191,7 +191,7 @@ final class People extends AbstractParser
 
     /**
      * Returns a collection of people to be exported
-     * Gets a collection of people from cache or uses the ZenDesk reader
+     * Gets a collection of people from cache or ZD incremental export request
      *
      * @return array
      */
