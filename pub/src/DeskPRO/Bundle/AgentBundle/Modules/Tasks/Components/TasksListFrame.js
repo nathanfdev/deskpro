@@ -22,6 +22,8 @@ import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
 import AssignHover from "../Components/AssignHover";
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 
+import Positioned from 'DeskPRO/Component/Positioned';
+
 @connect(state => ({
     taskFrameList: state.taskFrameList,
     taskListList: state.taskListList,
@@ -402,6 +404,13 @@ export default class TasksListFrame extends React.Component {
     return (
       <section className={sectionClass}>
         <div className="ticket-list">
+          <Positioned isOpen={true}
+                      positionTarget={this.refs.ticketControlBar}>
+            <div>
+            HELLO!
+            </div>
+          </Positioned>
+
           <ComponentRootWrapper open={this.state.showAssignWindow}>
             <AssignHover position={this.state.position}
                           assignTask={this.handleAssigneeChange.bind(this)}
@@ -411,7 +420,7 @@ export default class TasksListFrame extends React.Component {
                           taskData={this.state.taskData}
                           closeWindow={this.closeAssignWindow.bind(this)} />
           </ComponentRootWrapper>
-          <div className="tickets-control-bar">
+          <div className="tickets-control-bar" ref="ticketControlBar">
             <div className="bulk-edit-control">
               <a href="#" onClick={this.toggleAllMassActions.bind(this)}>
                   <span className="checkbox">
