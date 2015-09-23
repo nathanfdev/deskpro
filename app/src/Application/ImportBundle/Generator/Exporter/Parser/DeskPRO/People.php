@@ -78,7 +78,7 @@ final class People extends AbstractParser
      */
     public function getCurrentUsersMinId()
     {
-        return $this->users_min_id ? : $this->getBatchConfig()->getUsersMinId();
+        return max($this->users_min_id, $this->getBatchConfig()->getUsersMinId());
     }
 
     /**

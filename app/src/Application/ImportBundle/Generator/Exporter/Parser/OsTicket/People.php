@@ -87,7 +87,7 @@ final class People extends AbstractParser
      */
     public function getCurrentStaffMinId()
     {
-        return $this->staff_min_id ? : $this->getBatchConfig()->getStaffMinId();
+        return max($this->staff_min_id, $this->getBatchConfig()->getStaffMinId());
     }
 
     /**
@@ -97,7 +97,7 @@ final class People extends AbstractParser
      */
     public function getCurrentUsersMinId()
     {
-        return $this->users_min_id ? : $this->getBatchConfig()->getUsersMinId();
+        return max($this->users_min_id, $this->getBatchConfig()->getUsersMinId());
     }
 
     /**
@@ -132,27 +132,42 @@ final class People extends AbstractParser
      */
     protected function exportStaffCollection()
     {
-        $collection = new Entity\Collection();
+        if (count($this->people_storage->getPeople()) > 0) {
+            $collection = $this->exportStaffBatch($this->getPeopleByPrefix('staff_'));
+        } else {
+            $collection = new Entity\Collection();
 
-        do {
-            $batch  = $this->reader->findStaff($this->getReaderBatchSize(), $this->getCurrentStaffMinId());
-            $config = new ExportCollectionConfig();
-            $config
-                ->setData($batch)
-                ->setPrefix('OSStaff')
-                ->setRefColumn('staff_id')
-                ->setMethod('exportStaff')
-                ->setAdvanceProgressbar(true)
-            ;
+            do {
+                $batch = $this->reader->findStaff($this->getReaderBatchSize(), $this->getCurrentStaffMinId());
+                $collection->merge($this->exportStaffBatch($batch));
 
-            $collection->merge($this->exportCollection($config));
+                $this->staff_min_id     = max($this->staff_min_id, $collection->getMaxOid());
+                $this->entities_loaded += count($batch);
 
-            $this->entities_loaded += count($batch);
-            $this->staff_min_id     = max($this->staff_min_id, $collection->getMaxOid());
-
-        } while (count($batch) > 0);
+            } while (count($batch) > 0);
+        }
 
         return $collection;
+    }
+
+    /**
+     * Returns a collection of people entities
+     *
+     * @param array|\Traversable $data
+     * @return Entity\Collection
+     */
+    protected function exportStaffBatch($data)
+    {
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($data)
+            ->setPrefix('OSStaff')
+            ->setRefColumn('staff_id')
+            ->setMethod('exportStaff')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**
@@ -203,27 +218,42 @@ final class People extends AbstractParser
      */
     protected function exportUsersCollection()
     {
-        $collection = new Entity\Collection();
+        if (count($this->people_storage->getPeople()) > 0) {
+            $collection = $this->exportUserBatch($this->getPeopleByPrefix('user_'));
+        } else {
+            $collection = new Entity\Collection();
 
-        do {
-            $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
-            $config = new ExportCollectionConfig();
-            $config
-                ->setData($batch)
-                ->setPrefix('OSUser')
-                ->setRefColumn('user_id')
-                ->setMethod('exportUser')
-                ->setAdvanceProgressbar(true)
-            ;
+            do {
+                $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+                $collection->merge($this->exportUserBatch($batch));
 
-            $collection->merge($this->exportCollection($config));
+                $this->users_min_id     = max($this->users_min_id, $collection->getMaxOid());
+                $this->entities_loaded += count($batch);
 
-            $this->entities_loaded += count($batch);
-            $this->users_min_id    = max($this->users_min_id, $collection->getMaxOid());
-
-        } while (count($batch) > 0);
+            } while (count($batch) > 0);
+        }
 
         return $collection;
+    }
+
+    /**
+     * Returns a collection of people entities
+     *
+     * @param array|\Traversable $data
+     * @return Entity\Collection
+     */
+    protected function exportUserBatch($data)
+    {
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($data)
+            ->setPrefix('OSUser')
+            ->setRefColumn('user_id')
+            ->setMethod('exportUser')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**
@@ -259,5 +289,23 @@ final class People extends AbstractParser
         ;
 
         return $entity;
+    }
+
+    /**
+     * Filters people storage by prefix (user or staff)
+     *
+     * @param string $prefix
+     * @return array
+     */
+    protected function getPeopleByPrefix($prefix)
+    {
+        $filtered = array();
+        foreach ($this->people_storage->getPeople() as $key => $person) {
+            if (strpos($key, $prefix) === 0) {
+                $filtered[] = $person;
+            }
+        }
+
+        return $filtered;
     }
 }

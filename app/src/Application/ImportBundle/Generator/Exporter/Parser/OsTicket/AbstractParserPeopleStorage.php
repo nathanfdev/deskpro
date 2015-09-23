@@ -61,11 +61,11 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
         $user_ids  = array();
         $staff_ids = array();
 
-        foreach ($request_ids as $key => $id) {
-            if (preg_match('/^user_(\d+)$/', $key)) {
-                $user_ids[]  = (int)$id;
-            } elseif (preg_match('/^staff_(\d+)$/', $key)) {
-                $staff_ids[] = (int)$id;
+        foreach ($request_ids as $key) {
+            if (strpos($key, 'user_') === 0) {
+                $user_ids[]  = (int)$ids[$key];
+            } elseif (strpos($key, 'staff_') === 0) {
+                $staff_ids[] = (int)$ids[$key];
             }
         }
 
@@ -74,14 +74,16 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
         if ( ! empty($user_ids)) {
             $result = $this->reader->findUsersByIds($user_ids);
             foreach ($result as $person) {
-                $people['user_' . $person['user_id']] = $person;
+                $person['id'] = 'user_' . $person['user_id'];
+                $people[] = $person;
             }
         }
 
         if ( ! empty($staff_ids)) {
             $result = $this->reader->findStaffByIds($staff_ids);
             foreach ($result as $person) {
-                $people['staff_' . $person['staff_id']] = $person;
+                $person['id'] = 'staff_' . $person['staff_id'];
+                $people[] = $person;
             }
         }
 
