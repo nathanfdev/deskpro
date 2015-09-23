@@ -90,7 +90,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getTicketsCount($this->getCurrentTicketsMinId());
+        return count($this->getTickets());
     }
 
     /**
@@ -341,15 +341,16 @@ final class Tickets extends AbstractParser
     private function getTickets()
     {
         $tickets = array();
+        $min_id  = $this->getBatchConfig()->getTicketsMinId();
 
         do {
-            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
+            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $min_id);
             $this->entities_loaded += count($batch);
 
             foreach ($batch as &$ticket) {
                 if (isset($ticket['ticket_id'])) {
                     $ticket['messages'] = $this->reader->findMessages($ticket['ticket_id']);
-                    $this->tickets_min_id = max($this->tickets_min_id, $ticket['ticket_id']);
+                    $min_id = max($min_id, $ticket['ticket_id']);
                 }
             }
 
@@ -358,6 +359,8 @@ final class Tickets extends AbstractParser
         } while (count($batch) > 0);
 
         $this->tickets_people->loadBy($tickets);
+        $this->tickets_min_id = $min_id;
+
         return $tickets;
     }
 }
