@@ -94,8 +94,6 @@ class DepartmentsController extends BaseController
     }
 
     /**
-     * @Get("/ticket_filters/{id}", name="get_ticket_filters")
-     *
      * @ApiDoc(
      *      description="get a filter",
      *      requirements={
