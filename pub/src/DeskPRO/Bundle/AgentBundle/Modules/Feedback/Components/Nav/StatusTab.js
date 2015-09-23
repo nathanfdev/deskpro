@@ -14,14 +14,14 @@ export class StatusTab extends Component {
     const { statuses, onClick, currentGroup } = this.props;
     return (
       <ul>
-        <div onClick={onClick.bind(this, {'status':'new'})}>
+        <div onClick={onClick.bind(this, {name:'status', value:'new'})}>
           <ListItem count={statuses.new} label="New"
                     active={currentGroup.name === 'status' && currentGroup.value === 'new'}
             />
         </div>
-        <NestedList node={statuses.active} onClick={onClick.bind(this)} status="active" label="Active"/>
-        <NestedList node={statuses.closed} onClick={onClick.bind(this)} status="closed" label="Closed"/>
-        <NestedList node={statuses.hidden} onClick={onClick.bind(this)} status="hidden" label="Hidden"/>
+        <NestedList currentGroup={currentGroup} node={statuses.active} onClick={onClick.bind(this)} status="active" label="Active"/>
+        <NestedList currentGroup={currentGroup} node={statuses.closed} onClick={onClick.bind(this)} status="closed" label="Closed"/>
+        <NestedList currentGroup={currentGroup} node={statuses.hidden} onClick={onClick.bind(this)} status="hidden" label="Hidden"/>
       </ul>
     );
   }

@@ -16,7 +16,7 @@ export class CategoryTab extends React.Component {
       <ul>
         {customCategories.map((item, index) =>
             <div key={index}
-                 onClick={onClick.bind(this, {'custom_category':item.group})}>
+                 onClick={onClick.bind(this, {name:'custom_category', value:item.group})}>
               <ListItem count={item.count} label={item.group}
                         active={currentGroup.name === 'custom_category' && currentGroup.value === item.title}
                 />

@@ -58,7 +58,7 @@ export const feedbackHiddenStatus = createAction(
   () => dispatch => Feedback.getHidden().then(value => value.getData()));
 
 export const changeGroupState = createAction(
-  "FEEDBACK_CHANGE_QUERY",
+  "FEEDBACK_CHANGE_GROUP",
     group =>   dispatch => {
     dispatch(loadFeedbackList({group: group}));
     return group;

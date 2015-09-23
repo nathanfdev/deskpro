@@ -18,7 +18,7 @@ export class Pending extends Component {
       <Section>
         <SectionHeader>Pending</SectionHeader>
         <ul>
-          <div onClick={onClick.bind(this, {'awaiting_validation':1})}>
+          <div onClick={onClick.bind(this, {name:'awaiting_validation', value:1})}>
             <ListItem count={toValidateCount} label="Feedback to Validate"
                       active={currentGroup.name === 'awaiting_validation'}
               />

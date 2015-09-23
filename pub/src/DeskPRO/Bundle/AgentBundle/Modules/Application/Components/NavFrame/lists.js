@@ -3,14 +3,15 @@ import classNames from 'classnames';
 
 
 class BaseList extends Component {
-  renderCount(count) {
+  renderCount(count, active) {
     if ((count !== 0) && !count) {
       return;
     }
+    var classes = classNames('list-counter', {'active': active});
 
     return (
       <div className="list-counter-bucket">
-        <a className="list-counter active" href="#">{count}</a>
+        <a className={classes} href="#">{count}</a>
       </div>
     );
   }
@@ -33,7 +34,7 @@ export class ListItem extends BaseList {
 
     return (
       <li>
-        {this.renderCount(count)}
+        {this.renderCount(count, active)}
         <a href="#" className={classes} onClick={onClick}>{label}</a>
 
         {this.props.children}

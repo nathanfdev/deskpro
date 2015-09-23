@@ -7,6 +7,7 @@ const initialState = {
   groups: [
     {name: 'awaiting_validation', value: 1, current: true},
     {name: 'status', value: '', current: false},
+    {name: 'status_category', value: '', current: false},
     {name: 'category', value: '', current: false},
     {name: 'custom_category', value: '', current: false}
   ],
@@ -74,7 +75,10 @@ export default createReducer(initialState, {
     let groups = [];
     state.get('groups').toJS().forEach(obj=> {
       const nextObj   = {...obj};
-      nextObj.current = obj.field === payload;
+      nextObj.current = obj.name === payload.name;
+      if (obj.name === payload.name) {
+        nextObj.value = payload.value;
+      }
       groups.push(nextObj);
     });
     return state.set('groups', Immutable.fromJS(groups))

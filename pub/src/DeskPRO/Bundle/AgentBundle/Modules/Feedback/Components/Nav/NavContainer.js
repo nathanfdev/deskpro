@@ -39,20 +39,21 @@ export class NavContainer extends React.Component {
   }
 
   render() {
+    const {statuses, toValidateCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
+
     return (
       <Nav
-        toValidateCount={this.props.toValidateCount}
+        toValidateCount={toValidateCount}
+        dispatch={dispatch}
+        statuses={statuses}
+        labels={labels}
+        types={types}
+        customCategories={customCategories}
+        currentGroup={currentGroup}
         groupChoice={this.groupChoice.bind(this)}
-        dispatch={this.props.dispatch}
-        statuses={this.props.statuses}
-        labels={this.props.labels}
-        types={this.props.types}
-        customCategories={this.props.customCategories}
-        currentGroup={this.props.currentGroup}
         />
     );
   }
-
 
   groupChoice(group, event) {
     event.preventDefault();
