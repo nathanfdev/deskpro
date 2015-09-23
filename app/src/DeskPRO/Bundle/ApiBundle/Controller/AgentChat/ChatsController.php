@@ -47,7 +47,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ChatsController extends BaseController
+class ChatsController extends AbstractController
 {
     /**
      * @ApiDoc(
@@ -196,96 +196,4 @@ class ChatsController extends BaseController
     }
 
 
-    /**
-     * @param $id
-     * @param Request $request
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     * @return View
-     * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
-     */
-    public function getMessagesAction($id, Request $request)
-    {
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        $user = $this->getUser();
-        $chat = $this->getChat($id);
-
-        if(!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $searchString = $request->query->getAlnum('search', '');
-        $orderBy = $request->query->get('order', 'date_created');
-        $page = $request->query->getInt('page', 1);
-        /** @var History $searchService */
-        $searchService = $this->get('deskpro.agentchat.history');
-        $messages = $searchService->searchInChat($chat, $searchString, $orderBy);
-
-        $pager = new Pagerfanta(new ArrayAdapter($messages));
-        $pager->setCurrentPage($page);
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @param $id
-     * @param Request $request
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     * @throws InvalidFormException
-     * @return View
-     * @Annotations\Post("/agent_chats/{id}/messages", name="agent_chats_add_chat_message")
-     */
-    public function postMessagesAction($id, Request $request)
-    {
-        $form = $this->createFormBuilder(array('message' => null))
-            ->add('message', 'text')
-            ->getForm();
-        $form->submit($request->request->all());
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        $user = $this->getUser();
-        $chat = $this->getChat($id);
-
-        if(!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $data = $form->getData();
-        $message = $messenger->addMessage($chat, $user, $data['message']);
-        return View::create(
-            $this->dataSerialize($message),
-            Response::HTTP_CREATED
-        );
-    }
-
-    /**
-     * @param $id
-     * @return AgentChat|null
-     * @throws NotFoundHttpException;
-     */
-    private function getChat($id)
-    {
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        if(!$chat = $messenger->getChat($id))
-        {
-            throw new NotFoundHttpException();
-        }
-        return $chat;
-    }
-
-    /**
-     * @return \Doctrine\Common\Persistence\ObjectManager|object
-     */
-    private function em()
-    {
-        return $this->getDoctrine()->getManager();
-    }
 }
