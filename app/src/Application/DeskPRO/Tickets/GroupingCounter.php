@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler\Date;
+use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -177,7 +179,7 @@ class GroupingCounter
             if ($f->isChoiceType()) {
                 return "COALESCE(custom_data_ticket_$field.field_id, 0) AS $field";
             } else {
-                return "COALESCE(custom_data_ticket_$field.input, 0) AS $field";
+                return "COALESCE(custom_data_ticket_$field." . $f->getHandler()->getSearchType() . ", 0) AS $field";
             }
         } else {
             try {
@@ -654,7 +656,27 @@ class GroupingCounter
                         }
                     } else {
                         if ($ids) {
+
                             $titles = array_combine($ids, $ids);
+
+                            $h = $f->getHandler();
+                            $isDate = $h instanceof Date;
+                            $isDateTime = $h instanceof DateTime;
+
+                            if ($isDate || $isDateTime) {
+
+                                $timezone = App::getCurrentPerson()->getTimezone();
+                                $date_format = App::getSetting('core.date_full');
+                                $datetime_format = App::getSetting('core.date_fulltime');
+
+                                foreach ($titles as &$id) {
+                                    if (!$id) continue;
+                                    $date = new \DateTime('@' . $id, new \DateTimeZone('UTC'));
+                                    $date->setTimezone($timezone);
+                                    $id = $date->format($isDate ? $date_format : $datetime_format);
+                                }
+                            }
+
                         } else {
                             $titles = array();
                         }
