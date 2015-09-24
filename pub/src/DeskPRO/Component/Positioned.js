@@ -17,7 +17,20 @@ export default class Positioned extends React.Component {
     positionTarget: React.PropTypes.any,
     collision: React.PropTypes.object,
     onOpen: React.PropTypes.func,
-    onClose: React.PropTypes.func
+    onClose: React.PropTypes.func,
+    children: React.PropTypes.any
+  }
+
+  /**
+   * Constructor
+   * @param  {Object} props The props for the objject
+   * @return {void}
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false
+    };
   }
 
   /**
@@ -60,31 +73,52 @@ export default class Positioned extends React.Component {
    * @return {void}
    */
   updatePosition() {
-    const placement = this.props.position || {
-      my: 'top left',
-      at: 'bottom right',
-      of: null,
-      collision: 'none'
-    };
+    if (this.props.positionCalc) {
+      const positionResult = this.props.positionCalc();
+      $(this.node).css('position', absolute)
+                  .css('top', positionResult.top)
+                  .css('left', positionResult.left);
+    } else {
+      const placement = this.props.position || {
+        my: 'top left',
+        at: 'bottom right',
+        of: null,
+        collision: 'none'
+      };
 
-    placement.my = this.props.positionMy || placement.my;
-    placement.at = this.props.positionAt || placement.at;
+      placement.my = this.props.positionMy || placement.my;
+      placement.at = this.props.positionAt || placement.at;
 
-    if (this.props.positionTarget) {
-      placement.of = this.props.positionTarget;
-      if (React.findDOMNode(this.props.positionTarget) !== null) {
-        placement.of = React.findDOMNode(this.props.positionTarget);
+      if (this.props.positionTarget) {
+        placement.of = this.props.positionTarget;
+        if (React.findDOMNode(this.props.positionTarget) !== null) {
+          placement.of = React.findDOMNode(this.props.positionTarget);
+        }
+
+        placement.collision = this.props.collision || placement.collision;
+
+        // Error out if we don't have a position target
+        if (placement.of === null) {
+          console.error('No position target specified');
+        }
+
+        $(this.node).css('position', 'absolute').position(placement);
       }
-
-      placement.collision = this.props.collision || placement.collision;
-
-      // Error out if we don't have a position target
-      if (placement.of === null) {
-        console.error('No position target specified');
-      }
-
-      $(this.node).css('position', 'absolute').position(placement);
     }
+  }
+
+  /**
+   * Calculate whether onOpen/onClose should fire
+   * @return {bool} Whether the function should run
+   */
+  shouldFire() {
+    const fire = (this.props.isOpen === this.state.isOpen);
+
+    this.setState({
+      isOpen: this.props.isOpen
+    });
+
+    return fire;
   }
 
   /**
@@ -98,8 +132,14 @@ export default class Positioned extends React.Component {
       // Put the element inside a div that we can position
       React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();
+      if (this.shouldFire() && this.props.onOpen) {
+        this.props.onOpen();
+      }
     } else {
       React.render(<div />, this.node);
+      if (this.shouldFire() && this.props.onClose) {
+        this.props.onClose();
+      }
     }
   }
 

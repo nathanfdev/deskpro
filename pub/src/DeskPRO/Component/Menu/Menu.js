@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class Card extends React.Component {
+export default class Menu extends React.Component {
 
   /**
    * Valid prop types
@@ -9,7 +9,9 @@ export default class Card extends React.Component {
   static propTypes = {
     widgetClass: React.PropTypes.string,
     overrideWidgetClass: React.PropTypes.bool,
-    children: React.PropTypes.node
+    children: React.PropTypes.node,
+    menuLevel: React.PropTypes.number,
+    isOpen: React.PropTypes.bool
   }
 
   /**
@@ -18,6 +20,7 @@ export default class Card extends React.Component {
    */
   render() {
     const baseClass = 'dpw-navigation-dropdown';
+    const isOpen = typeof this.props.isOpen !== 'undefined' ? this.props.isOpen : true;
 
     let divClass = (this.props.widgetClass ? baseClass + ' ' + this.props.widgetClass : baseClass);
 
@@ -25,8 +28,17 @@ export default class Card extends React.Component {
       divClass = this.props.widgetClass;
     }
 
-    return (<div className={divClass}>
-        <ul>{this.props.children}</ul>
-      </div>);
+    if (isOpen) {
+      const menuLevel = this.props.menuLevel ? this.props.menuLevel : 1;
+      return (<div className={divClass} style={{zIndex: 1000 + menuLevel}}>
+          <ul>
+            {React.Children.map(this.props.children, (child) => {
+              return React.cloneElement(child, { parentMenuLevel: menuLevel });
+            })}
+          </ul>
+        </div>);
+    }
+
+    return <div />;
   }
 }

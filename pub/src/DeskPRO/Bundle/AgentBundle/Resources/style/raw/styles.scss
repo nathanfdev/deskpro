@@ -70,6 +70,8 @@ a { color: $link-color; }
   @import 'help-dropdown';// Help stuff
   @import 'select-dropdown';
 
+  @import 'navigation-dropdowns';
+
 @import 'live-search';
 @import 'forms';
 @import 'sidebar-kb';
