@@ -126,20 +126,22 @@ final class TicketCustomDef extends AbstractParser
             ))
         ;
 
-        foreach ($formatted['system_field_options'] as $option) {
-            $option_formatted = $this->formatter->format($option, array(
-                'name'  => TransformerInterface::TYPE_STRING,
-                'value' => TransformerInterface::TYPE_STRING,
-            ));
+        foreach (array($formatted['custom_field_options'], $formatted['system_field_options']) as $options) {
+            foreach ($options as $option) {
+                $option_formatted = $this->formatter->format($option, array(
+                    'name'  => TransformerInterface::TYPE_STRING,
+                    'value' => TransformerInterface::TYPE_STRING,
+                ));
 
-            $child_entity = new Entity\PersonCustomDef();
-            $child_entity
-                ->setTitle($option_formatted['value'])
-                ->setDescription($option_formatted['name'])
-                ->setAsEnabled($formatted['active'])
-            ;
+                $child_entity = new Entity\PersonCustomDef();
+                $child_entity
+                    ->setTitle($option_formatted['value'])
+                    ->setDescription($option_formatted['name'])
+                    ->setAsEnabled($formatted['active'])
+                ;
 
-            $entity->addCustomDef($child_entity);
+                $entity->addCustomDef($child_entity);
+            }
         }
 
         return $entity;
