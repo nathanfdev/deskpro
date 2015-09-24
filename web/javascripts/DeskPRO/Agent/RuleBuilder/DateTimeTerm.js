@@ -10,17 +10,17 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
   initValues: function() {
     var timestamp = null, date = null;
 
-    //timestamp = this.date1Input.val();
-    //if (timestamp) {
-    //  date = new Date(timestamp * 1000);
-    //  this.date1Widget.datepicker('setDate', date);
-    //}
-    //
-    //timestamp = this.date2Input.val();
-    //if (timestamp) {
-    //  date = new Date(timestamp * 1000);
-    //  this.date2Widget.datepicker('setDate', date);
-    //}
+    timestamp = this.date1Input.val();
+    if (timestamp) {
+      date = new Date(timestamp * 1000);
+      this.date1Display.data('DateTimePicker').date(date);
+    }
+
+    timestamp = this.date2Input.val();
+    if (timestamp) {
+      date = new Date(timestamp * 1000);
+      this.date2Display.data('DateTimePicker').date(date);
+    }
 
     //------------------------------
     // Existing values
@@ -29,12 +29,18 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
     var relative1 = $('.relative', this.date1);
     var relative2 = $('.relative', this.date2);
 
-    if (parseInt($('.relative-input', relative1).val())) {
+    if (parseInt($('.date1-relative-input', this.rowEl).val())) {
+      $('.relative-input', relative1).val($('.date1-relative-input', this.rowEl).val());
+      $('.relative-type', relative1).val($('.date1-relative-type', this.rowEl).val());
+
       $('.date', this.date1).hide();
       $('.relative', this.date1).show().addClass('on');
     }
 
-    if (parseInt($('.relative-input', relative2).val())) {
+    if (parseInt($('.date2-relative-input', this.rowEl).val())) {
+      $('.relative-input', relative2).val($('.date2-relative-input', this.rowEl).val());
+      $('.relative-type', relative2).val($('.date2-relative-type', this.rowEl).val());
+
       $('.date', this.date2).hide();
       $('.relative', this.date2).show().addClass('on');
     }
@@ -134,28 +140,24 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
     //------------------------------
 
     $('.switcher', this.date1).on('click', (function() {
-      var date = $('.date', this.date1);
-      var rel  = $('.relative', this.date1);
+      var date1 = $('.date', this.date1)
+        , date2 = $('.date', this.date2)
+        , rel1 = $('.relative', this.date1)
+        , rel2 = $('.relative', this.date2)
+        ;
 
-      if (date.is(':visible')) {
-        date.hide();
-        rel.show().addClass('on');
+      if (date1.is(':visible')) {
+        date1.hide();
+        date2.hide();
+        rel1.show().addClass('on');
+        rel2.show().addClass('on');
       } else {
-        rel.hide().removeClass('on');
-        date.show();
-      }
-    }).bind(this));
-
-    $('.switcher', this.date2).on('click', (function() {
-      var date = $('.date', this.date2);
-      var rel  = $('.relative', this.date2);
-
-      if (date.is(':visible')) {
-        date.hide();
-        rel.show().addClass('on');
-      } else {
-        rel.hide().removeClass('on');
-        date.show();
+        rel1.hide().removeClass('on');
+        rel2.hide().removeClass('on');
+        $('.date1-relative-input', this.rowEl).val('');
+        $('.date2-relative-input', this.rowEl).val('');
+        date1.show();
+        date2.show();
       }
     }).bind(this));
   },

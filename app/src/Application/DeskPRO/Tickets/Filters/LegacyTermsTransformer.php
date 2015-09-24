@@ -423,30 +423,11 @@ class LegacyTermsTransformer
             case 'FilterTicketField':
                 $t = $term->getTermOptions();
                 $fid = $t['field_id'];
-                $value = @$t['value'] ?: null;
-
-                if ($t->has('date1')) {
-                    $value = 'date|' . $t['date1'];
-                }
-                if ($t->has('date2')) {
-                    $value .= '|' . $t['date2'];
-                }
-
-                if ($t->has('date1_relative')) {
-                    $value = 'date_relative|' . (int) $t['date1_relative'] . ' ' . $t['date1_relative_type'];
-                }
-                if ($t->has('date2_relative')) {
-                    $value .= '|' . (int) $t['date2_relative'] . ' ' . $t['date2_relative_type'];
-                }
 
                 return array(
                     'type'    => "ticket_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
-                    'options' => array(
-                        'custom_fields' => array(
-                            "field_{$fid}" => $value
-                        )
-                    )
+                    'options' => $t->all(),
                 );
 
             case 'FilterUserField':
@@ -835,23 +816,6 @@ class LegacyTermsTransformer
             case 'ticket_field':
                 $new_opts = $options;
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
-
-                $parts = is_string($new_opts['value'])
-                    ? explode('|', $new_opts['value'])
-                    : array();
-
-                if ($field = array_shift($parts)) {
-                    foreach ($parts as $k => $part) {
-                        if ('date_relative' === $field) {
-                            @list($interval, $type) = explode(' ', $part);
-                            $new_opts['date' . ($k + 1) . '_relative'] = $interval;
-                            $new_opts['date' . ($k + 1) . '_relative_type'] = $type;
-                        } else {
-                            $new_opts[$field . ($k + 1)] = $part;
-                        }
-                    }
-                }
 
                 return new Terms\FilterTicketField($op, $new_opts);
 
