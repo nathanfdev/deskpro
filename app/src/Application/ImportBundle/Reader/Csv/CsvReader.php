@@ -57,40 +57,70 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      */
     public function checkConfig()
     {
-        $primary_files = array(
-            self::FILE_ARTICLE_CATEGORIES,
-            self::FILE_ARTICLES,
-            self::FILE_DOWNLOADS,
-            self::FILE_FEEDBACK,
-            self::FILE_NEWS,
-            self::FILE_PEOPLE,
-            self::FILE_TICKETS,
-            self::FILE_ORGANIZATIONS,
+        $files = array(
+            self::FILE_ARTICLE_CATEGORIES => array(),
+            self::FILE_ARTICLES           => array(
+                self::FILE_ARTICLE_CUSTOM_FIELDS,
+            ),
+            self::FILE_DOWNLOADS          => array(
+                self::FILE_DOWNLOAD_ATTACHMENTS,
+            ),
+            self::FILE_FEEDBACK           => array(
+                self::FILE_FEEDBACK_ATTACHMENTS,
+                self::FILE_FEEDBACK_CUSTOM_FIELDS,
+            ),
+            self::FILE_NEWS               => array(),
+            self::FILE_PEOPLE             => array(
+                self::FILE_PEOPLE_CONTACT_DATA,
+                self::FILE_PEOPLE_CUSTOM_FIELDS,
+            ),
+            self::FILE_TICKETS            => array(
+                self::FILE_TICKET_MESSAGES,
+                self::FILE_TICKET_ATTACHMENTS,
+                self::FILE_TICKET_CUSTOM_FIELDS,
+            ),
+            self::FILE_ORGANIZATIONS      => array(
+                self::FILE_ORGANIZATION_CONTACT_DATA,
+                self::FILE_ORGANIZATION_CUSTOM_FIELDS,
+            ),
         );
 
         if ( ! is_dir($this->config->getPath())) {
-            throw new \RuntimeException(sprintf('`%s` is not a directory', $this->config->getPath()));
+            throw new \RuntimeException(sprintf('`%s` is not a directory.', $this->config->getPath()));
         }
 
-        foreach ($primary_files as $file) {
+        $has_primary_iterator = false;
+        foreach ($files as $primary_file => $related_files) {
             try {
-                $this->getIterator($file);
-                return true;
+                $this->getIterator($primary_file);
+                $has_primary_iterator = true;
 
             } catch (NotFoundException $e) {
-                // File not found, continue...
+                foreach ($related_files as $file) {
+                    try {
+                        $this->getIterator($file);
+                        throw new \RuntimeException(sprintf('Unable to parse `%s` without primary file `%s`.', $file, $primary_file));
+
+                    } catch (NotFoundException $e) {
+                        // File not found, continue...
+                    }
+                }
             }
         }
 
-        throw new \RuntimeException(sprintf(
-            'No required files found in directory `%s`. Expected one of %s.',
-            $this->config->getPath(), implode(', ', array_map(
-                function($file) {
-                    return '`' . $file . '`';
-                },
-                $primary_files
-            ))
-        ));
+        if ( ! $has_primary_iterator) {
+            throw new \RuntimeException(sprintf(
+                'No required files found in directory `%s`. Expected one of %s.',
+                $this->config->getPath(), implode(', ', array_map(
+                    function ($file) {
+                        return '`' . $file . '`';
+                    },
+                    $files
+                ))
+            ));
+        }
+
+        return true;
     }
 
     /**
