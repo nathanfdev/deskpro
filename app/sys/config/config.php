@@ -110,27 +110,6 @@ $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-urls.php'));
 $container->setDefinition('deskpro.service_urls', $definition);
 
-
-// dp_enc
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Encryption\\DpEnc');
-$definition->setFactoryClass('Application\\DeskPRO\\Encryption\\StandardEncFactory');
-$definition->setFactoryMethod('create');
-$definition->setArguments(array(new Reference('service_container')));
-$container->setDefinition('dp_enc', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncTextType');
-$definition->setArguments(array(new Reference('dp_enc')));
-$definition->addTag('form.type', array('alias' => 'dp_enc_text'));
-$container->setDefinition('dp_enc.form.type.dp_enc_text', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncPasswordType');
-$definition->setArguments(array(new Reference('dp_enc')));
-$definition->addTag('form.type', array('alias' => 'dp_enc_password'));
-$container->setDefinition('dp_enc.form.type.dp_enc_password', $definition);
-
 ############################################################################
 # Validators and Constraints
 ############################################################################
