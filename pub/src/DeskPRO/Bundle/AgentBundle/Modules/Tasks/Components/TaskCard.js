@@ -51,7 +51,7 @@ const TaskCard = React.createClass({
     require('react-onclickoutside')
   ],
 
-  handleClickOutside: function () {
+  handleClickOutside: function() {
     if (this.state.editing === true) {
       this.setState({
         editing: false
@@ -64,7 +64,7 @@ const TaskCard = React.createClass({
     }
   },
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       expanded: false,
       editing: false,
@@ -72,19 +72,19 @@ const TaskCard = React.createClass({
     };
   },
 
-  toggleDetails: function () {
+  toggleDetails: function() {
     this.setState({
       expanded: !this.state.expanded
     });
   },
 
-  editMode: function () {
+  editMode: function() {
     this.setState({
       editing: true
     });
   },
 
-  handleTitleChange: function (name, value) {
+  handleTitleChange: function(name, value) {
     const task = this.state.task;
     task.title = value;
     this.setState({
@@ -92,11 +92,11 @@ const TaskCard = React.createClass({
     });
   },
 
-  toggleMassAction: function () {
+  toggleMassAction: function() {
     this.props.updateMassActions(this.props.task.id);
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     const dueField = 'due-' + this.props.task.id;
 
     // Check if the due field actually exists before we try and add a date picker (e.g. on done tasks)
@@ -137,7 +137,7 @@ const TaskCard = React.createClass({
     });
   },
 
-  getStyles: function (props) {
+  getStyles: function(props) {
     const { isDragging } = props;
 
     return {
@@ -148,7 +148,7 @@ const TaskCard = React.createClass({
     };
   },
 
-  dueIndicator: function (due) {
+  dueIndicator: function(due) {
     const dueMoment = new Moment(due);
 
     let result = '';
@@ -166,7 +166,7 @@ const TaskCard = React.createClass({
     return result;
   },
 
-  render: function () {
+  render: function() {
     const { task,
             projects,
             linked_items,
