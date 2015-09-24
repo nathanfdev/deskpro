@@ -170,6 +170,28 @@ class RuleBuilder
                 continue;
             }
 
+            if (0 === strpos($data_item['type'], 'ticket_field') && isset($data_item['options']['date1'])) {
+                $opt = $data_item['options'];
+                if (!empty($opt['date1'])) {
+                    $value = 'date|' . $opt['date1'];
+                }
+                if (!empty($opt['date2'])) {
+                    $value .= '|' . $opt['date2'];
+                }
+
+                if (!empty($opt['date1_relative'])) {
+                    $value = 'date_relative|' . (int) $opt['date1_relative'] . ' ' . $opt['date1_relative_type'];
+                }
+                if (!empty($opt['date2_relative'])) {
+                    $value .= '|' . (int) $opt['date2_relative'] . ' ' . $opt['date2_relative_type'];
+                }
+                $data_item['options'] = array(
+                    'custom_fields' => array(
+                        'field_' . trim($data_item['type'], 'ticket_field[]') => $value,
+                    )
+                );
+            }
+
             $data[] = $data_item;
         }
 

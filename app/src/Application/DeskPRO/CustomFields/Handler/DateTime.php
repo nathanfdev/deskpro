@@ -35,12 +35,13 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Form\Type\CriteriaFilterField\DateTimeType;
 
 
 /**
  * Handles the datetime field
  */
-class DateTime extends HandlerAbstract
+class DateTime extends Date
 {
     public function renderHtml($data = null, array $template_vars = array())
     {
@@ -235,5 +236,36 @@ class DateTime extends HandlerAbstract
         }
 
         return array();
+    }
+
+    public function getSearchCriteriaForm($data = null)
+    {
+        $setData = null;
+        if ($data AND !empty($data['value'])) {
+            try {
+                if (ctype_digit($data['value'])) {
+                    $date = new \DateTime('@' . $data['value']);
+                    if ($date) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        $setData = $date->format('Y-m-d');
+                    }
+                } else {
+                    $date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+                    if ($date) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        $setData = $date->format('Y-m-d');
+                    }
+                }
+            } catch (\Exception $e) {
+                $setData = null;
+            }
+        }
+
+        return App::getFormFactory()->createNamedBuilder(
+            $this->getFormFieldName(),
+            new DateTimeType(),
+            $setData,
+            array('required' => false)
+        )->getForm();
     }
 }
