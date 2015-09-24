@@ -56,22 +56,6 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     /**
      * @ApiDoc(
      *      description="get a list of teams",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
      *      statusCodes={
      *          200="Success"
      *      }
@@ -91,15 +75,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
                             ->select('t')->from('DeskPRO:AgentTeam', 't')->getQuery();
         }
 
-        $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($teams));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
         return View::create(
-            $this->DataSerialize($pager),
+            $this->DataSerialize($teams->getResult()),
             Response::HTTP_OK
         );
     }
