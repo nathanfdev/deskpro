@@ -95,6 +95,7 @@ final class TicketCustomDef extends AbstractParser
             'description'          => TransformerInterface::TYPE_STRING,
             'raw_description'      => TransformerInterface::TYPE_STRING,
             'required'             => TransformerInterface::TYPE_BOOLEAN,
+            'active'               => TransformerInterface::TYPE_BOOLEAN,
             'system_field_options' => TransformerInterface::TYPE_ARRAY,
         ));
 
@@ -115,7 +116,27 @@ final class TicketCustomDef extends AbstractParser
             ->setTitle($formatted['title'])
             ->setDescription($formatted['description'])
             ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
+            ->setAsEnabled($formatted['active'])
+            ->setOptions(array(
+                'required' => $formatted['required'],
+            ))
         ;
+
+        foreach ($formatted['system_field_options'] as $option) {
+            $option_formatted = $this->formatter->format($option, array(
+                'name'  => TransformerInterface::TYPE_STRING,
+                'value' => TransformerInterface::TYPE_STRING,
+            ));
+
+            $child_entity = new Entity\PersonCustomDef();
+            $child_entity
+                ->setTitle($option_formatted['value'])
+                ->setDescription($option_formatted['name'])
+                ->setAsEnabled($formatted['active'])
+            ;
+
+            $entity->addCustomDef($child_entity);
+        }
 
         return $entity;
     }
