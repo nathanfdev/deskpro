@@ -92,12 +92,14 @@ class Importer
     }
 
     /**
-     * get current importer name
+     * Get current importer name
+     *
      * @return DataStore
      */
     public function getCurrentName()
     {
-        if (!$data = $this->data_store_repository->getByName('importers.main')) {
+        $data = $this->data_store_repository->getByName('importers.main');
+        if ( ! $data) {
             return null;
         }
 
@@ -105,12 +107,14 @@ class Importer
     }
 
     /**
-     * set current importer name
-     * @param $name
+     * Set current importer name
+     *
+     * @param string $name
      */
     public function setCurrentName($name)
     {
-        if (!$data = $this->data_store_repository->getByName('importers.main')) {
+        $data = $this->data_store_repository->getByName('importers.main');
+        if ( ! $data) {
             $data = new DataStore();
             $data['name'] = 'importers.main';
             $this->entity_manager->persist($data);
@@ -182,7 +186,10 @@ class Importer
     }
 
     /**
-     * @param $id
+     * Returns reader config
+     *
+     * @param string $id
+     *
      * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
      * @throws \Exception
      */
@@ -213,33 +220,29 @@ class Importer
     }
 
     /**
-     * create/copy all necessary dirs/files for import
-     * @param $id
+     * Create/copy all necessary dirs/files for import
+     *
+     * @param string $id
      * @return DataStore
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function initReader($id)
     {
         $importer = $this->getImporter($id);
-        $config = $importer->getData('config');
+        $config   = $importer->getData('config');
 
-        /**
-         * create temp dir
-         */
-        if (!$tmp = @$config['temp']) {
+        // Create temp dir
+        $tmp = @$config['temp'];
+        if ( ! $tmp) {
             $tmp = dp_get_tmp_dir().'/importer-'.time();
             $config['temp'] = $tmp;
             $this->entity_manager->flush($importer);
         }
-        if (!file_exists($tmp)) {
+
+        if ( ! file_exists($tmp)) {
             mkdir($tmp.'/in', 0777, true);
             mkdir($tmp.'/out', 0777, true);
 
-            /**
-             * copy blobs to temp dir
-             */
+            // Copy blobs to temp dir
             if (@$config['blobs']) {
                 foreach ($config['blobs'] as $blobData) {
                     if (!$blob = $this->entity_manager->find('DeskPRO:Blob', $blobData['id'])) {
@@ -255,10 +258,9 @@ class Importer
             }
         }
 
-        /**
-         * log file
-         */
-        if (!$log_file = $importer->getData('logfile')) {
+        // Log file
+        $log_file = $importer->getData('logfile');
+        if ( ! $log_file) {
             $log_file = dp_get_log_dir().'/importlog-'.date('Ymd-His').'-'.Strings::random(6, Strings::CHARS_ALPHA_IU);
             $importer->setData('logfile', $log_file);
         }
@@ -270,7 +272,8 @@ class Importer
     }
 
     /**
-     * set state of import
+     * Set state of import
+     *
      * @param $state
      * @param null $id
      * @throws \Exception
@@ -284,7 +287,7 @@ class Importer
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @return DataStore
      */
     public function startImport($id)
@@ -303,7 +306,6 @@ class Importer
     /**
      * @param DataStore $importer
      * @return GeneratorConfig
-     * @throws \Exception
      */
     public function createGeneratorConfig(DataStore $importer)
     {
