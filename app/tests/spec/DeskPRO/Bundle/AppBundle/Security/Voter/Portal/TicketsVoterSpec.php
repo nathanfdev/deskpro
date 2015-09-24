@@ -123,7 +123,7 @@ class TicketsVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
 
-    public function it_grants_edit_if_ticket_owner(
+    public function it_grants_edit_if_ticket_owner_and_ticket_is_visible(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
@@ -132,11 +132,26 @@ class TicketsVoterSpec extends ObjectBehavior
         $ticket->isParticipant($person)->willReturn(false);
         $ticket->isOwner($person)->willReturn(true);
         $ticket->isOrganizationManager($person)->willReturn(false);
+        $ticket->hasVisibleStatus()->willReturn(true);
 
         $this->verifyGrantedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
 
-    public function it_grants_edit_if_organization_manager(
+    public function it_denies_edit_if_ticket_owner_and_ticket_is_not_visible(
+        TokenInterface $token,
+        Ticket $ticket,
+        Person $person
+    ) {
+        $ticket->isInvolved($person)->willReturn(true);
+        $ticket->isParticipant($person)->willReturn(false);
+        $ticket->isOwner($person)->willReturn(true);
+        $ticket->isOrganizationManager($person)->willReturn(false);
+        $ticket->hasVisibleStatus()->willReturn(false);
+
+        $this->verifyDeniedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
+    }
+
+    public function it_denies_edit_if_organization_manager_and_not_owner(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
@@ -145,8 +160,9 @@ class TicketsVoterSpec extends ObjectBehavior
         $ticket->isParticipant($person)->willReturn(false);
         $ticket->isOwner($person)->willReturn(false);
         $ticket->isOrganizationManager($person)->willReturn(true);
+        $ticket->hasVisibleStatus()->willReturn(true);
 
-        $this->verifyGrantedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
+        $this->verifyDeniedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
 
     public function verifyGrantedVote($attribute, $token, $object)
