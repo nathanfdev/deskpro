@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/Card';
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardDate } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/Card';
 
 export class FeedbackCard extends Component {
 
@@ -12,74 +12,48 @@ export class FeedbackCard extends Component {
     return (
       <Card type="feedback">
 
-        <div className="dpm--card-checkbox">
-          {/** @ToDo toggle func <i className="fa fa-check"></i> */}
-        </div>
+        <CardCheckbox/>
 
-        <div className="dpw--card-line">
-          <div className="dpw--card-line-left">
-            <span className="dpwd--card-line-item">
-              #{feedback.id}
-            </span>
+        <CardLine>
+          <CardLineLeft>
+            <CardLineItem>#{feedback.id}</CardLineItem>
+            <CardDisc/>
+            <CardLineItem>{feedback.num_ratings}</CardLineItem>
+            <CardDisc/>
+            <CardTitle content={feedback.title}/>
+          </CardLineLeft>
 
-            <div className="list-counter-bucket">
-              <a className="list-counter" href="#">
-                {feedback.num_ratings}
-              </a>
-            </div>
+          <CardLineRight>
+            <CardLineItem>{feedback.status}</CardLineItem>
+          </CardLineRight>
+        </CardLine>
 
-            <div className="dpwd--card-title">
-              <h1>{feedback.title}</h1>
-            </div>
-          </div>
+        <CardLine>
+          <CardLineLeft>
+            <CardTitle content={feedback.content}/>
+          </CardLineLeft>
+        </CardLine>
 
-          <div className="dpw--card-line-right">
+        <CardLine>
+          <CardLineLeft>
+            <CardLineItem>
+              <i className="fa fa-calendar-o"></i> <CardDate label="Created" date={feedback.date_created}/>
+            </CardLineItem>
+            <CardDisc/>
             <div className="dpwd--card-assigned">
-              <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}></span>
+              <span className="dpw--avatar-face"
+                    style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>Sender</span>
             </div>
-          </div>
-        </div>
+            <CardDisc/>
+            <CardLineItem><i className="fa fa-book"></i> {feedback.category}</CardLineItem>
+            <CardDisc/>
+            <CardLineItem><i className="fa fa-link"></i> <a href="#">Linked ticket</a></CardLineItem>
+          </CardLineLeft>
 
-        <div className="dpw--card-line">
-          <div className="dpw--card-line-left">
-            <div className="dpwd--card-title">
-              <h1>{feedback.content}</h1>
-            </div>
-          </div>
-        </div>
-
-        <div className="dpw--card-line">
-          <div className="dpw--card-line-left">
-
-            <span className="dpwd--card-line-item">
-              <i className="fa fa-calendar-o"></i> Created: {feedback.date_created}
-            </span>
-
-            <span className="dpw--card-disc"></span>
-
-            <span className="dpwd--card-line-item">
-              <i className="fa fa-book"></i> {feedback.category}
-            </span>
-
-            <span className="dpw--card-disc"></span>
-
-            <span className="dpwd--card-line-item">
-              <i className="fa fa-link"></i> <a href="#">Linked ticket</a>
-            </span>
-          </div>
-
-          <div className="dpw--card-line-right">
-            <span className="dpwd--card-line-item">
-              5 <i className="fa fa-comment"></i>
-            </span>
-
-            <span className="dpw--card-disc"></span>
-
-            <span className="dpwd--card-line-item">
-                <div>1/3 <i className="fa fa-folder-open"></i></div>
-            </span>
-          </div>
-        </div>
+          <CardLineRight>
+            <CardLineItem>5 <i className="fa fa-comment"></i></CardLineItem>
+          </CardLineRight>
+        </CardLine>
       </Card>
     );
   }
