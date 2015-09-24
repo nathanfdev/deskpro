@@ -37,8 +37,7 @@ export default class CrmNav extends Reducer {
         total: 0,
         teams: [/* {count, group} */]
       },
-      groupNames: {/* id: name */},
-      teamNames: {/* id: name */}
+      groupNames: {/* id: name */}
     };
   }
 
@@ -54,7 +53,6 @@ export default class CrmNav extends Reducer {
       .r(actions.loadPersonLabels, this.personLabelsLoaded)
       .r(actions.loadOrganizationLabels, this.organizationLabelsLoaded)
       .r(actions.loadGroups, this.groupsLoaded)
-      .r(actions.loadTeams, this.teamsLoaded)
     ;
   }
 
@@ -115,25 +113,15 @@ export default class CrmNav extends Reducer {
     return next;
   }
 
-  teamsLoaded(prev, {payload}) {
-    const next     = {...prev};
-    next.teamNames = {};
-    payload.forEach(team => next.teamNames[team.id] = team.name);
-
-    return next;
-  }
-
   viewModeChanged(prev) {
     const next    = {...prev};
     next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
     return next;
   }
 
-
   orderChanged(prev) {
     const next = {...prev};
     next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
     return next;
   }
-
 }

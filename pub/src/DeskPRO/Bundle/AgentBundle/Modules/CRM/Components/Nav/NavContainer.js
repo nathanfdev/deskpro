@@ -1,9 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../Actions/crmNavActions'
+import * as actions from '../../Actions/crmNavActions';
+import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
+import { agentTeamNamesSelector }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { Nav } from './Nav';
 
-@connect(state => state.CrmNav)
+@connect(state => Object.assign({}, state.CrmNav, {teamNames: agentTeamNamesSelector(state)}))
 export class NavContainer extends React.Component {
 
   constructor(props) {
@@ -16,7 +19,7 @@ export class NavContainer extends React.Component {
       this.props.dispatch(actions.loadPersonLabels());
       this.props.dispatch(actions.loadOrganizationLabels());
       this.props.dispatch(actions.loadGroups());
-      this.props.dispatch(actions.loadTeams());
+      this.props.dispatch(loadAllAgentTeams());
   }
 
   render() {

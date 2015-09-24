@@ -44,8 +44,3 @@ export const loadGroups = createAction(
   'CRM_NAV_LOAD_GROUPS',
   trigger => UserGroups.loadAll().then(promise => trigger(promise.getData().data))
 );
-
-export const loadTeams = createAction(
-  'CRM_NAV_LOAD_TEAMS',
-  trigger => AgentTeams.loadAll().then(promise => trigger(promise.getData().data))
-);
