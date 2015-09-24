@@ -47,6 +47,7 @@ interface EntityInterface
     const TYPE_DOWNLOAD          = 'download';
     const TYPE_NEWS              = 'news';
     const TYPE_ARTICLE           = 'article';
+    const TYPE_ARTICLE_CATEGORY  = 'article_category';
     const TYPE_ARTICLE_COMMENT   = 'article_comment';
     const TYPE_FEEDBACK          = 'feedback';
     const TYPE_ORGANIZATION      = 'organization';

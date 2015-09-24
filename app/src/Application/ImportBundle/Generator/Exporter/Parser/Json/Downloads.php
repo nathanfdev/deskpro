@@ -28,10 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
  * Downloads json file parser
@@ -54,7 +54,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getDownloadReaderConfig());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_DOWNLOAD_PATH, $this->getBatchNum());
     }
 
     /**
@@ -62,26 +62,16 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $downloads  = $this->reader->getData($this->getDownloadReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_DOWNLOAD_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONDownload')
+            ->setRefColumn('oid')
+            ->setMethod('exportDownload')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($downloads as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportDownload($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONDownload', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONDownload', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -90,7 +80,7 @@ final class Downloads extends AbstractParser
      * @param array $data
      * @return Entity\Download|null
      */
-    private function exportDownload(array $data)
+    protected function exportDownload(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
@@ -147,15 +137,5 @@ final class Downloads extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getDownloadReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_DOWNLOAD_PATH);
     }
 }

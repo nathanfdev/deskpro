@@ -411,7 +411,7 @@ abstract class SearcherAbstract implements PersonContextInterface
             }
         }
 
-        $this->terms[] = array($term, $op, $data, $term_type, $term_id);
+        $this->terms_any[] = array($term, $op, $data, $term_type, $term_id);
     }
 
 

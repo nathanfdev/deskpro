@@ -55,34 +55,18 @@ final class NewsLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
         $news->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $news->addLabel($this->createNewsLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for news with oid `%d`',
-                $label, $news->getId()
-            ));
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelNews();
+            $label->setLabel($label_name);
+
+            $news->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for news with oid `%d`', $label_name, $news->getId()));
         }
 
+        $this->records->setPrimaryEntity($news);
         return $this->records;
-    }
-
-    /**
-     * Returns a new news label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelNews
-     */
-    private function createNewsLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelNews();
-        $entity->setLabel($label);
-
-        $this->records->addRelatedEntity($entity);
-        return $entity;
     }
 }

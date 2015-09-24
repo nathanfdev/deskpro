@@ -185,10 +185,10 @@ class TicketSettings
             );
         }
 
-        if (!$this->working_hours['holidays']) {
+        if (!@$this->working_hours['holidays']) {
             $this->working_hours['holidays'] = array();
         }
-        if (!$this->working_hours['work_days']) {
+        if (!@$this->working_hours['work_days']) {
             $this->working_hours['work_days'] = array();
         }
 

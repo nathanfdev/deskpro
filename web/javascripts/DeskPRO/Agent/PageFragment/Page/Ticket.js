@@ -144,6 +144,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initTasks();
 		this._initEditName();
 		this._initSlas();
+    this._initProblems();
 
 		// Change email menu
 		var emailText = this.getEl('user_email_text');
@@ -245,24 +246,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
-			var ticketId = parseInt(info.ticket_id),
-				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
-				isLocked = info.is_locked;
+      if (self.meta.ticket_id != info.ticket_id) return;
 
-			if (self.meta.ticket_id == ticketId) {
-				if (byAgentId && byAgentId != DESKPRO_PERSON_ID) {
-					// Reload the ticket page
-					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
-					self.closeSelf();
-					return;
-				} else if (!byAgentId) {
-					self.wrapper.find('.lock-overlay').remove();
-					self.getEl('locked_message').hide();
-					self.getEl('locked_message').data('locked-self', false);
-					self.getEl('lock_ticket').show();
-					self.getEl('unlock_ticket').hide();
-				}
-			}
+      if (info.locked_by) {
+
+        self.getEl('locked_message').show();
+
+        if (info.locked_by != DESKPRO_PERSON_ID) {
+          self.wrapper.find('.lock-overlay').show();
+          self.getEl('locked_message_self').hide();
+          self.getEl('locked_message_other').show().children('span').text(info.locked_by_name);
+          self.getEl('locked_message').data('locked-self', 0);
+          self.getEl('lock_ticket').hide();
+          self.getEl('unlock_ticket').show();
+        } else {
+          self.getEl('locked_message_self').show();
+          self.getEl('locked_message_other').hide();
+          self.getEl('locked_message').data('locked-self', 1);
+        }
+
+      } else {
+        self.wrapper.find('.lock-overlay').hide();
+        self.getEl('locked_message').hide();
+        self.getEl('locked_message').data('locked-self', 0);
+        self.getEl('lock_ticket').show();
+        self.getEl('unlock_ticket').hide();
+      }
+
 		}, null, [this.OBJ_ID]);
 
 		this.addEvent('shortcutFocusReply', function(ev) {
@@ -1408,6 +1418,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if ($(this).hasClass('cboxElement')) {
 				return;
 			}
+      if (!$(this).attr('href')) {
+        return;
+      }
 
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -1991,6 +2004,60 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}).bind(this));
 	},
 
+  _initCloseProblemOverlay: function () {
+    if (this.closeProblemOverlay) return;
+    this.closeProblemOverlayEl = $('.close-problem-overlay:first', this.wrapper);
+    if (!this.closeProblemOverlayEl) return;
+
+    this.closeProblemOverlay = new DeskPRO.UI.Overlay({
+      contentElement: this.closeProblemOverlayEl
+    });
+    this.ownObject(this.closeProblemOverlay);
+
+    $('.save-trigger', this.closeProblemOverlayEl).on('click', (function () {
+      this.doCloseProblem();
+    }).bind(this));
+  },
+
+  _initReopenProblemOverlay: function () {
+    if (this.reopenProblemOverlay) return;
+    this.reopenProblemOverlayEl = $('.reopen-problem-overlay:first', this.wrapper);
+    if (!this.reopenProblemOverlayEl) return;
+
+    this.reopenProblemOverlay = new DeskPRO.UI.Overlay({
+      contentElement: this.reopenProblemOverlayEl
+    });
+    this.ownObject(this.reopenProblemOverlay);
+
+    $('.save-trigger', this.reopenProblemOverlayEl).on('click', (function () {
+      this.doReopenProblem();
+    }).bind(this));
+  },
+
+  _initProblems: function () {
+    self = this;
+    this.getEl('field_holders').on('click', '.close-problem-link', function () {
+      self.showCloseProblemOverlay();
+    });
+
+		this.getEl('field_holders').on('click', '.incident-link', function () {
+			var pid = $(this).data('problem-id')
+				, $item = $('#problems-section li.is-nav-item[data-problem-id="' + pid + '"] [data-route]')
+				;
+      $item.trigger('click');
+
+      if (!$item.length) {
+        var $sel = $('#problems-section select.closed_problems_select');
+        $sel.children('option[data-problem-id="' + pid + '"]').prop('selected', true);
+        $sel.trigger('change');
+      }
+		});
+
+    this.getEl('field_holders').on('click', '.reopen-problem-link', function () {
+      self.showReopenProblemOverlay();
+    });
+  },
+
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
 		this.deleteOverlay.doBan = doBan;
@@ -2003,6 +2070,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.deleteOverlay.openOverlay();
 	},
+
+  showCloseProblemOverlay: function () {
+    this._initCloseProblemOverlay();
+    this.closeProblemOverlay.openOverlay();
+  },
+
+  showReopenProblemOverlay: function () {
+    this._initReopenProblemOverlay();
+    this.reopenProblemOverlay.openOverlay();
+  },
 
 	doTicketDelete: function() {
 
@@ -2042,6 +2119,42 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 	},
+
+  doCloseProblem: function () {
+    $('.loading-off', this.closeProblemOverlayEl).hide();
+    $('.loading-on', this.closeProblemOverlayEl).show();
+
+    var self = this;
+
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/close_problem',
+      type:     'POST',
+      context:  this,
+      complete: function () {
+        self.closeProblemOverlay.closeOverlay();
+        DeskPRO_Window.removePage(self);
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist: true});
+      }
+    });
+  },
+
+  doReopenProblem: function () {
+    $('.loading-off', this.reopenProblemOverlayEl).hide();
+    $('.loading-on', this.reopenProblemOverlayEl).show();
+
+    var self = this;
+
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/reopen_problem',
+      type:     'POST',
+      context:  this,
+      complete: function () {
+        self.reopenProblemOverlay.closeOverlay();
+        DeskPRO_Window.removePage(self);
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist: true});
+      }
+    });
+  },
 
 	doTicketSpam: function(doBan) {
 		var self = this;

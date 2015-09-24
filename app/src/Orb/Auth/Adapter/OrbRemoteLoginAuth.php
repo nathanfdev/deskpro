@@ -96,7 +96,7 @@ use \Orb\Auth\Result;
  * - orba_email: A preferred email address, or an array of preferred email addresses in order of priority
  * - orba_name: The users real name
  */
-abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInterface, CallbackInterface
+abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateInterface, CallbackInterface
 {
     const ERR_INVALID_TOKEN = -10;
     const ERR_SERVICE_ERR = -11;
@@ -189,7 +189,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
      *
      * @return
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         $state = $this->getStateHandler();
 

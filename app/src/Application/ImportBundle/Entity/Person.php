@@ -61,6 +61,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     private $is_admin = false;
 
     /**
+     * @var bool
+     */
+    private $is_disabled = false;
+
+    /**
+     * @var bool
+     */
+    private $is_deleted = false;
+
+    /**
      * @var string
      */
     private $first_name;
@@ -192,7 +202,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set person as user
+     * Mark person as user
      * If password is empty then initial password will be set up
      *
      * @param boolean $is_user
@@ -215,7 +225,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set person as admin
+     * Mark person as admin
      *
      * @param boolean $is_admin
      * @return $this
@@ -231,8 +241,52 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
+     * Is disabled?
+     *
+     * @return boolean
+     */
+    public function isDisabled()
+    {
+        return $this->is_disabled;
+    }
+
+    /**
+     * Mark person as disabled
+     *
+     * @param boolean $is_disabled
+     * @return $this
+     */
+    public function setAsDisabled($is_disabled)
+    {
+        $this->is_disabled = (bool)$is_disabled;
+        return $this;
+    }
+
+    /**
+     * Is deleted?
+     *
+     * @return boolean
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
+    }
+
+    /**
+     * Mark person as deleted
+     *
+     * @param boolean $is_deleted
+     * @return $this
+     */
+    public function setAsDeleted($is_deleted)
+    {
+        $this->is_deleted = (bool)$is_deleted;
+        return $this;
+    }
+
+    /**
      * Returns person first name
-     * If property "first_name" is empty tries to parse person name
+     * If property "first_name" is empty then tries to parse person name
      *
      * @return string
      */
@@ -241,11 +295,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
         if ($this->first_name) {
             return $this->first_name;
         }
-        if ($this->getName()) {
-            $names = @explode(' ', $this->getName());
 
-            if (isset($names[0])) {
-                return $names[0];
+        $name = $this->getName();
+        if ($name) {
+            $names = explode(' ', $name);
+
+            if (count($names) > 1) {
+                array_pop($names);
+                return implode(' ', $names);
+            } else {
+                return $name;
             }
         }
 
@@ -266,7 +325,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
 
     /**
      * Returns person last name
-     * If property "last_name" is empty tries to parse person name
+     * If property "last_name" is empty then tries to parse person name
      *
      * @return string
      */
@@ -275,11 +334,13 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
         if ($this->last_name) {
             return $this->last_name;
         }
-        if ($this->getName()) {
-            $names = @explode(' ', $this->getName());
 
-            if (isset($names[1])) {
-                return $names[1];
+        $name = $this->getName();
+        if ($name) {
+            $names = explode(' ', $name);
+
+            if (count($names) > 1) {
+                return array_pop($names);
             }
         }
 
@@ -659,6 +720,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             'is_agent'              => $this->is_agent,
             'is_user'               => $this->is_user,
             'is_admin'              => $this->is_admin,
+            'is_disabled'           => $this->is_disabled,
+            'is_deleted'            => $this->is_deleted,
             'first_name'            => $this->first_name,
             'last_name'             => $this->last_name,
             'name'                  => $this->name,
@@ -698,9 +761,18 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
                 ),
             )))
 
+            ->addPropertyConstraint('user_groups', new Constraints\All(array(
+                'constraints' => array(
+                    new Constraints\NotBlank(),
+                ),
+            )))
+
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
             ->addGetterConstraint('firstEmail', new Constraints\Email())
             ->addGetterConstraint('organizationValid', new Constraints\True())
+
+            ->addPropertyConstraint('contact_data', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
         ;
     }
 }

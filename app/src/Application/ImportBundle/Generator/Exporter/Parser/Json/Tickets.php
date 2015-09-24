@@ -28,10 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
  * Tickets json file parser
@@ -54,7 +54,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getTicketReaderConfig());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_TICKET_PATH, $this->getBatchNum());
     }
 
     /**
@@ -62,26 +62,16 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $tickets    = $this->reader->getData($this->getTicketReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_TICKET_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONTicket')
+            ->setRefColumn('oid')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($tickets as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportTicket($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTicket', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONTicket', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -90,7 +80,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\Ticket|null
      */
-    private function exportTicket(array $data)
+    protected function exportTicket(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
@@ -218,22 +208,15 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages(array $messages)
     {
-        $collection = new Entity\Collection();
-        foreach ($messages as $num => $data) {
-            try {
-                $entity = $this->exportMessage($data);
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($messages)
+            ->setPrefix('JSONTicketMessage')
+            ->setRefColumn('oid')
+            ->setMethod('exportMessage')
+        ;
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONTicketMessage', 'ticket message', 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONTicketMessage', 'ticket message', 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -242,7 +225,7 @@ final class Tickets extends AbstractParser
      * @param array $data
      * @return Entity\TicketMessage|null
      */
-    private function exportMessage(array $data)
+    protected function exportMessage(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'          => TransformerInterface::TYPE_STRING,
@@ -277,15 +260,5 @@ final class Tickets extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getTicketReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_TICKET_PATH);
     }
 }

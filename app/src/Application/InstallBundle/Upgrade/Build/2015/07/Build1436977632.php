@@ -45,10 +45,6 @@ class Build1436977632 extends AbstractBuild
         $per_batch = 25000;
 
         do {
-            if ($batch != 0) {
-                sleep(2);
-            }
-
             $this->out("Fix ticket org associations");
 
             $db->executeUpdate("

@@ -37,21 +37,34 @@ use Application\ImportBundle\Reader\ReaderInterface;
  */
 interface JsonReaderInterface extends ReaderInterface
 {
+    const ENTITY_PERSON_PATH           = 'people/';
+    const ENTITY_TICKET_PATH           = 'tickets/';
+    const ENTITY_ARTICLE_PATH          = 'articles/';
+    const ENTITY_ARTICLE_CATEGORY_PATH = 'article_categories/';
+    const ENTITY_DOWNLOAD_PATH         = 'downloads/';
+    const ENTITY_FEEDBACK_PATH         = 'feedback/';
+    const ENTITY_NEWS_PATH             = 'news/';
+    const ENTITY_ORGANIZATION_PATH     = 'organizations/';
+
     /**
      * Returns count of json files in the dir
      * One record per file
      *
-     * @param JsonConfig $config
+     * @param string $entity_path
+     * @param int    $batch_num
+     *
      * @return int
      */
-    public function getDirectoryFilesCount(JsonConfig $config);
+    public function getDirectoryFilesCount($entity_path, $batch_num);
 
     /**
      * Returns directory files data
      * Reads all directory json files, decode and returns  array
      *
-     * @param JsonConfig $config
+     * @param string $entity_path
+     * @param int    $batch_num
+     *
      * @return array
      */
-    public function getData(JsonConfig $config);
+    public function getData($entity_path, $batch_num);
 }

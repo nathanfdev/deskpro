@@ -61,6 +61,7 @@ class AppOptionsMapper
         $options['db_dsn'] = $settings->get('db_dsn');
         $options['db_username'] = $settings->get('db_username');
         $options['db_password'] = $settings->get('db_password');
+        $options['raw_info_filter'] = $settings->get('raw_info_filter');
 
         return $options;
     }

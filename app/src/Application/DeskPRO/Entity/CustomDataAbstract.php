@@ -37,8 +37,8 @@ namespace Application\DeskPRO\Entity;
 /**
  * Base class used for storing custom field data.
  *
- * @method $this setField(CustomDataAbstract $field)
- * @method $this setRootField(CustomDataAbstract $root_field)
+ * @method $this setField(CustomDefAbstract $field)
+ * @method $this setRootField(CustomDefAbstract $root_field)
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -135,11 +135,17 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
 
+    /**
+     * @return int
+     */
     public function getFieldId()
     {
         return $this->field->getId();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);

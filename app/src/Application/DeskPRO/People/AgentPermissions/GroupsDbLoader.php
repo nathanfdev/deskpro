@@ -59,19 +59,9 @@ class GroupsDbLoader
      */
     private $group_perms;
 
-    /**
-     * @var array
-     */
-    public static $prefix_map = array(
-        'agent_tickets' => 'ticket',
-        'agent_people'  => 'people',
-        'agent_org'     => 'org',
-        'agent_chat'    => 'chat',
-        'agent_publish' => 'publish',
-        'agent_general' => 'general',
-        'agent_tasks'   => 'tasks',
-    );
+    protected $all_perms_group = 0;
 
+    protected $all_safe_perms_group = 0;
 
     /**
      * @param int[]         $groups Group IDs or Usergroup objects
@@ -83,9 +73,26 @@ class GroupsDbLoader
 
         foreach ($groups as $g) {
             if (is_object($g)) {
-                $this->group_ids[] = $g->id;
+
+                if ('agent_all_perms' === $g->sys_name) {
+                    $this->all_perms_group = $g['id'];
+                } else if ('agent_all_safe_perms' === $g->sys_name) {
+                    $this->all_safe_perms_group = $g['id'];
+                } else {
+                    $this->group_ids[] = $g->id;
+                }
+
             } elseif (is_int($g) || ctype_digit($g)) {
-                $this->group_ids[] = (int)$g;
+
+                if (!$group = $em->find('DeskPRO:Usergroup', $g)) continue;
+
+                if ('agent_all_perms' === $group->sys_name) {
+                    $this->all_perms_group = $group['id'];
+                } else if ('agent_all_safe_perms' === $group->sys_name) {
+                    $this->all_safe_perms_group = $group['id'];
+                } else {
+                    $this->group_ids[] = (int)$g;
+                }
             }
         }
 
@@ -100,34 +107,48 @@ class GroupsDbLoader
      */
     private function getPermissions($group_id)
     {
-        if ($this->group_perms !== null) {
-            return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
+        $group_id = (int) $group_id;
+
+        if (isset($this->group_perms[$group_id])) {
+            return $this->group_perms[$group_id];
+        } else {
+            $this->group_perms[$group_id] = array();
         }
 
-        if (!$this->group_ids) {
-            $this->group_perms = array();
+        $names_loader = new PermissionNamesLoader();//TODO inject
 
-            return array();
+        switch ($group_id) {
+            case $this->all_perms_group:
+                foreach ($names_loader->getNames() as $name) {
+                    $this->group_perms[$group_id][$name] = true;
+                }
+                break;
+
+            case $this->all_safe_perms_group:
+                foreach ($names_loader->getSafeNames() as $name) {
+                    $this->group_perms[$group_id][$name] = true;
+                }
+                break;
+
+            default:
+                $perm_recs = $this->db->fetchAll("
+                    SELECT name, usergroup_id
+                    FROM permissions
+                    WHERE usergroup_id IN (?)
+                        AND value = 1
+                ", array($this->group_ids), array(Connection::PARAM_INT_ARRAY));
+
+                foreach ($perm_recs as $rec) {
+                    if (!isset($this->group_perms[$rec['usergroup_id']])) {
+                        $this->group_perms[$rec['usergroup_id']] = array();
+                    }
+
+                    $this->group_perms[$rec['usergroup_id']][$rec['name']] = true;
+                }
+
         }
 
-        $perm_recs = $this->db->fetchAll("
-            SELECT name, usergroup_id
-            FROM permissions
-            WHERE usergroup_id IN (?)
-                AND value = 1
-        ", array($this->group_ids), array(Connection::PARAM_INT_ARRAY));
-
-        $this->group_perms = array();
-
-        foreach ($perm_recs as $rec) {
-            if (!isset($this->group_perms[$rec['usergroup_id']])) {
-                $this->group_perms[$rec['usergroup_id']] = array();
-            }
-
-            $this->group_perms[$rec['usergroup_id']][$rec['name']] = true;
-        }
-
-        return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
+        return $this->group_perms[$group_id];
     }
 
 
@@ -156,9 +177,9 @@ class GroupsDbLoader
             if (strpos($k, '.') === false) continue; // invalid
 
             list ($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) continue; // unknown type
+            if (!isset(AgentPermissions::$prefix_map[$type])) continue; // unknown type
 
-            $obj_name = self::$prefix_map[$type];
+            $obj_name = AgentPermissions::$prefix_map[$type];
             $obj = $agent_perms->$obj_name;
             if (!isset($obj->$name)) continue; // invalid;
 

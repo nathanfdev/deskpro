@@ -33,7 +33,7 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 use Application\ImportBundle\Entity;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
+use Application\ImportBundle\Reader\NotFoundException;
 
 /**
  * Abstract csv parser
@@ -43,25 +43,6 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    const FILE_ARTICLES                   = 'articles.csv';
-    const FILE_ARTICLE_CUSTOM_FIELDS      = 'article_custom_fields.csv';
-    const FILE_DOWNLOADS                  = 'downloads.csv';
-    const FILE_DOWNLOAD_ATTACHMENTS       = 'downloads_attachments.csv';
-    const FILE_FEEDBACK                   = 'feedback.csv';
-    const FILE_FEEDBACK_ATTACHMENTS       = 'feedback_attachments.csv';
-    const FILE_FEEDBACK_CUSTOM_FIELDS     = 'feedback_custom_fields.csv';
-    const FILE_NEWS                       = 'news.csv';
-    const FILE_PEOPLE                     = 'people.csv';
-    const FILE_PEOPLE_CONTACT_DATA        = 'people_contact_data.csv';
-    const FILE_PEOPLE_CUSTOM_FIELDS       = 'people_custom_fields.csv';
-    const FILE_TICKETS                    = 'tickets.csv';
-    const FILE_TICKET_MESSAGES            = 'ticket_messages.csv';
-    const FILE_TICKET_ATTACHMENTS         = 'ticket_attachments.csv';
-    const FILE_TICKET_CUSTOM_FIELDS       = 'ticket_custom_fields.csv';
-    const FILE_ORGANIZATIONS              = 'organizations.csv';
-    const FILE_ORGANIZATION_CONTACT_DATA  = 'organization_contact_data.csv';
-    const FILE_ORGANIZATION_CUSTOM_FIELDS = 'organization_custom_fields.csv';
-
     /**
      * @var CsvReaderInterface
      */
@@ -87,35 +68,21 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
-     */
-    protected function getReaderConfig($record_type)
-    {
-        /** @var CsvConfig $base */
-        $base = $this->reader->getConfig();
-
-        $config = clone $base;
-        $config->setResource(rtrim($base->getResource(), '/') . '/' . $record_type);
-
-        return $config;
-    }
-
-    /**
      * Returns rows count of csv file
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      * @return int
      */
-    protected function getReaderCount(CsvConfig $config)
+    protected function getReaderCount($entity_type)
     {
-        try {
-            return $this->reader->getRowsCount($config);
+        /** @var CsvConfig $config */
+        $config = $this->reader->getConfig();
 
-        } catch (NotFoundResourceException $e) {
-            $this->logInfo(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+        try {
+            return $this->reader->getRowsCount($entity_type);
+
+        } catch (NotFoundException $e) {
+            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getPath(), $entity_type));
         }
 
         return 0;
@@ -124,26 +91,29 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns a collection of exporting data
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      * @return array
      */
-    protected function getReaderData(CsvConfig $config)
+    protected function getReaderData($entity_type)
     {
+        /** @var CsvConfig $config */
+        $config = $this->reader->getConfig();
+
         try {
-            $data = $this->reader->getData($config);
+            $data = $this->reader->getData($entity_type);
             if (count($data) === 0) {
-                $this->logWarning(sprintf('No records found in resource `%s`', $config->getResource()));
+                $this->logWarning(sprintf('No records found in resource `%s/%s`', $config->getPath(), $entity_type));
             }
 
             return $data;
 
-        } catch (NotFoundResourceException $e) {
-            $this->logInfo(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+        } catch (NotFoundException $e) {
+            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getPath(), $entity_type));
 
         } catch (CsvReaderException $e) {
             $this->logWarning(sprintf(
-                'Csv reader throws an exception while reading `%s`. Reason: %s',
-                $config->getResource(), $e->getMessage()
+                'Csv reader throws an exception while reading `%s/%s`. Reason: %s',
+                $config->getPath(), $entity_type, $e->getMessage()
             ));
         }
 

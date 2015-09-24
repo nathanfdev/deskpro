@@ -52,8 +52,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->person_repository       = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->organization_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
+        $this->person_repository       = $entity_manager->getRepository('DeskPRO:Person');
+        $this->organization_repository = $entity_manager->getRepository('DeskPRO:Organization');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv_inline';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
@@ -96,10 +96,12 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         // Checking for people
-        $this->assertContains('Entity `person_joe.smith@example.com` parsed successfully!', $output);
-        $this->assertContains('Entity `person_angry.customer@example.com` parsed successfully!', $output);
-        $this->assertContains('Entity `person_some@email.tld` parsed successfully!', $output);
-        $this->assertContains('Custom field of entity `person_joe.smith@example.com` parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #num_1 (person_angry.customer@example.com)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #num_2 (person_some@email.tld)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVPerson #num_3 (person_another@email.tld)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #0 (person_joe.smith@example.com)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #1 (person_joe.smith@example.com)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVCustomField #2 (person_joe.smith@example.com)] Entity parsed successfully!', $output);
 
         $this->helper->seeFileFound('1/people/person_some@email.tld.json');
         $this->helper->seeInThisFile('Some Customer');
@@ -119,8 +121,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->assertCount(4, $person['contact_data']);
 
         // Checking for tickets
-        $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
-        $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #144 (ticket_144)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVTicket #145 (ticket_145)] Entity parsed successfully!', $output);
 
         $ticket = $this->getContent('1/tickets/ticket_144.json');
         $this->assertCount(4, $ticket['custom_fields']);
@@ -129,8 +131,8 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->assertCount(5, $ticket['custom_fields']);
 
         // Checking for articles
-        $this->assertContains('Entity `article_num_0` parsed successfully!', $output);
-        $this->assertContains('Entity `article_num_1` parsed successfully!', $output);
+        $this->assertContains('[CSVArticle #num_0 (article_num_0)] Entity parsed successfully!', $output);
+        $this->assertContains('[CSVArticle #num_1 (article_num_1)] Entity parsed successfully!', $output);
 
         $article = $this->getContent('1/articles/article_num_0.json');
         $this->assertArrayHasKey('import_map_key', $article);
@@ -141,13 +143,13 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->assertCount(2, $article['custom_fields']);
 
         // Checking for feedback
-        $this->assertContains('Entity `feedback_1` parsed successfully!', $output);
+        $this->assertContains('[CSVFeedback #1 (feedback_1)] Entity parsed successfully!', $output);
 
         $feedback = $this->getContent('1/feedback/feedback_1.json');
         $this->assertCount(2, $feedback['custom_fields']);
 
         // Checking for organizations
-        $this->assertContains('Entity `organization_some_organization` parsed successfully!', $output);
+        $this->assertContains('[CSVOrganization #num_0 (organization_some_organization)] Entity parsed successfully!', $output);
 
         $organization = $this->getContent('1/organizations/organization_some_organization.json');
         $this->assertCount(2, $organization['custom_fields']);

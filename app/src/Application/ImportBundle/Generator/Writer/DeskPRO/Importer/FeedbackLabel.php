@@ -55,34 +55,18 @@ final class FeedbackLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $feedback = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
         $feedback->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $feedback->addLabel($this->createFeedbackLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for feedback with oid `%d`',
-                $label, $feedback->getId()
-            ));
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelFeedback();
+            $label->setLabel($label_name);
+
+            $feedback->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for feedback with oid `%d`', $label_name, $feedback->getId()));
         }
 
+        $this->records->setPrimaryEntity($feedback);
         return $this->records;
-    }
-
-    /**
-     * Returns a new feedback label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelFeedback
-     */
-    private function createFeedbackLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelFeedback();
-        $entity->setLabel($label);
-
-        $this->records->addRelatedEntity($entity);
-        return $entity;
     }
 }

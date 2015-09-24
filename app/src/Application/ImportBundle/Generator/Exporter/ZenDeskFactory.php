@@ -27,15 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\EntityRepository;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Guzzle\Http\Client;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ZenDesk data exporter factory
@@ -43,26 +40,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class ZenDeskFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
-class ZenDeskFactory extends AbstractFactory
+class ZenDeskFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        if ( ! $config instanceof ZenDeskConfig) {
-            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        if ( ! $reader instanceof ZenDeskReaderInterface) {
+            throw new \RuntimeException('Reader expected to be instance of ZenDeskReaderInterface');
         }
 
         $http_client = new Client();
-
-        /** @var ZenDeskReaderFactoryInterface $reader_factory */
-        $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
-        /** @var FormatterInterface $formatter */
-        $formatter = $container->get('deskpro.import.formatter');
-
-        $reader  = $reader_factory->createReader($config);
-        $storage = new Parser\ZenDesk\PeopleStorage();
+        $formatter   = $this->container->get('deskpro.import.formatter');
 
         $helpers = new ParserHelperSet();
         $helpers
@@ -70,8 +60,9 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\Helper\Translations($formatter))
         ;
 
-        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $storage);
-        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $storage);
+        $people_storage = new Parser\PeopleStorage();
+        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $people_storage);
+        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $people_storage);
 
         // Parsers collection
         $parsers = new Parser\Collection();
@@ -79,8 +70,9 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\Downloads($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Feedback($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
+            ->attach(new Parser\ZenDesk\ArticleCategories($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
-            ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $storage))
+            ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $people_storage))
             ->attach(new Parser\ZenDesk\PeopleCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Tickets($reader, $formatter, $helpers, $ticket_people))
             ->attach(new Parser\ZenDesk\TicketCustomDef($reader, $formatter, $helpers))

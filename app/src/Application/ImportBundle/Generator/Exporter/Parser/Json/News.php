@@ -28,10 +28,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
  * News json file parser
@@ -54,7 +54,7 @@ final class News extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getNewsReaderConfig());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_NEWS_PATH, $this->getBatchNum());
     }
 
     /**
@@ -62,26 +62,16 @@ final class News extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $news       = $this->reader->getData($this->getNewsReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_NEWS_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONNews')
+            ->setRefColumn('oid')
+            ->setMethod('exportNews')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($news as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportNews($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('JSONNews', $this->getEntityType(), 'oid', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('JSONNews', $this->getEntityType(), 'oid', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -90,7 +80,7 @@ final class News extends AbstractParser
      * @param array $data
      * @return Entity\News
      */
-    private function exportNews(array $data)
+    protected function exportNews(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
@@ -143,15 +133,5 @@ final class News extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getNewsReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_NEWS_PATH);
     }
 }

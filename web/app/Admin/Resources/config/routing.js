@@ -1127,6 +1127,15 @@ define(function() {
     target: "appbody@tickets"
   });
 
+
+  // Problems
+  routes.push({
+    id: 'tickets.problems',
+    url: '/problems',
+    templateName: 'TicketProblems/settings.html',
+    controller: 'Admin_TicketProblems_Ctrl_Settings',
+  });
+
   //##################################################################################################################
   // CRM
   //##################################################################################################################
@@ -2160,6 +2169,16 @@ define(function() {
   });
 
   //###
+  //# Encryption
+  //###
+  routes.push({
+    id: 'server.enc',
+    url: '/encryption',
+    templateName: 'Server/encryption.html',
+    controller: 'Admin_Server_Ctrl_ServerEnc'
+  });
+
+  //###
   //# Elastic Search
   //###
   routes.push({
@@ -2203,17 +2222,17 @@ define(function() {
   //# Imports
   //###
   routes.push({
-    id:           'server.importers',
+    id:           'apps.importers',
     url:          '/importers',
-    templateName: 'Server/importers-list.html',
-    controller:   'Admin_Server_Ctrl_ImportersList'
+    templateName: 'Apps/importers-list.html',
+    controller:   'Admin_Apps_Ctrl_ImportersList'
   });
 
   routes.push({
-    id:           'server.importers.view',
+    id:           'apps.importers.view',
     url:          '/{id}',
-    templateName: 'Server/importers-view.html',
-    controller:   'Admin_Server_Ctrl_ImportersView'
+    templateName: 'Apps/importers-view.html',
+    controller:   'Admin_Apps_Ctrl_ImportersView'
   });
 
   //###

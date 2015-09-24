@@ -144,6 +144,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
                             $timeout
                         );
 
+                    case ZenDeskReaderInterface::CODE_NOT_FOUND:
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do
 
@@ -168,6 +169,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
             return $this->retry($request, $retry_attempt, $e);
         }
 
+        $this->was_request = true;
         return null;
     }
 

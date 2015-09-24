@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -41,13 +43,17 @@ use DateTime;
  * Class ZenDeskReaderFactory
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
+class ZenDeskReaderFactory implements ReaderFactoryInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function createReader(ZenDeskConfig $config)
+    public function createReader(ReaderConfigInterface $config)
     {
+        if ( ! $config instanceof ZenDeskConfig) {
+            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        }
+
         return new ZenDeskReader(new Request\RequestCacheAdapter(self::createClientAdapter($config)), $config);
     }
 
@@ -146,7 +152,7 @@ class ZenDeskReaderFactory implements ZenDeskReaderFactoryInterface
     {
         $dp_config = dp_get_config('zendesk_import');
         if (empty($dp_config)) {
-            throw new Exception('DeskPRO zendesk import config is not defined');
+            throw new Exception('ZenDesk import config is not defined');
         }
 
         $config = new ZenDeskConfig(

@@ -37,16 +37,16 @@ namespace Application\DeskPRO\Auth\Adapter;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\FormLoginInterface;
+use Orb\Auth\Adapter\PluginAdapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
-
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local implements AdapterInterface, FormLoginInterface, Loggable
+class Local extends PluginAdapter implements FormLoginInterface, Loggable
 {
     /**
      * Entity manager
@@ -100,7 +100,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
      *
      * @return
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         $time_start = microtime(true);
         if ($this->logger) {

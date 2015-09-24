@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\AbstractReader;
 use Zendesk\API;
 use DateTime;
 
@@ -40,18 +40,15 @@ use DateTime;
  *
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
+ *
+ * @property ZenDeskConfig $config
  */
-class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
+class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
 {
     /**
      * @var Request\RequestAdapterInterface
      */
     private $adapter;
-
-    /**
-     * @var DateTime
-     */
-    private $initial_time;
 
     /**
      * Constructor
@@ -62,9 +59,26 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function __construct(Request\RequestAdapterInterface $adapter, ZenDeskConfig $config)
     {
         parent::__construct($config);
+        $this->adapter = $adapter;
+    }
 
-        $this->adapter      = $adapter;
-        $this->initial_time = $config->getInitialTime();
+    /**
+     * {@inheritdoc}
+     */
+    public function checkConfig()
+    {
+        $this->getSettings();
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSettings()
+    {
+        $result = $this->adapter->doRequest('CoreAPI\SettingsFindAll');
+
+        return $this->toArray($result->settings);
     }
 
     /**
@@ -108,6 +122,16 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
         )));
 
         return $this->getIncrementalEndDateTime($request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPersonById($id)
+    {
+        $result = $this->adapter->doRequest('CoreAPI\PeopleFind', array('id' => $id));
+
+        return $result ? $this->toArray($result->user) : null;
     }
 
     /**
@@ -244,18 +268,26 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getArticleCategory($section_id)
+    public function getArticleCategoryPath($section_id)
     {
+        $response_categories = $this->adapter->doRequest('HelpCenter\CategoriesFindAll');
+        $response_categories = $this->toArray($response_categories->categories);
+        
         $response_sections = $this->adapter->doRequest(Request\Request::createHelpCenter('Section', 'findAll'));
         $response_sections = $this->toArray($response_sections->sections);
 
+        $categories = array();
+        foreach ($response_categories as $category) {
+            $categories[$category['id']] = $category;
+        }
+
         $sections = array();
-        foreach ($response_sections as $section) {
-            $sections[$section['id']] = $section;
+        foreach ($response_sections as $category) {
+            $sections[$category['id']] = $category;
         }
 
         if (isset($sections[$section_id])) {
-            return $sections[$section_id];
+            $section = $sections[$section_id];
         } else {
             $response_section = $this->adapter->doRequest(Request\Request::createHelpCenter('Section', 'find', array(
                 'id' => $section_id
@@ -263,6 +295,23 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
 
             return $this->toArray($response_section->section);
         }
+
+        if ( ! empty($section)) {
+            if (isset($categories[$section['category_id']])) {
+                $category = $categories[$section['category_id']];
+            } else {
+                $response_section = $this->adapter->doRequest('HelpCenter\CategoryFind', array('id' => $section['category_id']));
+                $category = $this->toArray($response_section->category);
+            }
+
+            if ( ! empty($category)) {
+                return $category['name'] . ' > ' . $section['name'];
+            } else {
+                return $section['name'];
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -366,6 +415,47 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getArticlesCategories()
+    {
+        $categories = array();
+        $result     = $this->adapter->doRequest('HelpCenter\CategoriesFindAll');
+
+        if ($result) {
+            foreach ($result->categories as $category) {
+                $categories[] = $this->toArray($category);
+            }
+        }
+
+        return $categories;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getArticlesSections()
+    {
+        $sections = array();
+        $result   = $this->adapter->doRequest('HelpCenter\SectionsFindAll');
+
+        if ($result) {
+            foreach ($result->sections as $section) {
+                $section = $this->toArray($section);
+                $access  = $this->adapter->doRequest('HelpCenter\SectionAccessPolicyFind', array(
+                    'id' => $section['id'])
+                );
+                $access  = $access ? $this->toArray($access) : null;
+
+                $section = array_merge($section, $access);
+                $sections[] = $section;
+            }
+        }
+
+        return $sections;
+    }
+
+    /**
      * Converts stdClass to array
      *
      * @param mixed $object
@@ -384,11 +474,12 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      */
     private function getStartTimeTimestamp(DateTime $start_time = null)
     {
-        if ($start_time && $start_time > $this->initial_time) {
+        $initial_time = $this->config->getInitialTime();
+        if ($start_time && $start_time > $initial_time) {
             return $start_time->getTimestamp();
         }
 
-        return $this->initial_time->getTimestamp();
+        return $initial_time->getTimestamp();
     }
 
     /**

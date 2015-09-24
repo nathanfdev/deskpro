@@ -35,6 +35,13 @@ namespace Application\ImportBundle\Generator;
  */
 interface GeneratorInterface extends GeneratorConfigAwareInterface
 {
+    const STATUS_PENDING    = 'pending';
+    const STATUS_EXPORT     = 'export';
+    const STATUS_VALIDATION = 'validation';
+    const STATUS_IMPORT     = 'import';
+    const STATUS_ERROR      = 'error';
+    const STATUS_DONE       = 'done';
+
     /**
      * Returns generator configuration
      *
@@ -50,15 +57,9 @@ interface GeneratorInterface extends GeneratorConfigAwareInterface
     public function getTotalRecordsCount();
 
     /**
-     * Returns true if there is something to import
-     * Test connection, file availability, etc
-     *
-     * @return bool
-     */
-    public function isReady();
-
-    /**
      * Generates and writes a collection of entities
+     *
+     * @return void
      */
     public function generate();
 

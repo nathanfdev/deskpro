@@ -10,14 +10,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.allowDupe = true;
 	},
 
-        _initLabels: function() {
-            if (this.getEl('labels_input')[0]) {
-                this.labelsInput = new DeskPRO.UI.LabelsInput({
-                    type: 'tickets',
-                    input: this.getEl('labels_input')
-                });
-                this.ownObject(this.labelsInput);
-            }
+	_initLabels: function () {
+		if (this.getEl('labels_input')[0]) {
+			this.labelsInput = new DeskPRO.UI.LabelsInput({
+				type:  'tickets',
+				input: this.getEl('labels_input')
+			});
+			this.ownObject(this.labelsInput);
+		}
 	},
 
 	initPage: function(el) {
@@ -450,7 +450,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       if ($(this).data('is-note')) {
 
-        self._is_note = true;
+        self.isNote = true;
         emailCheckboxState = $input.prop('checked');
         replyAsState = self.getEl('reply_as_type').data('type');
         self.removeSignature();
@@ -460,18 +460,27 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       } else {
 
-        self._is_note = false;
+        self.isNote = false;
         $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
         self.addSignature();
 
       }
     });
+
+
+		var $problems = this.getEl('select_problem');
+		$problems.on('change', function () {
+			var $title = self.getEl('problem_title');
+			if (!$title.length) return;
+			-1 == $problems.val() ? $title.show() : $title.hide();
+		});
+
 	},
 
   addSignature: function() {
 
-    if (this._is_note) return;
+    if (this.isNote) return;
 
     var textarea = this.textarea
       , api = this.textarea.data('redactor')
@@ -1398,6 +1407,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					}
 				}
 			});
+
+      this._initAgentNotifier(textarea);
+
 		} else {
 			var sig = this.getEl('signature_value').val();
 			if (sig) {
@@ -1415,6 +1427,34 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}, 250);
 			});
 		}
+	},
+
+	hideAgentNotifyList: function() {
+		DeskPRO_Window.hideAgentNotifyList(this);
+	},
+
+	_initAgentNotifier: function(textarea) {
+		var self = this;
+		DeskPRO_Window.initAgentNotifierForRte(
+			this,
+			textarea,
+			this.meta.agentMap ? this.meta.agentMap : false,
+			false,
+			function(agentId) {
+				agentId = parseInt(agentId);
+        // todo perm check for new ticket?
+				//if (
+				//	!self.meta.agents_with_perm[agentId]
+				//	&& parseInt(self.getEl('value_form').find('.agent_id').val()) != agentId
+				//	&& !self.getEl('followers_list').find('.agent-' + agentId)[0]
+				//) {
+				//	DeskPRO_Window.showAlert("That agent does not have permission to view this ticket. Add them as a follower before trying to mention them.");
+				//	return false;
+				//}
+
+				return true;
+			}
+		);
 	},
 
 	loadSnippetsViewer: function() {
@@ -1629,5 +1669,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	shortcutReplyOpenProperties: function() {
 		this.openStatusMenu();
+	},
+
+	destroy: function() {
+		if (this.agentNotifyList) {
+			this.agentNotifyList.remove();
+		}
 	}
 });

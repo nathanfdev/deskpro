@@ -55,33 +55,18 @@ final class OrganizationLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-        $organization  = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
+        $organization = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
         $organization->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $organization->addLabel($this->createOrganizationLabel($label));
-            $this->logInfo(sprintf(
-                'Creating a new label `%s` for organization with oid `%d`',
-                $label, $organization->getId()
-            ));
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelOrganization();
+            $label->setLabel($label_name);
+
+            $organization->addLabel($label);
+            $this->logInfo(sprintf('Creating a new label `%s` for organization with oid `%d`', $label_name, $organization->getId()));
         }
 
         $this->records->setPrimaryEntity($organization);
         return $this->records;
-    }
-
-    /**
-     * Returns a new organization label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelOrganization
-     */
-    private function createOrganizationLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelOrganization();
-        $entity->setLabel($label);
-
-        return $entity;
     }
 }

@@ -394,7 +394,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      *
      * @return mixed
      */
-    public function getSearchString()
+    public function getSearchString($prevent = false)
     {
         $pieces = array();
         for ($i = 1; $i <= 10; $i++) {
@@ -405,8 +405,10 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         }
 
         $pieces = implode(',', $pieces);
-        $pieces = preg_replace('#\s#', '', $pieces);
-        $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
+        if (!$prevent) {
+            $pieces = preg_replace('#\s#', '', $pieces);
+            $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
+        }
 
         return $pieces;
     }

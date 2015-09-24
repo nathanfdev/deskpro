@@ -9,7 +9,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
     init: ->
       @instanceId = @$stateParams.id
-      @permission_groups = [];
+      @permission_groups = []
+      @permission_groups_user = []
       @$scope.getController = => return this
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
@@ -71,6 +72,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
               res.data.groups.forEach( (val) =>
                 @permission_groups.push({"value": val.id.toString(), "label": val.title})
               )
+            )
+          if @permission_groups_user.length == 0
+            @permission_groups_user = [{"value": 0, "label": ""}]
+            @Api.sendGet('/user_groups').then( (res) =>
+              res.data.groups.forEach( (val) =>
+                @permission_groups_user.push({"value": val.id.toString(), "label": val.title})
+              )
+              console.log(@permission_groups_user)
             )
 
           @$scope.pack = @pack

@@ -29,8 +29,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Downloads csv file parser
@@ -55,7 +56,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getDownloadReaderConfig());
+        return $this->getReaderCount(CsvReaderInterface::FILE_DOWNLOADS);
     }
 
     /**
@@ -63,38 +64,28 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $downloads  = $this->getReaderData($this->getDownloadReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_DOWNLOADS))
+            ->setPrefix('CSVDownload')
+            ->setRefColumn('id')
+            ->setMethod('exportDownload')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($downloads as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportDownload($num, $data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (TransformerException $e) {
-                $this->logTransformerException('CSVDownload', $this->getEntityType(), 'title', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('CSVDownload', $this->getEntityType(), 'title', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * Returns a download entity
      * Download data contains attachment params
      *
-     * @param int   $num
      * @param array $data
+     * @param int   $num
      *
-     * @return Entity\Download|null
+     * @return Entity\Download
      */
-    private function exportDownload($num, array $data)
+    protected function exportDownload(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
             'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
@@ -136,15 +127,5 @@ final class Downloads extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getDownloadReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_DOWNLOADS);
     }
 }

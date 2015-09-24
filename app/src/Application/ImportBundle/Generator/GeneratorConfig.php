@@ -27,12 +27,11 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Generator\Exporter\AbstractFactory as AbstractExporterFactory;
-use Application\ImportBundle\Generator\Writer\AbstractFactory as AbstractWriterFactory;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Exception;
 use DateTime;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -50,8 +49,6 @@ class GeneratorConfig
      */
     private $exporter_type;
 
-    protected $exporter_factory_class;
-
     /**
      * @var BatchConfigInterface
      */
@@ -61,11 +58,6 @@ class GeneratorConfig
      * @var string
      */
     private $writer_type;
-
-    /**
-     * @var array
-     */
-    private $entity_types = array();
 
     /**
      * @var string
@@ -98,7 +90,7 @@ class GeneratorConfig
     private $silent = false;
 
     /**
-     * @var BaseConfig
+     * @var ReaderConfigInterface
      */
     protected $reader_config;
 
@@ -128,6 +120,7 @@ class GeneratorConfig
             ExporterInterface::TYPE_JSON,
             ExporterInterface::TYPE_OS_TICKET,
             ExporterInterface::TYPE_ZENDESK,
+            ExporterInterface::TYPE_DESKPRO,
         );
 
         return in_array($this->exporter_type, $batch_exporters, true);
@@ -144,52 +137,6 @@ class GeneratorConfig
     {
         $this->exporter_type = $exporter_type;
         return $this;
-    }
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @return AbstractExporterFactory
-     * @throws Exception
-     */
-    public function getExporterFactory(ContainerInterface $container)
-    {
-        $factories = array(
-            ExporterInterface::TYPE_CSV       => 'Application\ImportBundle\Generator\Exporter\CsvFactory',
-            ExporterInterface::TYPE_JSON      => 'Application\ImportBundle\Generator\Exporter\JsonFactory',
-            ExporterInterface::TYPE_OS_TICKET => 'Application\ImportBundle\Generator\Exporter\OsTicketFactory',
-            ExporterInterface::TYPE_ZENDESK   => 'Application\ImportBundle\Generator\Exporter\ZenDeskFactory',
-        );
-
-        if (!isset($factories[$this->exporter_type])) {
-            throw new \Exception('Invalid exporter type');
-        }
-
-        return new $factories[$this->exporter_type]($container);
-    }
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @return AbstractWriterFactory
-     * @throws Exception
-     */
-    public function getWriterFactory(ContainerInterface $container)
-    {
-        $factories = array(
-            WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPRO\DeskProWriterFactory',
-            WriterInterface::TYPE_JSON     => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
-        );
-
-        if (!$this->writer_type) {
-            return null;
-        }
-
-        if (!isset($factories[$this->writer_type])) {
-            throw new \Exception('Invalid writer type');
-        }
-
-        return new $factories[$this->writer_type]($container);
     }
 
     /**
@@ -304,7 +251,18 @@ class GeneratorConfig
      */
     public function getEntityTypes()
     {
-        return $this->entity_types;
+        return array(
+            Entity\EntityInterface::TYPE_ORGANIZATION,
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF,
+            Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_ARTICLE_CATEGORY,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
     }
 
     /**
@@ -315,19 +273,7 @@ class GeneratorConfig
      */
     public function hasEntityType($type)
     {
-        return in_array($type, $this->entity_types, true);
-    }
-
-    /**
-     * Add an entity type to be affected
-     *
-     * @param string $record_type
-     * @return $this
-     */
-    public function addEntityType($record_type)
-    {
-        $this->entity_types[] = $record_type;
-        return $this;
+        return in_array($type, $this->getEntityTypes(), true);
     }
 
     /**
@@ -369,7 +315,7 @@ class GeneratorConfig
      */
     public function setInputPath($input_path)
     {
-        $this->input_path = $input_path;
+        $this->input_path = $input_path ? (rtrim($input_path, '/') . '/') : null;
         return $this;
     }
 
@@ -392,7 +338,7 @@ class GeneratorConfig
      */
     public function setOutputPath($output_path)
     {
-        $this->output_path = $output_path;
+        $this->output_path = $output_path ? (rtrim($output_path, '/') . '/') : null;
         return $this;
     }
 
@@ -543,7 +489,7 @@ class GeneratorConfig
     }
 
     /**
-     * @return BaseConfig
+     * @return ReaderConfigInterface
      */
     public function getReaderConfig()
     {
@@ -551,10 +497,10 @@ class GeneratorConfig
     }
 
     /**
-     * @param BaseConfig $reader_config
+     * @param ReaderConfigInterface $reader_config
      * @return $this
      */
-    public function setReaderConfig(BaseConfig $reader_config)
+    public function setReaderConfig(ReaderConfigInterface $reader_config)
     {
         $this->reader_config = $reader_config;
         return $this;

@@ -113,8 +113,10 @@ class SyncerHelper
         }
 
         if (!$person) {
-            $person = Person::newContactPerson(array('email' => $user_info['email']));
-            $this->em->persist($person);
+            if (!$person = $this->getPersonFromEmail($user_info['email'])) {
+                $person = Person::newContactPerson(array('email' => $user_info['email']));
+                $this->em->persist($person);
+            }
         }
 
         if (!empty($user_info['first_name'])) {
@@ -147,6 +149,7 @@ class SyncerHelper
             // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
             LoginProcessor::tryAutoAgent($usersource, $person);
         }
+        LoginProcessor::tryUsergroupPromotion($usersource, $person);
 
         return $person;
     }

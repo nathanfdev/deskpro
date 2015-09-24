@@ -37,6 +37,8 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 use Application\DeskPRO\App;
@@ -79,6 +81,14 @@ class InstallKernel extends BaseKernel
         App::$container = $this->container;
     }
 
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    {
+        $response = parent::handle($request, $type, $catch);
+
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+
+        return $response;
+    }
 
     /**
      * {@inheritDoc}

@@ -12,21 +12,23 @@ IMPORT BUNDLE
     - [Exporter #1. CSV](#exporter-1-csv)
         * [CSV Files structure (input-path)](#csv-files-structure-input-path)
         * [CSV Entity #1. Article](#csv-entity-1-article)
-        * [CSV Entity #2. Download](#csv-entity-2-download)
-        * [CSV Entity #3. Feedback](#csv-entity-3-feedback)
-        * [CSV Entity #4. News](#csv-entity-4-news)
-        * [CSV Entity #5. Person](#csv-entity-5-person)
-        * [CSV Entity #6. Ticket](#csv-entity-6-ticket)
-        * [CSV Entity #7. Organization](#csv-entity-7-organization)
+        * [CSV Entity #2. Article Category](#csv-entity-2-article-category)
+        * [CSV Entity #3. Download](#csv-entity-3-download)
+        * [CSV Entity #4. Feedback](#csv-entity-4-feedback)
+        * [CSV Entity #5. News](#csv-entity-5-news)
+        * [CSV Entity #6. Person](#csv-entity-6-person)
+        * [CSV Entity #7. Ticket](#csv-entity-7-ticket)
+        * [CSV Entity #8. Organization](#csv-entity-8-organization)
     - [Exporter #2. JSON](#exporter-2-json)
         * [JSON Files structure (input-path)](#json-files-structure-input-path)
         * [JSON Entity #1. Article](#json-entity-1-article)
-        * [JSON Entity #2. Download](#json-entity-2-download)
-        * [JSON Entity #3. Feedback](#json-entity-3-feedback)
-        * [JSON Entity #4. News](#json-entity-4-news)
-        * [JSON Entity #5. Person](#json-entity-5-person)
-        * [JSON Entity #6. Ticket](#json-entity-6-ticket)
-        * [JSON Entity #7. Organization](#json-entity-7-organization)
+        * [JSON Entity #2. Article Category](#json-entity-2-article-category)
+        * [JSON Entity #3. Download](#json-entity-3-download)
+        * [JSON Entity #4. Feedback](#json-entity-4-feedback)
+        * [JSON Entity #5. News](#json-entity-5-news)
+        * [JSON Entity #6. Person](#json-entity-6-person)
+        * [JSON Entity #7. Ticket](#json-entity-7-ticket)
+        * [JSON Entity #8. Organization](#json-entity-8-organization)
         * [JSON Batch.json](#json-batchjson)
     - [Exporter #3. OsTicket](#exporter-3-osticket)
         * [OsTicket Configuration](#osticket-configuration)
@@ -37,6 +39,7 @@ IMPORT BUNDLE
             - [ZenDesk Fixtures Core API](#zendesk-fixtures-core-api)
             - [ZenDesk Fixtures Help Center](#zendesk-fixtures-help-center)
         * [ZenDesk Batch.json](#zendesk-batchjson)
+    - [Exporter #5. DeskPRO](#exporter-5-deskpro)
 
 ## Commands
 
@@ -285,7 +288,15 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                                         |
 | value                      |                                                                                         |
 
-##### CSV Entity #2. Download
+##### CSV Entity #2. Article Category
+
+| Column name                | Description                                                                             |
+| -------------------------- |-----------------------------------------------------------------------------------------|
+| title                      | Title tree path, e.g. "Category 1 > Subcategory 1"                                      |
+| is_agent                   | could be empty (by default "false")                                                     |
+| is_book                    | could be empty (by default "false")                                                     |
+
+##### CSV Entity #3. Download
 
 ###### downloads.csv
 
@@ -307,7 +318,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | content_type               |                                                                                         |
 | is_inline                  | boolean                                                                                 |
 
-##### CSV Entity #3. Feedback
+##### CSV Entity #4. Feedback
 
 ###### feedback.csv
 
@@ -347,7 +358,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | field_name                 |                                                                                         |
 | value                      |                                                                                         |
 
-##### CSV Entity #4. News
+##### CSV Entity #5. News
 
 ###### news.csv
 
@@ -364,7 +375,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | category                   | could be empty                                                                          |
 | label                      | could be empty (only one label is supported)                                            |
 
-##### CSV Entity #5. Person
+##### CSV Entity #6. Person
 
 ###### people.csv
 
@@ -419,7 +430,7 @@ Contact info:
 
 *Note:* You should use reference to `id` or `email` column, not both together.
 
-##### CSV Entity #6. Ticket
+##### CSV Entity #7. Ticket
 
 ###### tickets.csv
 
@@ -463,7 +474,7 @@ Contact info:
 | field_name                 |                                                                                         |
 | value                      |                                                                                         |
 
-##### CSV Entity #7. Organization
+##### CSV Entity #8. Organization
 
 ###### organizations.csv
 
@@ -731,7 +742,29 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 }
 ```
 
-###### JSON Entity #2. Download
+###### JSON Entity #2. Article Category
+
+```json
+{
+  "oid": "1",
+  "title": "Category 1",
+  "import_map_key": "zd_article_category",
+  "categories": [
+    {
+      "oid": "1",
+      "title": "Sub Category 1",
+      "categories": []
+    },
+    {
+      "oid": "2",
+      "title": "Sub Category 2",
+      "categories": []
+    }
+  ]
+}
+```
+
+###### JSON Entity #3. Download
 
 ```json
 {
@@ -764,7 +797,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 }
 ```
 
-###### JSON Entity #3. Feedback
+###### JSON Entity #4. Feedback
 
 ```json
 {
@@ -800,7 +833,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 }
 ```
 
-###### JSON Entity #4. News
+###### JSON Entity #5. News
 
 ```json
 {
@@ -822,7 +855,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 }
 ```
 
-###### JSON Entity #5. Person
+###### JSON Entity #6. Person
 
 ```json
 {
@@ -849,7 +882,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 }
 ```
 
-###### JSON Entity #6. Ticket
+###### JSON Entity #7. Ticket
 
 ```json
 {
@@ -898,7 +931,7 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
 }
 ```
 
-###### JSON Entity #7. Organization
+###### JSON Entity #8. Organization
 
 ```json
 {
@@ -945,6 +978,7 @@ Add `osticket_import` configuration to `config.php`
 ```php
 $DP_CONFIG['osticket_import'] = array(
     'db_host'       => 'localhost',
+    'db_port'       => 3306, // (ignore if default value)
     'db_name'       => 'os_ticket',
     'db_username'   => 'root',
     'db_password'   => 'deskpro'
@@ -1078,4 +1112,19 @@ php cmd.php dpdev:import:fixtures --type=category -d
   "retry_after_time": "2015-07-30 06:11:01",
   "has_remaining": true
 }
+```
+
+#### Exporter #5. DeskPRO
+
+Add `zendesk_import` configuration to `config.php`
+
+```php
+$DP_CONFIG['deskpro_import'] = array(
+    'db_host'         => 'host',
+    'db_port'         => 3306, // (ignore if default value)
+    'db_name'         => 'dbname',
+    'db_username'     => 'dbuser',
+    'db_password'     => 'dbpassword',
+    'start_ticket_id' => 0,
+);
 ```

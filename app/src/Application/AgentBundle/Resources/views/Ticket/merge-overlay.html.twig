@@ -188,12 +188,16 @@
 	{% endif %}
 	{% if other_ticket %}
 		<div class="overlay-footer">
-			<div class="is-not-loading">
-				<button class="clean-white merge-trigger">{{ phrase('agent.tickets.merge_submit_btn') }}</button>
-			</div>
-			<div class="is-loading">
-				<div class="loading-icon"></div>
-			</div>
+			{% if can_merge %}
+				<div class="is-not-loading">
+					<button class="clean-white merge-trigger">{{ phrase('agent.tickets.merge_submit_btn') }}</button>
+				</div>
+				<div class="is-loading">
+					<div class="loading-icon"></div>
+				</div>
+			{% else %}
+				You do not have permission to merge Ticket {{ other_ticket.id }}.
+			{% endif %}
 		</div>
 	{% endif %}
 </div>

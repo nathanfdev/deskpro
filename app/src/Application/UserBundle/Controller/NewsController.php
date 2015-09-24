@@ -196,6 +196,9 @@ class NewsController extends AbstractController
 
         // Perm check
         if (!$this->person->PermissionsManager->UserPublishChecker->canViewNews($news)) {
+            if ($news->status === 'hidden') {
+                throw $this->createNotFoundException();
+            }
             return $this->renderLoginOrPermissionError();
         }
 

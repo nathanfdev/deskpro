@@ -55,34 +55,18 @@ final class PersonLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
         $person->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $person->addLabel($this->createPersonLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for person with oid `%d`',
-                $label, $person->getId()
-            ));
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelPerson();
+            $label->setLabel($label_name);
+
+            $person->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for person with oid `%d`', $label_name, $person->getId()));
         }
 
+        $this->records->setPrimaryEntity($person);
         return $this->records;
-    }
-
-    /**
-     * Returns a new person label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelPerson
-     */
-    private function createPersonLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelPerson();
-        $entity->setLabel($label);
-
-        $this->records->addRelatedEntity($entity);
-        return $entity;
     }
 }

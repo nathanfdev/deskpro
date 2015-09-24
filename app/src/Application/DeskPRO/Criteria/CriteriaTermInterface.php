@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Criteria;
 
+use Orb\Util\CheckedOptionsArray;
+
 interface CriteriaTermInterface
 {
     /**
@@ -53,7 +55,7 @@ interface CriteriaTermInterface
     /**
      * Get's an array of options
      *
-     * @return array
+     * @return CheckedOptionsArray
      */
     public function getTermOptions();
 }

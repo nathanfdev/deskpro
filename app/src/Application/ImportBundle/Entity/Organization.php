@@ -268,6 +268,8 @@ class Organization extends AbstractEntity
 
         $metadata
             ->addPropertyConstraint('name', new Constraints\NotBlank())
+            ->addPropertyConstraint('contact_data', new Constraints\Valid())
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
         ;
     }
 }

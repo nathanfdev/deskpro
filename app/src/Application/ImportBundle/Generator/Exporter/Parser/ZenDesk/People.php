@@ -30,9 +30,10 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
+use Application\ImportBundle\Generator\Exporter\Parser\PeopleStorage;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
@@ -98,28 +99,16 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $people = $this->getPeople();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getPeople())
+            ->setPrefix('ZDPerson')
+            ->setRefColumn('id')
+            ->setMethod('exportPerson')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        $collection = new Entity\Collection();
-        $collection->setExpectedCount(count($people));
-
-        foreach ($people as $num => $data) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportPerson($data);
-                $collection->attach($entity);
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDPerson', $this->getEntityType(), 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDPerson', $this->getEntityType(), 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDPerson', $this->getEntityType(), 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -130,7 +119,7 @@ final class People extends AbstractParser
      * @return Entity\Person
      * @throws \RuntimeException
      */
-    private function exportPerson(array $data)
+    protected function exportPerson(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'              => TransformerInterface::TYPE_STRING,
@@ -144,11 +133,19 @@ final class People extends AbstractParser
             'role'            => TransformerInterface::TYPE_STRING,
             'created_at'      => TransformerInterface::TYPE_DATE,
             'user_fields'     => TransformerInterface::TYPE_ARRAY,
+            'tags'            => TransformerInterface::TYPE_ARRAY,
             'organization_id' => TransformerInterface::TYPE_STRING,
+            'is_deleted'      => TransformerInterface::TYPE_BOOLEAN,
         ));
 
         if ( ! $formatted['email']) {
             throw new SkippingException('Person without email, skipping', $formatted);
+        }
+
+        try {
+            $time_zone = TimeZoneMapper::getTimeZoneName($formatted['time_zone']);
+        } catch (\RuntimeException $e) {
+            $time_zone = $formatted['time_zone'];
         }
 
         $entity = new Entity\Person();
@@ -158,10 +155,18 @@ final class People extends AbstractParser
             ->setOid($formatted['id'])
             ->addEmail($formatted['email'])
             ->setName($formatted['name'])
-            ->setTimezone(new DateTimeZone(TimeZoneMapper::getTimeZoneName($formatted['time_zone'])))
+            ->setTimezone(new DateTimeZone($time_zone))
             ->setOrganization($this->getOrganizationName($formatted['organization_id']))
             ->setDateCreated($formatted['created_at'])
         ;
+
+        if ($formatted['is_deleted']) {
+            $entity->setAsDisabled(true);
+
+            if (in_array($data['role'], array(self::ROLE_ADMIN, self::ROLE_AGENT))) {
+                $entity->setAsDeleted(true);
+            }
+        }
 
         switch ($data['role']) {
             case self::ROLE_ADMIN:
@@ -177,12 +182,16 @@ final class People extends AbstractParser
                 break;
         }
 
+        foreach ($formatted['tags'] as $tag) {
+            $entity->addLabel($tag);
+        }
+
         return $entity;
     }
 
     /**
      * Returns a collection of people to be exported
-     * Gets a collection of people from cache or uses the ZenDesk reader
+     * Gets a collection of people from cache or ZD incremental export request
      *
      * @return array
      */

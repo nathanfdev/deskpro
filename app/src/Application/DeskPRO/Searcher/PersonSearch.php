@@ -163,9 +163,17 @@ class PersonSearch extends SearcherAbstract
         # Add wheres
         #------------------------------
 
+        $sql .= "WHERE ";
+
         if ($parts['wheres']) {
-            $sql .= "WHERE ";
             $sql .= implode(" AND ", $parts['wheres']);
+        }
+        if (!empty($parts['wheres_any'])) {
+            $sql .= " AND (" . implode(" OR ", $parts['wheres_any']) . ")";
+        }
+
+        if (empty($parts['wheres']) && empty($parts['wheres_any'])) {
+            $sql .= "1=1";
         }
 
         $sql .= " GROUP BY people.id ";
@@ -280,523 +288,535 @@ class PersonSearch extends SearcherAbstract
         $db = App::getDbRead('search.filter.people');
         $tr = App::getTranslator();
 
-        $wheres = array();
+        $wheres_all = array();
+        $wheres_any = array();
         $joins = array();
 
-        foreach ($this->terms as $info) {
-            $join_id = Util::requestUniqueId();
-            $join_name = "j_$join_id";
-
-            list($term, $op, $choice) = $info;
-
-            $term_id = null;
-
-            // $term of people_field[12] becomes $term=people_field, $term_id=12
-            $m = null;
-            if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
-                $term_id = $m[2];
+        foreach (array(array('all', $this->terms), array('any', $this->terms_any)) as $term_set) {
+            if ($term_set[0] == 'all') {
+                $wheres = &$wheres_all;
+            } else {
+                $wheres = &$wheres_any;
             }
 
-            switch ($term) {
-                case self::TERM_ID:
-                    // One specific id
-                    if (isset($choice['person_id'])) {
+            foreach ($term_set[1] as $info) {
+                $join_id = Util::requestUniqueId();
+                $join_name = "j_$join_id";
+
+                list($term, $op, $choice) = $info;
+
+                $term_id = null;
+
+                // $term of people_field[12] becomes $term=people_field, $term_id=12
+                $m = null;
+                if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+                    $term = $m[1];
+                    $term_id = $m[2];
+                }
+
+                switch ($term) {
+                    case self::TERM_ID:
+                        // One specific id
+                        if (isset($choice['person_id'])) {
+                            switch ($op) {
+                                case self::OP_GT:
+                                case self::OP_GTE:
+                                case self::OP_LT:
+                                case self::OP_LTE:
+                                    $wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice['person_id'], true);
+                                    break;
+
+                                default:
+                                    $ids = explode(',', $choice['person_id']);
+                                    $ids = Arrays::func($ids, 'trim');
+                                    $ids = Arrays::func($ids, 'intval');
+                                    $ids = Arrays::removeFalsey($ids);
+
+                                    $context = null;
+                                    if ($this->getPersonContext()) {
+                                        $context = $this->getPersonContext();
+                                    }
+
+                                    $ids = array_map(function ($id) use ($context) {
+                                        if ($id === -1) {
+                                            if ($context) {
+                                                $id = $context->id;
+                                            } else {
+                                                $id = null;
+                                            }
+                                        }
+
+                                        return $id;
+                                    }, $ids);
+
+                                    $ids = Arrays::removeFalsey($ids);
+                                    if (!$ids) {
+                                        $ids = array(-1);
+                                    }
+
+                                    if ($op == self::OP_NOT) {
+                                        $wheres[] = "$people_table.id NOT IN (" . implode(',', $ids) . ")";
+                                    } else {
+                                        $wheres[] = "$people_table.id IN (" . implode(',', $ids) . ")";
+                                    }
+                            }
+                        } else {
+                            $wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
+                        }
+                        break;
+                    case self::TERM_LANGUAGE:
+                        $wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice, true);
+                        break;
+                    case self::TERM_ORGANIZATION:
+                        $wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
+                        break;
+                    case self::TERM_ORGANIZATION_NAME:
+                        $joins[] = array(
+                            'organizations',
+                            "LEFT JOIN organizations AS $join_name ON ($join_name.id = people.organization_id)"
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.name", $op, $choice);
+                        break;
+                    case self::TERM_USERGROUP:
+                        if (isset($choice['usergroup_ids'])) {
+                            $choice = $choice['usergroup_ids'];
+                        } elseif (isset($choice['usergroup'])) {
+                            $choice = $choice['usergroup'];
+                        }
+                        $choice = array_map('intval', (array)$choice);
+                        if (!$choice) $choice = array(0);
+                        $person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
+                            SELECT person_id
+                            FROM person2usergroups
+                            WHERE usergroup_id IN (?)
+                            LIMIT 1001
+                        ", array($choice), array(Connection::PARAM_INT_ARRAY));
+                        if (!$person_ids) {
+                            $person_ids = array(0);
+                        }
+                        $org_ids = App::getDbRead('search.filter.people')->fetchAllCol("
+                            SELECT organization_id
+                            FROM organization2usergroups
+                            WHERE usergroup_id IN (?)
+                        ", array($choice), array(Connection::PARAM_INT_ARRAY));
+                        if (count($person_ids) == 1001) {
+                            // too many, need to do the join method
+                            $joins[] = array(
+                                'person2usergroups',
+                                "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
+                            );
+                            if ($org_ids) {
+                                $wheres[] = '(' . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice) . " OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
+                            } else {
+                                $wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
+                            }
+                        } else {
+                            if ($org_ids) {
+                                $wheres[] = "($people_table.id IN (" . implode(',', $person_ids) . ") OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
+                            } else {
+                                $wheres[] = "$people_table.id IN (" . implode(',', $person_ids) . ")";
+                            }
+                        }
+
+                        $this->mode = self::MODE_ANY;
+
+                        break;
+                    case self::TERM_EMAIL:
+                        $joins[] = array(
+                            'people_emails',
+                            "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
+                        );
+
+                        $suffix_only = false;
+                        if (BigMode::isBigMode(BigMode::PERSON_SEARCH_PREFIX_WILDCARD)) {
+                            $suffix_only = true;
+                        }
+
+                        $wheres[] = $this->_stringMatch("$join_name.email", $op, $choice, $suffix_only);
+
+                        $choice = implode(' or ', (array)$choice);
+
+                        break;
+                    case self::TERM_EMAIL_DOMAIN:
+
+                        if (is_array($choice) AND count($choice) == 1) {
+                            $choice = Arrays::getFirstItem($choice);
+                        }
+
+                        if (is_array($choice)) {
+                            foreach ($choice as &$x) {
+                                $x = ltrim($x, '@');
+                            }
+                            unset($x);
+                        } else {
+                            $choice = ltrim($choice, '@');
+                        }
+
+                        $suffix_only = false;
+                        if (BigMode::isBigMode(BigMode::PERSON_SEARCH_PREFIX_WILDCARD)) {
+                            $suffix_only = true;
+                        }
+
+                        $joins[] = array(
+                            'people_emails',
+                            "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice, $suffix_only);
+
+                        $choice = implode(' or ', (array)$choice);
+
+                        break;
+
+                    case self::TERM_DATE_CREATED:
+                        $wheres[] = $this->_dateMatch("$people_table.date_created", $op, $choice);
+                        break;
+
+                    case self::TERM_NAME:
+                        $w = '(';
+                        $w .= $this->_stringMatch("people.name", $op, $choice);
+                        $w .= " OR ";
+                        $w .= $this->_stringMatch("people.first_name", $op, $choice);
+                        $w .= " OR ";
+                        $w .= $this->_stringMatch("people.last_name", $op, $choice);
+                        $w .= ')';
+
+                        $wheres[] = $w;
+
+                        $choice = implode(' or ', (array)$choice);
+
+                        break;
+
+                    case self::TERM_USERNAME:
+                        $choice = (array)$choice;
+                        $choice = array_pop($choice);
+
+                        $joins[] = array(
+                            'person_usersource_assoc',
+                            "LEFT JOIN person_usersource_assoc AS $join_name ON ($join_name.person_id = people.id)"
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.identity_friendly", $op, $choice, true, true);
+
+                        break;
+
+                    case self::TERM_ALPHA:
+
+                        $wheres[] = $this->_stringMatch("people.last_name", $op, $choice, true, true);
+
+
+                        break;
+
+                    case self::TERM_DIRECTORY_NAME:
+
+                        if ($choice == 'OTHER') {
+                            $wheres[] = "people.last_name RLIKE '^[^A-Za-z]'";
+                        } else {
+                            $letter = $choice[0];
+                            if (!preg_match('#^[a-zA-Z]#', $letter)) {
+                                $letter = 'A';
+                            }
+
+                            $wheres[] = "people.last_name LIKE '%$letter'";
+                        }
+
+                        break;
+
+                    case self::TERM_CONTACT_PHONE:
+
+                        if (is_array($choice) && isset($choice['phone'])) $choice = $choice['phone'];
+
+                        $choice = preg_replace('#[^0-9]#', '', $choice);
+                        $joins[] = array(
+                            'phone_numbers',
+                            "JOIN phone_numbers AS $join_name ON ($join_name.person_id = people.id)"
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.number", $op, $choice, false, true);
+
+                        break;
+
+                    case self::TERM_CONTACT_ADDRESS:
+
+                        if (is_array($choice) && isset($choice['address'])) $choice = $choice['address'];
+
+                        $joins[] = array(
+                            'people_contact_data',
+                            "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'address')"
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
+
+                        break;
+
+                    case self::TERM_CONTACT_IM:
+
+                        if (is_array($choice) && isset($choice['im'])) $choice = $choice['im'];
+
+                        $joins[] = array(
+                            'people_contact_data',
+                            "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'instant_message')"
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
+
+                        break;
+
+                    case self::TERM_LABEL:
+                        $this->_normalizeOpAndChoice($op, $choice);
+
+                        $choices_in = array();
+                        if (is_array($choice)) {
+                            foreach ((array)$choice as $c) {
+                                $choices_in[] = $db->quote($c);
+                            }
+                            $choices_in = implode(',', $choices_in);
+                            if (!$choices_in) $choices_in = '\'\'';
+                        }
+
                         switch ($op) {
-                            case self::OP_GT:
-                            case self::OP_GTE:
-                            case self::OP_LT:
-                            case self::OP_LTE:
-                                $wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice['person_id'], true);
+                            case self::OP_IS:
+                                $joins[] = array(
+                                    'labels_people',
+                                    "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+                                );
+                                $wheres[] = "$join_name.label = " . $db->quote($choice);
+                                break;
+                            case self::OP_NOT:
+                                $joins[] = array(
+                                    'labels_people',
+                                    "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = " . $db->quote($choice) . ")"
+                                );
+                                $wheres[] = "$join_name.person_id IS NULL";
+                                break;
+                            case self::OP_CONTAINS:
+                                $joins[] = array(
+                                    'labels_people',
+                                    "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+                                );
+                                $wheres[] = "$join_name.label IN ($choices_in)";
                                 break;
 
-                            default:
-                                $ids = explode(',', $choice['person_id']);
-                                $ids = Arrays::func($ids, 'trim');
-                                $ids = Arrays::func($ids, 'intval');
-                                $ids = Arrays::removeFalsey($ids);
+                            case self::OP_NOTCONTAINS:
+                                $joins[] = array(
+                                    'labels_people',
+                                    "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label IN ($choices_in))"
+                                );
+                                $wheres[] = "$join_name.person_id IS NULL";
+                                break;
+                        }
+                        break;
 
-                                $context = null;
-                                if ($this->getPersonContext()) {
-                                    $context = $this->getPersonContext();
+                    case self::TERM_IS_AGENT_CONFIRMED:
+
+                        if (is_array($choice)) {
+                            $choice = array_pop($choice);
+                        }
+
+                        if ($choice) {
+                            $choice = 1;
+                        } else {
+                            $choice = 0;
+                        }
+
+                        $wheres[] = $this->_choiceMatch("$people_table.is_agent_confirmed", $op, $choice, false);
+                        break;
+
+                    case self::TERM_IS_CONFIRMED:
+
+                        if (is_array($choice)) {
+                            $choice = array_pop($choice);
+                        }
+
+                        if ($choice) {
+                            $choice = 1;
+                        } else {
+                            $choice = 0;
+                        }
+
+                        $wheres[] = $this->_choiceMatch("$people_table.is_confirmed", $op, $choice, false);
+                        break;
+
+                    case self::TERM_PERSON_FIELD:
+
+                        $field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
+                        if (!$field) break;
+
+                        $search_type = $field->getHandler()->getSearchType();
+
+                        if (isset($choice['custom_fields']['field_' . $term_id])) {
+                            $choice = $choice['custom_fields']['field_' . $term_id];
+                        }
+
+                        switch ($search_type) {
+                            case 'input':
+                            case 'value':
+
+                                $join_id = Util::requestUniqueId();
+                                $joins[] = array(
+                                    'custom_data_person',
+                                    "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id = $term_id)"
+                                );
+
+                                if (is_array($choice)) {
+                                    $choice = array_pop($choice);
                                 }
 
-                                $ids = array_map(function ($id) use ($context) {
-                                    if ($id === -1) {
-                                        if ($context) {
-                                            $id = $context->id;
-                                        } else {
-                                            $id = null;
+                                if ($choice === null) {
+                                    $choice = 'DP_NO_SELECTION';
+                                }
+
+                                $field = 'custom_data_person_' . $join_id . '.' . $search_type;
+                                switch ($op) {
+                                    case self::OP_IS:
+                                        $wheres[] = "$field = " . $db->quote($choice);
+                                        break;
+                                    case self::OP_NOT:
+                                        $w = "$field != " . $db->quote($choice);
+
+                                        if ($choice != "") {
+                                            $w = "($w OR $field IS NULL)";
                                         }
+
+                                        $wheres[] = $w;
+
+                                        break;
+                                    case self::OP_CONTAINS:
+                                    case self::OP_NOTCONTAINS:
+                                        $op = 'LIKE';
+                                        if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
+                                        $w = "$field $op " . $db->quote('%' . $choice . '%');
+
+                                        if ($op == self::OP_NOTCONTAINS) {
+                                            $w = "($w OR $field IS NULL)";
+                                        }
+
+                                        $wheres[] = $w;
+                                        break;
+                                }
+                                break;
+
+                            case 'id':
+                                $join_id = Util::requestUniqueId();
+                                $choices_in = array();
+
+                                if ($choice != 'DP_NO_SELECTION') {
+                                    $choice = (array)$choice;
+                                    if (isset($choice["field_{$field->getId()}"])) {
+                                        $choice = $choice["field_{$field->getId()}"];
                                     }
-
-                                    return $id;
-                                }, $ids);
-
-                                $ids = Arrays::removeFalsey($ids);
-                                if (!$ids) {
-                                    $ids = array(-1);
+                                    if (!is_array($choice)) {
+                                        $choice = array($choice);
+                                    }
+                                    foreach ($choice as $c) {
+                                        $choices_in[] = (int)$c;
+                                    }
+                                    $choices_in = implode(',', $choices_in);
                                 }
 
-                                if ($op == self::OP_NOT) {
-                                    $wheres[] = "$people_table.id NOT IN (" . implode(',', $ids) . ")";
-                                } else {
-                                    $wheres[] = "$people_table.id IN (" . implode(',', $ids) . ")";
+                                if (!$choices_in) {
+                                    $choice = 'DP_NO_SELECTION';
                                 }
+
+                                $field = 'custom_data_person_' . $join_id . '.field_id';
+                                switch ($op) {
+                                    case self::OP_CONTAINS:
+                                    case self::OP_IS:
+                                        if ($choice == 'DP_NO_SELECTION') {
+                                            $joins[] = array(
+                                                'custom_data_person',
+                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
+                                            );
+                                            $wheres[] = "custom_data_person_$join_id.id IS NULL";
+                                        } else {
+                                            $joins[] = array(
+                                                'custom_data_person',
+                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
+                                            );
+                                            $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
+                                        }
+                                        break;
+
+                                    case self::OP_NOTCONTAINS:
+                                    case self::OP_NOT:
+                                        if ($choice == 'DP_NO_SELECTION') {
+                                            $joins[] = array(
+                                                'custom_data_person',
+                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
+                                            );
+                                            $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
+                                        } else {
+                                            $joins[] = array(
+                                                'custom_data_person',
+                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
+                                            );
+                                            $wheres[] = "custom_data_person_$join_id.id IS NULL";
+                                        }
+                                        break;
+                                }
+                                break;
                         }
-                    } else {
-                        $wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
-                    }
-                    break;
-                case self::TERM_LANGUAGE:
-                    $wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice, true);
-                    break;
-                case self::TERM_ORGANIZATION:
-                    $wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
-                    break;
-                case self::TERM_ORGANIZATION_NAME:
-                    $joins[] = array(
-                        'organizations',
-                        "LEFT JOIN organizations AS $join_name ON ($join_name.id = people.organization_id)"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.name", $op, $choice);
-                    break;
-                case self::TERM_USERGROUP:
-                    if (isset($choice['usergroup_ids'])) {
-                        $choice = $choice['usergroup_ids'];
-                    }
-                    $choice = array_map('intval', (array)$choice);
-                    if (!$choice) $choice = array(0);
-                    $person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
-                        SELECT person_id
-                        FROM person2usergroups
-                        WHERE usergroup_id IN (?)
-                        LIMIT 1001
-                    ", array($choice), array(Connection::PARAM_INT_ARRAY));
-                    if (!$person_ids) {
-                        $person_ids = array(0);
-                    }
-                    $org_ids = App::getDbRead('search.filter.people')->fetchAllCol("
-                        SELECT organization_id
-                        FROM organization2usergroups
-                        WHERE usergroup_id IN (?)
-                    ", array($choice), array(Connection::PARAM_INT_ARRAY));
-                    if (count($person_ids) == 1001) {
-                        // too many, need to do the join method
+                        break; // end TERM_PERSON_FIELD
+
+                    case self::TERM_AGENT_TEAM:
+
+                        $this->setMode(self::MODE_AGENT);
+
                         $joins[] = array(
-                            'person2usergroups',
-                            "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
+                            'agent_team_members',
+                            "LEFT JOIN agent_team_members AS $join_name ON ($join_name.person_id = people.id)"
                         );
-                        if ($org_ids) {
-                            $wheres[] = '(' . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice) . " OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
+
+                        $wheres[] = $this->_choiceMatch("$join_name.team_id", $op, $choice, true);
+
+                        break;
+
+                    case self::TERM_AGENT_MODE:
+                        $this->setMode(self::MODE_AGENT);
+                        break;
+
+                    case self::TERM_USER_MODE:
+                        $this->setMode(self::MODE_USER);
+                        break;
+
+                    case self::TERM_ANY_MODE:
+                        $this->setMode(self::MODE_ANY);
+                        break;
+
+                    case self::TERM_IP_ADDRESS:
+                        $joins[] = array(
+                            'tickets_messages',
+                            "LEFT JOIN tickets_messages AS $join_name ON ($join_name.person_id = people.id)"
+                        );
+
+                        $field = "$join_name.ip_address";
+
+                        $choice = is_array($choice) ? array_pop($choice) : $choice;
+                        $choice = preg_replace('#[^0-9\.]#', '', $choice);
+
+                        // If last char is a dot, then do a wildcard suffix search
+                        if (substr($choice, -1, 1) == '.') {
+                            $wheres[] = $this->_stringMatch($field, $op, $choice, true, true);
                         } else {
-                            $wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
+                            $wheres[] = $this->_stringMatch($field, $op, $choice);
                         }
-                    } else {
-                        if ($org_ids) {
-                            $wheres[] = "($people_table.id IN (" .  implode(',', $person_ids) . ") OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
-                        } else {
-                            $wheres[] = "$people_table.id IN (" .  implode(',', $person_ids) . ")";
-                        }
-                    }
-
-                    $this->mode = self::MODE_ANY;
-
-                    break;
-                case self::TERM_EMAIL:
-                    $joins[] = array(
-                        'people_emails',
-                        "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
-                    );
-
-                    $suffix_only = false;
-                    if (BigMode::isBigMode(BigMode::PERSON_SEARCH_PREFIX_WILDCARD)) {
-                        $suffix_only = true;
-                    }
-
-                    $wheres[] = $this->_stringMatch("$join_name.email", $op, $choice, $suffix_only);
-
-                    $choice = implode(' or ', (array)$choice);
-
-                    break;
-                case self::TERM_EMAIL_DOMAIN:
-
-                    if (is_array($choice) AND count($choice) == 1) {
-                        $choice = Arrays::getFirstItem($choice);
-                    }
-
-                    if (is_array($choice)) {
-                        foreach ($choice as &$x) {
-                            $x = ltrim($x, '@');
-                        }
-                        unset($x);
-                    } else {
-                        $choice = ltrim($choice, '@');
-                    }
-
-                    $suffix_only = false;
-                    if (BigMode::isBigMode(BigMode::PERSON_SEARCH_PREFIX_WILDCARD)) {
-                        $suffix_only = true;
-                    }
-
-                    $joins[] = array(
-                        'people_emails',
-                        "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice, $suffix_only);
-
-                    $choice = implode(' or ', (array)$choice);
-
-                    break;
-
-                case self::TERM_DATE_CREATED:
-                    $wheres[] = $this->_dateMatch("$people_table.date_created", $op, $choice);
-                    break;
-
-                case self::TERM_NAME:
-                    $w = '(';
-                    $w .= $this->_stringMatch("people.name", $op, $choice);
-                    $w .= " OR ";
-                    $w .= $this->_stringMatch("people.first_name", $op, $choice);
-                    $w .= " OR ";
-                    $w .= $this->_stringMatch("people.last_name", $op, $choice);
-                    $w .= ')';
-
-                    $wheres[] = $w;
-
-                    $choice = implode(' or ', (array)$choice);
-
-                    break;
-
-                case self::TERM_USERNAME:
-                    $choice = (array)$choice;
-                    $choice = array_pop($choice);
-
-                    $joins[] = array(
-                        'person_usersource_assoc',
-                        "LEFT JOIN person_usersource_assoc AS $join_name ON ($join_name.person_id = people.id)"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.identity_friendly", $op, $choice, true, true);
-
-                    break;
-
-                case self::TERM_ALPHA:
-
-                    $wheres[] = $this->_stringMatch("people.last_name", $op, $choice, true, true);
-
-
-                    break;
-
-                case self::TERM_DIRECTORY_NAME:
-
-                    if ($choice == 'OTHER') {
-                        $wheres[] = "people.last_name RLIKE '^[^A-Za-z]'";
-                    } else {
-                        $letter = $choice[0];
-                        if (!preg_match('#^[a-zA-Z]#', $letter)) {
-                            $letter = 'A';
-                        }
-
-                        $wheres[] = "people.last_name LIKE '%$letter'";
-                    }
-
-                    break;
-
-                case self::TERM_CONTACT_PHONE:
-
-                    if (is_array($choice) && isset($choice['phone'])) $choice = $choice['phone'];
-
-                    $choice = preg_replace('#[^0-9]#', '', $choice);
-                    $joins[] = array(
-                        'phone_numbers',
-                        "JOIN phone_numbers AS $join_name ON ($join_name.person_id = people.id)"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.number", $op, $choice, false, true);
-
-                    break;
-
-                case self::TERM_CONTACT_ADDRESS:
-
-                    if (is_array($choice) && isset($choice['address'])) $choice = $choice['address'];
-
-                    $joins[] = array(
-                        'people_contact_data',
-                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'address')"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
-
-                    break;
-
-                case self::TERM_CONTACT_IM:
-
-                    if (is_array($choice) && isset($choice['im'])) $choice = $choice['im'];
-
-                    $joins[] = array(
-                        'people_contact_data',
-                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'instant_message')"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
-
-                    break;
-
-                case self::TERM_LABEL:
-                    $this->_normalizeOpAndChoice($op, $choice);
-
-                    $choices_in = array();
-                    if (is_array($choice)) {
-                        foreach ((array)$choice as $c) {
-                            $choices_in[] = $db->quote($c);
-                        }
-                        $choices_in = implode(',', $choices_in);
-                        if (!$choices_in) $choices_in = '\'\'';
-                    }
-
-                    switch ($op) {
-                        case self::OP_IS:
-                            $joins[] = array(
-                                'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
-                            );
-                            $wheres[] = "$join_name.label = " . $db->quote($choice);
-                            break;
-                        case self::OP_NOT:
-                            $joins[] = array(
-                                'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = ".$db->quote($choice).")"
-                            );
-                            $wheres[] = "$join_name.person_id IS NULL";
-                            break;
-                        case self::OP_CONTAINS:
-                            $joins[] = array(
-                                'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
-                            );
-                            $wheres[] = "$join_name.label IN ($choices_in)";
-                            break;
-
-                        case self::OP_NOTCONTAINS:
-                            $joins[] = array(
-                                'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label IN ($choices_in))"
-                            );
-                            $wheres[] = "$join_name.person_id IS NULL";
-                            break;
-                    }
-                    break;
-
-                case self::TERM_IS_AGENT_CONFIRMED:
-
-                    if (is_array($choice)) {
-                        $choice = array_pop($choice);
-                    }
-
-                    if ($choice) {
-                        $choice = 1;
-                    } else {
-                        $choice = 0;
-                    }
-
-                    $wheres[] = $this->_choiceMatch("$people_table.is_agent_confirmed", $op, $choice, false);
-                    break;
-
-                case self::TERM_IS_CONFIRMED:
-
-                    if (is_array($choice)) {
-                        $choice = array_pop($choice);
-                    }
-
-                    if ($choice) {
-                        $choice = 1;
-                    } else {
-                        $choice = 0;
-                    }
-
-                    $wheres[] = $this->_choiceMatch("$people_table.is_confirmed", $op, $choice, false);
-                    break;
-
-                case self::TERM_PERSON_FIELD:
-
-                    $field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
-                    if (!$field) break;
-
-                    $search_type = $field->getHandler()->getSearchType();
-
-                    if (isset($choice['custom_fields']['field_' . $term_id])) {
-                        $choice = $choice['custom_fields']['field_' . $term_id];
-                    }
-
-                    switch ($search_type) {
-                        case 'input':
-                        case 'value':
-
-                            $join_id = Util::requestUniqueId();
-                            $joins[] = array(
-                                'custom_data_person',
-                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id = $term_id)"
-                            );
-
-                            if (is_array($choice)) {
-                                $choice = array_pop($choice);
-                            }
-
-                            if ($choice === null){
-                                $choice = 'DP_NO_SELECTION';
-                            }
-
-                            $field = 'custom_data_person_'.$join_id.'.'.$search_type;
-                            switch ($op) {
-                                case self::OP_IS:
-                                    $wheres[] = "$field = " . $db->quote($choice);
-                                    break;
-                                case self::OP_NOT:
-                                    $w = "$field != " . $db->quote($choice);
-
-                                    if ($choice != "") {
-                                        $w = "($w OR $field IS NULL)";
-                                    }
-
-                                    $wheres[] = $w;
-
-                                    break;
-                                case self::OP_CONTAINS:
-                                case self::OP_NOTCONTAINS:
-                                    $op = 'LIKE';
-                                    if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-                                    $w = "$field $op " . $db->quote('%'.$choice.'%');
-
-                                    if ($op == self::OP_NOTCONTAINS) {
-                                        $w = "($w OR $field IS NULL)";
-                                    }
-
-                                    $wheres[] = $w;
-                                    break;
-                            }
-                            break;
-
-                        case 'id':
-                            $join_id = Util::requestUniqueId();
-                            $choices_in = array();
-
-                            if ($choice != 'DP_NO_SELECTION') {
-                                $choice = (array)$choice;
-                                if (isset($choice["field_{$field->getId()}"])) {
-                                    $choice = $choice["field_{$field->getId()}"];
-                                }
-                                if (!is_array($choice)) {
-                                    $choice = array($choice);
-                                }
-                                foreach ($choice as $c) {
-                                    $choices_in[] = (int)$c;
-                                }
-                                $choices_in = implode(',', $choices_in);
-                            }
-
-                            if (!$choices_in) {
-                                $choice = 'DP_NO_SELECTION';
-                            }
-
-                            $field = 'custom_data_person_'.$join_id.'.field_id';
-                            switch ($op) {
-                                case self::OP_CONTAINS:
-                                case self::OP_IS:
-                                    if ($choice == 'DP_NO_SELECTION') {
-                                        $joins[] = array(
-                                            'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
-                                        );
-                                        $wheres[] = "custom_data_person_$join_id.id IS NULL";
-                                    } else {
-                                        $joins[] = array(
-                                            'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
-                                        );
-                                        $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
-                                    }
-                                    break;
-
-                                case self::OP_NOTCONTAINS:
-                                case self::OP_NOT:
-                                    if ($choice == 'DP_NO_SELECTION') {
-                                        $joins[] = array(
-                                            'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
-                                        );
-                                        $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
-                                    } else {
-                                        $joins[] = array(
-                                            'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
-                                        );
-                                        $wheres[] = "custom_data_person_$join_id.id IS NULL";
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
-                    break; // end TERM_PERSON_FIELD
-
-                case self::TERM_AGENT_TEAM:
-
-                    $this->setMode(self::MODE_AGENT);
-
-                    $joins[] = array(
-                        'agent_team_members',
-                        "LEFT JOIN agent_team_members AS $join_name ON ($join_name.person_id = people.id)"
-                    );
-
-                    $wheres[] = $this->_choiceMatch("$join_name.team_id", $op, $choice, true);
-
-                    break;
-
-                case self::TERM_AGENT_MODE:
-                    $this->setMode(self::MODE_AGENT);
-                    break;
-
-                case self::TERM_USER_MODE:
-                    $this->setMode(self::MODE_USER);
-                    break;
-
-                case self::TERM_ANY_MODE:
-                    $this->setMode(self::MODE_ANY);
-                    break;
-
-                case self::TERM_IP_ADDRESS:
-                    $joins[] = array(
-                        'tickets_messages',
-                        "LEFT JOIN tickets_messages AS $join_name ON ($join_name.person_id = people.id)"
-                    );
-
-                    $field = "$join_name.ip_address";
-
-                    $choice = is_array($choice) ? array_pop($choice) : $choice;
-                    $choice = preg_replace('#[^0-9\.]#', '', $choice);
-
-                    // If last char is a dot, then do a wildcard suffix search
-                    if (substr($choice, -1, 1) == '.') {
-                        $wheres[] = $this->_stringMatch($field, $op, $choice, true, true);
-                    } else {
-                        $wheres[] = $this->_stringMatch($field, $op, $choice);
-                    }
-                    break;
-
-                default:
-                    throw new \InvalidArgumentException("Unknown term: $term");
+                        break;
+
+                    default:
+                        throw new \InvalidArgumentException("Unknown term: $term");
+                }
             }
         }
 
         if ($this->mode != self::MODE_ANY) {
             if ($this->mode == self::MODE_AGENT) {
-                $wheres[] = "people.is_agent = 1";
+                $wheres_all[] = "people.is_agent = 1";
             } else {
-                $wheres[] = "people.is_agent = 0";
+                $wheres_all[] = "people.is_agent = 0";
             }
         }
 
-        $wheres[] = 'people.is_deleted = 0';
+        $wheres_all[] = 'people.is_deleted = 0';
 
         $this->sql_parts = array(
             'joins' => $joins,
-            'wheres' => $wheres
+            'wheres' => $wheres_all,
+            'wheres_any' => $wheres_any,
         );
 
         return $this->sql_parts;

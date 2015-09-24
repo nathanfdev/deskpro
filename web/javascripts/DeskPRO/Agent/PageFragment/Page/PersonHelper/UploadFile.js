@@ -48,18 +48,18 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile = new Orb.Class({
 
 		wrapper.on('click', '.save-trigger', function(e) {
 			e.preventDefault();
-			
+
 			self._doSave(e);
 		});
-		
+
 		wrapper.on('click', '.file-delete', function(e) {
 			e.preventDefault();
-			
+
 			if (confirm('Are you sure?')) {
 				var file_id = $(this).closest('.file-row').attr('id').split('_');
-			
+
 				file_id = file_id[2];
-				
+
 				$.ajax({
 					url: self.deleteUrl,
 					type: 'POST',
@@ -72,33 +72,33 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile = new Orb.Class({
 					}
 				});
 			}
-			
+
 			return false;
 		});
-		
+
 		wrapper.on('click', '.file-edit', function(e) {
 			e.preventDefault();
-			
+
 			var editable_row = $(this).closest('.file-row');
-			
+
 			$(this).closest('.file-row').addClass('editable');
-			
+
 			editable_row.addClass('editable');
-			
+
 			return false;
 		});
-		
+
 		wrapper.on('click', '.file-edit-save', function(e) {
 			e.preventDefault();
-			
+
 			var editable_row = $(this).closest('.file-row');
-			
+
 			var form = self.getEl('add_file_form');
-			
+
 			var file_id = $(this).closest('.file-row').attr('id').split('_');
-			
+
 			file_id = file_id[2];
-			
+
 			$.ajax({
 				url: form.attr('action'),
 				type: 'POST',
@@ -110,13 +110,13 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile = new Orb.Class({
 					}
 				}
 			});
-			
+
 			return false;
 		});
-		
+
 		wrapper.on('blur', '.editable-note-input', function(e) {
 			e.preventDefault();
-			
+
 			$(this).closest('.file-row').find('.file-edit-save').click();
 		});
 	},
@@ -153,15 +153,17 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile = new Orb.Class({
 					files.find('.empty-notice').remove();
 					files.append(data.html);
 					self.activateFilesTab();
+					form.find("#input_note").val('');
+          self.getEl('add_file_initial').find('ul.file-list li').remove();
 				}
 			}
 		});
 	},
 	activateFilesTab: function() {
 		var data_tab = '#' + this.page.meta.baseId + '_files_tab';
-		
+
 		var row_count = this.getEl('files_initial').find('.file-row').length;
-		
+
 		$("li[data-tab-for='" + data_tab + "']").children('span.count').text(row_count);
 
 		$("li[data-tab-for='" + data_tab + "']").click();

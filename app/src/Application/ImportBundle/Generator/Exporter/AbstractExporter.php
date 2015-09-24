@@ -35,7 +35,7 @@ use Application\ImportBundle\Reader\ReaderInterface;
 use Exception;
 
 /**
- * Base data exporter class methods
+ * Base generator exporter
  *
  * Class AbstractExporter
  * @package Application\ImportBundle\Generator\Exporter
@@ -114,11 +114,9 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         $parser->setConfig($this->config);
 
         if ($this->logger && $parser instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $parser */
             $parser->setLogger($this->logger);
         }
         if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $parser */
             $parser->setProgressBarHelper($this->progress_bar);
         }
 
@@ -135,6 +133,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
             Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_ARTICLE_CATEGORY,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,

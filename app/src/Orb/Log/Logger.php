@@ -127,7 +127,7 @@ class Logger
      */
     public function enable()
     {
-        $this->disabled = true;
+        $this->disabled = false;
         $this->default_disabled = false;
     }
 
@@ -238,10 +238,21 @@ class Logger
         }
 
         if (is_string($priority)) {
-            if ($priority == 'ERROR') {
+            if ($priority === 'ERROR') {
                 $priority = 'ERR';
             }
-            $priority = constant('Orb\\Log\\Logger::' . strtoupper($priority));
+            switch (strtoupper($priority)) {
+                case 'EMERG': $priority = self::EMERG; break;
+                case 'ALERT': $priority = self::ALERT; break;
+                case 'CRIT': $priority = self::CRIT; break;
+                case 'ERR': $priority = self::ERR; break;
+                case 'WARN': $priority = self::WARN; break;
+                case 'NOTICE': $priority = self::NOTICE; break;
+                case 'INFO': $priority = self::INFO; break;
+                case 'DEBUG': $priority = self::DEBUG; break;
+                case 'STRICT': $priority = self::STRICT; break;
+                default: $priority = self::NOTICE; break;
+            }
         }
 
         $info[LogItem::MESSAGE] = $message;

@@ -38,12 +38,12 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
     /**
      * {@inheritdoc}
      */
-    protected function getPeopleIds(array $data)
+    protected function getPeopleIds($data)
     {
         $people_ids = array();
         foreach ($data as $ticket) {
-            if (isset($ticket['submitter_id']) && $ticket['submitter_id'] > 0) {
-                $people_ids[] = $ticket['submitter_id'];
+            if (isset($ticket['requester_id']) && $ticket['requester_id'] > 0) {
+                $people_ids[] = $ticket['requester_id'];
             }
             if (isset($ticket['assignee_id']) && $ticket['assignee_id'] > 0) {
                 $people_ids[] = $ticket['assignee_id'];
@@ -53,6 +53,13 @@ class TicketPeopleStorage extends AbstractParserPeopleStorage
                 foreach ($ticket['comments'] as $comment) {
                     if (isset($comment['author_id']) && $comment['author_id'] > 0) {
                         $people_ids[] = $comment['author_id'];
+                    }
+                }
+            }
+            if ( ! empty($ticket['collaborator_ids'])) {
+                foreach ($ticket['collaborator_ids'] as $collaborator_id) {
+                    if ($collaborator_id > 0) {
+                        $people_ids[] = $collaborator_id;
                     }
                 }
             }

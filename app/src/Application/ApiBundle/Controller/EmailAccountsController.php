@@ -39,6 +39,7 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -217,7 +218,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $data = $this->in->getAll('post');
         $form->submit($data);
 
-        $tester = new IncomingAccountTester($edit_account->getIncomingAccountConfig());
+        $tester = new IncomingAccountTester(EmailAccountUtil::decryptIncomingAccount($edit_account->getIncomingAccountConfig(), $this->container->get('dp_enc')));
         $tester->test();
 
         return $this->createApiResponse(array(
@@ -266,7 +267,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         try {
-            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport($out_account);
+            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport(EmailAccountUtil::decryptOutgoingAccount($out_account, $this->container->get('dp_enc')));
         } catch (\Exception $e) {
             return $this->createApiResponse(array(
                 'is_success'    => false,

@@ -55,34 +55,18 @@ final class DownloadLabel extends AbstractImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
         $download->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            $download->addLabel($this->createDownloadLabel($label));
-            $this->logDebug(sprintf(
-                'Creating a new label `%s` for download with oid `%d`',
-                $label, $download->getId()
-            ));
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelDownload();
+            $label->setLabel($label_name);
+
+            $download->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for download with oid `%d`', $label_name, $download->getId()));
         }
 
+        $this->records->setPrimaryEntity($download);
         return $this->records;
-    }
-
-    /**
-     * Returns a new download label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelDownload
-     */
-    private function createDownloadLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelDownload();
-        $entity->setLabel($label);
-
-        $this->records->addRelatedEntity($entity);
-        return $entity;
     }
 }

@@ -180,7 +180,19 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addArticleCategoriesFindAll($response)
     {
-        $this->addResponse('HelpCenter\Section::findAll', $response);
+        $this->addResponse('HelpCenter\CategoriesFindAll', $response);
+        return $this;
+    }
+
+    /**
+     * Stores an article sections response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addArticleSectionsFindAll($response)
+    {
+        $this->addResponse('HelpCenter\SectionsFindAll', $response);
         return $this;
     }
 
@@ -190,9 +202,21 @@ class JsonMockAdapter implements RequestAdapterInterface
      * @param string|array $response
      * @return $this
      */
-    public function addArticleCategoryFindResponse($response)
+    public function addArticleSectionFindResponse($response)
     {
-        $this->addResponse('HelpCenter\Section::find', $response);
+        $this->addResponse('HelpCenter\SectionFind', $response);
+        return $this;
+    }
+
+    /**
+     * Stores an article category access policy response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addArticleSectionAccessPolicyFindResponse($response)
+    {
+        $this->addResponse('HelpCenter\SectionAccessPolicyFind', $response);
         return $this;
     }
 

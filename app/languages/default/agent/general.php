@@ -236,6 +236,7 @@
     'agent.general.edit_search_terms'                       => 'Edit search terms',
     'agent.general.email'                                   => 'Email',
     'agent.general.phone_number'                            => 'Phone Number',
+    'agent.general.email_account'                           => 'Email Account',
     'agent.general.email_address'                           => 'Email Address',
     'agent.general.email_agent_new_agent_reply'             => 'Email: Agent notification of new agent reply',
     'agent.general.email_agent_new_reply'                   => 'Email: Agent notification about new reply',
@@ -761,4 +762,6 @@
     'agent.general.tabs_close_all'                          => 'Close all tabs',
     'agent.general.tabs_close_others'                       => 'Close all other tabs',
     'agent.general.tabs_reopen'                             => 'Reopen:',
+
+    'agent.general.reopen'                                  => 'reopen',
 );

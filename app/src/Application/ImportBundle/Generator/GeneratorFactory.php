@@ -28,6 +28,12 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\ImportBundle\Generator\Exporter\ExporterFactoryInterface;
+use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Writer\WriterFactoryInterface;
+use Application\ImportBundle\Generator\Writer\WriterInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * Generator importer service factory
@@ -41,18 +47,75 @@ class GeneratorFactory
      * Creates importer generator instance
      *
      * @param DeskproContainer $container
+     * @param GeneratorConfig  $config
+     *
      * @return Generator
      */
-    public static function createGenerator(DeskproContainer $container)
+    public static function createGenerator(DeskproContainer $container, GeneratorConfig $config)
     {
-        /** @var GeneratorConfig $config */
-        $config   = $container->get('deskpro.import.config');
-        $exporter = $config->getExporterFactory($container)->createExporter($container, $config->getReaderConfig());
+        $exporter = self::createExporter($container, $config);
+        $writer   = self::createWriter($container, $config);
 
-        $writer_factory = $config->getWriterFactory($container);
-        $writer = $writer_factory ? $writer_factory->createWriter() : null;
+        $symfony_validator = $container->get('validator');
+        $validators = new Validator\Collection();
+        $validators
+            ->attach(new Validator\Download($symfony_validator))
+            ->attach(new Validator\Feedback($symfony_validator))
+            ->attach(new Validator\Article($symfony_validator))
+            ->attach(new Validator\ArticleCategory($symfony_validator))
+            ->attach(new Validator\News($symfony_validator))
+            ->attach(new Validator\Person($symfony_validator))
+            ->attach(new Validator\Ticket($symfony_validator))
+            ->attach(new Validator\Organization($symfony_validator))
+        ;
 
-        $validator = $container->get('validator');
+        /** @var \Application\ImportBundle\Importer\Importer $import_service */
+        $import_service = $container->get('deskpro.import');
+
+        return new Generator($exporter, $validators, $config, $import_service, $writer);
+    }
+
+    /**
+     * Creates generator reader instance
+     *
+     * @param DeskproContainer $container
+     * @param GeneratorConfig  $config
+     *
+     * @return ReaderInterface
+     */
+    public static function createReader(DeskproContainer $container, GeneratorConfig $config)
+    {
+        /** @var ReaderFactoryInterface $factory */
+        $factory = $container->get(sprintf('deskpro.import.%s_reader_factory', $config->getExporterType()));
+        return $factory->createReader($config->getReaderConfig());
+    }
+
+    /**
+     * Creates generator exporter instance
+     *
+     * @param DeskproContainer $container
+     * @param GeneratorConfig  $config
+     *
+     * @return ExporterInterface
+     * @throws \RuntimeException
+     */
+    private static function createExporter(DeskproContainer $container, GeneratorConfig $config)
+    {
+        $factories = array(
+            ExporterInterface::TYPE_CSV       => 'Application\ImportBundle\Generator\Exporter\CsvFactory',
+            ExporterInterface::TYPE_JSON      => 'Application\ImportBundle\Generator\Exporter\JsonFactory',
+            ExporterInterface::TYPE_OS_TICKET => 'Application\ImportBundle\Generator\Exporter\OsTicketFactory',
+            ExporterInterface::TYPE_ZENDESK   => 'Application\ImportBundle\Generator\Exporter\ZenDeskFactory',
+            ExporterInterface::TYPE_DESKPRO   => 'Application\ImportBundle\Generator\Exporter\DeskPROFactory',
+        );
+
+        if ( ! isset($factories[$config->getExporterType()])) {
+            throw new \RuntimeException(sprintf('Invalid exporter type `%s`', $config->getExporterType()));
+        }
+
+        /** @var ExporterFactoryInterface $factory */
+        $factory  = new $factories[$config->getExporterType()]($container);
+        $exporter = $factory->createExporter(self::createReader($container, $config));
 
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
             if ( ! $config->getExporterBatchConfig()) {
@@ -60,6 +123,37 @@ class GeneratorFactory
             }
         }
 
-        return new Generator($exporter, $validator, $config, $writer);
+        return $exporter;
+    }
+
+    /**
+     * Creates generator writer instance
+     *
+     * @param DeskproContainer $container
+     * @param GeneratorConfig  $config
+     *
+     * @return WriterInterface
+     * @throws \RuntimeException
+     */
+    private static function createWriter(DeskproContainer $container, GeneratorConfig $config)
+    {
+        $factories = array(
+            WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPRO\DeskProWriterFactory',
+            WriterInterface::TYPE_JSON     => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
+        );
+
+        if ( ! $config->getWriterType()) {
+            return null;
+        }
+        if ( ! isset($factories[$config->getWriterType()])) {
+            throw new \RuntimeException(sprintf('Invalid writer type `%s`', $config->getWriterType()));
+        }
+
+        /** @var WriterFactoryInterface $factory */
+        $factory = new $factories[$config->getWriterType()]($container);
+        $writer  = $factory->createWriter();
+
+        return $writer;
+
     }
 }

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
 
 /**
  * Goes through soft-deleted tickets that were deleted long ago,
@@ -74,6 +75,8 @@ class HardDeleteTickets extends AbstractJob
             App::getDb()->beginTransaction();
 
             try {
+                TicketUtil::deleteTicketAttachments($ticket_id, App::getDb());
+
                 // Ticket log already has the deletion record, we're doing the physical delete of the actual rows here
                 App::getDb()->delete('tickets_search_active', array('id' => $ticket_id));
                 App::getDb()->delete('tickets', array('id' => $ticket_id));

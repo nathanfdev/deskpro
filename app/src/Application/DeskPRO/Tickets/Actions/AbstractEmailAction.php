@@ -272,7 +272,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         /** @var TemplatingExtension $renderer */
         $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
 
-        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars);
+        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars ?: array());
     }
 
 

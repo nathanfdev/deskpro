@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
 
 /**
  * Goes through tickets marked as spam and deletes them
@@ -75,6 +76,8 @@ class DeleteSpamTickets extends AbstractJob
 			App::getDb()->beginTransaction();
 			try {
 				$this->logger->log(sprintf("[DeleteSpamTickets] Deleted ticket %d", $ticket['id']), 'DEBUG');
+
+				TicketUtil::deleteTicketAttachments($ticket['id'], App::getDb());
 
 				App::getDb()->delete('tickets_deleted', array('ticket_id' => $ticket['id']));
 				App::getDb()->replace('tickets_deleted', array('ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)'));

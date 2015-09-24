@@ -48,7 +48,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
-use Orb\Util\Util;
+use Orb\Util\Util as OrbUtil;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 class TicketManager
@@ -120,7 +120,7 @@ class TicketManager
         $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
         $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
         $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
-        $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getDb(), $container->getTicketFilterChangeDetector());
+        $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
         $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
 
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
@@ -323,13 +323,13 @@ class TicketManager
         #----------------------------------------
 
         foreach ($this->save_actions as $action) {
-            $context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", Util::getBaseClassname($action)));
+            $context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", OrbUtil::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
                 try{
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
-                    $context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+                    $context->getLogger()->error(sprintf("[%s] Exception: %s", OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
                 $action->processTicket($ticket, $context);
@@ -345,13 +345,13 @@ class TicketManager
         $this->auto_vars['custom_field_manager']->flush();
 
         foreach ($this->post_save_actions as $action) {
-            $context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
+            $context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", OrbUtil::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
                 try{
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
-                    $context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+                    $context->getLogger()->error(sprintf("[%s] Exception: %s", OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
                 $action->processTicket($ticket, $context);
@@ -391,8 +391,9 @@ class TicketManager
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(array(
                     'ticket_id'       => $ticket->getId(),
-                    'is_locked'       => $ticket->getIsLocked(),
+                    'is_locked'       => (bool) $ticket->locked_by_agent,
                     'locked_by'       => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
+                    'locked_by_name'  => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
                     'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
                 ))
             ));
@@ -577,7 +578,7 @@ class TicketManager
             $logger->pushHandler($stream);
         }
 
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
+        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && empty($GLOBALS['DP_CRON_ID']) && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
             $stream = new StreamHandler('php://stdout');
             $logger->pushHandler($stream);
         }

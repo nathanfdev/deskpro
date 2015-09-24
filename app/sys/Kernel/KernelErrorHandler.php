@@ -365,7 +365,7 @@ class KernelErrorHandler
         $str = array();
         if ($errinfo['type'] == 'exception') {
             $e = $errinfo['exception'];
-            $message = substr($e->getMessage(), 0, 500);
+            $message = substr($e->getMessage(), 0, 1000);
             $line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $message);
             $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $message);
             $str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);

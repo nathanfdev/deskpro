@@ -36,7 +36,7 @@ class ArticlePeopleStorage extends AbstractParserPeopleStorage
     /**
      * {@inheritdoc}
      */
-    protected function getPeopleIds(array $data)
+    protected function getPeopleIds($data)
     {
         $people_ids = array();
         foreach ($data as $article) {

@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
+use Application\ImportBundle\Entity;
 
 /**
  * Class AbstractParserHelper
@@ -37,7 +38,65 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 abstract class AbstractParserHelper extends AbstractGenerator implements ParserHelperInterface
 {
     /**
+     * Exports a collection of entities
+     *
+     * @param ExportCollectionConfig $export_config
+     * @return Entity\Collection
+     */
+    protected function exportCollection(ExportCollectionConfig $export_config)
+    {
+        $collection = new Entity\Collection();
+        $collection->setExpectedCount(count($export_config->getData()));
+
+        foreach ($export_config->getData() as $num => $item) {
+            if ($export_config->isAdvanceProgressbar()) {
+                $this->advanceProgressBar();
+            }
+
+            $ref_column = $export_config->getRefColumn();
+            $prefix     = $export_config->getPrefix();
+
+            try {
+                $method = $export_config->getMethod();
+
+                if (is_callable($method)) {
+                    $result = $method($item, $num);
+                } else {
+                    $result = $this->$method($item, $num);
+                }
+
+                if ($result instanceof Entity\EntityInterface) {
+                    $collection->attach($result);
+                    $this->logInfo(sprintf(
+                        '[%s #%s (%s)] Entity parsed successfully!',
+                        $prefix, $result->getOid(), $result->getDestination()
+                    ));
+
+                } elseif ($result instanceof Entity\Collection) {
+                    $collection->merge($result);
+                    $this->logInfo(sprintf(
+                        '[%s #%s (%s)] Entity collection parsed successfully!',
+                        $prefix, $result->getMaxOid(), $result->count() ? implode(', ', $result->getDestinations()) : 'empty'));
+                } else {
+                    throw new \RuntimeException('Unsupported parser result');
+                }
+
+            } catch (SkippingException $e) {
+                $this->logSkippingException($prefix, $prefix, $ref_column, $e);
+            } catch (TransformerException $e) {
+                $this->logTransformerException($prefix, $prefix, $ref_column, $e);
+            } catch (\Exception $e) {
+                $this->logUnknownException($prefix, $prefix, $ref_column, $e, $item);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
      * Log skipping exception
+     *
+     * todo remove entity_type argument
      *
      * @param string            $prefix
      * @param string            $entity_type
@@ -56,6 +115,8 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
     /**
      * Log transformer exception
      *
+     * todo remove entity_type argument
+     *
      * @param string               $prefix
      * @param string               $entity_type
      * @param string               $ref_column
@@ -67,14 +128,16 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
         $oid  = isset($data[$ref_column]) ? $data[$ref_column] : '?';
 
         $this->logWarning(sprintf(
-            '[%s #%s] Unable to transform `%s`.`%s` property to %s (Skipping): %s',
-            $prefix, $oid, $entity_type, $e->getMessage()
+            '[%s #%s] Unable to transform `%s`.`%s` property to `%s` (Skipping): %s',
+            $prefix, $oid, $entity_type, $e->getProperty(), $e->getTransformerType(), $e->getMessage()
         ));
         $this->logWarning(json_encode($data));
     }
 
     /**
      * Log unknown exception
+     *
+     * todo remove entity_type argument
      *
      * @param string     $prefix
      * @param string     $entity_type

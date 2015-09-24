@@ -170,6 +170,9 @@ class DownloadsController extends AbstractController
 
         // Perm check
         if (!$this->person->PermissionsManager->UserPublishChecker->canViewDownload($download)) {
+            if ($download->status === 'hidden') {
+                throw $this->createNotFoundException();
+            }
             return $this->renderLoginOrPermissionError();
         }
 

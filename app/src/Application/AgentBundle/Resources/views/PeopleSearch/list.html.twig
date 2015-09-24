@@ -47,14 +47,14 @@ pageMeta.persons = {{ people_json|raw }};
         {% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
         {#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
-        <section class="people-list list-listing no-check"
-                 ng-if="listType == 'list'">
+      <div ng-if="listType == 'list'">
+        <section class="people-list list-listing no-check">
             {% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
         </section>
+      </div>
 
-        <div class="table-result-list"
-             ng-if="'table' === listType"
-                >
+      <div ng-if="'table' === listType">
+        <div class="table-result-list">
             <table cellspacing="0" width="100%">
 
                 {% include 'AgentBundle:PeopleSearch:list-table-head.html.twig' %}
@@ -72,6 +72,7 @@ pageMeta.persons = {{ people_json|raw }};
 
             </table>
         </div>
+      </div>
 
         {% include 'AgentBundle::list-pane-nav.html.twig' with {
             listName: 'persons',

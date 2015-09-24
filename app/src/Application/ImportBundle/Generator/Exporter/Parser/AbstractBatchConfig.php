@@ -55,7 +55,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     /**
      * @var bool
      */
-    private $has_remaining = false;
+    protected $has_remaining = false;
 
     /**
      * Constructor
@@ -117,17 +117,16 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     }
 
     /**
-     * @param bool $remaining
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setHasRemaining($remaining)
+    public function setHasRemaining($has_remaining)
     {
-        $this->has_remaining = (bool)$remaining;
+        $this->has_remaining = (bool)$has_remaining;
         return $this;
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function getHasRemaining()
     {

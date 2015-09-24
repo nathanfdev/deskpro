@@ -185,18 +185,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     *
+     * todo add onPropertyChanged() if change tracking is needed
      * @return $this
      */
     public function resetCustomData()
     {
-        foreach ($this->custom_data as $data) {
-            App::getOrm()->remove($data);
-        }
-
         $this->custom_data->clear();
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-
         return $this;
     }
 
@@ -386,19 +380,32 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function resetLabels()
     {
         foreach ($this->labels as $data) {
-            App::getOrm()->remove($data);
+            $this->labels->removeElement($data);
         }
 
-        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
+        return $this;
+    }
+
+    /**
+     * @param LabelFeedback $label
+     *
+     * @return $this
+     */
+    public function addLabel(LabelFeedback $label)
+    {
+        $label['feedback'] = $this;
+        $this->labels->add($label);
 
         return $this;
     }
 
-    public function addLabel($label)
+    /**
+     * @return \Application\DeskPRO\Entity\LabelFeedback[]
+     */
+    public function getLabels()
     {
-        $label['feedback'] = $this;
-        $this->labels->add($label);
+        return $this->labels;
     }
 
 

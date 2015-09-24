@@ -33,7 +33,9 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Storage;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 
 /**
  * Fetches mail from a imap server
@@ -96,10 +98,12 @@ class Imap extends AbstractFetcher
     {
         $options = array();
 
-        switch ($this->account->incoming_account->getType()) {
+        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+
+        switch ($incoming_account->getType()) {
             case 'imap':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $imap_config */
-                $imap_config = $this->account->incoming_account;
+                $imap_config = $incoming_account;
 
                 $options['host']         = $imap_config->host;
                 $options['port']         = $imap_config->port;
@@ -121,7 +125,7 @@ class Imap extends AbstractFetcher
 
             case 'gmail':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-                $gmail_config = $this->account->incoming_account;
+                $gmail_config = $incoming_account;
 
                 $options['host']     = 'imap.gmail.com';
                 $options['port']     = 993;
@@ -133,7 +137,7 @@ class Imap extends AbstractFetcher
 
             case 'office365':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
-                $config = $this->account->incoming_account;
+                $config = $incoming_account;
 
                 $options['host']     = 'outlook.office365.com';
                 $options['port']     = 993;
@@ -144,7 +148,7 @@ class Imap extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
+                throw new \InvalidArgumentException("Unknown account type: " . $incoming_account->getType());
         }
 
         $this->mode = $options['mode'];

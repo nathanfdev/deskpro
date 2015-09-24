@@ -490,6 +490,18 @@ class TicketLogGenerator
                 );
                 break;
 
+            case 'ticket_slas_status':
+                if (!empty($new['sla'])) {
+                    return array(
+                        'action_type' => 'changed_sla_status',
+                        'sla_id'      => $new['sla']->id,
+                        'sla_title'   => $new['sla']->title,
+                        'old_status'  => $new['old_status'],
+                        'new_status'  => $new['new_status']
+                    );
+                }
+                return;
+
             case 'urgency':
                 return array(
                     'action_type' => 'changed_urgency',
@@ -515,7 +527,6 @@ class TicketLogGenerator
                 break;
 
             case 'trigger':
-                $a = 1;
                 return array(
                     'action_type' => 'trigger',
                     'id_after'    => $new['trigger_id'],
@@ -705,6 +716,14 @@ class TicketLogGenerator
 				$log_data['is_choice']    = $is_choice;
 
 				return $log_data;
+
+            case 'email_account':
+                return array(
+                    'action_type'   => 'email_account',
+                    'old'           => $old ? $old->address : null,
+                    'new'           => $new ? $new->address : null,
+                );
+                break;
 
             default:
                 return array();

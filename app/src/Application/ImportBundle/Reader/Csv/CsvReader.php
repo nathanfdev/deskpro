@@ -27,10 +27,8 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
-use Application\ImportBundle\Reader\BaseReader;
-use Symfony\Component\Translation\Exception\InvalidResourceException;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
-use Orb\Util\Arrays;
+use Application\ImportBundle\Reader\AbstractReader;
+use Application\ImportBundle\Reader\NotFoundException;
 use SplFileObject;
 use LimitIterator;
 
@@ -39,8 +37,10 @@ use LimitIterator;
  *
  * Class CsvReader
  * @package Application\ImportBundle\Reader\Csv
+ *
+ * @property CsvConfig $config
  */
-class CsvReader extends BaseReader implements CsvReaderInterface
+class CsvReader extends AbstractReader implements CsvReaderInterface
 {
     /**
      * Constructor
@@ -55,10 +55,81 @@ class CsvReader extends BaseReader implements CsvReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getRowsCount(CsvConfig $config)
+    public function checkConfig()
     {
-        $this->detectDelimiter($config);
-        $iterator = $this->getIterator($config);
+        $files = array(
+            self::FILE_ARTICLE_CATEGORIES => array(),
+            self::FILE_ARTICLES           => array(
+                self::FILE_ARTICLE_CUSTOM_FIELDS,
+            ),
+            self::FILE_DOWNLOADS          => array(
+                self::FILE_DOWNLOAD_ATTACHMENTS,
+            ),
+            self::FILE_FEEDBACK           => array(
+                self::FILE_FEEDBACK_ATTACHMENTS,
+                self::FILE_FEEDBACK_CUSTOM_FIELDS,
+            ),
+            self::FILE_NEWS               => array(),
+            self::FILE_PEOPLE             => array(
+                self::FILE_PEOPLE_CONTACT_DATA,
+                self::FILE_PEOPLE_CUSTOM_FIELDS,
+            ),
+            self::FILE_TICKETS            => array(
+                self::FILE_TICKET_MESSAGES,
+                self::FILE_TICKET_ATTACHMENTS,
+                self::FILE_TICKET_CUSTOM_FIELDS,
+            ),
+            self::FILE_ORGANIZATIONS      => array(
+                self::FILE_ORGANIZATION_CONTACT_DATA,
+                self::FILE_ORGANIZATION_CUSTOM_FIELDS,
+            ),
+        );
+
+        if ( ! is_dir($this->config->getPath())) {
+            throw new \RuntimeException(sprintf('`%s` is not a directory.', $this->config->getPath()));
+        }
+
+        $has_primary_iterator = false;
+        foreach ($files as $primary_file => $related_files) {
+            try {
+                $this->getIterator($primary_file);
+                $has_primary_iterator = true;
+
+            } catch (NotFoundException $e) {
+                foreach ($related_files as $file) {
+                    try {
+                        $this->getIterator($file);
+                        throw new \RuntimeException(sprintf('Unable to parse `%s` without primary file `%s`.', $file, $primary_file));
+
+                    } catch (NotFoundException $e) {
+                        // File not found, continue...
+                    }
+                }
+            }
+        }
+
+        if ( ! $has_primary_iterator) {
+            throw new \RuntimeException(sprintf(
+                'No required files found in directory `%s`. Expected one of %s.',
+                $this->config->getPath(), implode(', ', array_map(
+                    function ($file) {
+                        return '`' . $file . '`';
+                    },
+                    $files
+                ))
+            ));
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRowsCount($entity_type)
+    {
+        $this->detectDelimiter($entity_type);
+        $iterator = $this->getIterator($entity_type);
 
         $count = 0;
         foreach ($iterator as $row) {
@@ -78,10 +149,10 @@ class CsvReader extends BaseReader implements CsvReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getData(CsvConfig $config)
+    public function getData($entity_file)
     {
-        $this->detectDelimiter($config);
-        $iterator = $this->getIterator($config);
+        $this->detectDelimiter($entity_file);
+        $iterator = $this->getIterator($entity_file);
 
         $header = null;
         $data   = array();
@@ -113,39 +184,43 @@ class CsvReader extends BaseReader implements CsvReaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns entity type path
+     *
+     * @param string $entity_file
+     * @return string
      */
-    public function isReady()
+    private function getEntityPath($entity_file)
     {
-        return true;
+        return rtrim($this->config->getPath(), '/') . '/' . $entity_file;
     }
 
     /**
      * Returns spl file object iterator
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      *
      * @return LimitIterator
-     * @throws \Exception
+     * @throws \RuntimeException
      */
-    private function getIterator(CsvConfig $config)
+    private function getIterator($entity_type)
     {
-        if ( ! stream_is_local($config->getResource())) {
-            throw new InvalidResourceException(sprintf('This is not a local file "%s".', $config->getResource()));
-        }
+        $entity_path = $this->getEntityPath($entity_type);
 
-        if ( ! file_exists($config->getResource())) {
-            throw new NotFoundResourceException(sprintf('File "%s" not found.', $config->getResource()));
+        if ( ! file_exists($entity_path)) {
+            throw new NotFoundException(sprintf('File "%s" not found.', $entity_path));
+        }
+        if ( ! stream_is_local($entity_path)) {
+            throw new \RuntimeException(sprintf('This is not a local file "%s".', $entity_path));
         }
 
         try {
-            $file = new SplFileObject($config->getResource(), 'rb');
+            $file = new SplFileObject($entity_path, 'rb');
         } catch (\RuntimeException $e) {
-            throw new NotFoundResourceException(sprintf('Error opening file "%s".', $config->getResource()), 0, $e);
+            throw new \RuntimeException(sprintf('Error opening file "%s".', $entity_path), 0, $e);
         }
 
         $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY);
-        $file->setCsvControl($config->getDelimiter(), $config->getEnclosure(), $config->getEscape());
+        $file->setCsvControl($this->config->getDelimiter(), $this->config->getEnclosure(), $this->config->getEscape());
 
         return new LimitIterator($file);
     }
@@ -153,14 +228,14 @@ class CsvReader extends BaseReader implements CsvReaderInterface
     /**
      * Detect a delimiter
      *
-     * @param CsvConfig $config
+     * @param string $entity_file
      */
-    private function detectDelimiter(CsvConfig $config)
+    private function detectDelimiter($entity_file)
     {
-        $delimiters = array_diff(array(';', ','), array($config->getDelimiter()));
+        $delimiters = array_diff(array(';', ','), array($this->config->getDelimiter()));
 
         while (true) {
-            $iterator = $this->getIterator($config);
+            $iterator = $this->getIterator($entity_file);
             $iterator->rewind();
 
             $row = $iterator->current();
@@ -168,7 +243,7 @@ class CsvReader extends BaseReader implements CsvReaderInterface
                 return;
             }
 
-            $config->setDelimiter(array_shift($delimiters));
+            $this->config->setDelimiter(array_shift($delimiters));
         }
 
     }
@@ -181,6 +256,6 @@ class CsvReader extends BaseReader implements CsvReaderInterface
      */
     private function isValidRow($row)
     {
-        return is_array($row) && count(Arrays::removeEmptyString($row)) > 1;
+        return is_array($row) && count($row) > 1;
     }
 }

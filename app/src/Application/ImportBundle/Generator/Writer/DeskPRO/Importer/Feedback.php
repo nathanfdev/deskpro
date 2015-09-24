@@ -78,8 +78,6 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records = new DoctrineEntitiesCollection();
-
         $feedback = new DeskPROEntity\Feedback();
         $feedback
             ->setTitle($entity->getTitle())
@@ -162,13 +160,17 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
         $email = $entity->getPersonEmail() ? : $person_email;
+        $blob  = $this->blob_adapter->createByBlob($entity);
+
         $attachment = new DeskPROEntity\FeedbackAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByBlob($entity))
+            ->setBlob($blob)
         ;
 
         $this->records->addRelatedEntity($attachment);
+        $this->records->addRelatedEntity($blob);
+
         return $attachment;
     }
 
@@ -182,6 +184,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      */
     private function createFeedbackCustomData(Entity\CustomField $entity)
     {
+        /** @var Mapper\CustomDefFeedback $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_FEEDBACK);
 
         return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataFeedback());

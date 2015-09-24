@@ -1307,6 +1307,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					return ticket.labels && ticket.labels.length > 0;
 				case 'slas':
 					return ticket.ticket_slas && ticket.ticket_slas.length > 0;
+        case 'problems':
+          return ticket.problems && ticket.problems.length;
 				default:
 					fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
 					if (fieldM) {
