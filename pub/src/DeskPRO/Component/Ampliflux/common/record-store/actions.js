@@ -96,15 +96,12 @@ export function requestRecords(stateKey, loaderFn, defaultMode = MODE_APPEND) {
       requestId: requestId,
       ids: ids,
       missingIds: missingIds,
-      promise: new Promise((resolve) => {
+      promise: new Promise((resolve, reject) => {
         if (missingIds.size) {
           loaderFn(missingIds).then(newRecords => {
-            if (!Immutable.Map.isMap(newRecords)) {
-              Immutable.fromJS(newRecords);
-            }
             resolve({
               requestId: requestId,
-              records: records.merge(newRecords),
+              records: records.merge(mapKeyedFromArray(newRecords, 'id')),
               ids: ids,
               mode: mode
             });

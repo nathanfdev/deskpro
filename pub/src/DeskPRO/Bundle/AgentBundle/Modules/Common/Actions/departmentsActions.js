@@ -1,10 +1,9 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
 import { load } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Departments';
-import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 const statePath   = ['Common', 'department'];
-const loadMissing = (ids) => load(ids).then((response) => mapKeyedFromArray(response.getData().data, 'id'));
+const loadMissing = (ids) => load(ids).then(response => response.getData().data);
 
 export const gcDepartments             = createAction('GC_DEPARTMENTS',              rsa.gcRecords());
 export const releaseDepartments        = createAction('RELEASE_DEPARTMENTS',         rsa.releaseRecords());

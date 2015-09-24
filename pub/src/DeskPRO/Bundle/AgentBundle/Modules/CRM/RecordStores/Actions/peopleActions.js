@@ -1,6 +1,5 @@
 import { createAction } from 'Ampliflux';
 import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
-import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import Immutable from 'immutable';
 
@@ -15,12 +14,10 @@ export const loadPeople       = createAction(
   recordStoreActions.requestRecords(
     ['RecordStores', 'people'],
     missingIds => new Promise(
-      (resolve, reject) => {
-        console.error('loading people');
+      (resolve, reject) =>
         DpApi.sendGet('DP_API/people?ids=' + missingIds.toArray().join(','))
-          .success(data => resolve(Immutable.fromJS(mapKeyedFromArray(data.data, 'id'))))
-          .error(res => reject(res));
-      }
+             .success(response => resolve(response.data))
+             .error(response => reject(response))
     )
   )
 );
