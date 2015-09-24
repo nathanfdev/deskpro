@@ -81,14 +81,17 @@ final class TicketCustomDef extends AbstractParser
     protected function exportCustomDef(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'                   => TransformerInterface::TYPE_STRING,
+            'destination'          => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'ticket_custom_def_',
                 'ref'    => 'id',
             )),
-            'title'       => TransformerInterface::TYPE_STRING,
-            'description' => TransformerInterface::TYPE_STRING,
-            'required'    => TransformerInterface::TYPE_BOOLEAN,
+            'title'                => TransformerInterface::TYPE_STRING,
+            'raw_title'            => TransformerInterface::TYPE_STRING,
+            'description'          => TransformerInterface::TYPE_STRING,
+            'raw_description'      => TransformerInterface::TYPE_STRING,
+            'required'             => TransformerInterface::TYPE_BOOLEAN,
+            'system_field_options' => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity = new Entity\PersonCustomDef();
