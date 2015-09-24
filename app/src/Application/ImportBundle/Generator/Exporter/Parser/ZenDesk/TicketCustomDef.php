@@ -31,7 +31,9 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\FieldsHandlerClassMapper;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
  * ZenDesk ticket custom def parser
@@ -95,6 +97,15 @@ final class TicketCustomDef extends AbstractParser
             'required'             => TransformerInterface::TYPE_BOOLEAN,
             'system_field_options' => TransformerInterface::TYPE_ARRAY,
         ));
+
+        $not_supported_types = array(
+            ZenDeskReaderInterface::FIELD_TYPE_ASSIGNEE,
+            ZenDeskReaderInterface::FIELD_TYPE_REGEXP,
+        );
+
+        if (in_array($formatted['type'], $not_supported_types)) {
+            throw new SkippingException(sprintf('Not supported type `%s`', $formatted['type']), $data);
+        }
 
         $entity = new Entity\PersonCustomDef();
         $entity
