@@ -113,7 +113,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             $outputWriter = $this->getWriter();
             $collection   = new GenerateCollection();
 
-            $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_EXPORT);
+            $this->importer->setStatus($this->config->getExporterType(), self::STATUS_EXPORT);
 
             // Exports data to a collection of entities
             foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
@@ -130,7 +130,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             }
 
             if ($collection->hasEntities()) {
-                $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_VALIDATION);
+                $this->importer->setStatus($this->config->getExporterType(), self::STATUS_VALIDATION);
 
                 // Validate the collection of entities
                 foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
@@ -163,7 +163,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                     }
                 }
 
-                $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_IMPORT);
+                $this->importer->setStatus($this->config->getExporterType(), self::STATUS_IMPORT);
 
                 // Writes entities to a storage
                 $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
@@ -188,16 +188,16 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
             if ($exporter instanceof Exporter\ExporterBatchInterface) {
                 if ( ! $exporter->getUpdatedBatchConfig()->getHasRemaining()) {
-                    $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_DONE);
+                    $this->importer->setStatus($this->config->getExporterType(), self::STATUS_DONE);
                 }
 
             } else {
-                $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_DONE);
+                $this->importer->setStatus($this->config->getExporterType(), self::STATUS_DONE);
             }
 
         } catch (\Exception $e) {
             // todo em closed
-            // $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_ERROR);
+            // $this->importer->setStatus($this->config->getExporterType(), self::STATUS_ERROR);
             throw $e;
         }
     }

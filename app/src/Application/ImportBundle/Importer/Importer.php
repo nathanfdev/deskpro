@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Generator\ImporterProgressBar;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
@@ -55,13 +56,6 @@ class Importer
         ExporterInterface::TYPE_ZENDESK,
         ExporterInterface::TYPE_DESKPRO,
     );
-
-    const STATUS_PENDING     = 'pending';
-    const STATUS_EXPORT      = 'export';
-    const STATUS_VALIDATION  = 'validation';
-    const STATUS_IMPORT      = 'import';
-    const STATUS_ERROR       = 'error';
-    const STATUS_DONE        = 'done';
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -298,7 +292,7 @@ class Importer
         $importer = $this->initReader($id);
 
         // set pointer to current import
-        $this->setStatus($id, self::STATUS_PENDING);
+        $this->setStatus($id, GeneratorInterface::STATUS_PENDING);
         $this->setCurrentName($id);
 
         // trigger cron to start console command
