@@ -6,25 +6,13 @@ export const gcAgentTeams         = createAction('GC_AGENT_TEAMS',              
 export const releaseAgentTeams    = createAction('RELEASE_AGENT_TEAMS',         recordStoreActions.releaseRecords());
 export const releaseRequest       = createAction('RELEASE_AGENT_TEAMS_REQUEST', recordStoreActions.releaseRequest());
 export const setAgentTeamsRequest = createAction('SET_AGENT_TEAMS',             recordStoreActions.setRequestRecords());
-export const loadAgentTeams       = createAction(
-  'LOAD_AGENT_TEAMS',
-  recordStoreActions.requestRecords(
-    ['RecordStores', 'agentTeams'],
-    missingIds => new Promise(
-      (resolve, reject) =>
-        DpApi.sendGet('DP_API/agent-teams?ids=' + missingIds.toArray().join(','))
-             .success(response => resolve(response.data))
-             .error(response => reject(response))
-    )
-  )
-);
 export const loadAllAgentTeams    = createAction(
-  loadAgentTeams.type,
+  'LOAD_AGENT_TEAMS',
   recordStoreActions.createRecordsRequest(
-    ['RecordStores', 'people'],
+    ['RecordStores', 'agentTeams'],
     'all',
     () => new Promise((resolve, reject) =>
-      DpApi.sendGet('DP_API/agent-teams')
+      DpApi.sendGet('DP_API/agent_teams')
            .success(response => resolve(response.data))
            .error(response => reject(response)))
   )
