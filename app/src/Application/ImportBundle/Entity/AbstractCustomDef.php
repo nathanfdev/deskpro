@@ -37,11 +37,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 abstract class AbstractCustomDef extends AbstractEntity
 {
     /**
-     * @var int
-     */
-    protected $parent_id;
-
-    /**
      * @var string
      */
     protected $sys_name;
@@ -72,21 +67,16 @@ abstract class AbstractCustomDef extends AbstractEntity
     protected $options = array();
 
     /**
-     * @return int
+     * @var Collection|AbstractCustomDef[]
      */
-    public function getParentId()
-    {
-        return $this->parent_id;
-    }
+    protected $custom_def;
 
     /**
-     * @param int $parent_id
-     * @return $this
+     * Constructor
      */
-    public function setParentId($parent_id)
+    public function __construct()
     {
-        $this->parent_id = $parent_id;
-        return $this;
+        $this->custom_def = new Collection();
     }
 
     /**
@@ -198,6 +188,40 @@ abstract class AbstractCustomDef extends AbstractEntity
     }
 
     /**
+     * Returns a collection of child custom def
+     *
+     * @return ArticleCategory[]|Collection
+     */
+    public function getChildren()
+    {
+        return $this->custom_def;
+    }
+
+    /**
+     * Add a child custom def
+     *
+     * @param AbstractCustomDef $custom_def
+     * @return $this
+     */
+    public function addCustomDef(AbstractCustomDef $custom_def)
+    {
+        $this->custom_def->attach($custom_def);
+        return $this;
+    }
+
+    /**
+     * Set a collection of custom def
+     *
+     * @param Collection|AbstractCustomDef[] $custom_def
+     * @return $this
+     */
+    public function setCustomDef(Collection $custom_def)
+    {
+        $this->custom_def = $custom_def;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -205,12 +229,12 @@ abstract class AbstractCustomDef extends AbstractEntity
         return array(
             'oid'           => $this->oid,
             'sys_name'      => $this->sys_name,
-            'parent_id'     => $this->parent_id,
             'title'         => $this->title,
             'description'   => $this->description,
             'handler_class' => $this->handler_class,
             'is_enabled'    => $this->is_enabled,
             'options'       => $this->options,
+            'custom_def'    => $this->custom_def->entitiesToArray(),
         );
     }
 
@@ -226,6 +250,7 @@ abstract class AbstractCustomDef extends AbstractEntity
             ->addPropertyConstraint('title', new Constraints\NotBlank())
             ->addPropertyConstraint('description', new Constraints\NotBlank())
             ->addPropertyConstraint('handler_class', new Constraints\NotBlank())
+            ->addPropertyConstraint('custom_def', new Constraints\Valid())
         ;
     }
 }
