@@ -24,8 +24,10 @@ $output_realtime = function ($type, $buffer) {
 };
 
 $quick = false;
+$quick_opt_str = '';
 if (in_array('--quick', $_SERVER['argv'])) {
     $quick = true;
+    $quick_opt_str = ' --quick';
 }
 
 #####################################################################
@@ -177,7 +179,7 @@ echo "\n";
 $time = microtime(true);
 echo "build-data ... ";
 
-$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-data.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-data.php'.$quick_opt_str, DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run($output_realtime);
 
