@@ -28,28 +28,28 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
-use Zendesk\API\Client;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
 use Zendesk\API\MissingParametersException;
 
 /**
  * ZenDesk HelpCenter section access policy get request client helper
  *
- * Class SectionAccessPolicyFind
+ * Class SectionAccessPolicy
  * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter
- *
- * @see https://developer.zendesk.com/rest_api/docs/help_center/access_policies#show-access-policy
  */
-final class SectionAccessPolicyFind extends AbstractHelper
+final class SectionAccessPolicy extends AbstractHelper implements ClientHelperFindInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @see https://developer.zendesk.com/rest_api/docs/help_center/access_policies#show-access-policy
      */
-    public function request(Client $client)
+    public function find(array $params = array())
     {
-        if ( ! isset($this->params['id'])) {
+        if ( ! isset($params['id'])) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
 
-        return $this->doGetRequest($client, sprintf('help_center/sections/%d/access_policy.json', $this->params['id']));
+        return $this->doGetRequest(sprintf('help_center/sections/%d/access_policy.json', $params['id']));
     }
 }
