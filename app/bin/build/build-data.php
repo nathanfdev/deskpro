@@ -16,7 +16,7 @@ require DP_ROOT.'/sys/system.php';
 
 $quick = in_array('--quick', $_SERVER['argv']);
 
-if ($quick) {
+if (!$quick) {
     #------------------------------
     # Build cloudflare IPs data
     #------------------------------
