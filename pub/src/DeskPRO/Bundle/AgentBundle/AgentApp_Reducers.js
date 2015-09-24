@@ -2,7 +2,6 @@ import ROOT_dp_window                                     from "./Modules/Applic
 import ROOT_routing                                       from "./Modules/Application/Reducers/routing.js";
 import ROOT_user                                          from "./Modules/Application/Reducers/user.js";
 import ROOT_CrmNav                                        from "./Modules/CRM/Reducers/CrmNav.js";
-import RecordStores_people                                from "./Modules/CRM/RecordStores/Reducers/people.js";
 import Chat_list                                          from "./Modules/Chat/Reducers/list.js";
 import Chat_nav                                           from "./Modules/Chat/Reducers/nav.js";
 import Common_departments                                 from "./Modules/Common/Reducers/departments.js";
@@ -56,9 +55,6 @@ export default {
   "taskList":                                             ROOT_taskList,
   "taskListList":                                         ROOT_taskListList,
   "teamList":                                             ROOT_teamList,
-  "RecordStores": {
-    "people":                                             RecordStores_people,
-  },
   "Chat": {
     "list":                                               Chat_list,
     "nav":                                                Chat_nav,

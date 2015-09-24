@@ -65,9 +65,12 @@ class FeedbackSelectCriteria extends Criteria
                     break;
                 case 'label':
                     $qb
-                        ->innerJoin("$alias.labels", 'labels')
                         ->andWhere('labels.label = :label')
                         ->setParameter('label', $value);
+                    break;
+                case 'no_labels':
+                    $qb
+                        ->andWhere('labels.label IS NULL');
                     break;
                 case 'custom_category':
                     $qb
@@ -98,16 +101,31 @@ class FeedbackSelectCriteria extends Criteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $resolver->setDefined([
-            'awaiting_validation', 'status', 'status_category', 'category', 'custom_category', 'label', 'sort', 'order', 'page', 'count'
-        ]);
+        $resolver->setDefined(
+            [
+                'awaiting_validation',
+                'status',
+                'status_category',
+                'category',
+                'custom_category',
+                'label',
+                'no_labels',
+                'sort',
+                'order',
+                'page',
+                'count',
+            ]
+        );
         $resolver->setAllowedValues('awaiting_validation', '1');
+        $resolver->setAllowedValues('no_labels', '1');
         $resolver->setAllowedValues(
             'status',
             ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
         );
-        $resolver->setAllowedValues('sort',
-            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']);
+        $resolver->setAllowedValues(
+            'sort',
+            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']
+        );
         $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

@@ -5,18 +5,23 @@ export class LabelsDictionary extends React.Component {
     const grouped = this.groupByFirstLetter(this.props.labels);
     const onClick = this.props.onClick ? this.props.onClick : () => {
     };
-    let groupKey  = 0, labelKey = 0;
 
     return (
       <section className="sidebar-list sidebar-list-labels tasks-nav-labels">
         <div className="sidebar-label-list sidebar-list">
-          {grouped.map(group => {
+          <span className="labelCharacter">--</span>
+          <ul>
+            <li onClick={onClick.bind(this, {name:'no_labels', value:1})}>
+              <a href="#" className="item-label">no labels defined</a>
+            </li>
+          </ul>
+          {grouped.map((group, index) => {
             return (
-              <div key={groupKey++}>
+              <div key={index}>
                 <span className="labelCharacter">{group.letter}</span>
                 <ul>
-                  {group.labels.map(label =>
-                    <li key={labelKey++} onClick={onClick.bind(this, {name:'label', value:label})}>
+                  {group.labels.map((label, index) =>
+                    <li key={index} onClick={onClick.bind(this, {name:'label', value:label})}>
                       <a href="#" className="item-label">{label}</a>
                     </li>)}
                 </ul>

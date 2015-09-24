@@ -207,8 +207,8 @@ class ApiDb extends AbstractDbSet
                 1,
                 1,
                 0,
-                '" . date('Y-m-d H:i:s') . "',
-                '" . date('Y-m-d H:i:s') . "',
+                '".date('Y-m-d H:i:s')."',
+                '".date('Y-m-d H:i:s')."',
                 0,
                 0,
                 0,
@@ -227,26 +227,26 @@ class ApiDb extends AbstractDbSet
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
-                ('core.deskpro_build', '" . time() . "'),
+                ('core.deskpro_build', '".time()."'),
                 ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
-                ('core.done_rewrite_urls_check', '" . time() . "'),
-                ('core.install_build', '" . time() . "'),
+                ('core.done_rewrite_urls_check', '".time()."'),
+                ('core.install_build', '".time()."'),
                 ('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-                ('core.install_timestamp', '" . time() . "'),
+                ('core.install_timestamp', '".time()."'),
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-                ('core.last_cron_run', '" . time() . "'),
-                ('core.last_cron_start', '" . time() . "'),
+                ('core.last_cron_run', '".time()."'),
+                ('core.last_cron_start', '".time()."'),
                 ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
-                ('core.task_completed_add_ticketfield', '" . time() . "'),
-                ('core.twitter_last_cleanup', '" . time() . "'),
+                ('core.task_completed_add_ticketfield', '".time()."'),
+                ('core.twitter_last_cleanup', '".time()."'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '" . time() . "');
+                ('user.kb_subscriptions_last', '".time()."');
         "
         );
 
@@ -304,7 +304,8 @@ class ApiDb extends AbstractDbSet
 
 // Feedback
 
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `feedback_categories`
                 (`title`,`slug`)
 
@@ -317,9 +318,11 @@ class ApiDb extends AbstractDbSet
                 ('Test feedback category 5', '5'),
                 ('Test feedback category 6', '6')
             ;
-        ");
+        "
+        );
 
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `feedback_status_categories` (`status_type`, `title`, `display_order`)
             VALUES
               ('active', 'Gathering Feedback', 0),
@@ -329,9 +332,11 @@ class ApiDb extends AbstractDbSet
               ('closed', 'Completed', 0),
               ('closed', 'Duplicate', 0),
               ('closed', 'Declined', 0);
-        ");
+        "
+        );
 
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `feedback`
                 (`status_category_id`,`category_id`,`title`, `slug`, `content`,`status`, `hidden_status`)
 
@@ -343,9 +348,23 @@ class ApiDb extends AbstractDbSet
                 (5, 1, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 'closed', 'validating'),
                 (1, 2, 'Test feedback 6', 'Slug to feedback 6', 'Content of test feedback 6', 'new', 'validating')
             ;
-        ");
+        "
+        );
 
-        $this->getDb()->exec("
+
+        $this->getDb()->exec(
+            "
+            INSERT INTO `labels_feedback` (`feedback_id`, `label`)
+            VALUES
+              (1, 'label1'),
+              (1, 'label2'),
+              (2, 'label1'),
+              (3, 'another');
+            "
+        );
+
+        $this->getDb()->exec(
+            "
             INSERT INTO `feedback_comments`
                 (`feedback_id`,`content`, `status`, `is_reviewed`)
 
@@ -357,17 +376,21 @@ class ApiDb extends AbstractDbSet
                 (2, 'Feedback 2 comment 5', 'visible', 1),
                 (6, 'Feedback 6 comment 6', 'visible', 0)
             ;
-        ");
+        "
+        );
 
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `custom_def_feedback`
             (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
             VALUES
               (1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', NULL, '', 1, 1, 0, NULL, 1)
             ;
-        ");
+        "
+        );
 
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `custom_data_feedback`
             (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`)
             VALUES
@@ -376,10 +399,12 @@ class ApiDb extends AbstractDbSet
               (3, 1, 1, NULL, 0, 'Linux'),
               (4, 1, 1, NULL, 0, 'Mac')
             ;
-        ");
+        "
+        );
 
         // "/user_chats" endpoint test data ----------------------------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `chat_conversations`
                 (`department_id`, `agent_id`, `subject`, `status`, `person_name`, `person_email`, `rating_comment`,
                  `is_agent`, `is_window`, `date_created`, `should_send_transcript`, `total_to_ended`, `ended_by`)
@@ -392,12 +417,14 @@ class ApiDb extends AbstractDbSet
                 (2, 2, 'Test chat 4', 'test', 'test', 'test', '', 1, 1, '2015-08-04 10:19:00', 1, 1, 'test'),
                 (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
             ;
-        ");
+        "
+        );
         // end of "/user_chats" endpoint test data
 
 
         // Labels endpoints test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `label_defs`
                 (`label_type`, `label`, `color`, `total`)
             VALUES
@@ -409,11 +436,13 @@ class ApiDb extends AbstractDbSet
                 ('person', 'person label #1', 'white', 1),
                 ('person', 'person label #2', 'red', 3)
             ;
-        ");
+        "
+        );
         // end of labels endpoints
 
         // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `usergroups`
                 (`id`, `title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
             VALUES
@@ -434,21 +463,25 @@ class ApiDb extends AbstractDbSet
                 (3, 3),
                 (4, 4)
             ;
-        ");
+        "
+        );
         // end of "/user_groups"
 
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `organizations`
                 (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
             VALUES
                 (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
                 (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
-        ");
+        "
+        );
         // end of "/organizations"
 
         // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `agent_teams`
                 (`avatar_blob_id`, `name`)
             VALUES
@@ -464,20 +497,24 @@ class ApiDb extends AbstractDbSet
                 (2, 3),
                 (2, 4)
             ;
-        ");
+        "
+        );
         // end of "/organizations"
 
         // Default language --------------------------------------------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `languages`
                 (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
                  `has_agent`, `has_admin`)
             VALUES
                 (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
-        ");
+        "
+        );
 
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `articles`
                 (`id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
                  `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
@@ -581,11 +618,13 @@ class ApiDb extends AbstractDbSet
                 (7, 2, 3, '7', 'Test Download #7', 'Test Download #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL, 0),
                 (8, 9, 3, '8', 'Test Download #8', 'Test Download #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00', 0)
             ;
-        ");
+        "
+        );
         // end of content test data
 
         // Comments test data ------------------------------------------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `article_comments`
                 (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
             VALUES
@@ -609,11 +648,13 @@ class ApiDb extends AbstractDbSet
                 (2, 1, 2, '', NULL, NULL, NULL, 'Download comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
                 (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
             ;
-        ");
+        "
+        );
         // end of comments test data
 
         // Glossary test data ------------------------------------------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `glossary_word_definitions`
                 (`id`, `definition`)
             VALUES
@@ -627,18 +668,21 @@ class ApiDb extends AbstractDbSet
                 (1, 1, 'Word 1'),
                 (2, 1, 'Word 2')
             ;
-        ");
+        "
+        );
         // end of glossary test data
 
         // ArticlePendingCreate test data ------------------------------------------------------------------------------
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             INSERT INTO `article_pending_create`
                 (`person_id`, `ticket_id`, `ticket_message_id`, `comment`, `date_created`, `assigned_person_id`)
             VALUES
                 (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
                 (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
             ;
-        ");
+        "
+        );
         // end of ArticlePendingCreate
 
         $count++;

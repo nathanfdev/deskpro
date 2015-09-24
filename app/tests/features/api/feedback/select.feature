@@ -60,7 +60,6 @@ Feature: /feedback/ endpoint
 #    And print last JSON response
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data" should exist
     And the JSON node "data" should have 3 elements
 #    And the JSON node "data[0].type" should be equal to "Test feedback category 1"
 #    And the JSON node "data[1].type" should be equal to "Test feedback category 1"
@@ -75,10 +74,19 @@ Feature: /feedback/ endpoint
 #   And print last JSON response
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data" should exist
     And the JSON node "data" should have 2 elements
-#   And the JSON node "data[0].custom_category" should be equal to "Linux"
-#   And the JSON node "data[1].custom_category" should be equal to "Linux"
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.count" should be equal to 2
+
+  Scenario: I GET feedback without any label
+    When I send a GET request to "/api/v2/feedback/?no_labels=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+#    And print last JSON response
+    And the JSON node "data" should exist
+    And the JSON node "data" should have 3 elements
+    And the JSON node "meta" should exist
+    And the JSON node "meta.pagination" should exist
+    And the JSON node "meta.pagination.count" should be equal to 3
+
