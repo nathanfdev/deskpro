@@ -33,7 +33,6 @@ namespace Application\ImportBundle\Reader\ZenDesk;
  */
 class LocaleMapper
 {
-
     /**
      * Returns DeskPRO locale by ZenDesk locale code
      *

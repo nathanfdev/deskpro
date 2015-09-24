@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\ZenDesk\FieldsHandlerClassMapper;
 
 /**
  * ZenDesk ticket custom def parser
@@ -86,6 +87,7 @@ final class TicketCustomDef extends AbstractParser
                 'prefix' => 'ticket_custom_def_',
                 'ref'    => 'id',
             )),
+            'type'                 => TransformerInterface::TYPE_STRING,
             'title'                => TransformerInterface::TYPE_STRING,
             'raw_title'            => TransformerInterface::TYPE_STRING,
             'description'          => TransformerInterface::TYPE_STRING,
@@ -101,6 +103,7 @@ final class TicketCustomDef extends AbstractParser
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['title'])
             ->setDescription($formatted['description'])
+            ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
         ;
 
         return $entity;
