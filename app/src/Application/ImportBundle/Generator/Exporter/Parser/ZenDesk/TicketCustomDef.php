@@ -29,11 +29,12 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerException;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
+ * ZenDesk ticket custom def parser
+ *
  * Class TicketFields
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
@@ -53,7 +54,7 @@ final class TicketCustomDef extends AbstractParser
     public function getCount()
     {
         // We can read data from ZD reader twice because of ZD reader cache support
-        return count($this->getFields());
+        return count($this->reader->getTicketFields());
     }
 
     /**
@@ -61,33 +62,23 @@ final class TicketCustomDef extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $custom_def = $this->getFields();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getTicketFields())
+            ->setPrefix('ZDTicketCustomDef')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($custom_def as $num => $data) {
-            try {
-                $entity = $this->exportCustomDef($data);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-
-            } catch (SkippingException $e) {
-                $this->logSkippingException('ZDTicketCustomDef', $this->getEntityType(), 'id', $e);
-            } catch (TransformerException $e) {
-                $this->logTransformerException('ZDTicketCustomDef', $this->getEntityType(), 'id', $e);
-            } catch (\Exception $e) {
-                $this->logUnknownException('ZDTicketCustomDef', $this->getEntityType(), 'id', $e, $data);
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * @param array $data
      * @return Entity\PersonCustomDef
      */
-    public function exportCustomDef(array $data)
+    protected function exportCustomDef(array $data)
     {
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_STRING,
@@ -110,13 +101,5 @@ final class TicketCustomDef extends AbstractParser
         ;
 
         return $entity;
-    }
-
-    /**
-     * @return array
-     */
-    private function getFields()
-    {
-        return $this->reader->getTicketFields();
     }
 }
