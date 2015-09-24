@@ -71,6 +71,7 @@ class FieldsHandlerClassMapper
             ZenDeskReaderInterface::FIELD_TYPE_GROUP          => CustomDefAbstract::HANDLER_CLASS_CHOICE,
             ZenDeskReaderInterface::FIELD_TYPE_ASSIGNEE       => '',
             ZenDeskReaderInterface::FIELD_TYPE_CHECKBOX       => CustomDefAbstract::HANDLER_CLASS_TOGGLE,
+            ZenDeskReaderInterface::FIELD_TYPE_TAGGER         => CustomDefAbstract::HANDLER_CLASS_TOGGLE,
             ZenDeskReaderInterface::FIELD_TYPE_DATE           => CustomDefAbstract::HANDLER_CLASS_DATE,
             ZenDeskReaderInterface::FIELD_TYPE_DECIMAL        => CustomDefAbstract::HANDLER_CLASS_TEXT,
             ZenDeskReaderInterface::FIELD_TYPE_DROPDOWN       => CustomDefAbstract::HANDLER_CLASS_CHOICE,

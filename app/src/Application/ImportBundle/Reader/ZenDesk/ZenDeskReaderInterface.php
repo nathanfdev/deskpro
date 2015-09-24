@@ -51,6 +51,7 @@ interface ZenDeskReaderInterface extends ReaderInterface
     const FIELD_TYPE_BASIC_PRIORITY  = 'basic_priority';
     const FIELD_TYPE_GROUP           = 'group';
     const FIELD_TYPE_ASSIGNEE        = 'assignee';
+    const FIELD_TYPE_TAGGER          = 'tagger';
     const FIELD_TYPE_CHECKBOX        = 'checkbox';
     const FIELD_TYPE_DATE            = 'date';
     const FIELD_TYPE_DECIMAL         = 'decimal';
