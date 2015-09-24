@@ -80,8 +80,8 @@ export default class Positioned extends React.Component {
                   .css('left', positionResult.left);
     } else {
       const placement = this.props.position || {
-        my: 'top left',
-        at: 'bottom right',
+        my: 'left top',
+        at: 'right bottom',
         of: null,
         collision: 'none'
       };

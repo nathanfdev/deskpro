@@ -413,7 +413,7 @@ export default class TasksListFrame extends React.Component {
           <Positioned isOpen={true}
                       positionTarget={this.refs.ticketControlBar}>
             <Menu>
-              <BaseItem>
+              <Item>
                 Hello!
                 <Menu>
                   <ItemGroup>
@@ -426,6 +426,10 @@ export default class TasksListFrame extends React.Component {
                   </ItemGroup>
                   <Item>
                     Test 3
+                    <Menu>
+                      <Item>Sub-menu</Item>
+                      <Item>Submarine</Item>
+                    </Menu>
                   </Item>
                   <Item icon="bolt" itemType="locked">
                     Test 4
@@ -438,7 +442,7 @@ export default class TasksListFrame extends React.Component {
                   <Item>Test A</Item>
                   <Item>Test B</Item>
                 </ItemList>
-              </BaseItem>
+              </Item>
               <MenuFooter>
                 <div className="dpw-navigation-dropdown-options-link">
                   <a href="#">Thing</a>

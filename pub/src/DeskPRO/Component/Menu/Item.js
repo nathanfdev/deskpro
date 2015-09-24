@@ -31,35 +31,8 @@ export default class Item extends React.Component {
       }
     }
 
-    return (<BaseItem {...this.props} widgetClass={typeClass}>
-      {this.props.listItem ?
-      <span>
-        <span className="dpw-navigation-dropdown-column-list-disc">
-          <i className="fa fa-circle" />
-        </span>
-        <span className="dpw-navigation-dropdown-column-list-title">
+    return (<BaseItem {...this.props} widgetClass={typeClass} format="item">
           {this.props.children}
-        </span>
-      </span>
-      :
-      <span>
-        { this.props.icon ?
-          <span className="dpw-navigation-dropdown-item-mark">
-            <span className="dpw-navigation-dropdown-item-icon dpw-navigation-dropdown-item-icon-2x">
-              <i className={'fa fa-' + this.props.icon} />
-            </span>
-          </span>
-        : '' }
-        <span className="dpw-navigation-dropdown-item-title">
-          {this.props.children}
-        </span>
-        {this.props.checked ?
-          <span className="dpw-navigation-dropdown-item-status">
-            <i className="fa fa-check" />
-          </span>
-        : ''}
-      </span>
-      }
     </BaseItem>);
   }
 }
