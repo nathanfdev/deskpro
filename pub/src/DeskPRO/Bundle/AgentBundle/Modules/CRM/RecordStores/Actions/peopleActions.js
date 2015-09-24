@@ -24,14 +24,3 @@ export const loadPeople       = createAction(
     )
   )
 );
-export const loadAgents       = createAction(
-  loadPeople.type,
-  recordStoreActions.createRecordsRequest(
-    ['RecordStores', 'people'],
-    'agents',
-    () => new Promise((resolve, reject) =>
-      DpApi.sendGet('DP_API/agents')
-           .success(response => resolve(response.data))
-           .error(response => reject(response)))
-  )
-);

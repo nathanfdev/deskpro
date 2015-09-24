@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
-import { loadAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { loadAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { loadDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/departmentsActions';
 
 /**

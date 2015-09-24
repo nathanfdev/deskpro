@@ -8,11 +8,3 @@ function peopleStateSel(state) {
 
 export const peopleStateSelector = createStoreSelectors(peopleStateSel);
 export const createPeopleRequestSelectors = createRequestSelectorsBuilder(peopleStateSelector);
-export const agentsSelector = createSelector(
-  createPeopleRequestSelectors('agents').recordsSel,
-  agents => agents.toJS()
-);
-export const agentNamesMapSelector = createSelector(
-  agentsSelector,
-  agents => reduceMapToProperty('name', agents)
-);
