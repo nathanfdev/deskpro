@@ -172,13 +172,6 @@ class CoreExtension extends Extension
     {
         $container
             ->register(
-                'dp.entity_listener.person_changelog',
-                'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener')
-            ->addArgument(new Reference('service_container'))
-            ->addTag('doctrine.entity_listener');
-
-        $container
-            ->register(
                 'dp.entity_listener.person_contact_data_changelog',
                 'Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener')
             ->addArgument(new Reference('service_container'))

@@ -413,6 +413,23 @@ class TicketsController extends AbstractController
 
         try {
             $ticket->addMessage($message);
+
+            // If status is pending, we'll switch it to open so agents will see it
+            if (in_array(
+                $ticket->getStatusCode(),
+                array(
+                    Ticket::STATUS_AWAITING_USER,
+                    Ticket::STATUS_RESOLVED
+                )
+            )) {
+                $ticket->setStatus(Ticket::STATUS_AWAITING_AGENT);
+            }
+
+            if ($person->getId() && !$ticket->hasParticipantPerson($person)) {
+                // someone like the org manager replying - need to make sure they're CC'd
+                $ticket->addParticipantPerson($person);
+            }
+
             $em->persist($ticket);
             $em->persist($message);
 

@@ -32,9 +32,9 @@
  * @subpackage ApiBundle
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Orb\Util\Arrays;

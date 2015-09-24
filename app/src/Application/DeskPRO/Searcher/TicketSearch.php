@@ -665,7 +665,6 @@ class TicketSearch extends SearcherAbstract
         $with_part_union = false;
 
         if ($this->person AND $this->person['is_agent']) {
-
             $assigned_perm_part = "tickets.agent_id = {$this->person['id']}";
             if ($this->person->getAgentTeamIds()) {
                 $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . "))";

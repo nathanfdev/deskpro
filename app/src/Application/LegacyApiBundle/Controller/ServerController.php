@@ -31,9 +31,9 @@
  * @package DeskPRO
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\Encryption\DpEnc;
 use Application\DeskPRO\Encryption\StandardEncFactory;

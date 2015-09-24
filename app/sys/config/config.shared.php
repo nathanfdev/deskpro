@@ -222,6 +222,11 @@ $container->loadFromExtension(
     )
 );
 
+$container->register(
+    'dp.entity_listener.person_changelog',
+    'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener'
+)->addArgument(new Reference('service_container'))->addTag('doctrine.entity_listener');
+
 ############################################################################
 # Cache services
 ############################################################################

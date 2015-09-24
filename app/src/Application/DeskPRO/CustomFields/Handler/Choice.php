@@ -212,11 +212,11 @@ class Choice extends HandlerAbstract
 
         $attr = array(
             'data-map' => json_encode($root),
-        $field_opts = array(
-            'choices'  => $options,
-            'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
-            'data-max-depth' => $max_depth
-        ));
+            'data-custom-field' => 'choice-' . ($this->expanded ? 'expanded' : 'collapsed') . ($this->multiple ? '-multiple' : null),
+            'data-max-depth'    => $max_depth
+        );
+
+        $field_opts = array('choices' => $choices,);
 
         if (!$this->multiple) {
             // turns off legacy select2 handler

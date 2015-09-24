@@ -1,39 +1,39 @@
-var gulp       = require('gulp'),
-    gutil      = require('gulp-util'),
-    cache      = require('gulp-cached'),
-    coffee     = require('gulp-coffee'),
-    less       = require('gulp-less'),
-    sass       = require('gulp-sass'),
-    sourcemaps = require('gulp-sourcemaps'),
-    watch      = require('gulp-watch'),
-    finclude   = require('gulp-file-include'),
-    path       = require('path'),
-    rename     = require('gulp-rename'),
-    rjs        = require('gulp-requirejs'),
-    plumber    = require('gulp-plumber'),
-    debug      = require('gulp-debug'),
-    using      = require('gulp-using'),
-    gulpif     = require('gulp-if'),
-    lazypipe   = require('lazypipe'),
-    clean      = require('gulp-clean'),
-    deskpro    = {util: {}, taskGen: {}};
+var gulp = require('gulp'),
+gutil = require('gulp-util'),
+cache = require('gulp-cached'),
+coffee = require('gulp-coffee'),
+less = require('gulp-less'),
+sass = require('gulp-sass'),
+sourcemaps = require('gulp-sourcemaps'),
+watch = require('gulp-watch'),
+finclude = require('gulp-file-include'),
+path = require('path'),
+rename = require('gulp-rename'),
+rjs = require('gulp-requirejs'),
+plumber = require('gulp-plumber'),
+debug = require('gulp-debug'),
+using = require('gulp-using'),
+gulpif = require('gulp-if'),
+lazypipe = require('lazypipe'),
+clean = require('gulp-clean'),
+deskpro = {util: {}, taskGen: {}};
 
 
 //######################################################################################################################
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['less', 'sass', 'cpjs', 'loader'], function() {
-    // hacking coffee here to run after all others
-    // because something in the other tasks corrupts
-    // the stream and causes coffee compile to fail
-    // randomly sometimes
-    return deskpro.taskGen.coffeeScript([
-        './app/Admin*/**/*.coffee',
-        './app/Agent*/**/*.coffee',
-        './app/Reports*/**/*.coffee',
-        './app/DeskPRO*/**/*.coffee'
-    ]);
+gulp.task('default', ['less', 'sass', 'cpjs', 'loader'], function () {
+  // hacking coffee here to run after all others
+  // because something in the other tasks corrupts
+  // the stream and causes coffee compile to fail
+  // randomly sometimes
+  return deskpro.taskGen.coffeeScript([
+    './app/Admin*/**/*.coffee',
+    './app/Agent*/**/*.coffee',
+    './app/Reports*/**/*.coffee',
+    './app/DeskPRO*/**/*.coffee'
+  ]);
 });
 gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
 
@@ -96,7 +96,7 @@ deskpro.util.coffeeError = function (e) {
 // Task Methods
 //------------------------------
 
-deskpro.taskGen.coffeeScript = function(glob, target_dir) {
+deskpro.taskGen.coffeeScript = function (glob, target_dir) {
 
   if (!target_dir) {
     target_dir = './app-build/';
@@ -113,7 +113,7 @@ deskpro.taskGen.coffeeScript = function(glob, target_dir) {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
 
-deskpro.taskGen.lessCss = function(glob, target_dir) {
+deskpro.taskGen.lessCss = function (glob, target_dir) {
 
   if (!target_dir) {
     target_dir = './app-build/';
@@ -130,7 +130,7 @@ deskpro.taskGen.lessCss = function(glob, target_dir) {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
 
-deskpro.taskGen.sassCss = function(glob, target_dir) {
+deskpro.taskGen.sassCss = function (glob, target_dir) {
 
   if (!target_dir) {
     target_dir = './app-build/';
@@ -147,7 +147,7 @@ deskpro.taskGen.sassCss = function(glob, target_dir) {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
 
-deskpro.taskGen.loaderTpl = function(glob, target_dir) {
+deskpro.taskGen.loaderTpl = function (glob, target_dir) {
 
   if (!target_dir) {
     target_dir = './loader-build/';
@@ -187,7 +187,7 @@ gulp.task('coffee-deskpro', function () {
   return deskpro.taskGen.coffeeScript('./app/DeskPRO*/**/*.coffee');
 });
 
-gulp.task('coffee', ['clean'], function() {
+gulp.task('coffee', ['clean'], function () {
   return deskpro.taskGen.coffeeScript([
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
@@ -200,9 +200,9 @@ gulp.task('coffee', ['clean'], function() {
 // Copy JS
 //------------------------------
 
-gulp.task('cpjs-all', function() {
+gulp.task('cpjs-all', function () {
 
-  var glob       = './app/**/*.js';
+  var glob = './app/**/*.js';
   var target_dir = './app-build/';
 
   return gulp.src(glob)
@@ -212,13 +212,13 @@ gulp.task('cpjs-all', function() {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 });
 
-gulp.task('cpjs', ['clean'], function() {
+gulp.task('cpjs', ['clean'], function () {
 
-  var glob       = './app/**/*.js';
+  var glob = './app/**/*.js';
   var target_dir = './app-build/';
 
   return gulp.src(glob)
-      .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
+    .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
@@ -275,21 +275,33 @@ var rjsLoadFiles = [
 
 function addRjsTask(rjsBundle) {
   var bundleName = rjsBundle.replace(/^.*\/(.*?)\.js$/, '$1');
-  var taskName   = 'rjs-' + bundleName.replace(/Load$/, '').toLowerCase();
+  var taskName = 'rjs-' + bundleName.replace(/Load$/, '').toLowerCase();
 
   var target;
   switch (bundleName) {
-    case 'AdminLoad':        target = 'Admin/AdminLoad.min.js'; break;
-    case 'CloudAdminLoad':   target = 'Admin/Cloud/CloudAdminLoad.min.js'; break;
-    case 'AdminUpgradeLoad': target = 'AdminUpgrade/AdminUpgradeLoad.min.js'; break;
-    case 'AdminStartLoad':   target = 'AdminStart/AdminStartLoad.min.js'; break;
-    case 'ReportsLoad':      target = 'Reports/ReportsLoad.min.js'; break;
-    case 'AgentLoad':        target = 'Agent/AgentLoad.min.js'; break;
+    case 'AdminLoad':
+      target = 'Admin/AdminLoad.min.js';
+      break;
+    case 'CloudAdminLoad':
+      target = 'Admin/Cloud/CloudAdminLoad.min.js';
+      break;
+    case 'AdminUpgradeLoad':
+      target = 'AdminUpgrade/AdminUpgradeLoad.min.js';
+      break;
+    case 'AdminStartLoad':
+      target = 'AdminStart/AdminStartLoad.min.js';
+      break;
+    case 'ReportsLoad':
+      target = 'Reports/ReportsLoad.min.js';
+      break;
+    case 'AgentLoad':
+      target = 'Agent/AgentLoad.min.js';
+      break;
   }
 
   gulp.task(taskName, ['coffee', 'loader'], function () {
     var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
-    rjsConfig.out  =  target;
+    rjsConfig.out = target;
     rjsConfig.name = bundleName;
 
     if (bundleName == 'AgentLoad') {
