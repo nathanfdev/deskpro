@@ -2097,8 +2097,7 @@ class TicketSearch extends SearcherAbstract
                                         if ('date' === @$_parts[0] && @$_parts[1]) {
                                             $wheres[] = "$field $op " . (int) $_parts[1];
                                         } elseif ('date_relative' === @$_parts[0]) {
-                                            @list($i, $g) = @$_parts[1];
-                                            $wheres[] = "$field $op " . strtotime('-' . (int) $i . ' ' . $g);
+                                            $wheres[] = "$field $op " . strtotime('-' . $_parts[1]);
                                         }
                                         break;
                                     case self::OP_BETWEEN:
