@@ -39,37 +39,37 @@ abstract class AbstractCustomDef extends AbstractEntity
     /**
      * @var int
      */
-    private $parent_id;
+    protected $parent_id;
 
     /**
      * @var string
      */
-    private $sys_name;
+    protected $sys_name;
 
     /**
      * @var string
      */
-    private $title;
+    protected $title;
 
     /**
      * @var string
      */
-    private $description;
+    protected $description;
 
     /**
      * @var string
      */
-    private $handler_class;
+    protected $handler_class;
 
     /**
      * @var bool
      */
-    private $is_enabled;
+    protected $is_enabled;
 
     /**
      * @var array
      */
-    private $options = array();
+    protected $options = array();
 
     /**
      * @return int
