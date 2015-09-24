@@ -28,8 +28,12 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
+ * People custom def json file parser
+ *
  * Class PeopleCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
@@ -48,7 +52,7 @@ final class PeopleCustomDef extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_PERSON_CUSTOM_DEF_PATH, $this->getBatchNum());
     }
 
     /**
@@ -56,6 +60,24 @@ final class PeopleCustomDef extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_PERSON_CUSTOM_DEF_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONPersonCustomDef')
+            ->setRefColumn('oid')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\TicketCustomDef
+     */
+    protected function exportCustomDef(array $data)
+    {
+        return new Entity\TicketCustomDef();
     }
 }

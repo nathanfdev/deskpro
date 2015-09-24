@@ -28,8 +28,12 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
+ * Tickets custom def json file parser
+ *
  * Class TicketCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
@@ -48,7 +52,7 @@ final class TicketCustomDef extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_TICKET_CUSTOM_DEF_PATH, $this->getBatchNum());
     }
 
     /**
@@ -56,6 +60,24 @@ final class TicketCustomDef extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_TICKET_CUSTOM_DEF_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONTicketCustomDef')
+            ->setRefColumn('oid')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\TicketCustomDef
+     */
+    protected function exportCustomDef(array $data)
+    {
+        return new Entity\TicketCustomDef();
     }
 }
