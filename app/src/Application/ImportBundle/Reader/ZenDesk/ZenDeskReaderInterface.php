@@ -43,21 +43,22 @@ interface ZenDeskReaderInterface extends ReaderInterface
     const CODE_TOO_MANY_REQUESTS     = 429;
     const CODE_NOT_FOUND             = 404;
 
-    const FIELD_TYPE_SUBJECT     = 'subject';
-    const FIELD_TYPE_DESCRIPTION = 'description';
-    const FIELD_TYPE_STATUS      = 'status';
-    const FIELD_TYPE_TICKET_TYPE = 'tickettype';
-    const FIELD_TYPE_PRIORITY    = 'priority';
-    const FIELD_TYPE_GROUP       = 'group';
-    const FIELD_TYPE_ASSIGNEE    = 'assignee';
-    const FIELD_TYPE_CHECKBOX    = 'checkbox';
-    const FIELD_TYPE_DATE        = 'date';
-    const FIELD_TYPE_DECIMAL     = 'decimal';
-    const FIELD_TYPE_DROPDOWN    = 'dropdown';
-    const FIELD_TYPE_INTEGER     = 'integer';
-    const FIELD_TYPE_REGEXP      = 'regexp';
-    const FIELD_TYPE_TEXT        = 'text';
-    const FIELD_TYPE_TEXTAREA    = 'textarea';
+    const FIELD_TYPE_SUBJECT         = 'subject';
+    const FIELD_TYPE_DESCRIPTION     = 'description';
+    const FIELD_TYPE_STATUS          = 'status';
+    const FIELD_TYPE_TICKET_TYPE     = 'tickettype';
+    const FIELD_TYPE_PRIORITY        = 'priority';
+    const FIELD_TYPE_BASIC_PRIORITY  = 'basic_priority';
+    const FIELD_TYPE_GROUP           = 'group';
+    const FIELD_TYPE_ASSIGNEE        = 'assignee';
+    const FIELD_TYPE_CHECKBOX        = 'checkbox';
+    const FIELD_TYPE_DATE            = 'date';
+    const FIELD_TYPE_DECIMAL         = 'decimal';
+    const FIELD_TYPE_DROPDOWN        = 'dropdown';
+    const FIELD_TYPE_INTEGER         = 'integer';
+    const FIELD_TYPE_REGEXP          = 'regexp';
+    const FIELD_TYPE_TEXT            = 'text';
+    const FIELD_TYPE_TEXTAREA        = 'textarea';
 
     /**
      * Returns account settings

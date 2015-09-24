@@ -94,9 +94,13 @@ final class TicketCustomDef extends AbstractParser
             'raw_title'            => TransformerInterface::TYPE_STRING,
             'description'          => TransformerInterface::TYPE_STRING,
             'raw_description'      => TransformerInterface::TYPE_STRING,
+            'position'             => TransformerInterface::TYPE_INT,
             'required'             => TransformerInterface::TYPE_BOOLEAN,
             'active'               => TransformerInterface::TYPE_BOOLEAN,
             'system_field_options' => TransformerInterface::TYPE_ARRAY,
+            'custom_field_options' => TransformerInterface::TYPE_ARRAY,
+            'created_at'           => TransformerInterface::TYPE_DATE,
+            'updated_at'           => TransformerInterface::TYPE_DATE,
         ));
 
         $not_supported_types = array(
