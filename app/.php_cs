@@ -9,6 +9,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
 ;
 
 return Symfony\CS\Config\Config::create()
+    ->setUsingCache(true)
     ->fixers(array(
         'align_double_arrow',
         'align_equals',
@@ -55,6 +56,8 @@ return Symfony\CS\Config\Config::create()
         'return',
         'short_tag',
         'single_array_no_trailing_comma',
+        'single_blank_line_before_namespace',
+        'single_line_after_imports',
         'spaces_before_semicolon',
         'spaces_cast',
         'standardize_not_equal',
@@ -63,6 +66,7 @@ return Symfony\CS\Config\Config::create()
         'unused_use',
         'visibility',
         'whitespacy_lines',
+        'unused_use'
     ))
     ->finder($finder)
 ;
