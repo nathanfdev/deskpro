@@ -16,6 +16,9 @@ import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Compo
 
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 
+import Immutable from 'immutable';
+window.Immutable = Immutable;
+
 export default class AgentApp {
   run() {
     $(document).on('ready', () => this.start());

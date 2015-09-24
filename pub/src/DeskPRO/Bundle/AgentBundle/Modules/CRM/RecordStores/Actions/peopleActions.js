@@ -1,9 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import Immutable from 'immutable';
-
-window.Immutable = Immutable;
 
 export const gcPeople         = createAction('GC_PEOPLE',              recordStoreActions.gcRecords());
 export const releasePeople    = createAction('RELEASE_PEOPLE',         recordStoreActions.releaseRecords());
