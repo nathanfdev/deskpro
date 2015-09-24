@@ -27,17 +27,24 @@ class AgentChatTransformer extends AbstractDataSerializerTransformer
     {
         /** @var AgentChat $entity */
         $entity = $transformation_request->getDataToBeTransformed();
-        $persons = $entity->getPersonList();
-        $participants = [];
-        foreach($persons as $person) {
-            $participants[$person->getId()] = [
-                'id' => $person->getId(),
-                'gravatar_url' => $person->getGravatarUrl(),
-                'name' => $person->getDisplayName(),
-            ];
-        }
-        return [
-            'participants' => array_values($participants),
+        $participants = $entity->getParticipants();
+        $data = [
+            'agents' => [],
+            'agent_teams' => [],
+            'departments' => [],
         ];
+        foreach($participants as $participant) {
+            if($participant->getPersonId()) {
+                $data['agents'][] = $participant->getPersonId();
+            } elseif ($participant->getTeamId() ) {
+                $data['agent_teams'][] = $participant->getTeamId();
+            } elseif ($participant->getDepartmentId()) {
+                $data['departments'][] = $participant->getDepartmentId();
+            }
+        }
+        foreach($data as &$datum) {
+            array_unique($datum);
+        }
+        return $data;
     }
 }

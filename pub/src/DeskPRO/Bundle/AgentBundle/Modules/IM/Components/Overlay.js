@@ -26,7 +26,7 @@ export default class Overlay extends React.Component {
                 <div className="wrapper">
                     <div className="bucket left">
                         <h1>Agents</h1>
-                        <AgentsList agents={this.props.agents}/>
+                        <AgentsList handler={this.props.agentClickHandler} agents={this.props.agents}/>
                     </div>
 
                     <div className="bucket right">

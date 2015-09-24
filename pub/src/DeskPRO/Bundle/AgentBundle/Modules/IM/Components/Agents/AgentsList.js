@@ -29,7 +29,7 @@ const AgentsList = React.createClass(
                 </form>
                 <div className="im-list-wrapper">
                     <ul className="im-list">
-                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} highlight={this.state.value}/>) : this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />)}
+                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem agentClickHandler={this.props.handler} key={index} agent={agent} highlight={this.state.value}/>) : this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />)}
                     </ul>
                 </div>
             </div>

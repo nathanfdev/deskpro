@@ -214,4 +214,28 @@ class AgentChatParticipant extends DomainObject
         $this->is_admin = $is_admin;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getPersonId()
+    {
+        return $this->person_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTeamId()
+    {
+        return $this->agent_team_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDepartmentId()
+    {
+        return $this->department_id;
+    }
 }
