@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,33 +29,46 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Criteria;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Orb\Util\CheckedOptionsArray;
-
-interface CriteriaTermInterface
+class Build1443084898 extends AbstractBuild
 {
-    /**
-     * Gets the type name of the criteria
-     *
-     * @return string
-     */
-    public function getTermType();
+    public function run()
+    {
+        $this->out("Migrate Ticket Field Filters");
 
-    /**
-     * Gets criteria operator (is, is not, etc).
-     *
-     * @return string
-     */
-    public function getTermOperator();
+        $db = $this->container->getDb();
+        $q = 'select id, terms from ticket_filters';
+        foreach ($db->fetchAll($q) as $row) {
+            $terms = json_decode($row['terms'], 1);
+            $update = false;
 
-    /**
-     * Get's an array of options
-     *
-     * @return CheckedOptionsArray
-     */
-    public function getTermOptions();
+            foreach ($terms as &$term) {
+                if (0 !== strpos(@$term['type'], 'ticket_field')) continue;
+                $id = trim($term['type'], 'ticket_field[]');
+                if (!isset($term['options']['custom_fields']['field_' . $id])) continue;
+
+                $term['options'] = $term['options']['custom_fields']['field_' . $id];
+                if (0 === strpos($term['options'], 'date')) {
+                    $term['options'] = array(
+                        'date1' => time(),
+                        'date2' => '',
+                        'date1_relative' => '',
+                        'date1_relative_type' => 'days',
+                        'date2_relative' => '',
+                        'date2_relative_type' => 'days',
+                    );
+                }
+
+                $update = true;
+            }
+
+            if ($update) {
+                $db->update('ticket_filters', array('terms' => json_encode($terms)), array('id' => $row['id']));
+            }
+        }
+    }
 }

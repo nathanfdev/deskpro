@@ -2030,11 +2030,8 @@ class TicketSearch extends SearcherAbstract
 
                         $search_type = $field_def->getHandler()->getSearchType();
 
-                        if (is_array($choice) && isset($choice['custom_fields']['field_' . $term_id])) {
-                            $choice = $choice['custom_fields']['field_' . $term_id];
-                        }
-
-                        if (is_array($choice) && isset($choice['value'])) {
+                        $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
+                        if (is_array($choice) && isset($choice['value']) && !$isDate) {
                             $choice = $choice['value'];
                         }
 
@@ -2093,24 +2090,26 @@ class TicketSearch extends SearcherAbstract
                                     case self::OP_LTE:
                                     case self::OP_GTE:
                                         $op = self::OP_LTE === $op ? '<=' : '>=';
-                                        $_parts = explode('|', $choice);
-                                        if ('date' === @$_parts[0] && @$_parts[1]) {
-                                            $wheres[] = "$field $op " . (int) $_parts[1];
-                                        } elseif ('date_relative' === @$_parts[0]) {
-                                            @list($i, $g) = @$_parts[1];
-                                            $wheres[] = "$field $op " . strtotime('-' . (int) $i . ' ' . $g);
+
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = "$field $op " . (int) $choice['date1'];
+                                            } else if (!empty($choice['date1_relative'])) {
+                                                $wheres[] = "$field $op " . strtotime('-' . $choice['date1_relative'] . ' ' . $choice['date1_relative_type']);
+                                            }
+                                        } else {
+                                            $wheres[] = "$field $op " . $this->quoteDbValue('%'.$choice.'%');
                                         }
                                         break;
                                     case self::OP_BETWEEN:
-                                        $_parts = explode('|', $choice);
-                                        if ('date' === @$_parts[0] && @$_parts[1] && @$_parts[2]) {
-                                            $d1 = (int) $_parts[1];
-                                            $d2 = (int) $_parts[2];
-                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
-                                        } else if ('date_relative' === @$_parts[0]) {
-                                            $d1 = strtotime('-' . $_parts[1]);
-                                            $d2 = strtotime('-' . $_parts[2]);
-                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = $field . ' BETWEEN ' . (int) $choice['date1'] . ' AND ' . (int) @$choice['date2'];
+                                            } else if (!empty($choice['date1_relative'])) {
+                                                $d1 = strtotime('-' . $choice['date1_relative'] . ' ' . $choice['date1_relative_type']);
+                                                $d2 = strtotime('-' . @$choice['date2_relative'] . ' ' . @$choice['date2_relative_type']);
+                                                $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                            }
                                         }
                                         break;
                                 }

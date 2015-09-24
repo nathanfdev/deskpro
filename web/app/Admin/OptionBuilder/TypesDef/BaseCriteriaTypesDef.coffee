@@ -314,7 +314,7 @@ define [
               date2_relative = null
               use_relative = false
 
-              if value.options.date1 or value.options.date2 or (not value.options.date1_relative and not value.options.date2_relative)
+              if value.options.date1 or (not value.options.date1_relative and not value.options.date2_relative)
                 use_relative = false
 
                 if value.options.date1
@@ -345,10 +345,9 @@ define [
               value.options = {}
 
               if not model.use_relative
-                if (model.op == 'lte' || model.op == 'between')
-                  if not model.date1 then model.date1 = new Date()
-                  value.options.date1 = parseInt(model.date1.getTime() / 1000)
-                if (model.op == 'gte' || model.op == 'between') and model.date2
+                if not model.date1 then model.date1 = new Date()
+                value.options.date1 = parseInt(model.date1.getTime() / 1000)
+                if (model.op == 'between')
                   if not model.date2 then model.date2 = new Date()
                   value.options.date2 = parseInt(model.date2.getTime() / 1000)
               else
@@ -363,7 +362,7 @@ define [
 
               # compatibility with Custom Ticket Field
               value.options.value = 'date'
-
+              console.info value
               return value
           }
       }

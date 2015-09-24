@@ -25,37 +25,22 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Entities
- */
+namespace Application\DeskPRO\Form\Type\CriteriaFilterField;
 
-namespace Application\DeskPRO\Criteria;
+use Application\DeskPRO\App;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
 
-use Orb\Util\CheckedOptionsArray;
-
-interface CriteriaTermInterface
+class DateTimeType extends AbstractType
 {
-    /**
-     * Gets the type name of the criteria
-     *
-     * @return string
-     */
-    public function getTermType();
+    public function getName()
+    {
+        return 'criteria_filter_datetime';
+    }
 
-    /**
-     * Gets criteria operator (is, is not, etc).
-     *
-     * @return string
-     */
-    public function getTermOperator();
-
-    /**
-     * Get's an array of options
-     *
-     * @return CheckedOptionsArray
-     */
-    public function getTermOptions();
+	public function buildView(FormView $view, FormInterface $form, array $options)
+	{
+		$view->vars['rule_handler'] = ' data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTimeTerm"';
+	}
 }
