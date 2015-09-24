@@ -31,7 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
-use Application\ImportBundle\Service\Import as ImportService;
+use Application\ImportBundle\Importer\Importer;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
@@ -61,7 +61,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     private $writer;
 
     /**
-     * @var ImportService
+     * @var Importer
      */
     protected $importer;
 
@@ -71,14 +71,14 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * @param Exporter\ExporterInterface $exporter
      * @param Validator\Collection       $validators
      * @param GeneratorConfig            $config
-     * @param ImportService              $importer
+     * @param Importer                   $importer
      * @param Writer\WriterInterface     $writer
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
         Validator\Collection       $validators,
         GeneratorConfig            $config,
-        ImportService              $importer,
+        Importer                   $importer,
         Writer\WriterInterface     $writer = null
     ) {
         $this->config     = $config;
@@ -113,7 +113,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             $outputWriter = $this->getWriter();
             $collection   = new GenerateCollection();
 
-            $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
+            $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_EXPORT);
 
             // Exports data to a collection of entities
             foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
@@ -130,7 +130,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             }
 
             if ($collection->hasEntities()) {
-                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
+                $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_VALIDATION);
 
                 // Validate the collection of entities
                 foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
@@ -163,7 +163,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                     }
                 }
 
-                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_IMPORT);
+                $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_IMPORT);
 
                 // Writes entities to a storage
                 $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
@@ -188,16 +188,16 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
             if ($exporter instanceof Exporter\ExporterBatchInterface) {
                 if ( ! $exporter->getUpdatedBatchConfig()->getHasRemaining()) {
-                    $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+                    $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_DONE);
                 }
 
             } else {
-                $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+                $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_DONE);
             }
 
         } catch (\Exception $e) {
             // todo em closed
-            // $this->importer->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
+            // $this->importer->setStatus($this->config->getExporterType(), Importer::STATUS_ERROR);
             throw $e;
         }
     }

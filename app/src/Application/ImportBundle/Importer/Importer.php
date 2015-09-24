@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Service;
+namespace Application\ImportBundle\Importer;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\DataStore;
@@ -43,10 +43,10 @@ use Orb\Util\Strings;
 use Orb\Zip\Zip;
 
 /**
- * Class Import
+ * Class Importer
  * @package Application\ImportBundle\Service
  */
-class Import
+class Importer
 {
     public static $allowed = array(
         ExporterInterface::TYPE_CSV,

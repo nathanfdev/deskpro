@@ -58,7 +58,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Process\Process;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Application\ImportBundle\Service\Import as ImportService;
+use Application\ImportBundle\Importer\Importer;
 
 /**
  * Base export command
@@ -136,7 +136,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('config-from-db')) {
-            /** @var ImportService $is */
+            /** @var Importer $is */
             $is = $this->getContainer()->get('deskpro.import');
             $input->setArgument('script', $is->getCurrentName());
         }
@@ -388,7 +388,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $readerConfig = null;
 
         if ($input->getOption('config-from-db')) {
-            /** @var ImportService $is */
+            /** @var Importer $is */
             $is = $this->getContainer()->get('deskpro.import');
             $importer = $is->getImporter($input->getArgument('script'));
             $configData = $importer->getData('config');

@@ -22,8 +22,8 @@ services:
     class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
 
   deskpro.import:
-    class: Application\ImportBundle\Service\Import
-    factory_class: Application\ImportBundle\Service\ImportFactory
+    class: Application\ImportBundle\Importer\Importer
+    factory_class: Application\ImportBundle\Importer\ImporterFactory
     factory_method: create
     arguments: [@service_container]
 

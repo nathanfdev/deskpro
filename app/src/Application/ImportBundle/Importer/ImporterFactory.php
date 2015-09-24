@@ -25,19 +25,19 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Service;
+namespace Application\ImportBundle\Importer;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * Class ImportFactory
+ * Class ImporterFactory
  * @package Application\ImportBundle\Service
  */
-class ImportFactory
+class ImporterFactory
 {
     /**
      * @param DeskproContainer $container
-     * @return Import
+     * @return Importer
      */
     public static function create(DeskproContainer $container)
     {
@@ -45,6 +45,6 @@ class ImportFactory
         $blob_storage   = $container->getBlobStorage();
         $zipper         = $container->getSystemService('zipper');
 
-        return new Import($entity_manager, $blob_storage, $zipper);
+        return new Importer($entity_manager, $blob_storage, $zipper);
     }
 }
