@@ -108,17 +108,17 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $output = $command_tester->getDisplay();
 
         $this->assertContains('Read 4 tickets', $output);
-        $this->assertContains('[ZDTicket #3] Skipping exception with ZDTicket: Unable to get submitter email by id #3', $output);
+        $this->assertNotContains('Skipping exception with ZDTicket: Unable to get submitter email', $output);
         $this->assertContains('[ZDTicket #1] Reading comments', $output);
         $this->assertContains('[ZDTicketComment #3] Skipping exception with ZDTicketComment: Comment without author_id, skipping', $output);
-        $this->assertContains('[ZDTicketComment #4] Skipping exception with ZDTicketComment: Unable to get comment author, skipping', $output);
+        $this->assertNotContains('[ZDTicketComment #4] Skipping exception with ZDTicketComment: Unable to get comment author, skipping', $output);
         $this->assertContains('[ZDAttachment #2] Skipping exception with ZDAttachment: Inline attachment, skipping', $output);
         $this->assertContains('[ZDAttachment #3] Skipping exception with ZDAttachment: Unable to download attachment', $output);
 
         $this->assertContains('[ZDTicket #2] Reading comments', $output);
         $this->assertContains('[ZDTicket #3] Reading comments', $output);
         $this->assertContains('Read 6 people', $output);
-        $this->assertContains('[ZDPerson #3] Skipping exception with ZDPerson: Person without email, skipping', $output);
+        $this->assertNotContains('[ZDPerson #3] Skipping exception with ZDPerson: Person without email, skipping', $output);
         $this->assertContains('Done. Checking was successful.', $output);
 
         $this->checkNoErrors($command_tester);
@@ -226,7 +226,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('"is_hold":false');
         $this->helper->seeInThisFile('"participants":[]');
 
-        $this->assertFalse(file_exists('1/tickets/ticket_3.json'));
+        $this->helper->seeFileFound('1/tickets/ticket_3.json');
+        $this->helper->seeInThisFile('Ticket 3');
+        $this->helper->seeInThisFile('"person":"imported.user.3@example.com"');
+        $this->helper->seeInThisFile('"agent":"imported.user.4@example.com"');
 
         $this->helper->seeFileFound('1/tickets/ticket_4.json');
         $this->helper->seeInThisFile('Ticket 4');
@@ -685,7 +688,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         /** @var Entity\Ticket[] $tickets */
         $tickets = $this->ticket_repository->findAll();
-        $this->assertCount(3, $tickets);
+        $this->assertCount(4, $tickets);
 
         $ticket = $tickets[0];
 
@@ -704,6 +707,13 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertFalse($ticket->isHold());
 
         $ticket = $tickets[2];
+
+        $this->assertNotNull($ticket);
+        $this->assertEquals('Ticket 3', $ticket->getTitle());
+        $this->assertEquals('awaiting_agent', $ticket->getStatusCode());
+        $this->assertFalse($ticket->isHold());
+
+        $ticket = $tickets[3];
 
         $this->assertNotNull($ticket);
         $this->assertEquals('Ticket 4', $ticket->getTitle());
@@ -731,6 +741,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->assertEquals(array('Tag 2', 'Tag 3'), $labels);
         $this->assertFalse($person->isDisabled());
+        $this->assertFalse($person->isDeleted());
+
+        $person = $this->person_repository->findOneByEmail('imported.user.4@example.com');
+        $this->assertTrue($person->isDisabled());
         $this->assertFalse($person->isDeleted());
 
         $person = $this->person_repository->findOneByEmail('imported.user.100000@example.com');

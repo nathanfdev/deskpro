@@ -58,6 +58,13 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
 
         $people = array();
         foreach ($result as $person) {
+            if ( ! isset($person['email']) || ! $person['email']) {
+                $person = array_merge($person, array(
+                    'email'      => sprintf('imported.user.%s@example.com', $person['id']),
+                    'is_deleted' => true,
+                ));
+            }
+
             $people[$person['id']] = $person;
         }
 

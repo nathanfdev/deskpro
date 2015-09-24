@@ -3,23 +3,25 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
     # Description
     # -----------
     #
-    # This turns an input into an intl-tel-input:
+    # This turns a div into an intl-tel-input with extension support:
     # https://github.com/Bluefieldscom/intl-tel-input
     #
     # You can pass in the default selected 2 character country code.
     #
-    # NOTE: If you are using a scoped model (ie API) for this input's phone number
-    #       value, you should always pass in the country code parameter
-    #       that will be evaluated at the time as the model. Otherwise,
-    #       the widget might render incorrectly due to DOM issues.
-    #       This is because we need to call setNumber() after its visible to the user.
+    # attributes:
+    #
+    # default_region = the default country code to use if no phone number
+    # start-phone-number = the phone number to start with. this will likely be the same
+    #                      data as the model, except formatted as "{num} ext. {extension}"
+    # phone = a JS model (object) that this writes to, in the format of { number: "+19024030560", ext: "999" }
     #
     # Example
     # -------
-    # <input dp-phone-number="CA">
-    #
-    # Example with handling a model attached:
-    # <input dp-phone-number="{{ phone.region }}" ng-model="phone.number">
+    # <div dp-phone-number
+		#			 phone="EditCtrl.form.primary_phone"
+		#			 default_region="{{ ng_var('EditCtrl.primary_phone_number_region')  }}"
+		#			 start-phone-number="{{ ng_var('EditCtrl.form.primary_phone.number') }} ext. {{ ng_var('EditCtrl.form.primary_phone.ext') }}">
+		#		</div>
   ###
   Admin_Main_Directive_DpPhoneNumber = [ '$rootScope', '$timeout', ($rootScope, $timeout) ->
     return {
@@ -37,6 +39,11 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
         $ext = $($elements[1]);
         $num = $($elements[2]);
 
+        dialCodes = $.fn.intlTelInput.getCountryData().reduce((a, cdata) =>
+          a[cdata.dialCode] = cdata.iso2
+          return a
+        , {})
+
         didNotRun = true
         $attrs.$observe 'defaultRegion', (region) =>
           if didNotRun && region
@@ -49,19 +56,35 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
                 nationalMode: true
               })
             $main.intlTelInput('utilsLoaded')
-            $main.bind('blur keyup change input', () ->
-                raw_input = $main.val().split(" ext. ");
-                if (raw_input.length > 1 && raw_input[1].length == 0)
-                  $main.val(raw_input[0])
+            $main.bind('change input', () ->
+              main_val = $main.val();
+              for dcode, isocode of dialCodes
+                dial_code = '+' + dcode;
+                shouldRemoveDialCode = main_val.indexOf(dial_code) == 0 && main_val.length > dial_code.length + 1
+                if shouldRemoveDialCode
+                  $main.intlTelInput('setNumber', $main.val().substr(dial_code.length).trim())
+                  $main.intlTelInput('selectCountry', isocode);
 
-                $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')}
-              )
+              raw_input = $main.val().split("ext.");
+              if ((raw_input.length > 1 && raw_input[1].trim().length == 0) or raw_input.length == 1)
+                $main.intlTelInput('setNumber', raw_input[0].replace(/\s/g, ''))
+
+              $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')}
+
+              if not $main.intlTelInput('getExtension').trim()
+                $main.intlTelInput('setNumber', raw_input[0].trim())
+                $main.intlTelInput('setExtension', null)
+            )
 
         didNotRun2 = true
         $attrs.$observe 'startPhoneNumber', (startPhoneNumber) =>
-          if didNotRun2 && startPhoneNumber && startPhoneNumber.trim().length > 0
+          raw_input = startPhoneNumber.split("ext.")
+          if didNotRun2 && raw_input.length > 0 && raw_input[0].trim().length > 0
             didNotRun2 = false
-            $main.intlTelInput("setNumber", startPhoneNumber)
+            num = raw_input[0].trim()
+            if raw_input.length > 1 && raw_input[1].trim().length > 0
+              num += ' ext. ' + raw_input[1].trim()
+            $main.intlTelInput("setNumber", num)
     }
   ]
 
