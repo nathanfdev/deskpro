@@ -49,6 +49,7 @@ if (!$quick) {
 
     $lines = \Orb\Util\Strings::modifyLines($lines, "\t'", "',");
 } else {
+    $data_path = DP_ROOT.'/sys/Resources/cloudflare-ips.php';
     $lines = "";
 }
 

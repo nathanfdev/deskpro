@@ -78,7 +78,9 @@
   },
   "scripts": {
     "test": "jest",
-    "eslint": "eslint src || true"
+    "eslint": "eslint src || true",
+    "gulp": "gulp",
+    "gulp-prod": "gulp"
   },
   "jest": {
     "testDirectoryName": "tests",

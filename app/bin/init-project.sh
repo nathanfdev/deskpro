@@ -40,6 +40,6 @@ npm install
 echo ".. done"
 
 echo ">> Building new web assets"
-bin/gulp
+npm run-script gulp-prod
 echo ".. done"
 echo
