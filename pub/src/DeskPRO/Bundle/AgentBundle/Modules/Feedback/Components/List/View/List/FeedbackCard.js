@@ -20,13 +20,15 @@ export class FeedbackCard extends Component {
             <CardLineItem>#{feedback.id}</CardLineItem>
             <CardDisc/>
             <CardLineItem icon="fa-thumbs-up">{feedback.num_ratings}</CardLineItem>
-            <CardDisc/>
-            <CardTitle content={feedback.title}/>
           </CardLineLeft>
 
           <CardLineRight>
             <CardLineItem>{feedback.status}</CardLineItem>
           </CardLineRight>
+        </CardLine>
+
+        <CardLine>
+          <CardTitle content={feedback.title}/>
         </CardLine>
 
         <CardLine>
@@ -37,7 +39,7 @@ export class FeedbackCard extends Component {
           <CardLineLeft>
             <CardLineItem icon="fa-calendar-plus-o"><CardDate date={feedback.date_created}/></CardLineItem>
             <CardDisc/>
-            <CardUser/> // @ToDo send user data
+            <CardUser/> { /* @ToDo send user data */ }
             <CardDisc/>
             <CardLineItem icon="fa-book">{feedback.category}</CardLineItem>
             <CardDisc/>

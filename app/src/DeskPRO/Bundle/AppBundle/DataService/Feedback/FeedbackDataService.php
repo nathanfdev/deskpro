@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -251,12 +252,12 @@ class FeedbackDataService extends AbstractDataService
     /**
      * Select filtered list of feedback
      *
-     * @param FeedbackSelectCriteria $criteria
+     * @param Criteria $criteria
      * @param int $page
      * @param int $count
      * @return array
      */
-    public function selectFeedback(FeedbackSelectCriteria $criteria, $page, $count)
+    public function selectFeedback(Criteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
@@ -264,6 +265,7 @@ class FeedbackDataService extends AbstractDataService
             ->from('DeskPRO:Feedback', 'f')
             ->leftJoin('f.status_category', 'statusCategory')
             ->leftJoin('f.custom_data', 'customCat')
+            ->leftJoin('f.labels', 'labels')
             ->leftJoin('f.category', 'category')
             ->leftJoin('f.person', 'person')
             ->leftJoin('f.language', 'language')
