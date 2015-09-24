@@ -333,7 +333,7 @@ pageMeta.lang = {{ {
 <div class="profile-box-container dp-simpletab-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
-			<div class="controls {% if locked_self %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
+			<div class="controls {% if not locked_self %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
 				<div class="is-not-loading">
 					<span class="edit-gear" id="{{baseId}}_field_edit_start"></span>
 					<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>
