@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardDate } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/Card';
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardDate, CardUser }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/Card';
 
 export class FeedbackCard extends Component {
 
@@ -18,7 +19,7 @@ export class FeedbackCard extends Component {
           <CardLineLeft>
             <CardLineItem>#{feedback.id}</CardLineItem>
             <CardDisc/>
-            <CardLineItem>{feedback.num_ratings}</CardLineItem>
+            <CardLineItem icon="fa-thumbs-up">{feedback.num_ratings}</CardLineItem>
             <CardDisc/>
             <CardTitle content={feedback.title}/>
           </CardLineLeft>
@@ -29,29 +30,22 @@ export class FeedbackCard extends Component {
         </CardLine>
 
         <CardLine>
-          <CardLineLeft>
-            <CardTitle content={feedback.content}/>
-          </CardLineLeft>
+          <CardTitle content={feedback.content}/>
         </CardLine>
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem>
-              <i className="fa fa-calendar-o"></i> <CardDate label="Created" date={feedback.date_created}/>
-            </CardLineItem>
+            <CardLineItem icon="fa-calendar-plus-o"><CardDate date={feedback.date_created}/></CardLineItem>
             <CardDisc/>
-            <div className="dpwd--card-assigned">
-              <span className="dpw--avatar-face"
-                    style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>Sender</span>
-            </div>
+            <CardUser/> // @ToDo send user data
             <CardDisc/>
-            <CardLineItem><i className="fa fa-book"></i> {feedback.category}</CardLineItem>
+            <CardLineItem icon="fa-book">{feedback.category}</CardLineItem>
             <CardDisc/>
-            <CardLineItem><i className="fa fa-link"></i> <a href="#">Linked ticket</a></CardLineItem>
+            <CardLineItem icon="fa-link"><a href="#">Linked ticket</a></CardLineItem>
           </CardLineLeft>
 
           <CardLineRight>
-            <CardLineItem>5 <i className="fa fa-comment"></i></CardLineItem>
+            <CardLineItem icon="fa-comment">5</CardLineItem>
           </CardLineRight>
         </CardLine>
       </Card>

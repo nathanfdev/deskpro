@@ -61,10 +61,19 @@ export class CardLineRight extends Component {
 
 export class CardLineItem extends Component {
 
+  static propTypes = {
+    icon: PropTypes.string
+  };
+
   render() {
+
+    const {icon} = this.props;
+    if(icon){
+      var classes = classNames('fa', icon);
+    }
     return (
       <span className="dpwd--card-line-item">
-        {this.props.children}
+         {icon ? <i className={classes}/> : ''} {this.props.children}
       </span>
     );
   }
@@ -133,3 +142,16 @@ export class CardDate extends Component {
     );
   }
 }
+
+export class CardUser extends Component {
+
+  render() {
+    return (
+      <div className="dpwd--card-assigned">
+              <span className="dpw--avatar-face"
+                    style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>Sender</span>
+      </div>
+    );
+  }
+}
+
