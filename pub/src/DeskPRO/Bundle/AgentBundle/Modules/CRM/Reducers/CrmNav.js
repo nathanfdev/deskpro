@@ -1,7 +1,7 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/crmNavActions';
 import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ActionTypes";
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export default class CrmNav extends Reducer {
   getInitialState() {
@@ -36,8 +36,7 @@ export default class CrmNav extends Reducer {
       agents: {
         total: 0,
         teams: [/* {count, group} */]
-      },
-      groupNames: {/* id: name */}
+      }
     };
   }
 
@@ -52,7 +51,6 @@ export default class CrmNav extends Reducer {
       .r(actions.loadTeamsCounts, this.teamsCountsLoaded)
       .r(actions.loadPersonLabels, this.personLabelsLoaded)
       .r(actions.loadOrganizationLabels, this.organizationLabelsLoaded)
-      .r(actions.loadGroups, this.groupsLoaded)
     ;
   }
 
@@ -101,14 +99,6 @@ export default class CrmNav extends Reducer {
   organizationLabelsLoaded(prev, {payload}) {
     const next               = {...prev};
     next.labels.organization = payload;
-
-    return next;
-  }
-
-  groupsLoaded(prev, {payload}) {
-    const next      = {...prev};
-    next.groupNames = {};
-    payload.forEach(group => next.groupNames[group.id] = group.title);
 
     return next;
   }
