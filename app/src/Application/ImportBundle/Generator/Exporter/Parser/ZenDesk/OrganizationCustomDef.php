@@ -42,7 +42,7 @@ final class OrganizationCustomDef extends AbstractParser
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF;
+        return Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF;
     }
 
     /**

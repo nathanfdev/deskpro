@@ -253,10 +253,11 @@ class GeneratorConfig
     {
         return array(
             Entity\EntityInterface::TYPE_ORGANIZATION,
+            Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF,
+            Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_ARTICLE_CATEGORY,
             Entity\EntityInterface::TYPE_DOWNLOAD,
