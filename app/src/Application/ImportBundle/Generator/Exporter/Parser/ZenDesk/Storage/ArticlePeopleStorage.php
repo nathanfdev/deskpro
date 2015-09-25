@@ -25,11 +25,11 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Storage;
 
 /**
  * Class ArticlePeopleStorage
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\Storage
  */
 class ArticlePeopleStorage extends AbstractParserPeopleStorage
 {

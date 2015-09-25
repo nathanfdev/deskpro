@@ -61,8 +61,8 @@ class ZenDeskFactory extends AbstractExporterFactory
         ;
 
         $people_storage = new Parser\PeopleStorage();
-        $ticket_people  = new Parser\ZenDesk\TicketPeopleStorage($reader, $people_storage);
-        $article_people = new Parser\ZenDesk\ArticlePeopleStorage($reader, $people_storage);
+        $ticket_people  = new Parser\ZenDesk\Storage\TicketPeopleStorage($reader, $people_storage);
+        $article_people = new Parser\ZenDesk\Storage\ArticlePeopleStorage($reader, $people_storage);
 
         // Parsers collection
         $parsers = new Parser\Collection();
