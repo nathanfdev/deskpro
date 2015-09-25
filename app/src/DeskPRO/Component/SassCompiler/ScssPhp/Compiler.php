@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
 use Leafo\ScssPhp\Compiler as BaseCompiler;
@@ -38,7 +38,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * This is an extension to the ScssPhp to add:
+ * This is an extension to the ScssPhp to add:.
  *
  * - Ability to "jail" to specific paths. E.g., makes it impossible to try and @import(/etc/passwd) or something.
  * - And better erorr handling and choice of what happens when something goes wrong. Eg. what happens if
@@ -62,10 +62,10 @@ class Compiler extends BaseCompiler
     private $options;
 
     /**
-     * @param array $options
+     * @param array                 $options
      * @param FileLoaderInterface[] $file_loaders
      */
-    function __construct(array $options = null)
+    public function __construct(array $options = null)
     {
         $this->options = self::getOptionsResolver()->resolve($options ?: array());
 
@@ -90,6 +90,7 @@ class Compiler extends BaseCompiler
 
     /**
      * @param string $url
+     *
      * @return null|string
      */
     public function findImport($url)
@@ -127,7 +128,7 @@ class Compiler extends BaseCompiler
             $resolver->setDefault('error_load_file', 'comment');
             $resolver->setAllowedValues('error_load_file', array('ignore', 'throw', 'comment', 'continue'));
 
-            $resolver->setDefault('file_loaders', function(Options $options) {
+            $resolver->setDefault('file_loaders', function (Options $options) {
                 return new DefaultFileLoader();
             });
 
@@ -142,8 +143,10 @@ class Compiler extends BaseCompiler
      * Attempts to load a file through all our loaders.
      *
      * @param string $path
-     * @return string
+     *
      * @throws \Exception
+     * @return string
+     *
      */
     protected function loadFile($path)
     {
@@ -155,7 +158,7 @@ class Compiler extends BaseCompiler
                     case 'throw':
                         throw $e;
                     case 'comment':
-                        return '/* ERROR LOADING FILE (' . $path . '): ' . $e->getMessage() . ' */';
+                        return '/* ERROR LOADING FILE ('.$path.'): '.$e->getMessage().' */';
                     case 'ignore':
                         return '';
                 }
@@ -167,9 +170,9 @@ class Compiler extends BaseCompiler
 
         switch ($this->options['invalid_load_file']) {
             case 'throw':
-                throw new \InvalidArgumentException('Could not load file: ' . $path);
+                throw new \InvalidArgumentException('Could not load file: '.$path);
             case 'comment':
-                return '/* COULD NOT LOAD FILE (' . $path . ') */';
+                return '/* COULD NOT LOAD FILE ('.$path.') */';
         }
 
         return '';
@@ -191,7 +194,7 @@ class Compiler extends BaseCompiler
             $code = $this->loadFile($path);
 
             $parser = new ScssPhpParser($path, false);
-            $tree = $parser->parse($code);
+            $tree   = $parser->parse($code);
 
             if ($realPath) {
                 $this->importCache[$realPath] = $tree;

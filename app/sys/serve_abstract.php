@@ -1,38 +1,37 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
-abstract class LoaderAbstract
+abstract class serve_abstract
 {
     /**
      * @var string
@@ -165,14 +164,14 @@ abstract class LoaderAbstract
             $container = $this->bootFullSystem();
         } catch (\Exception $e) {
             error_log("Error handling error: {$e->getMessage()}");
-            echo "Error while processing error";
+            echo 'Error while processing error';
             exit(1);
         }
 
         KernelErrorHandler::handleException($e);
 
-        header("HTTP/1.1 500 Internal Server Error");
-        echo "There was an error while processing your request.";
+        header('HTTP/1.1 500 Internal Server Error');
+        echo 'There was an error while processing your request.';
         exit(1);
     }
 
@@ -314,10 +313,10 @@ abstract class LoaderAbstract
 
         $this->settings = array();
 
-        $q = $this->getPdo()->prepare("
+        $q = $this->getPdo()->prepare('
             SELECT name, value
             FROM settings
-        ");
+        ');
         $q->execute();
         while ($row = $q->fetch(\PDO::FETCH_NUM)) {
             $this->settings[$row[0]] = $row[1];
@@ -559,9 +558,9 @@ abstract class LoaderAbstract
             $line = "#$k ";
 
             if (isset($v['object'])) {
-                $line .= get_class($v['object'])."::";
+                $line .= get_class($v['object']).'::';
             } elseif (isset($v['class'])) {
-                $line .= $v['class']."::";
+                $line .= $v['class'].'::';
             }
 
             $line .= "{$v['function']}(";
@@ -570,7 +569,7 @@ abstract class LoaderAbstract
                 $line .= self::varToString($v['args']);
             }
 
-            $line .= ")";
+            $line .= ')';
 
             if (!empty($v['file'])) {
                 $line .= " called at [{$v['file']}:{$v['line']}]";
@@ -595,7 +594,7 @@ abstract class LoaderAbstract
                 $a[] = sprintf('%s => %s', $k, self::varToString($v));
             }
 
-            return sprintf("[array](%s)", implode(', ', $a));
+            return sprintf('[array](%s)', implode(', ', $a));
         }
         if (is_resource($var)) {
             return '[resource]';

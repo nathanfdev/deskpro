@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -121,22 +121,22 @@ abstract class AbstractDbSet implements DataSetInterface
 
     protected function addUser($fname, $lname, $email, $pass, $agent = false, $admin = false)
     {
-        $new_user = new \Application\DeskPRO\Entity\Person();
+        $new_user             = new \Application\DeskPRO\Entity\Person();
         $new_user->first_name = $fname;
-        $new_user->last_name = $lname;
+        $new_user->last_name  = $lname;
         $new_user->setEmail($email, true);
         $new_user->setPassword($pass);
-        $new_user->is_user = true;
+        $new_user->is_user      = true;
         $new_user->is_confirmed = true;
 
         if ($agent || $admin) {
             $new_user->is_agent_confirmed = true;
-            $new_user->is_agent = true;
-            $new_user->can_agent = true;
+            $new_user->is_agent           = true;
+            $new_user->can_agent          = true;
         }
 
         if ($admin) {
-            $new_user->can_admin = true;
+            $new_user->can_admin   = true;
             $new_user->can_billing = true;
             $new_user->can_reports = true;
         }
@@ -165,7 +165,7 @@ abstract class AbstractDbSet implements DataSetInterface
     private function getCachePath()
     {
         if (!$this->cache_dir) {
-            throw new \RuntimeException("No cache directory is set");
+            throw new \RuntimeException('No cache directory is set');
         }
 
         return $this->cache_dir.DIRECTORY_SEPARATOR.$this->getCacheName();
@@ -190,7 +190,7 @@ abstract class AbstractDbSet implements DataSetInterface
     {
         if (strlen(DP_DATABASE_PASSWORD)) {
             $cmd = sprintf(
-                "%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s",
+                '%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s',
                 $this->mysqldump_bin_path,
                 escapeshellarg(DP_DATABASE_HOST),
                 escapeshellarg(3306),
@@ -201,7 +201,7 @@ abstract class AbstractDbSet implements DataSetInterface
             );
         } else {
             $cmd = sprintf(
-                "%s --opt -Q -h%s --port=%s -u%s %s > %s",
+                '%s --opt -Q -h%s --port=%s -u%s %s > %s',
                 $this->mysqldump_bin_path,
                 escapeshellarg(DP_DATABASE_HOST),
                 escapeshellarg(3306),
@@ -272,7 +272,7 @@ abstract class AbstractDbSet implements DataSetInterface
         } else {
             $this->installDatabase();
             $this->installSet();
-                $this->getContainer()->getSettingsHandler()->reloadSettings();
+            $this->getContainer()->getSettingsHandler()->reloadSettings();
 
             if ($this->cache_dir) {
                 $this->dumpToCache();
@@ -313,7 +313,7 @@ abstract class AbstractDbSet implements DataSetInterface
             if ($base_schema_cache) {
                 file_put_contents(
                     $base_schema_cache,
-                    "<?php return ".var_export($queries, true).";\n"
+                    '<?php return '.var_export($queries, true).";\n"
                 );
             }
         }
@@ -332,12 +332,12 @@ abstract class AbstractDbSet implements DataSetInterface
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1
         ");
         foreach ($queries['creates'] as $q) {
-            $count++;
+            ++$count;
             $this->getDb()->exec($q);
         }
 
         foreach ($queries['alters'] as $q) {
-            $count++;
+            ++$count;
             $this->getDb()->exec($q);
         }
 

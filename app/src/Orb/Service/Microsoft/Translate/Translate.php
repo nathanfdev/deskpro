@@ -1,54 +1,54 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Orb\Service\Microsoft\Translate;
 
 use Guzzle\Http\Client;
 
 class Translate
 {
-    const OAUTH_AUTH       = 'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/';
-    const OAUTH_SCOPE_URL  = 'http://api.microsofttranslator.com';
-    const API_URL          = 'http://api.microsofttranslator.com/V2/Http.svc/';
+    const OAUTH_AUTH      = 'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/';
+    const OAUTH_SCOPE_URL = 'http://api.microsofttranslator.com';
+    const API_URL         = 'http://api.microsofttranslator.com/V2/Http.svc/';
 
-    const FORMAT_WAV       = 'audio/wav';
-    const FORMAT_MP3       = 'audio/mp3';
+    const FORMAT_WAV = 'audio/wav';
+    const FORMAT_MP3 = 'audio/mp3';
 
-    const OPT_MINSIZE       = 'MinSize';
-    const OPT_MAXQUALITY    = 'MaxQuality';
+    const OPT_MINSIZE    = 'MinSize';
+    const OPT_MAXQUALITY = 'MaxQuality';
 
-    const TYPE_TEXT         = 'text/plain';
-    const TYPE_HTML         = 'text/html';
+    const TYPE_TEXT = 'text/plain';
+    const TYPE_HTML = 'text/html';
 
-    const CAT_GENERAL       = 'general';
+    const CAT_GENERAL = 'general';
 
     /**
      * @var string
@@ -110,7 +110,7 @@ class Translate
             return $this->access_token;
         }
 
-        $request  = $this->getOauthHttpClient()->post()->addPostFields(array(
+        $request = $this->getOauthHttpClient()->post()->addPostFields(array(
             'grant_type'    => 'client_credentials',
             'scope'         => self::OAUTH_SCOPE_URL,
             'client_id'     => $this->client_id,
@@ -159,7 +159,7 @@ class Translate
 
             $post_body[] = "\t<Texts>";
             foreach ($text as $t) {
-                $post_body[] = "\t\t<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">".$this->escapeXml($t)."</string>";
+                $post_body[] = "\t\t<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">".$this->escapeXml($t).'</string>';
             }
             $post_body[] = "\t</Texts>";
             $post_body[] = "\t<To>$to</To>";
@@ -209,8 +209,8 @@ class Translate
      * @param string|string $text A string or array of strings to detect
      *
      * @throws \InvalidArgumentException
-     * @return string|array              The lang or array of lang IDs
      *
+     * @return string|array The lang or array of lang IDs
      */
     public function detect($text)
     {
@@ -439,7 +439,7 @@ class Translate
      */
     public function createArrayOfStringXmlBody(array $strings)
     {
-        $body  = '<ArrayOfstring xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">';
+        $body = '<ArrayOfstring xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">';
         $body .= "\n";
         foreach ($strings as $s) {
             $body .= "\t<string>".$this->escapeXml($s)."</string>\n";
@@ -457,8 +457,8 @@ class Translate
     protected function escapeXml($str)
     {
         return str_replace(
-            array("&",     "<",    ">",    '"',      "'"),
-            array("&amp;", "&lt;", "&gt;", "&quot;", "&apos;"),
+            array('&',     '<',    '>',    '"',      "'"),
+            array('&amp;', '&lt;', '&gt;', '&quot;', '&apos;'),
             $str
         );
     }
@@ -480,7 +480,7 @@ class Translate
         }
 
         if (strpos($locale, '_')) {
-            list($top,) = explode('_', $locale, 2);
+            list($top) = explode('_', $locale, 2);
             // Try again with just the first part
             return $this->getNearestTranslateLocale($top);
         }

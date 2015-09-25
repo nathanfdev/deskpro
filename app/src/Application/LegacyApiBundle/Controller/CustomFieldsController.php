@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\CustomFields\CustomDataPersister;
@@ -36,7 +36,6 @@ use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
-use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
@@ -56,15 +55,15 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         'context' => array('person', 'organization'),
     );
 
-    static public $allowed_common = array(
-        'person' => 'Person',
-        'org' => 'Organization',
-        'ticket' => 'Ticket',
+    public static $allowed_common = array(
+        'person'  => 'Person',
+        'org'     => 'Organization',
+        'ticket'  => 'Ticket',
         'billing' => 'TicketCharge',
     );
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -158,8 +157,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @param $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return Response
      *
+     * @return Response
      */
     public function addChildAction(Request $request, $id)
     {
@@ -276,8 +275,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @param $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return null|object
      *
+     * @return null|object
      */
     protected function getDefinition($id)
     {
@@ -291,38 +290,39 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
     /**
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function deleteOptionAction(Request $request)
     {
         $types = array(
-            'tickets' => 'CustomDefTicket',
+            'tickets'       => 'CustomDefTicket',
             'organizations' => 'CustomDefOrganization',
-            'people' => 'CustomDefPerson',
-            'chats' => 'CustomDefChat',
+            'people'        => 'CustomDefPerson',
+            'chats'         => 'CustomDefChat',
         );
 
         if (!$repClass = @$types[$request->get('type')]) {
-            throw new BadRequestHttpException;
+            throw new BadRequestHttpException();
         }
         if (!$ids = $request->get('ids')) {
-            throw new BadRequestHttpException;
+            throw new BadRequestHttpException();
         }
 
-        if (!$ids = array_filter($ids, function($id){return 'cb_' !== substr($id, 0, 3);})) {
-            throw new BadRequestHttpException;
+        if (!$ids = array_filter($ids, function ($id) {return 'cb_' !== substr($id, 0, 3);})) {
+            throw new BadRequestHttpException();
         }
 
-        $rep = $this->em->getRepository('DeskPRO:'.$repClass);
-        $step = (int)$request->get('step');
+        $rep  = $this->em->getRepository('DeskPRO:'.$repClass);
+        $step = (int) $request->get('step');
         switch ($step) {
 
             case 1:
                 $response = array('success' => $rep->hasData($ids));
-                $field = $rep->getByOptions($ids);
-                $root = (int)reset($ids);
-                $options = array();
-                $map = array();
+                $field    = $rep->getByOptions($ids);
+                $root     = (int) reset($ids);
+                $options  = array();
+                $map      = array();
                 foreach ($field->children as $child) {
                     if ($pid = $child->getOption('parent_id')) {
                         if ($root !== $child['id']) {
@@ -346,41 +346,44 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
             case 2:
                 if (!$to = $request->get('update_to')) {
-                    throw new BadRequestHttpException;
+                    throw new BadRequestHttpException();
                 }
                 $rep->updateTo($ids, $to);
+
                 return $this->createSuccessResponse();
                 break;
         }
 
-        throw new BadRequestHttpException;
+        throw new BadRequestHttpException();
     }
 
     /**
      * @param $objectType
      * @param $objectId
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function getCommonFieldsAction($objectType, $objectId, Request $request)
     {
         if (!isset(self::$allowed_common[$objectType])) {
-            throw new BadRequestHttpException;
+            throw new BadRequestHttpException();
         }
 
         if (!$object = $this->em->find('DeskPRO:'.self::$allowed_common[$objectType], $objectId)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         /** @var FieldManager $manager */
         $manager = $this->container->getSystemService($objectType.'_fields_manager');
-        $array = $manager->getDisplayArrayForObject($object);
-        $ret = array();
+        $array   = $manager->getDisplayArrayForObject($object);
+        $ret     = array();
         foreach ($array as $display_array) {
-            /** @var $field FieldDisplayArray */
+            /* @var $field FieldDisplayArray */
             if ($display_array instanceof FormView) {
                 continue;
             }
@@ -393,9 +396,9 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             }
 
             $data = array(
-                'id' => $display_array['id'],
+                'id'    => $display_array['id'],
                 'title' => $display_array['title'],
-                'type' => $display_array['field_handler'],
+                'type'  => $display_array['field_handler'],
                 'value' => trim($handler->renderText($display_array['value'], $display_array)),
             );
 
@@ -413,28 +416,30 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @param $objectType
      * @param $objectId
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function setCommonFieldAction($objectType, $objectId, Request $request)
     {
         if (!isset(self::$allowed_common[$objectType])) {
-            throw new BadRequestHttpException;
+            throw new BadRequestHttpException();
         }
 
         if (!$id = $request->get('id')) {
-            throw new BadRequestHttpException;
+            throw new BadRequestHttpException();
         }
 
         if (!$object = $this->em->find('DeskPRO:'.self::$allowed_common[$objectType], $objectId)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         /** @var FieldManager $manager */
         $manager = $this->container->getSystemService($objectType.'_fields_manager');
-        $data = array(
+        $data    = array(
             'field_'.$id => $request->get('value'),
         );
 

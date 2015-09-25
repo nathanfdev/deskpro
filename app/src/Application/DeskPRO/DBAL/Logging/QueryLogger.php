@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\DBAL\Logging;
 
 use Application\DeskPRO\App;
@@ -149,7 +149,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
             $query_typename = 'OTHER';
         }
 
-        $this->_last_query++;
+        ++$this->_last_query;
 
         $trans_level = App::getDb()->getTransactionNestingLevel();
 
@@ -174,10 +174,10 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
         }
         if ($this->ignored_query_start) {
             $timetaken = microtime(true) - $this->ignored_query_start;
-            $this->query_count++;
+            ++$this->query_count;
             $this->total_time += $timetaken;
 
-            $this->_query_counter++;
+            ++$this->_query_counter;
             $this->_query_total_time += $timetaken;
 
             $this->ignored_query_start = false;
@@ -192,10 +192,10 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
         $queryinfo['time_end']   = microtime(true);
         $queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
 
-        $this->query_count++;
+        ++$this->query_count;
         $this->total_time += $queryinfo['time_taken'];
 
-        $this->_query_counter++;
+        ++$this->_query_counter;
         $this->_query_total_time += $queryinfo['time_taken'];
 
         $this->_is_logging = true;

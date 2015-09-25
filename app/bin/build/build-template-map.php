@@ -15,10 +15,10 @@ require DP_ROOT.'/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
-    'AdminInterfaceBundle'       => DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/views',
-    'AgentBundle'                => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-    'DeskPRO'                    => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-    'ReportsInterfaceBundle'     => DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/views',
+    'AdminInterfaceBundle'   => DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/views',
+    'AgentBundle'            => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+    'DeskPRO'                => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+    'ReportsInterfaceBundle' => DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/views',
 );
 
 $tpl_info = array();
@@ -68,7 +68,7 @@ foreach ($paths as $bundle => $dir) {
             'last_updated' => $time,
         );
 
-        echo ".";
+        echo '.';
     }
 }
 
@@ -78,7 +78,7 @@ foreach ($tpl_info as $k => $info) {
     $php[] = "'$k' => array('path' => {$info['path']}, 'last_updated' => {$info['last_updated']}),\n";
 }
 
-$php[] = ");";
+$php[] = ');';
 $php[] = "\n";
 
 file_put_contents(DP_ROOT.'/sys/config/template-map.php', implode('', $php));

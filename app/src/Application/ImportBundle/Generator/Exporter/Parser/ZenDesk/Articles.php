@@ -1,34 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
@@ -52,7 +53,7 @@ final class Articles extends AbstractParser
     private $article_people;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
@@ -104,20 +105,21 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns an article entity
+     * Returns an article entity.
      *
      * @param array $data
      *
-     * @return Entity\Article
      * @throws SkippingException
+     * @return Entity\Article
+     *
      */
     protected function exportArticle(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'           => TransformerInterface::TYPE_INT,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'article_',
-                'ref'    => 'id',
+            'id'          => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => 'article_',
+                'ref'     => 'id',
             )),
             'author_id'    => TransformerInterface::TYPE_INT,
             'section_id'   => TransformerInterface::TYPE_INT,
@@ -140,7 +142,7 @@ final class Articles extends AbstractParser
         }
 
         $author_email = $this->article_people->getPersonEmail($formatted['author_id']);
-        if ( ! $author_email) {
+        if (!$author_email) {
             throw new SkippingException('Unable to get article author, skipping', $formatted);
         }
 
@@ -161,7 +163,7 @@ final class Articles extends AbstractParser
         ;
 
         if ($formatted['draft']) {
-            $entity->setStatus(DeskPROEntity\Article::STATUS_HIDDEN . '.' . DeskPROEntity\Article::HIDDEN_STATUS_DRAFT);
+            $entity->setStatus(DeskPROEntity\Article::STATUS_HIDDEN.'.'.DeskPROEntity\Article::HIDDEN_STATUS_DRAFT);
         } else {
             $entity->setStatus(DeskPROEntity\Article::STATUS_PUBLISHED);
         }
@@ -195,9 +197,10 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns a collection of the article comments
+     * Returns a collection of the article comments.
      *
      * @param array $comments
+     *
      * @return Entity\ArticleComment[]
      */
     private function exportComments(array $comments)
@@ -214,9 +217,10 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns a comment entity
+     * Returns a comment entity.
      *
      * @param array $data
+     *
      * @return Entity\ArticleComment
      */
     protected function exportComment(array $data)
@@ -224,12 +228,12 @@ final class Articles extends AbstractParser
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_INT,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'article_comment_',
-                'ref'    => 'id',
+                'prefix'  => 'article_comment_',
+                'ref'     => 'id',
             )),
-            'body'        => TransformerInterface::TYPE_STRING,
-            'author_id'   => TransformerInterface::TYPE_INT,
-            'created_at'  => TransformerInterface::TYPE_DATE,
+            'body'       => TransformerInterface::TYPE_STRING,
+            'author_id'  => TransformerInterface::TYPE_INT,
+            'created_at' => TransformerInterface::TYPE_DATE,
         ));
 
         if (empty($formatted['author_id'])) {
@@ -237,7 +241,7 @@ final class Articles extends AbstractParser
         }
 
         $author_email = $this->article_people->getPersonEmail($formatted['author_id']);
-        if ( ! $author_email) {
+        if (!$author_email) {
             throw new SkippingException('Unable to get article comment author, skipping', $formatted);
         }
 
@@ -258,25 +262,26 @@ final class Articles extends AbstractParser
 
     /**
      * Returns articles
-     * Loads data from ZenDesk reader
+     * Loads data from ZenDesk reader.
      *
-     * @param boolean $count_only
+     * @param bool $count_only
      *
-     * @return array
      * @throws \Exception
+     * @return array
+     *
      */
     private function getArticles($count_only = false)
     {
-        $this->logDebugTimeStart('getArticles', "Reading articles batch");
+        $this->logDebugTimeStart('getArticles', 'Reading articles batch');
 
-        $articles = array();
+        $articles   = array();
         $start_time = $this->getBatchConfig()->getArticlesEndTime();
 
         if ($start_time < new \DateTime('-5 minutes')) {
             if ($start_time) {
-                $this->logDebug(sprintf("Reading from time: %s", $start_time->format('Y-m-d H:i:s')));
+                $this->logDebug(sprintf('Reading from time: %s', $start_time->format('Y-m-d H:i:s')));
             } else {
-                $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
+                $this->logDebug(sprintf('Reading from time: %s', 'Beginning'));
             }
 
             $response = $this->reader->getArticles($start_time);
@@ -285,7 +290,7 @@ final class Articles extends AbstractParser
                 // ZenDesk API does not allow to get article comments in a single request due to huge response (could be up to ~20 MB)
                 // We have to load comments for each article separately
                 foreach ($response as $article) {
-                    if ( ! $count_only) {
+                    if (!$count_only) {
                         $this->logDebug(sprintf('[ZDArticle #%s] Reading comments', $article['id']));
                         $article['comments'] = $this->reader->getArticleComments($article['id']);
 
@@ -306,12 +311,10 @@ final class Articles extends AbstractParser
                     $this->end_time->modify('+1 second');
                 }
 
-                $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
-
+                $this->logDebug(sprintf('New end time: %s', $this->end_time->format('Y-m-d H:i:s')));
             } else {
-                $this->logDebug(sprintf("No more records"));
+                $this->logDebug(sprintf('No more records'));
             }
-
         } else {
             $this->logAlert('No article was exported due 5 minutes timeout of the last end time');
         }

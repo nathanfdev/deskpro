@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -146,19 +146,19 @@ class AgentDataService
         // needed to preload $this->ids
         $this->preload();
 
-        $this->team_to_agents = $this->db->fetchAllGrouped("
+        $this->team_to_agents = $this->db->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ", array(), 'team_id', null, 'person_id');
+        ', array(), 'team_id', null, 'person_id');
 
         $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true, true);
 
         if ($this->ids) {
-            $this->agent_to_groups = $this->db->fetchAllGrouped("
+            $this->agent_to_groups = $this->db->fetchAllGrouped('
                 SELECT person_id, usergroup_id
                 FROM person2usergroups
                 WHERE person_id IN (?)
-            ", array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+            ', array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
         } else {
             $this->agent_to_groups = array();
         }
@@ -330,12 +330,12 @@ class AgentDataService
         }
         $cutoff = date('Y-m-d H:i:s', time() - $this->agent_timeout);
 
-        $this->online_agent_ids = $this->db->fetchAllKeyValue("
+        $this->online_agent_ids = $this->db->fetchAllKeyValue('
             SELECT DISTINCT s.person_id
             FROM sessions s
             INNER JOIN people p ON (s.person_id = p.id)
             WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
-        ", array($cutoff), array(), 0, 0);
+        ', array($cutoff), array(), 0, 0);
 
         return $this->online_agent_ids;
     }
@@ -435,8 +435,8 @@ class AgentDataService
      * @param int|\Application\DeskPRO\Entity\Person $agent
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
      *
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
     public function getTeamsForAgent($agent)
     {
@@ -510,8 +510,8 @@ class AgentDataService
      * @param int|\Application\DeskPRO\Entity\Person $agent
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
      *
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
     public function getGroupIdsForAgent($agent)
     {
@@ -536,8 +536,8 @@ class AgentDataService
      * @param int|\Application\DeskPRO\Entity\AgentTeam $team
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\Person[]
      *
+     * @return \Application\DeskPRO\Entity\Person[]
      */
     public function getAgentsForTeam($team)
     {

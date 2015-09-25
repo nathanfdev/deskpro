@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -36,11 +36,11 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Base API controller.
@@ -199,7 +199,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
             // Increase lifetime of the session token
             $this->container->getDb()->update('api_token', array(
-                'date_expires' => date('Y-m-d H:i:s', strtotime("+1 hour")),
+                'date_expires' => date('Y-m-d H:i:s', strtotime('+1 hour')),
             ), array('id' => $this->api_token->id));
         }
 
@@ -249,7 +249,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         if ($this->rate_info) {
-            $this->rate_info['hits']++;
+            ++$this->rate_info['hits'];
         }
     }
 
@@ -329,8 +329,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Creates an API success response.
      *
-     * @param array   $extra
-     * @param integer $status
+     * @param array $extra
+     * @param int   $status
      *
      * @return Response
      */
@@ -387,8 +387,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      * @param int                                               $status The HTTP status code to return
      *
      * @throws \InvalidArgumentException
-     * @return Response
      *
+     * @return Response
      */
     public function createApiValidationErrorResponse($errors, array $extra = null, $status = 400)
     {
@@ -424,8 +424,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      * @param int   $status The HTTP status code to return
      *
      * @throws \InvalidArgumentException
-     * @return Response
      *
+     * @return Response
      */
     public function createApiFormErrorResponse(Form $form, array $extra = null, $status = 400)
     {
@@ -669,7 +669,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ), 404);
         } elseif ($e instanceof AccessDeniedHttpException) {
             return $this->createApiResponse(array(
-                'error_code' => 403,
+                'error_code'    => 403,
                 'error_message' => $e->getMessage() ?: 'Access Denied',
             ), 403);
         } elseif ($e instanceof AccessDeniedException) {

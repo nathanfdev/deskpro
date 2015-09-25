@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Storage;
 
 use EWSType_BodyTypeResponseType;
@@ -55,15 +55,14 @@ use EWSType_ItemResponseShapeType;
 use EWSType_MessageType;
 use EWSType_MoveItemType;
 use EWSType_NonEmptyArrayOfBaseFolderIdsType;
-use EWSType_NonEmptyArrayOfFoldersType;
 use EWSType_NonEmptyArrayOfBaseItemIdsType;
+use EWSType_NonEmptyArrayOfFoldersType;
 use EWSType_NonEmptyArrayOfItemChangeDescriptionsType;
 use EWSType_NonEmptyArrayOfPathsToElementType;
 use EWSType_PathToUnindexedFieldType;
 use EWSType_RestrictionType;
 use EWSType_SetItemFieldType;
 use EWSType_UpdateItemType;
-use ExchangeWebServices;
 use Orb\Util\Arrays;
 
 class Exchange
@@ -133,7 +132,7 @@ class Exchange
 
             $constant                  = new EWSType_FieldURIOrConstantType();
             $constant->Constant        = new EWSType_ConstantValueType();
-            $constant->Constant->Value = "0";
+            $constant->Constant->Value = '0';
 
             $IsEqTo                     = new EWSType_IsEqualToType();
             $IsEqTo->FieldURIOrConstant = $constant;
@@ -257,7 +256,7 @@ class Exchange
     private function createFolder($name)
     {
         $request                                            = new EWSType_CreateFolderType();
-        $request->Folders                      = new EWSType_NonEmptyArrayOfFoldersType();
+        $request->Folders                                   = new EWSType_NonEmptyArrayOfFoldersType();
         $request->Folders->Folder                           = new EWSType_FolderType();
         $request->Folders->Folder->DisplayName              = $name;
         $request->ParentFolderId                            = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
@@ -400,7 +399,7 @@ class Exchange
 
         $field                     = new EWSType_SetItemFieldType();
         $field->FieldURI           = new EWSType_PathToUnindexedFieldType();
-        $field->FieldURI->FieldURI = "message:IsRead";
+        $field->FieldURI->FieldURI = 'message:IsRead';
         $field->Message            = new EWSType_MessageType();
         $field->Message->IsRead    = true;
 

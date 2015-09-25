@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -85,7 +85,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 $data = json_decode($data_arg, true);
 
                 if (!is_array($data)) {
-                    $output->writeln("<error>Data did not decode into an array. Make sure you specified a JSON string.</error>");
+                    $output->writeln('<error>Data did not decode into an array. Make sure you specified a JSON string.</error>');
 
                     return 1;
                 }
@@ -115,7 +115,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 $base_url .= 'api/';
             }
             if (!preg_match('#^https?://#', $base_url)) {
-                $base_url = "http://".$base_url;
+                $base_url = 'http://'.$base_url;
             }
         } else {
             $base_url = trim(App::getSetting('core.deskpro_url'), '/').'/index.php/api/';
@@ -127,24 +127,24 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             $key = App::getOrm()->getRepository('DeskPRO:ApiKey')->findOneBy(array('note' => '[dpdev:test-api]'));
 
             if (!$key) {
-                $first_admin = App::getOrm()->createQuery("
+                $first_admin = App::getOrm()->createQuery('
                     SELECT p
                     FROM DeskPRO:Person p
                     WHERE p.is_agent = true and p.can_admin = true
                     ORDER BY p.id ASC
-                ")->setMaxResults(1)->getOneOrNullResult();
+                ')->setMaxResults(1)->getOneOrNullResult();
 
                 if ($first_admin) {
                     $key         = new ApiKey();
                     $key->person = $first_admin;
-                    $key->note   =  '[dpdev:test-api]';
+                    $key->note   = '[dpdev:test-api]';
                     App::getOrm()->persist($key);
                     App::getOrm()->flush();
                 }
             }
 
             if (!$key) {
-                $output->writeln("<error>Could not find a key to use</error>");
+                $output->writeln('<error>Could not find a key to use</error>');
 
                 return 1;
             }
@@ -218,10 +218,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             } else {
                 $output->write("<info>Success</info>\n");
             }
-            $output->writeln("<info>Request URI:    ".$request->getUrl()."</info>");
-            $output->writeln("<info>Request Method: ".$request->getMethod()."</info>");
-            $output->writeln("<info>Status Code:    ".$response->getStatusCode()."</info>");
-            $output->writeln("<info>Content Type:   ".$response->getContentType()."</info>");
+            $output->writeln('<info>Request URI:    '.$request->getUrl().'</info>');
+            $output->writeln('<info>Request Method: '.$request->getMethod().'</info>');
+            $output->writeln('<info>Status Code:    '.$response->getStatusCode().'</info>');
+            $output->writeln('<info>Content Type:   '.$response->getContentType().'</info>');
 
             $res  = $response->getBody(true);
             $json = @json_decode($res, true);
@@ -249,15 +249,15 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
     private function _jsonpp($json, $istr = '  ')
     {
         $result = '';
-        for ($p = $q = $i = 0; isset($json[$p]); $p++) {
-            $json[$p] == '"' && ($p>0 ? $json[$p-1] : '') != '\\' && $q = !$q;
+        for ($p = $q = $i = 0; isset($json[$p]); ++$p) {
+            $json[$p] == '"' && ($p > 0 ? $json[$p - 1] : '') != '\\' && $q = !$q;
             if (strchr('}]', $json[$p]) && !$q && $i--) {
-                strchr('{[', $json[$p-1]) || $result .= "\n".str_repeat($istr, $i);
+                strchr('{[', $json[$p - 1]) || $result .= "\n".str_repeat($istr, $i);
             }
             $result .= $json[$p];
             if (strchr(',{[', $json[$p]) && !$q) {
                 $i += strchr('{[', $json[$p]) === false ? 0 : 1;
-                strchr('}]', $json[$p+1]) || $result .= "\n".str_repeat($istr, $i);
+                strchr('}]', $json[$p + 1]) || $result .= "\n".str_repeat($istr, $i);
             }
         }
 

@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Entity;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
+use DateTime;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use DateTime;
 
 /**
- * Exporting ticket entity
+ * Exporting ticket entity.
  *
  * Class Ticket
- * @package Application\ImportBundle\Entity
  */
 final class Ticket extends AbstractEntity implements PersonAwareInterface, LabelAwareInterface, LanguageAwareInterface
 {
@@ -156,7 +156,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     private $log_message;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -182,11 +182,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param int $ref
+     *
      * @return $this
      */
     public function setRef($ref)
     {
         $this->ref = $ref;
+
         return $this;
     }
 
@@ -200,11 +202,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $department
+     *
      * @return $this
      */
     public function setDepartment($department)
     {
         $this->department = $department;
+
         return $this;
     }
 
@@ -221,7 +225,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      */
     public function setPersonEmail($person_email)
     {
-        $this->person_email = (string)$person_email;
+        $this->person_email = (string) $person_email;
+
         return $this;
     }
 
@@ -235,11 +240,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $agent_email
+     *
      * @return $this
      */
     public function setAgentEmail($agent_email)
     {
-        $this->agent_email = (string)$agent_email;
+        $this->agent_email = (string) $agent_email;
+
         return $this;
     }
 
@@ -253,11 +260,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param int $agent_team
+     *
      * @return $this
      */
     public function setAgentTeam($agent_team)
     {
         $this->agent_team = $agent_team;
+
         return $this;
     }
 
@@ -271,16 +280,18 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $status
+     *
      * @return $this
      */
     public function setStatus($status)
     {
         $this->status = $status;
+
         return $this;
     }
 
     /**
-     * Checks if status is valid
+     * Checks if status is valid.
      *
      * @return bool
      */
@@ -293,10 +304,10 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             DeskPROEntity\Ticket::STATUS_ARCHIVED,
             DeskPROEntity\Ticket::STATUS_HIDDEN,
 
-            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_VALIDATING,
-            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_SPAM,
-            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
-            DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_TEMP,
+            DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_VALIDATING,
+            DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_SPAM,
+            DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
+            DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_TEMP,
         );
 
         return in_array($this->status, $statuses, true);
@@ -312,11 +323,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(DateTime $date_created = null)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
@@ -330,11 +343,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param DateTime $date_archived
+     *
      * @return $this
      */
     public function setDateArchived(DateTime $date_archived = null)
     {
         $this->date_archived = $date_archived;
+
         return $this;
     }
 
@@ -348,11 +363,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param DateTime $date_resolved
+     *
      * @return $this
      */
     public function setDateResolved(DateTime $date_resolved = null)
     {
         $this->date_resolved = $date_resolved;
+
         return $this;
     }
 
@@ -366,16 +383,18 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $subject
+     *
      * @return $this
      */
     public function setSubject($subject)
     {
         $this->subject = $subject;
+
         return $this;
     }
 
     /**
-     * Returns ticket priority
+     * Returns ticket priority.
      *
      * @return TicketPriority
      */
@@ -385,14 +404,16 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * Set priority
+     * Set priority.
      *
      * @param TicketPriority $priority
+     *
      * @return $this
      */
     public function setPriority(TicketPriority $priority = null)
     {
         $this->priority = $priority;
+
         return $this;
     }
 
@@ -410,6 +431,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     public function setLanguage($language)
     {
         $this->language = $language;
+
         return $this;
     }
 
@@ -423,11 +445,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $category
+     *
      * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -441,11 +465,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $workflow
+     *
      * @return $this
      */
     public function setWorkflow($workflow)
     {
         $this->workflow = $workflow;
+
         return $this;
     }
 
@@ -459,16 +485,18 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $product
+     *
      * @return $this
      */
     public function setProduct($product)
     {
         $this->product = $product;
+
         return $this;
     }
 
     /**
-     * Returns a ticket organization
+     * Returns a ticket organization.
      *
      * @return string
      */
@@ -478,19 +506,21 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * Set an organization
+     * Set an organization.
      *
      * @param string $organization
+     *
      * @return $this
      */
     public function setOrganization($organization)
     {
         $this->organization = $organization;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isHold()
     {
@@ -498,12 +528,14 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param boolean $is_hold
+     * @param bool $is_hold
+     *
      * @return $this
      */
     public function setAsHold($is_hold)
     {
         $this->is_hold = $is_hold;
+
         return $this;
     }
 
@@ -517,11 +549,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param int $urgency
+     *
      * @return $this
      */
     public function setUrgency($urgency)
     {
         $this->urgency = $urgency;
+
         return $this;
     }
 
@@ -535,11 +569,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $participant
+     *
      * @return $this
      */
     public function addParticipant($participant)
     {
         $this->participants[] = $participant;
+
         return $this;
     }
 
@@ -557,11 +593,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     public function addLabel($label)
     {
         $this->labels[] = $label;
+
         return $this;
     }
 
     /**
-     * Returns ticket messages
+     * Returns ticket messages.
      *
      * @return TicketMessage[]|Collection
      */
@@ -571,9 +608,10 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * Add a ticket message
+     * Add a ticket message.
      *
      * @param TicketMessage $message
+     *
      * @return $this
      */
     public function addMessage(TicketMessage $message)
@@ -594,11 +632,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param CustomField $custom_field
+     *
      * @return $this
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields->attach($custom_field);
+
         return $this;
     }
 
@@ -612,11 +652,13 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
     /**
      * @param string $log_message
+     *
      * @return $this
      */
     public function setLogMessage($log_message)
     {
         $this->log_message = $log_message;
+
         return $this;
     }
 
@@ -625,7 +667,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      */
     public function toArray()
     {
-        if ( ! $this->date_created) {
+        if (!$this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

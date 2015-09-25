@@ -1,43 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\Notifications;
 
-use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
+use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\Filters\FilterChangeSet;
@@ -82,10 +82,10 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     public function __construct(Ticket $ticket, FilterChangeSet $filter_changes, TicketFilterSubscriptionRepos $filter_sub_repos)
     {
-        $this->ticket          = $ticket;
-        $this->state           = $ticket->getStateChangeRecorder();
-        $this->filter_changes  = $filter_changes;
-        $this->subs_repos      = $filter_sub_repos;
+        $this->ticket         = $ticket;
+        $this->state          = $ticket->getStateChangeRecorder();
+        $this->filter_changes = $filter_changes;
+        $this->subs_repos     = $filter_sub_repos;
 
         $this->logger = new NullLogger();
     }
@@ -114,7 +114,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     private function logMessage($message)
     {
-        $this->logger->info("[AgentNotifyListBuilder] ".$message);
+        $this->logger->info('[AgentNotifyListBuilder] '.$message);
     }
 
     /**
@@ -126,7 +126,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
     {
         // Never notify about hidden tickets
         if ($this->ticket->status == 'hidden') {
-            $this->logMessage("ticket hidden, no notifications to send");
+            $this->logMessage('ticket hidden, no notifications to send');
 
             return array();
         }
@@ -148,7 +148,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
         if ($this->state->isNewTicket()) {
             $event_types['new'] = true;
-            $this->logMessage("notify_new = true (new ticket)");
+            $this->logMessage('notify_new = true (new ticket)');
         } elseif (
             // A ticket that was just validated counts as new
             $this->ticket->status != 'hidden'
@@ -156,18 +156,18 @@ class AgentNotifyListBuilder implements PersonContextInterface
             && $this->state->getFirstChangeForField('hidden_status')->getOld() == 'validating'
         ) {
             $event_types['new'] = true;
-            $this->logMessage("notify_new = true (was validating)");
+            $this->logMessage('notify_new = true (was validating)');
         }
 
         if ($this->state->hasNewAgentNote()) {
             $event_types['agent_note'] = true;
-            $this->logMessage("notify_agent_note = true");
+            $this->logMessage('notify_agent_note = true');
         } elseif ($this->state->hasNewAgentReply()) {
             $event_types['agent_reply'] = true;
-            $this->logMessage("notify_agent_reply = true");
+            $this->logMessage('notify_agent_reply = true');
         } elseif ($this->state->hasNewUserReply()) {
             $event_types['user_reply'] = true;
-            $this->logMessage("notify_user_reply = true");
+            $this->logMessage('notify_user_reply = true');
         }
 
         // Its a property change subscription event if its not a reply
@@ -225,7 +225,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
             }
         }
 
-        $this->logMessage(sprintf("%d agents with notifications", count($notify_list)));
+        $this->logMessage(sprintf('%d agents with notifications', count($notify_list)));
 
         return $notify_list;
     }
@@ -235,7 +235,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
      * @param Person       $agent
      * @param TicketFilter $filter
      * @param $change_type
-     * @param array        $notify_types
+     * @param array $notify_types
      */
     private function addTypesToList(array &$notify_list, Person $agent, TicketFilter $filter, $change_type, array $notify_types)
     {
@@ -248,10 +248,10 @@ class AgentNotifyListBuilder implements PersonContextInterface
         }
         if (!isset($notify_list[$agent->id]['filter_subs'][$filter->id])) {
             $notify_list[$agent->id]['filter_subs'][$filter->id] = array(
-                'filter'     => $filter,
-                'is_new'     => false,
-                'is_update'  => false,
-                'types'      => array(),
+                'filter'    => $filter,
+                'is_new'    => false,
+                'is_update' => false,
+                'types'     => array(),
             );
         }
 
@@ -304,7 +304,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
     }
 
     /**
-     * @param array                    $event_types
+     * @param array $event_types
      * @param $with_newmatch
      * @param TicketFilter             $filter
      * @param TicketFilterSubscription $sub
@@ -390,12 +390,12 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $for_agent_ids  = array_unique($for_agent_ids, \SORT_NUMERIC);
 
         if (!$for_agent_ids || !$for_filter_ids) {
-            $this->logMessage("no agents or filters match, no notifications to send");
+            $this->logMessage('no agents or filters match, no notifications to send');
 
             return array();
         }
 
-        $this->logMessage(sprintf("There are %d changed filters for %d agents", count($for_filter_ids), count($for_agent_ids)));
+        $this->logMessage(sprintf('There are %d changed filters for %d agents', count($for_filter_ids), count($for_agent_ids)));
 
         $agent_subs = $this->subs_repos->getForAgents($for_agent_ids, $for_filter_ids);
         $this->logMessage(sprintf("\tThere are %d matching subscriptions", count($agent_subs)));

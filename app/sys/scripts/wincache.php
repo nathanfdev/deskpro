@@ -83,7 +83,7 @@ if (USE_AUTHENTICATION == 1) {
         header('HTTP/1.0 401 Unauthorized');
         exit;
     } elseif ($_SERVER['PHP_AUTH_PW'] == 'wincache') {
-        echo "Please change the default password to get this page working. Exiting.";
+        echo 'Please change the default password to get this page working. Exiting.';
         exit;
     }
 }
@@ -104,7 +104,7 @@ define('SUBKEY_MAX_LENGTH', 90);
 define('CACHE_MAX_ENTRY', 250);
 
 // WinCache settings that are used for debugging purposes
-$settings_to_hide = array( 'wincache.localheap', 'wincache.debuglevel', 'wincache.olocaltest' );
+$settings_to_hide = array('wincache.localheap', 'wincache.debuglevel', 'wincache.olocaltest');
 
 // Input parameters check
 $PHP_SELF    = isset($_SERVER['PHP_SELF']) ? htmlentities(strip_tags($_SERVER['PHP_SELF'], ''), ENT_QUOTES, 'UTF-8') : '';
@@ -170,8 +170,8 @@ if (isset($_GET['key'])) {
 // End of input parameters check
 
 // Initialize global variables
-$user_cache_available    = function_exists('wincache_ucache_info') && !strcmp(ini_get('wincache.ucenabled'), "1");
-$session_cache_available = function_exists('wincache_scache_info') && !strcasecmp(ini_get('session.save_handler'), "wincache");
+$user_cache_available    = function_exists('wincache_ucache_info') && !strcmp(ini_get('wincache.ucenabled'), '1');
+$session_cache_available = function_exists('wincache_scache_info') && !strcasecmp(ini_get('session.save_handler'), 'wincache');
 $ocache_mem_info         = null;
 $ocache_file_info        = null;
 $ocache_summary_info     = null;
@@ -205,7 +205,7 @@ function cmp($a, $b)
 
 function convert_bytes_to_string($bytes)
 {
-    $units = array( 0 => 'B', 1 => 'kB', 2 => 'MB', 3 => 'GB' );
+    $units = array(0 => 'B', 1 => 'kB', 2 => 'MB', 3 => 'GB');
     $log   = log($bytes, 1024);
     $power = (int) $log;
     $size  = pow(1024, $log - $power);
@@ -216,7 +216,7 @@ function convert_bytes_to_string($bytes)
 function seconds_to_words($seconds)
 {
     /*** return value ***/
-    $ret = "";
+    $ret = '';
 
     /*** get the hours ***/
     $hours = intval(intval($seconds) / 3600);
@@ -383,7 +383,7 @@ if ($img > 0) {
             $hit_percent  = round($hits / ($hits + $misses) * 100, 2);
             $miss_percent = round($misses / ($hits + $misses) * 100, 2);
         }
-        $data = array( 'Hits' => $hit_percent, 'Misses' => $miss_percent );
+        $data = array('Hits' => $hit_percent, 'Misses' => $miss_percent);
 
         $image = imagecreate($width, $height);
 
@@ -423,7 +423,7 @@ if ($img > 0) {
         $dydat = 100 / $ngrid;
         $dypix = $ysize / $ngrid;
 
-        for ($i = 0; $i <= $ngrid; $i++) {
+        for ($i = 0; $i <= $ngrid; ++$i) {
             $ydat = (int) ($i * $dydat);
             $ypos = $vmargin + $ysize - (int) ($i * $dypix);
 
@@ -433,7 +433,7 @@ if ($img > 0) {
             $xpos = (int) (($hmargin - $txtsize) / 2);
             $xpos = max(1, $xpos);
 
-            imagestring($image, $labelfont, $xpos, $ypos - (int) ($txtheight/2), $ydat, $black);
+            imagestring($image, $labelfont, $xpos, $ypos - (int) ($txtheight / 2), $ydat, $black);
 
             if (!($i == 0) && !($i >= $ngrid)) {
                 imageline($image, $hmargin - 3, $ypos, $hmargin + $xsize, $ypos, $gray);
@@ -446,7 +446,7 @@ if ($img > 0) {
         $padding = 30; // half of spacing between columns
         $yscale  = $ysize / ($ngrid * $dydat); // pixels per data unit
 
-        for ($i = 0; list($xval, $yval) = each($data); $i++) {
+        for ($i = 0; list($xval, $yval) = each($data); ++$i) {
             // vertical columns
             $ymax = $vmargin + $ysize;
             $ymin = $ymax - (int) ($yval * $yscale);
@@ -514,12 +514,12 @@ if ($img > 0) {
 
         //read the arguments into different arrays:
         foreach ($items as $key => $val) {
-            $n++;
+            ++$n;
             $label[$n] = $key;
             $value[$n] = $val;
             $total += $val;
-            $arc_dec[$n] = $total*360;
-            $arc_rad[$n] = $total*2*pi();
+            $arc_dec[$n] = $total * 360;
+            $arc_rad[$n] = $total * 2 * pi();
         }
 
         //the base:
@@ -527,10 +527,10 @@ if ($img > 0) {
         $arc_dec[0] = 0;
 
         //count the labels:
-        for ($i = 1; $i <= $n; $i++) {
+        for ($i = 1; $i <= $n; ++$i) {
             //calculate the percents:
             $perc[$i]    = $value[$i] / $total;
-            $percstr[$i] = (string) number_format($perc[$i] * 100, 2)."%";
+            $percstr[$i] = (string) number_format($perc[$i] * 100, 2).'%';
             //label with percentage:
             $label[$i] = $percstr[$i];
 
@@ -540,10 +540,10 @@ if ($img > 0) {
             $hpos        = round($centerX + ($diameter / 2) * sin($arc_rad[$i]));
             $vpos        = round($centerY + ($diameter / 2) * cos($arc_rad[$i]));
             imageline($image, $centerX, $centerY, $hpos, $vpos, $black);
-            imagearc($image, $centerX, $centerY, $diameter, $diameter, $arc_dec[$i-1], $arc_dec[$i], $black);
+            imagearc($image, $centerX, $centerY, $diameter, $diameter, $arc_dec[$i - 1], $arc_dec[$i], $black);
 
             //calculate the positions for the labels:
-            $arc_rad_label = $arc_rad[$i-1] + 0.5 * $perc[$i] * 2 * pi();
+            $arc_rad_label = $arc_rad[$i - 1] + 0.5 * $perc[$i] * 2 * pi();
             $hpos          = $centerX + 1.1 * ($diameter / 2) * sin($arc_rad_label);
             $vpos          = $centerY + 1.1 * ($diameter / 2) * cos($arc_rad_label);
             if (($arc_rad_label > 0.5 * pi()) && ($arc_rad_label < 1.5 * pi())) {
@@ -557,8 +557,8 @@ if ($img > 0) {
         }
 
         //fill the parts with their colors:
-        for ($i = 1; $i <= $n; $i++) {
-            if (round($arc_dec[$i] - $arc_dec[$i-1]) != 0) {
+        for ($i = 1; $i <= $n; ++$i) {
+            if (round($arc_dec[$i] - $arc_dec[$i - 1]) != 0) {
                 $arc_rad_label = $arc_rad[$i - 1] + 0.5 * $perc[$i] * 2 * pi();
                 $hpos          = $centerX + 0.8 * ($diameter / 2) * sin($arc_rad_label);
                 $vpos          = $centerY + 0.8 * ($diameter / 2) * cos($arc_rad_label);

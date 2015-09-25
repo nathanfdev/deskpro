@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -221,6 +221,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * Find an existing data record for a field id.
      *
      * @param int $field_id
+     *
      * @return CustomDataOrganization
      */
     public function getCustomDataForField($field_id)
@@ -260,12 +261,14 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset contact data
-     * todo add onPropertyChanged() if change tracking is needed
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
      * @return $this
      */
     public function resetContactData()
     {
         $this->contact_data->clear();
+
         return $this;
     }
 
@@ -291,7 +294,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $ret;
     }
 
-
     public function removeCustomDataForField(CustomDefOrganization $field)
     {
         $parent_id = null;
@@ -316,8 +318,8 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * @param mixed $value
      *
      * @throws \Exception
-     * @return mixed
      *
+     * @return mixed
      */
     public function setCustomData($field_id, $value_type, $value)
     {
@@ -358,12 +360,14 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
     /**
      * Reset custom data
-     * todo add onPropertyChanged() if change tracking is needed
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
      * @return $this
      */
     public function resetCustomData()
     {
         $this->custom_data->clear();
+
         return $this;
     }
 
@@ -444,14 +448,16 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set organization picture
+     * Set organization picture.
      *
      * @param Blob|null $blob
+     *
      * @return $this
      */
     public function setPicture(Blob $blob = null)
     {
         $this->setModelField('picture_blob', $blob);
+
         return $this;
     }
 
@@ -460,6 +466,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * will be rendered. Use hasPicture if you need to know if a picture exists.
      *
      * @deprecated Use AvatarResolver
+     *
      * @return null|string
      */
     public function getPictureUrl($size = 80, $secure = null)
@@ -521,7 +528,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Reset labels
+     * Reset labels.
      *
      * @return $this
      */
@@ -532,6 +539,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
         }
 
         $this->_onPropertyChanged('labels', null, $this->labels);
+
         return $this;
     }
 
@@ -565,14 +573,16 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set date created
+     * Set date created.
      *
      * @param \DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
         return $this;
     }
 
@@ -622,6 +632,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * Get Elasticsearch highlight data.
      *
      * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -645,21 +656,21 @@ class Organization extends DomainObject implements HighlightableModelInterface
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Organization';
-        $metadata->setPrimaryTable(array( 'name' => 'organizations'));
+        $metadata->setPrimaryTable(array('name' => 'organizations'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary'));
-        $metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance'));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(array('fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary'));
+        $metadata->mapField(array('fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'dpApi' => true));
-        $metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'indexBy' => 'id', 'joinTable' => array( 'name' => 'organization2usergroups', 'schema' => null, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))), 'dpApi' => true ));
-        $metadata->mapManyToMany(array( 'fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'organizations_auto_cc', 'schema' => null, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)))));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization'));
+        $metadata->mapManyToOne(array('fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataOrganization', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'dpApi' => true));
+        $metadata->mapManyToMany(array('fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'indexBy' => 'id', 'joinTable' => array('name' => 'organization2usergroups', 'schema' => null, 'joinColumns' => array(0 => array('name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'inverseJoinColumns' => array(0 => array('name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))), 'dpApi' => true));
+        $metadata->mapManyToMany(array('fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array('name' => 'organizations_auto_cc', 'schema' => null, 'joinColumns' => array(0 => array('name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'inverseJoinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)))));
+        $metadata->mapOneToMany(array('fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization'));
+        $metadata->mapOneToMany(array('fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization'));
     }
 }

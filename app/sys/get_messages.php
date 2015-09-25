@@ -1,35 +1,34 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -43,7 +42,7 @@ if (!defined('DP_ROOT')) {
 
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
-class AgentMessagesLoader extends LoaderAbstract
+class get_messages extends LoaderAbstract
 {
     protected $_person_id;
     protected $_session_id;
@@ -56,16 +55,16 @@ class AgentMessagesLoader extends LoaderAbstract
         try {
             $agent_session_id = isset($_COOKIE['dpsid-agent']) ? strval($_COOKIE['dpsid-agent']) : '';
             if (!$agent_session_id) {
-                echo "no session";
+                echo 'no session';
                 exit;
             }
 
             if (!strpos($agent_session_id, '-')) {
-                echo "no session";
+                echo 'no session';
                 exit;
             }
-            list($session_id,)  = explode('-', $agent_session_id, 2);
-            $session_id         = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
+            list($session_id) = explode('-', $agent_session_id, 2);
+            $session_id       = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
             $agent_session = $this->getPdoRead()->query("
                 SELECT sessions.*, people.is_agent, people_prefs.value_str AS last_message_id
@@ -75,12 +74,12 @@ class AgentMessagesLoader extends LoaderAbstract
                 WHERE sessions.id = ".$this->getPdoRead()->quote($session_id)
             )->fetch(\PDO::FETCH_ASSOC);
             if (!$agent_session || $agent_session_id !== (Util::baseEncode($agent_session['id'], Util::BASE36_ALPHABET).'-'.$agent_session['auth'])) {
-                echo "no/invalid session";
+                echo 'no/invalid session';
                 exit;
             }
 
             if (!$agent_session['is_agent']) {
-                echo "invalid session";
+                echo 'invalid session';
                 exit;
             }
 
@@ -180,29 +179,29 @@ class AgentMessagesLoader extends LoaderAbstract
             // We save the last message we know a user got because we need to know
             // to deliver offline messages (such as chats) the next time the user logs in
             if ($new_since && $new_since > $last_since) {
-                $q = $this->getPdo()->prepare("
+                $q = $this->getPdo()->prepare('
                     REPLACE INTO people_prefs
                         (person_id, name, value_str, value_array, date_expire)
                     VALUES
                         (?, ?, ?, NULL, NULL);
-                ");
+                ');
                 $q->execute(array($agent_session['person_id'], 'agent.ui.last_message_id', $new_since));
             }
 
             // See if we should update last activity time
-            if ($activity_time && $activity_time > (time()-330)) {
+            if ($activity_time && $activity_time > (time() - 330)) {
                 // This bit makes sure theres only one record per 5 minute block
                 $date_active         = new \DateTime('@'.$activity_time);
                 list($hour, $minute) = explode(':', $date_active->format('H:i'));
                 $minute              = intval($minute / 5) * 5;
                 $date_active->setTime($hour, $minute, 0);
 
-                $q = $this->getPdo()->prepare("
+                $q = $this->getPdo()->prepare('
                     INSERT IGNORE INTO agent_activity
                         (agent_id, date_active)
                     VALUES
                         (?,?)
-                ");
+                ');
                 $q->execute(array($agent_session['person_id'], $date_active->format('Y-m-d H:i:s')));
             }
 
@@ -214,11 +213,11 @@ class AgentMessagesLoader extends LoaderAbstract
             $token                 = md5($agent_session['id'].$agent_session['auth'].$secret.'request_token');
             $data['request_token'] = Util::generateStaticSecurityToken($token, 10800);
 
-            $q = $this->getPdo()->prepare("
+            $q = $this->getPdo()->prepare('
                 UPDATE sessions
                 SET date_last = ?
                 WHERE id = ?
-            ");
+            ');
             $q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
 
             if (!empty($_REQUEST['recent_tabs'])) {
@@ -332,7 +331,7 @@ class AgentMessagesLoader extends LoaderAbstract
                     if ($last_alert_id === null || $r['id'] < $last_alert_id) {
                         $last_alert_id = $r['id'];
                     }
-                    $count++;
+                    ++$count;
 
                     $r['data']          = unserialize($r['data']);
                     $data['messages'][] = array(
@@ -390,13 +389,13 @@ class AgentMessagesLoader extends LoaderAbstract
         $url = null;
 
         return $this->_getContainer()->getTemplating()->render('AgentBundle:UserChat:chat-alert.html.twig', array(
-            'convo'         => $convo,
-            'person'        => $convo->person,
-            'tickets'       => $tickets,
-            'session'       => $convo->session,
-            'visitor'       => null,
-            'waiting_secs'  => $waiting_secs,
-            'url'           => $url,
+            'convo'        => $convo,
+            'person'       => $convo->person,
+            'tickets'      => $tickets,
+            'session'      => $convo->session,
+            'visitor'      => null,
+            'waiting_secs' => $waiting_secs,
+            'url'          => $url,
         ));
     }
 
@@ -406,7 +405,7 @@ class AgentMessagesLoader extends LoaderAbstract
         $all_messages = false;
 
         if (!$since) {
-            $last_id = $this->getPdoRead()->query("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1")->fetchColumn();
+            $last_id = $this->getPdoRead()->query('SELECT id FROM client_messages ORDER BY id DESC LIMIT 1')->fetchColumn();
             if ($last_id) {
                 $data['last_id'] = $last_id;
             } else {
@@ -525,13 +524,13 @@ class AgentMessagesLoader extends LoaderAbstract
             }
         }
 
-        $q = $this->getPdoRead()->prepare("
+        $q = $this->getPdoRead()->prepare('
             SELECT c.id
             FROM chat_conversations c
             LEFT JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
             WHERE (c.agent_id = ? OR c2p.person_id = ?)
                 AND c.date_ended IS NULL
-        ");
+        ');
         $q->execute(array($person_id, $person_id));
         while ($row = $q->fetch(\PDO::FETCH_ASSOC)) {
             $channels[] = 'chat_convo.'.$row['id'];
@@ -575,13 +574,13 @@ class AgentMessagesLoader extends LoaderAbstract
 
     public function getInitialMessagesForPerson($person_id, $since_id)
     {
-        $q = $this->getPdoRead()->prepare("
+        $q = $this->getPdoRead()->prepare('
             SELECT *
             FROM client_messages
             WHERE for_person_id = ?
                 AND id > ?
             ORDER BY id
-        ");
+        ');
         $q->execute(array($person_id, $since_id));
 
         return $q->fetchAll(\PDO::FETCH_ASSOC);
@@ -663,7 +662,7 @@ class AgentMessagesLoader extends LoaderAbstract
         $this->_getContainer();
         $filters_api = new \Application\DeskPRO\Tickets\Filters();
 
-        $filter_info      = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
+        $filter_info = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
 
         $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filter_info['custom_filters'], $this->_getPerson());
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
@@ -722,11 +721,11 @@ class AgentMessagesLoader extends LoaderAbstract
         $timeout = $this->_getSetting('core_chat.user_online_time', 600);
         $cutoff  = date('Y-m-d H:i:s', time() - $timeout);
 
-        $q = $this->getPdoRead()->prepare("
+        $q = $this->getPdoRead()->prepare('
             SELECT COUNT(*)
             FROM visitors
             WHERE date_last > ? AND last_track_id IS NOT NULL AND hint_hidden = 0
-        ");
+        ');
         $q->execute(array($cutoff));
 
         $online_count = $q->fetchColumn(0);
@@ -783,10 +782,10 @@ class AgentMessagesLoader extends LoaderAbstract
     {
         if (!$this->_settings) {
             $this->_settings = array();
-            $q               = $this->getPdoRead()->prepare("
+            $q               = $this->getPdoRead()->prepare('
                 SELECT name, value
                 FROM settings
-            ");
+            ');
             $q->execute();
             while ($row = $q->fetch(\PDO::FETCH_ASSOC)) {
                 $this->_settings[$row['name']] = $row['value'];

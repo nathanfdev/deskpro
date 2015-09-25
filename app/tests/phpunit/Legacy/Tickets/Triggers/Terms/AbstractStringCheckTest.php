@@ -1,4 +1,31 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -30,8 +57,8 @@ abstract class AbstractStringCheckTest extends DeskProTestCase
 
     public function setup()
     {
-        $this->ticket1 = $this->createTicket(1, $this->getString1());
-        $this->ticket2 = $this->createTicket(2, $this->getString2());
+        $this->ticket1       = $this->createTicket(1, $this->getString1());
+        $this->ticket2       = $this->createTicket(2, $this->getString2());
         $this->exec_context1 = $this->createExecutorContext($this->ticket1);
         $this->exec_context2 = $this->createExecutorContext($this->ticket2);
     }
@@ -63,7 +90,7 @@ abstract class AbstractStringCheckTest extends DeskProTestCase
     }
 
     /**
-     * @param int $id
+     * @param int    $id
      * @param string $test_string
      *
      * @return Ticket
@@ -72,14 +99,14 @@ abstract class AbstractStringCheckTest extends DeskProTestCase
 
     /**
      * @param string $op
-     * @param array $options
+     * @param array  $options
      *
      * @return TriggerTermInterface
      */
     protected function createChecker($op, array $options)
     {
         $check_class = $this->getCheckClass();
-        $opt_key = $this->getCheckClassOptionKey();
+        $opt_key     = $this->getCheckClassOptionKey();
 
         if (isset($options['%OPT%'])) {
             $options[$opt_key] = $options['%OPT%'];
@@ -274,14 +301,14 @@ abstract class AbstractStringCheckTest extends DeskProTestCase
     public function testIsRegexWithAnchorStart()
     {
         $GLOBALS['begin'] = true;
-        $check = $this->createChecker('is_regex', array('%OPT%' => '/^' . preg_quote($this->getString1(), '/') . '/'));
+        $check            = $this->createChecker('is_regex', array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'/'));
         $this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context1));
         unset($GLOBALS['begin']);
     }
 
     public function testIsRegexWithAnchorEnd()
     {
-        $check = $this->createChecker('is_regex', array('%OPT%' => '/' . preg_quote($this->getString2(), '/') . '$/'));
+        $check = $this->createChecker('is_regex', array('%OPT%' => '/'.preg_quote($this->getString2(), '/').'$/'));
         $this->assertTrue($check->isTriggerMatch($this->ticket2, $this->exec_context2));
     }
 
@@ -289,7 +316,7 @@ abstract class AbstractStringCheckTest extends DeskProTestCase
     {
         $check = $this->createChecker(
             'is_regex',
-            array('%OPT%' => '/^' . preg_quote($this->getString1(), '/') . '$/i')
+            array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'$/i')
         );
         $this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context1));
     }
@@ -298,7 +325,7 @@ abstract class AbstractStringCheckTest extends DeskProTestCase
     {
         $check = $this->createChecker(
             'is_regex',
-            array('%OPT%' => '/^' . preg_quote($this->getString1(), '/') . '$/e')
+            array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'$/e')
         );
         $this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context1));
     }
@@ -309,7 +336,7 @@ abstract class AbstractStringCheckTest extends DeskProTestCase
     {
         $check = $this->createChecker(
             'not_regex',
-            array('%OPT%' => '/^' . preg_quote($this->getString1(), '/') . '$/i')
+            array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'$/i')
         );
         $this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context1));
     }

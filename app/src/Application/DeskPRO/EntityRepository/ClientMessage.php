@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -56,7 +56,7 @@ class ClientMessage extends AbstractEntityRepository
         $all_messages = false;
 
         if (!$since) {
-            $last_id = $this->_em->getConnection()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
+            $last_id = $this->_em->getConnection()->fetchColumn('SELECT id FROM client_messages ORDER BY id DESC LIMIT 1');
             if ($last_id) {
                 $data['last_id'] = $last_id;
             } else {
@@ -172,16 +172,16 @@ class ClientMessage extends AbstractEntityRepository
         $params = array($client_id);
 
         if ($person_id) {
-            $sql .= "AND (for_client = ? OR for_person_id = ? OR (for_client IS NULL AND for_person_id IS NULL))";
+            $sql .= 'AND (for_client = ? OR for_person_id = ? OR (for_client IS NULL AND for_person_id IS NULL))';
             $params[] = $client_id;
             $params[] = $person_id;
         } else {
-            $sql .= "AND (for_client = ? OR (for_client IS NULL AND for_person_id IS NULL))";
+            $sql .= 'AND (for_client = ? OR (for_client IS NULL AND for_person_id IS NULL))';
             $params[] = $client_id;
         }
 
         if ($since_id) {
-            $sql .= "AND (id > ?)";
+            $sql .= 'AND (id > ?)';
             $params[] = $since_id;
 
             $sql .= "\nORDER BY id ASC";
@@ -206,17 +206,17 @@ class ClientMessage extends AbstractEntityRepository
      */
     public function getInitialMessagesForPerson($person_id, $since_id = null)
     {
-        $sql = "
+        $sql = '
             SELECT
                 id, for_person_id, channel, data, created_by_client, for_client, date_created
             FROM client_messages
             WHERE
                 for_person_id = ?
-        ";
+        ';
         $params = array($person_id);
 
         if ($since_id) {
-            $sql .= "AND (id > ?)";
+            $sql .= 'AND (id > ?)';
             $params[] = $since_id;
 
             $sql .= "\nORDER BY id ASC";
@@ -291,12 +291,12 @@ class ClientMessage extends AbstractEntityRepository
         }
 
         // They're automatically subscribed to their own chats of course
-        $chat_ids = App::getDb()->fetchAllCol("
+        $chat_ids = App::getDb()->fetchAllCol('
             SELECT c.id
             FROM chat_conversations c
             JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
             WHERE c.agent_id = ? OR c2p.person_id = ?
-        ", array($person_id, $person_id));
+        ', array($person_id, $person_id));
 
         foreach ($chat_ids as $chat_id) {
             $channels[] = 'chat_convo.'.$chat_id;

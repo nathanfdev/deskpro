@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\FragmentRouter;
@@ -36,10 +36,10 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
-use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Symfony\Component\HttpFoundation\Request;
 
 class MiscController extends AbstractController
@@ -59,7 +59,7 @@ class MiscController extends AbstractController
         $geoip = $this->container->getSystemService('geoip');
 
         return $this->createJsonResponse(array(
-            'geoip' => $geoip->lookup($request->getClientIp())
+            'geoip' => $geoip->lookup($request->getClientIp()),
         ));
     }
 
@@ -144,13 +144,13 @@ class MiscController extends AbstractController
         // Data
         $js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
 
-        $system_filters = $this->db->fetchAllKeyValue("SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL");
+        $system_filters = $this->db->fetchAllKeyValue('SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL');
         $system_filters = Arrays::castToType($system_filters, 'string', 'int');
         $js[]           = 'window.DESKPRO_DATA_REGISTRY.systemFilters = '.json_encode($system_filters).';';
 
         // Ticket display elements
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
-        $js[]    = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
+        $js[]    = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         // Snippet short codes
         $ticket_snippets     = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
@@ -169,9 +169,9 @@ class MiscController extends AbstractController
         }
 
         if ($snippet_short_codes) {
-            $js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = ".json_encode($snippet_short_codes).";";
+            $js[] = 'window.DESKPRO_TICKET_SNIPPET_SHORTCODES = '.json_encode($snippet_short_codes).';';
         } else {
-            $js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};";
+            $js[] = 'window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};';
         }
 
         // Snippet short codes
@@ -188,25 +188,25 @@ class MiscController extends AbstractController
         }
 
         if ($snippet_short_codes) {
-            $js[] = "window.DESKPRO_CHAT_SNIPPET_SHORTCODES = ".json_encode($snippet_short_codes).";";
+            $js[] = 'window.DESKPRO_CHAT_SNIPPET_SHORTCODES = '.json_encode($snippet_short_codes).';';
         } else {
-            $js[] = "window.DESKPRO_CHAT_SNIPPET_SHORTCODES = {};";
+            $js[] = 'window.DESKPRO_CHAT_SNIPPET_SHORTCODES = {};';
         }
 
         // Chat display elements
         $chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
         $chat_display->addPagesFromDb();
-        $js[] = "window.DESKPRO_CHAT_DISPLAY = {}";
-        $js[] = "window.DESKPRO_CHAT_DISPLAY.create = ".$chat_display->compileJs().";";
+        $js[] = 'window.DESKPRO_CHAT_DISPLAY = {}';
+        $js[] = 'window.DESKPRO_CHAT_DISPLAY.create = '.$chat_display->compileJs().';';
 
-        $js[] = "window.DESKPRO_TICKET_PRI_MAP = ".json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()).';';
+        $js[] = 'window.DESKPRO_TICKET_PRI_MAP = '.json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()).';';
 
         $fragment_router = new FragmentRouter($this->get('router')->getGenerator());
         $js[]            = $fragment_router->compile();
 
         /** @var \Application\DeskPRO\EntityRepository\LabelDef $labelDef */
         $labelDef = $this->em->getRepository('DeskPRO:LabelDef');
-        $js[]     = "window.DESKPRO_DATA_REGISTRY.labels = ".json_encode($labelDef->getAllLabelsToTyped());
+        $js[]     = 'window.DESKPRO_DATA_REGISTRY.labels = '.json_encode($labelDef->getAllLabelsToTyped());
 
         if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
             $ms_translator = $this->container->getAppManager()->getService('ms_translator');
@@ -232,10 +232,10 @@ class MiscController extends AbstractController
                 'lang_codes'                   => $lang_codes,
                 'lang_names'                   => $lang_names,
                 'translate_ticket_message_url' => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-ticket-message')),
-                'translate_text_url'                                                                  => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-text')),
+                'translate_text_url'           => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-text')),
             );
 
-            $js[] = "window.DESKPRO_TRANSLATE_SERVICE = ".json_encode($info).";";
+            $js[] = 'window.DESKPRO_TRANSLATE_SERVICE = '.json_encode($info).';';
         }
 
         $date_formats = array(
@@ -477,12 +477,12 @@ JS;
     public function ajaxLabelsAutocompleteAction($label_type)
     {
         $search    = $this->in->getString('term');
-        $statement = $this->db->executeQuery("
+        $statement = $this->db->executeQuery('
             SELECT label
             FROM label_defs
             WHERE label_type = ? AND label LIKE ?
             ORDER BY label ASC
-            LIMIT 50",
+            LIMIT 50',
         array($label_type, '%'.$search.'%'));
 
         $array = array();
@@ -681,7 +681,7 @@ JS;
             'is_image'          => $blob->isImage(),
 
             // needed for Redactor
-            'filelink'     => $blob->getDownloadUrl(true),
+            'filelink' => $blob->getDownloadUrl(true),
         ));
 
         return $res;
@@ -736,13 +736,13 @@ JS;
             }
 
             App::getDb()->insert('client_messages', array(
-                'channel' => 'agent.ticket-draft-updated',
-                'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                'channel'      => 'agent.ticket-draft-updated',
+                'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data'         => serialize(array(
-                    'ticket_id'      => $content_id,
-                    'draft_html'     => $html,
-                    'via_person'     => $this->person->id,
+                    'ticket_id'  => $content_id,
+                    'draft_html' => $html,
+                    'via_person' => $this->person->id,
                 )),
             ));
         }
@@ -915,7 +915,7 @@ JS;
         $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
         foreach ($usersources as $us) {
             foreach ($this->person->getEmailAddresses() as $email) {
-                /** @var $us \Application\DeskPRO\Entity\Usersource */
+                /* @var $us \Application\DeskPRO\Entity\Usersource */
                 $adapter = $this->_initUserSourceAdapter($us);
                 $adapter->setFormData(array(
                     'username' => $email,
@@ -1041,7 +1041,7 @@ JS;
             if ($appAsset) {
                 $class_name = $name;
             } else {
-                $class_name = "Agent/AppPlatform/Context/AppContext";
+                $class_name = 'Agent/AppPlatform/Context/AppContext';
             }
 
             if ($package->native_name) {
@@ -1072,7 +1072,7 @@ JS;
                 }
                 $asset_files_js = "{\n".implode(",\n", $asset_files_js)."\n\t\t}";
             } else {
-                $asset_files_js = "{}";
+                $asset_files_js = '{}';
             }
 
             $module_asset = $package->getTaggedAsset('module_js');
@@ -1156,13 +1156,13 @@ JS;
 
     public function viewDpNewsAction($id)
     {
-        $dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+        $dp_news = require_once DP_ROOT.'/sys/config/config.news.php';
         if (!isset($dp_news[$id])) {
             throw $this->createNotFoundException();
         }
 
         return $this->render('AgentBundle:Misc:dp-news-view.html.twig', array(
-                'dp_news' => $dp_news[$id]
+                'dp_news' => $dp_news[$id],
             ));
     }
 }

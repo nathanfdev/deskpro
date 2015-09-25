@@ -1,44 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
-
 
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class JsonHeadersResponseListener implements EventSubscriberInterface
@@ -46,7 +42,7 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
     const INCLUDE_HEADERS_PARAM = 'include_headers';
 
     public static $excluded_headers = array(
-        'set-cookie'
+        'set-cookie',
     );
 
     /**
@@ -62,13 +58,13 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onResponse', -1)
+            KernelEvents::RESPONSE => array('onResponse', -1),
         );
     }
 
     public function onResponse(FilterResponseEvent $event)
     {
-        $request = $event->getRequest();
+        $request  = $event->getRequest();
         $response = $event->getResponse();
 
         if ($request->query->has(self::INCLUDE_HEADERS_PARAM)) {
@@ -88,11 +84,12 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
 
     /**
      * @param $header_split
+     *
      * @return array
      */
     private function getHeaderStringVal($header_split)
     {
-        $header_values = array_splice($header_split, 1, count($header_split) - 1);
+        $header_values      = array_splice($header_split, 1, count($header_split) - 1);
         $header_value_split = implode(':', $header_values);
 
         return trim($header_value_split);
@@ -100,16 +97,17 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
 
     /**
      * @param Response $response
+     *
      * @return array
      */
     private function extractHeaderArray(Response $response)
     {
-        $headers = (string)$response->headers;
+        $headers = (string) $response->headers;
 
         $header_bag = explode("\r\n", $headers);
 
         $json_headers = array(
-            'status-code' => $response->getStatusCode()
+            'status-code' => $response->getStatusCode(),
         );
         foreach ($header_bag as $key => $val) {
             $header_split = explode(':', $val);

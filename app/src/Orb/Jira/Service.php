@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Orb\Jira;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
@@ -29,7 +55,7 @@ class Service
      *
      * @var array errors
      */
-    protected $_errors    = array();
+    protected $_errors = array();
 
     /**
      * Switches the debug mode<br/>
@@ -39,7 +65,7 @@ class Service
      *
      * @var bool Debug Mode
      */
-    protected $_debug    = false;
+    protected $_debug = false;
 
     /** @var EntityManager */
     protected $_em;
@@ -55,7 +81,7 @@ class Service
     public function __construct($baseUrl, $params = array(), $em = null)
     {
         if (!isset($params['username']) || !isset($params['password'])) {
-            throw new \Exception("You must supply your JIRA credentials to connect to JIRA");
+            throw new \Exception('You must supply your JIRA credentials to connect to JIRA');
         }
 
         $this->_client = new Client();
@@ -102,9 +128,9 @@ class Service
      *
      * @param String $error The Error Message
      *
-     * @throws \Exception    if the debug mode is off
-     * @return \JIRA\Service
+     * @throws \Exception if the debug mode is off
      *
+     * @return \JIRA\Service
      */
     public function addError($error, $code = 0)
     {
@@ -242,7 +268,7 @@ class Service
     public function postJson($uri, $body)
     {
         $header = array(
-            'Content-Type'    => 'application/json',
+            'Content-Type' => 'application/json',
         );
 
         $contentType = 'application/json';
@@ -267,7 +293,7 @@ class Service
     public function putJson($uri, $body)
     {
         $header = array(
-            'Content-Type'    => 'application/json',
+            'Content-Type' => 'application/json',
         );
 
         $contentType = 'application/json';
@@ -301,13 +327,13 @@ class Service
      * @param String $entity Entity class name
      * @param int    $id     id of the entity to find
      *
-     * @return boolean|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
+     * @return bool|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
      */
     public function find($entity, $id)
     {
-        $repositoryClass    = $this->getRepositoryClass($entity);
+        $repositoryClass = $this->getRepositoryClass($entity);
 
-        $repository            = $this->getRepository($repositoryClass);
+        $repository = $this->getRepository($repositoryClass);
 
         if (method_exists($repository, 'find')) {
             return $repository->find($id);
@@ -323,7 +349,7 @@ class Service
      * @param String $name      the name of the function called
      * @param mixed  $arguments additional arguments passed
      *
-     * @return boolean|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
+     * @return bool|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
      */
     public function __call($name, $arguments)
     {
@@ -341,7 +367,7 @@ class Service
      *
      * @param String|\JIRA\Entity\Entity $entity An Entity object or class name
      *
-     * @return string|boolean The repository class name if found and "FALSE" otherwise
+     * @return string|bool The repository class name if found and "FALSE" otherwise
      */
     public function getRepositoryClass($entity)
     {
@@ -413,7 +439,7 @@ class Service
      *
      * @param \JIRA\Entity\Entity $entity The entity to persist
      *
-     * @return boolean "TRUE" on success and "FALSE" otherwise
+     * @return bool "TRUE" on success and "FALSE" otherwise
      */
     public function remove(\Orb\Jira\Entity $entity)
     {
@@ -503,7 +529,7 @@ class Service
 
         try {
             //Reaching this point means there are DeskPRO tickets associated to this issue_id
-            $issue    = $this->findIssue($issue_id);
+            $issue = $this->findIssue($issue_id);
         } catch (\Exception $e) {
             if (404 === $e->getCode()) {
                 foreach ($jiraIssues as $issue) {
@@ -518,7 +544,7 @@ class Service
             return;
         }
 
-        $jiraRepository    = $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+        $jiraRepository = $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
 
         $comments = $jiraRepository->getComments($issue);
 
@@ -537,15 +563,15 @@ class Service
                     }
                 }
 
-                $ticketNote                        = new \Application\DeskPRO\Entity\TicketMessage();
+                $ticketNote = new \Application\DeskPRO\Entity\TicketMessage();
 
-                $ticketNote['ticket']            = $ticket;
+                $ticketNote['ticket'] = $ticket;
 
-                $ticketNote['ip_address']        = '10.20.30.40';
+                $ticketNote['ip_address'] = '10.20.30.40';
 
-                $ticketNote['creation_system']    = 'app.jira';
+                $ticketNote['creation_system'] = 'app.jira';
 
-                $jiraUserEmail                    = $comment['author']['emailAddress'];
+                $jiraUserEmail = $comment['author']['emailAddress'];
 
                 /*
                  * Comment author mapping
@@ -553,7 +579,7 @@ class Service
                  * If none found we set it to current user
                  */
                 $matchedEmail = $this->_em->getRepository('Application\DeskPRO\Entity\PersonEmail')->findOneBy(array(
-                    'email'    => $jiraUserEmail,
+                    'email' => $jiraUserEmail,
                 ));
 
                 if ($matchedEmail) {
@@ -575,16 +601,16 @@ class Service
                     }
                 }
 
-                $ticketNote['person']            = $commentAuthor;
+                $ticketNote['person'] = $commentAuthor;
 
-                $ticketNote->message            = $comment['body'].'<br/><br/>'.
+                $ticketNote->message = $comment['body'].'<br/><br/>'.
                         ' by <a target="_blank" href="'.$this->getBaseUrl().'secure/ViewProfile.jspa?name='.$comment['author']['name'].'">'.$comment['author']['displayName'].'</a><br/>'.
                         ' in <a target="_blank" href="'.$this->getBaseUrl().'browse/'.$issue->getKey().'">'.$issue->getKey().'</a><br/>'.
                         ' - JIRA';
 
-                $ticketNote['is_agent_note']    = true;
+                $ticketNote['is_agent_note'] = true;
 
-                $ticketNote['date_created']        = new \DateTime($comment['updated']);
+                $ticketNote['date_created'] = new \DateTime($comment['updated']);
 
                 $ticket->addMessage($ticketNote);
 
@@ -593,8 +619,8 @@ class Service
 
                 $jiraIssueComment = new \Application\DeskPRO\Entity\JiraIssueComment();
 
-                $jiraIssueComment->jiraId            = $comment['id'];
-                $jiraIssueComment->ticketMessage     = $ticketNote;
+                $jiraIssueComment->jiraId        = $comment['id'];
+                $jiraIssueComment->ticketMessage = $ticketNote;
 
                 $jiraIssue->addComment($jiraIssueComment);
 

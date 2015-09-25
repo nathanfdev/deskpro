@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Search
  */
-
 namespace Application\DeskPRO\Search\Adapter\Mysql;
 
 use Application\DeskPRO\Entity\Person;
@@ -91,7 +91,7 @@ class PermissionFilter
     protected function _gen()
     {
         if (!$this->person_context) {
-            throw new \RuntimeException("PermissionFilter requires you to set a person context");
+            throw new \RuntimeException('PermissionFilter requires you to set a person context');
         }
 
         if ($this->has_gen) {
@@ -104,7 +104,7 @@ class PermissionFilter
         $x     = 0;
 
         if (in_array('article', $this->types)) {
-            $x++;
+            ++$x;
             $jn      = '_cs'.$x;
             $dis_ids = $this->person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
             if ($dis_ids) {
@@ -115,7 +115,7 @@ class PermissionFilter
         }
 
         if (in_array('news', $this->types)) {
-            $x++;
+            ++$x;
             $jn      = '_cs'.$x;
             $dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
             if ($dis_ids) {
@@ -126,7 +126,7 @@ class PermissionFilter
         }
 
         if (in_array('feedback', $this->types)) {
-            $x++;
+            ++$x;
             $jn      = '_cs'.$x;
             $dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
             if ($dis_ids) {
@@ -137,7 +137,7 @@ class PermissionFilter
         }
 
         if (in_array('download', $this->types)) {
-            $x++;
+            ++$x;
             $jn      = '_cs'.$x;
             $dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
             if ($dis_ids) {
@@ -152,7 +152,7 @@ class PermissionFilter
         }
 
         $this->perm_join  = implode("\n", $join);
-        $this->perm_where = "(".implode(" AND ", $where).")";
+        $this->perm_where = '('.implode(' AND ', $where).')';
     }
 
     /**

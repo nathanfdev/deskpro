@@ -1,38 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\Twig\Loader;
 
 use Application\DeskPRO\App;
-use Doctrine\DBAL\Connection;
 
 /**
  * Twig loaders expect a path, and to read templates from the database means.
@@ -89,10 +88,10 @@ class DbStreamWrapper
         }
 
         $where = array('name = ?');
-        for ($i = 1, $c = count($params); $i < $c; $i++) {
-            $where[] = "name LIKE ?";
+        for ($i = 1, $c = count($params); $i < $c; ++$i) {
+            $where[] = 'name LIKE ?';
         }
-        $where = implode(" OR ", $where);
+        $where = implode(' OR ', $where);
 
         // no good way to avoid this App:: use at the moment, because we need db access here
         $statement = App::$container->get('doctrine.dbal.default_connection')->executeQuery("
@@ -104,7 +103,6 @@ class DbStreamWrapper
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $results[$row['name']] = $row;
         }
-
 
         $templates = array_merge($templates, $results);
 

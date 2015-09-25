@@ -1,19 +1,48 @@
 <?php
-/* This file has been auto-generated. See build-vendors-mutate.php */
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Application\DeskPRO\ORM\Unprivate;
 
-use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;
-use Exception;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\LockMode;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataFactory;
-use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Internal;
+use Doctrine\ORM\NativeQuery;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Proxy\ProxyFactory;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\FilterCollection;
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\UnitOfWork;
+use Exception;
 
 class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 {
@@ -30,16 +59,16 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
     protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
     {
-        $this->conn = $conn;
-        $this->config = $config;
-        $this->eventManager = $eventManager;
+        $this->conn               = $conn;
+        $this->config             = $config;
+        $this->eventManager       = $eventManager;
         $metadataFactoryClassName = $config->getClassMetadataFactoryName();
-        $this->metadataFactory = new $metadataFactoryClassName;
+        $this->metadataFactory    = new $metadataFactoryClassName();
         $this->metadataFactory->setEntityManager($this);
         $this->metadataFactory->setCacheDriver($this->config->getMetadataCacheImpl());
         $this->repositoryFactory = $config->getRepositoryFactory();
-        $this->unitOfWork = new UnitOfWork($this);
-        $this->proxyFactory = new ProxyFactory(
+        $this->unitOfWork        = new UnitOfWork($this);
+        $this->proxyFactory      = new ProxyFactory(
             $this,
             $config->getProxyDir(),
             $config->getProxyNamespace(),
@@ -60,7 +89,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     public function getExpressionBuilder()
     {
         if ($this->expressionBuilder === null) {
-            $this->expressionBuilder = new Query\Expr;
+            $this->expressionBuilder = new Query\Expr();
         }
 
         return $this->expressionBuilder;
@@ -169,7 +198,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         $unitOfWork = $this->getUnitOfWork();
         if (($entity = $unitOfWork->tryGetById($sortedId, $class->rootEntityName)) !== false) {
             if (!($entity instanceof $class->name)) {
-                return null;
+                return;
             }
             switch ($lockMode) {
                 case LockMode::OPTIMISTIC:
@@ -308,7 +337,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
     public function copy($entity, $deep = false)
     {
-        throw new \BadMethodCallException("Not implemented.");
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function lock($entity, $lockMode, $lockVersion = null)
@@ -410,7 +439,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
                 }
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid argument: ".$conn);
+                throw new \InvalidArgumentException('Invalid argument: '.$conn);
         }
 
         return new static($conn, $config, $conn->getEventManager());

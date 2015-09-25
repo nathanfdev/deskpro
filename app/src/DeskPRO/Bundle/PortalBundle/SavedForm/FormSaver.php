@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\PortalBundle\SavedForm;
 
 use Application\DeskPRO\Entity\Person;
@@ -44,7 +42,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class FormSaver 
+class FormSaver
 {
     const AUTO_SUBMIT_SESSION_KEY = 'portal_form_saver_auto_submit';
     const SAVED_FORMS_SESSION_KEY = 'portal_form_saver_saved_forms';
@@ -71,10 +69,10 @@ class FormSaver
 
     public function __construct(UrlGeneratorInterface $generator, EntityManager $em, Session $session)
     {
-        $this->generator = $generator;
-        $this->em = $em;
+        $this->generator       = $generator;
+        $this->em              = $em;
         $this->saved_form_repo = $em->getRepository('DeskPRO\Bundle\AppBundle\Entity\SavedForm');
-        $this->session = $session;
+        $this->session         = $session;
     }
 
     /**
@@ -88,13 +86,14 @@ class FormSaver
             return $this->saved_form_repo->getByExternalCode($external_code);
         }
 
-        return null;
+        return;
     }
 
     /**
      * Find a list of SavedForm objects that we should display to this user.
      *
      * @param Person $person
+     *
      * @return SavedForm[]
      */
     public function getSavedForms(Person $person)
@@ -110,9 +109,10 @@ class FormSaver
     }
 
     /**
-     * A shortcut to the repo method
+     * A shortcut to the repo method.
      *
      * @param $external_code
+     *
      * @return SavedForm|null
      */
     public function getByExternalCode($external_code)
@@ -127,15 +127,16 @@ class FormSaver
      * Saves the form information and prepares the session for auto-submit. Returns the correct
      * redirect reponse that your controller should return immediately to auto-submit.
      *
-     * @param Person $person the Person that needs to log in
-     * @param FormInterface $form the submitted form
-     * @param Request $request the request that was used to submit the form
+     * @param Person        $person  the Person that needs to log in
+     * @param FormInterface $form    the submitted form
+     * @param Request       $request the request that was used to submit the form
+     *
      * @return RedirectResponse
      */
     public function saveFormForPerson(Person $person, FormInterface $form, Request $request)
     {
-        $data = $request->request->all();
-        $route = $request->attributes->get('_route');
+        $data         = $request->request->all();
+        $route        = $request->attributes->get('_route');
         $route_params = $request->attributes->get('_route_params');
 
         // we have to do a "hack" to find the saved auth codes for the attachments
@@ -144,8 +145,8 @@ class FormSaver
         $saved_form = new SavedForm($person);
         $saved_form->setFormData($data);
         $saved_form->setMetaData(array(
-            'route' => $route,
-            'route_params' => $route_params
+            'route'        => $route,
+            'route_params' => $route_params,
         ));
 
         $this->em->persist($saved_form);
@@ -156,7 +157,7 @@ class FormSaver
 
         return new RedirectResponse(
             $this->generator->generate('portal_login', array(
-                'saved_form' => $saved_form->getExternalCode()
+                'saved_form' => $saved_form->getExternalCode(),
             ))
         );
     }
@@ -241,7 +242,8 @@ class FormSaver
 
     /**
      * @param FormInterface $form
-     * @param array $data
+     * @param array         $data
+     *
      * @return mixed
      */
     public function dealWithAttachmentsAuthCodes(FormInterface $form, array $data)
@@ -249,13 +251,13 @@ class FormSaver
         // we have to loop through the form's view to find the saved
         // auth codes from the BlobType form type and then "insert" them
         // into $data
-        $form_views = $form->createView();
+        $form_views          = $form->createView();
         $attachment_raw_data = array();
         foreach ($form_views as $name => $form_view) {
             if ($name === 'attachments') {
                 foreach ($form_view->children as $attachment_view) {
                     if (array_key_exists('blob_auth', $attachment_view->children)) {
-                        $blob_field = $attachment_view->children['blob_auth'];
+                        $blob_field                                          = $attachment_view->children['blob_auth'];
                         $attachment_raw_data[$blob_field->vars['full_name']] = $blob_field->vars['value'];
                     }
                 }
@@ -264,10 +266,10 @@ class FormSaver
         if (count($attachment_raw_data)) {
             $accessor = PropertyAccess::createPropertyAccessor();
             foreach ($attachment_raw_data as $full_name => $value) {
-                $path = array();
+                $path     = array();
                 $exploded = explode('[', $full_name);
                 foreach ($exploded as $piece) {
-                    $path[] = '[' . $piece . (strpos($piece, ']') ? '' : ']');
+                    $path[] = '['.$piece.(strpos($piece, ']') ? '' : ']');
                 }
                 $property_path = implode('', $path);
                 $accessor->setValue($data, $property_path, $value);

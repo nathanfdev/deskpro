@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -99,10 +99,10 @@ abstract class AbstractGatewayProcessor
 
     public function __construct(Entity\EmailAccount $account, AbstractReader $reader, array $options = array())
     {
-        $this->container    = App::getContainer();
-        $this->account      = $account;
-        $this->reader       = $reader;
-        $this->options      = $options;
+        $this->container = App::getContainer();
+        $this->account   = $account;
+        $this->reader    = $reader;
+        $this->options   = $options;
 
         if (isset($options['event_dispatcher'])) {
             $this->event_dispatcher = $options['event_dispatcher'];
@@ -124,7 +124,7 @@ abstract class AbstractGatewayProcessor
         }
 
         if ($this->account_email_address) {
-            $this->logMessage(sprintf("Matched address %s", $this->account_email_address));
+            $this->logMessage(sprintf('Matched address %s', $this->account_email_address));
         } else {
             $this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $account->id));
         }
@@ -172,7 +172,7 @@ abstract class AbstractGatewayProcessor
                 $attach->getMimeType()
             );
 
-            $this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
+            $this->logMessage(sprintf('Processed blob %s (%d)', $blob->filename, $blob->id));
             $this->processed_blobs[$blob->id] = $blob;
 
             if ($attach->getContentId()) {

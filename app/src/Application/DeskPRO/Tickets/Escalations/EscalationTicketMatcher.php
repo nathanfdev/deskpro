@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -82,21 +82,21 @@ class EscalationTicketMatcher
      */
     public function getMatches(TicketEscalation $esc, $limit = 100)
     {
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] Getting matches for %d %s -- limit(%d)", $esc->id, $esc->title, $limit));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] Getting matches for %d %s -- limit(%d)', $esc->id, $esc->title, $limit));
 
         $ms_start = microtime(true);
 
         $searcher = $this->_getSearcherForEscalation($esc);
         $searcher->setLimit($limit);
 
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] --> SQL: %s", $searcher->getSql()));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] --> SQL: %s', $searcher->getSql()));
         $ticket_ids = $searcher->getMatches();
         $tickets    = array();
         if ($ticket_ids) {
             $tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
         }
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] --> Number of results: %d", count($tickets)));
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] --> Took %.4fs", microtime(true) - $ms_start));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] --> Number of results: %d', count($tickets)));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] --> Took %.4fs', microtime(true) - $ms_start));
 
         return $tickets;
     }
@@ -105,8 +105,8 @@ class EscalationTicketMatcher
      * @param TicketEscalation $esc
      *
      * @throws \InvalidArgumentException
-     * @return TicketSearch
      *
+     * @return TicketSearch
      */
     private function _getSearcherForEscalation(TicketEscalation $esc)
     {
@@ -202,7 +202,7 @@ class EscalationTicketMatcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Invalid escalation event: ".$esc->event_trigger);
+                throw new \InvalidArgumentException('Invalid escalation event: '.$esc->event_trigger);
         }
 
         return $searcher;

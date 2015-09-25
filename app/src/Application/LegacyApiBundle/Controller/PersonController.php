@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -46,7 +46,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 	resourcePath="/people",
  * 	description="Operations about People/Persons",
  * 	basePath="/api"
- * )
+ * ).
  */
 class PersonController extends AbstractController
 {
@@ -201,7 +201,7 @@ class PersonController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
@@ -252,7 +252,7 @@ class PersonController extends AbstractController
         }
 
         foreach ($this->container->getSystemService('person_fields_manager')->getFields() as $field) {
-            if ($this->in->checkIsset("field.".$field->getId())) {
+            if ($this->in->checkIsset('field.'.$field->getId())) {
                 $in_val = $this->in->getString('field.'.$field->getId());
                 if ($in_val) {
                     $terms[] = array('type' => 'person_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val));
@@ -418,7 +418,7 @@ class PersonController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function newPersonAction()
     {
@@ -458,7 +458,7 @@ class PersonController extends AbstractController
             }
 
             $all_empty = true;
-            for ($i = 1; $i <= 10; $i++) {
+            for ($i = 1; $i <= 10; ++$i) {
                 if ($contact_data->{'field_'.$i}) {
                     $all_empty = false;
                     break;
@@ -574,7 +574,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonAction($person_id)
     {
@@ -663,7 +663,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonAction($person_id)
     {
@@ -797,7 +797,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonAction($person_id)
     {
@@ -864,7 +864,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonPictureAction($person_id)
     {
@@ -913,7 +913,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonPictureAction($person_id)
     {
@@ -969,7 +969,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonPictureAction($person_id)
     {
@@ -999,7 +999,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonEmailsAction($person_id)
     {
@@ -1046,7 +1046,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonEmailsAction($person_id)
     {
@@ -1118,7 +1118,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonEmailAction($person_id, $email_id)
     {
@@ -1177,7 +1177,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonEmailAction($person_id, $email_id)
     {
@@ -1238,7 +1238,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonEmailAction($person_id, $email_id)
     {
@@ -1300,7 +1300,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonVcardAction($person_id)
     {
@@ -1410,7 +1410,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonActivityStreamAction($person_id)
     {
@@ -1473,7 +1473,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonTicketsAction($person_id)
     {
@@ -1552,7 +1552,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonChatsAction($person_id)
     {
@@ -1627,7 +1627,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function resetPasswordAction($person_id)
     {
@@ -1678,7 +1678,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function clearSessionAction($person_id)
     {
@@ -1705,7 +1705,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonNotesAction($person_id)
     {
@@ -1739,7 +1739,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonNotesAction($person_id)
     {
@@ -1782,7 +1782,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonBillingChargesAction($person_id)
     {
@@ -1827,7 +1827,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonContactDetailsAction($person_id)
     {
@@ -1874,7 +1874,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonContactDetailsAction($person_id)
     {
@@ -1902,7 +1902,7 @@ class PersonController extends AbstractController
         }
 
         $all_empty = true;
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 10; ++$i) {
             if ($contact_data->{'field_'.$i}) {
                 $all_empty = false;
                 break;
@@ -1948,7 +1948,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonContactDetailAction($person_id, $contact_id)
     {
@@ -1987,7 +1987,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonContactDetailAction($person_id, $contact_id)
     {
@@ -2022,7 +2022,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonGroupsAction($person_id)
     {
@@ -2055,7 +2055,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonGroupsAction($person_id)
     {
@@ -2118,7 +2118,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonGroupAction($person_id, $usergroup_id)
     {
@@ -2157,7 +2157,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonGroupAction($person_id, $usergroup_id)
     {
@@ -2195,7 +2195,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonLabelsAction($person_id)
     {
@@ -2228,7 +2228,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonLabelsAction($person_id)
     {
@@ -2273,7 +2273,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonLabelAction($person_id, $label)
     {
@@ -2310,7 +2310,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonLabelAction($person_id, $label)
     {
@@ -2330,7 +2330,7 @@ class PersonController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available custom person fields"
      * 	)
-     * )
+     * ).
      */
     public function getFieldsAction()
     {
@@ -2347,7 +2347,7 @@ class PersonController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available usergroups"
      * 	)
-     * )
+     * ).
      */
     public function getGroupsAction()
     {
@@ -2378,7 +2378,7 @@ class PersonController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getLoginTokenAction($person_id)
     {
@@ -2410,11 +2410,11 @@ class PersonController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Person
      *
+     * @return \Application\DeskPRO\Entity\Person
      */
     protected function _getPersonOr404($id, $check_perm = '')
     {
@@ -2432,10 +2432,10 @@ class PersonController extends AbstractController
                 case 'manage_emails':
                 case 'notes':
                     if (!$this->isPersonEditable($person)) {
-                        throw $this->createAccessDeniedException("Only admins may edit other agents.");
+                        throw $this->createAccessDeniedException('Only admins may edit other agents.');
                     }
                     if (!$this->person->hasPerm('agent_people.'.$check_perm)) {
-                        throw $this->createAccessDeniedException("Insufficient permission. Required: agent_people.".$check_perm);
+                        throw $this->createAccessDeniedException('Insufficient permission. Required: agent_people.'.$check_perm);
                     }
                     break;
 

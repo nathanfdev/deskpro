@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Routing\UrlMatcher;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Negotiation\LanguageNegotiator;
 use Psr\Log\LoggerInterface;
@@ -70,7 +69,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
     {
         $this->language_manager = $language_manager;
         $this->logger           = $logger;
-        $this->em = $em;
+        $this->em               = $em;
     }
 
     public static function getSubscribedEvents()
@@ -166,10 +165,10 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             $query = $this->em->getConnection()->executeQuery(
                 'SELECT * FROM sess_data WHERE sess_id = :sess_id',
                 array(
-                    'sess_id' => $session_id
+                    'sess_id' => $session_id,
                 ),
                 array(
-                    'sess_id' => \PDO::PARAM_STR
+                    'sess_id' => \PDO::PARAM_STR,
                 )
             );
 
@@ -189,7 +188,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
                 return;
             }
 
-            /** @var Person $person */
+            /* @var Person $person */
             return $person->language;
         }
     }
@@ -199,8 +198,8 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         $negotiator = new LanguageNegotiator();
 
         // get the language codes of all portal langs enabled
-        $langs = $this->language_manager->getEnabledLanguages();
-        $lang_codes = array_map(function(Language $lang) {
+        $langs      = $this->language_manager->getEnabledLanguages();
+        $lang_codes = array_map(function (Language $lang) {
             return $lang->getTwoLetterLanguageCode();
         }, $langs);
 
@@ -219,7 +218,8 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         if (in_array($header_lang, $request->getLanguages())) {
             try {
                 return $this->language_manager->getLanguage($header_lang);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return;

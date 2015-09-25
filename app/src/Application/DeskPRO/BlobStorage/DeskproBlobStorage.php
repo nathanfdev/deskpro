@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\BlobStorage;
 
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
@@ -146,8 +146,8 @@ class DeskproBlobStorage implements Loggable
      * @param string $id
      *
      * @throws \InvalidArgumentException
-     * @return AbstractStorageAdapter
      *
+     * @return AbstractStorageAdapter
      */
     public function getAdapter($id)
     {
@@ -280,16 +280,16 @@ class DeskproBlobStorage implements Loggable
      * @param array  $props
      *
      * @throws \RuntimeException
-     * @return int               The blob ID that was created
      *
+     * @return int The blob ID that was created
      */
     public function createBlobRowFromFile($source_path, $filename, $content_type, array $props = null)
     {
         $this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromFile) From path: $source_path");
 
-        $blob_entity_tmp               = $this->_createBlobEntity($filename, $content_type, $props);
-        $blob_entity_tmp->filesize     = filesize($source_path);
-        $blob_entity_tmp->blob_hash    = md5_file($source_path);
+        $blob_entity_tmp            = $this->_createBlobEntity($filename, $content_type, $props);
+        $blob_entity_tmp->filesize  = filesize($source_path);
+        $blob_entity_tmp->blob_hash = md5_file($source_path);
 
         if (ContentTypes::isImageContentType($content_type)) {
             $imageinfo = @getimagesize($source_path);
@@ -314,7 +314,7 @@ class DeskproBlobStorage implements Loggable
         $blob_entity_tmp->id = $blob_array['id'];
 
         // We need the ID first to generate a proper unique filename/auth
-        $batch = (int) (($blob_entity_tmp->id-1) / 1000) + 1;
+        $batch = (int) (($blob_entity_tmp->id - 1) / 1000) + 1;
         $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Blob ID: {$blob_entity_tmp->id}");
 
         // Now call the blob storages
@@ -335,9 +335,9 @@ class DeskproBlobStorage implements Loggable
             /* @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
             try {
                 if ($adapter_id == 'fs') {
-                    $authcode = $batch  . DpStrings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
+                    $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity_tmp->getId().$blob_entity_tmp->getNameHash();
                 } else {
-                    $authcode = $blob_entity_tmp->getId() . DpStrings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+                    $authcode = $blob_entity_tmp->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
                 }
 
                 $blob->setMeta('authcode', $authcode);
@@ -361,14 +361,14 @@ class DeskproBlobStorage implements Loggable
 
         // None of the succeeded, try to delete this half-inserted blob and then throw an error
         if (!$blob_entity_tmp->storage_loc) {
-            $this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromFile) All adapters failed");
+            $this->logger->logError('[DeskproBlobStorage] (saveBlobRecordFromFile) All adapters failed');
 
             $this->db->delete('blobs', $blob_array['id']);
 
-            throw new \RuntimeException("Failed to store blob, no adapters succeeded", 1, $prev_e);
+            throw new \RuntimeException('Failed to store blob, no adapters succeeded', 1, $prev_e);
         }
 
-        $blob_entity_tmp->authcode  = $blob->getMeta('authcode');
+        $blob_entity_tmp->authcode = $blob->getMeta('authcode');
 
         if ($blob->getMeta('file_url')) {
             $blob_entity_tmp->file_url = $blob->getMeta('file_url');
@@ -394,7 +394,7 @@ class DeskproBlobStorage implements Loggable
 
         $this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
 
-        $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
+        $this->logger->logDebug('[DeskproBlobStorage] (saveBlobRecordFromFile) Save success');
 
         return $blob_array;
     }
@@ -406,8 +406,8 @@ class DeskproBlobStorage implements Loggable
      * @param array  $props
      *
      * @throws \RuntimeException
-     * @return BlobEntity
      *
+     * @return BlobEntity
      */
     public function createBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
     {
@@ -424,19 +424,19 @@ class DeskproBlobStorage implements Loggable
      * @param array  $props
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function createBlobRowFromString($source_data, $filename, $content_type, array $props = null)
     {
-        $this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromString) From data string ".Numbers::filesizeDisplay(strlen($source_data)));
+        $this->logger->logDebug('[DeskproBlobStorage] BEGIN (saveBlobRecordFromString) From data string '.Numbers::filesizeDisplay(strlen($source_data)));
 
         $blob_entity_tmp            = $this->_createBlobEntity($filename, $content_type, $props);
         $blob_entity_tmp->filesize  = strlen($source_data);
         $blob_entity_tmp->blob_hash = md5($source_data);
 
         if (ContentTypes::isImageContentType($content_type)) {
-            $tmpfname = @tempnam(sys_get_temp_dir(), "dpblob_");
+            $tmpfname = @tempnam(sys_get_temp_dir(), 'dpblob_');
             if ($tmpfname && @file_put_contents($tmpfname, $source_data)) {
                 $imageinfo = @getimagesize($tmpfname);
                 if ($imageinfo) {
@@ -462,7 +462,7 @@ class DeskproBlobStorage implements Loggable
         $blob_entity_tmp->id = $blob_array['id'];
 
         // We need the ID first to generate a proper unique filename/auth
-        $batch = (int) (($blob_entity_tmp->id-1) / 1000) + 1;
+        $batch = (int) (($blob_entity_tmp->id - 1) / 1000) + 1;
         $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Blob ID: {$blob_entity_tmp->id}");
 
         // Now call the blob storages
@@ -483,9 +483,9 @@ class DeskproBlobStorage implements Loggable
             /* @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
             try {
                 if ($adapter_id == 'fs') {
-                    $authcode = $batch  . DpStrings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
+                    $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity_tmp->getId().$blob_entity_tmp->getNameHash();
                 } else {
-                    $authcode = $blob_entity_tmp->getId() . DpStrings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+                    $authcode = $blob_entity_tmp->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
                 }
 
                 $blob->setMeta('authcode', $authcode);
@@ -509,14 +509,14 @@ class DeskproBlobStorage implements Loggable
 
         // None of the succeeded, try to delete this half-inserted blob and then throw an error
         if (!$blob_entity_tmp->storage_loc) {
-            $this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromString) All adapters failed");
+            $this->logger->logError('[DeskproBlobStorage] (saveBlobRecordFromString) All adapters failed');
 
             $this->db->delete('blobs', $blob_array['id']);
 
-            throw new \RuntimeException("Failed to store blob, no adapters succeeded", 1, $prev_e);
+            throw new \RuntimeException('Failed to store blob, no adapters succeeded', 1, $prev_e);
         }
 
-        $blob_entity_tmp->authcode  = $blob->getMeta('authcode');
+        $blob_entity_tmp->authcode = $blob->getMeta('authcode');
 
         if ($blob->getMeta('file_url')) {
             $blob_entity_tmp->file_url = $blob->getMeta('file_url');
@@ -542,7 +542,7 @@ class DeskproBlobStorage implements Loggable
 
         $this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
 
-        $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
+        $this->logger->logDebug('[DeskproBlobStorage] (saveBlobRecordFromString) Save success');
 
         return $blob_array;
     }
@@ -570,8 +570,8 @@ class DeskproBlobStorage implements Loggable
      * @param string $adapter_id
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function copyBlobToString(Blob $blob, $adapter_id)
     {
@@ -586,7 +586,7 @@ class DeskproBlobStorage implements Loggable
             throw $e;
         }
 
-        $this->logger->logDebug("[DeskproBlobStorage] (getBlobString) Read success: ".Numbers::filesizeDisplay(strlen($data)));
+        $this->logger->logDebug('[DeskproBlobStorage] (getBlobString) Read success: '.Numbers::filesizeDisplay(strlen($data)));
 
         return $data;
     }
@@ -599,8 +599,8 @@ class DeskproBlobStorage implements Loggable
      * @param string $adapter_id
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     public function copyBlobToFile($target_path, Blob $blob, $adapter_id)
     {
@@ -615,7 +615,7 @@ class DeskproBlobStorage implements Loggable
             throw $e;
         }
 
-        $this->logger->logDebug("[DeskproBlobStorage] (getBlobString) Save success: ".Numbers::filesizeDisplay($data));
+        $this->logger->logDebug('[DeskproBlobStorage] (getBlobString) Save success: '.Numbers::filesizeDisplay($data));
 
         return $data;
     }
@@ -636,7 +636,7 @@ class DeskproBlobStorage implements Loggable
             $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Attempting to fetch via URL: {$blob_entity->file_url}");
             $data = @file_get_contents($blob_entity->file_url);
             if (!$data || strlen($data) != $blob_entity->filesize) {
-                $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Failed");
+                $this->logger->logDebug('[DeskproBlobStorage] (readBlobStringFromRecord) Failed');
                 $data = null;
             } else {
                 $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Successfully read {$blob_entity->filesize} bytes");
@@ -667,7 +667,7 @@ class DeskproBlobStorage implements Loggable
             $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Attempting to fetch via URL: {$blob_row['file_url']}");
             $data = @file_get_contents($blob_row['file_url']);
             if (!$data || strlen($data) != $blob_row['filesize']) {
-                $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Failed");
+                $this->logger->logDebug('[DeskproBlobStorage] (readcopyBlobRowToString) Failed');
                 $data = null;
             } else {
                 $this->logger->logDebug("[DeskproBlobStorage] (copyBlobRowToString) Successfully read {$blob_row['filesize']} bytes");
@@ -689,7 +689,7 @@ class DeskproBlobStorage implements Loggable
      */
     public function copyBlobRowIdToString($blob_row_id)
     {
-        $blob_row = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_row_id));
+        $blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($blob_row_id));
         if (!$blob_row) {
             throw new \InvalidArgumentException("Could not find blob with ID $blob_row_id");
         }
@@ -722,7 +722,7 @@ class DeskproBlobStorage implements Loggable
             }
 
             if ($failed) {
-                $this->logger->logDebug("[DeskproBlobStorage] (saveBlobStringToFile) Failed");
+                $this->logger->logDebug('[DeskproBlobStorage] (saveBlobStringToFile) Failed');
                 $data = null;
             } else {
                 $this->logger->logDebug("[DeskproBlobStorage] (saveBlobStringToFile) Successfully saved {$blob_entity->filesize} bytes");
@@ -745,8 +745,8 @@ class DeskproBlobStorage implements Loggable
      *                            Otherwise, you can still check error state based on the return value.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function deleteBlob(Blob $blob, $adapter_id, $ex_on_error = false)
     {
@@ -765,7 +765,7 @@ class DeskproBlobStorage implements Loggable
             return false;
         }
 
-        $this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete success");
+        $this->logger->logDebug('[DeskproBlobStorage] (deleteBlob) Delete success');
 
         return true;
     }
@@ -776,8 +776,8 @@ class DeskproBlobStorage implements Loggable
      *                                Otherwise, you can still check error state based on the return value.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function deleteBlobRecord(BlobEntity $blob_entity, $ex_on_error = false)
     {
@@ -798,7 +798,7 @@ class DeskproBlobStorage implements Loggable
             return false;
         }
 
-        $this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete success");
+        $this->logger->logDebug('[DeskproBlobStorage] (deleteBlobRecord) Delete success');
 
         return true;
     }
@@ -809,8 +809,8 @@ class DeskproBlobStorage implements Loggable
      *                           Otherwise, you can still check error state based on the return value.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function deleteBlobRow(array $blob_row, $ex_on_error = false)
     {
@@ -830,7 +830,7 @@ class DeskproBlobStorage implements Loggable
             return false;
         }
 
-        $this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete success");
+        $this->logger->logDebug('[DeskproBlobStorage] (deleteBlobRow) Delete success');
 
         return true;
     }
@@ -842,7 +842,7 @@ class DeskproBlobStorage implements Loggable
      */
     public function deleteBlobRowId($blob_row_id)
     {
-        $blob_row = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_row_id));
+        $blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($blob_row_id));
         if (!$blob_row) {
             return;
         }
@@ -876,8 +876,8 @@ class DeskproBlobStorage implements Loggable
      * @param array $blob_row
      *
      * @throws \InvalidArgumentException
-     * @return Blob
      *
+     * @return Blob
      */
     public function getBlobFromBlobRow(array $blob_row)
     {
@@ -908,11 +908,11 @@ class DeskproBlobStorage implements Loggable
         $blob      = $this->getBlobFromBlobRecord($blob_entity);
         $file_data = $this->copyBlobRecordToString($blob_entity);
 
-        $batch = (int) (($blob_entity->id-1) / 1000) + 1;
+        $batch = (int) (($blob_entity->id - 1) / 1000) + 1;
         if ($adapter_id == 'fs') {
-            $authcode = $batch  . DpStrings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity->getId() . $blob_entity->getNameHash();
+            $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity->getId().$blob_entity->getNameHash();
         } else {
-            $authcode = $blob_entity->getId() . DpStrings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+            $authcode = $blob_entity->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
         }
 
         $blob->setMeta('authcode', $authcode);
@@ -926,7 +926,7 @@ class DeskproBlobStorage implements Loggable
         $blob_entity->save_path   = $path;
         $blob_entity->storage_loc = $adapter_id;
 
-        $blob_entity->authcode  = $blob->getMeta('authcode');
+        $blob_entity->authcode = $blob->getMeta('authcode');
 
         if ($blob->getMeta('file_url')) {
             $blob_entity->file_url = $blob->getMeta('file_url');

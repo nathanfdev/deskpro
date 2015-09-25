@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Article;
@@ -54,7 +54,7 @@ class ArticlesDataService extends AbstractDataService
 
     public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
     {
-        $this->em = $em;
+        $this->em                  = $em;
         $this->permissions_manager = $permissions_manager;
     }
 
@@ -65,8 +65,8 @@ class ArticlesDataService extends AbstractDataService
     {
         $em = $this->em;
 
-        return $this->generateAndCache(array('hasAny'), function() use ($em) {
-            return $em->getConnection()->fetchColumn("SELECT COUNT(*) FROM articles LIMIT 1") ? true : false;
+        return $this->generateAndCache(array('hasAny'), function () use ($em) {
+            return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM articles LIMIT 1') ? true : false;
         });
     }
 
@@ -79,7 +79,7 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getArticlesPager(ArticleCategory $category = null, $page, $max_per_page, Person $person)
     {
-        $em = $this->em;
+        $em                  = $this->em;
         $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
@@ -88,7 +88,7 @@ class ArticlesDataService extends AbstractDataService
                 $category,
                 $page,
                 $max_per_page,
-                $person
+                $person,
             ),
             function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
                 $qb = $em->createQueryBuilder();
@@ -103,7 +103,7 @@ class ArticlesDataService extends AbstractDataService
                     // find allowed ids
                     $cat_ids = $category->getTreeIds(true);
                     $using_ids = array();
-                    foreach($cat_ids as $cat_id) {
+                    foreach ($cat_ids as $cat_id) {
                         if (in_array($cat_id, $allowed_ids)) {
                             $using_ids[] = $cat_id;
                         }
@@ -140,8 +140,8 @@ class ArticlesDataService extends AbstractDataService
      * @param int|null|ArticleCategory $category
      *
      * @throws \InvalidArgumentException
-     * @return ArticleCategory[]
      *
+     * @return ArticleCategory[]
      */
     public function getCategoryChildren($category, Person $person)
     {
@@ -151,7 +151,7 @@ class ArticlesDataService extends AbstractDataService
             array(
                 'getCategoryChildren',
                 $category,
-                $person
+                $person,
             ),
             function () use ($that, $category, $person) {
                 $allowed_ids = $that->permissions_manager->getPermissionsBagForPerson($person)->getAllowedArticleCategories();
@@ -196,7 +196,7 @@ class ArticlesDataService extends AbstractDataService
             ),
             function () use ($that, $article) {
                 if (!$article) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($article instanceof Article) { // already have what you seek
@@ -228,7 +228,7 @@ class ArticlesDataService extends AbstractDataService
             ),
             function () use ($that, $category) {
                 if (!$category) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($category instanceof ArticleCategory) { // already have what you seek

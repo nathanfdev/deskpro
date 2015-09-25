@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  */
-
 namespace Orb\Log;
 
 /**
@@ -41,15 +41,15 @@ namespace Orb\Log;
 class Logger
 {
     /**@#+ Standard log levels */
-    const EMERG    = 0;
-    const ALERT    = 1;
-    const CRIT     = 2;
-    const ERR      = 3;
-    const WARN     = 4;
-    const NOTICE   = 5;
-    const INFO     = 6;
-    const DEBUG    = 7;
-    const STRICT   = 8;
+    const EMERG  = 0;
+    const ALERT  = 1;
+    const CRIT   = 2;
+    const ERR    = 3;
+    const WARN   = 4;
+    const NOTICE = 5;
+    const INFO   = 6;
+    const DEBUG  = 7;
+    const STRICT = 8;
     /**@#-*/
 
     /**
@@ -58,15 +58,15 @@ class Logger
      * @var array
      */
     protected $_priorities = array(
-        self::EMERG     => 'EMERG',
-        self::ALERT     => 'ALERT',
-        self::CRIT      => 'CRIT',
-        self::ERR       => 'ERR',
-        self::WARN      => 'WARN',
-        self::NOTICE    => 'NOTICE',
-        self::INFO      => 'INFO',
-        self::DEBUG     => 'DEBUG',
-        self::STRICT    => 'STRICT',
+        self::EMERG  => 'EMERG',
+        self::ALERT  => 'ALERT',
+        self::CRIT   => 'CRIT',
+        self::ERR    => 'ERR',
+        self::WARN   => 'WARN',
+        self::NOTICE => 'NOTICE',
+        self::INFO   => 'INFO',
+        self::DEBUG  => 'DEBUG',
+        self::STRICT => 'STRICT',
     );
 
     /**
@@ -121,7 +121,7 @@ class Logger
      */
     public function enable()
     {
-        $this->disabled = false;
+        $this->disabled         = false;
         $this->default_disabled = false;
     }
 
@@ -140,6 +140,7 @@ class Logger
      *
      * @param string $name
      * @param int    $priority
+     *
      * @return Logger
      */
     public function addPriority($name, $priority)
@@ -231,16 +232,16 @@ class Logger
                 $priority = 'ERR';
             }
             switch (strtoupper($priority)) {
-                case 'EMERG': $priority = self::EMERG; break;
-                case 'ALERT': $priority = self::ALERT; break;
-                case 'CRIT': $priority = self::CRIT; break;
-                case 'ERR': $priority = self::ERR; break;
-                case 'WARN': $priority = self::WARN; break;
+                case 'EMERG': $priority  = self::EMERG; break;
+                case 'ALERT': $priority  = self::ALERT; break;
+                case 'CRIT': $priority   = self::CRIT; break;
+                case 'ERR': $priority    = self::ERR; break;
+                case 'WARN': $priority   = self::WARN; break;
                 case 'NOTICE': $priority = self::NOTICE; break;
-                case 'INFO': $priority = self::INFO; break;
-                case 'DEBUG': $priority = self::DEBUG; break;
+                case 'INFO': $priority   = self::INFO; break;
+                case 'DEBUG': $priority  = self::DEBUG; break;
                 case 'STRICT': $priority = self::STRICT; break;
-                default: $priority = self::NOTICE; break;
+                default: $priority       = self::NOTICE; break;
             }
             $priority = constant('Orb\\Log\\Logger::'.strtoupper($priority));
         }
@@ -281,7 +282,7 @@ class Logger
             $dump = self::varToString($var);
         }
 
-        $this->log($name.": ".$dump, $priority);
+        $this->log($name.': '.$dump, $priority);
     }
 
     /**
@@ -301,18 +302,18 @@ class Logger
                 if ($_depth > 8) {
                     $a[] = sprintf('%s => %s', $k, '(string)');
                 } else {
-                    $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+                    $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
                 }
             }
 
-            return sprintf("[array](%s)", implode(', ', $a));
+            return sprintf('[array](%s)', implode(', ', $a));
         }
         if (is_resource($var)) {
             return '[resource]';
         }
         $str = (string) $var;
         if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000)."...(clipped)";
+            $str = substr($str, 0, 1000).'...(clipped)';
         }
 
         return $str;
@@ -437,8 +438,8 @@ class Logger
      * @param $name
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getStartTime($name)
     {
@@ -454,8 +455,8 @@ class Logger
      * @param bool   $reset
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getTotalTime($name = 'default', $reset = true)
     {
@@ -487,7 +488,7 @@ class Logger
             $message .= ' {{TIME}}';
         }
 
-        $message = str_replace('{{TIME}}', sprintf("%.5fs", $this->getTotalTime($name)), $message);
+        $message = str_replace('{{TIME}}', sprintf('%.5fs', $this->getTotalTime($name)), $message);
 
         $this->log($message, $level);
     }

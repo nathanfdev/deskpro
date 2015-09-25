@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -98,9 +98,9 @@ class UserChatManager
         $this->activityLogger = $logger;
 
         if ($session) {
-            $this->session     = $session;
-            $this->visitor     = null;
-            $this->person      = $session->getPerson();
+            $this->session = $session;
+            $this->visitor = null;
+            $this->person  = $session->getPerson();
         }
     }
 
@@ -143,7 +143,7 @@ class UserChatManager
             $traps = array(@$chat_options['full_name'], @$chat_options['email_address']);
             $traps = Arrays::func($traps, 'trim');
             $traps = Arrays::removeEmptyString($traps);
-            if (count($traps) || @$chat_options['email_address2'] != "yes") {
+            if (count($traps) || @$chat_options['email_address2'] != 'yes') {
                 $error_code = 'person_disabled';
 
                 return;
@@ -178,7 +178,7 @@ class UserChatManager
                         $new_person->name = $convo->person_name;
                     }
                     $new_person->setEmail($convo->person_email);
-                    $convo->person = $new_person;
+                    $convo->person        = $new_person;
                     $new_person->language = $this->tr->getLanguage();
                 }
             }
@@ -358,12 +358,12 @@ class UserChatManager
         $tag1 = 'user_joined.'.$person->getId();
         $tag2 = 'user_left.'.$person->getId();
 
-        $joined_left_counts = App::getDb()->fetchAllKeyValue("
+        $joined_left_counts = App::getDb()->fetchAllKeyValue('
             SELECT tag, COUNT(*)
             FROM chat_messages
             WHERE tag IN (?, ?)
             GROUP BY tag
-        ", array($tag1, $tag2));
+        ', array($tag1, $tag2));
 
         if (
             $joined_left_counts
@@ -405,12 +405,12 @@ class UserChatManager
         $tag1 = 'user_joined.'.$person->getId();
         $tag2 = 'user_left.'.$person->getId();
 
-        $joined_left_counts = App::getDb()->fetchAllKeyValue("
+        $joined_left_counts = App::getDb()->fetchAllKeyValue('
             SELECT tag, COUNT(*)
             FROM chat_messages
             WHERE tag IN (?, ?)
             GROUP BY tag
-        ", array($tag1, $tag2));
+        ', array($tag1, $tag2));
 
         if (
             $joined_left_counts
@@ -447,9 +447,10 @@ class UserChatManager
      * Change the department of a chat.
      *
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param  \Application\DeskPRO\Entity\Department|null  $dep
-     * @param  \Application\DeskPRO\Entity\Person           $who
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\Department|null  $dep
+     * @param \Application\DeskPRO\Entity\Person           $who
+     *
      * @throws \Exception
      *
      * @return
@@ -485,9 +486,9 @@ class UserChatManager
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel'                                                             => 'chat.depchange',
-                'data'                                                                => array_merge($convo->getInfo(), array('old_department_id' => $old_dep_id)),
-                'created_by_client'                                                                                                               => $this->getCurrentClientId(),
+                'channel'           => 'chat.depchange',
+                'data'              => array_merge($convo->getInfo(), array('old_department_id' => $old_dep_id)),
+                'created_by_client' => $this->getCurrentClientId(),
             ));
 
             $this->em->persist($cm);
@@ -542,9 +543,9 @@ class UserChatManager
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel'                                                        => 'chat.reassigned',
-                'data'                                                           => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user)),
-                'created_by_client'                                                                                                     => $this->getCurrentClientId(),
+                'channel'           => 'chat.reassigned',
+                'data'              => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user)),
+                'created_by_client' => $this->getCurrentClientId(),
             ));
 
             $this->em->persist($cm);
@@ -617,9 +618,9 @@ class UserChatManager
         if (!$convo->agent && $convo->status == 'open') {
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel'                                                        => 'chat.unassigned',
-                'data'                                                           => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
-                'created_by_client'                                                                                                     => $this->getCurrentClientId(),
+                'channel'           => 'chat.unassigned',
+                'data'              => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
+                'created_by_client' => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
         }
@@ -629,7 +630,8 @@ class UserChatManager
      * Mark an agent as timed out and unassign the chat.
      *
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @throws \Exception
      */
     public function agentTimeout(ChatConversation $convo, Person $person)
@@ -784,7 +786,8 @@ class UserChatManager
      * The user ended the chat.
      *
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @throws \Exception
      */
     public function endChatUser(ChatConversation $convo, $ended_by = null)
@@ -820,16 +823,16 @@ class UserChatManager
      *
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param $email
-     * @param string                                       $name
+     * @param string $name
      */
     public function sendChatTranscript(ChatConversation $convo, $email, $name = '')
     {
-        $convo_messages = $this->em->createQuery("
+        $convo_messages = $this->em->createQuery('
             SELECT m
             FROM DeskPRO:ChatMessage m
             WHERE m.conversation = ?1 AND m.is_user_hidden = false
             ORDER BY m.id DESC
-        ")->setParameter(1, $convo)->execute();
+        ')->setParameter(1, $convo)->execute();
 
         $vars = array(
             'convo'          => $convo,
@@ -885,7 +888,7 @@ class UserChatManager
      *
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param $message
-     * @param array                                        $metadata
+     * @param array $metadata
      *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
@@ -904,7 +907,7 @@ class UserChatManager
     /**
      * Add a new message from a user.
      *
-     * @param \Application\DeskPRO\Entity\Person           $author
+     * @param \Application\DeskPRO\Entity\Person $author
      * @param $message
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
      *
@@ -1079,9 +1082,9 @@ class UserChatManager
         try {
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel'                    => $convo->getChannelId('usertyping'),
-                'data'                       => array('preview' => $preview_string),
-                'created_by_client'                             => $this->getCurrentClientId(),
+                'channel'           => $convo->getChannelId('usertyping'),
+                'data'              => array('preview' => $preview_string),
+                'created_by_client' => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
 
@@ -1107,22 +1110,22 @@ class UserChatManager
 
         try {
             $d = date('Y-m-d H:i:s');
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 UPDATE chat_messages
                 SET date_received = ?
                 WHERE
                     id IN (?)
                     AND conversation_id = ?
-            ",
+            ',
                 array($d, $message_ids, $convo->getId()),
                 array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT)
             );
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel'                        => $convo->getChannelId('ack_messages'),
-                'data'                           => array('message_ids' => $message_ids),
-                'created_by_client'                                     => $this->getCurrentClientId(),
+                'channel'           => $convo->getChannelId('ack_messages'),
+                'data'              => array('message_ids' => $message_ids),
+                'created_by_client' => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
 

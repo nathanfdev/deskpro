@@ -1,43 +1,41 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpTest;
 
+use Application\DeskPRO\Entity\Template;
+use Application\EmailBundle\Entity\SendmailSource;
+use Application\EmailBundle\Templating\Templates\TemplateCustom;
 use DeskPRO\Kernel\ApiKernel;
 use DeskPRO\Kernel\PortalKernel;
-use Application\EmailBundle\Entity\SendmailSource;
-use Application\DeskPRO\Entity\Template;
-use Application\EmailBundle\Templating\Templates\TemplateCustom;
 
 abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 {
@@ -52,14 +50,15 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     protected static $portal_kernel;
 
     protected static $last_installed_data_set;
-    
+
     /**
      * @return \Symfony\Component\DependencyInjection\ContainerInterface
      */
-    protected abstract function getContainer();
-    
+    abstract protected function getContainer();
+
     /**
      * @param mixed $service
+     *
      * @return object
      */
     protected function get($service)
@@ -69,6 +68,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
     /**
      * @param array $server - lets you override $_SERVER variables
+     *
      * @return \Symfony\Bundle\FrameworkBundle\Client
      */
     public function getClient($server = array())
@@ -83,6 +83,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
     /**
      * @param bool $force_reboot
+     *
      * @return ApiKernel
      */
     protected function getApiKernel($force_reboot = false)
@@ -96,7 +97,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             self::$api_kernel = null;
         }
 
-        require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
+        require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
         $kernel = new ApiKernel('test', true);
         $kernel->boot();
 
@@ -107,6 +108,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
     /**
      * @param bool $force_reboot
+     *
      * @return PortalKernel
      */
     protected function getPortalKernel($force_reboot = false)
@@ -120,7 +122,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             self::$portal_kernel = null;
         }
 
-        require_once DP_ROOT . '/sys/Kernel/PortalKernel.php';
+        require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
         $kernel = new PortalKernel('test', true);
         $kernel->boot();
 
@@ -136,7 +138,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      * then nothing happens.
      *
      * @param string $data_set_id
-     * @param bool $reinstall
+     * @param bool   $reinstall
      */
     public function installDataSet($data_set_id, $reinstall = false)
     {
@@ -156,6 +158,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
     /**
      * @param $entity
+     *
      * @return \Doctrine\ORM\EntityManager
      */
     protected function getRepo($entity)
@@ -183,7 +186,8 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      * @param $subject
      * @param null $message_contains
      */
-    public function assertEmailWithSubjectWasSentTo($to, $subject, $message_contains = null) {
+    public function assertEmailWithSubjectWasSentTo($to, $subject, $message_contains = null)
+    {
         $email_info = $this->getLastEmailInfo($to);
 
         $this->assertNotFalse($email_info, 'an email was sent');
@@ -211,6 +215,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      *  subject: the SUBJECT header of the email
      *
      * @param $email_address_string
+     *
      * @return array|false false if no emails in the queue, the last one in queue otherwise
      */
     protected function getLastEmailInfo($email_address_string)
@@ -224,15 +229,16 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
         }
 
         return array(
-            'from' => $last_source->getHeaderFrom(),
-            'to' => $last_source->getHeaderTo(),
+            'from'    => $last_source->getHeaderFrom(),
+            'to'      => $last_source->getHeaderTo(),
             'subject' => $last_source->getHeaderSubject(),
-            'message' => $this->getMessageFromEmailSource($last_source)
+            'message' => $this->getMessageFromEmailSource($last_source),
         );
     }
 
     /**
      * @param $email
+     *
      * @return SendmailSource[]
      */
     protected function getSendmailSources($email)
@@ -250,6 +256,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
     /**
      * @param SendmailSource $last_source
+     *
      * @return string
      */
     public function getMessageFromEmailSource($last_source)
@@ -260,17 +267,17 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     }
 
     /**
-     * Simulates saving a custom email template
+     * Simulates saving a custom email template.
      *
      * @param $name
      * @param $template_code
      */
     public function saveCustomEmailTemplate($name, $template_code)
     {
-        $tt = new Template();
-        $tt->name = $name;
+        $tt                = new Template();
+        $tt->name          = $name;
         $tt->template_code = $template_code;
-        $template = new TemplateCustom($name, $tt);
+        $template          = new TemplateCustom($name, $tt);
         $this->get('templating.email.template_set')->saveTemplate($template);
     }
 }

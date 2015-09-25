@@ -1,52 +1,47 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
-use Application\DeskPRO\NewSearch\SearchEngine\SearchContext;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\StickyWordSearch;
 use DeskPRO\Bundle\AppBundle\Pagerfanta\Adapter\DeskproSearchAdapter;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Numbers;
-use Pagerfanta\Adapter\NullAdapter;
 use Pagerfanta\Pagerfanta;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -60,13 +55,13 @@ class SearchController extends AbstractController
     {
         $q = $request->get('q');
 
-        $is_search = false;
-        $person = $this->getUser() ?: new PersonGuest();
+        $is_search      = false;
+        $person         = $this->getUser() ?: new PersonGuest();
         $sticky_results = array();
-        $results = array();
-        $total = 0;
-        $cur_page = $request->get('page', 1);
-        $per_page = 10;
+        $results        = array();
+        $total          = 0;
+        $cur_page       = $request->get('page', 1);
+        $per_page       = 10;
 
         ////////////////////////////////////////////////////////////////////////
         // search types
@@ -77,7 +72,7 @@ class SearchController extends AbstractController
         if (!is_array($limit_types_array)) {
             $limit_types_array = explode(',', $limit_types_array);
         }
-        $limit_types_array = array_filter($limit_types_array, function($value) use ($allowed_search_types) {
+        $limit_types_array = array_filter($limit_types_array, function ($value) use ($allowed_search_types) {
             return in_array($value, $allowed_search_types);
         });
         $limit_types = implode(',', $limit_types_array);
@@ -85,14 +80,14 @@ class SearchController extends AbstractController
         if ($q) {
             $is_search = true;
 
-            $se = $this->get('search_engine');
+            $se             = $this->get('search_engine');
             $contextFactory = new SearchContextFactory($this->getContainer());
-            $context = $contextFactory->createUserSearchContext($person);
+            $context        = $contextFactory->createUserSearchContext($person);
 
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
             $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page, 'limit_types' => $limit_types));
 
-            $total = $result_set->getTotal();
+            $total   = $result_set->getTotal();
             $results = $result_set->getTypedResults();
 
             $sticky_search = new StickyWordSearch($this->getEm());
@@ -102,19 +97,19 @@ class SearchController extends AbstractController
             if ($sticky_results) {
                 $got_sticky = array();
                 foreach ($sticky_results as $sitem) {
-                    $total++;
-                    $got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
+                    ++$total;
+                    $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
                 }
                 $results = array_filter(
                     $results,
                     function ($r) use ($got_sticky) {
-                        return !isset($got_sticky[get_class($r['object']) . $r['object']->getId()]);
+                        return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
                     }
                 );
             }
 
-            $searchlog = SearchLog::create($q, count($results) + count($sticky_results));
-            $searchlog->person = $this->getUser();
+            $searchlog             = SearchLog::create($q, count($results) + count($sticky_results));
+            $searchlog->person     = $this->getUser();
             $searchlog->ip_address = $request->getClientIp();
             $this->getEm()->transactional(
                 function (EntityManager $em) use ($searchlog) {
@@ -130,33 +125,34 @@ class SearchController extends AbstractController
 
         if ($request->isXmlHttpRequest()) {
             $serialized_results = $this->get('portal_search_serializer')->serializeArray($results);
+
             return $this->makeJsonResponse(
                 array(
-                    'results' => $serialized_results,
-                    'pageinfo'   => $pageinfo,
+                    'results'  => $serialized_results,
+                    'pageinfo' => $pageinfo,
                 )
             );
         }
 
         $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
-        $pagination->setMaxPerPage((int)$pageinfo['per_page']);
-        $pagination->setCurrentPage((int)$pageinfo['curpage']);
+        $pagination->setMaxPerPage((int) $pageinfo['per_page']);
+        $pagination->setCurrentPage((int) $pageinfo['curpage']);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
 
         return $this->renderThemeView(
             'Theme:Search:search_results.html.twig',
             array(
-                'is_search' => $is_search,
-                'results' => $results,
+                'is_search'      => $is_search,
+                'results'        => $results,
                 'sticky_results' => $sticky_results,
-                'query' => $q,
-                'pageinfo' => $pageinfo,
-                'num_results' => $total,
-                'pager' => $pagination,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->search(),
-                'limit_types' => $limit_types_array
+                'query'          => $q,
+                'pageinfo'       => $pageinfo,
+                'num_results'    => $total,
+                'pager'          => $pagination,
+                'breadcrumbs'    => $breadcrumbs,
+                'page_title'     => $this->createPageTitle()->search(),
+                'limit_types'    => $limit_types_array,
             )
         );
     }
@@ -175,7 +171,7 @@ class SearchController extends AbstractController
                     'articles',
                     'feedback',
                     'downloads',
-                    'news'))
+                    'news', ))
             ) {
                 $type = 'all';
             }
@@ -183,11 +179,11 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('portal_search_labels', array('type' => $t, 'label' => $l));
         }
 
-        if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+        if (!$type or !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
             $type = 'all';
         }
 
-        $total = 0;
+        $total    = 0;
         $per_page = 25;
         $cur_page = $request->query->get('page', 1);
 
@@ -211,15 +207,15 @@ class SearchController extends AbstractController
                 $search_types = array();
         }
 
-        $results = null;
+        $results  = null;
         $pageinfo = null;
         if ($label) {
             $search_adapter = $this->get('deskpro.search_adapter');
             $search_adapter->setPersonContext($this->getCurrentPerson());
             $result_set = $search_adapter->getContentSearcher()->labelled(array($label), $per_page, $cur_page, $search_types);
-            $results = $search_adapter->getResultSetObjects($result_set, true);
+            $results    = $search_adapter->getResultSetObjects($result_set, true);
 
-            $total = $result_set->totalCount();
+            $total    = $result_set->totalCount();
             $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
         }
 
@@ -228,11 +224,11 @@ class SearchController extends AbstractController
         #------------------------------
 
         $content_cloud = new ContentLabelCloud();
-        $cloud = $content_cloud->getCloud();
+        $cloud         = $content_cloud->getCloud();
 
         $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo ?: array()));
-        $pagination->setMaxPerPage($pageinfo ? (int)$pageinfo['per_page'] : $per_page);
-        $pagination->setCurrentPage($pageinfo ? (int)$pageinfo['curpage'] : $cur_page);
+        $pagination->setMaxPerPage($pageinfo ? (int) $pageinfo['per_page'] : $per_page);
+        $pagination->setCurrentPage($pageinfo ? (int) $pageinfo['curpage'] : $cur_page);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildLabelSearch($type, $label);
 
@@ -247,7 +243,7 @@ class SearchController extends AbstractController
                 'pageinfo'    => $pageinfo,
                 'num_results' => $total,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->labelSearch(),
+                'page_title'  => $this->createPageTitle()->labelSearch(),
             )
         );
     }
@@ -264,7 +260,7 @@ class SearchController extends AbstractController
             return $this->makeJsonResponse(
                 array(
                     'results' => array(),
-                    'words' => array()
+                    'words'   => array(),
                 )
             );
         }
@@ -277,11 +273,11 @@ class SearchController extends AbstractController
             $content_type = array($content_type);
         }
 
-        $person = $this->getUser() ?: new PersonGuest();
-        $se = $this->get('search_engine');
+        $person         = $this->getUser() ?: new PersonGuest();
+        $se             = $this->get('search_engine');
         $contextFactory = new SearchContextFactory($this->getContainer());
-        $context = $contextFactory->createUserSearchContext($person);
-        $sticky_search = new StickyWordSearch($this->getEm());
+        $context        = $contextFactory->createUserSearchContext($person);
+        $sticky_search  = new StickyWordSearch($this->getEm());
         /** @var ResultSet $results */
         $results = $se->getUserSearch()->similarTo(
             $context,
@@ -289,13 +285,12 @@ class SearchController extends AbstractController
             array('limit_types' => $content_type)
         );
 
-
         $search_results = $results->getTypedResults();
 
         // filter out the unwanted types from response and get the "words" for allowed objects
         $property_accessor = PropertyAccess::createPropertyAccessor();
-        $typed_results = array();
-        $words = array();
+        $typed_results     = array();
+        $words             = array();
         foreach ($search_results as $result) {
             if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
                 $typed_results[] = $result;
@@ -303,8 +298,8 @@ class SearchController extends AbstractController
                 $object = $result['object'];
                 if (is_object($object)) {
                     $class = get_class($object);
-                    $type = 'DeskPRO:' . substr($class, strrpos($class, '\\') + 1);
-                    $id = $property_accessor->getValue($object, 'id');
+                    $type  = 'DeskPRO:'.substr($class, strrpos($class, '\\') + 1);
+                    $id    = $property_accessor->getValue($object, 'id');
                     foreach ($sticky_search->getStickyWords($type, $id) as $word) {
                         if (count($words) < 100) {
                             $words[] = $word;
@@ -318,7 +313,7 @@ class SearchController extends AbstractController
         return $this->makeJsonResponse(
             array(
                 'results' => $serialized_results,
-                'words' => $words,
+                'words'   => $words,
             )
         );
     }

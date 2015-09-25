@@ -1,20 +1,41 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Session;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Behat\Tester\Exception\PendingException;
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use Doctrine\ORM\EntityManager;
 use DpBehat\BaseContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
-use Orb\Util\Util;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Defines application features from the specific context.
@@ -36,7 +57,7 @@ class AuthContext extends BaseContext
 
     public function __construct(EntityManager $em, UserDetailsRepo $user_details)
     {
-        $this->em = $em;
+        $this->em           = $em;
         $this->user_details = $user_details;
     }
 
@@ -45,15 +66,15 @@ class AuthContext extends BaseContext
      */
     public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $id, $who)
     {
-        $api_token = new ApiToken();
-        $api_token->token = $token;
+        $api_token         = new ApiToken();
+        $api_token->token  = $token;
         $api_token->person = $this->user_details->getWho($who);
-        $api_token->scope = ApiToken::SCOPE_CLIENT;
+        $api_token->scope  = ApiToken::SCOPE_CLIENT;
 
         $this->persistAndFlush($api_token);
 
         if ($api_token->id != $id) {
-            throw new \Exception('expected id (' . $id . ') is not correct. please check database.');
+            throw new \Exception('expected id ('.$id.') is not correct. please check database.');
         }
     }
 
@@ -62,8 +83,8 @@ class AuthContext extends BaseContext
      */
     public function aValidApiKeyExistsWithTheCodeAndIdForUser($code, $id, $who)
     {
-        $key = new ApiKey();
-        $key->code = $code;
+        $key         = new ApiKey();
+        $key->code   = $code;
         $key->person = $this->user_details->getWho($who);
 
         $this->persistAndFlush($key);
@@ -82,7 +103,7 @@ class AuthContext extends BaseContext
 
         session_start();
         $_SESSION['_sf2_attributes'] = array('auth_person_id' => $user->getId());
-        $data = session_encode();
+        $data                        = session_encode();
         unset($_SESSION['_sf2_attributes']);
         session_destroy();
 
@@ -133,6 +154,6 @@ class AuthContext extends BaseContext
             $key = $key_repo->find(1);
         }
 
-        $this->rest_context->iAddHeaderEqualTo('Authorization', 'key ' . $key->getKeyString());
+        $this->rest_context->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
     }
 }

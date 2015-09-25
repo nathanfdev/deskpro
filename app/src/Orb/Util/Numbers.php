@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Util
  */
-
 namespace Orb\Util;
 
 /**
@@ -142,7 +142,7 @@ class Numbers
         $res = '';
 
         foreach ($map as $roman => $value) {
-            $res .= str_repeat($roman, (int) $num/$value);
+            $res .= str_repeat($roman, (int) $num / $value);
             $num %= $value;
         }
 
@@ -189,8 +189,8 @@ class Numbers
         $x = $mode == 'si' ? 1000 : 1024;
 
         $all_symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-        $exp         = floor(log($bytes)/log($x));
-        $val         = $bytes/pow($x, floor($exp));
+        $exp         = floor(log($bytes) / log($x));
+        $val         = $bytes / pow($x, floor($exp));
 
         $sym = '';
         if (isset($all_symbols[$exp])) {
@@ -260,8 +260,8 @@ class Numbers
             $page = $num_pages;
         }
 
-        $range_start = max(1, $page - floor(($pad-1) / 2));
-        $range_end   = max(min($num_pages, $page + floor(($pad-1) / 2)), $pad);
+        $range_start = max(1, $page - floor(($pad - 1) / 2));
+        $range_end   = max(min($num_pages, $page + floor(($pad - 1) / 2)), $pad);
 
         if ($range_end > $num_pages) {
             $range_end = $num_pages;
@@ -269,14 +269,14 @@ class Numbers
 
         $info['per_page']      = $per_page;
         $info['pages']         = range($range_start, $range_end);
-        $info['prev']          = ($page != 1) ? $page-1 : false;
-        $info['next']          = ($page < $num_pages) ? $page+1 : false;
+        $info['prev']          = ($page != 1) ? $page - 1 : false;
+        $info['next']          = ($page < $num_pages) ? $page + 1 : false;
         $info['first']         = 1;
         $info['last']          = $num_pages;
         $info['curpage']       = $page;
         $info['total_results'] = $num_results;
-        $info['first_result']  = (($page-1) * $per_page) + 1;
-        $info['last_result']   = (($page-1) * $per_page) + $per_page;
+        $info['first_result']  = (($page - 1) * $per_page) + 1;
+        $info['last_result']   = (($page - 1) * $per_page) + $per_page;
 
         $info['curpage'] = self::bound($info['curpage'], 1, $info['last']);
 
@@ -297,7 +297,7 @@ class Numbers
     public static function parseIniSize($val)
     {
         $val  = trim($val);
-        $last = strtoupper($val[strlen($val)-1]);
+        $last = strtoupper($val[strlen($val) - 1]);
 
         // Already in bytes
         if (ctype_digit($last)) {

@@ -1,43 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\PortalBundle\Helper;
-
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Symfony\Component\Routing\RouterInterface;
 use League\Url\Url;
+use Symfony\Component\Routing\RouterInterface;
 
 class LanguageChanger
 {
@@ -60,20 +57,19 @@ class LanguageChanger
         RouterInterface $router,
         LanguageManager $lang_manager,
         PortalModeStorage $mode_storage
-    )
-    {
-        $this->router = $router;
+    ) {
+        $this->router       = $router;
         $this->lang_manager = $lang_manager;
         $this->mode_storage = $mode_storage;
     }
 
     public function changeLanguage($new_lang_code, $http_referer)
     {
-        $router = $this->router;
+        $router           = $this->router;
         $language_manager = $this->lang_manager;
-        $language_stack = $language_manager->getLanguageStack();
-        $mode = $this->mode_storage->getMode();
-        $isMode = $mode && strlen(trim($mode->getModePath(), '/')) > 0;
+        $language_stack   = $language_manager->getLanguageStack();
+        $mode             = $this->mode_storage->getMode();
+        $isMode           = $mode && strlen(trim($mode->getModePath(), '/')) > 0;
 
         $referer_or_home = function () use ($http_referer, $router) {
             if (!$http_referer) {
@@ -103,8 +99,8 @@ class LanguageChanger
         }
 
         // replace the language path from the referer with the new lang
-        $url = Url::createFromUrl($http_referer);
-        $path = $url->getPath();
+        $url        = Url::createFromUrl($http_referer);
+        $path       = $url->getPath();
         $path_array = $path->toArray();
         if ($isMode) {
             array_shift($path_array);
@@ -116,6 +112,6 @@ class LanguageChanger
         }
         $url->setPath($path_array);
 
-        return (string)$url;
+        return (string) $url;
     }
 }

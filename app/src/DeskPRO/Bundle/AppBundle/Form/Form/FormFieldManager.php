@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Form;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -95,13 +95,13 @@ class FormFieldManager
             'custom_field' => $field,
             'label'        => false,
             'constraints'  => $constraints,
-            'help'         => $field->getDescription()
+            'help'         => $field->getDescription(),
         );
 
         return array(
             'data',
             'deskpro_contextual_per_field_choice',
-            $options
+            $options,
         );
     }
 
@@ -148,6 +148,7 @@ class FormFieldManager
 
     /**
      * @param $id
+     *
      * @return CustomDefTicket
      */
     public function getCustomTicketFieldById($id)
@@ -157,6 +158,7 @@ class FormFieldManager
 
     /**
      * @param $id
+     *
      * @return CustomDefPerson
      */
     public function getCustomPersonFieldById($id)
@@ -164,9 +166,9 @@ class FormFieldManager
         return $this->em->getRepository('DeskPRO:CustomDefPerson')->find($id);
     }
 
-
     /**
      * @param $id
+     *
      * @return CustomDefOrganization
      */
     public function getCustomOrganizationFieldById($id)
@@ -175,9 +177,10 @@ class FormFieldManager
     }
 
     /**
-     * per-user/per-organization special custom fields
+     * per-user/per-organization special custom fields.
      *
      * @param $id
+     *
      * @return \Application\DeskPRO\Entity\CustomFieldDefinition
      */
     public function getCustomPerFieldById($id)
@@ -199,7 +202,7 @@ class FormFieldManager
         // and this label is for the 'data' attribute, whereas
         // the real label will be on the parent form which is adding the field
         $options['label'] = false;
-        $options['help'] = $field->getDescription();
+        $options['help']  = $field->getDescription();
 
         return array($value_name, $type, $options);
     }
@@ -209,8 +212,8 @@ class FormFieldManager
      * @param                   $agent_interface
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     private function getFormType(CustomDefAbstract $field_type, $agent_interface)
     {

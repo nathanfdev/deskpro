@@ -1,35 +1,34 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 if (!defined('DP_ROOT')) {
@@ -46,7 +45,7 @@ require_once DP_ROOT.'/sys/serve_abstract.php';
 /**
  * A light-weight loader for website widgetss.
  */
-class DpLoader extends LoaderAbstract
+class serve_dp extends LoaderAbstract
 {
     public function runAction()
     {
@@ -68,8 +67,8 @@ class DpLoader extends LoaderAbstract
             } elseif (preg_match('#^/agent-lang-(\d+)\.js#', $pathinfo, $match)) {
                 $this->agentLanguageAction($match[1]);
             } else {
-                header("HTTP/1.0 404 Not Found");
-                echo "Action not found. (1)";
+                header('HTTP/1.0 404 Not Found');
+                echo 'Action not found. (1)';
             }
         } catch (\Exception $exception) {
             if (isset($DP_CONFIG['debug']['dev'])) {
@@ -813,7 +812,7 @@ class DpLoader extends LoaderAbstract
         $interface = (!empty($_GET['i']) && is_scalar($_GET['i'])) ? $_GET['i'] : null;
 
         $pdo  = $this->getPdo();
-        $q    = $pdo->prepare("UPDATE sessions SET date_last = ? WHERE id = ? AND auth = ?");
+        $q    = $pdo->prepare('UPDATE sessions SET date_last = ? WHERE id = ? AND auth = ?');
         $date = date('Y-m-d H:i:s');
 
         $sessions = array();
@@ -849,9 +848,9 @@ class DpLoader extends LoaderAbstract
             'okay'          => true,
             'request_token' => $token,
         ));
-        header("Content-Type: application/json; filename=session-ping.json");
+        header('Content-Type: application/json; filename=session-ping.json');
         header('Content-Length: '.strlen($content));
-        header("Content-Disposition: inline; filename=session-ping.json");
+        header('Content-Disposition: inline; filename=session-ping.json');
         header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
@@ -942,10 +941,10 @@ class DpLoader extends LoaderAbstract
             $js_phrases['agent.general.on']          = $tr->getPhraseText('agent.general.on');
             $js_phrases['agent.general.off']         = $tr->getPhraseText('agent.general.off');
 
-            $js_phrases["agent.time.reltime_less_second"]    = $tr->getPhraseText("agent.time.reltime_less_second");
-            $js_phrases["agent.time.reltime_less_minute"]    = $tr->getPhraseText("agent.time.reltime_less_minute");
-            $js_phrases["agent.time.reltimeago_less_second"] = $tr->getPhraseText("agent.time.reltimeago_less_second");
-            $js_phrases["agent.time.reltimeago_less_minute"] = $tr->getPhraseText("agent.time.reltimeago_less_minute");
+            $js_phrases['agent.time.reltime_less_second']    = $tr->getPhraseText('agent.time.reltime_less_second');
+            $js_phrases['agent.time.reltime_less_minute']    = $tr->getPhraseText('agent.time.reltime_less_minute');
+            $js_phrases['agent.time.reltimeago_less_second'] = $tr->getPhraseText('agent.time.reltimeago_less_second');
+            $js_phrases['agent.time.reltimeago_less_minute'] = $tr->getPhraseText('agent.time.reltimeago_less_minute');
 
             foreach (array('reltime', 'reltimeago') as $pre) {
                 foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
@@ -993,7 +992,7 @@ class DpLoader extends LoaderAbstract
                 unset($p);
             }
 
-            $js = "window.DESKPRO_LANG = ".json_encode($js_phrases).";";
+            $js = 'window.DESKPRO_LANG = '.json_encode($js_phrases).';';
             if (defined('DP_BUILD_TIME')) {
                 $js .= "\n/* DP_BUILD(".DP_BUILD_TIME.") */\n";
             }
@@ -1062,8 +1061,8 @@ class DpLoader extends LoaderAbstract
 
             $js_phrases = array();
 
-            $js_phrases["user.time.time_less_second"]     = $tr->phrase("user.time.time_less_second");
-            $js_phrases["user.time.time-ago_less_second"] = $tr->phrase("user.time.time_less_second");
+            $js_phrases['user.time.time_less_second']     = $tr->phrase('user.time.time_less_second');
+            $js_phrases['user.time.time-ago_less_second'] = $tr->phrase('user.time.time_less_second');
 
             foreach (array('time', 'time-ago') as $pre) {
                 foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
@@ -1136,7 +1135,7 @@ class DpLoader extends LoaderAbstract
                 $js_phrases[$k] = $tr->getPhraseText($k);
             }
 
-            $js = "window.DESKPRO_LANG = ".json_encode($js_phrases).";";
+            $js = 'window.DESKPRO_LANG = '.json_encode($js_phrases).';';
             if (defined('DP_BUILD_TIME')) {
                 $js .= "\n/* DP_BUILD(".DP_BUILD_TIME.") */\n";
             }

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -50,8 +50,8 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      * @param ExecutorContextInterface $context
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\EmailAccount
      *
+     * @return \Application\DeskPRO\Entity\EmailAccount
      */
     protected function getFromEmailAccountOption(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -70,12 +70,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $context->getLogger()->debug("[AbstractEmailAction] Sending with email account: $from_account");
 
             if (!$from_account->is_enabled) {
-                $context->getLogger()->warn("[AbstractEmailAction] Email account is not enabled");
+                $context->getLogger()->warn('[AbstractEmailAction] Email account is not enabled');
                 throw new \InvalidArgumentException('account_disabled');
             }
 
             if (!$from_account->outgoing_account) {
-                $context->getLogger()->warn("[AbstractEmailAction] Email account is not an outgoing account");
+                $context->getLogger()->warn('[AbstractEmailAction] Email account is not an outgoing account');
                 throw new \InvalidArgumentException('account_not_outgoing');
             }
         }
@@ -89,8 +89,8 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      * @param bool                     $allow_blank
      *
      * @throws \InvalidArgumentException
-     * @return string|null
      *
+     * @return string|null
      */
     protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allow_blank = false)
     {
@@ -100,13 +100,13 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
                 return;
             }
 
-            $context->getLogger()->warn("[AbstractEmailAction] No template specified");
+            $context->getLogger()->warn('[AbstractEmailAction] No template specified');
             throw new \InvalidArgumentException('no_template_specified');
         }
 
         $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
         if (!$this->getContainer()->getTemplating()->exists($template)) {
-            $context->getLogger()->warn("[AbstractEmailAction] Template does not exist");
+            $context->getLogger()->warn('[AbstractEmailAction] Template does not exist');
             throw new \InvalidArgumentException('invalid_templte');
         }
 
@@ -136,7 +136,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         $context->getLogger()->info("[AbstractEmailAction] Type: $type");
-        $context->getLogger()->info(sprintf("[AbstractEmailAction] Performer: %s", $context->getEventPerformer()));
+        $context->getLogger()->info(sprintf('[AbstractEmailAction] Performer: %s', $context->getEventPerformer()));
 
         #------------------------------
         # Set reply flags

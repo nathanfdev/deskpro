@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
@@ -64,31 +62,29 @@ abstract class DbalCompiler implements DbalCompilerInterface
         DbalTermCompilerFactory $compiler_factory,
         array $visitors,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->compiler_factory = $compiler_factory;
-        $this->visitors = $visitors;
-        $this->logger = $logger;
+        $this->visitors         = $visitors;
+        $this->logger           = $logger;
     }
 
     /**
-     * An opportunity for this engine implemention to alter the query before compile starts
+     * An opportunity for this engine implemention to alter the query before compile starts.
      *
      * @param DbalQueryBuilder $query_writer
-     * @return void
      */
     abstract protected function enginePreCompile(DbalQueryBuilder $query_writer);
 
     /**
-     * An opportunity for this engine implemention to alter the query after compile is completed
+     * An opportunity for this engine implemention to alter the query after compile is completed.
      *
      * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
-     * @return void
      */
     abstract protected function enginePostCompile(DbalQueryBuilder $query_writer);
 
     /**
      * @param TermInterface $term
+     *
      * @return DbalQuery
      */
     public function compile(TermInterface $term)
@@ -96,7 +92,7 @@ abstract class DbalCompiler implements DbalCompilerInterface
         $timer = new SimpleTimer();
 
         // the fastest way to do this performance-wise is with reflection
-        $ref = new \ReflectionClass($term);
+        $ref             = new \ReflectionClass($term);
         $term_class_name = $ref->getShortName();
 
         $this->logger->info('DBAL TERM COMPILER START', array('term' => $term_class_name));
@@ -122,7 +118,7 @@ abstract class DbalCompiler implements DbalCompilerInterface
         $this->enginePostCompile($query_builder);
 
         $this->logger->info('DBAL TERM COMPILER END', array(
-            'time' => $timer->getElapsedTime()
+            'time' => $timer->getElapsedTime(),
         ));
 
         // result is a DbalQuery
@@ -145,7 +141,6 @@ abstract class DbalCompiler implements DbalCompilerInterface
     protected function compileTerm(TermInterface $term, DbalQueryBuilder $query_builder)
     {
         if ($term instanceof CompositeTermInterface) {
-
             $timer = new SimpleTimer();
 
             $this->logger->debug(
@@ -172,8 +167,8 @@ abstract class DbalCompiler implements DbalCompilerInterface
             }
 
             // now we can compose the proper WHERE string for this composite term
-            $sep = $term->getOp() === TermInterface::OP_OR ? 'OR' : 'AND';
-            $where_string = implode(' ' . $sep . ' ', $where_strings);
+            $sep          = $term->getOp() === TermInterface::OP_OR ? 'OR' : 'AND';
+            $where_string = implode(' '.$sep.' ', $where_strings);
 
             // write it in its own parenthesis
             $query_builder->setWhereString($where_string);
@@ -181,20 +176,18 @@ abstract class DbalCompiler implements DbalCompilerInterface
             $this->logger->debug(
                 'END CompositeTerm',
                 array(
-                    'time' => $timer->getElapsedTime()
+                    'time' => $timer->getElapsedTime(),
                 )
             );
-
         } else {
 
             // not a composite term, so compile it normally
             $this->compileSingleTerm($term, $query_builder);
-
         }
     }
 
     /**
-     * @param TermInterface $term
+     * @param TermInterface    $term
      * @param DbalQueryBuilder $query_builder
      */
     protected function compileSingleTerm(TermInterface $term, DbalQueryBuilder $query_builder)

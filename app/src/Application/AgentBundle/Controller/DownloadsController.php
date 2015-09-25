@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\DownloadResults;
@@ -73,29 +73,29 @@ class DownloadsController extends AbstractController
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($download),
         );
 
-        $user_view_count = $this->db->fetchColumn("
+        $user_view_count = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM page_view_log
             WHERE object_type = 2 AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
-        ", array($download->id));
+        ', array($download->id));
 
-        $user_download_count = $this->db->fetchColumn("
+        $user_download_count = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM page_view_log
             WHERE object_type = 2 AND object_id = ? AND view_action = 2 AND person_id IS NOT NULL
-        ", array($download->id));
+        ', array($download->id));
 
         return $this->render('AgentBundle:Downloads:view.html.twig', array(
-            'download'              => $download,
-            'download_comments'     => $download_comments,
-            'download_categories'   => $download_categories,
-            'related_content'       => $related_content,
-            'state'                 => $state,
-            'sticky_search_words'   => $sticky_search_words,
-            'rated_searches'        => $rated_searches,
-            'perms'                 => $perms,
-            'user_view_count'       => $user_view_count,
-            'user_download_count'   => $user_download_count,
+            'download'            => $download,
+            'download_comments'   => $download_comments,
+            'download_categories' => $download_categories,
+            'related_content'     => $related_content,
+            'state'               => $state,
+            'sticky_search_words' => $sticky_search_words,
+            'rated_searches'      => $rated_searches,
+            'perms'               => $perms,
+            'user_view_count'     => $user_view_count,
+            'user_download_count' => $user_download_count,
         ));
     }
 
@@ -150,12 +150,12 @@ class DownloadsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $comment                  = new DownloadComment();
-        $comment->download        = $download;
-        $comment->person          = $this->person;
-        $comment['content']       = $this->in->getString('content');
-        $comment['status']        = 'visible';
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new DownloadComment();
+        $comment->download       = $download;
+        $comment->person         = $this->person;
+        $comment['content']      = $this->in->getString('content');
+        $comment['status']       = 'visible';
+        $comment['date_created'] = new \DateTime();
 
         if ($this->person->hasPerm('agent_publish.validate')) {
             $comment->is_reviewed = true;
@@ -401,22 +401,22 @@ class DownloadsController extends AbstractController
 
         $comment_counts = array();
         if ($results) {
-            $comment_counts = $this->db->fetchAllKeyValue("
+            $comment_counts = $this->db->fetchAllKeyValue('
                 SELECT download_id, COUNT(*)
                 FROM download_comments
                 WHERE download_id IN (?)
                 GROUP BY download_id
-            ", array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
+            ', array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
         }
 
         $cat_usergroups     = array();
         $cat_structure_data = array();
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol("
+            $cat_usergroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM download_category2usergroup
                 WHERE category_id = ?
-            ", array($category->getId()));
+            ', array($category->getId()));
 
             $cat_structure_data = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();
             $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);

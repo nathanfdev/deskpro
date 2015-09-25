@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
@@ -90,14 +90,14 @@ class PortalExtension extends \Twig_Extension
      */
     public function __construct(ContainerInterface $continer)
     {
-        $this->container = $continer;
-        $this->brand_stack       = $continer->get('brand_stack');
-        $this->settings_resolver = $continer->get('settings_resolver');
-        $this->avatar_resolver   = $continer->get('avatar_resolver');
-        $this->ticket_public_id_resolver = $continer->get('ticket.public_id_resolver');
-        $this->permission_manager = $continer->get('portal_permissions_manager');
-        $this->token_storage = $continer->get('security.token_storage');
-        $this->ratings_helper = $continer->get('ratings_helper');
+        $this->container                       = $continer;
+        $this->brand_stack                     = $continer->get('brand_stack');
+        $this->settings_resolver               = $continer->get('settings_resolver');
+        $this->avatar_resolver                 = $continer->get('avatar_resolver');
+        $this->ticket_public_id_resolver       = $continer->get('ticket.public_id_resolver');
+        $this->permission_manager              = $continer->get('portal_permissions_manager');
+        $this->token_storage                   = $continer->get('security.token_storage');
+        $this->ratings_helper                  = $continer->get('ratings_helper');
         $this->visitor_identification_provider = $continer->get('visitor_identification_provider');
     }
 
@@ -116,12 +116,13 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('get_secure_content_cats', array($this, 'getSecureCats')),
             new \Twig_SimpleFunction('user_up_voted', array($this, 'didUserUpVote')),
-            new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote'))
+            new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote')),
         );
     }
 
     /**
      * @param $object
+     *
      * @return bool
      */
     public function didUserUpVote($object)
@@ -135,6 +136,7 @@ class PortalExtension extends \Twig_Extension
 
     /**
      * @param $object
+     *
      * @return bool
      */
     public function didUserDownVote($object)
@@ -148,6 +150,7 @@ class PortalExtension extends \Twig_Extension
 
     /**
      * @param $object
+     *
      * @return Entity\Rating|null
      */
     public function getRating($object)
@@ -166,7 +169,7 @@ class PortalExtension extends \Twig_Extension
             }
         }
 
-        return null;
+        return;
     }
 
     public function getPublicTicketId($ticket)
@@ -229,7 +232,8 @@ class PortalExtension extends \Twig_Extension
 
     /**
      * @param string $setting
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getBrandSetting($setting, $default = null)
@@ -239,6 +243,7 @@ class PortalExtension extends \Twig_Extension
 
     /**
      * @param string $prop
+     *
      * @return string
      */
     public function getBrand($prop)
@@ -248,6 +253,7 @@ class PortalExtension extends \Twig_Extension
 
     /**
      * @param Entity\Ticket $ticket
+     *
      * @return string
      */
     public function getTicketStatusString($ticket)
@@ -271,8 +277,8 @@ class PortalExtension extends \Twig_Extension
     /**
      * Get URL to a profile picture/avatar.
      *
-     * @param mixed  $obj
-     * @param int    $size
+     * @param mixed $obj
+     * @param int   $size
      *
      * @return string the url
      */
@@ -284,6 +290,7 @@ class PortalExtension extends \Twig_Extension
     /**
      * @param mixed $obj
      * @param mixed $opt
+     *
      * @return string
      */
     public function getRenderedObject($obj, $opt = null)

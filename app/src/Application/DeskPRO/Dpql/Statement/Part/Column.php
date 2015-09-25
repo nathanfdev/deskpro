@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
@@ -91,7 +91,7 @@ class Column extends AbstractPart
         'custom_data_organizations' => '%1$s.root_field_id = %2$s',
         'custom_data_person'        => '%1$s.root_field_id = %2$s',
         'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
-        'custom_data_billing' => '%1$s.root_field_id = %2$s',
+        'custom_data_billing'       => '%1$s.root_field_id = %2$s',
         'ticket_slas'               => '%1$s.sla_id = %2$s',
     );
 
@@ -339,7 +339,7 @@ class Column extends AbstractPart
 
                     $select->addJoin(
                         "$joinAlias",
-                        "LEFT JOIN `$childSqlTable` AS `$joinAlias` ON (".implode(' AND ', $joinConditions).")"
+                        "LEFT JOIN `$childSqlTable` AS `$joinAlias` ON (".implode(' AND ', $joinConditions).')'
                     );
 
                     $repository = $childRepository; // now references come from this table
@@ -361,19 +361,19 @@ class Column extends AbstractPart
             $name       = $part;
             if ($assocTable == 'departments') {
                 $call = new FunctionCall('if', array(
-                    new Column(array_merge($this->parts, array('parent', 'id'))),
+                    new self(array_merge($this->parts, array('parent', 'id'))),
                     new FunctionCall('concat', array(
-                        new Column(array_merge($this->parts, array('parent', 'title'))),
+                        new self(array_merge($this->parts, array('parent', 'title'))),
                         new String(' > '),
-                        new Column(array_merge($this->parts, array('title'))),
+                        new self(array_merge($this->parts, array('title'))),
                     )),
-                    new Column(array_merge($this->parts, array('title'))),
+                    new self(array_merge($this->parts, array('title'))),
                 ));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
             } elseif ($assocTable == 'ticket_slas') {
-                $call    = new Column(array_merge($this->parts, array('sla')));
+                $call    = new self(array_merge($this->parts, array('sla')));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), $prepped->printed());
@@ -381,7 +381,7 @@ class Column extends AbstractPart
                 $custom_def_table = str_replace('_data_', '_def_', $assocTable);
                 switch ($custom_def_table) {
                     case 'custom_def_ticket': $manager        = App::getContainer()->getSystemService('TicketFieldsManager'); break;
-                    case 'custom_def_billing': $manager = App::getContainer()->getBillingFieldManager(); break;
+                    case 'custom_def_billing': $manager       = App::getContainer()->getBillingFieldManager(); break;
                     case 'custom_def_people': $manager        = App::getContainer()->getSystemService('PersonFieldsManager'); break;
                     case 'custom_def_organizations': $manager = App::getContainer()->getSystemService('OrgFieldsManager'); break;
                     default: $manager                         = null; break;
@@ -394,7 +394,7 @@ class Column extends AbstractPart
 
                 $renderer = null;
                 if ($field && $field->getTypeName() == 'date') {
-                    $call    = new Column(array_merge($this->parts, array('value')));
+                    $call    = new self(array_merge($this->parts, array('value')));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                     $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
@@ -411,9 +411,9 @@ class Column extends AbstractPart
                     };
                 } else {
                     $call = new FunctionCall('if', array(
-                        new Column(array_merge($this->parts, array('value'))),
-                        new Column(array_merge($this->parts, array('field', 'title'))),
-                        new Column(array_merge($this->parts, array('input'))),
+                        new self(array_merge($this->parts, array('value'))),
+                        new self(array_merge($this->parts, array('field', 'title'))),
+                        new self(array_merge($this->parts, array('input'))),
                     ));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
@@ -421,9 +421,9 @@ class Column extends AbstractPart
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
                 $call = new FunctionCall('if', array(
-                    new Column(array_merge($this->parts, array('parent', 'id'))),
-                    new Column(array_merge($this->parts, array('parent', 'title'))),
-                    new Column(array_merge($this->parts, array('title'))),
+                    new self(array_merge($this->parts, array('parent', 'id'))),
+                    new self(array_merge($this->parts, array('parent', 'title'))),
+                    new self(array_merge($this->parts, array('title'))),
                 ));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 

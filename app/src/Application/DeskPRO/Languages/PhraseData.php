@@ -1,46 +1,46 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\Departments\ChatDepartments;
 use Application\DeskPRO\Departments\TicketDepartments;
-use Application\DeskPRO\EntityRepository\ArticleCategory as ArticleCategoryRepository;
-use Application\DeskPRO\EntityRepository\Phrase as PhraseRepository;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\EntityRepository\ArticleCategory as ArticleCategoryRepository;
+use Application\DeskPRO\EntityRepository\Phrase as PhraseRepository;
 use Application\DeskPRO\Products\Products;
 use Application\DeskPRO\Tickets\TicketCategories;
 use Application\DeskPRO\Tickets\TicketPriorities;
@@ -276,7 +276,7 @@ class PhraseData
 
         foreach ($chat_deps->getFlatArray() as $dep_row) {
             /** @var \Application\DeskPRO\Entity\Department $dep */
-            $dep   = $dep_row['object'];
+            $dep = $dep_row['object'];
 
             $id = $phrase_group.'.'.$dep->id.'_title';
 
@@ -322,7 +322,7 @@ class PhraseData
 
         foreach ($products->getFlatArray() as $prod_row) {
             /** @var \Application\DeskPRO\Entity\Product $prod */
-            $prod   = $prod_row['object'];
+            $prod = $prod_row['object'];
 
             $id = $phrase_group.'.'.$prod->id.'_title';
 
@@ -398,7 +398,7 @@ class PhraseData
 
             if ($children = $fm->getFieldChildren($field)) {
                 foreach ($children as $child_field) {
-                    array_merge($phrase_data, $fn_get_rows($child_field, $depth+1));
+                    array_merge($phrase_data, $fn_get_rows($child_field, $depth + 1));
                 }
             }
 
@@ -426,11 +426,11 @@ class PhraseData
 
         $phrase_group = 'obj_feedbackstatuscategory';
 
-        $all_statuses = $em->createQuery("
+        $all_statuses = $em->createQuery('
             SELECT s
             FROM DeskPRO:FeedbackStatusCategory s
             ORDER BY s.display_order ASC
-        ")->getResult();
+        ')->getResult();
 
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
@@ -474,11 +474,11 @@ class PhraseData
 
         $phrase_group = 'obj_feedbackcategory';
 
-        $all_types = $em->createQuery("
+        $all_types = $em->createQuery('
             SELECT s
             FROM DeskPRO:FeedbackCategory s
             ORDER BY s.display_order ASC
-        ")->getResult();
+        ')->getResult();
 
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
@@ -570,8 +570,8 @@ class PhraseData
         $default_phrases = $this->loadSystemPhrases('default', $group_id);
 
         if ($language) {
-            $lang_phrases    = $this->loadSystemPhrases($language->sys_name, $group_id);
-            $custom_phrases  = $this->loadCustomPhrases($language, $group_id);
+            $lang_phrases   = $this->loadSystemPhrases($language->sys_name, $group_id);
+            $custom_phrases = $this->loadCustomPhrases($language, $group_id);
         } else {
             $lang_phrases   = array();
             $custom_phrases = array();

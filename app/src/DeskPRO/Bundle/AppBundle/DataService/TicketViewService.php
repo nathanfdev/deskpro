@@ -1,46 +1,46 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 
 class TicketViewService extends AbstractDataService
 {
@@ -69,11 +69,10 @@ class TicketViewService extends AbstractDataService
         TicketLayoutFactory $ticket_layout_factory,
         Translate $translate,
         CustomPerFieldManager $custom_per_field_manager
-    )
-    {
-        $this->form_field_manager    = $form_field_manager;
-        $this->ticket_layout_factory = $ticket_layout_factory;
-        $this->translate             = $translate;
+    ) {
+        $this->form_field_manager       = $form_field_manager;
+        $this->ticket_layout_factory    = $ticket_layout_factory;
+        $this->translate                = $translate;
         $this->custom_per_field_manager = $custom_per_field_manager;
     }
 
@@ -130,7 +129,7 @@ class TicketViewService extends AbstractDataService
                         $field_def = $this->form_field_manager->getCustomOrganizationFieldById($layout_field->getFieldId());
                         /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
                         if ($data = $ticket->getOrganization()->getCustomDataForField($field_def)) {
-                            $value = $this->getValueForCustomFormField($field_def, $data);
+                            $value                                        = $this->getValueForCustomFormField($field_def, $data);
                             $view->attribute_list[$field_def->getTitle()] = $value;
                         }
                     }
@@ -141,7 +140,7 @@ class TicketViewService extends AbstractDataService
                         $field_def = $this->form_field_manager->getCustomPersonFieldById($layout_field->getFieldId());
                         /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
                         if ($data = $ticket->person->getCustomDataForField($field_def)) {
-                            $value = $this->getValueForCustomFormField($field_def, $data);
+                            $value                                        = $this->getValueForCustomFormField($field_def, $data);
                             $view->attribute_list[$field_def->getTitle()] = $value;
                         }
                     }
@@ -162,9 +161,9 @@ class TicketViewService extends AbstractDataService
                         if ($data = $this->custom_per_field_manager->getCustomPerFieldData($field_def, $context)) {
                             if ($selected = $this->findSelectedCustomPerFieldChoice($field_def, $context, $data)) {
                                 if (is_array($selected)) {
-                                    $value = implode(', ', array_map(function($choice_def) {
+                                    $value = implode(', ', array_map(function ($choice_def) {
                                         return $choice_def->getTitle();
-                                    },$selected));
+                                    }, $selected));
                                 } else {
                                     $value = $selected->getTitle();
                                 }
@@ -192,7 +191,7 @@ class TicketViewService extends AbstractDataService
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
                 try {
                     $datetime = new \DateTime($data->getData());
-                    $value = date('F j, Y', $datetime->getTimestamp());
+                    $value    = date('F j, Y', $datetime->getTimestamp());
                 } catch (\Exception $e) {
                     $value = '';
                 }
@@ -200,7 +199,7 @@ class TicketViewService extends AbstractDataService
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
                 try {
                     $datetime = new \DateTime($data->getData());
-                    $value = date('F j, Y, g:i a', $datetime->getTimestamp());
+                    $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
                 } catch (\Exception $e) {
                     $value = '';
                 }
@@ -244,6 +243,7 @@ class TicketViewService extends AbstractDataService
      * @param $field_def
      * @param $context
      * @param $data
+     *
      * @return \Application\DeskPRO\Entity\CustomFieldDefinition|null
      */
     public function findSelectedCustomPerFieldChoice(CustomFieldDefinition $field_def, $context, $data)
@@ -251,8 +251,9 @@ class TicketViewService extends AbstractDataService
         $choices = $this->custom_per_field_manager->getCustomPerFieldChoices($field_def, $context);
 
         if ($field_def->getOption('multiple', false)) {
-            $values = explode(',',$data->input);
-            return array_filter($choices, function($choice_def) use ($values) {
+            $values = explode(',', $data->input);
+
+            return array_filter($choices, function ($choice_def) use ($values) {
                 return in_array($choice_def->id, $values);
             });
         } else {

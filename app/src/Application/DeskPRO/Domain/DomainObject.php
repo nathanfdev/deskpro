@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -104,8 +104,8 @@ abstract class DomainObject extends BasicDomainObject
      * For example, "tickets.1234".
      *
      * @throws \RuntimeException
-     * @return string
      *
+     * @return string
      */
     public function getObjectRef()
     {
@@ -114,7 +114,7 @@ abstract class DomainObject extends BasicDomainObject
         } elseif (method_exists($this, 'getRef')) {
             return $this->getTableName().'.'.$this->getRef();
         } else {
-            throw new \RuntimeException("Object does not implement getObjectRef");
+            throw new \RuntimeException('Object does not implement getObjectRef');
         }
     }
 
@@ -162,11 +162,11 @@ abstract class DomainObject extends BasicDomainObject
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetSet($offset, $value)
     {
-        $func = "set".str_replace('_', '', $offset);
+        $func = 'set'.str_replace('_', '', $offset);
         if (method_exists($this, $func) || $this->_isCustomCallable(strtolower($func))) {
             $this->$func($value);
         } else {
@@ -264,7 +264,7 @@ abstract class DomainObject extends BasicDomainObject
                     $subDeep = false;
                 }
 
-                if ($val instanceof DomainObject) {
+                if ($val instanceof self) {
                     $values[$name] = $val->toApiData(false, $subDeep, $visited);
                 } elseif (is_array($val) || $val instanceof \Traversable) {
                     $output = array();
@@ -341,12 +341,12 @@ abstract class DomainObject extends BasicDomainObject
 
         if (property_exists($this, 'id')) {
             if ($this->id) {
-                return "<$me:#".$this->id.">";
+                return "<$me:#".$this->id.'>';
             } else {
-                return "<$me:#0:".spl_object_hash($this).">";
+                return "<$me:#0:".spl_object_hash($this).'>';
             }
         } else {
-            return "<$me:".spl_object_hash($this).">";
+            return "<$me:".spl_object_hash($this).'>';
         }
     }
 }

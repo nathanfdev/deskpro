@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -110,7 +110,7 @@ abstract class AbstractKernel extends BaseKernel
                             Files build: $file_build
                         </div>
                     </div>
-                ", "DeskPRO Upgrade");
+                ", 'DeskPRO Upgrade');
                 exit;
 
             // Standard offline mode for users
@@ -173,14 +173,14 @@ abstract class AbstractKernel extends BaseKernel
         // Make sure we arent banned ip
         if (!preg_match('#^/admin/?#', $path)) {
             $ip      = dp_get_user_ip_address();
-            $ip_long = sprintf("%u", ip2long($ip));
+            $ip_long = sprintf('%u', ip2long($ip));
 
-            $banned = App::getDb()->fetchColumn("
+            $banned = App::getDb()->fetchColumn('
                 SELECT banned_ip
                 FROM ban_ips
                 WHERE banned_ip = ? OR (ip_start <= ? AND ip_end >= ?)
                 LIMIT 1
-            ", array($ip, $ip_long, $ip_long));
+            ', array($ip, $ip_long, $ip_long));
 
             if ($banned) {
                 $response = new Response();
@@ -273,7 +273,7 @@ abstract class AbstractKernel extends BaseKernel
                 if (License::getLicense()->getMaxAgents()) {
                     // The main interface frame is a good place to stick this check
                     if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
-                        $count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0");
+                        $count = App::getDb()->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
                         if ($count > License::getLicense()->getMaxAgents()) {
                             $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('agents', $request->getBaseUrl()));
 
@@ -455,6 +455,7 @@ final class License
      * @static
      *
      * @return string
+     *
      * @deprecated Use getSecureLicServer
      */
     public static function getLicServer()
@@ -606,7 +607,7 @@ final class License
         $license_code   = trim($license_code);
         $this->raw_code = $license_code;
 
-        $this->install_key  = $install_key;
+        $this->install_key = $install_key;
         if (preg_match('#@([A-Z0-9\-_]+)$#', $license_code, $m)) {
             $this->install_key = $m[1];
             $license_code      = str_replace($m[0], '', $license_code);
@@ -620,7 +621,7 @@ final class License
             $opts = explode(',', $parts[1]);
         }
 
-        $license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
+        $license_code = str_replace(array("\n", "\r", ' ', "\t"), '', $license_code);
         $license_code = base64_decode($license_code);
 
         $this->license_id   = substr($license_code, 0, 14);
@@ -629,9 +630,9 @@ final class License
         $enc                = substr($license_code, 34);
         $enc                = strrev($enc);
 
-        $key  = sha1($this->license_id.$this->license_salt.$this->install_key.'5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS').'7ucrx3ghJwt7m3MNwvhXcddAskF0tLTMpIU3GMK6X';
+        $key = sha1($this->license_id.$this->license_salt.$this->install_key.'5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS').'7ucrx3ghJwt7m3MNwvhXcddAskF0tLTMpIU3GMK6X';
         $key .= sha1($this->license_id.$this->license_salt.$this->install_key.'aPRfHzg1EHDXtQdXYOlRGrvKJmP7G0UPo4SmLIqt4').'djqhyJa40ucOWDGhQ3taSppI8D5Gpyeoc9BlcIlYv';
-        $key  = $key.strrev($key);
+        $key = $key.strrev($key);
 
         $enc = $this->xorString($enc, $key);
 
@@ -650,7 +651,7 @@ final class License
                     continue;
                 }
 
-                $opt = substr($opt, $lid_p+1);
+                $opt = substr($opt, $lid_p + 1);
                 if (strpos($opt, '=') === false) {
                     $opt .= '=';
                 }
@@ -924,9 +925,9 @@ STR;
 
     private function xorString($string, $key)
     {
-        $string_len  = strlen($string);
-        $key_len     = strlen($key);
-        $new_string  = array();
+        $string_len = strlen($string);
+        $key_len    = strlen($key);
+        $new_string = array();
 
         for ($i = 0, $j = 0; $i < $string_len; $i++, $j++) {
             if ($j >= $key_len) {

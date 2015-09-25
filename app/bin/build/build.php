@@ -31,7 +31,7 @@ if (in_array('--quick', $_SERVER['argv'])) {
 #####################################################################
 
 $time = microtime(true);
-echo "build-boostrap ... ";
+echo 'build-boostrap ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-bootstrap.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -42,13 +42,13 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-kernels ... ";
+echo 'build-kernels ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-kernels.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -59,13 +59,13 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-caches ... ";
+echo 'build-caches ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-caches.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -76,16 +76,16 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-assetic ... ";
+echo 'build-assetic ... ';
 
 if (in_array('--skip-assetic', $_SERVER['argv'])) {
-    echo " SKIPPED (--skip-assetic) ";
+    echo ' SKIPPED (--skip-assetic) ';
 } else {
     $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-assetic.php', DP_ROOT.'/bin/build');
     $proc->setTimeout(600);
@@ -96,13 +96,13 @@ if (in_array('--skip-assetic', $_SERVER['argv'])) {
         exit($proc->getExitCode());
     }
 }
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-schema-file ... ";
+echo 'build-schema-file ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-schema-file.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -113,13 +113,13 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-template-map ... ";
+echo 'build-template-map ... ';
 
 if ($quick) {
     $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-template-map.php --bogus', DP_ROOT.'/bin/build');
@@ -134,13 +134,13 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-class-map ... ";
+echo 'build-class-map ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-class-map.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -151,13 +151,13 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-agent-permset ... ";
+echo 'build-agent-permset ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-agent-permset.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -168,13 +168,13 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-data ... ";
+echo 'build-data ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-data.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -185,7 +185,7 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
@@ -204,13 +204,13 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ";
+echo ' DONE ';
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-cleanup ... ";
+echo 'build-cleanup ... ';
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-cleanup.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
@@ -221,16 +221,16 @@ if (!$proc->isSuccessful()) {
     exit($proc->getExitCode());
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
 
 $time = microtime(true);
-echo "build-checkphp ... ";
+echo 'build-checkphp ... ';
 
 if ($quick) {
-    echo "SKIPPED (--quick)";
+    echo 'SKIPPED (--quick)';
 } else {
     $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-checkphp.php --only-changed', DP_ROOT.'/bin/build');
     $proc->setTimeout(600);
@@ -242,7 +242,7 @@ if ($quick) {
     }
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 
 #####################################################################
@@ -294,10 +294,10 @@ echo "\n";
 #####################################################################
 
 $time = microtime(true);
-echo "build-checksum-file ... ";
+echo 'build-checksum-file ... ';
 
 if ($quick) {
-    echo "SKIPPED (--quick)";
+    echo 'SKIPPED (--quick)';
     @unlink(DP_ROOT.'/sys/Resources/distro-checksums.php');
 } else {
     $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH.' ./build-checksum-file.php', DP_ROOT.'/bin/build');
@@ -310,5 +310,5 @@ if ($quick) {
     }
 }
 
-echo " DONE ".sprintf("%.f", microtime(true)-$time);
+echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";

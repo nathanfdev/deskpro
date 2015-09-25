@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\EmailBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -44,19 +44,19 @@ class SendmailSource implements NotifyPropertyChanged
      * Inserted: record is created only. Usually this is so we have an ID
      * in the database. But no automated processes should touch this record.
      */
-    const STATUS_INSERTED   = 'inserted';
+    const STATUS_INSERTED = 'inserted';
 
     /**
      * pending: The email is ready to be sent. The queue process should send
      * pending messages.
      */
-    const STATUS_PENDING    = 'pending';
+    const STATUS_PENDING = 'pending';
 
     /**
      * retry: The email is set to retry. This means the email was already sent
      * or has already failed, but the email is being retried now.
      */
-    const STATUS_RETRY      = 'retry';
+    const STATUS_RETRY = 'retry';
 
     /**
      * processing: The email is currently processing. This means the record
@@ -67,17 +67,17 @@ class SendmailSource implements NotifyPropertyChanged
     /**
      * complete: The email has been sent successfully.
      */
-    const STATUS_COMPLETE   = 'complete';
+    const STATUS_COMPLETE = 'complete';
 
     /**
      * error: The email failed to send.
      */
-    const STATUS_ERROR      = 'error';
+    const STATUS_ERROR = 'error';
 
     /**
      * aborted: The email was cancelled.
      */
-    const STATUS_ABORTED    = 'aborted';
+    const STATUS_ABORTED = 'aborted';
 
     /**
      * Indicates a problem while queueing an email with an external service.
@@ -211,39 +211,39 @@ class SendmailSource implements NotifyPropertyChanged
      */
     protected $exec_count = 0;
 
-	/**
-	 * @var int
-	 */
-	protected $num_targets;
+    /**
+     * @var int
+     */
+    protected $num_targets;
 
-	/**
-	 * @var int
-	 */
-	protected $num_pending;
+    /**
+     * @var int
+     */
+    protected $num_pending;
 
-	/**
-	 * @var int
-	 */
-	protected $num_complete;
+    /**
+     * @var int
+     */
+    protected $num_complete;
 
-	/**
-	 * @var int
-	 */
-	protected $num_error;
+    /**
+     * @var int
+     */
+    protected $num_error;
 
-	/**
-	 * @var SendmailSourceStatus[]
-	 */
-	protected $statuses;
+    /**
+     * @var SendmailSourceStatus[]
+     */
+    protected $statuses;
 
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_status', new \DateTime());
-	    $this->num_targets = 0;
-	    $this->num_pending = 0;
-	    $this->num_complete = 0;
-	    $this->num_error = 0;
+        $this->num_targets  = 0;
+        $this->num_pending  = 0;
+        $this->num_complete = 0;
+        $this->num_error    = 0;
     }
 
     /**
@@ -646,13 +646,13 @@ class SendmailSource implements NotifyPropertyChanged
         return ($this->options && isset($this->options[$k])) ? $this->options[$k] : $default;
     }
 
-	/**
-	 * @return SendmailSourceStatus[]
-	 */
-	public function getStatuses()
-	{
-		return $this->statuses;
-	}
+    /**
+     * @return SendmailSourceStatus[]
+     */
+    public function getStatuses()
+    {
+        return $this->statuses;
+    }
 
     /**
      * @param string $k
@@ -690,10 +690,10 @@ class SendmailSource implements NotifyPropertyChanged
         $data['error_code']     = $this->error_code;
         $data['exec_count']     = $this->exec_count;
         $data['options']        = $this->options;
-	    $data['num_targets']    = $this->num_targets;
-	    $data['num_pending']    = $this->num_pending;
-	    $data['num_error']      = $this->num_error;
-	    $data['num_complete']   = $this->num_complete;
+        $data['num_targets']    = $this->num_targets;
+        $data['num_pending']    = $this->num_pending;
+        $data['num_error']      = $this->num_error;
+        $data['num_complete']   = $this->num_complete;
 
         foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
             if ($this->$date_field) {
@@ -804,12 +804,12 @@ class SendmailSource implements NotifyPropertyChanged
         return $data;
     }
 
-	public function initTargetsCount()
-	{
-		$count = count($this->getToEmails()) + count($this->getCcEmails()) + count($this->getBccEmails());
-		$this->setModelField('num_targets', $count);
-		$this->setModelField('num_pending', $count);
-	}
+    public function initTargetsCount()
+    {
+        $count = count($this->getToEmails()) + count($this->getCcEmails()) + count($this->getBccEmails());
+        $this->setModelField('num_targets', $count);
+        $this->setModelField('num_pending', $count);
+    }
 
     ############################################################################
     # Doctrine
@@ -822,7 +822,7 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceRepository';
 
-	    $metadata->addLifecycleCallback('initTargetsCount', 'prePersist');
+        $metadata->addLifecycleCallback('initTargetsCount', 'prePersist');
 
         $metadata->setPrimaryTable(array(
             'name'    => 'sendmail_sources',
@@ -966,26 +966,26 @@ class SendmailSource implements NotifyPropertyChanged
             'type'       => 'integer',
             'nullable'   => false,
         ));
-	    $metadata->mapField(array(
-		    'columnName' => 'num_targets',
-		    'fieldName'  => 'num_targets',
-		    'type'       => 'integer',
-	    ));
-	    $metadata->mapField(array(
-		    'columnName' => 'num_pending',
-		    'fieldName'  => 'num_pending',
-		    'type'       => 'integer',
-	    ));
-	    $metadata->mapField(array(
-		    'columnName' => 'num_error',
-		    'fieldName'  => 'num_error',
-		    'type'       => 'integer',
-	    ));
-	    $metadata->mapField(array(
-		    'columnName' => 'num_complete',
-		    'fieldName'  => 'num_complete',
-		    'type'       => 'integer',
-	    ));
+        $metadata->mapField(array(
+            'columnName' => 'num_targets',
+            'fieldName'  => 'num_targets',
+            'type'       => 'integer',
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'num_pending',
+            'fieldName'  => 'num_pending',
+            'type'       => 'integer',
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'num_error',
+            'fieldName'  => 'num_error',
+            'type'       => 'integer',
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'num_complete',
+            'fieldName'  => 'num_complete',
+            'type'       => 'integer',
+        ));
 
         $metadata->mapManyToOne(array(
             'fieldName'    => 'blob',
@@ -1022,11 +1022,11 @@ class SendmailSource implements NotifyPropertyChanged
                 'onDelete'             => 'set null',
             )),
         ));
-	    $metadata->mapOneToMany(array(
-		    'fieldName'    => 'statuses',
-		    'targetEntity' => 'Application\EmailBundle\Entity\SendmailSourceStatus',
-		    'mappedBy'     => 'source',
-	    ));
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'statuses',
+            'targetEntity' => 'Application\EmailBundle\Entity\SendmailSourceStatus',
+            'mappedBy'     => 'source',
+        ));
     }
 
     public function __getPropValue__($k)

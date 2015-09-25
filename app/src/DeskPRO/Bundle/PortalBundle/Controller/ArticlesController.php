@@ -1,40 +1,39 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
-use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
@@ -55,7 +54,7 @@ class ArticlesController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
-        $page = $request->get('page', 1);
+        $page   = $request->get('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -70,9 +69,9 @@ class ArticlesController extends AbstractController
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array(
-                'pager' => $pager,
-                'category' => null,
-                'page_title' => $this->get('portal_view.page_title_generator')->kb()
+                'pager'      => $pager,
+                'category'   => null,
+                'page_title' => $this->get('portal_view.page_title_generator')->kb(),
             ));
         }
         $rss_link = $this->generateUrl(
@@ -91,11 +90,11 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig',
             array(
-                'page'  => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
+                'page'        => $page,
+                'count'       => $this->getBrandSetting('portal.per_page_content'),
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
-                'rss_link' => $rss_link
+                'rss_link'    => $rss_link,
             )
         );
     }
@@ -109,7 +108,7 @@ class ArticlesController extends AbstractController
      */
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
-        $page = $request->get('page', 1);
+        $page   = $request->get('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -124,9 +123,9 @@ class ArticlesController extends AbstractController
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array(
-                'pager' => $pager,
-                'category' => $category,
-                'page_title' => $this->get('portal_view.page_title_generator')->kb($category)
+                'pager'      => $pager,
+                'category'   => $category,
+                'page_title' => $this->get('portal_view.page_title_generator')->kb($category),
             ));
         }
         $rss_link = $this->generateUrl('portal_kb_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
@@ -164,14 +163,14 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:browse.html.twig',
             array(
-                'category'        => $category,
-                'breadcrumbs'     => $breadcrumbs,
-                'page_title'      => $this->get('portal_view.page_title_generator')->kb($category),
-                'is_subscribed'   => $is_subscribed,
-                'pager'           => $pager,
-                'count'           => $count,
-                'page'            => $page,
-                'rss_link'        => $rss_link
+                'category'      => $category,
+                'breadcrumbs'   => $breadcrumbs,
+                'page_title'    => $this->get('portal_view.page_title_generator')->kb($category),
+                'is_subscribed' => $is_subscribed,
+                'pager'         => $pager,
+                'count'         => $count,
+                'page'          => $page,
+                'rss_link'      => $rss_link,
             )
         );
     }
@@ -191,7 +190,7 @@ class ArticlesController extends AbstractController
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $article)) {
             $form_handler = $this->get('form_handler.comment');
-            $comment = new ArticleComment();
+            $comment      = new ArticleComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
@@ -237,8 +236,8 @@ class ArticlesController extends AbstractController
             'Theme:Articles:view.html.twig',
             array(
                 'article'          => $article,
-                'rating' => $rating,
-                'is_subscribed' => $is_subscribed,
+                'rating'           => $rating,
+                'is_subscribed'    => $is_subscribed,
                 'category'         => $article->getPrimaryCategory(),
                 'breadcrumbs'      => $breadcrumbs,
                 'content_id'       => $article->getId(),

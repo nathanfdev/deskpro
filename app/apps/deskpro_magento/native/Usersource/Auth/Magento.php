@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace deskpro_magento\Usersource\Auth;
 
 use Doctrine\DBAL\DriverManager;
@@ -101,8 +101,8 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
 
         $time_start = microtime(true);
         if ($this->logger) {
-            $this->logger->log("START Magento::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: ".trim(Arrays::implodeTemplate("{KEY}({VAL}) ")), Logger::DEBUG);
+            $this->logger->log('START Magento::authenticate', Logger::DEBUG);
+            $this->logger->log('Options: '.trim(Arrays::implodeTemplate('{KEY}({VAL}) ')), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
@@ -129,8 +129,8 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
         $identity = $this->getIdentityFromUserInfo($userinfo);
 
         if ($this->logger) {
-            $this->logger->log("Found user ".$identity->getIdentity(), Logger::DEBUG);
-            $this->logger->log(sprintf("END Magento::authenticate (took %.4fs)", microtime(true)-$time_start), Logger::DEBUG);
+            $this->logger->log('Found user '.$identity->getIdentity(), Logger::DEBUG);
+            $this->logger->log(sprintf('END Magento::authenticate (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG);
         }
 
         return new Result(Result::SUCCESS, $identity);
@@ -150,9 +150,9 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
         // Map fields from the raw userinfo to common fields that most
         // auth adapters use by convention
         $map = array(
-            'email'       => 'email_address',
-            'first_name'  => 'first_name',
-            'last_name'   => 'last_name',
+            'email'      => 'email_address',
+            'first_name' => 'first_name',
+            'last_name'  => 'last_name',
         );
 
         foreach ($map as $field_key => $info_key) {

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
@@ -36,7 +36,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\EntityRepository\Problem;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -44,7 +43,6 @@ use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Handles ticket searches.
@@ -89,22 +87,21 @@ class TicketSearchController extends AbstractController
             WHERE person_id = ? AND (name LIKE 'agent.ui.filter-visibility.%' OR name LIKE 'agent.ui.sla.filter-visibility.%')
         ", array($this->person->id));
 
-        /**
+        /*
          * @var Problem $rep
          */
-        $open_problems = array();
+        $open_problems   = array();
         $closed_problems = array();
         if ($this->settings->get('core.problems.enabled') && $this->person->hasPerm('agent_problems.view')) {
-            $rep = $this->em->getRepository('DeskPRO:Problem');
+            $rep      = $this->em->getRepository('DeskPRO:Problem');
             $problems = $rep->findBy(array(), array('title' => 'asc'));
 
             foreach ($problems as $problem) {
                 $problem->is_open
-                    ? $open_problems[] = $problem->toApiData()
+                    ? $open_problems[]   = $problem->toApiData()
                     : $closed_problems[] = $problem->toApiData();
             }
         }
-
 
         #------------------------------
         # SLAs
@@ -140,7 +137,7 @@ class TicketSearchController extends AbstractController
             'sys_filters'            => $sys_filters,
             'sys_filters_hold'       => $sys_filters_hold,
             'archive_filters'        => $archive_filters,
-            'problem_filters' => $problem_filters,
+            'problem_filters'        => $problem_filters,
             'archive_filter_counts'  => $archive_filter_counts,
             'filter_id_matches'      => $filter_id_matches,
             'filters_summary'        => $filters_summary,
@@ -152,7 +149,7 @@ class TicketSearchController extends AbstractController
             'labels_cloud'           => $cloud,
             'initial_inbox_grouping' => $initial_inbox_grouping,
 
-            'open_problems' => $open_problems,
+            'open_problems'   => $open_problems,
             'closed_problems' => $closed_problems,
 
             'slas'       => $slas,
@@ -284,7 +281,7 @@ class TicketSearchController extends AbstractController
                 $results = Arrays::castToType($results, 'integer');
             } else {
                 $searcher->addTerm('ticket_message', 'is', array('query' => $q));
-                $searcher->addTerm('date_created', 'gte', array('date1' => strtotime("-60 days")));
+                $searcher->addTerm('date_created', 'gte', array('date1' => strtotime('-60 days')));
                 $results = $searcher->getMatches();
                 $results = Arrays::castToType($results, 'integer');
 
@@ -671,18 +668,18 @@ class TicketSearchController extends AbstractController
             $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
             $set_terms_map = array(
-                'department'    => array('op' => 'contains', 'options' => array()),
-                'status'        => array('op' => 'contains', 'options' => array()),
-                'agent'         => array('op' => 'contains', 'options' => array()),
-                'agent_team'    => array('op' => 'contains', 'options' => array()),
-                'participant'   => array('op' => 'contains', 'options' => array()),
-                'category'      => array('op' => 'contains', 'options' => array()),
-                'product'       => array('op' => 'contains', 'options' => array()),
-                'priority'      => array('op' => 'contains', 'options' => array()),
-                'workflow'      => array('op' => 'contains', 'options' => array()),
-                'organization'  => array('op' => 'contains', 'options' => array()),
-                'language'      => array('op' => 'contains', 'options' => array()),
-                'sla'           => array('op' => 'contains', 'options' => array()),
+                'department'   => array('op' => 'contains', 'options' => array()),
+                'status'       => array('op' => 'contains', 'options' => array()),
+                'agent'        => array('op' => 'contains', 'options' => array()),
+                'agent_team'   => array('op' => 'contains', 'options' => array()),
+                'participant'  => array('op' => 'contains', 'options' => array()),
+                'category'     => array('op' => 'contains', 'options' => array()),
+                'product'      => array('op' => 'contains', 'options' => array()),
+                'priority'     => array('op' => 'contains', 'options' => array()),
+                'workflow'     => array('op' => 'contains', 'options' => array()),
+                'organization' => array('op' => 'contains', 'options' => array()),
+                'language'     => array('op' => 'contains', 'options' => array()),
+                'sla'          => array('op' => 'contains', 'options' => array()),
             );
 
             foreach ($set_terms_map as $name => $info) {
@@ -713,7 +710,7 @@ class TicketSearchController extends AbstractController
                     if (is_array($_v)) {
                         $_v = Arrays::func($_v, 'trim');
                         $_v = Arrays::removeEmptyArray($_v);
-                    } elseif (trim($_v) === "") {
+                    } elseif (trim($_v) === '') {
                         $_v = null;
                     }
                 }
@@ -746,7 +743,7 @@ class TicketSearchController extends AbstractController
                 foreach ($search_term as $t) {
                     if (strpos($t, 'team.') === 0) {
                         $t = Strings::extractRegexMatch('#^team\.(\d+)$#', $t);
-                        if ($t !== "") {
+                        if ($t !== '') {
                             $t          = (int) $t;
                             $team_ids[] = $t;
                         }
@@ -905,15 +902,15 @@ class TicketSearchController extends AbstractController
         }
 
         $vars = array(
-            'cache'               => $result_cache,
-            'cache_id'            => $result_cache->id,
-            'order_by_summary'    => $result_cache->getExtraData('order_by_summary'),
-            'terms_summary'       => $result_cache->getExtraData('terms_summary'),
-            'needs_urgency'       => $result_cache->getExtraData('needs_urgency'),
-            'order_by'            => explode(':', $result_cache->getExtraData('order_by')),
-            'ticket_ids'          => $result_cache->results,
-            'view_name'           => $this->in->getString('view_name'),
-            'view_extra'          => $this->in->getString('view_extra'),
+            'cache'            => $result_cache,
+            'cache_id'         => $result_cache->id,
+            'order_by_summary' => $result_cache->getExtraData('order_by_summary'),
+            'terms_summary'    => $result_cache->getExtraData('terms_summary'),
+            'needs_urgency'    => $result_cache->getExtraData('needs_urgency'),
+            'order_by'         => explode(':', $result_cache->getExtraData('order_by')),
+            'ticket_ids'       => $result_cache->results,
+            'view_name'        => $this->in->getString('view_name'),
+            'view_extra'       => $this->in->getString('view_extra'),
         );
 
         $search_form = array(
@@ -1344,33 +1341,33 @@ class TicketSearchController extends AbstractController
         }
 
         $vars = array_merge($vars, array(
-            'agents'                  => $agents,
-            'agent_teams'             => $agent_teams,
-            'type'                    => $type,
-            'type_id'                 => $type_id,
-            'ticket_display'          => $ticket_display,
-            'tickets'                 => $tickets,
-            'all_ticket_ids'          => $is_grouping ? $results_helper->getGroupTicketIds($grouping_option) : $results_helper->getTicketIds(),
-            'count'                   => $results_helper->getCount(),
-            'flagged_tickets'         => $flagged_tickets,
-            'ticket_options'          => $ticket_options,
-            'page'                    => $page,
-            'pageinfo'                => $pageinfo,
-            'per_page'                => $per_page,
-            'macros'                  => $macros,
-            'show_flag'               => true,
-            'grouped_info'            => $grouped_info,
-            'group_by'                => $results_helper->getGroupField(),
-            'grouping_option'         => $grouping_option,
-            'grouping_summary'        => $results_helper->getGroupingSummary(),
-            'is_grouped_result'       => $is_grouping,
-            'ticket_field_defs'       => $ticket_field_defs,
-            'person_field_defs'       => $person_field_defs,
-            'load_first'              => $this->in->getBool('load_first'),
-            'all_custom_fields'       => $all_custom_fields,
-            'user_all_custom_fields'  => $user_all_custom_fields,
-            'agent_signature'         => $this->person->getSignature(),
-            'agent_signature_html'    => $this->person->getSignatureHtml(),
+            'agents'                 => $agents,
+            'agent_teams'            => $agent_teams,
+            'type'                   => $type,
+            'type_id'                => $type_id,
+            'ticket_display'         => $ticket_display,
+            'tickets'                => $tickets,
+            'all_ticket_ids'         => $is_grouping ? $results_helper->getGroupTicketIds($grouping_option) : $results_helper->getTicketIds(),
+            'count'                  => $results_helper->getCount(),
+            'flagged_tickets'        => $flagged_tickets,
+            'ticket_options'         => $ticket_options,
+            'page'                   => $page,
+            'pageinfo'               => $pageinfo,
+            'per_page'               => $per_page,
+            'macros'                 => $macros,
+            'show_flag'              => true,
+            'grouped_info'           => $grouped_info,
+            'group_by'               => $results_helper->getGroupField(),
+            'grouping_option'        => $grouping_option,
+            'grouping_summary'       => $results_helper->getGroupingSummary(),
+            'is_grouped_result'      => $is_grouping,
+            'ticket_field_defs'      => $ticket_field_defs,
+            'person_field_defs'      => $person_field_defs,
+            'load_first'             => $this->in->getBool('load_first'),
+            'all_custom_fields'      => $all_custom_fields,
+            'user_all_custom_fields' => $user_all_custom_fields,
+            'agent_signature'        => $this->person->getSignature(),
+            'agent_signature_html'   => $this->person->getSignatureHtml(),
         ));
 
         if ($view_type == 'csv') {
@@ -1921,7 +1918,7 @@ class TicketSearchController extends AbstractController
                 foreach ($actions as $name => $opt) {
                     // Cleanup RTE markup
                     if ($name == 'reply') {
-						$new_message = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html');
+                        $new_message       = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html');
                         $new_message       = Strings::trimHtml($new_message);
                         $new_message       = Strings::prepareWysiwygHtml($new_message);
                         $opt['reply_text'] = $new_message;
@@ -1985,11 +1982,11 @@ class TicketSearchController extends AbstractController
         }
 
         return $this->createJsonResponse(array(
-            'success'          => true,
-            'success_tickets'  => $success,
-            'failed_tickets'   => $permission_errors,
-            'client_messages'  => $client_messages,
-            'ticket_data'      => $ticket_data,
+            'success'         => true,
+            'success_tickets' => $success,
+            'failed_tickets'  => $permission_errors,
+            'client_messages' => $client_messages,
+            'ticket_data'     => $ticket_data,
         ));
     }
 }

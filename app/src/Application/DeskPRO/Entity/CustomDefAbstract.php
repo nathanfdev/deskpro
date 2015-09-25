@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -177,7 +177,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public $field_manager = null;
 
-
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -198,14 +197,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
+
         return $this;
     }
 
@@ -233,7 +234,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return App::getTranslator()->getPhraseObject($this, 'description');
     }
 
-
     /**
      * @return string
      */
@@ -243,14 +243,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
+     *
      * @return $this
      */
     public function setDescription($description)
     {
         $this->setModelField('description', $description);
+
         return $this;
     }
 
@@ -319,7 +321,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $this->_onPropertyChanged('children', $this->children, $this->children);
     }
 
-
     /**
      * Remove a child field.
      *
@@ -363,14 +364,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Set handler class
+     * Set handler class.
      *
      * @param null $handler_class
+     *
      * @return $this
      */
     public function setHandlerClass($handler_class = null)
     {
         $this->setModelField('handler_class', $handler_class);
+
         return $this;
     }
 
@@ -429,7 +432,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $ids;
     }
 
-
     /**
      * @return array
      */
@@ -442,8 +444,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         return $titles;
     }
-
-
 
     /**
      * Creates a new instance of the same type and sets its parent to this object.
@@ -459,8 +459,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         return $obj;
     }
-
-
 
     /**
      * Get the value of an option, or a default value if none is set.
@@ -487,7 +485,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->options;
     }
 
-
     /**
      * @return string
      */
@@ -496,7 +493,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return App::getTranslator()->getPhraseObject($this, 'html');
     }
 
-
     /**
      * @return string
      */
@@ -504,7 +500,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return $this->getOption('html', '');
     }
-
 
     /**
      * Set a value of an option.
@@ -591,7 +586,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $phrase;
     }
 
-
     /**
      * The "short name" for the handler type.
      *
@@ -651,7 +645,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
     }
 
-
     /**
      * @param string $property
      *
@@ -686,9 +679,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->title;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
@@ -697,7 +689,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         if ($data['type_name'] == 'choice') {
             $data['choices'] = array();
-            $has_children = $map = array();
+            $has_children    = $map    = array();
 
             foreach ($this->children as $c) {
                 $map[$c['id']] = $c;

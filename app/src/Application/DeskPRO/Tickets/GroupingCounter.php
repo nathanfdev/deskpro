@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -38,13 +38,13 @@ use Orb\Util\Strings;
 
 class GroupingCounter
 {
-    const LAST_TIME_MARKER   = 1893456000;
-    const MODE_AGENT         = 'agent';
-    const MODE_AGENT_TEAM    = 'agent_team';
-    const MODE_PARTICIPANT   = 'participant';
-    const MODE_UNASSIGNED    = 'unassigned';
-    const MODE_ALL           = 'all';
-    const MODE_SPECIFY       = 'specify';
+    const LAST_TIME_MARKER = 1893456000;
+    const MODE_AGENT       = 'agent';
+    const MODE_AGENT_TEAM  = 'agent_team';
+    const MODE_PARTICIPANT = 'participant';
+    const MODE_UNASSIGNED  = 'unassigned';
+    const MODE_ALL         = 'all';
+    const MODE_SPECIFY     = 'specify';
 
     /** @var string */
     protected $grouping1 = 'department';
@@ -236,10 +236,10 @@ class GroupingCounter
                 $where_perm[] = "tickets.agent = {$agent['id']}";
 
                 if ($agent->getAgentTeamIds()) {
-                    $where_perm[] = "tickets.agent_team IN (".implode(',', $agent->getAgentTeamIds()).")";
+                    $where_perm[] = 'tickets.agent_team IN ('.implode(',', $agent->getAgentTeamIds()).')';
                 }
 
-                $where_perm[] = "tickets.department IN (".implode(',', $agent->getAllowedDepartments()).")";
+                $where_perm[] = 'tickets.department IN ('.implode(',', $agent->getAllowedDepartments()).')';
                 $where_perm[] = "part_check.person = {$agent['id']}";
 
                 $where_perm = implode(' OR ', $where_perm);
@@ -253,11 +253,11 @@ class GroupingCounter
                     break;
 
                 case self::MODE_AGENT_TEAM:
-                    $wheres[] = "tickets.agent_team IN (".implode(',', $agent->getAgentTeamIds()).")";
+                    $wheres[] = 'tickets.agent_team IN ('.implode(',', $agent->getAgentTeamIds()).')';
                     break;
 
                 case self::MODE_PARTICIPANT:
-                    $wheres[] = "tickets.agent_team IN (".implode(',', $agent->getAgentTeamIds()).")";
+                    $wheres[] = 'tickets.agent_team IN ('.implode(',', $agent->getAgentTeamIds()).')';
                     break;
 
                 case self::MODE_ALL:
@@ -268,8 +268,8 @@ class GroupingCounter
                     break;
             }
 
-            $sql = "
-                SELECT ".implode(', ', $select_fields)."
+            $sql = '
+                SELECT '.implode(', ', $select_fields)."
                 FROM tickets
                 $join
                 LEFT JOIN tickets_participants ON (tickets_participants.ticket = tickets.id)
@@ -284,9 +284,9 @@ class GroupingCounter
                 return array();
             }
 
-            $wheres[] = "tickets.id IN (".implode(',', $this->tickets).")";
-            $sql      = "
-                SELECT ".implode(', ', $select_fields)."
+            $wheres[] = 'tickets.id IN ('.implode(',', $this->tickets).')';
+            $sql      = '
+                SELECT '.implode(', ', $select_fields)."
                 FROM tickets
                 $join
                 WHERE ".implode(' AND ', $wheres)."
@@ -348,7 +348,7 @@ class GroupingCounter
 
         $now = time();
 
-        $sql = "CASE ";
+        $sql = 'CASE ';
 
         $parts = array();
         foreach ($times as $t) {
@@ -372,7 +372,7 @@ class GroupingCounter
             $last_t = $t;
         }
 
-        $sql .= implode('', $parts)." ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
 
         return $sql;
     }
@@ -564,8 +564,8 @@ class GroupingCounter
                         } elseif ($r['first_name']) {
                             $name = $r['first_name'];
                         } elseif ($r['email']) {
-                            $email        = $r['email'];
-                            list($name,)  = explode('@', $email, 2);
+                            $email      = $r['email'];
+                            list($name) = explode('@', $email, 2);
 
                             $name = str_replace('_', ' ', $name);
                             $name = str_replace('.', ' ', $name);
@@ -680,31 +680,31 @@ class GroupingCounter
     public static function getTimeTitles()
     {
         $times = array(
-            300                                => 'agent.time.group_lt_5_mins',
-            900                                => 'agent.time.group_5_to_15_mins',
-            1800                               => 'agent.time.group_15_to_30_mins',
-            3600                               => 'agent.time.group_30_to_60_mins',
-            7200                               => 'agent.time.group_1_to_2_hours',
-            10800                              => 'agent.time.group_2_to_3_hours',
-            14400                              => 'agent.time.group_3_to_4_hours',
-            21600                              => 'agent.time.group_4_to_6_hours',
-            43200                              => 'agent.time.group_6_to_12_hours',
-            86400                              => 'agent.time.group_12_to_24_hours',
-            172800                             => 'agent.time.group_1_to_2_days',
-            259200                             => 'agent.time.group_2_to_3_days',
-            345600                             => 'agent.time.group_3_to_4_days',
-            432000                             => 'agent.time.group_4_to_5_days',
-            518400                             => 'agent.time.group_5_to_6_days',
-            604800                             => 'agent.time.group_6_to_7_days',
-            1209600                            => 'agent.time.group_1_to_2_weeks',
-            1814400                            => 'agent.time.group_2_to_3_weeks',
-            2419200                            => 'agent.time.group_3_to_4_weeks',
-            4838400                            => 'agent.time.group_1_to_2_months',
-            7257600                            => 'agent.time.group_2_to_3_months',
-            9676800                            => 'agent.time.group_3_to_4_months',
-            12096000                           => 'agent.time.group_4_to_5_months',
-            14515200                           => 'agent.time.group_5_to_6_months',
-            self::LAST_TIME_MARKER             => 'agent.time.group_gt_6_months',
+            300                    => 'agent.time.group_lt_5_mins',
+            900                    => 'agent.time.group_5_to_15_mins',
+            1800                   => 'agent.time.group_15_to_30_mins',
+            3600                   => 'agent.time.group_30_to_60_mins',
+            7200                   => 'agent.time.group_1_to_2_hours',
+            10800                  => 'agent.time.group_2_to_3_hours',
+            14400                  => 'agent.time.group_3_to_4_hours',
+            21600                  => 'agent.time.group_4_to_6_hours',
+            43200                  => 'agent.time.group_6_to_12_hours',
+            86400                  => 'agent.time.group_12_to_24_hours',
+            172800                 => 'agent.time.group_1_to_2_days',
+            259200                 => 'agent.time.group_2_to_3_days',
+            345600                 => 'agent.time.group_3_to_4_days',
+            432000                 => 'agent.time.group_4_to_5_days',
+            518400                 => 'agent.time.group_5_to_6_days',
+            604800                 => 'agent.time.group_6_to_7_days',
+            1209600                => 'agent.time.group_1_to_2_weeks',
+            1814400                => 'agent.time.group_2_to_3_weeks',
+            2419200                => 'agent.time.group_3_to_4_weeks',
+            4838400                => 'agent.time.group_1_to_2_months',
+            7257600                => 'agent.time.group_2_to_3_months',
+            9676800                => 'agent.time.group_3_to_4_months',
+            12096000               => 'agent.time.group_4_to_5_months',
+            14515200               => 'agent.time.group_5_to_6_months',
+            self::LAST_TIME_MARKER => 'agent.time.group_gt_6_months',
         );
 
         foreach ($times as &$phrase) {
@@ -773,7 +773,7 @@ class GroupingCounter
                     return array('type' => $groupvar, 'op' => 'lte', 'options' => array('date1' => $date));
                 } else {
                     $date1 = new \DateTime('-'.$times[$key].' seconds');
-                    $date2 = new \DateTime('-'.$times[$key-1].' seconds');
+                    $date2 = new \DateTime('-'.$times[$key - 1].' seconds');
 
                     return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
                 }
@@ -790,7 +790,7 @@ class GroupingCounter
                 } elseif ($key == (count($times) - 1)) {
                     $term = array('type' => $groupvar, 'op' => 'gte', 'options' => 14515200);
                 } else {
-                    $term = array('type' => $groupvar, 'op' => 'between', 'options' => array($times[$key], $times[$key+1]));
+                    $term = array('type' => $groupvar, 'op' => 'between', 'options' => array($times[$key], $times[$key + 1]));
                 }
 
                 return $term;

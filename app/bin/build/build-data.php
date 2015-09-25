@@ -19,7 +19,7 @@ require DP_ROOT.'/sys/system.php';
 #------------------------------
 
 $fn_get_url = function ($url) {
-    for ($i = 0; $i < 5; $i++) {
+    for ($i = 0; $i < 5; ++$i) {
         $content = trim(file_get_contents($url));
         if ($content) {
             break;

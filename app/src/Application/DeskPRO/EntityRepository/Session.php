@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -48,12 +48,12 @@ class Session extends AbstractEntityRepository
     {
         $datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
-        $check = App::getDb()->fetchColumn("
+        $check = App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM sessions
-            WHERE date_last >= ? AND active_status = ? AND is_person = 1 ".($for_chat ? " AND is_chat_available = 1 " : '')."
+            WHERE date_last >= ? AND active_status = ? AND is_person = 1 '.($for_chat ? ' AND is_chat_available = 1 ' : '').'
             LIMIT 1
-        ", array($datecut, 'available'));
+        ', array($datecut, 'available'));
 
         return $check;
     }
@@ -67,12 +67,12 @@ class Session extends AbstractEntityRepository
     {
         $datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
-        $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+        $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
             SELECT DISTINCT(sessions.person_id)
             FROM sessions
             LEFT JOIN people ON (people.id = sessions.person_id)
             WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
-        ", array($datecut));
+        ', array($datecut));
 
         if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
             \Orb\Util\Arrays::pushUnique($ids, App::getCurrentPerson()->getId());
@@ -108,12 +108,12 @@ class Session extends AbstractEntityRepository
      */
     public function getSessionFromVisitor(VisitorEntity $visitor)
     {
-        $session = $this->getEntityManager()->createQuery("
+        $session = $this->getEntityManager()->createQuery('
             SELECT s
             FROM DeskPRO:Session s
             WHERE s.visitor = ?1
             ORDER BY s.id DESC
-        ")->setParameter(1, $visitor)->setMaxResults(1)->execute();
+        ')->setParameter(1, $visitor)->setMaxResults(1)->execute();
 
         if (!count($session)) {
             return;
@@ -126,7 +126,7 @@ class Session extends AbstractEntityRepository
      * Get the latest active session for a particular user.
      *
      * @param \Application\DeskPRO\Entity\Person $person
-     * @param integer|null                       $offset Max number of seconds old the session's last page can be (null for session lifetime)
+     * @param int|null                           $offset Max number of seconds old the session's last page can be (null for session lifetime)
      */
     public function getSessionForPerson(PersonEntity $person, $offset = null)
     {
@@ -135,12 +135,12 @@ class Session extends AbstractEntityRepository
         }
         $datecut = date('Y-m-d H:i:s', time() - $offset);
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT s
             FROM DeskPRO:Session s
             WHERE s.person = ?1 AND s.date_last > ?2
             ORDER BY s.id
-        ")->setMaxResults(1)
+        ')->setMaxResults(1)
           ->setParameter(1, $person)
           ->setParameter(2, $datecut)
           ->getOneOrNullResult();
@@ -153,11 +153,11 @@ class Session extends AbstractEntityRepository
      */
     public function countOnlineUsers()
     {
-        return $this->_em->getConnection()->fetchColumn("
+        return $this->_em->getConnection()->fetchColumn('
             SELECT COUNT(DISTINCT sessions.visitor_id)
             FROM sessions
             LEFT JOIN people ON (people.id = sessions.person_id)
             WHERE sessions.date_last > ? AND sessions.is_helpdesk = 1 AND (people.id IS NULL OR people.is_agent = 0) AND sessions.is_bot = 0
-        ", array(date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+        ', array(date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
     }
 }

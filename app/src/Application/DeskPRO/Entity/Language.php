@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -38,7 +38,6 @@ use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 
 // This class_exists check is needed because when doing a schema check,
 // doctrine will try to load this source file. But the Language class
@@ -161,20 +160,20 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * Return a unique ID that we can use to look up translations for this object.
          *
-         * @param string $property If supplied, the property on the object we want to translate.
+         * @param string    $property  If supplied, the property on the object we want to translate.
          * @param Translate $translate The translate object requesting
          *
          * @return string
          */
         public function getPhraseName($property = null, Translate $translate)
         {
-            return 'user.lang.lang_title_' . $this->sys_name;
+            return 'user.lang.lang_title_'.$this->sys_name;
         }
 
         /**
          * Get the default value phrase for the object.
          *
-         * @param string $property If supplied, the property on the object we want to translate.
+         * @param string    $property  If supplied, the property on the object we want to translate.
          * @param Translate $translate The translate object requesting
          *
          * @return string
@@ -203,7 +202,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => false,
                     'columnName' => 'id',
-                    'id'         => true
+                    'id'         => true,
                 )
             )
             ;
@@ -215,7 +214,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'precision'  => 0,
                     'scale'      => 0,
                     'nullable'   => false,
-                    'columnName' => 'sys_name'
+                    'columnName' => 'sys_name',
                 )
             )
             ;
@@ -227,7 +226,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'precision'  => 0,
                     'scale'      => 0,
                     'nullable'   => false,
-                    'columnName' => 'lang_code'
+                    'columnName' => 'lang_code',
                 )
             )
             ;
@@ -239,7 +238,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'precision'  => 0,
                     'scale'      => 0,
                     'nullable'   => false,
-                    'columnName' => 'title'
+                    'columnName' => 'title',
                 )
             )
             ;
@@ -251,7 +250,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'precision'  => 0,
                     'scale'      => 0,
                     'nullable'   => true,
-                    'columnName' => 'base_filepath'
+                    'columnName' => 'base_filepath',
                 )
             )
             ;
@@ -263,7 +262,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'precision'  => 0,
                     'scale'      => 0,
                     'nullable'   => false,
-                    'columnName' => 'locale'
+                    'columnName' => 'locale',
                 )
             )
             ;
@@ -275,7 +274,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'precision'  => 0,
                     'scale'      => 0,
                     'nullable'   => false,
-                    'columnName' => 'flag_image'
+                    'columnName' => 'flag_image',
                 )
             )
             ;
@@ -298,5 +297,4 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         }
     }
-
 }

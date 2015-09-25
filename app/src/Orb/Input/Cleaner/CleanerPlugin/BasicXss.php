@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Input
  */
-
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
 use Orb\Input\Cleaner\Cleaner;
@@ -104,15 +104,15 @@ class __DP_CI_Security
     protected $_xss_hash = '';
 
     protected $_never_allowed_str = array(
-        'document.cookie'      => 'document,cookie',
-        'document.write'       => 'document,write',
-        '.parentNode'          => ',parentNode',
-        '.innerHTML'           => ',innerHTML',
-        '-moz-binding'         => '',
-        '<!--'                 => '&lt;!--',
-        '-->'                  => '--&gt;',
-        '<![CDATA['            => '&lt;![CDATA[',
-        '<comment>'            => '&lt;comment&gt;',
+        'document.cookie' => 'document,cookie',
+        'document.write'  => 'document,write',
+        '.parentNode'     => ',parentNode',
+        '.innerHTML'      => ',innerHTML',
+        '-moz-binding'    => '',
+        '<!--'            => '&lt;!--',
+        '-->'             => '--&gt;',
+        '<![CDATA['       => '&lt;![CDATA[',
+        '<comment>'       => '&lt;comment&gt;',
     );
 
     protected $_never_allowed_regex = array(
@@ -235,7 +235,7 @@ class __DP_CI_Security
             $str_compare = $str;
 
             if ($c = preg_match_all('/&[a-z]{2,}(?![a-z;])/i', $str, $matches)) {
-                if (! isset($_entities)) {
+                if (!isset($_entities)) {
                     $_entities = array_map(
                         'strtolower',
                         version_compare(PHP_VERSION, '5.3.4', '>=')
@@ -255,7 +255,7 @@ class __DP_CI_Security
                 $replace = array();
                 $matches = array_values(array_unique(array_map('strtolower', $matches[0])));
                 $c       = count($matches);
-                for ($i = 0; $i < $c; $i++) {
+                for ($i = 0; $i < $c; ++$i) {
                     if (($char = array_search($matches[$i].';', $_entities, true)) !== false) {
                         $replace[$matches[$i]] = $char;
                     }

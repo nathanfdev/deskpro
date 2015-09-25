@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -44,7 +44,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	resourcePath="/downloads",
  * 	description="Operations about Downloads",
  * 	basePath="/api"
- * )
+ * ).
  */
 class DownloadController extends AbstractController
 {
@@ -136,7 +136,7 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
@@ -262,7 +262,7 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function newDownloadAction()
     {
@@ -361,7 +361,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadAction($download_id)
     {
@@ -428,7 +428,7 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function postDownloadAction($download_id)
     {
@@ -527,7 +527,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteDownloadAction($download_id)
     {
@@ -558,7 +558,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadCommentsAction($download_id)
     {
@@ -607,7 +607,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function newDownloadCommentAction($download_id)
     {
@@ -626,13 +626,13 @@ class DownloadController extends AbstractController
 
         $status = $this->in->getString('status');
 
-        $comment                  = new DownloadComment();
-        $comment->download        = $download;
-        $comment->person          = $person ?: $this->person;
-        $comment['content']       = $content;
-        $comment['status']        = $status ?: 'visible';
-        $comment['is_reviewed']   = ($comment['status'] == 'visible' && !$person);
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new DownloadComment();
+        $comment->download       = $download;
+        $comment->person         = $person ?: $this->person;
+        $comment['content']      = $content;
+        $comment['status']       = $status ?: 'visible';
+        $comment['is_reviewed']  = ($comment['status'] == 'visible' && !$person);
+        $comment['date_created'] = new \DateTime();
 
         $this->em->persist($comment);
         $this->em->flush();
@@ -668,7 +668,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadCommentAction($download_id, $comment_id)
     {
@@ -727,7 +727,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function postDownloadCommentAction($download_id, $comment_id)
     {
@@ -784,7 +784,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteDownloadCommentAction($download_id, $comment_id)
     {
@@ -820,7 +820,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadLabelsAction($download_id)
     {
@@ -854,7 +854,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function postDownloadLabelsAction($download_id)
     {
@@ -899,7 +899,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadLabelAction($download_id, $label)
     {
@@ -936,7 +936,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteDownloadLabelAction($download_id, $label)
     {
@@ -956,7 +956,7 @@ class DownloadController extends AbstractController
      * 		method="GET",
      * 		summary="Gets download comments that are awaiting validation."
      * 	)
-     * )
+     * ).
      */
     public function getValidatingCommentsAction()
     {
@@ -980,7 +980,7 @@ class DownloadController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available download categories."
      * 	)
-     * )
+     * ).
      */
     public function getCategoriesAction()
     {
@@ -1026,7 +1026,7 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function postCategoriesAction()
     {
@@ -1106,7 +1106,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryAction($category_id)
     {
@@ -1153,7 +1153,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function postCategoryAction($category_id)
     {
@@ -1208,7 +1208,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteCategoryAction($category_id)
     {
@@ -1259,7 +1259,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryDownloadsAction($category_id)
     {
@@ -1319,7 +1319,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryGroupsAction($category_id)
     {
@@ -1352,7 +1352,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function postCategoryGroupsAction($category_id)
     {
@@ -1410,7 +1410,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryGroupAction($category_id, $group_id)
     {
@@ -1451,7 +1451,7 @@ class DownloadController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteCategoryGroupAction($category_id, $group_id)
     {
@@ -1470,11 +1470,11 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Download
      *
+     * @return \Application\DeskPRO\Entity\Download
      */
     protected function _getDownloadOr404($id, $check_perm = false)
     {
@@ -1498,11 +1498,11 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\DownloadCategory
      *
+     * @return \Application\DeskPRO\Entity\DownloadCategory
      */
     protected function _getCategoryOr404($id)
     {

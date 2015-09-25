@@ -1,46 +1,46 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CsvUploadController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -112,13 +112,14 @@ class CsvUploadController extends AbstractController implements ProtectedControl
      */
     public function logsAction()
     {
-        $logs = array();
+        $logs      = array();
         $deletions = $this->getDeletionStatus();
         foreach ($this->em->getRepository('DeskPRO:DataStore')->getByPrefix('csv_import.') as $entity) {
-            $data = $entity->toApiData();
+            $data                    = $entity->toApiData();
             $data['deletion_status'] = @$deletions[str_replace('csv_import.', '', $data['name'])];
-            $logs[] = $data;
+            $logs[]                  = $data;
         }
+
         return $this->createApiResponse($logs);
     }
 
@@ -128,7 +129,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
     public function cleanAction(Request $request)
     {
         if (!$ref = $request->get('ref')) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $statuses = $this->getDeletionStatus();
@@ -141,7 +142,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
             UsersImportProcessor::JOB_TYPE,
             array(
             'context_person_id' => $this->person['id'],
-            'labeled_by' => 'import-' . $ref,
+            'labeled_by'        => 'import-'.$ref,
         ));
         $this->em->flush();
 
@@ -149,7 +150,8 @@ class CsvUploadController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * get statuses of users deletion jobs
+     * get statuses of users deletion jobs.
+     *
      * @return array
      */
     protected function getDeletionStatus()
@@ -162,12 +164,16 @@ class CsvUploadController extends AbstractController implements ProtectedControl
             array('date_created' => 'desc'),
             1
         ) as $job) {
-            /** @var $job Job */
+            /* @var $job Job */
             $data = $job['data'];
-            if (!$ref = @$data['labeled_by']) continue;
-            if (isset($res[$ref])) continue;
+            if (!$ref = @$data['labeled_by']) {
+                continue;
+            }
+            if (isset($res[$ref])) {
+                continue;
+            }
 
-            $ref = str_replace('import-', '', $ref);
+            $ref    = str_replace('import-', '', $ref);
             $status = $job['status'];
             if (in_array($status, array('rejected', 'aborted'))) {
                 $status = 'error';

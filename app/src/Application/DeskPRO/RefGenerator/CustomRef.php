@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\RefGenerator;
 
 use Application\DeskPRO\App;
@@ -39,15 +39,15 @@ class CustomRef implements RefGeneratorInterface
 {
     /** @var array */
     public static $keywords = array(
-        'A'          => true,
-        '#'          => true,
-        '?'          => true,
-        'YEAR'       => true,
-        'MONTH'      => true,
-        'DAY'        => true,
-        'HOUR'       => true,
-        'MIN'        => true,
-        'SEC'        => true,
+        'A'     => true,
+        '#'     => true,
+        '?'     => true,
+        'YEAR'  => true,
+        'MONTH' => true,
+        'DAY'   => true,
+        'HOUR'  => true,
+        'MIN'   => true,
+        'SEC'   => true,
     );
 
     /**
@@ -105,7 +105,7 @@ class CustomRef implements RefGeneratorInterface
         $parts  = array();
         while ($tok !== false) {
             $parts[] = $tok;
-            $tok     = strtok("<>");
+            $tok     = strtok('<>');
         }
 
         $last   = null;
@@ -116,7 +116,7 @@ class CustomRef implements RefGeneratorInterface
             }
 
             if ($last == $p) {
-                $repeat++;
+                ++$repeat;
             } else {
                 $format[] = array($last, $repeat);
                 $last     = $p;
@@ -154,7 +154,7 @@ class CustomRef implements RefGeneratorInterface
         $field = 'ref';
 
         $stmt  = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
-        $stmt2 = $this->db->prepare("SELECT COUNT(*) FROM `ref_reserve` WHERE `obj_type` = ? AND `ref` = ?");
+        $stmt2 = $this->db->prepare('SELECT COUNT(*) FROM `ref_reserve` WHERE `obj_type` = ? AND `ref` = ?');
 
         $attempt      = 0;
         $append_count = 0;
@@ -184,14 +184,14 @@ class CustomRef implements RefGeneratorInterface
 
         while (true) {
             do {
-                $attempt++;
-                $append_count++;
+                ++$attempt;
+                ++$append_count;
 
                 if ($attempt > $this->max_tries) {
                     throw new \Exception("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
                 }
 
-                if ($attempt > $this->max_tries-5) {
+                if ($attempt > $this->max_tries - 5) {
                     // Last five allowed attempts, fallback to trying random nums at the end
                     $ref = $this->generateRefString($append_count.mt_rand(1000, 9999));
                 } else {
@@ -315,7 +315,7 @@ class CustomRef implements RefGeneratorInterface
                     break;
 
                 case 'MONTH':
-                    $regex[] = "(0[1-9]|1[012])";
+                    $regex[] = '(0[1-9]|1[012])';
                     break;
 
                 case 'DAY':
@@ -335,7 +335,7 @@ class CustomRef implements RefGeneratorInterface
                     break;
 
                 default:
-                    $regex[] = "(".preg_quote(str_repeat($type, $length), '#').")";
+                    $regex[] = '('.preg_quote(str_repeat($type, $length), '#').')';
                     break;
             }
         }

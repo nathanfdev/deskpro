@@ -1,43 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Entity;
 
 /**
- * Tickets json file parser
+ * Tickets json file parser.
  *
  * Class Tickets
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class Tickets extends AbstractParser
 {
@@ -75,9 +75,10 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket entity
+     * Returns a ticket entity.
      *
      * @param array $data
+     *
      * @return Entity\Ticket|null
      */
     protected function exportTicket(array $data)
@@ -86,36 +87,36 @@ final class Tickets extends AbstractParser
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'ticket_',
-                'ref'    => 'oid',
+                'prefix'     => 'ticket_',
+                'ref'        => 'oid',
             )),
-            'ref'            => TransformerInterface::TYPE_STRING,
-            'department'     => TransformerInterface::TYPE_STRING,
-            'person'         => TransformerInterface::TYPE_STRING,
-            'agent'          => TransformerInterface::TYPE_STRING,
-            'agent_team'     => TransformerInterface::TYPE_STRING,
-            'status'         => TransformerInterface::TYPE_STRING,
-            'date_created'   => TransformerInterface::TYPE_DATE,
-            'date_resolved'  => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null' => true,
+            'ref'           => TransformerInterface::TYPE_STRING,
+            'department'    => TransformerInterface::TYPE_STRING,
+            'person'        => TransformerInterface::TYPE_STRING,
+            'agent'         => TransformerInterface::TYPE_STRING,
+            'agent_team'    => TransformerInterface::TYPE_STRING,
+            'status'        => TransformerInterface::TYPE_STRING,
+            'date_created'  => TransformerInterface::TYPE_DATE,
+            'date_resolved' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null'      => true,
             )),
-            'date_archived'  => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null' => true,
+            'date_archived' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null'      => true,
             )),
-            'subject'        => TransformerInterface::TYPE_STRING,
-            'priority'       => TransformerInterface::TYPE_ARRAY,
-            'language'       => TransformerInterface::TYPE_STRING,
-            'category'       => TransformerInterface::TYPE_STRING,
-            'workflow'       => TransformerInterface::TYPE_STRING,
-            'product'        => TransformerInterface::TYPE_STRING,
-            'organization'   => TransformerInterface::TYPE_STRING,
-            'is_hold'        => TransformerInterface::TYPE_BOOLEAN,
-            'urgency'        => TransformerInterface::TYPE_INT,
-            'messages'       => TransformerInterface::TYPE_ARRAY,
-            'participants'   => TransformerInterface::TYPE_ARRAY,
-            'labels'         => TransformerInterface::TYPE_ARRAY,
-            'custom_fields'  => TransformerInterface::TYPE_ARRAY,
-            'log_message'    => TransformerInterface::TYPE_STRING,
+            'subject'       => TransformerInterface::TYPE_STRING,
+            'priority'      => TransformerInterface::TYPE_ARRAY,
+            'language'      => TransformerInterface::TYPE_STRING,
+            'category'      => TransformerInterface::TYPE_STRING,
+            'workflow'      => TransformerInterface::TYPE_STRING,
+            'product'       => TransformerInterface::TYPE_STRING,
+            'organization'  => TransformerInterface::TYPE_STRING,
+            'is_hold'       => TransformerInterface::TYPE_BOOLEAN,
+            'urgency'       => TransformerInterface::TYPE_INT,
+            'messages'      => TransformerInterface::TYPE_ARRAY,
+            'participants'  => TransformerInterface::TYPE_ARRAY,
+            'labels'        => TransformerInterface::TYPE_ARRAY,
+            'custom_fields' => TransformerInterface::TYPE_ARRAY,
+            'log_message'   => TransformerInterface::TYPE_STRING,
         ));
 
         $entity = new Entity\Ticket();
@@ -166,22 +167,23 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket priority entity
+     * Returns a ticket priority entity.
      *
      * @param array $data
+     *
      * @return Entity\TicketPriority|null
      */
     private function exportPriority(array $data = null)
     {
         if (empty($data)) {
-            return null;
+            return;
         }
 
         $configuration = array(
-            'oid'           => TransformerInterface::TYPE_STRING,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'priority_',
-                'ref'    => 'oid',
+            'oid'         => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => 'priority_',
+                'ref'     => 'oid',
             )),
             'title' => TransformerInterface::TYPE_STRING,
             'value' => TransformerInterface::TYPE_STRING,
@@ -201,9 +203,10 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a collection of the ticket messages
+     * Returns a collection of the ticket messages.
      *
      * @param array $messages
+     *
      * @return Entity\TicketMessage[]
      */
     private function exportMessages(array $messages)
@@ -220,18 +223,19 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket message entity
+     * Returns a ticket message entity.
      *
      * @param array $data
+     *
      * @return Entity\TicketMessage|null
      */
     protected function exportMessage(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'oid'          => TransformerInterface::TYPE_STRING,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'message_',
-                'ref'    => 'oid',
+            'oid'         => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => 'message_',
+                'ref'     => 'oid',
             )),
             'person'       => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
@@ -255,7 +259,7 @@ final class Tickets extends AbstractParser
 
         $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
         foreach ($attachments as $attachment) {
-            /** @var Entity\Attachment $attachment */
+            /* @var Entity\Attachment $attachment */
             $entity->addAttachment($attachment);
         }
 
@@ -263,7 +267,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */

@@ -1,52 +1,50 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
- * Records a log of a sync job for a particular usersource
+ * Records a log of a sync job for a particular usersource.
  */
 class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
 {
     const STATUS_COMPLETED = 'completed';
-    const STATUS_ERROR = 'connection error';
+    const STATUS_ERROR     = 'connection error';
     const STATUS_CANCELLED = 'cancelled';
-    const STATUS_PENDING = 'pending';
+    const STATUS_PENDING   = 'pending';
 
     /**
      * The unique ID.
@@ -56,14 +54,14 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * The usersource
+     * The usersource.
      *
      * @var Usersource
      */
     protected $usersource;
 
     /**
-     * The number of synced records
+     * The number of synced records.
      *
      * @var int
      */
@@ -84,14 +82,14 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
     protected $date_end;
 
     /**
-     * End of the second phase of syncing
+     * End of the second phase of syncing.
      *
      * @var \DateTime
      */
     protected $date_phase_2_start;
 
     /**
-     * End of the second phase of syncing
+     * End of the second phase of syncing.
      *
      * @var \DateTime
      */
@@ -145,7 +143,7 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
             return $diff < 0 ? 0 : $diff;
         }
 
-        return null;
+        return;
     }
 
     public function getPhaseTwoTimeInSeconds()
@@ -156,7 +154,7 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
             return $diff < 0 ? 0 : $diff;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -314,8 +312,7 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
             ->setChangeTrackingPolicyNotify();
         $builder->mapId();
 
-
-        $metadata->mapManyToOne(array('fieldName' => 'usersource', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usersource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array(0 => array('name' => 'usersource_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL,),),));
+        $metadata->mapManyToOne(array('fieldName' => 'usersource', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usersource', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'usersource_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
 
         $builder->mapInteger('record_count', false);
         $builder->mapDateTime('date_start');

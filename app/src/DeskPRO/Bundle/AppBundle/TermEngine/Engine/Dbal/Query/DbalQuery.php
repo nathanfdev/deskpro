@@ -1,47 +1,44 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
-
 
 class DbalQuery
 {
-    const JOIN_LEFT = 'LEFT';
+    const JOIN_LEFT  = 'LEFT';
     const JOIN_RIGHT = 'RIGHT';
     const JOIN_INNER = 'INNER';
 
     const ORDER_DESC = 'DESC';
-    const ORDER_ASC = 'ASC';
+    const ORDER_ASC  = 'ASC';
 
     /**
      * @var array
@@ -120,16 +117,16 @@ class DbalQuery
 
     public function __construct()
     {
-        $this->page = 1;
-        $this->select_pieces = array('*');
-        $this->joins = array();
-        $this->join_ons = array();
-        $this->unique_joins = array();
-        $this->unique_join_ons = array();
+        $this->page              = 1;
+        $this->select_pieces     = array('*');
+        $this->joins             = array();
+        $this->join_ons          = array();
+        $this->unique_joins      = array();
+        $this->unique_join_ons   = array();
         $this->unique_join_types = array();
-        $this->groupings = array();
-        $this->orderings = array();
-        $this->params = array();
+        $this->groupings         = array();
+        $this->orderings         = array();
+        $this->params            = array();
         $this->group_with_rollup = true; // uses GROUP BY .. WITH ROLLUP by default
     }
 
@@ -140,11 +137,11 @@ class DbalQuery
         $sql_string = sprintf('SELECT %s FROM %s', $this->generateSelectString(), $this->generateFromString());
 
         if (count($this->joins)) {
-            $sql_string .= ' ' . $this->generateJoinString();
+            $sql_string .= ' '.$this->generateJoinString();
         }
 
         if (count($this->unique_joins)) {
-            $sql_string .= ' ' . $this->generateUniqueJoinString();
+            $sql_string .= ' '.$this->generateUniqueJoinString();
         }
 
         if (strlen($this->where) > 0) {
@@ -152,18 +149,18 @@ class DbalQuery
         }
 
         if (count($this->groupings)) {
-            $sql_string .= ' GROUP BY ' . $this->generateGroupByString();
+            $sql_string .= ' GROUP BY '.$this->generateGroupByString();
             if ($this->group_with_rollup) {
                 $sql_string .= ' WITH ROLLUP';
             }
         }
 
         if (count($this->orderings)) {
-            $sql_string .= ' ORDER BY ' . $this->generateOrderByString();
+            $sql_string .= ' ORDER BY '.$this->generateOrderByString();
         }
 
         if ($this->limit) {
-            $sql_string .= ' LIMIT ' . $this->generateLimitString();
+            $sql_string .= ' LIMIT '.$this->generateLimitString();
         }
 
         $sql_string = str_replace(
@@ -204,7 +201,7 @@ class DbalQuery
     {
         $table = $this->from_table;
 
-        return $this->from_alias ? $table . ' ' . $this->from_alias : $table;
+        return $this->from_alias ? $table.' '.$this->from_alias : $table;
     }
 
     public function addSelectPart($select)
@@ -239,10 +236,9 @@ class DbalQuery
         $this->where = trim($where);
     }
 
-
     public function appendWhere($append_to_where)
     {
-        $this->where .= ' ' . trim($append_to_where);
+        $this->where .= ' '.trim($append_to_where);
     }
 
     public function addJoin($table, $on, $alias = null)
@@ -259,7 +255,7 @@ class DbalQuery
 
         foreach ($this->joins as $alias => $join) {
             $table = $join[0];
-            $on = $join[1];
+            $on    = $join[1];
 
             if ($table === $alias) {
                 $join_string .= sprintf('%s JOIN %s ON (%s) ', self::JOIN_LEFT, $table, $on);
@@ -278,7 +274,7 @@ class DbalQuery
 
         foreach ($this->unique_joins as $alias => $table) {
             $type = $this->unique_join_types[$alias];
-            $on = $this->unique_join_ons[$alias];
+            $on   = $this->unique_join_ons[$alias];
 
             $join_string .= sprintf('%s JOIN %s %s ON (%s) ', $type, $table, $alias, $on);
         }
@@ -289,16 +285,16 @@ class DbalQuery
 
     public function addUniqueJoin($table, $on, $type)
     {
-        $alias = $table . '_0';
+        $alias = $table.'_0';
 
-        for ($i = 1; array_key_exists($alias, $this->unique_joins); $i++) {
-            $alias = $table . '_' . $i;
+        for ($i = 1; array_key_exists($alias, $this->unique_joins); ++$i) {
+            $alias = $table.'_'.$i;
         }
 
         $on = str_replace('{alias}', $alias, $on);
 
-        $this->unique_joins[$alias] = $table;
-        $this->unique_join_ons[$alias] = $on;
+        $this->unique_joins[$alias]      = $table;
+        $this->unique_join_ons[$alias]   = $on;
         $this->unique_join_types[$alias] = $type;
 
         return $alias;
@@ -306,10 +302,10 @@ class DbalQuery
 
     public function addParameter($name_prefix, $value)
     {
-        $p_name = $name_prefix . '_0';
+        $p_name = $name_prefix.'_0';
 
-        for ($i = 1; array_key_exists($p_name, $this->params); $i++) {
-            $p_name = $name_prefix . '_' . $i;
+        for ($i = 1; array_key_exists($p_name, $this->params); ++$i) {
+            $p_name = $name_prefix.'_'.$i;
         }
 
         $this->params[$p_name] = $value;
@@ -328,7 +324,7 @@ class DbalQuery
             return $this->params[$param];
         }
 
-        return null;
+        return;
     }
 
     public function replaceParameter($param, $value)
@@ -372,7 +368,7 @@ class DbalQuery
         $parts = array();
 
         foreach ($this->orderings as $order) {
-            $parts[] = $order[0] . ' ' . $order[1];
+            $parts[] = $order[0].' '.$order[1];
         }
 
         return implode(', ', $parts);
@@ -414,14 +410,14 @@ class DbalQuery
     public function getPageOffset()
     {
         if (!$this->limit || !$this->page) {
-            return null;
+            return;
         }
 
         return ($this->page - 1) * $this->limit;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isGroupWithRollup()
     {
@@ -429,10 +425,10 @@ class DbalQuery
     }
 
     /**
-     * @param boolean $group_with_rollup
+     * @param bool $group_with_rollup
      */
     public function setGroupWithRollup($group_with_rollup)
     {
-        $this->group_with_rollup = (bool)$group_with_rollup;
+        $this->group_with_rollup = (bool) $group_with_rollup;
     }
 }

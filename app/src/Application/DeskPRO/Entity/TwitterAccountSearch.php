@@ -1,40 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -47,7 +46,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
     const SEARCH_RESULTS = 100;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $id;
 
@@ -67,12 +66,12 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
     protected $date_updated = null;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $max_id;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $min_id;
 
@@ -87,7 +86,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getAccountId()
     {
@@ -99,7 +98,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      */
     public function setAccountId($id)
     {
@@ -202,7 +201,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
         $offset = ($page - 1) * $per_page;
 
         $output  = array();
-        $results = App::getOrm()->createQuery("
+        $results = App::getOrm()->createQuery('
             SELECT s,
                 a, account, action_agent, agent, agent_team, retweeted,
                 notes, replies,
@@ -223,9 +222,9 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
             LEFT JOIN t.long long
             LEFT JOIN t.in_reply_to_status in_reply
             WHERE s.search = ?0
-                ".($includeArchived ? '' : "AND a.is_archived = false")."
+                '.($includeArchived ? '' : 'AND a.is_archived = false').'
             ORDER BY s.date_created DESC
-        ")->setParameters(array($this))->setMaxResults($per_page)->setFirstResult($offset)->execute();
+        ')->setParameters(array($this))->setMaxResults($per_page)->setFirstResult($offset)->execute();
         foreach ($results as $result) {
             $output[] = $result->account_status;
         }
@@ -241,13 +240,13 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        return App::getDb()->fetchColumn("
+        return App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM twitter_accounts_searches_statuses AS ss
             INNER JOIN twitter_accounts_statuses AS a ON (ss.account_status_id = a.id)
             WHERE ss.search_id = ?
-                ".($includeArchived ? '' : "AND a.is_archived = 0")."
-        ", array($this->id));
+                '.($includeArchived ? '' : 'AND a.is_archived = 0').'
+        ', array($this->id));
     }
 
     ############################################################################
@@ -259,15 +258,15 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountSearch';
-        $metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_searches'));
+        $metadata->setPrimaryTable(array('name' => 'twitter_accounts_searches'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'term'));
-        $metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated'));
-        $metadata->mapField(array( 'fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id'));
-        $metadata->mapField(array( 'fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id'));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'term'));
+        $metadata->mapField(array('fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated'));
+        $metadata->mapField(array('fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id'));
+        $metadata->mapField(array('fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => 'searches', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapOneToMany(array( 'fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search'));
+        $metadata->mapManyToOne(array('fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => 'searches', 'joinColumns' => array(0 => array('name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapOneToMany(array('fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search'));
     }
 }

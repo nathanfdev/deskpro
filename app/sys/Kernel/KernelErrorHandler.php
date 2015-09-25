@@ -1,39 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
 use Doctrine\DBAL\DBALException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class KernelErrorHandler
 {
@@ -110,7 +109,7 @@ class KernelErrorHandler
 
         if ($errinfo['display']) {
             $display_errors = @ini_get('display_errors');
-            if (isset($GLOBALS['DP_IS_IN_CLI']) || $display_errors == "1" || strtolower($display_errors) == "on" || strtolower($display_errors) == "true" || strtolower($display_errors) == "yes") {
+            if (isset($GLOBALS['DP_IS_IN_CLI']) || $display_errors == '1' || strtolower($display_errors) == 'on' || strtolower($display_errors) == 'true' || strtolower($display_errors) == 'yes') {
                 // Prevent outputting of APC warnings
                 // These are logged and a warning about APC is displayed to the admin,
                 // but until that is fixed these warnings themselves can cause issues (e.g., cause JSON results to become invalid)
@@ -227,11 +226,11 @@ class KernelErrorHandler
             $got_unique_ids[$unique_id] = true;
 
             try {
-                $got = App::getDb()->fetchColumn("
+                $got = App::getDb()->fetchColumn('
                     SELECT data
                     FROM install_data
                     WHERE build = ? AND name = ?
-                ", array(DP_BUILD_TIME, 'err_'.$unique_id));
+                ', array(DP_BUILD_TIME, 'err_'.$unique_id));
                 if ($got) {
                     return;
                 }
@@ -367,7 +366,7 @@ class KernelErrorHandler
         $str = array();
         if ($errinfo['type'] == 'exception') {
             $e     = $errinfo['exception'];
-            $line  = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
+            $line  = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
             $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $e->getMessage());
             $str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
             $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
@@ -378,7 +377,7 @@ class KernelErrorHandler
             }
             $str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
         } else {
-            $line  = sprintf("DeskPRO Error: %s (%s line %s): %s", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
+            $line  = sprintf('DeskPRO Error: %s (%s line %s): %s', $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
             $str[] = sprintf("Error: %s\n", $errinfo['errstr']);
             $str[] = sprintf("\tType: %s\n", $errinfo['errname']);
             $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
@@ -425,7 +424,7 @@ class KernelErrorHandler
 
         // Always write error line to standard error log
         if (defined('DPC_IS_CLOUD') && defined('DPC_SITE_DOMAIN')) {
-            $line = "[".DPC_SITE_DOMAIN."] ".$line;
+            $line = '['.DPC_SITE_DOMAIN.'] '.$line;
         }
         @error_log($line, 0);
 
@@ -460,7 +459,7 @@ class KernelErrorHandler
             && !dp_should_throttle_action($throttle_id, 300)
         ) {
             if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
-                $line = "There has been a MySQL error: ".$errinfo['exception']->getMessage();
+                $line = 'There has been a MySQL error: '.$errinfo['exception']->getMessage();
             }
 
             $fallback_send = true;
@@ -574,7 +573,7 @@ class KernelErrorHandler
 
             try {
                 if (class_exists('Application\\DeskPRO\\App', false)) {
-                    $status = App::getDb()->fetchAssoc("SHOW ENGINE INNODB STATUS");
+                    $status = App::getDb()->fetchAssoc('SHOW ENGINE INNODB STATUS');
                     if (!empty($status['Status'])) {
                         $status = $status['Status'];
                         $context_data .= "\n\nINNODB STATUS: $status";
@@ -599,15 +598,15 @@ class KernelErrorHandler
         $prev = $exception->getPrevious();
         if ($prev) {
             $previnfo = self::getExceptionInfo($prev);
-            $summary .= ", ".$previnfo['summary'];
+            $summary .= ', '.$previnfo['summary'];
             $trace .= "\n\n(Alt Exception)\n{$previnfo['summary']}\n".$previnfo['trace'];
         }
 
         $last_e = null;
         if (isset($GLOBALS['DP_LAST_ERROR'])) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
         } elseif ($last_e_info = @error_get_last()) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
         }
 
         $errinfo = array(
@@ -632,7 +631,7 @@ class KernelErrorHandler
             'process_log'       => implode("\n", self::$process_log),
             'context_data'      => $context_data,
             'error_time'        => microtime(true),
-            'time_to_error'     => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+            'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
         );
 
@@ -843,35 +842,35 @@ class KernelErrorHandler
             case E_ERROR:
                 $die     = true;
                 $pri     = 'ERR';
-                $errname = "E_ERROR";
+                $errname = 'E_ERROR';
                 break;
 
             case E_WARNING:
             case E_USER_WARNING:
                 $pri     = 'WARN';
-                $errname = "E_WARNING";
+                $errname = 'E_WARNING';
                 break;
 
             case E_NOTICE:
             case E_USER_NOTICE:
                 $pri     = 'NOTICE';
-                $errname = "E_NOTICE";
+                $errname = 'E_NOTICE';
                 break;
 
             case E_STRICT:
                 $pri     = 'STRICT';
-                $errname = "E_STRICT";
+                $errname = 'E_STRICT';
                 break;
 
             case E_RECOVERABLE_ERROR:
                 $pri     = 'ERR';
-                $errname = "E_RECOVERABLE_ERROR";
+                $errname = 'E_RECOVERABLE_ERROR';
                 break;
 
             case E_DEPRECATED:
             case E_USER_DEPRECATED:
                 $pri     = 'NOTICE';
-                $errname = "E_DEPRECATED";
+                $errname = 'E_DEPRECATED';
                 break;
 
             default:
@@ -1000,36 +999,36 @@ class KernelErrorHandler
 
         $last_e = null;
         if (isset($GLOBALS['DP_LAST_ERROR'])) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
         } elseif ($last_e_info = @error_get_last()) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
         }
 
         return array(
-            'type'               => 'error',
-            'session_name'       => self::genSessionName(),
-            'die'                => $die,
-            'pri'                => $pri,
-            'trace'              => $trace,
-            'summary'            => $summary,
-            'errstr'             => $errstr,
-            'errname'            => $errname,
-            'errno'              => $errno,
-            'errfile'            => $errfile,
-            'errfile_hash'       => $errfile_hash,
-            'errfile_modified'   => $errfile_modified,
-            'errline'            => $errline,
-            'last_error'         => $last_e,
-            'display'            => $display,
-            'build'              => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'process_log'        => implode("\n", self::$process_log),
-            'context_data'       => $context_data,
-            'error_time'         => microtime(true),
-            'time_to_error'      => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
-            'no_send_error'      => $no_send_error,
-            'client_user_agent'  => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-            'set_setting'        => $set_setting,
-            'url'                => $url,
+            'type'              => 'error',
+            'session_name'      => self::genSessionName(),
+            'die'               => $die,
+            'pri'               => $pri,
+            'trace'             => $trace,
+            'summary'           => $summary,
+            'errstr'            => $errstr,
+            'errname'           => $errname,
+            'errno'             => $errno,
+            'errfile'           => $errfile,
+            'errfile_hash'      => $errfile_hash,
+            'errfile_modified'  => $errfile_modified,
+            'errline'           => $errline,
+            'last_error'        => $last_e,
+            'display'           => $display,
+            'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'process_log'       => implode("\n", self::$process_log),
+            'context_data'      => $context_data,
+            'error_time'        => microtime(true),
+            'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
+            'no_send_error'     => $no_send_error,
+            'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+            'set_setting'       => $set_setting,
+            'url'               => $url,
         );
     }
 
@@ -1095,30 +1094,30 @@ class KernelErrorHandler
             }
 
             $errinfo = array(
-                'type'               => 'error',
-                'session_name'       => self::genSessionName(),
-                'die'                => false,
-                'pri'                => 'ERR',
-                'trace'              => $trace,
-                'summary'            => $summary,
-                'errstr'             => $errstr,
-                'errname'            => $errname,
-                'errno'              => $errno,
-                'errfile'            => $errfile,
-                'errfile_hash'       => '',
-                'errfile_modified'   => false,
-                'errline'            => $errline,
-                'last_error'         => null,
-                'display'            => false,
-                'build'              => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-                'process_log'        => '',
-                'context_data'       => '',
-                'error_time'         => microtime(true),
-                'time_to_error'      => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
-                'no_send_error'      => true,
-                'client_user_agent'  => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-                'set_setting'        => null,
-                'url'                => $url,
+                'type'              => 'error',
+                'session_name'      => self::genSessionName(),
+                'die'               => false,
+                'pri'               => 'ERR',
+                'trace'             => $trace,
+                'summary'           => $summary,
+                'errstr'            => $errstr,
+                'errname'           => $errname,
+                'errno'             => $errno,
+                'errfile'           => $errfile,
+                'errfile_hash'      => '',
+                'errfile_modified'  => false,
+                'errline'           => $errline,
+                'last_error'        => null,
+                'display'           => false,
+                'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+                'process_log'       => '',
+                'context_data'      => '',
+                'error_time'        => microtime(true),
+                'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
+                'no_send_error'     => true,
+                'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+                'set_setting'       => null,
+                'url'               => $url,
             );
             self::logToFile($errinfo);
         }
@@ -1179,16 +1178,16 @@ class KernelErrorHandler
                 }
             }
 
-            $x++;
+            ++$x;
 
-            $prefix   = sprintf("[#%02d] ", $x);
+            $prefix   = sprintf('[#%02d] ', $x);
             $pre_line = '';
             $line     = '';
 
             if (!empty($v['file'])) {
                 $prefix .= "{$v['file']}:{$v['line']} ";
             } else {
-                $prefix .= "<callback> ";
+                $prefix .= '<callback> ';
             }
 
             $show_vars_string = null;
@@ -1223,9 +1222,9 @@ class KernelErrorHandler
                 } elseif ($v['function'] == 'renderView') {
                     $show_vars_string = '<template_context>';
                 }
-                $line .= get_class($v['object'])."::";
+                $line .= get_class($v['object']).'::';
             } elseif (isset($v['class'])) {
-                $line .= $v['class']."::";
+                $line .= $v['class'].'::';
             }
 
             $line .= "{$v['function']}(";
@@ -1244,7 +1243,7 @@ class KernelErrorHandler
                 }
             }
 
-            $line .= ")";
+            $line .= ')';
 
             if ($pre_line) {
                 $trace .= $pre_line."\n";
@@ -1288,7 +1287,7 @@ class KernelErrorHandler
             $len      = count($var);
             $is_array = true;
 
-            for ($i = 0; $i < $len; $i++) {
+            for ($i = 0; $i < $len; ++$i) {
                 if (!array_key_exists($i, $var)) {
                     $is_array = false;
                     break;
@@ -1307,19 +1306,19 @@ class KernelErrorHandler
                     }
                 } else {
                     if ($is_array) {
-                        $a[] = self::varToString($v, $_depth+1);
+                        $a[] = self::varToString($v, $_depth + 1);
                     } else {
                         if (!is_numeric($k)) {
                             $k = "'$k'";
                         }
-                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
                     }
                 }
             }
             if ($_depth == 0) {
                 return implode(', ', $a);
             } else {
-                return sprintf("array(%s)", implode(', ', $a));
+                return sprintf('array(%s)', implode(', ', $a));
             }
         }
         if (is_resource($var)) {
@@ -1327,7 +1326,7 @@ class KernelErrorHandler
         }
         $str = (string) $var;
         if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000)."...(clipped)";
+            $str = substr($str, 0, 1000).'...(clipped)';
         }
 
         return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));
@@ -1385,18 +1384,18 @@ class KernelErrorHandler
 
     public static function logExceptionIfUniqueBacktrace(\Exception $e, $send = false)
     {
-        $hashable_trace = '';
+        $hashable_trace      = '';
         $formatted_backtrace = debug_backtrace();
         foreach ($formatted_backtrace as $trace) {
             $hashable_trace .= (isset($trace['class']) ? $trace['class'] : 'NOCLASS');
-            $hashable_trace .= '::' . (isset($trace['function']) ? $trace['function'] : 'NOFUNC');
-            $hashable_trace .= ' (line ' . (isset($trace['line']) ? $trace['line'] : 'NOLINE') . ')';
+            $hashable_trace .= '::'.(isset($trace['function']) ? $trace['function'] : 'NOFUNC');
+            $hashable_trace .= ' (line '.(isset($trace['line']) ? $trace['line'] : 'NOLINE').')';
             $hashable_trace .= PHP_EOL;
         }
 
         $hash = md5($hashable_trace);
 
-        KernelErrorHandler::logException(
+        self::logException(
             $e,
             $send,
             $hash

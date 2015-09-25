@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Controller
  */
-
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
@@ -89,6 +89,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * @param string $name
      * @param string $field_name
+     *
      * @return bool
      */
     public function checkRequestToken($name = '', $field_name = '_dp_security_token')
@@ -97,7 +98,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             return true;
         }
 
-        $header_name = "HTTP_".str_replace('-', '_', strtoupper('X-DeskPRO-'.trim($field_name, '_-')));
+        $header_name = 'HTTP_'.str_replace('-', '_', strtoupper('X-DeskPRO-'.trim($field_name, '_-')));
 
         if (!empty($_REQUEST[$field_name])) {
             $in_token = $_REQUEST[$field_name];
@@ -138,7 +139,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->checkRequestToken('request_token', '_rt');
     }
 
-
     /**
      * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
      * returns true.
@@ -171,7 +171,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return true;
     }
 
-
     /**
      * Just like checkRequestToken but this shows an error for you if its bad.
      *
@@ -185,7 +184,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
     }
 
-
     /**
      * Just like checkRequestToken but this shows an error for you if its bad.
      *
@@ -197,12 +195,12 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->ensureRequestToken('request_token', '_rt');
     }
 
-
     /**
      * Checks a request token $token.
      *
      * @param string $name
      * @param string $token
+     *
      * @return bool
      */
     public function checkAuthToken($name, $token)
@@ -213,7 +211,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         return $this->session->getEntity()->checkSecurityToken($name, $token);
     }
-
 
     /**
      * Just like checkAuthToken but this shows an error for you if its bad.
@@ -228,7 +225,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
     }
 
-
     /**
      * Just enables 'smart view resoltion' when the at sign is used.
      *
@@ -239,6 +235,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      * @param string                                     $view
      * @param array                                      $parameters
      * @param \Symfony\Component\HttpFoundation\Response $response
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function render($view, array $parameters = array(), Response $response = null)
@@ -296,6 +293,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * @param bool                  $has_just_logged_out
      * @param AuthInterfaceSettings $authInterfaceSettings
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function checkAuthSystemForResponse(

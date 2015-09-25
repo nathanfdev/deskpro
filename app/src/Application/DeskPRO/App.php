@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\HttpFoundation\Request;
@@ -428,7 +428,7 @@ class App
         }
 
         if (!isset(self::$_api_handler_names[$name])) {
-            throw new \OutOfBoundsException("API handler does not exist");
+            throw new \OutOfBoundsException('API handler does not exist');
         }
 
         $classname                  = self::$_api_handler_names[$name];
@@ -468,7 +468,8 @@ class App
      * Read a config array from a standardly named config file.
      *
      *
-     * @param  string                                      $name
+     * @param string $name
+     *
      * @throws \RuntimeException|\UnexpectedValueException
      *
      * @return array
@@ -552,10 +553,11 @@ class App
         if (strpos($log_name, 'worker_job') !== 0 || !defined('DP_DISABLE_DBCRONLOG')) {
             $writer = new \Application\DeskPRO\Log\Writer\LogItemEntity();
             $writer->addFilter(new \Orb\Log\Filter\PriorityFilter(\Orb\Log\Logger::INFO));
-            $writer->addFilter(new CallbackFormatter(function(LogItem $item) {
+            $writer->addFilter(new CallbackFormatter(function (LogItem $item) {
                 if (isset($item['is_email_info'])) {
-                    return null;
+                    return;
                 }
+
                 return $item;
             }));
             $logger->addWriter($writer);

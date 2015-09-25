@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets\Triggers\Edit;
 
 use Application\DeskPRO\Entity\Department;
@@ -44,7 +44,7 @@ class SpecialTriggerEdit
 {
     const TYPE_DEPARTMENT    = 'Department';
     const TYPE_EMAIL_ACCOUNT = 'EmailAccount';
-    const TYPE_SATISFACTION = 'default_update_satisfaction';
+    const TYPE_SATISFACTION  = 'default_update_satisfaction';
 
     /**
      * @var string
@@ -86,9 +86,8 @@ class SpecialTriggerEdit
         return new self(self::TYPE_SATISFACTION, $type, TicketTrigger::EVENT_TYPE_UPDATE);
     }
 
-
     /**
-     * @param string                  $type
+     * @param string                         $type
      * @param Department|EmailAccount|string $obj
      */
     private function __construct($type, $obj, $event)
@@ -171,18 +170,18 @@ class SpecialTriggerEdit
 
     private function applySatisfactionToTrigger(TicketTrigger $trigger)
     {
-        $type = ucfirst($this->obj);
+        $type                   = ucfirst($this->obj);
         $trigger->title         = "Trigger for {$type} Feedback";
         $trigger->email_account = null;
         $trigger->department    = null;
 
         $ratings = array(
             'positive' => 1,
-            'neutral' => 0,
+            'neutral'  => 0,
             'negative' => -1,
         );
 
-        $terms = new TriggerTerms();
+        $terms     = new TriggerTerms();
         $terms_set = new TriggerTermComposite();
         $terms_set->add(new CheckSatisfactionSubmittedRating('is', array('rating' => $ratings[$this->obj])));
         $terms->addTerm($terms_set);
@@ -192,6 +191,6 @@ class SpecialTriggerEdit
         $trigger->by_agent_mode = array('api', 'email', 'web');
         $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
 
-        $trigger->sys_name = self::TYPE_SATISFACTION . '_' . $this->obj;
+        $trigger->sys_name = self::TYPE_SATISFACTION.'_'.$this->obj;
     }
 }

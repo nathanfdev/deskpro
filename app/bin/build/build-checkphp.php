@@ -57,13 +57,13 @@ if (in_array('--only-changed', $_SERVER['argv']) && file_exists(DP_ROOT.'/sys/co
     }
 }
 
-echo "Checking ".count($check_files)." files ...\n";
+echo 'Checking '.count($check_files)." files ...\n";
 
 $has_failed = array();
 $bad_size   = array();
 foreach ($check_files as $filepath) {
     if (strpos($filepath, '/src/vendor/') === false && strpos($filepath, '/src/vendor-src/') === false) {
-        $cmd = DP_PHP_PATH." -l \"".$filepath."\"";
+        $cmd = DP_PHP_PATH.' -l "'.$filepath.'"';
 
         $out = null;
         exec($cmd, $out, $ret);
@@ -80,9 +80,9 @@ foreach ($check_files as $filepath) {
     } elseif (filesize($filepath) % 4096 == 0 && filesize($filepath) != 0) {
         $bad_size[] = str_replace(DP_ROOT, '', $filepath);
     } else {
-        $x++;
+        ++$x;
         if ($x % 10 === 0) {
-            echo ".";
+            echo '.';
         }
         if ($x % 100 == 0) {
             echo $x;
@@ -94,7 +94,7 @@ echo "\n";
 
 if ($has_failed) {
     echo "There were syntax errors detected in the following files:\n";
-    echo "- ".implode("\n- ", $has_failed);
+    echo '- '.implode("\n- ", $has_failed);
     echo "\n";
     exit(1);
 }
@@ -107,7 +107,7 @@ if ($bad_size) {
         $b    = str_replace('<?php', "<?php\n\n// ...\n\n", $b);
         file_put_contents($path, $b);
     }
-    echo "They have been fixed automatically.";
+    echo 'They have been fixed automatically.';
     echo "\n";
 }
 

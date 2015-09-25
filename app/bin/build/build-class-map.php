@@ -24,7 +24,7 @@ $no_ns = array(
     DP_ROOT.'/vendor-src/swiftmailer/lib/classes',
 );
 
-$map = array("<?php return array(");
+$map = array('<?php return array(');
 
 foreach ($dirs as $d) {
     $finder = new \Symfony\Component\Finder\Finder();
@@ -51,7 +51,7 @@ foreach ($dirs as $d) {
         }
 
         $line = sprintf("\t%-100s => %s,", "'$class'", "DP_ROOT.'$dir_suffix/$class_file'");
-        echo ".";
+        echo '.';
 
         $map[] = $line;
     }
@@ -59,7 +59,7 @@ foreach ($dirs as $d) {
 
 echo "\n";
 
-$map[] = ");";
+$map[] = ');';
 $map   = implode("\n", $map);
 
 file_put_contents(dp_get_cache_dir().'/classmap.php', $map);

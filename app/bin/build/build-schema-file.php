@@ -21,16 +21,16 @@ if (!isset($DP_CONFIG['db'])) {
     $DP_CONFIG['db'] = array();
 }
 if (!isset($DP_CONFIG['db']['host'])) {
-    $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
+    $DP_CONFIG['db']['host'] = DP_DATABASE_HOST;
 }
 if (!isset($DP_CONFIG['db']['user'])) {
-    $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
+    $DP_CONFIG['db']['user'] = DP_DATABASE_USER;
 }
 if (!isset($DP_CONFIG['db']['password'])) {
-    $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
+    $DP_CONFIG['db']['password'] = DP_DATABASE_PASSWORD;
 }
 if (!isset($DP_CONFIG['db']['dbname'])) {
-    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
+    $DP_CONFIG['db']['dbname'] = DP_DATABASE_NAME;
 }
 
 if (!defined('DP_BUILD_TIME')) {

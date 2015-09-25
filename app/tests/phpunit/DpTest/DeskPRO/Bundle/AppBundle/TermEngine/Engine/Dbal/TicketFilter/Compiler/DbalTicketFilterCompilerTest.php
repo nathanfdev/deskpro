@@ -1,44 +1,41 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
-
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
@@ -74,7 +71,7 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
         );
         $this->assertEquals(
             'SELECT * FROM tickets ticket WHERE (ticket.agent_id IN (:ids_0))',
-            (string)$dbal_query
+            (string) $dbal_query
         );
     }
 
@@ -88,8 +85,8 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
 
         $this->assertEquals(
             array(
-                'ids_0' => array(1),
-                'status_0' => array(Ticket::STATUS_RESOLVED)
+                'ids_0'    => array(1),
+                'status_0' => array(Ticket::STATUS_RESOLVED),
             ),
             $dbal_query->getParameters()
         );
@@ -99,7 +96,7 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
         );
         $this->assertEquals(
             'SELECT * FROM tickets ticket WHERE ((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0)))',
-            (string)$dbal_query
+            (string) $dbal_query
         );
     }
 
@@ -122,11 +119,11 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
 
         $this->assertEquals(
             array(
-                'ids_0' => array(1),
+                'ids_0'    => array(1),
                 'status_0' => array(Ticket::STATUS_RESOLVED),
-                'ids_1' => array(new TermEngineExpression('agent.getTeamIds()')),
-                'ids_2' => array(1, 2),
-                'email_0' => 'chris.tickner@deskpro.com',
+                'ids_1'    => array(new TermEngineExpression('agent.getTeamIds()')),
+                'ids_2'    => array(1, 2),
+                'email_0'  => 'chris.tickner@deskpro.com',
             ),
             $dbal_query->getParameters()
         );
@@ -136,7 +133,7 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
         );
         $this->assertEquals(
             'SELECT * FROM tickets ticket LEFT JOIN people_emails ON (ticket.person_id = people_emails.person_id) WHERE (((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (people_emails.email = :email_0)))',
-            (string)$dbal_query
+            (string) $dbal_query
         );
     }
 }

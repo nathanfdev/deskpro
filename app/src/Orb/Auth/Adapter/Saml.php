@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Auth
  */
-
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Identity;
@@ -91,16 +91,16 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     protected function getSamlSettings()
     {
         return array(
-            'sp'  => array(
+            'sp' => array(
                 'entityId'                 => $this->getMetadataXmlUrl(),
                 'assertionConsumerService' => array(
                     'url' => $this->getCallbackUrl(),
                 ),
-                'singleLogoutService'      => array(
+                'singleLogoutService' => array(
                     'url' => $this->getSingleLogoutServiceUrl(),
                 ),
                 // enforce a persistent ID for person association
-                'NameIDFormat'             => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
+                'NameIDFormat' => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
             ),
             'idp' => array(
                 'entityId'            => $this->options['issuer_id'],
@@ -110,8 +110,8 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'singleLogoutService' => array(
                     'url' => $this->options['slo_url'],
                 ),
-                'x509cert'            => $this->options['cert'] ?: null,
-                'certFingerprint'     => $this->options['cert_fingerprint'] ?: null,
+                'x509cert'        => $this->options['cert'] ?: null,
+                'certFingerprint' => $this->options['cert_fingerprint'] ?: null,
             ),
         );
     }
@@ -123,7 +123,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     {
         if ($this->logger) {
             $this->logger->log(
-                "Attempting SAML Callback", Logger::DEBUG
+                'Attempting SAML Callback', Logger::DEBUG
             );
             $this->logger->log(
                 "Using SAML settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
@@ -147,7 +147,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     {
         if ($this->logger) {
             $this->logger->log(
-                "Attampting SAML SSO Result", Logger::DEBUG
+                'Attampting SAML SSO Result', Logger::DEBUG
             );
             $this->logger->log(
                 "Using SAML settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
@@ -173,7 +173,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             $saml = $this->createSamlProcessor();
             if ($this->logger) {
                 $this->logger->log(
-                    "Initializing SAML Authentication", Logger::DEBUG
+                    'Initializing SAML Authentication', Logger::DEBUG
                 );
                 $this->logger->log(
                     "Using SAML settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
@@ -200,7 +200,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     {
         $time_start = microtime(true);
         if ($this->logger) {
-            $this->logger->log("START Saml::processAcs", Logger::DEBUG);
+            $this->logger->log('START Saml::processAcs', Logger::DEBUG);
             $this->logger->log(
                 "SAML Settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
                 Logger::DEBUG
@@ -271,7 +271,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         if ($this->logger) {
             $this->logger->log(
-                sprintf("END Saml::processAcs (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
+                sprintf('END Saml::processAcs (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG
             );
         }
 
@@ -290,7 +290,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         if (isset($idpData['singleLogoutService']) && isset($idpData['singleLogoutService']['url'])) {
             $sloUrl = $idpData['singleLogoutService']['url'];
         } else {
-            throw new \Exception("The IdP does not support Single Log Out");
+            throw new \Exception('The IdP does not support Single Log Out');
         }
 
         $logoutRequest = new \OneLogin_Saml2_LogoutRequest($saml_settings);
@@ -311,7 +311,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getIframeTemplateParams($is_first_page_load)
     {
@@ -322,7 +322,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isBackgroundSsoSimpleRefresh()
     {

@@ -1,52 +1,52 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
- * ZenDesk article categories parser
+ * ZenDesk article categories parser.
  *
  * Class ArticleCategories
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class ArticleCategories extends AbstractParser
 {
-    const VIEWABLE_BY_EVERYBODY  = 'everybody';       // all users, signed in or not
-    const VIEWABLE_BY_SIGNED     = 'signed_in_users'; // only authenticated users
-    const VIEWABLE_BY_STAFF      = 'staff';           // only agents and Help Center managers
+    const VIEWABLE_BY_EVERYBODY = 'everybody';       // all users, signed in or not
+    const VIEWABLE_BY_SIGNED    = 'signed_in_users'; // only authenticated users
+    const VIEWABLE_BY_STAFF     = 'staff';           // only agents and Help Center managers
 
-    const MANAGEABLE_BY_STAFF    = 'staff';	    // agents and managers
-    const MANAGEABLE_BY_MANAGERS = 'managers';	// only Help Center managers
+    const MANAGEABLE_BY_STAFF    = 'staff';        // agents and managers
+    const MANAGEABLE_BY_MANAGERS = 'managers';    // only Help Center managers
 
     /**
      * {@inheritdoc}
@@ -84,7 +84,7 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
-     * Returns a collection of article category entities
+     * Returns a collection of article category entities.
      *
      * @return Entity\Collection|Entity\ArticleCategory[]
      */
@@ -103,20 +103,21 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
-     * Returns an article category entity
+     * Returns an article category entity.
      *
      * @param array $data
+     *
      * @return Entity\ArticleCategory
      */
     protected function exportCategory(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'           => TransformerInterface::TYPE_INT,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'article_category_',
-                'ref'    => 'id',
+            'id'          => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => 'article_category_',
+                'ref'     => 'id',
             )),
-            'name'         => TransformerInterface::TYPE_STRING,
+            'name' => TransformerInterface::TYPE_STRING,
         ));
 
         $entity = new Entity\ArticleCategory();
@@ -133,7 +134,7 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
-     * Returns a collection of article subcategory entities
+     * Returns a collection of article subcategory entities.
      *
      * @return Entity\Collection|Entity\ArticleCategory[]
      */
@@ -151,18 +152,19 @@ final class ArticleCategories extends AbstractParser
     }
 
     /**
-     * Returns an article subcategory entity
+     * Returns an article subcategory entity.
      *
      * @param array $data
+     *
      * @return Entity\ArticleCategory
      */
     protected function exportSection(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'            => TransformerInterface::TYPE_INT,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'article_category_',
-                'ref'    => 'category_id',
+            'id'          => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => 'article_category_',
+                'ref'     => 'category_id',
             )),
             'name'          => TransformerInterface::TYPE_STRING,
             'category_id'   => TransformerInterface::TYPE_INT,

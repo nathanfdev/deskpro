@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
@@ -40,7 +40,6 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
-use Doctrine\DBAL\Connection;
 
 /**
  * The PortalPermissionsManager is the gatekeeper between you (developing on the portal) and the permissions system.
@@ -103,12 +102,12 @@ class PortalPermissionsManager
         PortalUsergroupDecider $usergroupDecider,
         PortalPermissionsLoader $permissionsLoader
     ) {
-        $this->settingsResolver  = $settingsResolver;
+        $this->settingsResolver   = $settingsResolver;
         $this->usergroup_decider  = $usergroupDecider;
         $this->permissions_loader = $permissionsLoader;
-        $this->cache             = new ConvenientCache($cacheAdapter); // the cache adapter knows details of how/where we cache permissions to
-        $this->conn              = $em->getConnection();
-        $this->em                = $em;
+        $this->cache              = new ConvenientCache($cacheAdapter); // the cache adapter knows details of how/where we cache permissions to
+        $this->conn               = $em->getConnection();
+        $this->em                 = $em;
     }
 
     /**
@@ -131,13 +130,13 @@ class PortalPermissionsManager
      */
     public function getPermissionsBagForGuest()
     {
-        $that = $this;
+        $that     = $this;
         $generate = function () use ($that) {
             return $that->generatePermissionsMapForGuest();
         };
 
         if (!$this->isCacheDisabled()) {
-            $usergoupIds = $this->usergroup_decider->getUsergroupIdsForGuest();
+            $usergoupIds     = $this->usergroup_decider->getUsergroupIdsForGuest();
             $permissions_map = $this->cache->get(
                 $this->getCacheKeyForUsergroupIds($usergoupIds),
                 $generate
@@ -147,11 +146,11 @@ class PortalPermissionsManager
             $permissions_map = $generate();
         }
 
-        $person_guest = new PersonGuest();
-        $allowed_departments = $this->getAllowedDepartmentIds($person_guest);
+        $person_guest                = new PersonGuest();
+        $allowed_departments         = $this->getAllowedDepartmentIds($person_guest);
         $allowed_feedback_categories = $this->getAllowedFeedbackCategoryIds($person_guest);
-        $allowed_news_categories = $this->getAllowedNewsCategoryIds($person_guest);
-        $allowed_article_categories = $this->getAllowedArticleCategoryIds($person_guest);
+        $allowed_news_categories     = $this->getAllowedNewsCategoryIds($person_guest);
+        $allowed_article_categories  = $this->getAllowedArticleCategoryIds($person_guest);
         $allowed_download_categories = $this->getAllowedDownloadCategoryIds($person_guest);
 
         return new PermissionsBag(
@@ -194,10 +193,10 @@ class PortalPermissionsManager
             $permissions_map = $generate();
         }
 
-        $allowed_departments = $this->getAllowedDepartmentIds($person);
+        $allowed_departments         = $this->getAllowedDepartmentIds($person);
         $allowed_feedback_categories = $this->getAllowedFeedbackCategoryIds($person);
-        $allowed_news_categories = $this->getAllowedNewsCategoryIds($person);
-        $allowed_article_categories = $this->getAllowedArticleCategoryIds($person);
+        $allowed_news_categories     = $this->getAllowedNewsCategoryIds($person);
+        $allowed_article_categories  = $this->getAllowedArticleCategoryIds($person);
         $allowed_download_categories = $this->getAllowedDownloadCategoryIds($person);
 
         return new PermissionsBag(
@@ -299,6 +298,7 @@ class PortalPermissionsManager
      * @param Person $person
      *
      * @return array
+     *
      * @deprecated use getPermissionsBagForPerson - this is meant to be used internally
      */
     public function generatePermissionsMapForPerson(Person $person)
@@ -316,6 +316,7 @@ class PortalPermissionsManager
 
     /**
      * @return mixed|null
+     *
      * @deprecated use getPermissionsBagForGuest - this is meant to be used internally
      */
     public function generatePermissionsMapForGuest()

@@ -1,40 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PermissionLoader\Usergroups;
@@ -126,12 +125,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         if ($agent_data->has($person->id)) {
             $this->usergroup_ids = $agent_data->getGroupIdsForAgent($person);
         } else {
-            $this->usergroup_ids = App::getDb()->fetchAllCol("
+            $this->usergroup_ids = App::getDb()->fetchAllCol('
                 SELECT person2usergroups.usergroup_id
                 FROM person2usergroups
                 LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
                 WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
-            ", array($this->person['id']));
+            ', array($this->person['id']));
         }
 
         $everyone_ug = App::$container->getUserGroups()->getEveryoneGroup();
@@ -149,12 +148,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         // And org ones...
         $this->org_usergroup_ids = array();
         if ($this->person->organization) {
-            $this->org_usergroup_ids = App::getDb()->fetchAllCol("
+            $this->org_usergroup_ids = App::getDb()->fetchAllCol('
                 SELECT organization2usergroups.usergroup_id
                 FROM organization2usergroups
                 JOIN usergroups ON usergroups.id = organization2usergroups.usergroup_id
                 WHERE organization2usergroups.organization_id = ? AND usergroups.is_enabled = 1
-            ", array($this->person->organization['id']));
+            ', array($this->person->organization['id']));
 
             if ($this->org_usergroup_ids) {
                 $this->usergroup_ids = array_merge($this->usergroup_ids, $this->org_usergroup_ids);
@@ -359,11 +358,11 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     public function hasPerm($name)
     {
         static $god_mode_names = array(
-            'articles.use' => true,
-            'feedback.use' => true,
+            'articles.use'  => true,
+            'feedback.use'  => true,
             'downloads.use' => true,
-            'news.use' => true,
-            'chat.use' => true
+            'news.use'      => true,
+            'chat.use'      => true,
         );
 
         if ($this->admin_god_mode && isset($god_mode_names[$name])) {
@@ -418,10 +417,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         try {
             foreach ($this->dirty_caches as $c) {
                 $insert_cache = array(
-                    'name'            => $c->getName(),
-                    'usergroup_key'   => $c->getUsergroupKey(),
-                    'usergroup_ids'   => implode(',', $c->getUsergroupIds()),
-                    'perms'           => serialize($c->getPerms()),
+                    'name'          => $c->getName(),
+                    'usergroup_key' => $c->getUsergroupKey(),
+                    'usergroup_ids' => implode(',', $c->getUsergroupIds()),
+                    'perms'         => serialize($c->getPerms()),
                 );
 
                 App::getDb()->replace('permissions_cache', $insert_cache);
@@ -449,10 +448,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     public function getShortCallableNames()
     {
         return array(
-            'getPermissionsManager'  => '_getthis',
-            'getPermsLoader'         => 'get',
-            'hasPerm'                => 'hasPerm',
-            'has_perm'               => 'hasPerm',
+            'getPermissionsManager' => '_getthis',
+            'getPermsLoader'        => 'get',
+            'hasPerm'               => 'hasPerm',
+            'has_perm'              => 'hasPerm',
         );
     }
 

@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 if (php_sapi_name() != 'cli') {
     echo "This script must only be run using the command line interface of PHP\n";
@@ -207,8 +208,8 @@ $log_status = function ($status, $print = true) {
 
 class CloudSiteStream extends \UserstreamPhirehose
 {
-    const URL_BASE         = 'https://sitestream.twitter.com/1.1/';
-    const METHOD_SITE      = 'site';
+    const URL_BASE    = 'https://sitestream.twitter.com/1.1/';
+    const METHOD_SITE = 'site';
 
     /**
      * @var \Closure|null
@@ -383,7 +384,7 @@ class CloudSiteStream extends \UserstreamPhirehose
 
 class CloudUserStream extends \UserstreamPhirehose
 {
-    const URL_BASE         = 'https://userstream.twitter.com/1.1/';
+    const URL_BASE = 'https://userstream.twitter.com/1.1/';
 
     /**
      * @var \Closure|null
@@ -396,7 +397,7 @@ class CloudUserStream extends \UserstreamPhirehose
     protected $callback;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $user_id;
 
@@ -570,7 +571,7 @@ $runner_active = $check_runner_active($runner_pid);
 
 if (!empty($argv[1])) {
     if (!$runner_active) {
-        echo "Can only be run when the runner is active.";
+        echo 'Can only be run when the runner is active.';
         exit(1);
     }
 
@@ -584,11 +585,11 @@ if (!empty($argv[1])) {
     }
 
     if (!$user_ids) {
-        echo "No users to connect to.";
+        echo 'No users to connect to.';
         exit(1);
     }
 
-    $log_status("[Site Stream] Processor starting with PID ".getmypid()." for users: ".implode(',', $user_ids).".");
+    $log_status('[Site Stream] Processor starting with PID '.getmypid().' for users: '.implode(',', $user_ids).'.');
 
     if (TWITTER_SITE_STREAM) {
         $consumer = new CloudSiteStream(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_TOKEN_SECRET);
@@ -596,13 +597,13 @@ if (!empty($argv[1])) {
     } else {
         $user_id = reset($user_ids);
         $db      = $get_db();
-        $user    = $db->fetchAssoc("
+        $user    = $db->fetchAssoc('
             SELECT *
             FROM cloud_twitter_associations
             WHERE user_id = ?
             ORDER BY id DESC
             LIMIT 1
-        ", array($user_id));
+        ', array($user_id));
         $db->close();
         $db = null;
 
@@ -628,13 +629,13 @@ if (!empty($argv[1])) {
         $my_pid = getmypid();
 
         if ($consumer instanceof CloudUserStream) {
-            $message_prefix = "[User Stream, PID $my_pid, User ".$consumer->getUserId()."]";
+            $message_prefix = "[User Stream, PID $my_pid, User ".$consumer->getUserId().']';
         } else {
             $message_prefix = "[Site Stream, PID $my_pid]";
         }
 
         $log = sprintf(
-            "Data received (length: %d), runner pid: %d, memory: %s KB (peak: %s KB)",
+            'Data received (length: %d), runner pid: %d, memory: %s KB (peak: %s KB)',
             strlen(trim($status)), $runner_pid,
             number_format((memory_get_usage(true) / 1024), 0, ',', '.'),
             number_format(memory_get_peak_usage(true) / 1024, 0, ',', '.')
@@ -659,18 +660,18 @@ if (!empty($argv[1])) {
 
         if ($consumer instanceof CloudUserStream) {
             $db = $get_db();
-            $user = $db->fetchAssoc("
+            $user = $db->fetchAssoc('
                 SELECT *
                 FROM cloud_twitter_associations
                 WHERE user_id = ?
                 ORDER BY id DESC
                 LIMIT 1
-            ", array($consumer->getUserId()));
+            ', array($consumer->getUserId()));
             $db->close();
             $db = null;
 
             if (!$user) {
-                $log_status("$message_prefix User ID ".$consumer->getUserId()." is not longer being retrieved. Terminating.");
+                $log_status("$message_prefix User ID ".$consumer->getUserId().' is not longer being retrieved. Terminating.');
                 exit;
             }
         }
@@ -683,9 +684,9 @@ if (!empty($argv[1])) {
     try {
         $consumer->consume();
     } catch (PhirehoseConnectLimitExceeded $e) {
-        $log_status("[Site Stream, PID $my_pid] Connection limit exceeded: ".$e->getMessage().". Likely no permission.");
+        $log_status("[Site Stream, PID $my_pid] Connection limit exceeded: ".$e->getMessage().'. Likely no permission.');
     } catch (Exception $e) {
-        $log_status("[Site Stream, PID $my_pid] General processor exception: ".$e->getMessage()." at ".$e->getFile().':'.$e->getLine());
+        $log_status("[Site Stream, PID $my_pid] General processor exception: ".$e->getMessage().' at '.$e->getFile().':'.$e->getLine());
     }
 
     $log_status("[Site Stream, PID $my_pid] Exiting Normally.");
@@ -718,7 +719,7 @@ if ($runner_active) {
 file_put_contents(PID_FILE, getmypid());
 file_put_contents(CONTROL_FILE, '');
 
-$log_status("[Runner, PID $my_pid] Starting with PID ".getmypid().".");
+$log_status("[Runner, PID $my_pid] Starting with PID ".getmypid().'.');
 
 if (function_exists('pcntl_signal')) {
     declare (ticks = 1);
@@ -769,12 +770,12 @@ while (true) {
         /** @var $db \Doctrine\DBAL\Connection */
         $db = $get_db();
 
-        $updates = $db->fetchAll("
+        $updates = $db->fetchAll('
             SELECT stream.*, associations.db, associations.account_id
             FROM cloud_twitter_stream AS stream
             LEFT JOIN cloud_twitter_associations AS associations ON (stream.user_id = associations.user_id)
             ORDER BY stream.id
-        ");
+        ');
         foreach ($updates as $update) {
             if ($update['account_id']) {
                 $db->executeUpdate("
@@ -809,11 +810,11 @@ while (true) {
         }
 
         if ($associations === null) {
-            $results = $db->fetchAll("
+            $results = $db->fetchAll('
                 SELECT user_id, COUNT(*) AS total
                 FROM cloud_twitter_associations
                 GROUP BY user_id
-            ");
+            ');
             $associations = array();
             foreach ($results as $result) {
                 $associations[$result['user_id']] = $result['total'];
@@ -833,7 +834,7 @@ while (true) {
             if ($message['message_type'] == 'add') {
                 $data = @unserialize($message['data']);
                 if ($data) {
-                    $affected = $db->executeUpdate("
+                    $affected = $db->executeUpdate('
                         INSERT INTO cloud_twitter_associations
                             (db, user_id, account_id, oauth_token, oauth_token_secret)
                         VALUES
@@ -841,11 +842,11 @@ while (true) {
                         ON DUPLICATE KEY UPDATE
                             oauth_token = VALUES(oauth_token),
                             oauth_token_secret = VALUES(oauth_token_secret)
-                    ", array($message['db'], $message['user_id'], $message['account_id'], $data['oauth_token'], $data['oauth_token_secret']));
+                    ', array($message['db'], $message['user_id'], $message['account_id'], $data['oauth_token'], $data['oauth_token_secret']));
                     if ($affected == 1) {
                         // an insert (2 affected is an update)
                         if (isset($associations[$message['user_id']])) {
-                            $associations[$message['user_id']]++;
+                            ++$associations[$message['user_id']];
                         } else {
                             $associations[$message['user_id']] = 1;
                             $add[]                             = $message['user_id'];
@@ -859,7 +860,7 @@ while (true) {
                 ));
 
                 if (isset($associations[$message['user_id']])) {
-                    $associations[$message['user_id']]--;
+                    --$associations[$message['user_id']];
                     if ($associations[$message['user_id']] <= 0) {
                         unset($associations[$message['user_id']]);
                         $remove[] = $message['user_id'];
@@ -944,11 +945,11 @@ while (true) {
                     $user_ids = array_slice($add, 0, 100);
                     $add      = array_slice($add, 100);
 
-                    $log_status("[Runner, PID $my_pid] Starting new processor for users ".implode(', ', $user_ids).".");
+                    $log_status("[Runner, PID $my_pid] Starting new processor for users ".implode(', ', $user_ids).'.');
 
                     $pipes = array();
                     // windows doesn't like the arguments being quoted for some reason...
-                    $process                      = proc_open("$php_path ".basename(__FILE__)." ".implode(' ', $user_ids), array(), $pipes, __DIR__);
+                    $process                      = proc_open("$php_path ".basename(__FILE__).' '.implode(' ', $user_ids), array(), $pipes, __DIR__);
                     $info                         = proc_get_status($process);
                     $children[$info['pid']]       = $process;
                     $child_user_map[$info['pid']] = $user_ids;

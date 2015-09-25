@@ -1,45 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Search
  */
-
 namespace Application\DeskPRO\Search\Searcher\Mysql;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
+use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
 use Application\DeskPRO\Search\SearcherResult\Result;
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
-use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
 use Orb\Util\Strings;
 
 /**
@@ -116,13 +116,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         // Specific labels
         if (preg_match_all('#\[(.*?)\]#', $query_text_orig, $m)) {
             foreach ($m[1] as $w) {
-                $query_text .= " ".MysqlAdapter::encodeLabel(strtolower($w));
+                $query_text .= ' '.MysqlAdapter::encodeLabel(strtolower($w));
             }
         }
 
         $words = explode(' ', $query_text);
         foreach ($words as $w) {
-            $query_text .= " ".MysqlAdapter::encodeLabel(strtolower($w));
+            $query_text .= ' '.MysqlAdapter::encodeLabel(strtolower($w));
         }
 
         $where = "
@@ -166,8 +166,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             $total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($query_text));
         }
 
-        $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($query_text, $query_text));
-        $results      = array();
+        $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($query_text, $query_text));
+        $results     = array();
 
         foreach ($results_raw as $result_raw) {
             $result = Result::newFromArray(array(
@@ -205,7 +205,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         $label_where = array();
 
         foreach ($labels as $label) {
-            $label_where[] = "+".MysqlAdapter::encodeLabel($label);
+            $label_where[] = '+'.MysqlAdapter::encodeLabel($label);
         }
 
         $label_where = implode(' ', $label_where);
@@ -230,9 +230,9 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             LIMIT $start, $per_page
         ";
 
-        $total        = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($label_where));
-        $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($label_where, $label_where));
-        $results      = array();
+        $total       = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($label_where));
+        $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($label_where, $label_where));
+        $results     = array();
 
         foreach ($results_raw as $result_raw) {
             $result = Result::newFromArray(array(
@@ -303,14 +303,14 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
                 continue;
             }
 
-            $likes[]  = "content_search.content LIKE ?";
+            $likes[]  = 'content_search.content LIKE ?';
             $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
         }
         if ($likes) {
             $where = "
                 content_search.object_type IN ($limit_types)
-                AND (".implode(' OR ', $likes).")
-            ";
+                AND (".implode(' OR ', $likes).')
+            ';
 
             if (!$this->ignore_perms) {
                 $permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
@@ -350,8 +350,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
             $total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, $params);
 
-            $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, $params);
-            $results      = array();
+            $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, $params);
+            $results     = array();
 
             foreach ($results_raw as $result_raw) {
                 $result = Result::newFromArray(array(
@@ -362,8 +362,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
                 $results[] = $result;
             }
         } else {
-            $total       = 0;
-            $results     = array();
+            $total   = 0;
+            $results = array();
         }
 
         if ($total === null) {

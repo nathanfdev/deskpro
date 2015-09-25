@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\App;
@@ -110,8 +110,9 @@ class ErrorReporter
             if (class_exists('Application\\DeskPRO\\App')) {
                 try {
                     $url = App::getRequest()->getUri();
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
                 }
+            }
         } else {
             $url = '';
         }
@@ -160,12 +161,12 @@ class ErrorReporter
 
         try {
             $db         = App::getDb();
-            $exist_date = $db->fetchColumn("
+            $exist_date = $db->fetchColumn('
                 SELECT date_expire
                 FROM tmp_data
                 WHERE name = ?
                 LIMIT 1
-            ", array('submitreport_'.$hash));
+            ', array('submitreport_'.$hash));
 
             if ($exist_date) {
                 $date = \DateTime::createFromFormat('Y-m-d H:i:s', $exist_date);
@@ -175,7 +176,8 @@ class ErrorReporter
                     return true;
                 }
             }
-        } catch (\Exception $e) {};
+        } catch (\Exception $e) {
+        };
 
         return false;
     }
@@ -377,13 +379,13 @@ class ErrorReporter
             $client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
 
-            $url = \DeskPRO\Kernel\License::getSecureLicServer() . '/api/data-submit/' . $service . '.json';
+            $url = \DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/'.$service.'.json';
             $client->setUri($url);
             $client->getRequest()->getPost()->fromArray($data);
             $r = $client->send();
 
             if (!$r->isSuccess()) {
-                error_log("URL retrned code ".$r->getStatusCode().": ".$url);
+                error_log('URL retrned code '.$r->getStatusCode().': '.$url);
             }
         } catch (\Exception $e) {
         }
@@ -418,13 +420,13 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer() . '/api/heartbeat.json');
+            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/heartbeat.json');
             $client->getRequest()->getPost()->fromArray($data);
             $r = $client->send();
 
             return $r->getBody();
         } catch (\Exception $e) {
-            error_log(sprintf("sendHeartbeat %s %s", $e->getCode(), $e->getMessage()));
+            error_log(sprintf('sendHeartbeat %s %s', $e->getCode(), $e->getMessage()));
 
             return;
         }
@@ -445,11 +447,11 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer() . '/api/data-submit/ping-install.json');
+            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/ping-install.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->send();
         } catch (\Exception $e) {
-            error_log(sprintf("sendInstallStatusPing %s %s", $e->getCode(), $e->getMessage()));
+            error_log(sprintf('sendInstallStatusPing %s %s', $e->getCode(), $e->getMessage()));
         }
     }
 
@@ -476,7 +478,7 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer() . '/api/data-submit/submit-feedback.json');
+            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
             $r = $client->send();
@@ -507,7 +509,7 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer() . '/api/data-submit/submit-feedback.json');
+            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
             $r = $client->send();

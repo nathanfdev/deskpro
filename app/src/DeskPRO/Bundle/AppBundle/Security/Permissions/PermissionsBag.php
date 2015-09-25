@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\Article;
@@ -90,8 +90,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $news_cateogory_ids = array(),
         $article_cateogory_ids = array(),
         $download_cateogory_ids = array()
-    )
-    {
+    ) {
         $this->setArray($permissions);
         $this->setAllowedTicketDepartmentIds($department_ticket_ids);
         $this->setAllowedChatDepartmentIds($department_chat_ids);
@@ -102,9 +101,10 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     }
 
     /**
-     * This is the primary method to ask for the yes/no boolean permissions (e.g. tickets.reopen_resolved)
+     * This is the primary method to ask for the yes/no boolean permissions (e.g. tickets.reopen_resolved).
      *
      * @param $permission
+     *
      * @return bool
      */
     public function hasPermission($permission)
@@ -122,6 +122,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      * content).
      *
      * @param object $content_or_category a Content or ContentCategory entity
+     *
      * @return bool
      */
     public function hasContentCategoryAccess($content_or_category)
@@ -140,7 +141,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         } elseif ($content_or_category instanceof ArticleCategory) {
             return in_array($content_or_category->getId(), $this->getAllowedArticleCategories());
 
-
         // FEEDBACK
         } elseif ($content_or_category instanceof Feedback) {
             $category_id = $content_or_category->getCategoryId();
@@ -152,7 +152,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         } elseif ($content_or_category instanceof FeedbackCategory) {
             return in_array($content_or_category->getId(), $this->getAllowedFeedbackCategoryIds());
 
-
         // DOWNLOAD
         } elseif ($content_or_category instanceof Download) {
             $category_id = $content_or_category->getCategoryId();
@@ -163,7 +162,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
             return false;
         } elseif ($content_or_category instanceof DownloadCategory) {
             return in_array($content_or_category->getId(), $this->getAllowedDownloadCategories());
-
 
         // NEWS
         } elseif ($content_or_category instanceof News) {
@@ -181,7 +179,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     }
 
     /**
-     * A list of department IDs that are allowed for tickets
+     * A list of department IDs that are allowed for tickets.
      *
      * @return array
      */
@@ -194,7 +192,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     }
 
     /**
-     * A list of department IDs that are allowed in chat
+     * A list of department IDs that are allowed in chat.
      *
      * @return array
      */
@@ -281,17 +279,18 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     }
 
     /**
-     * This is for the yes/no boolean permissions (e.g. tickets.reopen_resolved)
+     * This is for the yes/no boolean permissions (e.g. tickets.reopen_resolved).
      *
      * You should probably use hasPermissions() above instead for a yes/no answer.
      *
      * @param $key
      * @param bool $default
+     *
      * @return bool
      */
     public function get($key, $default = false)
     {
-        return (bool)($this->has($key) ? $this->permissions[$key] : $default);
+        return (bool) ($this->has($key) ? $this->permissions[$key] : $default);
     }
 
     public function toArray()
@@ -358,13 +357,13 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     {
         return serialize(
             array(
-                'permissions' => $this->permissions,
-                'feedback' => $this->feedback_categories,
-                'news' => $this->news_categories,
-                'article' => $this->article_categories,
-                'download' => $this->download_categories,
-                'department_chat' => $this->department_chat_ids,
-                'department_ticket' => $this->department_ticket_ids
+                'permissions'       => $this->permissions,
+                'feedback'          => $this->feedback_categories,
+                'news'              => $this->news_categories,
+                'article'           => $this->article_categories,
+                'download'          => $this->download_categories,
+                'department_chat'   => $this->department_chat_ids,
+                'department_ticket' => $this->department_ticket_ids,
             )
         );
     }
@@ -376,12 +375,12 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     {
         $unserialized = unserialize($serialized);
 
-        $this->permissions = $unserialized['permissions'];
-        $this->feedback_categories = $unserialized['feedback'];
-        $this->news_categories = $unserialized['news'];
-        $this->article_categories = $unserialized['article'];
-        $this->download_categories = $unserialized['download'];
-        $this->department_chat_ids = $unserialized['department_chat'];
+        $this->permissions           = $unserialized['permissions'];
+        $this->feedback_categories   = $unserialized['feedback'];
+        $this->news_categories       = $unserialized['news'];
+        $this->article_categories    = $unserialized['article'];
+        $this->download_categories   = $unserialized['download'];
+        $this->department_chat_ids   = $unserialized['department_chat'];
         $this->department_ticket_ids = $unserialized['department_ticket'];
     }
 

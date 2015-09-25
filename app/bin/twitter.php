@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 if (php_sapi_name() != 'cli') {
     echo "This script must only be run using the command line interface of PHP\n";
@@ -233,7 +234,7 @@ if (!empty($argv[1])) {
                     }
 
                     $consumer->enqueueStatus(json_encode($result));
-                    $total++;
+                    ++$total;
                 }
                 $log_status("[Account $account[id] REST] Missed home timeline: $total");
             } catch (EpiOAuthException $e) {
@@ -253,7 +254,7 @@ if (!empty($argv[1])) {
                     }
 
                     $consumer->enqueueStatus(json_encode($result));
-                    $total++;
+                    ++$total;
                 }
                 $log_status("[Account $account[id] REST] Missed mentions: $total");
             } catch (EpiOAuthException $e) {
@@ -275,7 +276,7 @@ if (!empty($argv[1])) {
                     $res->direct_message = $result;
 
                     $consumer->enqueueStatus(json_encode($res));
-                    $total++;
+                    ++$total;
                 }
                 $log_status("[Account $account[id] REST] Missed received DMs: $total");
             } catch (EpiOAuthException $e) {
@@ -297,7 +298,7 @@ if (!empty($argv[1])) {
                     $res->direct_message = $result;
 
                     $consumer->enqueueStatus(json_encode($res));
-                    $total++;
+                    ++$total;
                 }
                 $log_status("[Account $account[id] REST] Missed sent DMs: $total");
             } catch (EpiOAuthException $e) {
@@ -305,11 +306,11 @@ if (!empty($argv[1])) {
             }
 
             if ($max_id) {
-                $db->executeUpdate("
+                $db->executeUpdate('
                     UPDATE twitter_accounts
                     SET last_processed_id = ?
                     WHERE id = ? AND last_processed_id < ?
-                ", array($max_id, $account['id'], $max_id));
+                ', array($max_id, $account['id'], $max_id));
             }
 
             $log_status("[Account $account[id] REST] Completed.");
@@ -323,17 +324,17 @@ if (!empty($argv[1])) {
     $db = null;
     \Application\DeskPRO\App::getDb()->close();
 
-    $log_status("[Account $account[id]] Processor starting with PID ".getmypid().".");
+    $log_status("[Account $account[id]] Processor starting with PID ".getmypid().'.');
 
     if (!$runner_active) {
-        $log_status("[Account $account[id], PID ".getmypid()."] Started without parent runner. Can only be terminated manually.");
+        $log_status("[Account $account[id], PID ".getmypid().'] Started without parent runner. Can only be terminated manually.');
     }
 
     $consumer->setCallback(function ($status) use ($check_runner_active, $runner_active, $runner_pid, $log_status, $account, $get_db, $start_process) {
         $my_pid = getmypid();
 
         $log = sprintf(
-            "Data received (length: %d), runner pid: %d, memory: %s KB (peak: %s KB)",
+            'Data received (length: %d), runner pid: %d, memory: %s KB (peak: %s KB)',
             strlen(trim($status)), $runner_pid,
             number_format((memory_get_usage(true) / 1024), 0, ',', '.'),
             number_format(memory_get_peak_usage(true) / 1024, 0, ',', '.')
@@ -382,11 +383,11 @@ if (!empty($argv[1])) {
         }
 
         if ($new_id) {
-            $db->executeUpdate("
+            $db->executeUpdate('
                 UPDATE twitter_accounts
                 SET last_processed_id = ?
                 WHERE id = ? AND last_processed_id < ?
-            ", array($new_id, $account['id'], $new_id));
+            ', array($new_id, $account['id'], $new_id));
         }
 
         if (isset($status_test->friends) && $test_account['last_processed_id']) {
@@ -409,9 +410,9 @@ if (!empty($argv[1])) {
     try {
         $consumer->consume();
     } catch (PhirehoseConnectLimitExceeded $e) {
-        $log_status("[Account $account[id], PID $my_pid] Connection limit exceeded: ".$e->getMessage().". Likely no permission.");
+        $log_status("[Account $account[id], PID $my_pid] Connection limit exceeded: ".$e->getMessage().'. Likely no permission.');
     } catch (Exception $e) {
-        $log_status("[Account $account[id], PID $my_pid] General processor exception: ".$e->getMessage()." at ".$e->getFile().':'.$e->getLine());
+        $log_status("[Account $account[id], PID $my_pid] General processor exception: ".$e->getMessage().' at '.$e->getFile().':'.$e->getLine());
     }
 
     $log_status("[Account $account[id], PID $my_pid] Exiting Normally.");
@@ -435,7 +436,7 @@ if ($runner_active) {
 
 file_put_contents($pid_file, getmypid());
 
-$log_status("[Runner, PID $my_pid] Starting with PID ".getmypid().".");
+$log_status("[Runner, PID $my_pid] Starting with PID ".getmypid().'.');
 
 if (function_exists('pcntl_signal')) {
     declare (ticks = 1);

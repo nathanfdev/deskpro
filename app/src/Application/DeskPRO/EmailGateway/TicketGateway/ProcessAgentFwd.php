@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category EmailGateway
  */
-
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -76,15 +76,15 @@ class ProcessAgentFwd extends ProcessAbstract
      */
     public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email)
     {
-        $this->account       = $account;
-        $this->person        = $person;
-        $this->ticket_email  = $ticket_email;
-        $this->reader        = $ticket_email->reader;
-        $this->cleaner       = App::get('deskpro.core.input_cleaner');
+        $this->account      = $account;
+        $this->person       = $person;
+        $this->ticket_email = $ticket_email;
+        $this->reader       = $ticket_email->reader;
+        $this->cleaner      = App::get('deskpro.core.input_cleaner');
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -226,16 +226,16 @@ class ProcessAgentFwd extends ProcessAbstract
             $agent_ticket_message->creation_system = 'gateway.agent';
 
             if (isset($this->ticket_email->reply_actions['is_reply'])) {
-                $this->logMessage("is_reply flag is set");
+                $this->logMessage('is_reply flag is set');
                 $agent_ticket_message->is_agent_note = false;
-            } else if (isset($this->ticket_email->reply_actions['is_note'])) {
-                $this->logMessage("is_note flag is set");
+            } elseif (isset($this->ticket_email->reply_actions['is_note'])) {
+                $this->logMessage('is_note flag is set');
                 $agent_ticket_message->is_agent_note = true;
-            } else if (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
-                $this->logMessage("email_fwd_reply_as_note is enabled");
+            } elseif (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
+                $this->logMessage('email_fwd_reply_as_note is enabled');
                 $agent_ticket_message->is_agent_note = true;
             } else {
-                $this->logMessage("email_fwd_reply_as_note is NOT enabled");
+                $this->logMessage('email_fwd_reply_as_note is NOT enabled');
                 $agent_ticket_message->is_agent_note = false;
             }
 
@@ -243,8 +243,8 @@ class ProcessAgentFwd extends ProcessAbstract
             if ($agent_ticket_message->is_agent_note) {
                 $ticket->setStatus('awaiting_agent');
             } else {
-            $ticket->setStatus('awaiting_user');
-        }
+                $ticket->setStatus('awaiting_user');
+            }
         }
 
         foreach ($this->processBlobs() as $blob) {
@@ -310,10 +310,10 @@ class ProcessAgentFwd extends ProcessAbstract
         $tracker_extras = array(
             'fwd_via_agent' => $this->person,
         );
-        if ($this->person->getPref("agent_notify_override.forward.email")) {
+        if ($this->person->getPref('agent_notify_override.forward.email')) {
             $tracker_extras['force_notify_email'] = array($this->person->id);
         }
-        if ($this->person->getPref("agent_notify_override.forward.alert")) {
+        if ($this->person->getPref('agent_notify_override.forward.alert')) {
             $tracker_extras['force_notify_alert'] = array($this->person->id);
         }
         $fwd_info = $fwd_cutter->getData();
@@ -382,8 +382,8 @@ class ProcessAgentFwd extends ProcessAbstract
      * @param Attachment $has_eml_attach
      *
      * @throws \Exception
-     * @return Ticket
      *
+     * @return Ticket
      */
     private function runNewForwardedEmailAsAttachTicket(Attachment $has_eml_attach)
     {
@@ -538,16 +538,16 @@ class ProcessAgentFwd extends ProcessAbstract
             $agent_ticket_message->creation_system = 'gateway.agent';
 
             if (isset($this->ticket_email->reply_actions['is_reply'])) {
-                $this->logMessage("is_reply flag is set");
+                $this->logMessage('is_reply flag is set');
                 $agent_ticket_message->is_agent_note = false;
-            } else if (isset($this->ticket_email->reply_actions['is_note'])) {
-                $this->logMessage("is_note flag is set");
+            } elseif (isset($this->ticket_email->reply_actions['is_note'])) {
+                $this->logMessage('is_note flag is set');
                 $agent_ticket_message->is_agent_note = true;
-            } else if (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
-                $this->logMessage("email_fwd_reply_as_note is enabled");
+            } elseif (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
+                $this->logMessage('email_fwd_reply_as_note is enabled');
                 $agent_ticket_message->is_agent_note = true;
             } else {
-                $this->logMessage("email_fwd_reply_as_note is NOT enabled");
+                $this->logMessage('email_fwd_reply_as_note is NOT enabled');
                 $agent_ticket_message->is_agent_note = false;
             }
 
@@ -555,8 +555,8 @@ class ProcessAgentFwd extends ProcessAbstract
             if ($agent_ticket_message->is_agent_note) {
                 $ticket->setStatus('awaiting_agent');
             } else {
-            $ticket->setStatus('awaiting_user');
-        }
+                $ticket->setStatus('awaiting_user');
+            }
         }
 
         $processed_blobs     = array();

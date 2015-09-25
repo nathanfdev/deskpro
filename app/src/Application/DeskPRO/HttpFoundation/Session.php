@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category HttpFoundation
  */
-
 namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
@@ -112,17 +112,17 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 $sid = Entity\Session::getIdFromCode($_COOKIE['dpsid-agent']);
                 if ($sid) {
                     if (App::getSetting('core.session_keepalive_require_page')) {
-                        $agent_session = App::getDb()->fetchAssoc("
+                        $agent_session = App::getDb()->fetchAssoc('
                             SELECT person_id, auth
                             FROM sessions
                             WHERE id = ? AND date_last > ? AND date_last_page > ?
-                        ", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')), date(time() - App::getSetting('core.sessions_lifetime'))));
+                        ', array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')), date(time() - App::getSetting('core.sessions_lifetime'))));
                     } else {
-                        $agent_session = App::getDb()->fetchAssoc("
+                        $agent_session = App::getDb()->fetchAssoc('
                             SELECT person_id, auth
                             FROM sessions
                             WHERE id = ? AND date_last > ?
-                        ", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+                        ', array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
                     }
 
                     list(, $auth) = explode('-', $_COOKIE['dpsid-agent']);
@@ -168,13 +168,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 $sid = $_COOKIE['dpsid'];
                 if ($sid) {
                     $agent_session = App::getDb()->fetchAssoc(
-                        "
+                        '
                             SELECT sess_data
                             FROM sess_data
                             WHERE sess_id = ?
-                        ",
+                        ',
                         array(
-                            $sid
+                            $sid,
                         )
                     );
                     $agent_sess_data = $agent_session['sess_data'];
@@ -186,7 +186,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     $orig = $_SESSION;
                     session_decode($agent_sess_data);
                     $agent_sess_data = $_SESSION;
-                    $_SESSION = $orig;
+                    $_SESSION        = $orig;
                     //
                     // end session hack
 
@@ -282,7 +282,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 // and those visitor counts arent increasing, it probably means
                 // this is a bot or a user without cookies. So prevent the
                 // track from being displayed to agents a bajillion times.
-                $soft_visitor_id = App::getDb()->fetchColumn("
+                $soft_visitor_id = App::getDb()->fetchColumn('
                     SELECT v.id
                     FROM visitors v
                     LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
@@ -292,7 +292,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                         AND v.hint_hidden = 0
                         AND vt.ip_address = ?
                     LIMIT 1
-                ", array(
+                ', array(
                     date('Y-m-d H:i:s', time() - 600),
                     $user_ip,
                 ));
@@ -312,10 +312,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 // are not actually theirs.
                 // (theyre sending the cookie etc so the "guess" wouldnt be neccessary)
                 if ($vis->page_count < 4) {
-                    App::getDb()->executeUpdate("
+                    App::getDb()->executeUpdate('
                         DELETE FROM visitor_tracks
                         WHERE visitor_id = ? AND is_soft_track = 1
-                    ", array($vis->getId()));
+                    ', array($vis->getId()));
                 }
             }
 
@@ -359,19 +359,19 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     $track['geo_continent'] = $geo['continent'];
                 }
                 if (!empty($geo['country'])) {
-                    $track['geo_country']   = $geo['country'];
+                    $track['geo_country'] = $geo['country'];
                 }
                 if (!empty($geo['region'])) {
-                    $track['geo_region']    = $geo['region'];
+                    $track['geo_region'] = $geo['region'];
                 }
                 if (!empty($geo['city'])) {
-                    $track['geo_city']      = $geo['city'];
+                    $track['geo_city'] = $geo['city'];
                 }
                 if (!empty($geo['longitude'])) {
-                    $track['geo_long']      = $geo['longitude'];
+                    $track['geo_long'] = $geo['longitude'];
                 }
                 if (!empty($geo['latitude'])) {
-                    $track['geo_lat']       = $geo['latitude'];
+                    $track['geo_lat'] = $geo['latitude'];
                 }
             }
 

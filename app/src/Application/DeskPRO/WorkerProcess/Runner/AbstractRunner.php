@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
 use Application\DeskPRO\App;
@@ -133,7 +133,7 @@ abstract class AbstractRunner
         $GLOBALS['DP_CRON_LOGGER'] = $logger;
 
         if ($worker_job->getIsCrashed()) {
-            $logger->log("ERROR: Job appears to have crashed during the last run! The last run was started at ".$worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
+            $logger->log('ERROR: Job appears to have crashed during the last run! The last run was started at '.$worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
         }
 
         $mtime_start = microtime(true);
@@ -152,7 +152,7 @@ abstract class AbstractRunner
             // Roll back any transactions that might still be open
             try {
                 while (App::getDb()->isTransactionActive()) {
-                    $logger->log("(Rolling back open transaction)", Logger::DEBUG);
+                    $logger->log('(Rolling back open transaction)', Logger::DEBUG);
                     App::getDb()->rollback();
                 }
             } catch (\Exception $e) {
@@ -161,10 +161,10 @@ abstract class AbstractRunner
 
         $mtime_end   = microtime(true);
         $mtime_total = $mtime_end - $mtime_start;
-        $mtime_total = sprintf("%.5f", $mtime_total);
+        $mtime_total = sprintf('%.5f', $mtime_total);
 
         if ($run_e) {
-            $logger->log(sprintf("Exception: %s[%d]: %s", get_class($run_e), $run_e->getCode(), $run_e->getMessage()), Logger::ERR);
+            $logger->log(sprintf('Exception: %s[%d]: %s', get_class($run_e), $run_e->getCode(), $run_e->getMessage()), Logger::ERR);
             \DeskPRO\Kernel\KernelErrorHandler::handleException($run_e);
         } else {
             $worker_job['last_run_date'] = new \DateTime();

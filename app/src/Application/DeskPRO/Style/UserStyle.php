@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Style;
 
 class UserStyle
@@ -109,16 +109,16 @@ class UserStyle
 
         // Superflous whitespace
         $css = preg_replace("#\n{2,}#", "\n", $css);
-        $css = preg_replace("#\s*\{\s*#", "{", $css);
-        $css = preg_replace("#\s*\;\s*#", ";", $css);
-        $css = preg_replace("#\s*\:\s*#", ":", $css);
+        $css = preg_replace("#\s*\{\s*#", '{', $css);
+        $css = preg_replace("#\s*\;\s*#", ';', $css);
+        $css = preg_replace("#\s*\:\s*#", ':', $css);
 
         return $css;
     }
 
     public function hex2RGB($hex, $return_string = ',')
     {
-        $hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
+        $hex = preg_replace('/[^0-9A-Fa-f]/', '', $hex);
         $rgb = array();
         if (strlen($hex) == 6) {
             $color_val    = hexdec($hex);
@@ -140,13 +140,13 @@ class UserStyle
     {
         $highest_val = hexdec('FF');
         $r           = hexdec(substr($orig_color, 0, 2));
-        $r           = ($highest_val-$r)/$fraction_denom + $r;
+        $r           = ($highest_val - $r) / $fraction_denom + $r;
 
         $g = hexdec(substr($orig_color, 2, 2));
-        $g = ($highest_val-$g)/$fraction_denom + $g;
+        $g = ($highest_val - $g) / $fraction_denom + $g;
 
         $b = hexdec(substr($orig_color, 4, 2));
-        $b = ($highest_val-$b)/$fraction_denom + $b;
+        $b = ($highest_val - $b) / $fraction_denom + $b;
 
         return dechex($r).dechex($g).dechex($b);
     }

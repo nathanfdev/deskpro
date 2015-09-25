@@ -1,39 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Import\Importer;
 
 use Application\DeskPRO\DBAL\Logging\QueryLogger;
 use Orb\Log\Logger;
-use Orb\Service\Zendesk\Zendesk;
 
 class ZenDeskImporter extends AbstractImporter
 {
@@ -123,7 +122,7 @@ class ZenDeskImporter extends AbstractImporter
 
     public function getStep($step)
     {
-        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step-1].'Step';
+        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step - 1].'Step';
         $step  = new $class($this);
 
         return $step;
@@ -194,7 +193,7 @@ class ZenDeskImporter extends AbstractImporter
         }
         $mem = \Orb\Util\Numbers::filesizeDisplay($mem);
 
-        $this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   ZD: %.02f   DB: %0.2f   ZD Calls: %d   Queries: %d,  Peak Mem: %s", $time_total, $time_php_total, $time_zd, $time_db, $total_apicalls, $total_queries, $mem));
+        $this->logMessage(sprintf('Time: %0.2f   PHP: %0.2f   ZD: %.02f   DB: %0.2f   ZD Calls: %d   Queries: %d,  Peak Mem: %s', $time_total, $time_php_total, $time_zd, $time_db, $total_apicalls, $total_queries, $mem));
     }
 
     /**
@@ -228,7 +227,7 @@ class ZenDeskImporter extends AbstractImporter
                 if (count($cols) == $count) {
                     foreach ($cols as $idx_col) {
                         if (in_array($idx_col, $keep)) {
-                            $found_count++;
+                            ++$found_count;
                         }
                     }
                 }
@@ -244,7 +243,7 @@ class ZenDeskImporter extends AbstractImporter
 
             $p            = $sm->getDatabasePlatform()->getDropIndexSQL($x, $table);
             $p            = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
-            $p            = preg_replace("# ON (.*?)$#", '', trim($p));
+            $p            = preg_replace('# ON (.*?)$#', '', trim($p));
             $drop_parts[] = $p;
 
             $p               = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
@@ -263,7 +262,7 @@ class ZenDeskImporter extends AbstractImporter
                 if (count($cols) == $count) {
                     foreach ($cols as $idx_col) {
                         if (in_array($idx_col, $keep)) {
-                            $found_count++;
+                            ++$found_count;
                         }
                     }
                 }
@@ -297,8 +296,8 @@ class ZenDeskImporter extends AbstractImporter
             return;
         }
 
-        $drop_sql      = "ALTER TABLE `$table` ".implode(', ', $drop_parts);
-        $restore_sql   = "ALTER TABLE `$table` ".implode(', ', $restore_parts);
+        $drop_sql    = "ALTER TABLE `$table` ".implode(', ', $drop_parts);
+        $restore_sql = "ALTER TABLE `$table` ".implode(', ', $restore_parts);
 
         $this->getDb()->replace('import_datastore', array(
             'typename' => 'tableindexes.'.$table,
@@ -315,7 +314,7 @@ class ZenDeskImporter extends AbstractImporter
      */
     public function restoreTableIndexes($table)
     {
-        $data = $this->getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('tableindexes.'.$table));
+        $data = $this->getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('tableindexes.'.$table));
         $data = @unserialize($data);
 
         if (!$data || empty($data['sql'])) {
@@ -325,11 +324,11 @@ class ZenDeskImporter extends AbstractImporter
         try {
             $this->getDb()->exec($data['sql']);
         } catch (\Exception $e) {
-            $this->logger->log(sprintf("FK constraint failed so reexecuting with checks off: %s", $data['sql']), 'ERR');
+            $this->logger->log(sprintf('FK constraint failed so reexecuting with checks off: %s', $data['sql']), 'ERR');
 
-            $this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
+            $this->getDb()->exec('SET FOREIGN_KEY_CHECKS = 0');
             $this->getDb()->exec($data['sql']);
-            $this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
+            $this->getDb()->exec('SET FOREIGN_KEY_CHECKS = 1');
         }
     }
 
@@ -356,7 +355,7 @@ class ZenDeskImporter extends AbstractImporter
 
     public function getStepTitle($step)
     {
-        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step-1].'Step';
+        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step - 1].'Step';
 
         return $class::getTitle();
     }

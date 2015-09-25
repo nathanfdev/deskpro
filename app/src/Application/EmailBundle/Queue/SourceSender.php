@@ -1,40 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
-use Monolog;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
@@ -82,25 +81,25 @@ class SourceSender
     public function send(array $sendmail)
     {
         if (empty($sendmail['email_account_id']) || !$sendmail['email_account_id']) {
-            $this->logger->error(sprintf("The email account that this email was sent with no longer exists"));
+            $this->logger->error(sprintf('The email account that this email was sent with no longer exists'));
 
             return 0;
         }
 
         try {
             $account = $this->email_accounts->getActiveAccount($sendmail['email_account_id']);
-            $this->logger->info(sprintf("Using account #%d %s", $account->getId(), $account->getUseEmailAddress()));
+            $this->logger->info(sprintf('Using account #%d %s', $account->getId(), $account->getUseEmailAddress()));
         } catch (\Exception $e) {
-            $this->logger->error(sprintf("Email account %d does not exist or has been disabled", $sendmail['email_account_id']));
+            $this->logger->error(sprintf('Email account %d does not exist or has been disabled', $sendmail['email_account_id']));
 
             return 0;
         }
 
         try {
             $raw_tr = $this->email_accounts->getTransportForAccount($account);
-            $this->logger->debug(sprintf("Using transport type: %s", Util::getBaseClassname($raw_tr)));
+            $this->logger->debug(sprintf('Using transport type: %s', Util::getBaseClassname($raw_tr)));
         } catch (\Exception $e) {
-            $this->logger->error(sprintf("Email account has no transport: %s", $e->getMessage()));
+            $this->logger->error(sprintf('Email account has no transport: %s', $e->getMessage()));
 
             return 0;
         }
@@ -108,13 +107,13 @@ class SourceSender
         $fp = fopen('php://temp/maxmemory:10000000', 'rw');
         try {
             if (!fwrite($fp, $this->bs->copyBlobRowIdToString($sendmail['blob_id']))) {
-                $this->logger->error(sprintf("Failed writing source blob"));
-                throw new RawTransportException(sprintf("Failed writing source blob"));
+                $this->logger->error(sprintf('Failed writing source blob'));
+                throw new RawTransportException(sprintf('Failed writing source blob'));
             }
             rewind($fp);
         } catch (\InvalidArgumentException $e) {
-            $this->logger->error(sprintf("Email source blob does not exist"));
-            throw new \RuntimeException(sprintf("Email source blob does not exist"));
+            $this->logger->error(sprintf('Email source blob does not exist'));
+            throw new \RuntimeException(sprintf('Email source blob does not exist'));
         }
 
         try {
@@ -136,7 +135,7 @@ class SourceSender
 
             $this->logger->info(sprintf('Sent %d messages', $sendmail));
         } catch (RawTransportException $e) {
-            $this->logger->error(sprintf("Exception raised: %s [%s]: %s", get_class($e), $e->getCode(), $e->getMessage()));
+            $this->logger->error(sprintf('Exception raised: %s [%s]: %s', get_class($e), $e->getCode(), $e->getMessage()));
             @fclose($fp);
 
             throw $e;

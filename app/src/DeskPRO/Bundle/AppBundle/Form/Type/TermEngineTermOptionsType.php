@@ -1,48 +1,41 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
-use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
-use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 
@@ -57,7 +50,7 @@ class TermEngineTermOptionsType extends AbstractType
     {
         $resolver->setRequired(
             array(
-                'term_type'
+                'term_type',
             )
         );
     }
@@ -65,19 +58,19 @@ class TermEngineTermOptionsType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         $options = $event->getData();
-        $form = $event->getForm();
+        $form    = $event->getForm();
 
         if (!is_array($options)) {
             $options = array();
         }
 
         // what term are we dealing with for this options?
-        $term_type = $form->getConfig()->getOption('term_type');
+        $term_type  = $form->getConfig()->getOption('term_type');
         $term_class = TermTypeCodes::getTermClassForTypeCode($term_type);
 
         // what options are defined for this term?
         $options_resolver = call_user_func(array($term_class, 'getOptionsResolver'));
-        $defined = $options_resolver->getDefinedOptions();
+        $defined          = $options_resolver->getDefinedOptions();
 
         // add a form child for each option here
         foreach ($defined as $option_name) {
@@ -85,19 +78,19 @@ class TermEngineTermOptionsType extends AbstractType
             // we have the option value, and we need to dynamically figure out
             // what "type" of form to use (text, number, etc)
             // we can guess based on the type
-            $type = 'text'; // default to a text form type
+            $type         = 'text'; // default to a text form type
             $form_options = array();
             // NOTE: to enhance our "guessing" algorithm, we could use the $options_resolver above to inspect the
             //       "allowed types" array on the various options and make a decision based on them.
 
             if (array_key_exists($option_name, $options)) {
                 if (is_array($options[$option_name])) {
-                    $type = 'collection';
+                    $type         = 'collection';
                     $form_options = array(
-                        'type' => 'text',
-                        'allow_add' => true,
+                        'type'         => 'text',
+                        'allow_add'    => true,
                         'allow_delete' => true,
-                        'delete_empty' => true
+                        'delete_empty' => true,
                     );
                 } elseif (is_string($options[$option_name])) {
                     $type = 'text';
@@ -109,7 +102,6 @@ class TermEngineTermOptionsType extends AbstractType
             $form_options = array_merge($form_options, array('error_bubbling' => false)); // never bubble errors
             $form->add($option_name, $type, $form_options);
         }
-
     }
 
     public function getName()

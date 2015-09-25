@@ -1,4 +1,32 @@
-<?php if (!defined('DP_ROOT')) {
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+if (!defined('DP_ROOT')) {
     exit('No access');
 }
 
@@ -55,7 +83,7 @@ if ($mem_size && $mem_size != '-1') {
 if (dp_get_config('use_max_memory')) {
     define('DP_MAX_MEMSIZE', dp_get_config('use_max_memory'));
 } else {
-    define('DP_MAX_MEMSIZE', ($mem_size && $mem_size != -1) ? DP_SET_MEMSIZE+134217728 : -1);
+    define('DP_MAX_MEMSIZE', ($mem_size && $mem_size != -1) ? DP_SET_MEMSIZE + 134217728 : -1);
 }
 
 #------------------------------
@@ -97,7 +125,7 @@ if (!DP_REAL_ERROR_LOG) {
 // so problems during an install process are not missed
 if (!file_exists(dp_get_data_dir().'/is_installed.dat') && !defined('DPC_IS_CLOUD')) {
     $GLOBALS['DP_enable_display_errors'] = true;
-    @ini_set('display_errors', "1");
+    @ini_set('display_errors', '1');
 }
 
 #------------------------------
@@ -115,7 +143,7 @@ if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgra
     ) {
         if (php_sapi_name() == 'cli') {
             if (DP_BOOT_MODE == 'cron' && !in_array('-v', $_SERVER['argv']) && !in_array('--verbose', $_SERVER['argv'])) {
-                echo "Currently installing updates";
+                echo 'Currently installing updates';
             }
             die(0);
         } else {
@@ -172,10 +200,10 @@ if (!defined('DPC_IS_CLOUD') && ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cr
 
     if ($do_update) {
         if (!is_writable(dp_get_data_dir().'/cli-phpinfo.html')) {
-            error_log("No permission to write data/cli-phpinfo.php file");
+            error_log('No permission to write data/cli-phpinfo.php file');
         }
         if (!is_writable(dp_get_data_dir().'/cli-server-reqs-check.dat')) {
-            error_log("No permission to write data/cli-server-reqs-check.dat file");
+            error_log('No permission to write data/cli-server-reqs-check.dat file');
         }
 
         ob_start();
@@ -243,17 +271,17 @@ $errors       = array();
 $errors_codes = array();
 
 if (!deskpro_install_check_version() && !defined('DP_IGNORE_VERSION_CHECK')) {
-    $errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.9 or newer but <a href='?phpinfo'>you are using " . phpversion() . "</a>. You need to upgrade your version.";
+    $errors[]       = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.9 or newer but <a href='?phpinfo'>you are using ".phpversion().'</a>. You need to upgrade your version.';
     $errors_codes[] = 'php_version';
 }
 
 if (!deskpro_install_check_pcre()) {
-    $errors[]       = "PHP is configured with a `pcre.backtrack_limit` value that is too low. Edit your php.ini configuration and change it to at least 100000.";
+    $errors[]       = 'PHP is configured with a `pcre.backtrack_limit` value that is too low. Edit your php.ini configuration and change it to at least 100000.';
     $errors_codes[] = 'pcre_backtrack_limit';
 }
 
 if (!deskpro_install_check_safemode()) {
-    $errors[]       = "PHP currently has safe_mode enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
+    $errors[]       = 'PHP currently has safe_mode enabled. DeskPRO requires safe_mode to be set to "Off". You need to edit your PHP configuration to make this change.';
     $errors_codes[] = 'safe_mode';
 }
 
@@ -268,7 +296,7 @@ if (php_sapi_name() == 'cli') {
 }
 
 if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron' && php_sapi_name() != 'cli') {
-    $errors[]       = "You are using a PHP binary that is not meant for use on the command-line. You should re-compile PHP. (Using: ".php_sapi_name().")";
+    $errors[]       = 'You are using a PHP binary that is not meant for use on the command-line. You should re-compile PHP. (Using: '.php_sapi_name().')';
     $errors_codes[] = 'php_not_cli';
 }
 
@@ -347,3 +375,4 @@ if (extension_loaded('newrelic')) {
     }
 }
 //==END:MONITORING==
+

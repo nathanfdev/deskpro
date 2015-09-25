@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -152,19 +152,19 @@ class Billing
     {
         $currency = addslashes(App::getSetting('core_tickets.billing_currency'));
 
-        $fields = App::getContainer()->getBillingFieldManager()->getFields();
+        $fields      = App::getContainer()->getBillingFieldManager()->getFields();
         $select_bits = array();
         foreach ($fields as $f) {
-            $select_bits[] = 'ticket_charges.custom_data[' . $f->getId() . '] AS \'' . addslashes($f->getTitle()) . '\'';
+            $select_bits[] = 'ticket_charges.custom_data['.$f->getId().'] AS \''.addslashes($f->getTitle()).'\'';
         }
 
         $select_bits = implode(', ', $select_bits);
         if ($select_bits) {
-            $select_bits = $select_bits . ', ';
+            $select_bits = $select_bits.', ';
         }
 
         $output = array(
-            'list-charges-date'                      => array(
+            'list-charges-date' => array(
                 'title' => 'List of charges <1:date group, default: today>',
                 'query' => "
                         DISPLAY TABLE
@@ -174,7 +174,7 @@ class Billing
                         ORDER BY ticket_charges.date_created
                     ",
             ),
-            'total-charges-per-day-date'             => array(
+            'total-charges-per-day-date' => array(
                 'title' => 'Total [charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -184,7 +184,7 @@ class Billing
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
                     ",
             ),
-            'total-amount-charges-per-day-date'      => array(
+            'total-amount-charges-per-day-date' => array(
                 'title' => 'Total [amount charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -194,7 +194,7 @@ class Billing
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
                     ",
             ),
-            'total-time-charges-per-day-date'        => array(
+            'total-time-charges-per-day-date' => array(
                 'title' => 'Total [time charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -204,7 +204,7 @@ class Billing
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
                     ",
             ),
-            'total-charges-person-date'              => array(
+            'total-charges-person-date' => array(
                 'title' => 'Total [charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -214,7 +214,7 @@ class Billing
                         GROUP BY ticket_charges.person
                     ",
             ),
-            'total-amount-charges-person-date'       => array(
+            'total-amount-charges-person-date' => array(
                 'title' => 'Total [amount charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -224,7 +224,7 @@ class Billing
                         GROUP BY ticket_charges.person
                     ",
             ),
-            'total-time-charges-person-date'         => array(
+            'total-time-charges-person-date' => array(
                 'title' => 'Total [time charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -234,7 +234,7 @@ class Billing
                         GROUP BY ticket_charges.person
                     ",
             ),
-            'list-charges-person-date'               => array(
+            'list-charges-person-date' => array(
                 'title' => 'List of charges per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -245,7 +245,7 @@ class Billing
                         ORDER BY ticket_charges.date_created
                     ",
             ),
-            'total-charges-organization-date'        => array(
+            'total-charges-organization-date' => array(
                 'title' => 'Total [charges] per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -265,7 +265,7 @@ class Billing
                         GROUP BY ticket_charges.organization
                     ",
             ),
-            'total-time-charges-organization-date'   => array(
+            'total-time-charges-organization-date' => array(
                 'title' => 'Total [time charges] per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -275,7 +275,7 @@ class Billing
                         GROUP BY ticket_charges.organization
                     ",
             ),
-            'list-charges-organization-date'         => array(
+            'list-charges-organization-date' => array(
                 'title' => 'List of charges per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -286,7 +286,7 @@ class Billing
                         ORDER BY ticket_charges.date_created
                     ",
             ),
-            'total-charges-agent-date'               => array(
+            'total-charges-agent-date' => array(
                 'title' => 'Total [charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -296,7 +296,7 @@ class Billing
                         GROUP BY ticket_charges.agent
                     ",
             ),
-            'total-amount-charges-agent-date'        => array(
+            'total-amount-charges-agent-date' => array(
                 'title' => 'Total [amount charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -306,7 +306,7 @@ class Billing
                         GROUP BY ticket_charges.agent
                     ",
             ),
-            'total-time-charges-agent-date'          => array(
+            'total-time-charges-agent-date' => array(
                 'title' => 'Total [time charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -316,7 +316,7 @@ class Billing
                         GROUP BY ticket_charges.agent
                     ",
             ),
-            'list-charges-agent-date'                => array(
+            'list-charges-agent-date' => array(
                 'title' => 'List of charges per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -59,7 +59,7 @@ class FeedbackController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
-        $page = $request->query->get('page', 1);
+        $page   = $request->query->get('page', 1);
         $person = $this->getUser() ?: new PersonGuest();
 
         //
@@ -82,8 +82,8 @@ class FeedbackController extends AbstractController
             );
 
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
-                'pager'    => $pager,
-                'category' => null,
+                'pager'      => $pager,
+                'category'   => null,
                 'page_title' => $this->createPageTitle()->feedback(),
             ));
         }
@@ -93,13 +93,13 @@ class FeedbackController extends AbstractController
         // NEW FEEDBACK FORM
         //
         $rerendering_saved = $request->attributes->get('rerender-form', false); // true if auto-submit SavedFormController wants us to definitely rerender
-        $is_saved_form = $request->attributes->get('saved-form', false); // true if auto-submit SavedFormController
-        $new_feedback = new Feedback();
+        $is_saved_form     = $request->attributes->get('saved-form', false); // true if auto-submit SavedFormController
+        $new_feedback      = new Feedback();
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
-            'person' => $person,
-            'action' => $this->generateUrl('portal_feedback'),
-            'allow_extra_fields' => $is_saved_form
+            'person'             => $person,
+            'action'             => $this->generateUrl('portal_feedback'),
+            'allow_extra_fields' => $is_saved_form,
         ));
 
         $form->handleRequest($request);
@@ -112,7 +112,7 @@ class FeedbackController extends AbstractController
                     ||
                     (
                         $form->getClickedButton()
-                        && $form->getClickedButton()->getConfig()->getName() !== "more_attachments"
+                        && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments'
                     )
                 )
             ) {
@@ -165,7 +165,7 @@ class FeedbackController extends AbstractController
         //
         // JS INITIAL DATA
         //
-        $filter = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
+        $filter               = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
         $allowed_types_parsed = array();
         foreach ($feedback_types as $cat) {
             $allowed_types_parsed[] = $cat->getId();
@@ -179,23 +179,23 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
-                'page'              => $page,
-                'feedback_types'    => $feedback_types,
-                'count'             => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination'   => true,
-                'status'            => $filter->getStatus(),
-                'status_categories' => $filter->getStatusCategories(),
-                'types'             => $filter->getTypes(),
-                'sort'              => $filter->getSort(),
-                'sort_direction'    => $filter->getSortDirection(),
-                'form'              => $form->createView(),
-                'form_was_submitted'=> $form_was_submitted,
-                'user'              => $this->getUser(),
-                'rerendering_saved' => $rerendering_saved,
-                'breadcrumbs'       => $breadcrumbs,
-                'page_title'        => $this->createPageTitle()->feedback(),
-                'rss_link'          => $rss_link,
-                'filter_js'         => $filter_js
+                'page'               => $page,
+                'feedback_types'     => $feedback_types,
+                'count'              => $this->getBrandSetting('portal.per_page_content'),
+                'show_pagination'    => true,
+                'status'             => $filter->getStatus(),
+                'status_categories'  => $filter->getStatusCategories(),
+                'types'              => $filter->getTypes(),
+                'sort'               => $filter->getSort(),
+                'sort_direction'     => $filter->getSortDirection(),
+                'form'               => $form->createView(),
+                'form_was_submitted' => $form_was_submitted,
+                'user'               => $this->getUser(),
+                'rerendering_saved'  => $rerendering_saved,
+                'breadcrumbs'        => $breadcrumbs,
+                'page_title'         => $this->createPageTitle()->feedback(),
+                'rss_link'           => $rss_link,
+                'filter_js'          => $filter_js,
             )
         );
     }
@@ -208,7 +208,7 @@ class FeedbackController extends AbstractController
      */
     public function browseAction(Request $request, $filter_uri)
     {
-        $page = $request->query->get('page', 1);
+        $page   = $request->query->get('page', 1);
         $person = $this->getUser() ?: new PersonGuest();
 
         try {
@@ -220,7 +220,7 @@ class FeedbackController extends AbstractController
 
         // SECURITY
         // a permissions check, if the user can't see one of these filtered "types" (i.e. FeedbackCategory)
-        $permissions_bag = $this->getPermissionBag($person);
+        $permissions_bag      = $this->getPermissionBag($person);
         $allowed_category_ids = $permissions_bag->getAllowedFeedbackCategoryIds();
         foreach ($filter->getTypes() as $type) {
             if (!in_array($type, $allowed_category_ids)) {
@@ -239,9 +239,10 @@ class FeedbackController extends AbstractController
                     'portal_feedback'
                 );
             }
+
             return $this->redirectToRoute('portal_feedback_browse', array(
                 'filter_uri' => $generated_uri,
-                'page' => $page
+                'page'       => $page,
             ), Response::HTTP_MOVED_PERMANENTLY);
         }
 
@@ -254,7 +255,7 @@ class FeedbackController extends AbstractController
         // FILTER CATEGORIES
         //
         $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
-        $filter_js = $this->generateFilterJs($filter, $feedback_types, $page);
+        $filter_js      = $this->generateFilterJs($filter, $feedback_types, $page);
 
         $page_options = array(
             'page'              => $page,
@@ -269,7 +270,7 @@ class FeedbackController extends AbstractController
             'breadcrumbs'       => $breadcrumbs,
             'page_title'        => $this->createPageTitle()->feedback(),
             'filter_js'         => $filter_js,
-            'rerendering_saved' => false // wont happen here because we always rerender on index
+            'rerendering_saved' => false, // wont happen here because we always rerender on index
         );
 
         if ($request->isXmlHttpRequest()) {
@@ -289,9 +290,9 @@ class FeedbackController extends AbstractController
         ));
 
         $page_options = array_merge($page_options, array(
-            'form' => $form->createView(),
+            'form'               => $form->createView(),
             'form_was_submitted' => false,
-            'user' => $this->getUser(),
+            'user'               => $this->getUser(),
         ));
 
         //
@@ -318,7 +319,7 @@ class FeedbackController extends AbstractController
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
             $form_handler = $this->get('form_handler.comment');
-            $comment = new FeedbackComment();
+            $comment      = new FeedbackComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
@@ -355,9 +356,9 @@ class FeedbackController extends AbstractController
                 'content_id'       => $item->getId(),
                 'content_type'     => Feedback::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'page_title' => $this->createPageTitle()->feedback($item),
-                'breadcrumbs' => $breadcrumbs,
-                'rating' => $rating
+                'page_title'       => $this->createPageTitle()->feedback($item),
+                'breadcrumbs'      => $breadcrumbs,
+                'rating'           => $rating,
             )
         );
     }
@@ -398,17 +399,17 @@ class FeedbackController extends AbstractController
     /**
      * @param $filter
      * @param $feedback_types
+     *
      * @return string
      */
     public function generateFilterJs(FeedbackFilter $filter, array $feedback_types, $page)
     {
-
         $allowed_types_parsed = array();
         foreach ($feedback_types as $cat) {
             $allowed_types_parsed[$cat->getId()] = $cat->getTitle();
         }
 
-        $status_categories = array();
+        $status_categories        = array();
         $status_categories_entity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(array('status_type' => FeedbackFilter::$statuses));
         foreach ($status_categories_entity as $status_category) {
             $status_type = $status_category->getStatusType();
@@ -416,11 +417,10 @@ class FeedbackController extends AbstractController
                 $status_categories[$status_type] = array();
             }
             $status_categories[$status_type][] = array(
-                'id' => $status_category->getId(),
-                'title' => $status_category->getTitle()
+                'id'    => $status_category->getId(),
+                'title' => $status_category->getTitle(),
             );
         }
-
 
         $the_array = array(
             'filter'    => array_merge($filter->toArray(), array('page' => $page)),
@@ -430,7 +430,7 @@ class FeedbackController extends AbstractController
                 'types'             => $allowed_types_parsed,
                 'sorts'             => FeedbackFilter::$sorts_translated,
                 'sort_directions'   => FeedbackFilter::$sort_directions_translated,
-            )
+            ),
         );
 
         $filter_js = json_encode(

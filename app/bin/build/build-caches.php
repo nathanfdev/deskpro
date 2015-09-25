@@ -18,8 +18,8 @@ require DP_ROOT.'/sys/system.php';
 
 $proc_kernel = null;
 if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
-    if (isset($_SERVER['argv'][$k+1])) {
-        $proc_kernel = $_SERVER['argv'][$k+1];
+    if (isset($_SERVER['argv'][$k + 1])) {
+        $proc_kernel = $_SERVER['argv'][$k + 1];
     }
 }
 

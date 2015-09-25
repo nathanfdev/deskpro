@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -74,9 +74,9 @@ class TermEngineDb extends AbstractDbSet
         $this->addBaseBrand($em);
         $this->runBasicDataInstall($admin, $em);
 
-        $support = $this->getEm()->find('DeskPRO:Department', 1);
-        $sales = $this->getEm()->find('DeskPRO:Department', 2);
-        $team_both = $this->createAgentTeam('Agent And Chris', array($agent, $agent_chris));
+        $support    = $this->getEm()->find('DeskPRO:Department', 1);
+        $sales      = $this->getEm()->find('DeskPRO:Department', 2);
+        $team_both  = $this->createAgentTeam('Agent And Chris', array($agent, $agent_chris));
         $team_agent = $this->createAgentTeam('Agent And Chris', array($agent));
 
         // the ticket numbers in the titles are purposley hardcoded
@@ -127,7 +127,7 @@ class TermEngineDb extends AbstractDbSet
             $user,
             $admin,
             null,
-            Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_VALIDATING
+            Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_VALIDATING
         );
         $this->createTicket(
             'UNASSIGNED Test Ticket 27',
@@ -135,7 +135,7 @@ class TermEngineDb extends AbstractDbSet
             $user,
             $admin,
             null,
-            Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_SPAM
+            Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM
         );
         $this->createTicket(
             'UNASSIGNED Test Ticket 28',
@@ -143,7 +143,7 @@ class TermEngineDb extends AbstractDbSet
             $user,
             $admin,
             null,
-            Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED
+            Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED
         );
 
         $this->createCustomDataAndCustomFilters();
@@ -159,8 +159,7 @@ class TermEngineDb extends AbstractDbSet
         AgentTeam $agent_team = null,
         $status = Ticket::STATUS_AWAITING_AGENT,
         $message = 'Test Message'
-    )
-    {
+    ) {
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
         $ticket->creation_system = Ticket::CREATED_WEB_PERSON;
@@ -171,10 +170,10 @@ class TermEngineDb extends AbstractDbSet
         $ticket->setStatus($status);
         $ticket->agent_team = $agent_team;
 
-        $message = new TicketMessage();
-        $message->person = $person;
-        $message->ticket = $ticket;
-        $message->message = "Test Ticket";
+        $message          = new TicketMessage();
+        $message->person  = $person;
+        $message->ticket  = $ticket;
+        $message->message = 'Test Ticket';
         $ticket->addMessage($message);
 
         $ticket->recomputeHash();
@@ -227,7 +226,6 @@ class TermEngineDb extends AbstractDbSet
             false
         );
 
-
         $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
 
         return array($admin, $agent, $agent_chris, $user);
@@ -238,7 +236,7 @@ class TermEngineDb extends AbstractDbSet
      */
     protected function addBaseBrand($em)
     {
-// we need a brand
+        // we need a brand
         $brand = new Brand();
         $em->persist($brand);
         $em->flush();
@@ -247,19 +245,20 @@ class TermEngineDb extends AbstractDbSet
     /**
      * @param $admin
      * @param $em
+     *
      * @throws \Exception
      */
     protected function runBasicDataInstall($admin, $em)
     {
-// Install data stuff
-        $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+        // Install data stuff
+        $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
         $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT = $admin; // can be used in data.php
-        $WEB_INSTALL = true;
-        $IMPORT_INSTALL = false;
+        $AGENT              = $admin; // can be used in data.php
+        $WEB_INSTALL        = true;
+        $IMPORT_INSTALL     = false;
 
         $install_data = new \Application\InstallBundle\Install\InstallDataReader(
-            DP_ROOT . '/src/Application/InstallBundle/Data/data.php'
+            DP_ROOT.'/src/Application/InstallBundle/Data/data.php'
         );
         $translate = $this->getContainer()->get('deskpro.core.translate');
 
@@ -285,16 +284,16 @@ class TermEngineDb extends AbstractDbSet
         if ($USERGROUP_EVERYONE) {
             $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
             foreach ($scanner->getNames() as $p_name) {
-                $p = new \Application\DeskPRO\Entity\Permission();
+                $p            = new \Application\DeskPRO\Entity\Permission();
                 $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name = $p_name;
-                $p->value = 1;
+                $p->name      = $p_name;
+                $p->value     = 1;
                 $em->persist($p);
             }
             $em->flush();
         }
 
-        $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
         $data_init->admin_user = $admin;
         $data_init->run();
 // initial settings so we are "installed"
@@ -307,26 +306,26 @@ class TermEngineDb extends AbstractDbSet
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
-                ('core.deskpro_build', '" . time() . "'),
+                ('core.deskpro_build', '".time()."'),
                 ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
-                ('core.done_rewrite_urls_check', '" . time() . "'),
-                ('core.install_build', '" . time() . "'),
+                ('core.done_rewrite_urls_check', '".time()."'),
+                ('core.install_build', '".time()."'),
                 ('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-                ('core.install_timestamp', '" . time() . "'),
+                ('core.install_timestamp', '".time()."'),
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-                ('core.last_cron_run', '" . time() . "'),
-                ('core.last_cron_start', '" . time() . "'),
+                ('core.last_cron_run', '".time()."'),
+                ('core.last_cron_start', '".time()."'),
                 ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
-                ('core.task_completed_add_ticketfield', '" . time() . "'),
-                ('core.twitter_last_cleanup', '" . time() . "'),
+                ('core.task_completed_add_ticketfield', '".time()."'),
+                ('core.twitter_last_cleanup', '".time()."'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '" . time() . "');
+                ('user.kb_subscriptions_last', '".time()."');
         "
         );
 
@@ -348,11 +347,12 @@ class TermEngineDb extends AbstractDbSet
     /**
      * @param $team_name
      * @param array $members
+     *
      * @return AgentTeam
      */
     protected function createAgentTeam($team_name, array $members)
     {
-        $agent_team = new AgentTeam();
+        $agent_team       = new AgentTeam();
         $agent_team->name = $team_name;
 
         foreach ($members as $member) {
@@ -367,29 +367,29 @@ class TermEngineDb extends AbstractDbSet
 
     protected function createCustomDataAndCustomFilters()
     {
-// CUSTOM DATA
-        $question_def = new CustomDefTicket();
-        $question_def->title = "Favorite Color";
-        $question_def->dscription = "Pick your favorite color";
+        // CUSTOM DATA
+        $question_def             = new CustomDefTicket();
+        $question_def->title      = 'Favorite Color';
+        $question_def->dscription = 'Pick your favorite color';
         $question_def->is_enabled = $question_def->is_user_enabled = true;
 
-        $option_def_green = new CustomDefTicket();
-        $option_def_green->title = "Green";
-        $option_def_green->description = "Green";
-        $option_def_green->is_enabled = $option_def_green->is_enabled = true;
-        $option_def_green->parent = $question_def;
+        $option_def_green              = new CustomDefTicket();
+        $option_def_green->title       = 'Green';
+        $option_def_green->description = 'Green';
+        $option_def_green->is_enabled  = $option_def_green->is_enabled  = true;
+        $option_def_green->parent      = $question_def;
 
-        $option_def_blue = new CustomDefTicket();
-        $option_def_blue->title = "Blue";
-        $option_def_blue->description = "Blue";
-        $option_def_blue->is_enabled = $option_def_blue->is_enabled = true;
-        $option_def_blue->parent = $question_def;
+        $option_def_blue              = new CustomDefTicket();
+        $option_def_blue->title       = 'Blue';
+        $option_def_blue->description = 'Blue';
+        $option_def_blue->is_enabled  = $option_def_blue->is_enabled  = true;
+        $option_def_blue->parent      = $question_def;
 
-        $option_def_red = new CustomDefTicket();
-        $option_def_red->title = "Red";
-        $option_def_red->description = "Red";
-        $option_def_red->is_enabled = $option_def_red->is_enabled = true;
-        $option_def_red->parent = $question_def;
+        $option_def_red              = new CustomDefTicket();
+        $option_def_red->title       = 'Red';
+        $option_def_red->description = 'Red';
+        $option_def_red->is_enabled  = $option_def_red->is_enabled  = true;
+        $option_def_red->parent      = $question_def;
 
         $this->getEm()->persist($question_def);
         $this->getEm()->persist($option_def_green);
@@ -398,32 +398,32 @@ class TermEngineDb extends AbstractDbSet
         $this->getEm()->flush();
 
         // TICKETS WITH CUSTOM DATA
-        $ticket7 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(7);
-        $ticket_data = new CustomDataTicket();
-        $ticket_data->field = $question_def;
+        $ticket7             = $this->getEm()->getRepository('DeskPRO:Ticket')->find(7);
+        $ticket_data         = new CustomDataTicket();
+        $ticket_data->field  = $question_def;
         $ticket_data->ticket = $ticket7;
-        $ticket_data->value = $option_def_red->getId();
+        $ticket_data->value  = $option_def_red->getId();
         $this->getEm()->persist($ticket_data);
 
-        $ticket2 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(2);
-        $ticket_data = new CustomDataTicket();
-        $ticket_data->field = $question_def;
+        $ticket2             = $this->getEm()->getRepository('DeskPRO:Ticket')->find(2);
+        $ticket_data         = new CustomDataTicket();
+        $ticket_data->field  = $question_def;
         $ticket_data->ticket = $ticket2;
-        $ticket_data->value = $option_def_blue->getId();
+        $ticket_data->value  = $option_def_blue->getId();
         $this->getEm()->persist($ticket_data);
 
-        $ticket4 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(4);
-        $ticket_data = new CustomDataTicket();
-        $ticket_data->field = $question_def;
+        $ticket4             = $this->getEm()->getRepository('DeskPRO:Ticket')->find(4);
+        $ticket_data         = new CustomDataTicket();
+        $ticket_data->field  = $question_def;
         $ticket_data->ticket = $ticket4;
-        $ticket_data->value = $option_def_blue->getId();
+        $ticket_data->value  = $option_def_blue->getId();
         $this->getEm()->persist($ticket_data);
 
-        $ticket11 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(11); // NOT "agent"
-        $ticket_data = new CustomDataTicket(); // NOT "agent"
-        $ticket_data->field = $question_def; // NOT "agent"
+        $ticket11            = $this->getEm()->getRepository('DeskPRO:Ticket')->find(11); // NOT "agent"
+        $ticket_data         = new CustomDataTicket(); // NOT "agent"
+        $ticket_data->field  = $question_def; // NOT "agent"
         $ticket_data->ticket = $ticket11; // NOT "agent"
-        $ticket_data->value = $option_def_red->getId(); // NOT "agent"
+        $ticket_data->value  = $option_def_red->getId(); // NOT "agent"
         $this->getEm()->persist($ticket_data);
 
         $this->getEm()->flush();
@@ -435,7 +435,7 @@ class TermEngineDb extends AbstractDbSet
         $term->addTerm(
             new AgentTerm(
                 array(
-                    'agent_ids' => array(AgentTerm::ID_ME) // current agent
+                    'agent_ids' => array(AgentTerm::ID_ME), // current agent
                 )
             )
         );
@@ -443,7 +443,7 @@ class TermEngineDb extends AbstractDbSet
             new TicketCustomDataTerm(
                 array(
                     'field_id' => $question_def->getId(),
-                    'values' => array($option_def_red->getId()) // favorite color is RED
+                    'values'   => array($option_def_red->getId()), // favorite color is RED
                 )
             )
         );
@@ -459,7 +459,7 @@ class TermEngineDb extends AbstractDbSet
         $main_term->addTerm(
             new AgentTerm(
                 array(
-                    'agent_ids' => array(AgentTerm::ID_ME) // current agent
+                    'agent_ids' => array(AgentTerm::ID_ME), // current agent
                 )
             )
         );
@@ -472,7 +472,7 @@ class TermEngineDb extends AbstractDbSet
             new TicketCustomDataTerm(
                 array(
                     'field_id' => $question_def->getId(),
-                    'values' => array($option_def_red->getId())
+                    'values'   => array($option_def_red->getId()),
                     // favorite color is RED
                 )
             )
@@ -481,7 +481,7 @@ class TermEngineDb extends AbstractDbSet
             new TicketCustomDataTerm(
                 array(
                     'field_id' => $question_def->getId(),
-                    'values' => array($option_def_blue->getId())
+                    'values'   => array($option_def_blue->getId()),
                     // favorite color is BLUE
                 )
             )

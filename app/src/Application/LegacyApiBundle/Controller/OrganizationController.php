@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -44,7 +44,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	resourcePath="/organization",
  * 	description="Operations about Organization",
  * 	basePath="/api"
- * )
+ * ).
  */
 class OrganizationController extends AbstractController
 {
@@ -122,7 +122,7 @@ class OrganizationController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
@@ -144,7 +144,7 @@ class OrganizationController extends AbstractController
         }
 
         foreach ($this->container->getSystemService('org_fields_manager')->getFields() as $field) {
-            if ($this->in->checkIsset("field.".$field->getId())) {
+            if ($this->in->checkIsset('field.'.$field->getId())) {
                 $in_val = $this->in->getString('field.'.$field->getId());
                 if ($in_val) {
                     $terms[] = array('type' => 'org_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val));
@@ -240,7 +240,7 @@ class OrganizationController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function newOrganizationAction()
     {
@@ -291,7 +291,7 @@ class OrganizationController extends AbstractController
             }
 
             $all_empty = true;
-            for ($i = 1; $i <= 10; $i++) {
+            for ($i = 1; $i <= 10; ++$i) {
                 if ($contact_data->{'field_'.$i}) {
                     $all_empty = false;
                     break;
@@ -359,7 +359,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationAction($organization_id)
     {
@@ -406,7 +406,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationAction($organization_id)
     {
@@ -464,7 +464,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteOrganizationAction($organization_id)
     {
@@ -500,7 +500,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationPictureAction($organization_id)
     {
@@ -549,7 +549,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationPictureAction($organization_id)
     {
@@ -605,7 +605,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteOrganizationPictureAction($organization_id)
     {
@@ -642,7 +642,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationActivityStreamAction($organization_id)
     {
@@ -705,7 +705,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationMembersAction($organization_id)
     {
@@ -791,7 +791,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationTicketsAction($organization_id)
     {
@@ -870,7 +870,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationChatsAction($organization_id)
     {
@@ -938,7 +938,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationNotesAction($organization_id)
     {
@@ -973,7 +973,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationNotesAction($organization_id)
     {
@@ -1022,7 +1022,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationNoteAction($organization_id, $note_id)
     {
@@ -1060,7 +1060,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationBillingChargesAction($organization_id)
     {
@@ -1105,7 +1105,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationEmailDomainsAction($organization_id)
     {
@@ -1154,7 +1154,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationEmailDomainsAction($organization_id)
     {
@@ -1203,7 +1203,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationEmailDomainAction($organization_id, $domain)
     {
@@ -1244,7 +1244,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationEmailDomainMoveUsersAction($organization_id, $domain)
     {
@@ -1283,7 +1283,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationEmailDomainMoveTakenUsersAction($organization_id, $domain)
     {
@@ -1322,7 +1322,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteOrganizationEmailDomainAction($organization_id, $domain)
     {
@@ -1354,7 +1354,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationContactDetailsAction($organization_id)
     {
@@ -1401,7 +1401,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationContactDetailsAction($organization_id)
     {
@@ -1429,7 +1429,7 @@ class OrganizationController extends AbstractController
         }
 
         $all_empty = true;
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 10; ++$i) {
             if ($contact_data->{'field_'.$i}) {
                 $all_empty = false;
                 break;
@@ -1475,7 +1475,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationContactDetailAction($organization_id, $contact_id)
     {
@@ -1514,7 +1514,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteOrganizationContactDetailAction($organization_id, $contact_id)
     {
@@ -1549,7 +1549,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationGroupsAction($organization_id)
     {
@@ -1582,7 +1582,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationGroupsAction($organization_id)
     {
@@ -1645,7 +1645,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationGroupAction($organization_id, $usergroup_id)
     {
@@ -1684,7 +1684,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteOrganizationGroupAction($organization_id, $usergroup_id)
     {
@@ -1722,7 +1722,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationLabelsAction($organization_id)
     {
@@ -1755,7 +1755,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function postOrganizationLabelsAction($organization_id)
     {
@@ -1800,7 +1800,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function getOrganizationLabelAction($organization_id, $label)
     {
@@ -1837,7 +1837,7 @@ class OrganizationController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Organization not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteOrganizationLabelAction($organization_id, $label)
     {
@@ -1857,7 +1857,7 @@ class OrganizationController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available custom organization fields."
      * 	)
-     * )
+     * ).
      */
     public function getFieldsAction()
     {
@@ -1874,7 +1874,7 @@ class OrganizationController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available usergroups."
      * 	)
-     * )
+     * ).
      */
     public function getGroupsAction()
     {
@@ -1889,12 +1889,12 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * @param integer $id
-     * @param string  $check_perm
+     * @param int    $id
+     * @param string $check_perm
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Organization
      *
+     * @return \Application\DeskPRO\Entity\Organization
      */
     protected function _getOrganizationOr404($id, $check_perm = '')
     {
@@ -1910,7 +1910,7 @@ class OrganizationController extends AbstractController
                 case 'delete':
                 case 'create':
                 case 'note':
-                    if (!$this->person->hasPerm('agent_org.' . $check_perm)) {
+                    if (!$this->person->hasPerm('agent_org.'.$check_perm)) {
                         throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
                     }
                     break;

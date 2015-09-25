@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -43,6 +43,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A custom field definition.
+ *
  * @property int $id
  * @property CustomFieldDefinition $parent
  * @property ArrayCollection $children
@@ -181,16 +182,16 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
     public function spawnChild($title)
     {
-        $new = new CustomFieldDefinition();
-        $new->parent = $this;
-        $new->title = $title;
-        $new->form_type = $this->form_type;
-        $new->owner_class = $this->owner_class;
-        $new->context_class = $this->context_class;
-        $new->is_enabled = $this->is_enabled;
+        $new                  = new self();
+        $new->parent          = $this;
+        $new->title           = $title;
+        $new->form_type       = $this->form_type;
+        $new->owner_class     = $this->owner_class;
+        $new->context_class   = $this->context_class;
+        $new->is_enabled      = $this->is_enabled;
         $new->is_user_enabled = $this->is_user_enabled;
-        $new->is_agent_field = $this->is_agent_field;
-        $new->app = $this->app;
+        $new->is_agent_field  = $this->is_agent_field;
+        $new->app             = $this->app;
 
         return $new;
     }
@@ -257,8 +258,8 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
     /**
      * @throws \Exception
-     * @return \Application\DeskPRO\Form\Type\CustomFields\Definitions\CustomFieldDefinitionType
      *
+     * @return \Application\DeskPRO\Form\Type\CustomFields\Definitions\CustomFieldDefinitionType
      */
     public function createDefinitionType()
     {
@@ -355,27 +356,27 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true));
 
         // todo is these columns required?
-        $metadata->mapField(array( 'fieldName' => 'js_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'js_class'));
-        $metadata->mapField(array( 'fieldName' => 'has_form_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_form_template'));
-        $metadata->mapField(array( 'fieldName' => 'has_display_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_display_template'));
+        $metadata->mapField(array('fieldName' => 'js_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'js_class'));
+        $metadata->mapField(array('fieldName' => 'has_form_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_form_template'));
+        $metadata->mapField(array('fieldName' => 'has_display_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_display_template'));
 
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array( 'fieldName' => 'description', 'type' => 'text', 'nullable' => false, 'columnName' => 'description'));
-        $metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'nullable' => false, 'columnName' => 'options'));
-        $metadata->mapField(array( 'fieldName' => 'default_value', 'type' => 'string', 'length' => 500, 'nullable' => true, 'columnName' => 'default_value'));
-        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array('fieldName' => 'description', 'type' => 'text', 'nullable' => false, 'columnName' => 'description'));
+        $metadata->mapField(array('fieldName' => 'options', 'type' => 'array', 'nullable' => false, 'columnName' => 'options'));
+        $metadata->mapField(array('fieldName' => 'default_value', 'type' => 'string', 'length' => 500, 'nullable' => true, 'columnName' => 'default_value'));
+        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'nullable' => false, 'columnName' => 'display_order'));
 
-        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_enabled'));
-        $metadata->mapField(array( 'fieldName' => 'is_user_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_user_enabled'));
-        $metadata->mapField(array( 'fieldName' => 'is_agent_field', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_agent_field'));
+        $metadata->mapField(array('fieldName' => 'is_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_enabled'));
+        $metadata->mapField(array('fieldName' => 'is_user_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_user_enabled'));
+        $metadata->mapField(array('fieldName' => 'is_agent_field', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_agent_field'));
 
-        $metadata->mapField(array( 'fieldName' => 'form_type', 'type' => 'string', 'nullable' => false, 'columnName' => 'form_type'));
-        $metadata->mapField(array( 'fieldName' => 'owner_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'owner_class'));
-        $metadata->mapField(array( 'fieldName' => 'context_class', 'type' => 'string', 'nullable' => true, 'columnName' => 'context_class'));
-        $metadata->mapField(array( 'fieldName' => 'context_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'context_id'));
+        $metadata->mapField(array('fieldName' => 'form_type', 'type' => 'string', 'nullable' => false, 'columnName' => 'form_type'));
+        $metadata->mapField(array('fieldName' => 'owner_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'owner_class'));
+        $metadata->mapField(array('fieldName' => 'context_class', 'type' => 'string', 'nullable' => true, 'columnName' => 'context_class'));
+        $metadata->mapField(array('fieldName' => 'context_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'context_id'));
 
         $metadata->mapManyToOne(array(
             'fieldName'    => 'parent',

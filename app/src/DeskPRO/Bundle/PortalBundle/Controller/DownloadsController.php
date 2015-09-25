@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -55,7 +55,7 @@ class DownloadsController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
-        $page = $request->get('page', 1);
+        $page   = $request->get('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -70,9 +70,9 @@ class DownloadsController extends AbstractController
             );
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
-                'pager' => $pager,
-                'category' => null,
-                'page_title' => $this->createPageTitle()->downloads()
+                'pager'      => $pager,
+                'category'   => null,
+                'page_title' => $this->createPageTitle()->downloads(),
             ));
         }
         $rss_link = $this->generateUrl(
@@ -91,12 +91,12 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:index.html.twig',
             array(
-                'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
-                'breadcrumbs' => $breadcrumbs,
+                'page'               => $page,
+                'count'              => $this->getBrandSetting('portal.per_page_content'),
+                'breadcrumbs'        => $breadcrumbs,
                 'show_category_link' => true,
-                'page_title' => $this->createPageTitle()->downloads(),
-                'rss_link' => $rss_link
+                'page_title'         => $this->createPageTitle()->downloads(),
+                'rss_link'           => $rss_link,
             )
         );
     }
@@ -110,7 +110,7 @@ class DownloadsController extends AbstractController
      */
     public function browseAction(Request $request, DownloadCategory $category, $_format)
     {
-        $page = $request->query->get('page', 1);
+        $page   = $request->query->get('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -125,9 +125,9 @@ class DownloadsController extends AbstractController
             );
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
-                'pager' => $pager,
-                'category' => $category,
-                'page_title' => $this->createPageTitle()->downloads($category)
+                'pager'      => $pager,
+                'category'   => $category,
+                'page_title' => $this->createPageTitle()->downloads($category),
             ));
         }
         $rss_link = $this->generateUrl('portal_downloads_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
@@ -164,14 +164,14 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
             array(
-                'category' => $category,
-                'breadcrumbs' => $breadcrumbs,
-                'count' => $count,
-                'page' => $page,
-                'pager' => $pager,
+                'category'      => $category,
+                'breadcrumbs'   => $breadcrumbs,
+                'count'         => $count,
+                'page'          => $page,
+                'pager'         => $pager,
                 'is_subscribed' => $is_subscribed,
-                'page_title' => $this->createPageTitle()->downloads($category),
-                'rss_link' => $rss_link
+                'page_title'    => $this->createPageTitle()->downloads($category),
+                'rss_link'      => $rss_link,
             )
         );
     }
@@ -187,7 +187,7 @@ class DownloadsController extends AbstractController
     {
         // TODO: is there ever an instance that there would NOT be a blob associated with a download entity??
         if (!$file->getBlob()) {
-            throw $this->createNotFoundException('could not find downloadable content for download id=' . $file->getId());
+            throw $this->createNotFoundException('could not find downloadable content for download id='.$file->getId());
         }
 
         //
@@ -196,7 +196,7 @@ class DownloadsController extends AbstractController
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOAD, $file)) {
             $form_handler = $this->get('form_handler.comment');
-            $comment = new DownloadComment();
+            $comment      = new DownloadComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
@@ -240,14 +240,14 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             array(
-                'file' => $file,
-                'content_type' => Download::CONTENT_TYPE,
-                'content_id' => $file->getId(),
+                'file'             => $file,
+                'content_type'     => Download::CONTENT_TYPE,
+                'content_id'       => $file->getId(),
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'breadcrumbs' => $breadcrumbs,
-                'rating' => $rating,
-                'is_subscribed' => $is_subscribed,
-                'page_title' => $this->createPageTitle()->downloads($file)
+                'breadcrumbs'      => $breadcrumbs,
+                'rating'           => $rating,
+                'is_subscribed'    => $is_subscribed,
+                'page_title'       => $this->createPageTitle()->downloads($file),
             )
         );
     }
@@ -270,8 +270,8 @@ class DownloadsController extends AbstractController
 
         return $this->redirectToRoute('serve_blob', array(
             'blob_auth_id' => $file->getBlob()->getAuthId(),
-            'filename' => $file->getFilenameSafe(),
-            'dl' => 1,
+            'filename'     => $file->getFilenameSafe(),
+            'dl'           => 1,
         ));
     }
 
@@ -305,7 +305,7 @@ class DownloadsController extends AbstractController
      */
     public function downloadsSubscriptionAction(Download $file)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedContent($file, $person)) {
@@ -327,7 +327,7 @@ class DownloadsController extends AbstractController
      */
     public function downloadsCategorySubscriptionAction(DownloadCategory $category)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {

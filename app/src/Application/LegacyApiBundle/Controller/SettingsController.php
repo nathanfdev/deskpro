@@ -1,40 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\HttpFoundation\Request;
@@ -47,6 +43,8 @@ use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
 use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
+use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Kernel\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
@@ -55,13 +53,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class SettingsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
         return new AdminManagePermission();
     }
-
 
     ####################################################################################################################
     # get-value
@@ -77,7 +74,6 @@ class SettingsController extends AbstractController implements ProtectedControll
         ));
     }
 
-
     ####################################################################################################################
     # set-value
     ####################################################################################################################
@@ -88,10 +84,9 @@ class SettingsController extends AbstractController implements ProtectedControll
 
         return $this->createSuccessResponse(array(
             'name'  => $name,
-            'value' => $value
+            'value' => $value,
         ));
     }
-
 
     ####################################################################################################################
     # ticket-settings
@@ -105,7 +100,6 @@ class SettingsController extends AbstractController implements ProtectedControll
             'ticket_settings' => $ticket_settings->toArray(),
         ));
     }
-
 
     ####################################################################################################################
     # save-ticket-settings
@@ -133,7 +127,6 @@ class SettingsController extends AbstractController implements ProtectedControll
         ));
     }
 
-
     ####################################################################################################################
     # save-ticket-settings
     ####################################################################################################################
@@ -159,7 +152,6 @@ class SettingsController extends AbstractController implements ProtectedControll
             'server_settings' => $server_settings->toArray(),
         ));
     }
-
 
     ####################################################################################################################
     # save-server-settings
@@ -188,7 +180,6 @@ class SettingsController extends AbstractController implements ProtectedControll
         ));
     }
 
-
     ####################################################################################################################
     # save-general-settings
     ####################################################################################################################
@@ -202,7 +193,6 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # portal-settings
     ####################################################################################################################
@@ -215,7 +205,6 @@ class SettingsController extends AbstractController implements ProtectedControll
             'portal_settings' => $portal_settings->toArray(),
         ));
     }
-
 
     ####################################################################################################################
     # save-portal-settings
@@ -241,7 +230,6 @@ class SettingsController extends AbstractController implements ProtectedControll
         }
 
         if ($blob) {
-
             $ext = strtolower(Strings::getExtension($blob->getFilename()));
             if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg', 'ico'))) {
                 throw $this->createNotFoundException();
@@ -265,7 +253,7 @@ class SettingsController extends AbstractController implements ProtectedControll
                     if (!$gd) {
                         throw $this->createNotFoundException();
                     }
-                    $width = imagesx($gd);
+                    $width  = imagesx($gd);
                     $height = imagesy($gd);
 
                     $gd_dest = imagecreatetruecolor(16, 16);
@@ -283,11 +271,10 @@ class SettingsController extends AbstractController implements ProtectedControll
                 'image/x-icon'
             );
             $blob_id = $use_blob->getId();
-            $url = trim($blob->getDownloadUrl(true, false), '/');
+            $url     = trim($blob->getDownloadUrl(true, false), '/');
 
             $this->settings->setSetting('core.favicon_blob_id', $blob_id);
             $this->settings->setSetting('core.favicon_blob_url', $url);
-
         } else {
             $this->settings->setSetting('core.favicon_blob_id', null);
             $this->settings->setSetting('core.favicon_blob_url', null);
@@ -299,7 +286,6 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # all-settings-raw
     ####################################################################################################################
@@ -307,17 +293,29 @@ class SettingsController extends AbstractController implements ProtectedControll
     public function allSettingsRawAction()
     {
         $settings_files = new AdvancedSettings();
-        $all_settings = array();
+        $all_settings   = array();
 
         foreach ($settings_files->getAllSettings() as $name => $default_value) {
             $value = $set = $this->container->getSetting($name);
 
-            if ($default_value === true) $default_value = 1;
-            if ($value === true) $value = 1;
-            if ($default_value === false) $default_value = 0;
-            if ($value === false) $value = 0;
-            if ($default_value === null) $default_value = '';
-            if ($value === null) $value = '';
+            if ($default_value === true) {
+                $default_value = 1;
+            }
+            if ($value === true) {
+                $value = 1;
+            }
+            if ($default_value === false) {
+                $default_value = 0;
+            }
+            if ($value === false) {
+                $value = 0;
+            }
+            if ($default_value === null) {
+                $default_value = '';
+            }
+            if ($value === null) {
+                $value = '';
+            }
 
             if ($value === '' && $default_value != '') {
                 $value = '<BLANK>';
@@ -331,16 +329,24 @@ class SettingsController extends AbstractController implements ProtectedControll
         }
 
         foreach ($this->container->getSettingsHandler()->getIterator() as $name => $value) {
-            if (isset($all_settings[$name])) continue;
+            if (isset($all_settings[$name])) {
+                continue;
+            }
 
-            if ($value === true) $value = 1;
-            if ($value === false) $value = 0;
-            if ($value === null) $value = '';
+            if ($value === true) {
+                $value = 1;
+            }
+            if ($value === false) {
+                $value = 0;
+            }
+            if ($value === null) {
+                $value = '';
+            }
 
             $all_settings[$name] = array(
                 'name'          => $name,
                 'default_value' => '',
-                'value'         => $value
+                'value'         => $value,
             );
         }
 
@@ -356,7 +362,7 @@ class SettingsController extends AbstractController implements ProtectedControll
     public function saveAllSettingsRawAction()
     {
         $settings_files = new AdvancedSettings();
-        $set_settings = $this->in->getArrayValue('all_settings');
+        $set_settings   = $this->in->getArrayValue('all_settings');
 
         foreach ($settings_files->getAllSettings() as $name => $default_value) {
             if (!isset($set_settings[$name])) {
@@ -376,19 +382,18 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # registration-settings
     ####################################################################################################################
 
     public function registrationSettingsAction()
     {
-        $reg_settings = new RegistrationSettings($this->settings, $this->em);
+        $reg_settings        = new RegistrationSettings($this->settings, $this->em);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
         return $this->createApiResponse(array(
             'registration_settings' => $reg_settings->toArray(),
-            'rate_limit_settings' => $rate_limit_settings->toArray(),
+            'rate_limit_settings'   => $rate_limit_settings->toArray(),
         ));
     }
 
@@ -415,11 +420,11 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function passwordSettingsAction()
     {
-        $password_settings = new PasswordSettings($this->settings);
+        $password_settings   = new PasswordSettings($this->settings);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
         return $this->createApiResponse(array(
-            'settings' => $password_settings->toArray(),
+            'settings'            => $password_settings->toArray(),
             'rate_limit_settings' => $rate_limit_settings->toArray(),
         ));
     }
@@ -454,21 +459,20 @@ class SettingsController extends AbstractController implements ProtectedControll
 
         $remove_label = false;
         if ($content && isset($content['email']) && $this->person) {
-
             $form = $this->createForm(new PersonStartType());
             $data = array_intersect_key($content, $form->all());
             $form->submit($data);
 
             if (!$form->isValid()) {
-                return $this->createApiErrorResponse('form_error', (string)$form->getErrors(1));
+                return $this->createApiErrorResponse('form_error', (string) $form->getErrors(1));
             }
 
-            $data = $form->getData();
-            $p = $this->person;
-            $email = $p->getPrimaryEmail();
-            $email['email'] = $data['email'];
+            $data            = $form->getData();
+            $p               = $this->person;
+            $email           = $p->getPrimaryEmail();
+            $email['email']  = $data['email'];
             $p['first_name'] = $data['first_name'];
-            $p['last_name'] = $data['last_name'];
+            $p['last_name']  = $data['last_name'];
             $p->setPassword($data['password']);
 
             $this->em->flush($email);
@@ -485,7 +489,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         $this->settings->setSetting('core.default_timezone', $tz);
 
         $license_code = $this->in->getString('license_code');
-        $lic = License::create($license_code, $this->settings->get('core.install_key'));
+        $lic          = License::create($license_code, $this->settings->get('core.install_key'));
         if ($lic->isLicenseCodeError()) {
             return $this->createApiErrorResponse($lic->getLicenseCodeError(), 'Invalid license (bad code)');
         }
@@ -523,29 +527,29 @@ class SettingsController extends AbstractController implements ProtectedControll
         switch ($app) {
             case 'news':
                 $settings = array(
-                    'enabled'     => (bool)$this->settings->get('core.apps_news'),
-                    'tab_enabled' => (bool)$this->settings->get('user.portal_tab_news'),
+                    'enabled'     => (bool) $this->settings->get('core.apps_news'),
+                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_news'),
                 );
                 break;
 
             case 'kb':
                 $settings = array(
-                    'enabled'     => (bool)$this->settings->get('core.apps_kb'),
-                    'tab_enabled' => (bool)$this->settings->get('user.portal_tab_articles'),
+                    'enabled'     => (bool) $this->settings->get('core.apps_kb'),
+                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_articles'),
                 );
                 break;
 
             case 'feedback':
                 $settings = array(
-                    'enabled'     => (bool)$this->settings->get('core.apps_feedback'),
-                    'tab_enabled' => (bool)$this->settings->get('user.portal_tab_feedback'),
+                    'enabled'     => (bool) $this->settings->get('core.apps_feedback'),
+                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_feedback'),
                 );
                 break;
 
             case 'downloads':
                 $settings = array(
-                    'enabled'     => (bool)$this->settings->get('core.apps_downloads'),
-                    'tab_enabled' => (bool)$this->settings->get('user.portal_tab_downloads'),
+                    'enabled'     => (bool) $this->settings->get('core.apps_downloads'),
+                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_downloads'),
                 );
                 break;
 
@@ -554,7 +558,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         }
 
         return $this->createApiResponse(array(
-            'settings' => $settings
+            'settings' => $settings,
         ));
     }
 
@@ -568,28 +572,28 @@ class SettingsController extends AbstractController implements ProtectedControll
             case 'news':
                 $settings = array(
                     'core.apps_news'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_news' => (int)($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled'))
+                    'user.portal_tab_news' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                 );
                 break;
 
             case 'kb':
                 $settings = array(
                     'core.apps_kb'             => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_articles' => (int)($this->in->getBoolInt('settings.enabled') && $this->in->getBoolInt('settings.tab_enabled'))
+                    'user.portal_tab_articles' => (int) ($this->in->getBoolInt('settings.enabled') && $this->in->getBoolInt('settings.tab_enabled')),
                 );
                 break;
 
             case 'feedback':
                 $settings = array(
                     'core.apps_feedback'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_feedback' => (int)($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled'))
+                    'user.portal_tab_feedback' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                 );
                 break;
 
             case 'downloads':
                 $settings = array(
                     'core.apps_downloads'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_downloads' => (int)($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled'))
+                    'user.portal_tab_downloads' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                 );
                 break;
 
@@ -606,21 +610,23 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     /**
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function setLogoBlobAction(Request $request)
     {
         if (!$blob_id = $request->get('blob_id')) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         /** @var $blob Blob */
         if (!$blob = $this->em->find('DeskPRO:Blob', $blob_id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if ($old = $this->settings->get('agent.login_logo_blob_id')) {
@@ -637,24 +643,25 @@ class SettingsController extends AbstractController implements ProtectedControll
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function getLogoBlobAction()
     {
         if (!$blob_id = $this->settings->get('agent.login_logo_blob_id')) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         /** @var $blob Blob */
         if (!$blob = $this->em->find('DeskPRO:Blob', $blob_id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
-        $data = $blob->toApiData();
-        $data['thumbnail'] = rtrim($this->settings->get('core.deskpro_url'), '/') . $blob->getThumbnailUrl('360x100');
+        $data              = $blob->toApiData();
+        $data['thumbnail'] = rtrim($this->settings->get('core.deskpro_url'), '/').$blob->getThumbnailUrl('360x100');
 
         return $this->createJsonResponse($data);
     }

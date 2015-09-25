@@ -1,38 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway;
 
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailSource;
 use Orb\Log\Logger;
 
@@ -98,7 +98,7 @@ class RunnerExecSource
     {
         if (!$this->reader) {
             $this->logger->logDebug('No reader set, creating it from raw source');
-            $ts = microtime(true);
+            $ts           = microtime(true);
             $this->reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
             $this->reader->setRawSource($this->source['raw_source']);
             $this->logger->logDebug(sprintf('Reader created in %.3fs', microtime(true) - $ts));
@@ -119,7 +119,7 @@ class RunnerExecSource
         try {
             $reader = $this->getReader();
         } catch (\Exception $e) {
-            $this->logger->logDebug("Exception while decoding: ".$e->getMessage());
+            $this->logger->logDebug('Exception while decoding: '.$e->getMessage());
 
             return array(
                 'status'     => 'rejected',
@@ -168,17 +168,17 @@ class RunnerExecSource
 
         $from_headers = $this->from_headers;
         if ($from_headers) {
-            $this->logger->logDebug(sprintf("From header priority: %s", implode(', ', $from_headers)));
+            $this->logger->logDebug(sprintf('From header priority: %s', implode(', ', $from_headers)));
             $reader->setFromHeaderPriority($from_headers);
             $from = $reader->getFromAddress()->getEmail();
-            $this->logger->logDebug(sprintf("[Message] Using From: %s", $from));
+            $this->logger->logDebug(sprintf('[Message] Using From: %s', $from));
         }
 
         #------------------------------
         # Run preprocessor
         #------------------------------
 
-        $this->logger->logDebug("Running preprocessor");
+        $this->logger->logDebug('Running preprocessor');
         $result = $this->runPreProcessor();
 
         if ($result['status'] != 'okay') {
@@ -187,13 +187,13 @@ class RunnerExecSource
             return $result;
         }
 
-        $this->logger->logDebug("--> Preprocessor OKAY");
+        $this->logger->logDebug('--> Preprocessor OKAY');
 
         #------------------------------
         # Run email processor
         #------------------------------
 
-        $this->logger->logDebug("Running email processor");
+        $this->logger->logDebug('Running email processor');
         $result = $this->runEmailProcessor();
 
         if ($result['status'] != 'okay') {
@@ -202,8 +202,8 @@ class RunnerExecSource
             return $result;
         }
 
-        $this->logger->logDebug("--> Email processor OKAY");
-        $this->logger->logDebug(sprintf("--> Created: %s %s", @$result['created_object_type'], @$result['created_object_id']));
+        $this->logger->logDebug('--> Email processor OKAY');
+        $this->logger->logDebug(sprintf('--> Created: %s %s', @$result['created_object_type'], @$result['created_object_id']));
 
         return $result;
     }

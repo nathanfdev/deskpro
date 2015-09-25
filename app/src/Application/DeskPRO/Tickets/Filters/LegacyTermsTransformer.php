@@ -1,44 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
+use Application\DeskPRO\Util as DeskPROUtil;
 use Orb\Util\OptionsArray;
 use Orb\Util\Util;
-use Application\DeskPRO\Util as DeskPROUtil;
 
 /**
  * This converts between 'new' and 'old' style term definitions.
@@ -60,8 +60,8 @@ class LegacyTermsTransformer
      * @param FilterTerms $terms
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public function toLegacyTerms(FilterTerms $terms)
     {
@@ -73,7 +73,7 @@ class LegacyTermsTransformer
             $t = $this->_termToLegacyTerms($term);
 
             if (!$t) {
-                throw new \InvalidArgumentException("New term has no mapping to legacy term: ".get_class($terms));
+                throw new \InvalidArgumentException('New term has no mapping to legacy term: '.get_class($terms));
             }
 
             if (isset($t['type'])) {
@@ -220,8 +220,8 @@ class LegacyTermsTransformer
 
             case 'FilterFeedbackRating':
                 return array(
-                    'type' => 'feedback_rating',
-                    'op' => $term->getTermOperator(),
+                    'type'    => 'feedback_rating',
+                    'op'      => $term->getTermOperator(),
                     'options' => $term->getTermOptions(),
                 );
 
@@ -423,22 +423,22 @@ class LegacyTermsTransformer
                 );
 
             case 'FilterTicketField':
-                $t   = $term->getTermOptions();
-                $fid = $t['field_id'];
+                $t     = $term->getTermOptions();
+                $fid   = $t['field_id'];
                 $value = @$t['value'] ?: null;
 
                 if ($t->has('date1')) {
-                    $value = 'date|' . $t['date1'];
+                    $value = 'date|'.$t['date1'];
                 }
                 if ($t->has('date2')) {
-                    $value .= '|' . $t['date2'];
+                    $value .= '|'.$t['date2'];
                 }
 
                 if ($t->has('date1_relative')) {
-                    $value = 'date_relative|' . (int) $t['date1_relative'] . ' ' . $t['date1_relative_type'];
+                    $value = 'date_relative|'.(int) $t['date1_relative'].' '.$t['date1_relative_type'];
                 }
                 if ($t->has('date2_relative')) {
-                    $value .= '|' . (int) $t['date2_relative'] . ' ' . $t['date2_relative_type'];
+                    $value .= '|'.(int) $t['date2_relative'].' '.$t['date2_relative_type'];
                 }
 
                 return array(
@@ -446,9 +446,9 @@ class LegacyTermsTransformer
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'custom_fields' => array(
-                            "field_{$fid}" => $value
-                        )
-                    )
+                            "field_{$fid}" => $value,
+                        ),
+                    ),
                 );
 
             case 'FilterUserField':
@@ -489,8 +489,8 @@ class LegacyTermsTransformer
      * @param array $legacy_terms
      *
      * @throws \InvalidArgumentException
-     * @return FilterTerms               Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
      *
+     * @return FilterTerms Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
      */
     public function toFilterTerms(array $legacy_terms)
     {
@@ -500,7 +500,7 @@ class LegacyTermsTransformer
             $t = $this->_legacyTermToFilterTerm($term);
 
             if (!$t) {
-                throw new \InvalidArgumentException("Legacy term has no mapping to new term: ".@$term['type']);
+                throw new \InvalidArgumentException('Legacy term has no mapping to new term: '.@$term['type']);
             }
 
             $terms->addTerm($t);
@@ -687,8 +687,8 @@ class LegacyTermsTransformer
 
             case 'sla_status':
                 return new Terms\FilterSlaStatus($op, array(
-                    'sla_id'    => @$options['sla_id'] ?: 0,
-                    'sla_status' => @$options['sla_status'] ?: ''
+                    'sla_id'     => @$options['sla_id'] ?: 0,
+                    'sla_status' => @$options['sla_status'] ?: '',
                 ));
 
             case 'user_waiting':
@@ -838,9 +838,9 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgContactIm($op, $options);
 
             case 'ticket_field':
-                $new_opts = $options;
+                $new_opts             = $options;
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 $parts = is_string($new_opts['value'])
                     ? explode('|', $new_opts['value'])
@@ -849,11 +849,11 @@ class LegacyTermsTransformer
                 if ($field = array_shift($parts)) {
                     foreach ($parts as $k => $part) {
                         if ('date_relative' === $field) {
-                            @list($interval, $type) = explode(' ', $part);
-                            $new_opts['date' . ($k + 1) . '_relative'] = $interval;
-                            $new_opts['date' . ($k + 1) . '_relative_type'] = $type;
+                            @list($interval, $type)                     = explode(' ', $part);
+                            $new_opts['date'.($k + 1).'_relative']      = $interval;
+                            $new_opts['date'.($k + 1).'_relative_type'] = $type;
                         } else {
-                            $new_opts[$field . ($k + 1)] = $part;
+                            $new_opts[$field.($k + 1)] = $part;
                         }
                     }
                 }

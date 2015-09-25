@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -49,7 +49,7 @@ class InstallKernel extends BaseKernel
     {
         parent::__construct($environment, $debug);
 
-        $name       = explode("\\", get_class($this));
+        $name       = explode('\\', get_class($this));
         $name       = array_pop($name);
         $this->name = $name;
 
@@ -66,7 +66,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function boot()
     {
@@ -91,7 +91,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function registerBundles()
     {
@@ -110,7 +110,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
@@ -154,7 +154,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function initializeContainer()
     {
@@ -168,7 +168,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRootDir()
     {
@@ -176,7 +176,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCacheDir()
     {
@@ -194,7 +194,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getLogDir()
     {
@@ -230,20 +230,20 @@ class InstallKernel extends BaseKernel
     public function registerBundleDirs()
     {
         return array(
-            'Application'        => DP_ROOT.'/src/Application',
-            'Bundle'             => DP_ROOT.'/src/Bundle',
+            'Application' => DP_ROOT.'/src/Application',
+            'Bundle'      => DP_ROOT.'/src/Bundle',
         );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function loadClassCache($name = 'classes', $extension = '.php')
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setClassCache(array $classes)
     {

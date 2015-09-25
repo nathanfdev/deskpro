@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
@@ -56,9 +56,9 @@ class PortalSupportExtension extends \Twig_Extension
     /**
      * @param ContainerInterface $continer
      */
-    function __construct(ContainerInterface $continer)
+    public function __construct(ContainerInterface $continer)
     {
-        $this->container = $continer;
+        $this->container   = $continer;
         $this->brand_stack = $continer->get('brand_stack');
     }
 
@@ -67,7 +67,7 @@ class PortalSupportExtension extends \Twig_Extension
         $token_parsers = array(
             new TokenParser\ShowParser($this),
             new TokenParser\GroupParser($this),
-            new TokenParser\GroupItemParser($this)
+            new TokenParser\GroupItemParser($this),
         );
 
         return $token_parsers;
@@ -76,7 +76,7 @@ class PortalSupportExtension extends \Twig_Extension
     public function getNodeVisitors()
     {
         $visitors = array(
-            new NodeVisitor\GroupVisitor()
+            new NodeVisitor\GroupVisitor(),
         );
 
         return $visitors;
@@ -103,7 +103,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_multi_lang', array($this, 'isMultLang')),
             new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
             new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
-            new \Twig_SimpleFunction('date', array($this, 'date'))
+            new \Twig_SimpleFunction('date', array($this, 'date')),
         );
 
         return $funcs;
@@ -144,19 +144,21 @@ class PortalSupportExtension extends \Twig_Extension
      * Check if the current user can see/use a certain feature.
      *
      * @param string $name
+     *
      * @return bool
      */
     public function canUseCheck($name)
     {
         $n = strtoupper($name);
-        return $this->container->get('security.authorization_checker')->isGranted("USE_" . $n);
+
+        return $this->container->get('security.authorization_checker')->isGranted('USE_'.$n);
     }
 
-
     /**
-     * Check if there is any content to show for: articles, news, downloads, feedback
+     * Check if there is any content to show for: articles, news, downloads, feedback.
      *
      * @param string $name
+     *
      * @return bool
      */
     public function hasAnyCheck($name)
@@ -241,15 +243,13 @@ class PortalSupportExtension extends \Twig_Extension
         return $root_url;
     }
 
-
     /**
      * @return bool
      */
     public function isUser()
     {
-        return $this->container->get('security.authorization_checker')->isGranted("ROLE_USER");
+        return $this->container->get('security.authorization_checker')->isGranted('ROLE_USER');
     }
-
 
     /**
      * @return bool
@@ -262,7 +262,6 @@ class PortalSupportExtension extends \Twig_Extension
 
         return $person->is_agent && $person->can_agent;
     }
-
 
     /**
      * @return bool
@@ -302,11 +301,12 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function isGuest()
     {
-        return !$this->container->get('security.authorization_checker')->isGranted("ROLE_USER");
+        return !$this->container->get('security.authorization_checker')->isGranted('ROLE_USER');
     }
 
     /**
      * @param string $page
+     *
      * @return bool
      */
     public function pageIsCheck($page)
@@ -343,6 +343,7 @@ class PortalSupportExtension extends \Twig_Extension
      * Counts the number of truthy arguments. Typically used when counting columns.
      *
      * @param mixed...
+     *
      * @return int
      */
     public function countTruthy()
@@ -351,7 +352,9 @@ class PortalSupportExtension extends \Twig_Extension
 
         $x = 0;
         foreach ($args as $v) {
-            if ($v) $x++;
+            if ($v) {
+                $x++;
+            }
         }
 
         return $x;
@@ -359,8 +362,9 @@ class PortalSupportExtension extends \Twig_Extension
 
     /**
      * @param string|\DateTime $date
-     * @param string $format
-     * @param null $timezone
+     * @param string           $format
+     * @param null             $timezone
+     *
      * @return string
      */
     public function date($date, $format = 'fulltime', $timezone = null)
@@ -402,12 +406,14 @@ class PortalSupportExtension extends \Twig_Extension
                 try {
                     $date_str = $date;
                     $date     = new \DateTime($date_str);
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
         if (!($date instanceof \DateTime)) {
             $date_str = (string) $date;
+
             return "invalid_date($date_str)";
         }
 
@@ -418,13 +424,15 @@ class PortalSupportExtension extends \Twig_Extension
             } else {
                 try {
                     $timezone = new \DateTimeZone($brand->getSetting('core.default_timezone'));
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
         if (is_string($timezone)) {
             try {
                 $timezone = new \DateTimeZone($timezone);
-            } catch (\Exception $e) {};
+            } catch (\Exception $e) {
+            };
         }
 
         if (!$timezone) {
@@ -467,24 +475,28 @@ class PortalSupportExtension extends \Twig_Extension
 
     /**
      * @param string $tag_name
+     *
      * @return bool
      */
     public function hasTag($tag_name)
     {
-        $theme = $this->brand_stack->getActive()->getTheme();
+        $theme    = $this->brand_stack->getActive()->getTheme();
         $resolver = $this->container->get('theme_resolver');
+
         return $resolver->hasTag($theme, $tag_name);
     }
 
     /**
      * @param string $tag_name
+     *
      * @return string|null
      */
     public function getTagIncludeTemplate($tag_name)
     {
-        $theme = $this->brand_stack->getActive()->getTheme();
+        $theme    = $this->brand_stack->getActive()->getTheme();
         $resolver = $this->container->get('theme_resolver');
-        return $resolver->templatePath($theme, 'ThemeTagTemplate::' . $tag_name . '.html.twig');
+
+        return $resolver->templatePath($theme, 'ThemeTagTemplate::'.$tag_name.'.html.twig');
     }
 
     /**

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -106,14 +106,14 @@ class AgentChatController extends AbstractController
             );
         }
 
-        $sessions = $this->em->createQuery("
+        $sessions = $this->em->createQuery('
             SELECT s,p
             FROM DeskPRO:Session s
             JOIN s.person p
             WHERE p.is_agent = true AND s.date_last > ?1
             GROUP BY p.id
             ORDER BY s.id DESC
-        ")->setParameter(1, $cutoff)->execute();
+        ')->setParameter(1, $cutoff)->execute();
 
         foreach ($sessions as $sess) {
             $online_agents[] = array(
@@ -148,12 +148,12 @@ class AgentChatController extends AbstractController
             ));
         }
 
-        $messages = $this->em->createQuery("
+        $messages = $this->em->createQuery('
             SELECT m
             FROM DeskPRO:ChatMessage m
             WHERE m.conversation = ?0
             ORDER BY m.id ASC
-        ")->setParameters(array($conversation))->execute();
+        ')->setParameters(array($conversation))->execute();
 
         $data                    = array();
         $data['conversation_id'] = $conversation->getId();
@@ -249,12 +249,12 @@ class AgentChatController extends AbstractController
     {
         $conversation = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        $convo_messages = $this->em->createQuery("
+        $convo_messages = $this->em->createQuery('
             SELECT m
             FROM DeskPRO:ChatMessage m
             WHERE m.conversation = ?1
             ORDER BY m.id DESC
-        ")->setParameter(1, $conversation)->execute();
+        ')->setParameter(1, $conversation)->execute();
 
         return $this->render('AgentBundle:AgentChat:view.html.twig', array(
             'convo_messages' => $convo_messages,

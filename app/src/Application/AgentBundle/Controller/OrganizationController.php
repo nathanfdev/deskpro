@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -471,10 +471,10 @@ class OrganizationController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE people SET organization_manager = ?
             WHERE id = ? AND organization_id = ?
-        ", array((int) $this->in->getBool('organization_manager'), $person_id, $organization_id));
+        ', array((int) $this->in->getBool('organization_manager'), $person_id, $organization_id));
 
         return $this->createJsonResponse(array('success' => true));
     }
@@ -514,23 +514,26 @@ class OrganizationController extends AbstractController
 
     /**
      * @param $note_id
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function deleteNoteAction($note_id)
     {
         if (!$this->person->hasPerm('agent_org.notes')) {
-            throw new AccessDeniedException;
+            throw new AccessDeniedException();
         }
 
         if (!$note = $this->em->find('DeskPRO:OrganizationNote', $note_id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $this->em->remove($note);
         $this->em->flush();
+
         return $this->createJsonResponse(array('success' => true));
     }
 
@@ -756,8 +759,8 @@ class OrganizationController extends AbstractController
         #------------------------------
 
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('org_custom_fields', 'form');
-        $field_manager = $this->container->getOrgFieldManager();
-        $custom_fields = $field_manager->getDisplayArrayForObject(new Entity\Organization(), $custom_fields_form);
+        $field_manager      = $this->container->getOrgFieldManager();
+        $custom_fields      = $field_manager->getDisplayArrayForObject(new Entity\Organization(), $custom_fields_form);
 
         return $this->render('AgentBundle:Organization:neworganization.html.twig', array(
             'state'         => $state,

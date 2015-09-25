@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -60,11 +60,12 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      * Create a new Layout by filtering fields through $fn. $fn must return true for a field to be added to the new layout.
      *
      * @param callable $fn
+     *
      * @return Layout
      */
     public function filter($fn)
     {
-        $layout = new Layout();
+        $layout = new self();
         foreach ($this->fields as $f) {
             if (call_user_func($fn, $f) === true) {
                 $layout->add($f);
@@ -73,7 +74,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
         return $layout;
     }
-
 
     /**
      * @param LayoutField $field
@@ -136,6 +136,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     /**
      * @param string $id
      * @param Ticket $ticket
+     *
      * @return bool
      */
     public function hasActiveField($id, Ticket $ticket)
@@ -152,9 +153,9 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         return true;
     }
 
-
     /**
-     * @param  string      $id
+     * @param string $id
+     *
      * @return LayoutField
      */
     public function get($id)
@@ -240,7 +241,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         $js .= "\t\t}\n";
         $js .= "\t};\n";
 
-        $js .= "})()";
+        $js .= '})()';
 
         return $js;
     }
@@ -252,8 +253,8 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         $data = array();
 
-        $data['version']  = 1;
-        $data['fields']   = array();
+        $data['version'] = 1;
+        $data['fields']  = array();
         foreach ($this->fields as $f) {
             $data['fields'][] = $f->exportToArray();
         }

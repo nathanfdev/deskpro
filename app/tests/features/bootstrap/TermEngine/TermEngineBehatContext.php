@@ -1,52 +1,47 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpBehat\TermEngine;
 
-
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpBehat\BaseContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerInterface;
 
 class TermEngineBehatContext extends BaseContext
 {
@@ -109,14 +104,16 @@ class TermEngineBehatContext extends BaseContext
     {
         if ('DbalTicketFilterEngine' === $engine) {
             $this->engine = $this->get('term_engine.dbal_ticket_filters.engine');
+
             return;
         }
         if ('PhpTicketCheckerEngine' === $engine) {
             $this->engine = $this->get('term_engine.php_ticket_checker.engine');
+
             return;
         }
 
-        throw new \InvalidArgumentException('engine "' . $engine . '" does not exist');
+        throw new \InvalidArgumentException('engine "'.$engine.'" does not exist');
     }
 
     /**
@@ -134,7 +131,7 @@ class TermEngineBehatContext extends BaseContext
 
         $this->engine_result = array();
         foreach ($expected_ids as $id) {
-            $ticket = $ticket_repo->find($id);
+            $ticket                = $ticket_repo->find($id);
             $this->engine_result[] = $this->engine_evaluation->isTicketMatch($ticket);
         }
     }
@@ -250,7 +247,7 @@ class TermEngineBehatContext extends BaseContext
     public function iShouldBeGivenTheCountOfAllTicketsInTheDb($status)
     {
         $status = constant(sprintf('Application\DeskPRO\Entity\Ticket::%s', $status));
-        $count = count($this->getEntityRepo('DeskPRO:Ticket')->findBy(array('status' => $status)));
+        $count  = count($this->getEntityRepo('DeskPRO:Ticket')->findBy(array('status' => $status)));
         expect($this->engine_result)->toBe($count);
     }
 
@@ -284,7 +281,6 @@ class TermEngineBehatContext extends BaseContext
         foreach ($table->getRows() as $vals) {
             $expected_ids[] = current($vals);
         }
-
 
         expect($this->engine_result)->toBeLike($expected_ids);
     }
@@ -342,7 +338,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function theWhereShouldBeLike(PyStringNode $string)
     {
-        $where = trim($this->compiled->generateWhereString());
+        $where    = trim($this->compiled->generateWhereString());
         $expected = trim($string->getRaw());
 
         list($where, $expected) = $this->dealWithParamAssertions(
@@ -361,7 +357,7 @@ class TermEngineBehatContext extends BaseContext
         $expected_params = $this->filterTable($table);
         $resolved_params = array();
         foreach ($expected_params as $param_name => $value) {
-            $p = $this->param_name_mapping[':' . $param_name];
+            $p                              = $this->param_name_mapping[':'.$param_name];
             $resolved_params[substr($p, 1)] = $value;
         }
 
@@ -402,7 +398,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iEnterACompositeTerm($op)
     {
-        $this->composite_scope++;
+        ++$this->composite_scope;
         $scope = $this->composite_scope;
 
         $composite = new CompositeTerm();
@@ -420,7 +416,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iCloseTheCompositeTerm()
     {
-        $this->composite_scope--;
+        --$this->composite_scope;
     }
 
     /**
@@ -429,7 +425,7 @@ class TermEngineBehatContext extends BaseContext
     public function theTableJoinsShouldBeLike(PyStringNode $string)
     {
         $expected = trim($string->getRaw());
-        $real = $this->compiled->generateJoinString();
+        $real     = $this->compiled->generateJoinString();
 
         list($expected, $real) = $this->dealWithParamAssertions($expected, $real);
 
@@ -442,7 +438,7 @@ class TermEngineBehatContext extends BaseContext
     public function theUniqueTableJoinsShouldBeLike(PyStringNode $string)
     {
         $expected = trim($string->getRaw());
-        $real = $this->compiled->generateUniqueJoinString();
+        $real     = $this->compiled->generateUniqueJoinString();
 
         list($expected, $real) = $this->dealWithParamAssertions($expected, $real);
 
@@ -451,6 +447,7 @@ class TermEngineBehatContext extends BaseContext
 
     /**
      * @param TableNode $table
+     *
      * @return array
      */
     private function filterTable(TableNode $table)
@@ -458,7 +455,7 @@ class TermEngineBehatContext extends BaseContext
         // this is pretty terrible, but it did the trick. if problems, lets refactor it.
 
         $output = array();
-        $rows = $table->getRows();
+        $rows   = $table->getRows();
         array_shift($rows);
         foreach ($rows as $row) {
             $v = trim($row[1]);
@@ -468,19 +465,19 @@ class TermEngineBehatContext extends BaseContext
             if (preg_match('/^\\[(.*?)\\]/', $v, $matches)) {
                 $array = $matches[1];
 
-                $v = explode(',', $array);
+                $v  = explode(',', $array);
                 $nv = array();
                 foreach ($v as $vv) {
                     $b = trim($vv);
                     if (is_numeric($b)) {
-                        $b = (int)$b;
+                        $b = (int) $b;
                     }
                     $nv[] = $b;
                 }
             } else {
                 // no array
                 if (is_numeric($v)) {
-                    $v = (int)$v;
+                    $v = (int) $v;
                 }
                 if ($v == 'null') {
                     $v = null;
@@ -488,24 +485,26 @@ class TermEngineBehatContext extends BaseContext
                 $nv = $v;
             }
 
-
             $output[trim($row[0])] = $nv;
         }
+
         return $output;
     }
 
     /**
      * @param $op
+     *
      * @return mixed
      */
     private function getOp($op)
     {
-        return constant('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface::OP_' . $op);
+        return constant('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface::OP_'.$op);
     }
 
     /**
      * @param $expected
      * @param $where
+     *
      * @return array
      */
     private function dealWithParamAssertions($expected, $where)
@@ -531,7 +530,7 @@ class TermEngineBehatContext extends BaseContext
             $this->param_name_mapping[$expected_param] = $real_where_param_names[$i];
         }
 
-        $where = preg_replace($param_regex, '', $where);
+        $where    = preg_replace($param_regex, '', $where);
         $expected = preg_replace($param_regex, '', $expected);
 
         return array($where, $expected);

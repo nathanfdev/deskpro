@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -109,13 +109,13 @@ class TicketType extends AbstractType
         CaptchaDecider $captcha_decider,
         CustomPerFieldManager $custom_per_field_manager
     ) {
-        $this->layout_differ         = $layout_differ;
-        $this->field_manager         = $field_manager;
-        $this->ticket_layout_factory = $ticket_layout_factory;
-        $this->hierarchy_generator   = $hierarchy_generator;
-        $this->em                    = $em;
-        $this->language_manager      = $language_manager;
-        $this->captcha_decider       = $captcha_decider;
+        $this->layout_differ            = $layout_differ;
+        $this->field_manager            = $field_manager;
+        $this->ticket_layout_factory    = $ticket_layout_factory;
+        $this->hierarchy_generator      = $hierarchy_generator;
+        $this->em                       = $em;
+        $this->language_manager         = $language_manager;
+        $this->captcha_decider          = $captcha_decider;
         $this->custom_per_field_manager = $custom_per_field_manager;
     }
 
@@ -151,8 +151,8 @@ class TicketType extends AbstractType
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
 
         // if there is only one department we want to make sure to set it now...
-        $person    = $context->getForm()->getConfig()->getOption('person');
-        $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
+        $person             = $context->getForm()->getConfig()->getOption('person');
+        $hierarchy          = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
         $ticket->department = $hierarchy->getFirstSelectable();
 
         $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
@@ -346,9 +346,9 @@ class TicketType extends AbstractType
             ),
         ));
         $resolver->setAllowedTypes(array(
-            'person'          => 'Application\\DeskPRO\\Entity\\Person',
-            'settings'        => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-            'ticket_message'  => array('Application\\DeskPRO\\Entity\\TicketMessage', 'null'),
+            'person'         => 'Application\\DeskPRO\\Entity\\Person',
+            'settings'       => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
+            'ticket_message' => array('Application\\DeskPRO\\Entity\\TicketMessage', 'null'),
         ));
     }
 
@@ -444,7 +444,7 @@ class TicketType extends AbstractType
 
         $form_context->getForm()->add($field->getId(), 'deskpro_department', array(
             'person' => $form_context->getPerson(),
-            'ticket' => $form_context->getTicket()
+            'ticket' => $form_context->getTicket(),
         ));
     }
 
@@ -490,8 +490,8 @@ class TicketType extends AbstractType
                 'deskpro_person_email_choice',
                 array(
                     'property_path' => 'ticket_person_email',
-                    'label' => $this->phrase('portal.forms.label_email'),
-                    'person' => $person
+                    'label'         => $this->phrase('portal.forms.label_email'),
+                    'person'        => $person,
                 )
             );
         } else {
@@ -500,7 +500,7 @@ class TicketType extends AbstractType
                 'deskpro_person_email',
                 array(
                     'property_path' => 'person.primary_email',
-                    'label' => false,
+                    'label'         => false,
                 )
             );
         }
@@ -510,7 +510,7 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add($field->getId(), 'timezone', array(
             'property_path' => 'person.timezone',
-            'label' => $this->phrase('portal.forms.label_timezone')
+            'label'         => $this->phrase('portal.forms.label_timezone'),
         ));
     }
 
@@ -573,14 +573,14 @@ class TicketType extends AbstractType
 
         $options = array(
             'custom_data_field' => $field_def,
-            'person' => $form_context->getPerson(),
-            'property_path' => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label' => $field_def->getTitle(),
+            'person'            => $form_context->getPerson(),
+            'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'             => $field_def->getTitle(),
         );
 
         if ($ignore_validation) {
-            $options = $this->markNoValidation($form_context, $options);
+            $options                      = $this->markNoValidation($form_context, $options);
             $options['ignore_validation'] = true;
         }
 
@@ -611,14 +611,14 @@ class TicketType extends AbstractType
 
         $options = array(
             'custom_data_field' => $field_def,
-            'organization' => $organization,
-            'property_path' => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label' => $field_def->getTitle(),
+            'organization'      => $organization,
+            'property_path'     => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'             => $field_def->getTitle(),
         );
 
         if ($ignore_validation) {
-            $options = $this->markNoValidation($form_context, $options);
+            $options                      = $this->markNoValidation($form_context, $options);
             $options['ignore_validation'] = true;
         }
 
@@ -653,12 +653,12 @@ class TicketType extends AbstractType
         $data = $this->custom_per_field_manager->getOrCreateCustomPerFieldData($def, $context);
 
         $options = array(
-            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label' => $def->getTitle(),
-            'data' => $data,
-            'custom_per_field_context' => $context,
+            'agent_interface'             => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'                       => $def->getTitle(),
+            'data'                        => $data,
+            'custom_per_field_context'    => $context,
             'custom_per_field_definition' => $def,
-            'mapped' => false
+            'mapped'                      => false,
         );
 
         if ($ignore_validation) {

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Orb\Util\Strings;
@@ -116,7 +116,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -147,7 +147,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $comment;
     }
 
-
     /**
      * Get the email address for the person who made the comment, trying
      * the person record first if it exists.
@@ -164,7 +163,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
     }
-
 
     /**
      * Get the name for the person who made the comment, trying
@@ -210,6 +208,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * Set the Status.
      *
      * @param $new_status
+     *
      * @return $this
      */
     public function setStatus($new_status)
@@ -221,6 +220,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('status', $new_status);
+
         return $this;
     }
 
@@ -231,11 +231,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param string $content
+     *
      * @return $this
      */
     public function setContent($content)
     {
         $this->setModelField('content', $content);
+
         return $this;
     }
 
@@ -280,10 +282,10 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
         $content = Strings::standardEol($this->content);
-        $content = preg_replace("#<br\s*/?><p>#", "<p>", $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", "<p>", $content);
-        $content = preg_replace("#</p><br\s*/?>#", "</p>", $content);
-        $content = preg_replace("#<br\s*/?></p>#", "</p>", $content);
+        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
+        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
+        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
         $content = preg_replace("#<br\s*/?>?#", "\n", $content);
         $content = preg_replace("#<p>\n?#", "\n", $content);
         $content = preg_replace("#\n?</p>#", "\n", $content);
@@ -361,14 +363,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set created at
+     * Set created at.
      *
      * @param \DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
         return $this;
     }
 

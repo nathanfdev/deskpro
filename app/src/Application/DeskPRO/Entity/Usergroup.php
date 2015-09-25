@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -46,9 +46,9 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property int $id
  * @property string $title
  * @property string $note
- * @property boolean $is_agent_group
+ * @property bool $is_agent_group
  * @property string $sys_name
- * @property boolean $is_enabled
+ * @property bool $is_enabled
  * @property Permission[] $permissions
  * SWG\Model(id="Usergroup")
  */
@@ -58,7 +58,7 @@ class Usergroup extends DomainObject
      * The unique ID.
      *
      * @var int
-     * SWG\Property(name="id", type="integer")
+     *          SWG\Property(name="id", type="integer")
      */
     protected $id = null;
 
@@ -66,7 +66,7 @@ class Usergroup extends DomainObject
      * Title of the usergroup.
      *
      * @var string
-     * SWG\Property(name="title", type="string")
+     *             SWG\Property(name="title", type="string")
      */
     protected $title;
 
@@ -74,7 +74,7 @@ class Usergroup extends DomainObject
      * A note or description about the usergroup.
      *
      * @var string
-     * SWG\Property(name="note", type="string")
+     *             SWG\Property(name="note", type="string")
      */
     protected $note = '';
 
@@ -82,7 +82,7 @@ class Usergroup extends DomainObject
      * Is this an agent group?
      *
      * @var bool
-     * SWG\Property(name="is_agent_group", type="boolean")
+     *           SWG\Property(name="is_agent_group", type="boolean")
      */
     protected $is_agent_group = false;
 
@@ -90,7 +90,7 @@ class Usergroup extends DomainObject
      * When non-null, the group is a special system group (hidden from most interfaces).
      *
      * @var bool
-     * SWG\Property(name="sys_name", type="string")
+     *           SWG\Property(name="sys_name", type="string")
      */
     protected $sys_name = null;
 
@@ -98,13 +98,13 @@ class Usergroup extends DomainObject
      * Is the group enabled?
      *
      * @var bool
-     * SWG\Property(name="is_enabled", type="boolean")
+     *           SWG\Property(name="is_enabled", type="boolean")
      */
     protected $is_enabled = true;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * SWG\Property(name="permissions", type="array", SWG\Items("Permission"))
+     *                                                   SWG\Property(name="permissions", type="array", SWG\Items("Permission"))
      */
     protected $permissions;
 
@@ -157,14 +157,16 @@ class Usergroup extends DomainObject
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
+
         return $this;
     }
 

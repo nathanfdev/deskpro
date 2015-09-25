@@ -1,52 +1,49 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
-use Application\DeskPRO\DependencyInjection\SystemServices\PersonEditManagerService;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
-use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonFile;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
 use Application\DeskPRO\People\PersonEditManager;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
-use Orb\Util\PhoneNumbers;
-use Orb\Util\Strings;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -153,15 +150,14 @@ class PersonController extends AbstractController
         }
 
         $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
-            'type' => new PhoneNumberType(),
-            'allow_add' => true,
+            'type'         => new PhoneNumberType(),
+            'allow_add'    => true,
             'allow_delete' => true,
-            'options' => array(
-                'label' => false,
-                'show_phone_label' => true
+            'options'      => array(
+                'label'            => false,
+                'show_phone_label' => true,
             ),
         ))->createView();
-
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         $visitor = null;
@@ -194,15 +190,15 @@ class PersonController extends AbstractController
 
         $is_editable = $this->isPersonEditable($person);
         $perms       = array(
-            'edit'             => $is_editable && $this->person->hasPerm('agent_people.edit'),
-            'delete'           => $is_editable && $this->person->hasPerm('agent_people.delete'),
-            'merge'            => $is_editable && $this->person->hasPerm('agent_people.merge'),
-            'disable'          => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.disable'),
-            'manage_emails'    => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
-            'reset_password'   => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.reset_password'),
-            'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
-            'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create'),
-            'login_as'         => !$person->is_agent && $this->person->hasPerm('agent_people.login_as'),
+            'edit'           => $is_editable && $this->person->hasPerm('agent_people.edit'),
+            'delete'         => $is_editable && $this->person->hasPerm('agent_people.delete'),
+            'merge'          => $is_editable && $this->person->hasPerm('agent_people.merge'),
+            'disable'        => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.disable'),
+            'manage_emails'  => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
+            'reset_password' => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.reset_password'),
+            'notes'          => $is_editable && $this->person->hasPerm('agent_people.notes'),
+            'org_create'     => $is_editable && $this->person->hasPerm('agent_org.create'),
+            'login_as'       => !$person->is_agent && $this->person->hasPerm('agent_people.login_as'),
         );
 
         $person_api = $person->getDataForWidget();
@@ -250,12 +246,12 @@ class PersonController extends AbstractController
                 $vcard->addEmail($email->email);
             }
 
-            foreach($contact_data as $c_data) {
-                foreach($c_data as $data) {
+            foreach ($contact_data as $c_data) {
+                foreach ($c_data as $data) {
                     if (!isset($data['contact_type'])) {
                         continue;
                     }
-                    switch($data['contact_type']) {
+                    switch ($data['contact_type']) {
                         case 'website':
                             $vcard->setURL($data['url']);
                             break;
@@ -277,7 +273,6 @@ class PersonController extends AbstractController
             foreach ($person->phone_numbers as $phone) {
                 $vcard->addTelephone($phone->getPhoneNumber()->__toString());
             }
-
 
             $response->setContent($vcard->fetch());
 
@@ -569,7 +564,6 @@ class PersonController extends AbstractController
                     $data['html']            = '';
                 }
 
-
                 $conn = $this->em->getConnection();
                 foreach (array('tickets', 'tickets_search_active') as $table) {
                     $conn->executeQuery(
@@ -696,12 +690,12 @@ class PersonController extends AbstractController
         $this->em->persist($person);
         $this->em->flush();
 
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE people
             SET
                 organization_id = ?, organization_position = ?, organization_manager = ?
             WHERE id = ?
-        ", array(
+        ', array(
             $person->getOrganizationId() ?: null,
             $person->organization_position ?: '',
             $person->organization_manager ?: 0,
@@ -753,7 +747,6 @@ class PersonController extends AbstractController
             ));
         }
 
-
         // specific user custom fields definitions
         $manager = $this->container->getCustomFieldManager();
         $form    = $manager->createDefinitionsFormForContext($person);
@@ -768,8 +761,6 @@ class PersonController extends AbstractController
             ));
         }
         $manager->flush($form);
-
-
 
         if (!empty($custom_fields)) {
             $field_manager->saveFormToObject($custom_fields, $person);
@@ -873,11 +864,11 @@ class PersonController extends AbstractController
             'type'         => new PhoneNumberType(),
             'allow_add'    => true,
             'allow_delete' => true,
-		    'options' => array(
-			    'label' => false,
-                'show_phone_label' => true
-		    ),
-	    ));
+            'options'      => array(
+                'label'            => false,
+                'show_phone_label' => true,
+            ),
+        ));
 
         try {
             if ($this->person->hasPerm('agent_people.manage_emails')) {
@@ -993,20 +984,22 @@ class PersonController extends AbstractController
         if (!$request->get('collection')) {
             $request->request->set('collection', array());
         }
-	    $phones_form->handleRequest($request);
-	    if ($phones_form->isValid()) {
-		    foreach ($phones_form->getData() as $phone) {
-			    if ($phone->person) continue;
-			    $phone->person = $person;
-			    $this->em->persist($phone);
-		    }
-		    $this->em->flush();
-	    } else {
-		    foreach ($phones_form->getErrors(true, true) as $error) {
-			    /** @var $error FormError */
-			    $errors[] = $error->getMessage();
-		    }
-	    }
+        $phones_form->handleRequest($request);
+        if ($phones_form->isValid()) {
+            foreach ($phones_form->getData() as $phone) {
+                if ($phone->person) {
+                    continue;
+                }
+                $phone->person = $person;
+                $this->em->persist($phone);
+            }
+            $this->em->flush();
+        } else {
+            foreach ($phones_form->getErrors(true, true) as $error) {
+                /* @var $error FormError */
+                $errors[] = $error->getMessage();
+            }
+        }
 
         // Reset display array
         $contact_data_array = array(
@@ -1028,12 +1021,12 @@ class PersonController extends AbstractController
 
         $is_editable = $this->isPersonEditable($person);
         $perms       = array(
-            'edit'             => $is_editable && $this->person->hasPerm('agent_people.edit'),
-            'delete'           => $is_editable && $this->person->hasPerm('agent_people.delete'),
-            'manage_emails'    => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
-            'reset_password'   => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
-            'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
-            'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create'),
+            'edit'           => $is_editable && $this->person->hasPerm('agent_people.edit'),
+            'delete'         => $is_editable && $this->person->hasPerm('agent_people.delete'),
+            'manage_emails'  => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
+            'reset_password' => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
+            'notes'          => $is_editable && $this->person->hasPerm('agent_people.notes'),
+            'org_create'     => $is_editable && $this->person->hasPerm('agent_org.create'),
         );
 
         $display_html = $this->renderView('AgentBundle:Person:view-contact-display.html.twig', array(
@@ -1148,23 +1141,26 @@ class PersonController extends AbstractController
 
     /**
      * @param $note_id
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function deleteNoteAction($note_id)
     {
         if (!$this->person->hasPerm('agent_people.notes')) {
-            throw new AccessDeniedException;
+            throw new AccessDeniedException();
         }
 
         if (!$note = $this->em->find('DeskPRO:PersonNote', $note_id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $this->em->remove($note);
         $this->em->flush();
+
         return $this->createJsonResponse(array('success' => true));
     }
 
@@ -1180,7 +1176,7 @@ class PersonController extends AbstractController
 
         $person = $this->getPersonOr404($person_id);
 
-        $note_txt    = $this->in->getString('note');
+        $note_txt = $this->in->getString('note');
 
         if ($this->in->getUint('file_id')) {
             $file = $this->em->find('DeskPRO:PersonFile', $this->in->getUint('file_id'));
@@ -1214,9 +1210,9 @@ class PersonController extends AbstractController
         $em->commit();
 
         return $this->createJsonResponse(array(
-            'success'      => true,
-            'person_id'    => $person['id'],
-            'html'         => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file)),
+            'success'   => true,
+            'person_id' => $person['id'],
+            'html'      => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file)),
         ));
     }
 
@@ -1332,7 +1328,7 @@ class PersonController extends AbstractController
                     $email_addy = strtolower($email->email);
                     App::getDb()->replace('ban_emails', array(
                         'banned_email' => $email_addy,
-                        'is_pattern' => 0
+                        'is_pattern'   => 0,
                     ));
                 }
             }
@@ -1343,12 +1339,10 @@ class PersonController extends AbstractController
             $edit_manager->deleteUser($person);
 
             $this->em->commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;
         }
-
-
 
         return $this->createJsonResponse(array('success' => true));
     }
@@ -1407,8 +1401,8 @@ class PersonController extends AbstractController
         // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
         // So dont remove it even though it looks like it's not used! :-)
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('newperson_custom_fields', 'form');
-        $field_manager = $this->container->getPersonFieldManager();
-        $custom_fields = $field_manager->getDisplayArrayForObject(new Entity\Person(), $custom_fields_form);
+        $field_manager      = $this->container->getPersonFieldManager();
+        $custom_fields      = $field_manager->getDisplayArrayForObject(new Entity\Person(), $custom_fields_form);
 
         $manager                   = $this->container->getCustomFieldManager();
         $custom_fields_definitions = $manager->createDefinitionsFormForContext(new Entity\Person());
@@ -1446,7 +1440,7 @@ class PersonController extends AbstractController
         if ($isVCard) {
             $blobId = $this->in->getBoolean('blobId');
             if (!$blobId) {
-                throw new \Exception("Invalid Blob ID");
+                throw new \Exception('Invalid Blob ID');
             }
 
             $blob    = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
@@ -1515,13 +1509,13 @@ class PersonController extends AbstractController
 
             if ($this->in->getString('newperson.send_welcome_email')) {
                 /** @var Mailer $mailer */
-                $mailer = $this->get('mailer');
+                $mailer  = $this->get('mailer');
                 $message = $mailer->createMessage();
                 $message->setToPerson($person);
                 $message->setTemplate(
                     'DeskPRO:emails_user:register-welcome-byagent.html.twig',
                     array(
-                        'person' => $person
+                        'person' => $person,
                     )
                 );
                 $mailer->send($message);
@@ -1529,8 +1523,8 @@ class PersonController extends AbstractController
 
             return $this->createJsonResponse(
                 array(
-                    'success' => true,
-                    'person_id' => $person['id']
+                    'success'   => true,
+                    'person_id' => $person['id'],
                 )
             );
         }
@@ -1566,7 +1560,6 @@ class PersonController extends AbstractController
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
-
                 $trans = $this->container->getTranslator();
                 $trans->setPersonContext($newperson->getPerson());
 
@@ -1602,7 +1595,7 @@ class PersonController extends AbstractController
         $person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, $sort_by);
 
         return $this->render('AgentBundle:Person:view-tickets.html.twig', array(
-            'tickets'    => $person_tickets,
+            'tickets' => $person_tickets,
         ));
     }
 

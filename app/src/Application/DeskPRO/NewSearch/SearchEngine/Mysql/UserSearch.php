@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\NewSearch\SearchEngine\Mysql;
 
@@ -31,7 +32,6 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
-use Elastica\Query;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
@@ -73,7 +73,7 @@ class UserSearch implements UserSearchInterface
     public function search(SearchContextInterface $context, $query, array $options = null)
     {
         $options      = new OptionsArray($options ?: array());
-        $per_page = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
+        $per_page     = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
         $page         = max($options->get('page', 1), 1);
         $ignore_perms = $options->get('ignore_perms');
 
@@ -109,7 +109,7 @@ class UserSearch implements UserSearchInterface
                 continue;
             }
 
-            $likes[]  = "content_search.content LIKE ?";
+            $likes[]  = 'content_search.content LIKE ?';
             $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
 
             if (count($likes) >= self::MAX_WORDS) {
@@ -119,8 +119,8 @@ class UserSearch implements UserSearchInterface
         if ($likes) {
             $where = "
                 content_search.object_type IN ($limit_types)
-                AND (".implode(' OR ', $likes).")
-            ";
+                AND (".implode(' OR ', $likes).')
+            ';
 
             if (!$ignore_perms) {
                 $perm_join  = $context_params['join'];
@@ -151,11 +151,11 @@ class UserSearch implements UserSearchInterface
                 LIMIT $start, $per_page
             ";
 
-            $total    = $this->db->fetchColumn($count_query, $params);
-            $results  = $this->db->fetchAll($select_query, $params);
+            $total   = $this->db->fetchColumn($count_query, $params);
+            $results = $this->db->fetchAll($select_query, $params);
         } else {
-            $total       = 0;
-            $results     = array();
+            $total   = 0;
+            $results = array();
         }
 
         if ($total === null) {
@@ -177,9 +177,10 @@ class UserSearch implements UserSearchInterface
     }
 
     /**
-     * @param  SearchContextInterface $context
-     * @param  string $content
-     * @param  array $options
+     * @param SearchContextInterface $context
+     * @param string                 $content
+     * @param array                  $options
+     *
      * @return ResultSet
      */
     public function similarTo(SearchContextInterface $context, $content, array $options = null)
@@ -214,7 +215,7 @@ class UserSearch implements UserSearchInterface
                 continue;
             }
 
-            $search_places[] = "tickets_messages.message LIKE ?";
+            $search_places[] = 'tickets_messages.message LIKE ?';
             $search_params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
 
             if (count($search_params) >= self::MAX_WORDS) {
@@ -337,7 +338,7 @@ class UserSearch implements UserSearchInterface
         return array(
             'types' => $types,
             'join'  => implode("\n", $joins),
-            'where' => "(".implode(' OR ', $wheres).")",
+            'where' => '('.implode(' OR ', $wheres).')',
         );
     }
 }

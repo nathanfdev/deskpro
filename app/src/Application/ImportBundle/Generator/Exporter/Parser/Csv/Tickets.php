@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
@@ -35,10 +36,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Orb\Util\Strings;
 
 /**
- * Tickets csv file parser
+ * Tickets csv file parser.
  *
  * Class Tickets
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class Tickets extends AbstractParser
 {
@@ -80,7 +80,7 @@ final class Tickets extends AbstractParser
         $custom_fields = $this->exportTicketCustomFields();
 
         foreach ($collection as $ticket) {
-            /** @var Entity\Ticket $ticket */
+            /* @var Entity\Ticket $ticket */
             foreach ($messages as $message_entity) {
                 if ($ticket->getDestination() === $message_entity->getDestination()) {
                     $ticket->addMessage($message_entity);
@@ -102,7 +102,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket entity
+     * Returns a ticket entity.
      *
      * @param array $data
      * @param int   $num
@@ -112,12 +112,12 @@ final class Tickets extends AbstractParser
     protected function exportTicket(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
-                'default' => 'num_' . $num,
+            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_'.$num,
             )),
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => self::TICKET_PREFIX,
-                'ref'    => 'id',
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::TICKET_PREFIX,
+                'ref'     => 'id',
             )),
             'subject'      => TransformerInterface::TYPE_STRING,
             'user'         => TransformerInterface::TYPE_STRING,
@@ -135,7 +135,7 @@ final class Tickets extends AbstractParser
             ->setSubject($formatted['subject'])
             ->setPersonEmail($formatted['user'])
             ->setAgentEmail($formatted['agent'])
-            ->setStatus($formatted['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
+            ->setStatus($formatted['status'] ?: DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
             ->setDateCreated($formatted['date_created'])
         ;
 
@@ -148,7 +148,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a collection of ticket messages
+     * Returns a collection of ticket messages.
      *
      * @return Entity\TicketMessage[]|Entity\Collection
      */
@@ -167,7 +167,7 @@ final class Tickets extends AbstractParser
 
         foreach ($collection as $message) {
             foreach ($attachments as $attachment) {
-                if ($attachment->getDestination() === self::MESSAGE_PREFIX . $message->getOid()) {
+                if ($attachment->getDestination() === self::MESSAGE_PREFIX.$message->getOid()) {
                     $message->addAttachment($attachment);
                 }
             }
@@ -177,7 +177,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket message
+     * Returns a ticket message.
      *
      * @param array $data
      * @param int   $num
@@ -187,9 +187,9 @@ final class Tickets extends AbstractParser
     protected function exportMessage(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
-            'ticket_id'  => TransformerInterface::TYPE_STRING,
-            'message_id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
-                'default' => 'num_' . $num,
+            'ticket_id'   => TransformerInterface::TYPE_STRING,
+            'message_id'  => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_'.$num,
             )),
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix'  => self::TICKET_PREFIX,
@@ -214,7 +214,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a collection of ticket attachments
+     * Returns a collection of ticket attachments.
      *
      * @return Entity\Attachment[]|Entity\Collection
      */
@@ -227,7 +227,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a collection of ticket custom field data
+     * Returns a collection of ticket custom field data.
      *
      * @return Entity\CustomField[]|Entity\Collection
      */
@@ -240,7 +240,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader config for ticket records
+     * Returns reader config for ticket records.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -250,7 +250,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader config for ticket message records
+     * Returns reader config for ticket message records.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */

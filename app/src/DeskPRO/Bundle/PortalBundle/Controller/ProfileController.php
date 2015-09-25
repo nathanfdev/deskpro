@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -94,7 +94,7 @@ class ProfileController extends AbstractController
                         $this->get('portal_email_sender')->sendPasswordSetLink($person_check);
 
                         return $this->redirectToRoute('portal_user_register_set_password', array(
-                            'email' => $person_check->getPrimaryEmailAddress()
+                            'email' => $person_check->getPrimaryEmailAddress(),
                         ));
                     }
                 }
@@ -121,9 +121,9 @@ class ProfileController extends AbstractController
         return $this->renderThemeView(
             'Theme:Portal:User/register.html.twig',
             array(
-                'form' => $form->createView(),
+                'form'        => $form->createView(),
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->register()
+                'page_title'  => $this->createPageTitle()->register(),
             )
         );
     }
@@ -136,9 +136,9 @@ class ProfileController extends AbstractController
         return $this->renderThemeView(
             'Theme:Portal:User/send-set-password-email.html.twig',
             array(
-                'email' => $request->get('email', 'N/A'),
+                'email'       => $request->get('email', 'N/A'),
                 'breadcrumbs' => $this->getBreadcrumbGenerator()->buildRegistration(),
-                'page_title' => $this->createPageTitle()->register()
+                'page_title'  => $this->createPageTitle()->register(),
             )
         );
     }
@@ -189,14 +189,13 @@ class ProfileController extends AbstractController
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
 
-
         return $this->renderThemeView(
             'Theme:Portal:User/profile.html.twig', array(
-                'person' => $person,
-                'profile_form' => $profile_form->createView(),
+                'person'        => $person,
+                'profile_form'  => $profile_form->createView(),
                 'password_form' => $password_form->createView(),
-                'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->profile(),
+                'breadcrumbs'   => $breadcrumbs,
+                'page_title'    => $this->createPageTitle()->profile(),
             )
         );
     }
@@ -212,7 +211,7 @@ class ProfileController extends AbstractController
         $validating = $this->getEmailDataService()->getValidatingEmails($person);
 
         $add_email_form = null;
-        $verify_url = null;
+        $verify_url     = null;
         if ($person->isEmailValidated()) {
 
             //////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +254,7 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // NEW EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            $new_email = new PersonEmail();
+            $new_email      = new PersonEmail();
             $add_email_form = $this->createForm(
                 'deskpro_person_email',
                 $new_email
@@ -269,7 +268,7 @@ class ProfileController extends AbstractController
                     // this email validating already exists!
                     $add_email_form->addError(
                         new FormError(
-                            'The email "' . $new_email->getEmail() . ' is already awaiting validation.'
+                            'The email "'.$new_email->getEmail().' is already awaiting validation.'
                         )
                     );
                 }
@@ -311,15 +310,14 @@ class ProfileController extends AbstractController
             }
         }
 
-
         return $this->renderThemeView(
             'Theme:Portal:User/profile-emails.html.twig', array(
-                'person' => $person,
-                'verify_url' => $verify_url,
-                'add_email_form' => $add_email_form ? $add_email_form->createView() : null,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->profileEmails(),
-                'validating_emails' => $validating_ui
+                'person'            => $person,
+                'verify_url'        => $verify_url,
+                'add_email_form'    => $add_email_form ? $add_email_form->createView() : null,
+                'breadcrumbs'       => $breadcrumbs,
+                'page_title'        => $this->createPageTitle()->profileEmails(),
+                'validating_emails' => $validating_ui,
             )
         );
     }

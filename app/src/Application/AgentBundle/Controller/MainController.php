@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -58,12 +58,12 @@ class MainController extends AbstractController
     {
         $this->person->loadPrefGroup('agent.ui');
 
-        $last_message_id = $this->db->fetchColumn("
+        $last_message_id = $this->db->fetchColumn('
             SELECT id
             FROM client_messages
             ORDER BY id DESC
             LIMIT 1
-        ");
+        ');
         if (!$last_message_id) {
             $last_message_id = -1;
         }
@@ -113,16 +113,16 @@ class MainController extends AbstractController
         $people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
 
         $org_options = array(
-            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
+            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray(),
         );
 
-        $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
-        $online_agent_ids = $this->db->fetchAllCol("
+        $cutoff           = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
+        $online_agent_ids = $this->db->fetchAllCol('
             SELECT p.id
             FROM sessions s
             JOIN people AS p ON p.id = s.person_id
             WHERE p.is_agent = true AND s.date_last > ?
-        ", array($cutoff));
+        ', array($cutoff));
 
         $with_chat_perm = array();
         foreach ($this->container->getAgentData()->getAgents() as $a) {
@@ -149,7 +149,7 @@ class MainController extends AbstractController
             $agent_chat_depmap = array();
         }
 
-        $is_first_login = false;
+        $is_first_login      = false;
         $is_first_login_name = false;
 
         if ($this->person->getPref('agent.first_login')) {
@@ -447,8 +447,8 @@ class MainController extends AbstractController
 
                 $return_results[] = array(
                     'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
-                    'results' => $rows
+                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
+                    'results' => $rows,
                 );
             }
         }
@@ -460,16 +460,16 @@ class MainController extends AbstractController
         $return_results[] = $this->getDeletedTicketResults($q);
 
         return $this->createJsonResponse(array(
-            'grouped_results' => $return_results
+            'grouped_results' => $return_results,
         ));
     }
 
     protected function getDeletedTicketResults($query)
     {
         $res = array(
-            'type'      => 'deleted_tickets',
-            'title'     => $this->container->getTranslator()->phrase('agent.search.type_ticket_deleted'),
-            'results'   => array(),
+            'type'    => 'deleted_tickets',
+            'title'   => $this->container->getTranslator()->phrase('agent.search.type_ticket_deleted'),
+            'results' => array(),
         );
 
         if (!$query = preg_replace('/[^\d]/', '', $query)) {
@@ -482,7 +482,7 @@ class MainController extends AbstractController
         }
 
         $res['results'][] = array(
-            'id' => $deleted['ticket_id'],
+            'id'     => $deleted['ticket_id'],
             'reason' => $deleted['reason'],
         );
 
@@ -571,7 +571,7 @@ class MainController extends AbstractController
                         'id'      => $r->id,
                         'subject' => $r->subject,
                         'person'  => null,
-                        'agent'   => null
+                        'agent'   => null,
                     );
 
                     $agent = $r->agent;
@@ -618,7 +618,7 @@ class MainController extends AbstractController
     public function getPersonTicketsAction(Request $request)
     {
         if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $sort = 'date_created';

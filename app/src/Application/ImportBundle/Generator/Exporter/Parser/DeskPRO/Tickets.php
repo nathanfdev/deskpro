@@ -1,42 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
-use Orb\Util\Strings;
 
 /**
- * DeskPRO tickets parser
+ * DeskPRO tickets parser.
  *
  * Class Tickets
- * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
 final class Tickets extends AbstractParser
 {
@@ -46,7 +45,7 @@ final class Tickets extends AbstractParser
     private $tickets_min_id;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param DeskPROReader $reader
      * @param int           $min_id
@@ -54,7 +53,7 @@ final class Tickets extends AbstractParser
     public function __construct(DeskPROReader $reader, $min_id = 0)
     {
         parent::__construct($reader);
-        $this->tickets_min_id = (int)$min_id;
+        $this->tickets_min_id = (int) $min_id;
     }
 
     /**
@@ -66,7 +65,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns current tickets offset
+     * Returns current tickets offset.
      *
      * @return int
      */
@@ -89,7 +88,7 @@ final class Tickets extends AbstractParser
     public function export()
     {
         $this->entities_loaded = 0;
-        $collection = new Entity\Collection();
+        $collection            = new Entity\Collection();
 
         do {
             $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
@@ -105,7 +104,6 @@ final class Tickets extends AbstractParser
             }
 
             $this->entities_loaded += count($batch);
-
         } while (count($batch) > 0);
 
         return $collection;
@@ -113,6 +111,7 @@ final class Tickets extends AbstractParser
 
     /**
      * @param DeskPROEntity\Ticket $ticket
+     *
      * @return Entity\Ticket
      */
     private function exportTicket(DeskPROEntity\Ticket $ticket)
@@ -120,7 +119,7 @@ final class Tickets extends AbstractParser
         $entity = new Entity\Ticket();
         $entity
             ->setRawData($ticket->toArray())
-            ->setDestination('ticket_' . $ticket->getId())
+            ->setDestination('ticket_'.$ticket->getId())
             ->setOid($ticket->getId())
             ->setRef($ticket->getRef())
 
@@ -149,7 +148,7 @@ final class Tickets extends AbstractParser
             $ticket_priority = new Entity\TicketPriority();
             $ticket_priority
                 ->setOid($priority->getId())
-                ->setDestination('priority_' . $priority->getId())
+                ->setDestination('priority_'.$priority->getId())
                 ->setTitle($priority->getRealTitle())
                 ->setValue($priority['priority'])
             ;
@@ -164,7 +163,7 @@ final class Tickets extends AbstractParser
             $entity->addLabel($label['label']);
         }
         foreach ($ticket->participants as $participant) {
-            /** @var $participant DeskPROEntity\Person */
+            /* @var $participant DeskPROEntity\Person */
             $entity->addParticipant($participant->getPrimaryEmail()->email);
         }
 
@@ -176,6 +175,7 @@ final class Tickets extends AbstractParser
 
     /**
      * @param DeskPROEntity\TicketMessage $message
+     *
      * @return Entity\TicketMessage
      */
     private function exportMessage(DeskPROEntity\TicketMessage $message)
@@ -183,12 +183,12 @@ final class Tickets extends AbstractParser
         $entity = new Entity\TicketMessage();
         $entity
             ->setRawData($message->toArray())
-            ->setDestination('message_' . $message->getId())
+            ->setDestination('message_'.$message->getId())
             ->setOid($message->getId())
             ->setPersonEmail($message->person->getPrimaryEmail()->email)
             ->setDateCreated($message['date_created'])
             ->setMessageHtml($message['message'])
-            ->setAsNote((bool)$message['is_agent_note'])
+            ->setAsNote((bool) $message['is_agent_note'])
         ;
 
         foreach ($message->attachments as $num => $attachment) {
@@ -200,6 +200,7 @@ final class Tickets extends AbstractParser
 
     /**
      * @param DeskPROEntity\TicketAttachment $attachment
+     *
      * @return Entity\Attachment
      */
     private function exportAttachment(DeskPROEntity\TicketAttachment $attachment)
@@ -207,7 +208,7 @@ final class Tickets extends AbstractParser
         $blob   = $attachment->getBlob();
         $entity = new Entity\Attachment();
         $entity
-            ->setDestination('attachment_' . $attachment->getId())
+            ->setDestination('attachment_'.$attachment->getId())
             ->setOid($attachment->getId())
             ->setBlobData(base64_encode($this->reader->getBlobData($blob)))
             ->setFileName($blob['filename'])

@@ -1,38 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
-
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
@@ -83,8 +80,8 @@ abstract class AbstractTermCompiler
             'START',
             array(
                 'term_name' => TermTypeCodes::getTermTypeCode($term),
-                'op' => $term->getOp(),
-                'options' => $term->getOptions()
+                'op'        => $term->getOp(),
+                'options'   => $term->getOptions(),
             )
         );
     }
@@ -94,9 +91,9 @@ abstract class AbstractTermCompiler
         $this->logDebug(
             'END',
             array(
-                'term_name' => TermTypeCodes::getTermTypeCode($term),
-                'op' => $term->getOp(),
-                'time_in_ms' => $this->stateful_timer->getElapsedTime()
+                'term_name'  => TermTypeCodes::getTermTypeCode($term),
+                'op'         => $term->getOp(),
+                'time_in_ms' => $this->stateful_timer->getElapsedTime(),
             )
         );
     }
@@ -183,7 +180,7 @@ abstract class AbstractTermCompiler
     public function getShortName()
     {
         if (!$this->short_name) {
-            $ref = new \ReflectionClass($this);
+            $ref              = new \ReflectionClass($this);
             $this->short_name = $ref->getShortName();
         }
 
@@ -196,9 +193,10 @@ abstract class AbstractTermCompiler
     }
 
     /**
-     * Get a registered helper by ID (TermCompilerHelperInterface::getId())
+     * Get a registered helper by ID (TermCompilerHelperInterface::getId()).
      *
      * @param $id
+     *
      * @return TermCompilerHelperInterface
      */
     public function getHelper($id)
@@ -227,6 +225,7 @@ abstract class AbstractTermCompiler
      *
      * @param string $op
      * @param string $code
+     *
      * @return bool
      */
     protected function isOp($op, $code)
@@ -238,6 +237,7 @@ abstract class AbstractTermCompiler
      * Take a term and return a DbalQueryPart representing the term's query conditions.
      *
      * @param TermInterface $term
+     *
      * @return DbalQueryPart
      */
     abstract protected function doCompile(TermInterface $term);

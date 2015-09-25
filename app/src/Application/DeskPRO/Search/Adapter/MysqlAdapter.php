@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Search
  */
-
 namespace Application\DeskPRO\Search\Adapter;
 
 use Application\DeskPRO\App;
@@ -90,21 +90,21 @@ class MysqlAdapter extends AbstractAdapter
 
             $data = $doc->getData();
 
-            App::getDb()->executeUpdate("
+            App::getDb()->executeUpdate('
                 REPLACE INTO content_search
                 SET object_type = ?, object_id = ?, content = ?
-            ", array($doc->getContentTypeName(), $doc->getId(), $data['content']));
+            ', array($doc->getContentTypeName(), $doc->getId(), $data['content']));
 
             unset($data['content']);
 
             foreach ($data as $k => $v) {
-                App::getDb()->executeUpdate("
+                App::getDb()->executeUpdate('
                     DELETE FROM content_search_attribute WHERE object_type = ? AND object_id = ?
-                ", array($doc->getContentTypeName(), $doc->getId()));
-                App::getDb()->executeUpdate("
+                ', array($doc->getContentTypeName(), $doc->getId()));
+                App::getDb()->executeUpdate('
                     REPLACE INTO content_search_attribute
                     SET object_type = ?, object_id = ?, attribute_id = ?, content = ?
-                ", array($doc->getContentTypeName(), $doc->getId(), $k, $v));
+                ', array($doc->getContentTypeName(), $doc->getId(), $k, $v));
             }
         }
     }
@@ -169,9 +169,9 @@ class MysqlAdapter extends AbstractAdapter
      */
     public function deleteContentTypeFromIndex($type_name)
     {
-        App::getDb()->executeUpdate("
+        App::getDb()->executeUpdate('
             DELETE FROM content_search WHERE object_type = ?
-        ", array($type_name));
+        ', array($type_name));
     }
 
     /**
@@ -189,7 +189,7 @@ class MysqlAdapter extends AbstractAdapter
      */
     public static function encodeLabel($label)
     {
-        $label = "lbl".md5(strtolower(trim($label)));
+        $label = 'lbl'.md5(strtolower(trim($label)));
 
         return $label;
     }

@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
@@ -31,10 +32,9 @@ use Application\DeskPRO\Entity\Person;
 use Application\ImportBundle\Entity;
 
 /**
- * DeskPRO people parser
+ * DeskPRO people parser.
  *
  * Class People
- * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
 final class People extends AbstractParser
 {
@@ -52,13 +52,13 @@ final class People extends AbstractParser
     }
 
     /**
-     * Returns current users offset
+     * Returns current users offset.
      *
      * @return int
      */
     public function getCurrentUsersMinId()
     {
-        return $this->users_min_id ? : $this->getBatchConfig()->getUsersMinId();
+        return $this->users_min_id ?: $this->getBatchConfig()->getUsersMinId();
     }
 
     /**
@@ -75,7 +75,7 @@ final class People extends AbstractParser
     public function export()
     {
         $this->entities_loaded = 0;
-        $collection = new Entity\Collection();
+        $collection            = new Entity\Collection();
 
         do {
             $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
@@ -91,7 +91,6 @@ final class People extends AbstractParser
             }
 
             $this->entities_loaded += count($batch);
-
         } while (count($batch) > 0);
 
         return $collection;
@@ -99,6 +98,7 @@ final class People extends AbstractParser
 
     /**
      * @param Person $person
+     *
      * @return Entity\Person
      */
     private function exportUser(Person $person)
@@ -106,15 +106,15 @@ final class People extends AbstractParser
         $entity = new Entity\Person();
         $entity
             ->setRawData($person->toArray())
-            ->setDestination('user_' . $person->getId())
+            ->setDestination('user_'.$person->getId())
             ->setOid($person->getId())
 
             ->setName($person->getDisplayName())
             ->setFirstName($person['first_name'])
             ->setLastName($person['last_name'])
-            ->setAsAgent((bool)$person['is_agent'])
-            ->setAsUser( ! $person['is_agent'])
-            ->setAsAdmin((bool)$person['can_admin'])
+            ->setAsAgent((bool) $person['is_agent'])
+            ->setAsUser(!$person['is_agent'])
+            ->setAsAdmin((bool) $person['can_admin'])
 
             ->setOrganization($person->organization['name'])
             ->setOrganizationPosition($person['organization_position'])

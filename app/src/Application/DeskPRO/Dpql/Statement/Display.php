@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Dpql\Statement;
 
 use Application\DeskPRO\App;
@@ -94,7 +94,7 @@ class Display
     /**
      * Number of rows to limit to. 0 or null for unlimited.
      *
-     * @var integer|null
+     * @var int|null
      */
     protected $_limitAmount = null;
 
@@ -108,7 +108,7 @@ class Display
     /**
      * Number of rows to offset results by. 0 or null for no offset.
      *
-     * @var integer|null
+     * @var int|null
      */
     protected $_limitOffset = null;
 
@@ -184,7 +184,7 @@ class Display
         'custom_data_person'          => 'DeskPRO:CustomDataPerson',
         'custom_data_product'         => 'DeskPRO:CustomDataProduct',
         'custom_data_ticket'          => 'DeskPRO:CustomDataTicket',
-        'custom_data_billing' => 'DeskPRO:CustomDataBilling',
+        'custom_data_billing'         => 'DeskPRO:CustomDataBilling',
         'custom_def_article'          => 'DeskPRO:CustomDefArticle',
         'custom_def_chat'             => 'DeskPRO:CustomDefChat',
         'custom_def_feedback'         => 'DeskPRO:CustomDefFeedback',
@@ -192,7 +192,7 @@ class Display
         'custom_def_people'           => 'DeskPRO:CustomDefPerson',
         'custom_def_products'         => 'DeskPRO:CustomDefProduct',
         'custom_def_ticket'           => 'DeskPRO:CustomDefTicket',
-        'custom_def_billing' => 'DeskPRO:CustomDefBilling',
+        'custom_def_billing'          => 'DeskPRO:CustomDefBilling',
         'departments'                 => 'DeskPRO:Department',
         'downloads'                   => 'DeskPRO:Download',
         'download_categories'         => 'DeskPRO:DownloadCategory',
@@ -297,8 +297,8 @@ class Display
      * Gets the results from the database that match.
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-     * @return \Application\DeskPRO\Dpql\Results
      *
+     * @return \Application\DeskPRO\Dpql\Results
      */
     public function getResults()
     {
@@ -333,7 +333,7 @@ class Display
                 $results->setResults($this->_fillResults($queryResults));
             }
         } catch (\Exception $e) {
-            throw new Exception("This DPQL statement generated an invalid MySQL query. Please try a different query.");
+            throw new Exception('This DPQL statement generated an invalid MySQL query. Please try a different query.');
         }
 
         return $results;
@@ -731,7 +731,7 @@ class Display
      *
      * @param string $sql
      *
-     * @return boolean
+     * @return bool
      */
     public function addDefaultOrder($sql)
     {
@@ -773,7 +773,7 @@ class Display
      * @param $printId
      * @param $sqlId
      *
-     * @return boolean
+     * @return bool
      */
     public function addGroupFill(\Closure $fill, $printId, $sqlId, $orderId)
     {
@@ -815,7 +815,7 @@ class Display
      *
      * @param string $key
      *
-     * @return bool|integer
+     * @return bool|int
      */
     public function getSqlSelectFieldId($key)
     {
@@ -830,8 +830,8 @@ class Display
      * Gets the entity repository for the from table.
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-     * @return \Application\DeskPRO\EntityRepository\AbstractEntityRepository|bool
      *
+     * @return \Application\DeskPRO\EntityRepository\AbstractEntityRepository|bool
      */
     public function getFromEntityRepository()
     {
@@ -907,7 +907,7 @@ class Display
      */
     public function quoteDpqlString($string)
     {
-        $string = strtr($string, array("\\" => "\\\\", "'" => "\\'"));
+        $string = strtr($string, array('\\' => '\\\\', "'" => "\\'"));
 
         return "'$string'";
     }
@@ -1045,7 +1045,7 @@ class Display
     }
 
     /**
-     * @return integer|null
+     * @return int|null
      */
     public function getLimitAmount()
     {
@@ -1053,7 +1053,7 @@ class Display
     }
 
     /**
-     * @param integer $amount
+     * @param int $amount
      */
     public function setImplicitLimit($amount)
     {

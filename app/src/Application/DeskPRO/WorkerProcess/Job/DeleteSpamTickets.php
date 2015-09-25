@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -65,15 +65,15 @@ class DeleteSpamTickets extends AbstractJob
 			LIMIT 1000
 		", array($date_cut->format('Y-m-d H:i:s')));
 
-        $this->logger->log(sprintf("[DeleteSpamTickets] %d tickets to delete", count($all_tickets)), 'DEBUG');
+        $this->logger->log(sprintf('[DeleteSpamTickets] %d tickets to delete', count($all_tickets)), 'DEBUG');
         $date_str = date('Y-m-d H:i:s');
 
         foreach ($all_tickets as $ticket) {
             App::getDb()->beginTransaction();
             try {
-                $this->logger->log(sprintf("[DeleteSpamTickets] Deleted ticket %d", $ticket['id']), 'DEBUG');
+                $this->logger->log(sprintf('[DeleteSpamTickets] Deleted ticket %d', $ticket['id']), 'DEBUG');
 
-				TicketUtil::deleteTicketAttachments($ticket['id'], App::getDb());
+                TicketUtil::deleteTicketAttachments($ticket['id'], App::getDb());
 
                 App::getDb()->delete('tickets_deleted', array('ticket_id' => $ticket['id']));
                 App::getDb()->replace('tickets_deleted', array('ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)'));
@@ -81,7 +81,7 @@ class DeleteSpamTickets extends AbstractJob
                 App::getDb()->delete('tickets', array('id' => $ticket['id']));
                 App::getDb()->delete('tickets_search_active', array('id' => $ticket['id']));
 
-                $ticket_count++;
+                ++$ticket_count;
 
                 App::getDb()->commit();
             } catch (\Exception $e) {
@@ -91,7 +91,7 @@ class DeleteSpamTickets extends AbstractJob
         }
 
         if ($ticket_count) {
-            $this->logStatus("Removed ".count($ticket_count)." spam tickets");
+            $this->logStatus('Removed '.count($ticket_count).' spam tickets');
         }
     }
 }

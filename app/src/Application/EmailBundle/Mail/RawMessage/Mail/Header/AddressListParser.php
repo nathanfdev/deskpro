@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\EmailBundle\Mail\RawMessage\Mail\Header;
 
 use Zend\Mail\AddressList;
@@ -67,7 +64,7 @@ class AddressListParser
             $header->setEncoding('UTF-8');
         }
 
-        $fieldValue = str_replace(Headers::FOLDING, ' ', $fieldValue);
+        $fieldValue  = str_replace(Headers::FOLDING, ' ', $fieldValue);
         $addressList = $header->getAddressList();
 
         if (function_exists('imap_rfc822_parse_adrlist')) {
@@ -87,7 +84,7 @@ class AddressListParser
         $tokens = array();
         foreach (array(
             '#"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"#s',
-            "#'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'#s"
+            "#'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'#s",
         ) as $re) {
             $string = preg_replace_callback($re, function ($m) use (&$tokens) {
                 $id = uniqid('t', true);
@@ -114,7 +111,7 @@ class AddressListParser
 
             $name = null;
             if (isset($matches['name'])) {
-                $name  = trim($matches['name']);
+                $name = trim($matches['name']);
             }
             if (empty($name)) {
                 $name = null;
@@ -142,7 +139,7 @@ class AddressListParser
         $list = imap_rfc822_parse_adrlist($string, 'localhost');
 
         foreach ($list as $addr) {
-            $al->add($addr->mailbox . '@' . $addr->host, @$addr->personal ?: '');
+            $al->add($addr->mailbox.'@'.$addr->host, @$addr->personal ?: '');
         }
     }
 }

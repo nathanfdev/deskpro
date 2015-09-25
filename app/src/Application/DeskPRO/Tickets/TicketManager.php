@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -132,7 +132,6 @@ class TicketManager
         $this->auto_vars = array();
     }
 
-
     /**
      * Adds an array of vars to auto context vars.
      *
@@ -164,7 +163,6 @@ class TicketManager
         $this->auto_vars[$k] = $v;
     }
 
-
     /**
      * Unset an auto context var.
      *
@@ -174,7 +172,6 @@ class TicketManager
     {
         unset($this->auto_vars[$k]);
     }
-
 
     /**
      * Create a new ticket object. When you are ready to persist it, call saveTicket().
@@ -193,7 +190,7 @@ class TicketManager
             $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e);
-            $ref = DpStrings::random(4, Strings::CHARS_ALPHA_IU) . '-' . DpStrings::random(4, Strings::CHARS_NUM) . '-' . DpStrings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+            $ref         = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
             $ticket->ref = $ref;
         }
 
@@ -201,7 +198,6 @@ class TicketManager
 
         return $ticket;
     }
-
 
     /**
      * Finds a ticket and returns it.
@@ -224,7 +220,6 @@ class TicketManager
         return $ticket;
     }
 
-
     /**
      * Disables auto-ticket processing on the ticket. This means you should save the ticket
      * via $this->saveTicket().
@@ -238,7 +233,6 @@ class TicketManager
     {
         $ticket->disableAutoTicketProcess();
     }
-
 
     /**
      * Re-enables auto-ticket processing on the ticket.
@@ -264,7 +258,8 @@ class TicketManager
         if (isset($GLOBALS['DP_IS_IMPORTING'])) {
             $this->em->persist($ticket);
             $this->em->flush();
-            return null;
+
+            return;
         }
 
         $this->db->beginTransaction();
@@ -289,27 +284,27 @@ class TicketManager
         $is_trivial_change = $ticket->getStateChangeRecorder()->isTrivialChangeSet();
 
         $time_start = microtime(true);
-        $context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
+        $context->getLogger()->info(sprintf('########## START SAVE TICKET -- %s ##########', $ticket->id ? $ticket->id : 'newticket'));
 
-        $context->getLogger()->debug(sprintf("EventType: %s", $context->getEventType()));
-        $context->getLogger()->debug(sprintf("EventMethod: %s", $context->getEventMethod()));
-        $context->getLogger()->debug(sprintf("EventPerformer: %s", $context->getEventPerformer()));
-        $context->getLogger()->debug(sprintf("StateChanges: %s", implode(', ', $ticket->getStateChangeRecorder()->getChangedFields())));
+        $context->getLogger()->debug(sprintf('EventType: %s', $context->getEventType()));
+        $context->getLogger()->debug(sprintf('EventMethod: %s', $context->getEventMethod()));
+        $context->getLogger()->debug(sprintf('EventPerformer: %s', $context->getEventPerformer()));
+        $context->getLogger()->debug(sprintf('StateChanges: %s', implode(', ', $ticket->getStateChangeRecorder()->getChangedFields())));
 
         if ($is_trivial_change) {
-            $context->getLogger()->debug("is_trivial_change = true");
+            $context->getLogger()->debug('is_trivial_change = true');
             $context->setEventType('noop');
             $is_noop = true;
         }
         if ($context->getPersonContext()) {
             $context->getLogger()->debug(sprintf(
-                "PersonContext: <Person:%d> %s %s",
+                'PersonContext: <Person:%d> %s %s',
                 $context->getPersonContext()->id,
                 $context->getPersonContext()->getDisplayName(),
                 $context->getPersonContext()->getPrimaryEmailAddress()
             ));
         } else {
-            $context->getLogger()->debug("PersonContext: NULL");
+            $context->getLogger()->debug('PersonContext: NULL');
         }
 
         $this->em->persist($ticket);
@@ -319,13 +314,13 @@ class TicketManager
         #----------------------------------------
 
         foreach ($this->save_actions as $action) {
-            $context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", OrbUtil::getBaseClassname($action)));
+            $context->getLogger()->info(sprintf('[TicketManager:saveaction] %s', OrbUtil::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
                 try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
-                    $context->getLogger()->error(sprintf("[%s] Exception: %s", OrbUtil::getBaseClassname($action), $e->getMessage()));
+                    $context->getLogger()->error(sprintf('[%s] Exception: %s', OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
                 $action->processTicket($ticket, $context);
@@ -341,13 +336,13 @@ class TicketManager
         $this->auto_vars['custom_field_manager']->flush();
 
         foreach ($this->post_save_actions as $action) {
-            $context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", OrbUtil::getBaseClassname($action)));
+            $context->getLogger()->info(sprintf('[TicketManager:postsaveaction] %s', OrbUtil::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
                 try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
-                    $context->getLogger()->error(sprintf("[%s] Exception: %s", OrbUtil::getBaseClassname($action), $e->getMessage()));
+                    $context->getLogger()->error(sprintf('[%s] Exception: %s', OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
                 $action->processTicket($ticket, $context);
@@ -386,11 +381,11 @@ class TicketManager
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data'         => serialize(array(
-                    'ticket_id'       => $ticket->getId(),
-                    'is_locked'       => (bool) $ticket->locked_by_agent,
-                    'locked_by'       => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
-                    'locked_by_name'  => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
-                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                    'ticket_id'      => $ticket->getId(),
+                    'is_locked'      => (bool) $ticket->locked_by_agent,
+                    'locked_by'      => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
+                    'locked_by_name' => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
+                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
                 )),
             ));
         }
@@ -414,7 +409,7 @@ class TicketManager
         # Done
         #----------------------------------------
 
-        $context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
+        $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->id ?: 0, microtime(true) - $time_start));
 
         if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
             $log_text = $context->getLogger()->getSavedMessages();
@@ -449,12 +444,11 @@ class TicketManager
         $ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
     }
 
-
     /**
      * @param Person $agent
      * @param $event_type
      * @param $event_method
-     * @param array  $event_method_options
+     * @param array $event_method_options
      *
      * @return ExecutorContextInterface
      */
@@ -495,7 +489,7 @@ class TicketManager
      * @param Person $user
      * @param $event_type
      * @param $event_method
-     * @param array  $event_method_options
+     * @param array $event_method_options
      *
      * @return ExecutorContextInterface
      */
@@ -524,7 +518,6 @@ class TicketManager
 
         return $context;
     }
-
 
     /**
      * @param string $event_type
@@ -569,7 +562,7 @@ class TicketManager
         $logger->enableSavedMessages();
 
         if ($logfile = dp_get_config('debug.enable_ticket_log')) {
-            if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === "true") {
+            if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === 'true') {
                 $logfile = dp_get_log_dir().'/ticket.log';
             }
             $stream = new StreamHandler($logfile);

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Dpql\Renderer;
 
 /**
@@ -199,7 +199,7 @@ class Html extends AbstractRenderer
                 $nextRowId = $rowId + 1;
                 if (isset($rows[$nextRowId])) {
                     $firstNonMatch = null;
-                    for (; isset($rows[$nextRowId]); $nextRowId++) {
+                    for (; isset($rows[$nextRowId]); ++$nextRowId) {
                         $nextRow = $rows[$nextRowId];
                         $matched = 0;
 
@@ -211,11 +211,11 @@ class Html extends AbstractRenderer
 
                             $groupValue = $this->getColumnValue($nextRow, $groupColumn['groupResultId']);
                             if ($groupValues[$groupId] == $groupValue) {
-                                $matched++;
+                                ++$matched;
                                 if (!$myGroupSkipCount[$groupId]) {
                                     // if there's a skip count for this, we don't need to increase it
                                     // as it's already been accounted for
-                                    $groupSkipCount[$groupId]++;
+                                    ++$groupSkipCount[$groupId];
                                 }
                             } else {
                                 $firstNonMatch = $groupId;
@@ -231,7 +231,7 @@ class Html extends AbstractRenderer
 
                 foreach ($groupColumns as $groupId => $groupColumn) {
                     if ($myGroupSkipCount[$groupId]) {
-                        $groupSkipCount[$groupId]--;
+                        --$groupSkipCount[$groupId];
                         continue;
                     }
 
@@ -249,7 +249,7 @@ class Html extends AbstractRenderer
                 $cells[] = '<td>'.$this->_renderCellValue($row, $column).'</td>';
             }
 
-            $rowCount++;
+            ++$rowCount;
             $class = ($rowCount % 2 ? 'odd' : 'even');
 
             $rowsHtml[] = '<tr class="row-body '.$class.'">'.implode("\n\t", $cells).'</tr>';
@@ -336,8 +336,8 @@ class Html extends AbstractRenderer
     /**
      * Renders the header rows of a matrix table.
      *
-     * @param array          $prepared  Prepared matrix data (see _prepareMatrixTable).
-     * @param boolean|string $totalType If non empty, shows a total for each row/column
+     * @param array       $prepared  Prepared matrix data (see _prepareMatrixTable).
+     * @param bool|string $totalType If non empty, shows a total for each row/column
      *
      * @return string
      */
@@ -366,7 +366,7 @@ class Html extends AbstractRenderer
         if ($totalType) {
             $row[] = '<th>&nbsp;</th>';
         }
-        $output[] = "<tr class=\"row-header\">".implode('', $row)."</tr>";
+        $output[] = '<tr class="row-header">'.implode('', $row).'</tr>';
 
         foreach ($rows as $depth => $row) {
             if ($depth === 0) {
@@ -451,8 +451,8 @@ class Html extends AbstractRenderer
     /**
      * Renders the body of a matrix table.
      *
-     * @param array          $prepared  Prepared matrix data
-     * @param boolean|string $totalType If non empty, shows a total for each row/column
+     * @param array       $prepared  Prepared matrix data
+     * @param bool|string $totalType If non empty, shows a total for each row/column
      *
      * @return string
      */
@@ -496,7 +496,7 @@ class Html extends AbstractRenderer
                 $cells[] = '<td class="column-total">'.$this->_valueRenderer->renderValue($rowTotal, $totalType).'</td>';
             }
 
-            $rowCount++;
+            ++$rowCount;
             $class = ($rowCount % 2 ? 'odd' : 'even');
 
             $rows[] = '<tr class="row-body '.$class.'">'.$html.implode('', $cells).'</tr>';
@@ -510,7 +510,7 @@ class Html extends AbstractRenderer
             }
             $cells[] = '<td class="column-total">'.$this->_valueRenderer->renderValue(array_sum($columnTotals), $totalType).'</td>';
 
-            $rowCount++;
+            ++$rowCount;
             $class = ($rowCount % 2 ? 'odd' : 'even');
 
             $rows[] = '<tr class="row-body '.$class.' total-row">'.implode('', $cells).'</tr>';
@@ -642,7 +642,7 @@ class Html extends AbstractRenderer
                         $value = '';
                     }
                     $rowData['value'.$i] = $value;
-                    $i++;
+                    ++$i;
                 }
 
                 $chartData[] = $rowData;
@@ -654,7 +654,7 @@ class Html extends AbstractRenderer
                     'title' => implode(' / ', $printable),
                     'value' => "value$i",
                 );
-                $i++;
+                ++$i;
             }
 
             $hasCategory = true;
@@ -673,7 +673,7 @@ class Html extends AbstractRenderer
                     $grouper    = '';
                     $i          = 0;
                     foreach ($groupYColumns as $column) {
-                        $i++;
+                        ++$i;
                         if ($i == 1) {
                             $grouper = $this->_renderCellValue($row, $column);
                             continue;
@@ -789,7 +789,7 @@ class Html extends AbstractRenderer
 
                 $graphs[] = array(
                     'title' => $sel['title'],
-                    'value' => "value",
+                    'value' => 'value',
                 );
 
                 $parts = array();

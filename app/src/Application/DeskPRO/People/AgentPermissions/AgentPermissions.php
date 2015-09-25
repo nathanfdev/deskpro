@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category People
  */
-
 namespace Application\DeskPRO\People\AgentPermissions;
 
 use Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions;
@@ -89,25 +89,25 @@ class AgentPermissions
      * @var array
      */
     public static $prefix_map = array(
-        'agent_tickets' => 'ticket',
-        'agent_people'  => 'people',
-        'agent_org'     => 'org',
-        'agent_chat'    => 'chat',
-        'agent_publish' => 'publish',
-        'agent_general' => 'general',
-        'agent_tasks'   => 'tasks',
+        'agent_tickets'  => 'ticket',
+        'agent_people'   => 'people',
+        'agent_org'      => 'org',
+        'agent_chat'     => 'chat',
+        'agent_publish'  => 'publish',
+        'agent_general'  => 'general',
+        'agent_tasks'    => 'tasks',
         'agent_problems' => 'problems',
     );
 
     public function __construct()
     {
-        $this->chat    = new ChatPermissions();
-        $this->general = new GeneralPermissions();
-        $this->org     = new OrgPermissions();
-        $this->people  = new PeoplePermissions();
-        $this->publish = new PublishPermissions();
-        $this->ticket  = new TicketPermissions();
-        $this->tasks   = new TasksPermissions();
+        $this->chat     = new ChatPermissions();
+        $this->general  = new GeneralPermissions();
+        $this->org      = new OrgPermissions();
+        $this->people   = new PeoplePermissions();
+        $this->publish  = new PublishPermissions();
+        $this->ticket   = new TicketPermissions();
+        $this->tasks    = new TasksPermissions();
         $this->problems = new ProblemsPermissions();
     }
 
@@ -135,7 +135,7 @@ class AgentPermissions
     {
         $arr = array();
         foreach (get_object_vars($this) as $prop => $val) {
-            if (! $val instanceof PermissionValueInterface) {
+            if (!$val instanceof PermissionValueInterface) {
                 continue;
             }
             $arr[$prop] = array();
@@ -155,7 +155,7 @@ class AgentPermissions
     public function fromArray(array $perms)
     {
         foreach (get_object_vars($this) as $prop => $val) {
-            if (! $val instanceof PermissionValueInterface) {
+            if (!$val instanceof PermissionValueInterface) {
                 continue;
             }
             if (!isset($perms[$prop])) {

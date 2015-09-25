@@ -1,39 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\App;
 use DateTime;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -47,9 +46,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     const CONTENT_TYPE = null;
 
-    const STATUS_PUBLISHED   = 'published';
-    const STATUS_ARCHIVED    = 'archived';
-    const STATUS_HIDDEN      = 'hidden';
+    const STATUS_PUBLISHED = 'published';
+    const STATUS_ARCHIVED  = 'archived';
+    const STATUS_HIDDEN    = 'hidden';
 
     const HIDDEN_STATUS_UNPUBLISHED     = 'unpublished';
     const HIDDEN_STATUS_VALIDATING      = 'validating';
@@ -189,7 +188,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getPath()
     {
         KernelErrorHandler::logExceptionIfUniqueBacktrace(
-            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getPath()')
+            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPath()')
         )
         ;
 
@@ -202,7 +201,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getLink()
     {
         KernelErrorHandler::logExceptionIfUniqueBacktrace(
-            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getLink()')
+            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getLink()')
         )
         ;
 
@@ -217,7 +216,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getPermalink($absolute = true)
     {
         KernelErrorHandler::logExceptionIfUniqueBacktrace(
-            new \Exception('DEPRECATED METHOD CALL: ' . get_called_class() . '::getPermalink()')
+            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPermalink()')
         )
         ;
 
@@ -245,11 +244,13 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param Language $language
+     *
      * @return $this
      */
     public function setLanguage(Language $language = null)
     {
         $this->setModelField('language', $language);
+
         return $this;
     }
 
@@ -341,10 +342,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
         $content = Strings::standardEol($this['content']);
-        $content = preg_replace("#<br\s*/?><p>#", "<p>", $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", "<p>", $content);
-        $content = preg_replace("#</p><br\s*/?>#", "</p>", $content);
-        $content = preg_replace("#<br\s*/?></p>#", "</p>", $content);
+        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
+        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
+        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
         $content = preg_replace("#<br\s*/?>?#", "\n", $content);
         $content = preg_replace("#<p>\n?#", "\n", $content);
         $content = preg_replace("#\n?</p>#", "\n", $content);
@@ -371,7 +372,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getSearchSummary($length = 100)
     {
         $content = $this->getContentPlain();
-        $content = str_replace(array("\r\n", "\n"), " ", $content);
+        $content = str_replace(array("\r\n", "\n"), ' ', $content);
 
         if (Strings::utf8_strlen($content) > $length) {
             $content = Strings::utf8_substr($content, 0, $length).'...';
@@ -476,12 +477,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $x = $this->num_ratings - abs($this->total_rating);
 
         if ($x % 2 == 1) {
-            $x++; // never happens with correct data, this just error corrects
+            ++$x; // never happens with correct data, this just error corrects
         }
 
         if ($this->total_rating >= 0) {
             $up   = ($x / 2) + $this->total_rating;
-            $down =  ($x / 2);
+            $down = ($x / 2);
         } else {
             $up   = ($x / 2);
             $down = ($x / 2) + abs($this->total_rating);
@@ -534,8 +535,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function removeRating($rating)
     {
-        $this['num_ratings']   = $this->num_ratings - 1;
-        $this['total_rating']  = $this->total_rating - $rating->rating;
+        $this['num_ratings']  = $this->num_ratings - 1;
+        $this['total_rating'] = $this->total_rating - $rating->rating;
     }
 
     public function addComment($comment)
@@ -660,7 +661,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = preg_replace('# {2,}#', ' ', $content);
 
         if (strlen($content) > 120) {
-            $content = substr($content, 0, 120) . '...';
+            $content = substr($content, 0, 120).'...';
         }
 
         return $content;

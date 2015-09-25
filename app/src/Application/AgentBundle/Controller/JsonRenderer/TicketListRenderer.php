@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller\JsonRenderer;
 
 use Application\DeskPRO\App;
@@ -155,21 +155,21 @@ class TicketListRenderer
     {
         $data = array();
 
-        $data['id']                      = $ticket->id;
-        $data['ref']                     = $ticket->ref;
-        $data['auth']                    = $ticket->auth;
-        $data['sent_to_address']         = $ticket->sent_to_address;
-        $data['creation_system']         = $ticket->creation_system;
-        $data['creation_system_option']  = $ticket->creation_system_option;
-        $data['ticket_hash']             = $ticket->ticket_hash;
-        $data['status']                  = $ticket->status;
-        $data['hidden_status']           = $ticket->hidden_status;
-        $data['validating']              = $ticket->validating;
-        $data['is_hold']                 = $ticket->is_hold;
-        $data['urgency']                 = $ticket->urgency;
-        $data['count_agent_replies']     = $ticket->count_agent_replies;
-        $data['count_user_replies']      = $ticket->count_user_replies;
-        $data['feedback_rating']         = $ticket->feedback_rating;
+        $data['id']                     = $ticket->id;
+        $data['ref']                    = $ticket->ref;
+        $data['auth']                   = $ticket->auth;
+        $data['sent_to_address']        = $ticket->sent_to_address;
+        $data['creation_system']        = $ticket->creation_system;
+        $data['creation_system_option'] = $ticket->creation_system_option;
+        $data['ticket_hash']            = $ticket->ticket_hash;
+        $data['status']                 = $ticket->status;
+        $data['hidden_status']          = $ticket->hidden_status;
+        $data['validating']             = $ticket->validating;
+        $data['is_hold']                = $ticket->is_hold;
+        $data['urgency']                = $ticket->urgency;
+        $data['count_agent_replies']    = $ticket->count_agent_replies;
+        $data['count_user_replies']     = $ticket->count_user_replies;
+        $data['feedback_rating']        = $ticket->feedback_rating;
 
         foreach (array('date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked') as $field) {
             if ($ticket->$field) {
@@ -178,12 +178,12 @@ class TicketListRenderer
             }
         }
 
-        $data['total_user_waiting']      = $ticket->total_user_waiting;
-        $data['total_to_first_reply']    = $ticket->total_to_first_reply;
-        $data['subject']                 = $ticket->subject;
-        $data['properties']              = $ticket->properties;
-        $data['worst_sla_status']        = $ticket->worst_sla_status;
-        $data['waiting_times']           = $ticket->waiting_times;
+        $data['total_user_waiting']   = $ticket->total_user_waiting;
+        $data['total_to_first_reply'] = $ticket->total_to_first_reply;
+        $data['subject']              = $ticket->subject;
+        $data['properties']           = $ticket->properties;
+        $data['worst_sla_status']     = $ticket->worst_sla_status;
+        $data['waiting_times']        = $ticket->waiting_times;
 
         foreach (array('language', 'department', 'category', 'priority', 'workflow', 'product', 'person', 'agent', 'agent_team', 'organization', 'locked_by_agent') as $field) {
             $data[$field] = null;
@@ -260,7 +260,7 @@ class TicketListRenderer
             }
         }
 
-        $data['labels'] = $this->ticket_display->getTicketLabels($ticket);
+        $data['labels']   = $this->ticket_display->getTicketLabels($ticket);
         $data['problems'] = $this->ticket_display->getTicketProblems($ticket);
 
         $custom_data = $this->ticket_display->getTicketFieldData($ticket);
@@ -310,11 +310,11 @@ class TicketListRenderer
         foreach ($this->ticket_display->getTicketPreview($ticket) as $m) {
             $data['previews'][] = array(
                 'message' => array(
-                    'id'               => $m['id'],
-                    'preview_text'     => $m['preview_text'],
-                    'date_created'     => $m['date_created']->format('Y-m-d H:i:s'),
-                    'date_created_ts'  => $m['date_created']->getTimestamp(),
-                    'status'           => $m['status'],
+                    'id'              => $m['id'],
+                    'preview_text'    => $m['preview_text'],
+                    'date_created'    => $m['date_created']->format('Y-m-d H:i:s'),
+                    'date_created_ts' => $m['date_created']->getTimestamp(),
+                    'status'          => $m['status'],
                 ),
                 'person' => array(
                     'id'             => $m['person_id'],
@@ -360,7 +360,7 @@ class TicketListRenderer
         $data['date_created']    = $person->date_created->format('Y-m-d H:i:s');
         $data['date_created_ts'] = $person->date_created->getTimestamp();
 
-        $data['display_name']  = $person->getDisplayName();
+        $data['display_name'] = $person->getDisplayName();
         if ($person->primary_email) {
             $data['primary_email'] = array(
                 'id'    => $person->primary_email->id,

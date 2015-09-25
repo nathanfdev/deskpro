@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
 
     ####################################################################################################################
     # core
@@ -42,11 +70,11 @@
     /**#@+
      * Date formats
      */
-    'core.date_fulltime'   => 'D, jS M Y g:ia',
-    'core.date_full'       => 'D, jS M Y',
-    'core.date_day'        => 'M j Y',
-    'core.date_day_short'  => 'M j',
-    'core.date_time'       => 'g:i a',
+    'core.date_fulltime'  => 'D, jS M Y g:ia',
+    'core.date_full'      => 'D, jS M Y',
+    'core.date_day'       => 'M j Y',
+    'core.date_day_short' => 'M j',
+    'core.date_time'      => 'g:i a',
     /**#@-*/
 
     /*
@@ -97,12 +125,12 @@
      */
     'core.deskpro_url' => '',
 
-    /**
+    /*
      * Auto-correct the URL?
      */
     'core.deskpro_url_autocorrect' => true,
 
-    /**
+    /*
      * The name of the DeskPRO helpdesk
      */
     'core.deskpro_name' => 'DeskPRO',
@@ -254,7 +282,7 @@
     /*
      * Recaptcha public key
      */
-    'core.recaptcha_public_key'  => '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9',
+    'core.recaptcha_public_key' => '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9',
 
     /*
      * Recaptcha private key
@@ -480,7 +508,7 @@
 
     'core.allow_arbitrary_gateway_address' => 1,
 
-    'core_tickets.use_archive' => 1,
+    'core_tickets.use_archive'       => 1,
     'core_tickets.auto_archive_time' => 31536000,
 
     'core_tickets.enable_like_search_mode' => true,
@@ -542,12 +570,12 @@
      */
     'core_tickets.fwd_use_agent_address' => false,
 
-    /**
+    /*
      * True to add email replies as notes instead of ticket replies.
      */
     'core_tickets.email_reply_as_note' => true,
 
-    /**
+    /*
      * True to add replies in fwd as notes instaed of replies
      */
     'core_tickets.email_fwd_reply_as_note' => true,
@@ -947,95 +975,95 @@
     # login account lockout
     ####################################################################################################################
 
-    'user.login_rate_limit.enabled'         => true,
-    'user.login_rate_limit.attempts'        => 20,
-    'user.login_rate_limit.attempts_time'   => 900,
-    'user.login_rate_limit.lock_time'       => 900,
-    'agent.login_rate_limit.enabled'        => true,
-    'agent.login_rate_limit.attempts'       => 20,
-    'agent.login_rate_limit.attempts_time'  => 900,
-    'agent.login_rate_limit.lock_time'      => 900,
+    'user.login_rate_limit.enabled'        => true,
+    'user.login_rate_limit.attempts'       => 20,
+    'user.login_rate_limit.attempts_time'  => 900,
+    'user.login_rate_limit.lock_time'      => 900,
+    'agent.login_rate_limit.enabled'       => true,
+    'agent.login_rate_limit.attempts'      => 20,
+    'agent.login_rate_limit.attempts_time' => 900,
+    'agent.login_rate_limit.lock_time'     => 900,
 
     ####################################################################################################################
     # rate limit
     ####################################################################################################################
 
-    'rate_limit.login.limit'                            => 3,
-    'rate_limit.login.time'                             => 15 * 60, // 15 min
-    'rate_limit.login.response'                         => 'captcha',
+    'rate_limit.login.limit'    => 3,
+    'rate_limit.login.time'     => 15 * 60, // 15 min
+    'rate_limit.login.response' => 'captcha',
 
-    'rate_limit.registration.limit'                     => 3,
-    'rate_limit.registration.time'                      => 15 * 60, // 15 min
-    'rate_limit.registration.response'                  => 'captcha',
+    'rate_limit.registration.limit'    => 3,
+    'rate_limit.registration.time'     => 15 * 60, // 15 min
+    'rate_limit.registration.response' => 'captcha',
 
-    'rate_limit.reset_password.limit'                   => 3,
-    'rate_limit.reset_password.time'                    => 15 * 60, // 15 min
-    'rate_limit.reset_password.response'                => 'captcha',
+    'rate_limit.reset_password.limit'    => 3,
+    'rate_limit.reset_password.time'     => 15 * 60, // 15 min
+    'rate_limit.reset_password.response' => 'captcha',
 
-    'rate_limit.token_exchange.limit'                   => 50,
-    'rate_limit.token_exchange.time'                    => 15 * 60, // 15 min
-    'rate_limit.token_exchange.response'                => 'captcha',
+    'rate_limit.token_exchange.limit'    => 50,
+    'rate_limit.token_exchange.time'     => 15 * 60, // 15 min
+    'rate_limit.token_exchange.response' => 'captcha',
 
-    'rate_limit.submit_comment.limit'                   => 3,
-    'rate_limit.submit_comment.time'                    => 15 * 60, // 15 min
-    'rate_limit.submit_comment.response'                => 'captcha',
+    'rate_limit.submit_comment.limit'    => 3,
+    'rate_limit.submit_comment.time'     => 15 * 60, // 15 min
+    'rate_limit.submit_comment.response' => 'captcha',
 
-    'rate_limit.submit_feedback.limit'                  => 3,
-    'rate_limit.submit_feedback.time'                   => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.response'               => 'captcha',
+    'rate_limit.submit_feedback.limit'    => 3,
+    'rate_limit.submit_feedback.time'     => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.response' => 'captcha',
 
-    'rate_limit.submit_ticket.limit'                    => 3,
-    'rate_limit.submit_ticket.time'                     => 15 * 60, // 15 min
-    'rate_limit.submit_ticket.response'                 => 'captcha',
+    'rate_limit.submit_ticket.limit'    => 3,
+    'rate_limit.submit_ticket.time'     => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.response' => 'captcha',
 
-    'rate_limit.submit_comment.guest.limit'             => 3,
-    'rate_limit.submit_comment.guest.time'              => 15 * 60, // 15 min
-    'rate_limit.submit_comment.guest.response'          => 'captcha',
+    'rate_limit.submit_comment.guest.limit'    => 3,
+    'rate_limit.submit_comment.guest.time'     => 15 * 60, // 15 min
+    'rate_limit.submit_comment.guest.response' => 'captcha',
 
-    'rate_limit.submit_feedback.guest.limit'            => 3,
-    'rate_limit.submit_feedback.guest.time'             => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.guest.response'         => 'captcha',
+    'rate_limit.submit_feedback.guest.limit'    => 3,
+    'rate_limit.submit_feedback.guest.time'     => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.guest.response' => 'captcha',
 
-    'rate_limit.submit_ticket.guest.limit'              => 3,
-    'rate_limit.submit_ticket.guest.time'               => 15 * 60, // 15 min
-    'rate_limit.submit_ticket.guest.response'           => 'captcha',
+    'rate_limit.submit_ticket.guest.limit'    => 3,
+    'rate_limit.submit_ticket.guest.time'     => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.guest.response' => 'captcha',
 
     ####################################################################################################################
     # user_style
     ####################################################################################################################
 
-    'user_style.bg_color'                        => '#FFFFFF',
-    'user_style.dark_well_bg_color'              => '#EEEEEE',
-    'user_style.light_well_bg_color'             => '#FFFFFF',
-    'user_style.text_color'                      => '#333333',
+    'user_style.bg_color'            => '#FFFFFF',
+    'user_style.dark_well_bg_color'  => '#EEEEEE',
+    'user_style.light_well_bg_color' => '#FFFFFF',
+    'user_style.text_color'          => '#333333',
 
-    'user_style.header_bar_bg_color'             => '#2a69a9',
-    'user_style.header_text_color'               => '#FFFFFF',
+    'user_style.header_bar_bg_color' => '#2a69a9',
+    'user_style.header_text_color'   => '#FFFFFF',
 
-    'user_style.header_name_color'               => '#000000',
-    'user_style.header_tagline_color'            => '#5A5A5A',
+    'user_style.header_name_color'    => '#000000',
+    'user_style.header_tagline_color' => '#5A5A5A',
 
-    'user_style.header_tabs_link_color'          => '#0088CC',
+    'user_style.header_tabs_link_color' => '#0088CC',
 
-    'user_style.body_bg_color'                   => '#ededed',
-    'user_style.content_bg_color'                => '#FFFFFF',
-    'user_style.content_border_color'            => '#D2D0D0',
-    'user_style.cal_date_bg'                     => '#F8F8F8',
-    'user_style.cal_date_text'                   => '#888',
-    'user_style.cal_date_border'                 => '#DEDEDE',
-    'user_style.cal_date_month_bg'               => '#2A69A9',
-    'user_style.cal_date_month_text'             => '#fff',
-    'user_style.link_color'                      => '#0088CC',
-    'user_style.link_color_hover'                => '#005580',
-    'user_style.foot_copy_color'                 => '#B2B2B2',
+    'user_style.body_bg_color'        => '#ededed',
+    'user_style.content_bg_color'     => '#FFFFFF',
+    'user_style.content_border_color' => '#D2D0D0',
+    'user_style.cal_date_bg'          => '#F8F8F8',
+    'user_style.cal_date_text'        => '#888',
+    'user_style.cal_date_border'      => '#DEDEDE',
+    'user_style.cal_date_month_bg'    => '#2A69A9',
+    'user_style.cal_date_month_text'  => '#fff',
+    'user_style.link_color'           => '#0088CC',
+    'user_style.link_color_hover'     => '#005580',
+    'user_style.foot_copy_color'      => '#B2B2B2',
 
-    'user_style.meta_text_color'                 => '#898888',
+    'user_style.meta_text_color' => '#898888',
 
-    'user_style.big_header_color'                => '#B2B1B1',
+    'user_style.big_header_color' => '#B2B1B1',
 
-    'user_style.btn_bg1'                         => '#ffffff',
-    'user_style.btn_bg2'                         => '#e6e6e6',
+    'user_style.btn_bg1' => '#ffffff',
+    'user_style.btn_bg2' => '#e6e6e6',
 
-    'user_style.btn_primary_bg1'                => '#0088cc',
-    'user_style.btn_primary_bg2'                => '#0055cc',
+    'user_style.btn_primary_bg1' => '#0088cc',
+    'user_style.btn_primary_bg2' => '#0055cc',
 );

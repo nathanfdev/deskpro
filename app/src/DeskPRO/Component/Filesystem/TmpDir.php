@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Filesystem;
 
 use DeskPRO\Component\Util\RandUtils;
@@ -44,11 +44,13 @@ class TmpDir
      * Create a tmp dir and return the path.
      *
      * @param $base_path
+     *
      * @return string
      */
     public static function create($base_path)
     {
         $tmp = new self($base_path);
+
         return $tmp->getPath();
     }
 
@@ -68,12 +70,12 @@ class TmpDir
         }
 
         do {
-            $path = $base_path . DIRECTORY_SEPARATOR . 'tmp_' . date('YmdHis') . '_' . RandUtils::randomString(10, 'alpha_iu');
+            $path = $base_path.DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(10, 'alpha_iu');
         } while (file_exists($path));
 
         @mkdir($path);
         if (!is_dir($path)) {
-            throw new \RuntimeException("Could not create tmp dir: " . $path . " (" . error_get_last() . ")");
+            throw new \RuntimeException('Could not create tmp dir: '.$path.' ('.error_get_last().')');
         }
 
         $this->path = $path;
@@ -82,7 +84,7 @@ class TmpDir
     }
 
     /**
-     * Cleans up the temporary directory
+     * Cleans up the temporary directory.
      */
     public function cleanup()
     {
@@ -90,7 +92,7 @@ class TmpDir
             return;
         }
 
-        $rm = function($files) use (&$rm) {
+        $rm = function ($files) use (&$rm) {
             foreach ($files as $p) {
                 if (is_dir($p) && !is_link($p)) {
                     $rm(new \FilesystemIterator($p));

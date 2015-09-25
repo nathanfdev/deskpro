@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -113,13 +113,13 @@ class SettingsProfile
         $this->timezone              = $person->timezone;
         $this->language_id           = $person->getLanguage()->getId();
 
-        $this->ticket_close_reply   = (bool) $person->getPref('agent.ticket_close_reply', true);
-        $this->ticket_close_note    = (bool) $person->getPref('agent.ticket_close_note', false);
-        $this->ticket_go_next_reply = (bool) $person->getPref('agent.ticket_go_next_reply', false);
-        $this->hide_claimed_chat    = (bool) $person->getPref('agent.hide_claimed_chat', false);
-        $this->default_team_id      = $person->getPref('agent.ticket_default_team_id');
-        $this->ticket_reverse_order = (bool)$person->getPref('agent.ticket_reverse_order');
-        $this->enable_plaintext_email = (bool)$person->getPref('agent.enable_plaintext_email');
+        $this->ticket_close_reply     = (bool) $person->getPref('agent.ticket_close_reply', true);
+        $this->ticket_close_note      = (bool) $person->getPref('agent.ticket_close_note', false);
+        $this->ticket_go_next_reply   = (bool) $person->getPref('agent.ticket_go_next_reply', false);
+        $this->hide_claimed_chat      = (bool) $person->getPref('agent.hide_claimed_chat', false);
+        $this->default_team_id        = $person->getPref('agent.ticket_default_team_id');
+        $this->ticket_reverse_order   = (bool) $person->getPref('agent.ticket_reverse_order');
+        $this->enable_plaintext_email = (bool) $person->getPref('agent.enable_plaintext_email');
         if ($this->default_team_id === null) {
             $teams                 = $person->getAgent()->getTeams();
             $last_team             = end($teams);
