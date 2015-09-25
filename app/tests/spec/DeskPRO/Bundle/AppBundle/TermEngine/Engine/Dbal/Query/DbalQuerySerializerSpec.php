@@ -40,6 +40,6 @@ class DbalQuerySerializerSpec extends ObjectBehavior
 {
     public function it_is_initializable()
     {
-        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQueryCacheSerializer');
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQuerySerializer');
     }
 }
