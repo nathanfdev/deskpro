@@ -273,6 +273,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
             ->addTicketFieldsResponse((object)array(
                 'ticket_fields' => array(),
             ))
+            ->addOrganizationFieldsResponse((object)array(
+                'organization_fields' => array(),
+            ))
             ->addTicketsIncrementalExportResponse((object)array(
                 'tickets'  => array(
                     (object)array(

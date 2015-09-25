@@ -77,6 +77,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
+     * Stores a organization fields response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addOrganizationFieldsResponse($response)
+    {
+        $this->addResponse('CoreAPI\OrganizationField::findAll', $response);
+        return $this;
+    }
+
+    /**
      * Stores a organization find response
      *
      * @param string|array $response

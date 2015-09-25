@@ -184,10 +184,13 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\NewsLabel($mappers))
             ->attach(new Importer\Person($mappers))
             ->attach(new Importer\PersonLabel($mappers))
+            ->attach(new Importer\PersonCustomDef($mappers))
             ->attach(new Importer\Ticket($mappers, $ticket_manager, $blob_adapter))
             ->attach(new Importer\TicketLabel($mappers))
+            ->attach(new Importer\TicketCustomDef($mappers))
             ->attach(new Importer\Organization($mappers, $blob_adapter))
             ->attach(new Importer\OrganizationLabel($mappers))
+            ->attach(new Importer\OrganizationCustomDef($mappers))
         ;
 
         /** @var EntityWatcher $entity_watcher */
