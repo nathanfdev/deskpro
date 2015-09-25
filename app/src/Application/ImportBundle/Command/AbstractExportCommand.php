@@ -33,6 +33,7 @@ use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Logger\ImporterProcessingHandler;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
@@ -521,7 +522,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             if ($input->getOption('config-from-db')) {
                 $importer = $this->getContainer()->get('deskpro.import')->getImporter($input->getArgument('script'));
-                $handler = new Generator\Logger\ImporterProcessingHandler($importer, $this->getContainer()->getEm());
+                $handler = new ImporterProcessingHandler($importer, $this->getContainer()->getEm());
                 $handler->setFormatter($formatter);
                 $logger->pushHandler($handler);
             }

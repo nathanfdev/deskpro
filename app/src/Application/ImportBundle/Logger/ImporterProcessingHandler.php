@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\ImportBundle\Generator\Logger;
+namespace Application\ImportBundle\Logger;
 
 use Application\DeskPRO\Entity\DataStore;
 use Doctrine\ORM\EntityManager;
@@ -10,7 +10,7 @@ use Orb\Util\Strings;
 
 /**
  * Class ImporterProcessingHandler
- * @package Application\ImportBundle\Generator\Logger
+ * @package Application\ImportBundle\Logger
  */
 class ImporterProcessingHandler extends AbstractProcessingHandler
 {
