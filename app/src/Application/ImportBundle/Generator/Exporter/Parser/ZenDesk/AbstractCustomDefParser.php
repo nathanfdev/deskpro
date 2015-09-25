@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
@@ -83,7 +82,6 @@ abstract class AbstractCustomDefParser extends AbstractParser
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['value'])
             ->setDescription($formatted['name'])
-            ->setHandlerClass(CustomDefAbstract::HANDLER_CLASS_CHOICE)
             ->setAsEnabled(true)
         ;
 

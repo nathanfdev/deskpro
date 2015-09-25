@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -319,7 +320,19 @@ abstract class AbstractCustomDef extends AbstractEntity
 
         $metadata
             ->addPropertyConstraint('title', new Constraints\NotBlank())
-            ->addPropertyConstraint('handler_class', new Constraints\NotBlank())
+            ->addPropertyConstraint('handler_class', new Constraints\Choice(array(
+                'choices' => array(
+                    null,
+                    CustomDefAbstract::HANDLER_CLASS_CHOICE,
+                    CustomDefAbstract::HANDLER_CLASS_TOGGLE,
+                    CustomDefAbstract::HANDLER_CLASS_DATE,
+                    CustomDefAbstract::HANDLER_CLASS_DATETIME,
+                    CustomDefAbstract::HANDLER_CLASS_DISPLAY,
+                    CustomDefAbstract::HANDLER_CLASS_HIDDEN,
+                    CustomDefAbstract::HANDLER_CLASS_TEXT,
+                    CustomDefAbstract::HANDLER_CLASS_TEXTAREA,
+                ),
+            )))
             ->addPropertyConstraint('custom_def', new Constraints\Valid())
         ;
     }
