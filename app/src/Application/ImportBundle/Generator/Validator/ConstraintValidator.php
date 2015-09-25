@@ -27,20 +27,45 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
+use Symfony\Component\Validator\ValidatorInterface as SymfonyValidator;
 use Application\ImportBundle\Entity;
 
 /**
- * Class TicketCustomDef
+ * Symfony constraint validator
+ *
+ * Class AbstractConstraintValidator
  * @package Application\ImportBundle\Generator\Validator
  */
-final class TicketCustomDef extends AbstractConstraintValidator
+final class ConstraintValidator implements ValidatorInterface
 {
+    /**
+     * @var SymfonyValidator
+     */
+    private $validator;
+
+    /**
+     * @var string
+     */
+    private $entity_type;
+
+    /**
+     * Constructor
+     *
+     * @param SymfonyValidator $validator
+     * @param string           $entity_type
+     */
+    public function __construct(SymfonyValidator $validator, $entity_type)
+    {
+        $this->validator   = $validator;
+        $this->entity_type = $entity_type;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF;
+        return $this->entity_type;
     }
 
     /**
@@ -48,8 +73,9 @@ final class TicketCustomDef extends AbstractConstraintValidator
      */
     public function validate(Entity\EntityInterface $entity)
     {
-        if ( ! $entity instanceof Entity\TicketCustomDef) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        $errors = $this->validator->validate($entity);
+        if (count($errors) > 0) {
+            throw new ValidatorConstraintException($entity, $errors);
         }
     }
 }
