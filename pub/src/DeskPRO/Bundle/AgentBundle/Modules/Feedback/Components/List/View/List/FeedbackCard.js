@@ -9,7 +9,7 @@ export class FeedbackCard extends Component {
   };
 
   render() {
-    const {feedback} = this.props;
+    const {feedback, author} = this.props;
     return (
       <Card type="feedback">
 
@@ -39,7 +39,7 @@ export class FeedbackCard extends Component {
           <CardLineLeft>
             <CardLineItem icon="fa-calendar-plus-o"><CardDate date={feedback.date_created}/></CardLineItem>
             <CardDisc/>
-            <CardUser/> { /* @ToDo send user data */ }
+            <CardUser user={author}/>
             <CardDisc/>
             <CardLineItem icon="fa-book">{feedback.category}</CardLineItem>
             <CardDisc/>

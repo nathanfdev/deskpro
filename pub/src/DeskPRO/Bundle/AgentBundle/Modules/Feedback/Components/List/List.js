@@ -35,16 +35,16 @@ export class List extends Component {
   }
 
   renderFeedback() {
-    const {currentViewMode, feedback} = this.props;
+    const {currentViewMode, feedback, people} = this.props;
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
-        <FeedbackList elements={feedback}/>
+        <FeedbackList elements={feedback} people={people}/>
       );
     }
     else {
       return (
-        <FeedbackTable elements={feedback}/>
+        <FeedbackTable elements={feedback} people={people}/>
       );
     }
   }

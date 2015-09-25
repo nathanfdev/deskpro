@@ -41,7 +41,24 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
 {
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'status', 'hidden_status', 'title', 'slug', 'date_created', 'date_published', 'view_count', 'total_rating', 'num_ratings', 'num_comments', 'validating', 'popularity', 'content'];
+        return [
+            'id',
+            'status',
+            'hidden_status',
+            'title',
+            'slug',
+            'date_created',
+            'date_published',
+            'view_count',
+            'total_rating',
+            'num_ratings',
+            'num_comments',
+            'validating',
+            'popularity',
+            'content',
+            'person_id',
+            'category_id'
+        ];
     }
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
