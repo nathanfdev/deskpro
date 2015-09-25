@@ -49,7 +49,7 @@ final class PersonCustomDef extends AbstractCustomDefImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\PersonCustomDef) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);

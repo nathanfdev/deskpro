@@ -54,7 +54,7 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
      * 'num_comments'   => $nval->num_comments,
      * 'num_ratings'    => $nval->num_ratings,
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\News) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -74,7 +74,6 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
         ;
 
         $this->records->setPrimaryEntity($news);
-        return $this->records;
     }
 
     /**

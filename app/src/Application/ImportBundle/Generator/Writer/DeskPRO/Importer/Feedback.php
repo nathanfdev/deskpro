@@ -72,7 +72,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * $record['num_ratings']		= $fval->num_ratings;
      * $record['popularity']		= $fval->popularity;
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Feedback) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -106,7 +106,6 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
         }
 
         $this->records->setPrimaryEntity($feedback);
-        return $this->records;
     }
 
     /**

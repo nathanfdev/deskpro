@@ -49,7 +49,7 @@ final class OrganizationLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Organization) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -67,6 +67,5 @@ final class OrganizationLabel extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($organization);
-        return $this->records;
     }
 }

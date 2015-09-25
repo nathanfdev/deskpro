@@ -48,7 +48,7 @@ final class OrganizationCustomDef extends AbstractCustomDefImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\OrganizationCustomDef) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);

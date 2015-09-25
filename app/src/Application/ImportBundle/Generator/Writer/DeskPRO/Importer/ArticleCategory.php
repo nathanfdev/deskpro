@@ -65,7 +65,7 @@ final class ArticleCategory extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\ArticleCategory) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -77,7 +77,6 @@ final class ArticleCategory extends AbstractImporter
         $this->createOrUpdateDeepCategories($category, $entity);
 
         $this->records->setPrimaryEntity($category);
-        return $this->records;
     }
 
     /**

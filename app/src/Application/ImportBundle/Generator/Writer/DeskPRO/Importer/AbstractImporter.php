@@ -73,6 +73,14 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineEntities()
+    {
+        return $this->records;
+    }
+
+    /**
      * Returns a language id by title
      *
      * @param string $title

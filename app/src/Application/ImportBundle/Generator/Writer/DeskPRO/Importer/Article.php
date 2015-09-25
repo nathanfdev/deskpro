@@ -70,7 +70,7 @@ final class Article extends AbstractImporter
      * $record['total_rating'] = $kbval->total_rating;
      * $record['num_ratings']  = $kbval->num_ratings;
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Article) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -117,7 +117,6 @@ final class Article extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($article);
-        return $this->records;
     }
 
     /**

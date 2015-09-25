@@ -47,7 +47,7 @@ final class ArticleTranslation extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Article) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -59,7 +59,5 @@ final class ArticleTranslation extends AbstractImporter
         foreach ($entity->getUniqueTranslations() as $translation) {
             $this->addObjectLang($translation, $article);
         }
-
-        return $this->records;
     }
 }

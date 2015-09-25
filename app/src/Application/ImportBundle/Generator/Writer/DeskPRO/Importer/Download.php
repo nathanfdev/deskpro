@@ -71,7 +71,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
      * 'num_comments'   => $dval->num_comments,
      * 'num_ratings'    => $dval->num_ratings,
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if ( ! $entity instanceof Entity\Download) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -93,7 +93,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
         ;
 
         $this->records->setPrimaryEntity($download);
-        return $this->records;
     }
 
     /**
