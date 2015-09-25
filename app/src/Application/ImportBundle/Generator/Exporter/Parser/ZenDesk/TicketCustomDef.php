@@ -97,6 +97,7 @@ final class TicketCustomDef extends AbstractParser
             'raw_description'      => TransformerInterface::TYPE_STRING,
             'title_in_portal'      => TransformerInterface::TYPE_STRING,
             'raw_title_in_portal'  => TransformerInterface::TYPE_STRING,
+            'tag'                  => TransformerInterface::TYPE_STRING,
             'position'             => TransformerInterface::TYPE_INT,
             'required'             => TransformerInterface::TYPE_BOOLEAN,
             'active'               => TransformerInterface::TYPE_BOOLEAN,
