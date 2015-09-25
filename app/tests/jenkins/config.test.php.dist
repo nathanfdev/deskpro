@@ -37,33 +37,21 @@
 // Note: If you are using Windows and your MySQL
 // server is on the same machine, it it important
 // to specify 127.0.0.1 instead of localhost.
-define('DP_DATABASE_HOST', 'localhost');
+define('DP_DATABASE_HOST', '127.0.0.1');
 
 // The database username
-define('DP_DATABASE_USER', 'root');
+define('DP_DATABASE_USER', 'deskpro');
 
 // The password for the database user
-define('DP_DATABASE_PASSWORD', '');
+define('DP_DATABASE_PASSWORD', 'deskpro');
 
 // The name of the database
-define('DP_DATABASE_NAME', 'deskpro_test');
+define('DP_DATABASE_NAME', getenv('DATABASE_PREFIX') . '_test');
 
 // Specify an email address to receive reports of any
 // database problems that prevent DeskPRO from working
 define('DP_TECHNICAL_EMAIL', '');
 
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# The mySQL database settings are the only required
-# settings needed to install DeskPRO. You only need
-# to change the settings that follow if the DeskPRO
-# software, a knowledgebase article or a member
-# of DeskPRO's customer service team advise you
-# to do so.
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// do not edit the next line
-$DP_CONFIG = array('debug' => array(), 'cache' => array());
 
 ######################################################
 ######################################################
@@ -98,10 +86,26 @@ $DP_CONFIG['SETTINGS']['portal.smaxage_guest_page'] = 0;
 $DP_CONFIG['SETTINGS']['portal.smaxage_guest_tag'] = 0;
 $DP_CONFIG['SETTINGS']['portal.smaxage_user_page'] = 0;
 $DP_CONFIG['SETTINGS']['portal.smaxage_user_tag'] = 0;
-
 $DP_CONFIG['rewrite_urls'] = false;
 
-$DP_CONFIG['enable_termengine_log'] = true;
+
+
+
+
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# The mySQL database settings are the only required
+# settings needed to install DeskPRO. You only need
+# to change the settings that follow if the DeskPRO
+# software, a knowledgebase article or a member
+# of DeskPRO's customer service team advise you
+# to do so.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// do not edit the next line
+$DP_CONFIG = array('debug' => array(), 'cache' => array());
 
 # ~~~~~~~~~~~~~~~~~~~~  PATHS ~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -45,12 +45,12 @@ class DownloadsDataService extends AbstractDataService
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    private $em;
+    protected $em;
 
     /**
      * @var PortalPermissionsManager
      */
-    private $permissions_manager;
+    protected $permissions_manager;
 
     public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
     {
