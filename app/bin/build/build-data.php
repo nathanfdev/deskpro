@@ -16,7 +16,7 @@ require DP_ROOT.'/sys/system.php';
 
 $quick = in_array('--quick', $_SERVER['argv']);
 
-if ($quick) {
+if (!$quick) {
     #------------------------------
     # Build cloudflare IPs data
     #------------------------------
@@ -49,6 +49,7 @@ if ($quick) {
 
     $lines = \Orb\Util\Strings::modifyLines($lines, "\t'", "',");
 } else {
+    $data_path = DP_ROOT.'/sys/Resources/cloudflare-ips.php';
     $lines = "";
 }
 

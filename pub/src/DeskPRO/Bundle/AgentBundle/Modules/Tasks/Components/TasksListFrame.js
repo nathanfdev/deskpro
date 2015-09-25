@@ -23,6 +23,12 @@ import AssignHover from "../Components/AssignHover";
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 
 import Positioned from 'DeskPRO/Component/Positioned';
+import Menu from 'DeskPRO/Component/Menu/Menu';
+import BaseItem from 'DeskPRO/Component/Menu/BaseItem';
+import Item from 'DeskPRO/Component/Menu/Item';
+import ItemList from 'DeskPRO/Component/Menu/ItemList';
+import ItemGroup from 'DeskPRO/Component/Menu/ItemGroup';
+import MenuFooter from 'DeskPRO/Component/Menu/MenuFooter';
 
 @connect(state => ({
     taskFrameList: state.taskFrameList,
@@ -395,10 +401,10 @@ export default class TasksListFrame extends React.Component {
       });
     }
 
-    let total_pages = 1;
+    let totalPages = 1;
 
     if (taskFrameList.taskFrameMeta && taskFrameList.taskFrameMeta.pagination) {
-      total_pages = taskFrameList.taskFrameMeta.pagination.total_pages;
+      totalPages = taskFrameList.taskFrameMeta.pagination.total_pages;
     }
 
     return (
@@ -406,9 +412,43 @@ export default class TasksListFrame extends React.Component {
         <div className="ticket-list">
           <Positioned isOpen={true}
                       positionTarget={this.refs.ticketControlBar}>
-            <div>
-            HELLO!
-            </div>
+            <Menu>
+              <Item>
+                Hello!
+                <Menu>
+                  <ItemGroup>
+                    <Item>
+                      Test
+                    </Item>
+                    <Item checked>
+                      Test 2
+                    </Item>
+                  </ItemGroup>
+                  <Item>
+                    Test 3
+                    <Menu>
+                      <Item>Sub-menu</Item>
+                      <Item>Submarine</Item>
+                    </Menu>
+                  </Item>
+                  <Item icon="bolt" itemType="locked">
+                    Test 4
+                  </Item>
+                  <Item itemType="danger">
+                    Test 5
+                  </Item>
+                </Menu>
+                <ItemList>
+                  <Item>Test A</Item>
+                  <Item>Test B</Item>
+                </ItemList>
+              </Item>
+              <MenuFooter>
+                <div className="dpw-navigation-dropdown-options-link">
+                  <a href="#">Thing</a>
+                </div>
+              </MenuFooter>
+            </Menu>
           </Positioned>
 
           <ComponentRootWrapper open={this.state.showAssignWindow}>
@@ -427,7 +467,7 @@ export default class TasksListFrame extends React.Component {
                     {this.state.actionable.length > 0 ? <i className="fa fa-check"/> : ''}
                   </span>
               </a>
-              <span className="count" style={this.state.actionable.length > 0 ? {} : {display: "none"}}>
+              <span className="count" style={this.state.actionable.length > 0 ? {} : {display: 'none'}}>
                 <span>{this.state.actionable.length}</span>
               </span>
             </div>
@@ -608,12 +648,12 @@ export default class TasksListFrame extends React.Component {
           // initialSelected: Current page INDEX (zero-based - i.e. page number minus 1)
         }
 
-        { total_pages > 1 && this.state.view !== 'calendar' ?
+        { totalPages > 1 && this.state.view !== 'calendar' ?
         <div className="dpw--ticket-pagination">
           <ReactPaginate previousLabel={<i className="fa fa-caret-left" />}
                          nextLabel={<i className="fa fa-caret-right" />}
                          breakLabel={<li className="break"><a href="#">...</a></li>}
-                         pageNum={total_pages}
+                         pageNum={totalPages}
                          marginPagesDisplayed={3}
                          pageRangeDisplayed={3}
                          clickCallback={this.handlePageClick.bind(this)}

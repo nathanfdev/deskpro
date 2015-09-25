@@ -23,7 +23,7 @@ var deskpro = {
 //######################################################################################################################
 
 gulp.task('clean', function (cb) {
-  del(['./build']).then(cb);
+  del(['./build']).then(function() { cb(); });
 });
 
 gulp.task('default', ['clean'], function (cb) {

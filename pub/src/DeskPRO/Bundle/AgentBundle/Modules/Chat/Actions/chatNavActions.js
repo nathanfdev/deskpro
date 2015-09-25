@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
-import { loadAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
+import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { loadDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/departmentsActions';
 
 /**
@@ -16,7 +16,7 @@ export const loadCounts = createAction(
       if (groupBy === 'department') {
         dispatch(loadDepartments(recordStoresId, promise.getData().data.nested.map(count => count.group)));
       } else if (groupBy === 'agent') {
-        dispatch(loadAgents());
+        dispatch(loadAllAgents());
       }
 
       return {

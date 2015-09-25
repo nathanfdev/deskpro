@@ -97,11 +97,11 @@ const TaskFilterHover = React.createClass({
       {value: 'none', label: <span>No Attachments</span>}
     ];
 
-    let departments = [];
-    let teams = [];
-    let agents = [];
-    let projects = [];
-    let labels = [];
+    const departments = [];
+    const teams = [];
+    const agents = [];
+    const projects = [];
+    const labels = [];
 
     if (typeof this.props.departments !== 'undefined' && this.props.departments !== null) {
       this.props.departments.forEach(function(object) {

@@ -1,4 +1,4 @@
-import { createAction } from "Ampliflux/actions";
+import { createAction } from 'Ampliflux/actions';
 import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import * as UserGroups from 'DeskPRO/Bundle/AgentBundle/Services/Api/UserGroups';
 import * as Organizations from 'DeskPRO/Bundle/AgentBundle/Services/Api/Organizations';
@@ -38,14 +38,4 @@ export const loadPersonLabels = createAction(
 export const loadOrganizationLabels = createAction(
   'CRM_NAV_LOAD_ORGANIZATION_LABELS',
   trigger => Labels.loadOrganizationLabels().then(promise => trigger(promise.getData().data))
-);
-
-export const loadGroups = createAction(
-  'CRM_NAV_LOAD_GROUPS',
-  trigger => UserGroups.loadAll().then(promise => trigger(promise.getData().data))
-);
-
-export const loadTeams = createAction(
-  'CRM_NAV_LOAD_TEAMS',
-  trigger => AgentTeams.loadAll().then(promise => trigger(promise.getData().data))
 );

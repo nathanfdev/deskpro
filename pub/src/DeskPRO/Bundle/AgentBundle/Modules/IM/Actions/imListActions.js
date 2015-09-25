@@ -35,9 +35,7 @@ export const loadRecentAgents = createAction(
                     let chats = promise.getData().data;
                     let agents = [];
                     chats.forEach(function(chat) {
-                        chat.participants.forEach(function(participant){
-                            agents[participant.id] = participant;
-                        });
+                        
                     });
                     trigger(agents);
                 }

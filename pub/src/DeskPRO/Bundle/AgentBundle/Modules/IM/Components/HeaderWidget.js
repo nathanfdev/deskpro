@@ -42,7 +42,35 @@ export default class HeaderWidget extends React.Component {
     onClick() {
         const newState = {
             overlayShown: !this.state.overlayShown,
-            chating: !this.state.chating,
+            chating: this.state.chating,
+            messages: [
+                {
+                    author: {
+                        gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+                    },
+                    text: 'test'
+                },
+                {
+                    author: {
+                        gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+                    },
+                    text: 'test'
+                },
+                {
+                    author: {
+                        gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+                    },
+                    text: 'test'
+                }
+            ]
+        };
+        this.setState(newState);
+    }
+
+    agentClickHandler() {
+        const newState = {
+            overlayShown: false,
+            chating: true,
             messages: [
                 {
                     author: {
@@ -75,9 +103,9 @@ export default class HeaderWidget extends React.Component {
                       IMs <i className="fa fa-angle-down"></i>
                   </span>
                 </a>
-                { this.props.recentAgents.map((agent, index) => <Recent key={index} agent={agent} />)}
+                { this.props.recentAgents.map((agent, index) => <Recent agentClickHandler={this.agentClickHandler} key={index} agent={agent} />)}
                 { this.state.overlayShown ? <Overlay/> : null }
-                { this.state.chating ? <Chat messages={this.state.messages}/> : null }
+                { this.state.chating ? <Chat messages={this.state.messages} /> : null }
             </div>
         );
     }

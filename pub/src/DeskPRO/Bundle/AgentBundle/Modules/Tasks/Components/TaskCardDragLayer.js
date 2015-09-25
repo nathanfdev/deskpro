@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 import Moment from 'moment';
 import { FormattedDate } from 'react-intl';
-import Card from '../../Application/Components/ListFrame/Card';
+import { Card } from '../../Application/Components/ListFrame/Card';
 
 const layerStyles = {
   position: 'fixed',
@@ -84,75 +84,89 @@ class TaskCardDragLayer {
 
         const overdue = Moment(item.details.date_due).isBefore();
 
-        return (<Card statusBars
-              moving
-              cardType="task"
-              task={item.details}>
+        return (<Card minimized={item.details.is_done} moving type="task">
+        {
+          item.details.is_done ?
+          <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized">
+            <span>Done</span>
+            <i className="fa fa-check"/>
+          </div>
+            :
+          <div className="dpw--single-card-mark-done">
+            <i className="fa fa-check"/>
+            <span>Mark Done</span>
+          </div>
+        }
+        <span>
+          <div className="dpw--card-status-bar dpw--status-bar-left level-5"/>
+          <div className="dpw--card-status-bar dpw--status-bar-right level-5"/>
+        </span>
 
-          <div className="dpm--card-checkbox">
+        <div className="dpm--card-checkbox">
+          <i className="fa fa-check"/>
+        </div>
 
+        <div className="dpw--card-line">
+          <div className="dpw--card-line-left card-title">
+            <div className={titleClass}>
+              <h1>{item.details.title}</h1>
+            </div>
           </div>
 
-          <div className="dpw--card-line">
-            <div className="dpw--card-line-left card-title">
-              <div className={titleClass}>
-                <h1>{item.details.title}</h1>
-              </div>
-            </div>
+          <div className="dpw--card-line-right">
 
-            <div className="dpw--card-line-right">
-
-              {item.details.is_done ?
-              <div className="dpw--card-expand">
-                <a href="#">Expand <i className="fa fa-navicon" /></a>
-              </div>
+            {item.details.is_done ?
+             <div className="dpw--card-expand">
+               <a href="#">Expand <i className="fa fa-navicon"/></a>
+             </div>
               :
-              assignee && assignee.picture_blob ?
-              <div className="dpwd--card-assigned">
-                <span className="dpw--avatar-face" style={{backgroundImage: 'url(' + item.details.picture_blob.download_url + ')'}} />
-              </div> : '' }
-            </div>
+             assignee && assignee.picture_blob ?
+             <div className="dpwd--card-assigned">
+               <span className="dpw--avatar-face"
+                     style={{backgroundImage: 'url(' + assignee.picture_blob.download_url + ')'}}/>
+             </div> : '' }
           </div>
+        </div>
 
-          {!item.details.is_done ?
-          <div className="dpw--card-line">
-            <div className="dpw--card-line-left">
+        {!item.details.is_done ?
+         <div className="dpw--card-line">
+           <div className="dpw--card-line-left">
               <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'}>
-                <i className="fa fa-calendar-o" /> Due: {item.details.date_due ? this.dueIndicator(item.details.date_due) : 'N/A'}
+                <i className="fa fa-calendar-o"/> Due: {item.details.date_due ? this.dueIndicator(item.details.date_due) : 'N/A'}
               </span>
 
-              {item.details.project && item.projects[item.details.project] ? <span>
-                <span className="dpw--card-disc" />
+             {item.details.project && item.projects[item.details.project] ? <span>
+                <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-book" /> {item.projects[item.details.project].title}
+                  <i className="fa fa-book"/> {item.projects[item.details.project].title}
                 </span>
               </span>
-              : ''}
+               : ''}
 
-              {ticketLink ? <span>
-                <span className="dpw--card-disc" />
+             {ticketLink ? <span>
+                <span className="dpw--card-disc"/>
 
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-link" /> <a href={ticketLink}>{ticketTitle}</a>
+                  <i className="fa fa-link"/> <a href={ticketLink}>{ticketTitle}</a>
                 </span>
               </span> : ''}
-            </div>
+           </div>
 
-            <div className="dpw--card-line-right">
+           <div className="dpw--card-line-right">
               <span className="dpwd--card-line-item">
-                {item.details.comment_count} <i className="fa fa-comment" />
+                {item.details.comment_count} <i className="fa fa-comment"/>
               </span>
 
-              {item.details.subtasks_total > 0 ?
-                <span>
-                  <span className="dpw--card-disc" />
-                  <div>{item.details.subtasks_done}/{item.details.subtasks_total} <i className="fa fa-folder-open"/></div>
+             {item.details.subtasks_total > 0 ?
+              <span className="dpwd--card-line-item">
+                  <div><span className="dpw--card-disc"/> {item.details.subtasks_done}/{item.details.subtasks_total} <i
+                    className="fa fa-folder-open"/></div>
                 </span>
-              : ''}
-            </div>
-          </div>
+               : ''}
+           </div>
+         </div>
           : '' }
-        </Card>);
+      </Card>);
         break;
       case 'kanban':
         let assigneeName = '';

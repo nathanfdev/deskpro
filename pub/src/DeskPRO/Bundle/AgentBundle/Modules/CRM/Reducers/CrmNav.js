@@ -1,7 +1,7 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/crmNavActions';
 import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ActionTypes";
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export default class CrmNav extends Reducer {
   getInitialState() {
@@ -36,9 +36,7 @@ export default class CrmNav extends Reducer {
       agents: {
         total: 0,
         teams: [/* {count, group} */]
-      },
-      groupNames: {/* id: name */},
-      teamNames: {/* id: name */}
+      }
     };
   }
 
@@ -53,8 +51,6 @@ export default class CrmNav extends Reducer {
       .r(actions.loadTeamsCounts, this.teamsCountsLoaded)
       .r(actions.loadPersonLabels, this.personLabelsLoaded)
       .r(actions.loadOrganizationLabels, this.organizationLabelsLoaded)
-      .r(actions.loadGroups, this.groupsLoaded)
-      .r(actions.loadTeams, this.teamsLoaded)
     ;
   }
 
@@ -107,33 +103,15 @@ export default class CrmNav extends Reducer {
     return next;
   }
 
-  groupsLoaded(prev, {payload}) {
-    const next      = {...prev};
-    next.groupNames = {};
-    payload.forEach(group => next.groupNames[group.id] = group.title);
-
-    return next;
-  }
-
-  teamsLoaded(prev, {payload}) {
-    const next     = {...prev};
-    next.teamNames = {};
-    payload.forEach(team => next.teamNames[team.id] = team.name);
-
-    return next;
-  }
-
   viewModeChanged(prev) {
     const next    = {...prev};
     next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
     return next;
   }
 
-
   orderChanged(prev) {
     const next = {...prev};
     next.order = prev.order === constants.ORDER_DESC ? constants.ORDER_ASC : constants.ORDER_DESC;
     return next;
   }
-
 }
