@@ -27,10 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\ZenDesk\FieldsHandlerClassMapper;
 
 /**
  * ZenDesk people custom def parser
@@ -81,14 +83,19 @@ final class PeopleCustomDef extends AbstractParser
     protected function exportCustomDef(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'                   => TransformerInterface::TYPE_STRING,
+            'destination'          => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'person_custom_def_',
                 'ref'    => 'id',
             )),
-            'title'       => TransformerInterface::TYPE_STRING,
-            'description' => TransformerInterface::TYPE_STRING,
-            'required'    => TransformerInterface::TYPE_BOOLEAN,
+            'key'                  => TransformerInterface::TYPE_STRING,
+            'title'                => TransformerInterface::TYPE_STRING,
+            'description'          => TransformerInterface::TYPE_STRING,
+            'active'               => TransformerInterface::TYPE_BOOLEAN,
+            'custom_field_options' => TransformerInterface::TYPE_ARRAY,
+            'created_at'           => TransformerInterface::TYPE_DATE,
+            'updated_at'           => TransformerInterface::TYPE_DATE,
+            'tag'                  => TransformerInterface::TYPE_STRING,
         ));
 
         $entity = new Entity\PersonCustomDef();
@@ -96,9 +103,28 @@ final class PeopleCustomDef extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
+            ->setImportMapKey(ImportMap::TYPE_ZENDESK_USER_FIELD)
             ->setTitle($formatted['title'])
             ->setDescription($formatted['description'])
+            ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
+            ->setAsEnabled($formatted['active'])
         ;
+
+        foreach ($formatted['custom_field_options'] as $option) {
+            $option_formatted = $this->formatter->format($option, array(
+                'name'  => TransformerInterface::TYPE_STRING,
+                'value' => TransformerInterface::TYPE_STRING,
+            ));
+
+            $child_entity = new Entity\PersonCustomDef();
+            $child_entity
+                ->setTitle($option_formatted['value'])
+                ->setDescription($option_formatted['name'])
+                ->setAsEnabled($formatted['active'])
+            ;
+
+            $entity->addCustomDef($child_entity);
+        }
 
         return $entity;
     }

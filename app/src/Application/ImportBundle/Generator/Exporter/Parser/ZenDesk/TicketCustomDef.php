@@ -118,7 +118,7 @@ final class TicketCustomDef extends AbstractParser
             throw new SkippingException(sprintf('Not supported type `%s`', $formatted['type']), $data);
         }
 
-        $entity = new Entity\PersonCustomDef();
+        $entity = new Entity\TicketCustomDef();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
@@ -140,7 +140,7 @@ final class TicketCustomDef extends AbstractParser
                     'value' => TransformerInterface::TYPE_STRING,
                 ));
 
-                $child_entity = new Entity\PersonCustomDef();
+                $child_entity = new Entity\TicketCustomDef();
                 $child_entity
                     ->setTitle($option_formatted['value'])
                     ->setDescription($option_formatted['name'])
