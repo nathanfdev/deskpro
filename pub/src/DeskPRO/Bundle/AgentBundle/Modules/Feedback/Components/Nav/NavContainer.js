@@ -8,6 +8,7 @@ import { groupDataSelector } from '../../Selectors/nav';
 @connect(state => {
   return ({
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
+    commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
     statuses: state.Feedback.nav.get('statuses').toJS(),
     types: state.Feedback.nav.get('types').toJS(),
     labels: state.Feedback.nav.get('labels'),
@@ -38,11 +39,12 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const {statuses, toValidateCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
+    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
 
     return (
       <Nav
         toValidateCount={toValidateCount}
+        commentsToReviewCount={commentsToReviewCount}
         dispatch={dispatch}
         statuses={statuses}
         labels={labels}

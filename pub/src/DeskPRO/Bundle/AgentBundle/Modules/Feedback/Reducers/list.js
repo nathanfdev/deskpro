@@ -4,7 +4,9 @@ import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 const initialState = {
+  currentContent: 'feedback',
   feedback: [],
+  comments: [],
   viewModeOptions: [
     {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
     {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}

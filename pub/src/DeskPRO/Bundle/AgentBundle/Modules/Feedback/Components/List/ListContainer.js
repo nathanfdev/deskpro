@@ -5,16 +5,23 @@ import { viewDataSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
-    elements: state.Feedback.list.get('feedback'),
+    feedback: state.Feedback.list.get('feedback'),
+    comments: state.Feedback.list.get('comments'),
+    currentContent: state.Feedback.list.get('currentContent'),
     currentViewMode: viewDataSelector(state)
   });
 })
 
 export class ListContainer extends React.Component {
   render() {
-    const {elements, currentViewMode} = this.props;
+    const {feedback, comments, currentContent, currentViewMode} = this.props;
     return (
-      <List elements={elements} currentViewMode={currentViewMode}/>
+      <List
+        feedback={feedback}
+        comments={comments}
+        currentContent={currentContent}
+        currentViewMode={currentViewMode}
+        />
     );
   }
 }
