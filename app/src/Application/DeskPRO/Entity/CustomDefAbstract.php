@@ -178,16 +178,25 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public $field_manager = null;
 
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->children = new ArrayCollection();
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return int
+     */
     public function getParentId()
     {
         if ($this->parent) {
@@ -455,12 +464,25 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->getOption('html', '');
     }
 
+    /**
+     * Set options
+     *
+     * @param array $options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->setModelField('options', $options);
+        return $this;
+    }
 
     /**
      * Set a value of an option
      *
      * @param string $name
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setOption($name, $value)
     {
@@ -473,8 +495,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         $this->_onPropertyChanged('options', $old_opt, $this->options);
+        return $this;
     }
-
 
     /**
      * Is the field required?
@@ -486,6 +508,53 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->getOption('required', false);
     }
 
+    /**
+     * Mark as enabled
+     *
+     * @param bool $is_enabled
+     * @return $this
+     */
+    public function setIsEnabled($is_enabled)
+    {
+        $this->setModelField('is_enabled', (bool)$is_enabled);
+        return $this;
+    }
+
+    /**
+     * Mark as agent field
+     *
+     * @param bool $is_agent_field
+     * @return $this
+     */
+    public function setIsAgentField($is_agent_field)
+    {
+        $this->setModelField('is_agent_field', (bool)$is_agent_field);
+        return $this;
+    }
+
+    /**
+     * Mark as user enabled
+     *
+     * @param bool $is_user_enabled
+     * @return $this
+     */
+    public function setIsUserEnabled($is_user_enabled)
+    {
+        $this->setModelField('is_user_enabled', (bool)$is_user_enabled);
+        return $this;
+    }
+
+    /**
+     * Set default value
+     *
+     * @param mixed $default_value
+     * @return $this
+     */
+    public function setDefaultValue($default_value)
+    {
+        $this->setModelField('default_value', $default_value);
+        return $this;
+    }
 
     /**
      * Get the phrasename for the handler class. This is just
