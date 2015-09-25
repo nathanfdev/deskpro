@@ -25,26 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Writer\Json;
 
 use Application\ImportBundle\AbstractCollection;
-use Exception;
 
 /**
  * Collection of the supported json writer entities
  *
  * Class Collection
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * @package Application\ImportBundle\Generator\Writer\Json
  */
-final class Collection extends AbstractCollection
+final class DestinationCollection extends AbstractCollection
 {
     /**
      * Attach a destination configuration
      *
-     * @param DestinationInterface $destination
+     * @param Destination $destination
      * @return $this
      */
-    public function attach(DestinationInterface $destination)
+    public function attach(Destination $destination)
     {
         $this->collection[$destination->getEntityType()] = $destination;
         return $this;
@@ -55,8 +54,8 @@ final class Collection extends AbstractCollection
      *
      * @param string $type
      *
-     * @return DestinationInterface
-     * @throws Exception
+     * @return Destination
+     * @throws \RuntimeException
      */
     public function getByEntityType($type)
     {
@@ -64,6 +63,6 @@ final class Collection extends AbstractCollection
             return $this->collection[$type];
         }
 
-        throw new Exception(sprintf('Destination `%s` not found', $type));
+        throw new \RuntimeException(sprintf('Destination `%s` not found', $type));
     }
 }

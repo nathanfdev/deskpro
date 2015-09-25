@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,31 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
- * Person entity destination
+ * Exporter factory interface
  *
- * Class Person
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Interface ExporterFactoryInterface
+ * @package Application\ImportBundle\Generator\Exporter
  */
-final class Person implements DestinationInterface
+interface ExporterFactoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Creates an exporter instance
+     *
+     * @param ReaderInterface $reader
+     * @return ExporterInterface
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_PERSON;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityOutputPath()
-    {
-        return self::ENTITY_PERSON_PATH;
-    }
+     public function createExporter(ReaderInterface $reader);
 }

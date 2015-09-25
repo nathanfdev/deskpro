@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,31 +25,41 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
-
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 /**
- * Feedback entity destination
- *
- * Class Feedback
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class TicketPeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-final class Feedback implements DestinationInterface
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    protected function getPeopleIds($data)
     {
-        return Entity\EntityInterface::TYPE_FEEDBACK;
-    }
+        $people_ids = array();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityOutputPath()
-    {
-        return self::ENTITY_FEEDBACK_PATH;
+        foreach ($data as $ticket) {
+            if (isset($ticket['user_id']) && $ticket['user_id'] > 0) {
+                $people_ids['user_' . $ticket['user_id']] = $ticket['user_id'];
+            }
+            if (isset($ticket['staff_id']) && $ticket['staff_id'] > 0) {
+                $people_ids['staff_' . $ticket['staff_id']] = $ticket['staff_id'];
+            }
+
+            if ( ! empty($ticket['messages'])) {
+                foreach ($ticket['messages'] as $message) {
+                    if (isset($message['user_id']) && $message['user_id'] > 0) {
+                        $people_ids['user_' . $message['user_id']] = $message['user_id'];
+                    }
+                    if (isset($message['staff_id']) && $message['staff_id'] > 0) {
+                        $people_ids['staff_' . $message['staff_id']] = $message['staff_id'];
+                    }
+                }
+            }
+        }
+
+        return array_unique($people_ids);
     }
 }

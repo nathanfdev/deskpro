@@ -25,29 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
-
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Writer\Json;
 
 /**
- * Class ArticleCategory
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class Destination
+ * @package Application\ImportBundle\Generator\Writer\Json
  */
-final class ArticleCategory implements DestinationInterface
+class Destination
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function getEntityType()
+    private $entity_type;
+
+    /**
+     * @var string
+     */
+    private $entity_path;
+
+    /**
+     * Constructor
+     *
+     * @param $entity_type
+     * @param $entity_path
+     */
+    public function __construct($entity_type, $entity_path)
     {
-        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
+        $this->entity_type = $entity_type;
+        $this->entity_path = $entity_path;
     }
 
     /**
-     * {@inheritdoc}
+     * Referred entity type
+     *
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return $this->entity_type;
+    }
+
+    /**
+     * Relative entity output path
+     *
+     * @return string
      */
     public function getEntityOutputPath()
     {
-        return self::ENTITY_ARTICLE_CATEGORY_PATH;
+        return $this->entity_path;
     }
 }

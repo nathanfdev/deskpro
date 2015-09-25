@@ -69,13 +69,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       if @$scope.id == 'csv'
         allowed = [
           'articles.csv',
+          'article_categories.csv',
           'article_custom_fields.csv',
           'downloads.csv',
+          'downloads_attachments.csv',
           'feedback.csv',
           'feedback_attachments.csv',
           'feedback_custom_fields.csv',
           'news.csv',
           'people.csv',
+          'people_contact_data.csv',
           'people_custom_fields.csv',
           'tickets.csv',
           'ticket_messages.csv',

@@ -28,25 +28,16 @@
 namespace Application\ImportBundle\Reader;
 
 /**
- * Importer reader interface
- *
- * Interface ReaderInterface
+ * Interface ReaderFactoryInterface
  * @package Application\ImportBundle\Reader
  */
-interface ReaderInterface
+interface ReaderFactoryInterface
 {
     /**
-     * Returns the reader config
+     * Creates a reader
      *
-     * @return ReaderConfigInterface
+     * @param ReaderConfigInterface $config
+     * @return ReaderInterface
      */
-    public function getConfig();
-
-    /**
-     * Validates the reader config
-     *
-     * @return bool
-     * @throws \RuntimeException
-     */
-    public function checkConfig();
+    public function createReader(ReaderConfigInterface $config);
 }

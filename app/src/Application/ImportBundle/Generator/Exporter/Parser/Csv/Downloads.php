@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Downloads csv file parser
@@ -55,7 +56,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getDownloadReaderConfig());
+        return $this->getReaderCount(CsvReaderInterface::FILE_DOWNLOADS);
     }
 
     /**
@@ -65,7 +66,7 @@ final class Downloads extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getDownloadReaderConfig()))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_DOWNLOADS))
             ->setPrefix('CSVDownload')
             ->setRefColumn('id')
             ->setMethod('exportDownload')
@@ -126,15 +127,5 @@ final class Downloads extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getDownloadReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_DOWNLOADS);
     }
 }

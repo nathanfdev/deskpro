@@ -38,8 +38,10 @@ use Application\ImportBundle\Reader\AbstractReader;
 /**
  * Class DeskPROReader
  * @package Application\ImportBundle\Reader\DeskPRO
+ *
+ * @property DeskPROConfig $config
  */
-class DeskPROReader extends AbstractReader
+class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
 {
     /**
      * @var DeskproContainer
@@ -62,7 +64,7 @@ class DeskPROReader extends AbstractReader
         parent::__construct($config);
         $this->container = $container;
 
-        $em = $container->getEm();
+        $em       = $container->getEm();
         $this->em = $em->create(
             DriverManager::getConnection(array(
                 'dbname'   => $config->getDatabase(),
@@ -73,6 +75,14 @@ class DeskPROReader extends AbstractReader
             )),
             $em->getConfiguration()
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkConfig()
+    {
+        return $this->em->getConnection()->connect();
     }
 
     /**
@@ -94,12 +104,7 @@ class DeskPROReader extends AbstractReader
     }
 
     /**
-     * Returns a collection of people
-     *
-     * @param int $limit
-     * @param int $min_id
-     *
-     * @return Entity\Person[]
+     * {@inheritdoc}
      */
     public function findUsers($limit, $min_id = 0)
     {
@@ -113,10 +118,7 @@ class DeskPROReader extends AbstractReader
     }
 
     /**
-     * Returns a collection of people by criteria
-     *
-     * @param Criteria $criteria
-     * @return \Doctrine\Common\Collections\Collection
+     * {@inheritdoc}
      */
     public function findUsersByCriteria(Criteria $criteria)
     {
@@ -127,12 +129,7 @@ class DeskPROReader extends AbstractReader
     }
 
     /**
-     * Returns a collection of tickets
-     *
-     * @param int $limit
-     * @param int $min_id
-     *
-     * @return Entity\Ticket[]
+     * {@inheritdoc}
      */
     public function findTickets($limit, $min_id = 0)
     {
@@ -149,8 +146,7 @@ class DeskPROReader extends AbstractReader
     }
 
     /**
-     * @param Entity\Blob $blob
-     * @return null|string
+     * {@inheritdoc}
      */
     public function getBlobData(Entity\Blob $blob)
     {

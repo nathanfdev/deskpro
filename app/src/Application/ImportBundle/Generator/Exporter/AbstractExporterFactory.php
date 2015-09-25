@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,31 +25,30 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * Article entity destination
+ * Base generator exporter factory
  *
- * Class Article
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class AbstractExporterFactory
+ * @package Application\ImportBundle\Generator\Exporter
  */
-final class Article implements DestinationInterface
+abstract class AbstractExporterFactory implements ExporterFactoryInterface
 {
     /**
-     * {@inheritdoc}
+     * @var DeskproContainer
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_ARTICLE;
-    }
+    protected $container;
 
     /**
-     * {@inheritdoc}
+     * Constructor
+     *
+     * @param DeskproContainer $container
      */
-    public function getEntityOutputPath()
+    public function __construct(DeskproContainer $container)
     {
-        return self::ENTITY_ARTICLE_PATH;
+        $this->container = $container;
     }
 }

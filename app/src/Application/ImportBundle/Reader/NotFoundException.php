@@ -25,30 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Application\ImportBundle\Reader;
 
 /**
- * Base exporter factory
- *
- * Class AbstractFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class NotFoundException
+ * @package Application\ImportBundle\Reader
  */
-abstract class AbstractFactory implements FactoryInterface
+final class NotFoundException extends \RuntimeException
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
 
-    /**
-     * Constructor
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
 }

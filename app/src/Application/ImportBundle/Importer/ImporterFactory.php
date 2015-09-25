@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,36 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Importer;
+
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * Entity destination interface
- *
- * Interface DestinationInterface
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class ImporterFactory
+ * @package Application\ImportBundle\Service
  */
-interface DestinationInterface
+class ImporterFactory
 {
-    const ENTITY_PERSON_PATH           = 'people/';
-    const ENTITY_TICKET_PATH           = 'tickets/';
-    const ENTITY_ARTICLE_PATH          = 'articles/';
-    const ENTITY_ARTICLE_CATEGORY_PATH = 'article_categories/';
-    const ENTITY_DOWNLOAD_PATH         = 'downloads/';
-    const ENTITY_FEEDBACK_PATH         = 'feedback/';
-    const ENTITY_NEWS_PATH             = 'news/';
-    const ENTITY_ORGANIZATION_PATH     = 'organizations/';
-
     /**
-     * Referred entity type
-     *
-     * @return string
+     * @param DeskproContainer $container
+     * @return Importer
      */
-    public function getEntityType();
+    public static function create(DeskproContainer $container)
+    {
+        $entity_manager = $container->get('doctrine.orm.entity_manager');
+        $blob_storage   = $container->getBlobStorage();
+        $zipper         = $container->getSystemService('zipper');
 
-    /**
-     * Relative entity output path
-     *
-     * @return string
-     */
-    public function getEntityOutputPath();
+        return new Importer($entity_manager, $blob_storage, $zipper);
+    }
 }

@@ -29,10 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
-use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Application\ImportBundle\Entity;
-use Exception;
 
 /**
  * Abstract json parser
@@ -67,24 +65,10 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Get json reader config
-     *
-     * @param string $record_type
-     * @return JsonConfig
-     */
-    protected function getReaderConfig($record_type)
-    {
-        return new JsonConfig(sprintf(
-            '%s/%d/%s',
-            $this->config->getInputPath(), $this->getBatchConfig()->getId() + 1, $record_type
-        ));
-    }
-
-    /**
      * Returns batch config
      *
      * @return BatchConfig
-     * @throws Exception
+     * @throws \RuntimeException
      */
     protected function getBatchConfig()
     {
@@ -92,7 +76,15 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             return $this->config->getExporterBatchConfig();
         }
 
-        throw new Exception('Batch config is not defined');
+        throw new \RuntimeException('Batch config is not defined');
+    }
+
+    /**
+     * @return int
+     */
+    protected function getBatchNum()
+    {
+        return $this->getBatchConfig()->getId() + 1;
     }
 
     /**

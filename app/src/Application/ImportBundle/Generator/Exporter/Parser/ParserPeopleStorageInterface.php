@@ -38,15 +38,15 @@ interface ParserPeopleStorageInterface
     /**
      * Loads a collection of people by parser data
      *
-     * @param array $data
+     * @param array|\Traversable $data
      * @return void
      */
-    public function loadBy(array $data);
+    public function loadBy($data);
 
     /**
      * Returns person email or null if it was not loaded
      *
-     * @param int $id
+     * @param mixed $id
      * @return string|null
      */
     public function getPersonEmail($id);

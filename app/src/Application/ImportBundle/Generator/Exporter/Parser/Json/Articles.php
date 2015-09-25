@@ -30,8 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
  * Articles json file parser
@@ -54,7 +54,7 @@ final class Articles extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getArticleReaderConfig());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_ARTICLE_PATH, $this->getBatchNum());
     }
 
     /**
@@ -64,7 +64,7 @@ final class Articles extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->getData($this->getArticleReaderConfig()))
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_ARTICLE_PATH, $this->getBatchNum()))
             ->setPrefix('JSONArticle')
             ->setRefColumn('oid')
             ->setMethod('exportArticle')
@@ -226,15 +226,5 @@ final class Articles extends AbstractParser
         ;
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getArticleReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_PATH);
     }
 }

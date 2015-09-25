@@ -90,6 +90,16 @@ interface BatchConfigInterface
     public function setDateModified(DateTime $date_modified);
 
     /**
+     * Set has remaining
+     *
+     * @param bool $has_remaining
+     * @return $this
+     */
+    public function setHasRemaining($has_remaining);
+
+    /**
+     * Has remaining?
+     *
      * @return bool
      */
     public function getHasRemaining();

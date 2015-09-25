@@ -63,7 +63,7 @@ final class Tickets extends AbstractParser
     const PRIORITY_LOW    = 'low';
 
     /**
-     * @var TicketPeopleStorage
+     * @var ParserPeopleStorageInterface
      */
     private $tickets_people;
 

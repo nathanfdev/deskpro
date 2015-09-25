@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,20 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
+
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Zendesk\API\Client;
 
 /**
- * Generator writer factory interface
+ * ZenDesk account settings find request client helper
  *
- * Interface FactoryInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class SettingsFindAll
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI
  */
-interface FactoryInterface
+final class SettingsFindAll extends AbstractHelper
 {
     /**
-     * Returns a writer
-     *
-     * @return WriterInterface
+     * {@inheritdoc}
      */
-    public function createWriter();
+    public function request(Client $client)
+    {
+        return $client->settings()->findAll($this->params);
+    }
 }

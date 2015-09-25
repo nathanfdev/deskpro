@@ -25,26 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Reader\Json;
 
 use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 
 /**
- * Exporter factory interface
- *
- * Interface FactoryInterface
- * @package Application\ImportBundle\Generator\Exporter
+ * Class JsonReaderFactory
+ * @package Application\ImportBundle\Reader\Json
  */
-interface FactoryInterface
+class JsonReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * Creates an exporter instance
-     *
-     * @param ContainerInterface    $container
-     * @param ReaderConfigInterface $config
-     *
-     * @return ExporterInterface
+     * {@inheritdoc}
      */
-    static public function createExporter(ContainerInterface $container, ReaderConfigInterface $config);
+    public function createReader(ReaderConfigInterface $config)
+    {
+        if ( ! $config instanceof JsonConfig) {
+            throw new \RuntimeException('Config expected to be instance of JsonConfig');
+        }
+
+        return new JsonReader($config);
+    }
 }

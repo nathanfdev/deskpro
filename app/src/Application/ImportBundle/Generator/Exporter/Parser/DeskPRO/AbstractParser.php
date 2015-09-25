@@ -27,8 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
-use Exception;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
 /**
  * Abstract DeskPRO parser
@@ -41,7 +40,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     const MAX_BATCH_SIZE = 1000;
 
     /**
-     * @var DeskPROReader
+     * @var DeskPROReaderInterface
      */
     protected $reader;
 
@@ -53,9 +52,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Constructor
      *
-     * @param DeskPROReader $reader
+     * @param DeskPROReaderInterface $reader
      */
-    public function __construct(DeskPROReader $reader)
+    public function __construct(DeskPROReaderInterface $reader)
     {
         $this->reader = $reader;
     }
@@ -92,7 +91,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * Returns batch config
      *
      * @return BatchConfig
-     * @throws Exception
+     * @throws \RuntimeException
      */
     protected function getBatchConfig()
     {
@@ -100,6 +99,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             return $this->config->getExporterBatchConfig();
         }
 
-        throw new Exception('Batch config is not defined');
+        throw new \RuntimeException('Batch config is not defined');
     }
 }

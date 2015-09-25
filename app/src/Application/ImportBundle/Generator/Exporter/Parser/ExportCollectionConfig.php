@@ -34,7 +34,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
 class ExportCollectionConfig
 {
     /**
-     * @var array
+     * @var \Traversable|array
      */
     private $data = array();
 
@@ -59,11 +59,15 @@ class ExportCollectionConfig
     private $advance_progressbar = false;
 
     /**
-     * @param array $data
+     * @param \Traversable|array $data
      * @return $this
      */
-    public function setData(array $data)
+    public function setData($data)
     {
+        if ( ! is_array($data) && ! $data instanceof \Traversable) {
+            throw new \RuntimeException('Export collection data should be array or instance of Traversable');
+        }
+
         $this->data = $data;
         return $this;
     }

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,31 +25,68 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
-use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
 
 /**
- * News entity destination
+ * Class AbstractParserPeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  *
- * Class News
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * @property OsTicketReaderInterface $reader
  */
-final class News implements DestinationInterface
+abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function getPersonEmail($id)
     {
-        return Entity\EntityInterface::TYPE_NEWS;
+        $person = $this->storage->getPerson($id);
+        return isset($person['email']) ? $person['email'] : null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEntityOutputPath()
+    protected function loadByIds($ids)
     {
-        return self::ENTITY_NEWS_PATH;
+        $request_ids = $this->storage->getNotContainsIds(array_keys($ids));
+        if (empty($request_ids)) {
+            return;
+        }
+
+        $this->storage->addIgnoreIds($request_ids);
+
+        $user_ids  = array();
+        $staff_ids = array();
+
+        foreach ($request_ids as $key) {
+            if (strpos($key, 'user_') === 0) {
+                $user_ids[]  = (int)$ids[$key];
+            } elseif (strpos($key, 'staff_') === 0) {
+                $staff_ids[] = (int)$ids[$key];
+            }
+        }
+
+        $people = array();
+
+        if ( ! empty($user_ids)) {
+            $result = $this->reader->findUsersByIds($user_ids);
+            foreach ($result as $person) {
+                $person['id'] = 'user_' . $person['user_id'];
+                $people[] = $person;
+            }
+        }
+
+        if ( ! empty($staff_ids)) {
+            $result = $this->reader->findStaffByIds($staff_ids);
+            foreach ($result as $person) {
+                $person['id'] = 'staff_' . $person['staff_id'];
+                $people[] = $person;
+            }
+        }
+
+        $this->storage->addPeople($people);
     }
 }

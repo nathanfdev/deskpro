@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,31 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
-
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Ticket entity destination
- *
- * Class Ticket
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Class TicketPeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  */
-final class Ticket implements DestinationInterface
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    protected function getPeopleIds($data)
     {
-        return Entity\EntityInterface::TYPE_TICKET;
-    }
+        $people_ids = array();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityOutputPath()
-    {
-        return self::ENTITY_TICKET_PATH;
+        foreach ($data as $ticket) {
+            /** @var Ticket $ticket */
+            $people_ids[] = $ticket->person->getId();
+
+            if ($ticket->agent) {
+                $people_ids[] = $ticket->agent->getId();
+            }
+
+            foreach ($ticket->messages as $message) {
+                $people_ids[] = $message->person->getId();
+            }
+            foreach ($ticket->participants as $participant) {
+                $people_ids[] = $participant->getPerson()->getId();
+            }
+        }
+
+        return array_unique($people_ids);
     }
 }

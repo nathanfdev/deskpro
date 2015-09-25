@@ -95,11 +95,65 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
     {
         parent::__construct($config);
 
-        $this->connection_wrapper = new LazyConnectionWrapper(
-            sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost()),
-            $config->getUser(),
-            $config->getPassword()
+        $dsn = sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost());
+        if ($config->getPort()) {
+            $dsn .= sprintf(';port=%s', $config->getPort());
+        }
+
+        $this->connection_wrapper = new LazyConnectionWrapper($dsn, $config->getUser(), $config->getPassword());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkConfig()
+    {
+        $stmt = $this->getConnection()->prepare('SHOW TABLES');
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get a list of tables', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        $tables = array();
+        $result = $stmt->fetchAll(PDO::FETCH_NUM);
+
+        foreach ($result as $table_info) {
+            $tables[] = $table_info[0];
+        }
+
+        $check_tables = array(
+            'ost_staff',
+            'ost_user',
+            'ost_ticket',
+            'ost_ticket_thread',
+            'ost_ticket_attachment',
+            'ost_department',
+            'ost_organization',
+            'ost_groups',
+            'ost_user_email',
+            'ost_team',
+            'ost_file_chunk',
+            'ost_timezone',
+            'ost_ticket_priority',
         );
+
+        $exist_tables = array_intersect($tables, $check_tables);
+
+        sort($exist_tables);
+        sort($check_tables);
+
+        if ($exist_tables != $check_tables) {
+            throw new \RuntimeException(sprintf(
+                'Not all required tables found, please check for: %s.',
+                implode(', ', array_map(
+                    function($table) {
+                        return '`' . $table . '`';
+                    },
+                    array_diff($check_tables, $exist_tables)
+                ))
+            ));
+        }
+
+        return true;
     }
 
     /**
@@ -170,6 +224,27 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function findStaffByIds(array $ids)
+    {
+        if (empty($ids)) {
+            throw new OsTicketReaderException('Empty ids list');
+        }
+
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        $query = 'SELECT * FROM ost_staff WHERE staff_id IN ('.$marks.') ORDER BY staff_id ASC';
+
+        $stmt  = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute($ids) === false) {
+            throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function findUsers($limit, $min_id = 0)
     {
         $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id > :min_id ORDER BY u.id ASC LIMIT :limit';
@@ -178,6 +253,27 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
         $stmt->bindValue(':min_id', (int)$min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findUsersByIds(array $ids)
+    {
+        if (empty($ids)) {
+            throw new OsTicketReaderException('Empty ids list');
+        }
+
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id IN ('.$marks.') ORDER BY u.id ASC';
+
+        $stmt  = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute($ids) === false) {
             throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
         }
 

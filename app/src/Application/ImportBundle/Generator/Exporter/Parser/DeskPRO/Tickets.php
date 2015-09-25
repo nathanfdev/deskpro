@@ -29,7 +29,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 use Orb\Util\Strings;
 
 /**
@@ -43,17 +45,25 @@ final class Tickets extends AbstractParser
     /**
      * @var int
      */
-    private $tickets_min_id;
+    private $tickets_min_id = 0;
+
+    /**
+     * @var ParserPeopleStorageInterface
+     */
+    private $tickets_people;
 
     /**
      * Constructor
      *
-     * @param DeskPROReader $reader
-     * @param int           $min_id
+     * @param DeskPROReaderInterface       $reader
+     * @param ParserPeopleStorageInterface $tickets_people
+     * @param int                          $min_id
      */
-    public function __construct(DeskPROReader $reader, $min_id = 0)
+    public function __construct(DeskPROReaderInterface $reader, ParserPeopleStorageInterface $tickets_people, $min_id = 0)
     {
         parent::__construct($reader);
+
+        $this->tickets_people = $tickets_people;
         $this->tickets_min_id = (int)$min_id;
     }
 
@@ -80,7 +90,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getTicketsCount($this->getCurrentTicketsMinId());
+        return count($this->getTickets());
     }
 
     /**
@@ -88,34 +98,23 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $this->entities_loaded = 0;
-        $collection = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getTickets())
+            ->setPrefix('DPTicket')
+            ->setRefColumn('id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        do {
-            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
-
-            foreach ($batch as $num => $ticket) {
-                $this->advanceProgressBar();
-
-                $entity = $this->exportTicket($ticket);
-                $collection->attach($entity);
-
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                $this->tickets_min_id = $ticket->getId();
-            }
-
-            $this->entities_loaded += count($batch);
-
-        } while (count($batch) > 0);
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * @param DeskPROEntity\Ticket $ticket
      * @return Entity\Ticket
      */
-    private function exportTicket(DeskPROEntity\Ticket $ticket)
+    protected function exportTicket(DeskPROEntity\Ticket $ticket)
     {
         $entity = new Entity\Ticket();
         $entity
@@ -157,7 +156,7 @@ final class Tickets extends AbstractParser
             $entity->setPriority($ticket_priority);
         }
 
-        foreach ($ticket->messages as $num => $message) {
+        foreach ($ticket->messages as $message) {
             $entity->addMessage($this->exportMessage($message));
         }
         foreach ($ticket->labels as $label) {
@@ -215,5 +214,36 @@ final class Tickets extends AbstractParser
         ;
 
         return $entity;
+    }
+
+    /**
+     * Returns tickets
+     * Loads from osTicket database
+     *
+     * @return array
+     */
+    private function getTickets()
+    {
+        $this->entities_loaded = 0;
+
+        $tickets = array();
+        $min_id  = $this->getBatchConfig()->getTicketsMinId();
+
+        do {
+            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $min_id);
+            $this->entities_loaded += count($batch);
+
+            foreach ($batch as $ticket) {
+                $min_id = max($min_id, $ticket->getId());
+            }
+
+            $tickets = array_merge($tickets, $batch->toArray());
+
+        } while (count($batch) > 0);
+
+        $this->tickets_people->loadBy($tickets);
+        $this->tickets_min_id = $min_id;
+
+        return $tickets;
     }
 }

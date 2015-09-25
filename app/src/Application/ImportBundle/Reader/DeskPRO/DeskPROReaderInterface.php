@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,31 +25,65 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Reader\DeskPRO;
 
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 
 /**
- * Download entity destination
- *
- * Class Download
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
+ * Interface DeskPROReaderInterface
+ * @package Application\ImportBundle\Reader\DeskPRO
  */
-final class Download implements DestinationInterface
+interface DeskPROReaderInterface
 {
     /**
-     * {@inheritdoc}
+     * Returns users count
+     *
+     * @param int $min_id
+     * @return int
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_DOWNLOAD;
-    }
+    public function getUsersCount($min_id = 0);
 
     /**
-     * {@inheritdoc}
+     * Returns tickets count
+     *
+     * @param int $min_id
+     * @return int
      */
-    public function getEntityOutputPath()
-    {
-        return self::ENTITY_DOWNLOAD_PATH;
-    }
+    public function getTicketsCount($min_id = 0);
+
+    /**
+     * Returns a collection of people
+     *
+     * @param int $limit
+     * @param int $min_id
+     *
+     * @return Entity\Person[]
+     */
+    public function findUsers($limit, $min_id = 0);
+
+    /**
+     * Returns a collection of people by criteria
+     *
+     * @param Criteria $criteria
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function findUsersByCriteria(Criteria $criteria);
+
+    /**
+     * Returns a collection of tickets
+     *
+     * @param int $limit
+     * @param int $min_id
+     *
+     * @return ArrayCollection|Entity\Ticket[]
+     */
+    public function findTickets($limit, $min_id = 0);
+
+    /**
+     * @param Entity\Blob $blob
+     * @return null|string
+     */
+    public function getBlobData(Entity\Blob $blob);
 }

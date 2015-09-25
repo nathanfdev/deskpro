@@ -29,10 +29,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\EntityRepository;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
-use Application\ImportBundle\Generator\Writer\AbstractFactory;
+use Application\ImportBundle\Generator\Writer\AbstractWriterFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidMapper;
 use Doctrine\Common\Persistence\ObjectRepository;
@@ -43,17 +42,13 @@ use Doctrine\Common\Persistence\ObjectRepository;
  * Class DeskProWriterFactory
  * @package Application\ImportBundle\Generator\Writer\DeskPRO
  */
-class DeskProWriterFactory extends AbstractFactory
+class DeskProWriterFactory extends AbstractWriterFactory
 {
     /**
      * {@inheritdoc}
      */
     public function createWriter()
     {
-        if ( ! $this->container instanceof DeskproContainer) {
-            throw new \RuntimeException('Unable to create writer, container is not instance of DeskproContainer');
-        }
-
         /** @var EntityManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
 

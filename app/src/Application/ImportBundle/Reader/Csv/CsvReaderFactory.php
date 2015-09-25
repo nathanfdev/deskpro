@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,28 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Reader\Csv;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 
 /**
- * Class AbstractFactory
- * @package Application\ImportBundle\Generator\Writer
+ * Class CsvReaderFactory
+ * @package Application\ImportBundle\Reader\Csv
  */
-abstract class AbstractFactory implements FactoryInterface
+class CsvReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * @var ContainerInterface
+     * {@inheritdoc}
      */
-    protected $container;
-
-    /**
-     * Constructor
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
+    public function createReader(ReaderConfigInterface $config)
     {
-        $this->container = $container;
+        if ( ! $config instanceof CsvConfig) {
+            throw new \RuntimeException('Config expected to be instance of CsvConfig');
+        }
+
+        return new CsvReader($config);
     }
 }
