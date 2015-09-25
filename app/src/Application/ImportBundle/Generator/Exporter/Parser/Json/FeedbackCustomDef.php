@@ -34,19 +34,17 @@ use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
- * Tickets custom def json file parser
- *
- * Class TicketCustomDef
+ * Class FeedbackCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-final class TicketCustomDef extends AbstractParser
+final class FeedbackCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF;
+        return Entity\EntityInterface::TYPE_FEEDBACK_CUSTOM_DEF;
     }
 
     /**
@@ -54,7 +52,7 @@ final class TicketCustomDef extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_TICKET_CUSTOM_DEF_PATH, $this->getBatchNum());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_FEEDBACK_CUSTOM_DEF_PATH, $this->getBatchNum());
     }
 
     /**
@@ -64,8 +62,8 @@ final class TicketCustomDef extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_TICKET_CUSTOM_DEF_PATH, $this->getBatchNum()))
-            ->setPrefix('JSONTicketCustomDef')
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_FEEDBACK_CUSTOM_DEF_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONFeedbackCustomDef')
             ->setRefColumn('oid')
             ->setMethod('exportCustomDef')
             ->setAdvanceProgressbar(true)
@@ -83,7 +81,7 @@ final class TicketCustomDef extends AbstractParser
         $formatted = $this->formatter->format($data, array(
             'oid'           => TransformerInterface::TYPE_STRING,
             'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'ticket_custom_def_',
+                'prefix' => 'person_custom_def_',
                 'ref'    => 'oid',
             )),
             'sys_name'      => TransformerInterface::TYPE_STRING,

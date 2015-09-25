@@ -25,52 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
-use Application\ImportBundle\Reader\ReaderInterface;
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
- * DeskPRO data exporter factory
- *
- * Class DeskPROFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class ArticleCustomDef
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class DeskPROFactory extends AbstractExporterFactory
+final class ArticleCustomDef extends AbstractParser implements NotSupportedInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function createExporter(ReaderInterface $reader)
+    public function getEntityType()
     {
-        if ( ! $reader instanceof DeskPROReader) {
-            throw new \RuntimeException('Config expected to be instance of DeskPROReader');
-        }
+        return Entity\EntityInterface::TYPE_ARTICLE_CUSTOM_DEF;
+    }
 
-        /** @var DeskPROConfig $config */
-        $config = $reader->getConfig();
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 0;
+    }
 
-        $people_storage = new Parser\PeopleStorage();
-        $ticket_people  = new Parser\DeskPRO\Storage\TicketPeopleStorage($reader, $people_storage);
-
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\DeskPRO\People($reader, $people_storage))
-            ->attach(new Parser\DeskPRO\PeopleCustomDef($reader))
-            ->attach(new Parser\DeskPRO\Tickets($reader, $ticket_people, $config->getStartTicketId()))
-            ->attach(new Parser\DeskPRO\TicketCustomDef($reader))
-            ->attach(new Parser\DeskPRO\Articles($reader))
-            ->attach(new Parser\DeskPRO\ArticleCategories($reader))
-            ->attach(new Parser\DeskPRO\ArticleCustomDef($reader))
-            ->attach(new Parser\DeskPRO\Downloads($reader))
-            ->attach(new Parser\DeskPRO\Feedback($reader))
-            ->attach(new Parser\DeskPRO\FeedbackCustomDef($reader))
-            ->attach(new Parser\DeskPRO\News($reader))
-            ->attach(new Parser\DeskPRO\Organizations($reader))
-            ->attach(new Parser\DeskPRO\OrganizationCustomDef($reader))
-        ;
-
-        return new DeskPRO($parsers, $reader);
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
     }
 }

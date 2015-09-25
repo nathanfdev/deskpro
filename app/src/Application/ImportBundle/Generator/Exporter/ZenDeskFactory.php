@@ -64,13 +64,14 @@ class ZenDeskFactory extends AbstractExporterFactory
         $ticket_people  = new Parser\ZenDesk\Storage\TicketPeopleStorage($reader, $people_storage);
         $article_people = new Parser\ZenDesk\Storage\ArticlePeopleStorage($reader, $people_storage);
 
-        // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\ZenDesk\Downloads($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\FeedbackCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\Articles($reader, $formatter, $helpers, $article_people))
             ->attach(new Parser\ZenDesk\ArticleCategories($reader, $formatter, $helpers))
+            ->attach(new Parser\ZenDesk\ArticleCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\News($reader, $formatter, $helpers))
             ->attach(new Parser\ZenDesk\People($reader, $formatter, $helpers, $people_storage))
             ->attach(new Parser\ZenDesk\PeopleCustomDef($reader, $formatter, $helpers))

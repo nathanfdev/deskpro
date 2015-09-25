@@ -101,7 +101,6 @@ final class PeopleCustomDef extends AbstractParser
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setSysName($formatted['sys_name'])
-            ->setParentId($formatted['parent_id'])
             ->setTitle($formatted['title'])
             ->setDestination($formatted['description'])
             ->setHandlerClass($formatted['handler_class'])

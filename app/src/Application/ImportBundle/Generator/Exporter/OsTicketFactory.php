@@ -56,8 +56,10 @@ class OsTicketFactory extends AbstractExporterFactory
         $parsers
             ->attach(new Parser\OsTicket\Downloads($reader, $formatter))
             ->attach(new Parser\OsTicket\Feedback($reader, $formatter))
+            ->attach(new Parser\OsTicket\FeedbackCustomDef($reader, $formatter))
             ->attach(new Parser\OsTicket\Articles($reader, $formatter))
             ->attach(new Parser\OsTicket\ArticleCategories($reader, $formatter))
+            ->attach(new Parser\OsTicket\ArticleCustomDef($reader, $formatter))
             ->attach(new Parser\OsTicket\News($reader, $formatter))
             ->attach(new Parser\OsTicket\People($reader, $formatter, $people_storage))
             ->attach(new Parser\OsTicket\PeopleCustomDef($reader, $formatter))

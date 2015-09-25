@@ -43,8 +43,10 @@ interface JsonReaderInterface extends ReaderInterface
     const ENTITY_TICKET_CUSTOM_DEF_PATH       = 'tickets_custom_def/';
     const ENTITY_ARTICLE_PATH                 = 'articles/';
     const ENTITY_ARTICLE_CATEGORY_PATH        = 'article_categories/';
+    const ENTITY_ARTICLE_CUSTOM_DEF_PATH      = 'article_custom_def/';
     const ENTITY_DOWNLOAD_PATH                = 'downloads/';
     const ENTITY_FEEDBACK_PATH                = 'feedback/';
+    const ENTITY_FEEDBACK_CUSTOM_DEF_PATH     = 'feedback_custom_def/';
     const ENTITY_NEWS_PATH                    = 'news/';
     const ENTITY_ORGANIZATION_PATH            = 'organizations/';
     const ENTITY_ORGANIZATION_CUSTOM_DEF_PATH = 'organizations_custom_def/';

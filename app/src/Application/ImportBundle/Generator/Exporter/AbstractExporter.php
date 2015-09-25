@@ -132,6 +132,8 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
             Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF,
+            Entity\EntityInterface::TYPE_ARTICLE_CUSTOM_DEF,
+            Entity\EntityInterface::TYPE_FEEDBACK_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_ORGANIZATION,
             Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_ARTICLE_CATEGORY,

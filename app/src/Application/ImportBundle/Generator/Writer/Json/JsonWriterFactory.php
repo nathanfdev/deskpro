@@ -48,8 +48,10 @@ class JsonWriterFactory extends AbstractWriterFactory
         $mapping
             ->attach(new Destination(EntityInterface::TYPE_ARTICLE, JsonReaderInterface::ENTITY_ARTICLE_PATH))
             ->attach(new Destination(EntityInterface::TYPE_ARTICLE_CATEGORY, JsonReaderInterface::ENTITY_ARTICLE_CATEGORY_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_ARTICLE_CUSTOM_DEF, JsonReaderInterface::ENTITY_ARTICLE_CUSTOM_DEF_PATH))
             ->attach(new Destination(EntityInterface::TYPE_DOWNLOAD, JsonReaderInterface::ENTITY_DOWNLOAD_PATH))
             ->attach(new Destination(EntityInterface::TYPE_FEEDBACK, JsonReaderInterface::ENTITY_FEEDBACK_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_FEEDBACK_CUSTOM_DEF, JsonReaderInterface::ENTITY_FEEDBACK_CUSTOM_DEF_PATH))
             ->attach(new Destination(EntityInterface::TYPE_NEWS, JsonReaderInterface::ENTITY_NEWS_PATH))
             ->attach(new Destination(EntityInterface::TYPE_PERSON, JsonReaderInterface::ENTITY_PERSON_PATH))
             ->attach(new Destination(EntityInterface::TYPE_PERSON_CUSTOM_DEF, JsonReaderInterface::ENTITY_PERSON_CUSTOM_DEF_PATH))
