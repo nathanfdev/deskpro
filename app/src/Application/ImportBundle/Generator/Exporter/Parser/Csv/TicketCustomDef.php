@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 use Application\ImportBundle\Entity;
 
 /**
+ * Ticket custom def csv file parser
+ *
  * Class TicketCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */

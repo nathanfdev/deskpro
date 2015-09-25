@@ -56,6 +56,7 @@ class JsonWriterFactory extends AbstractWriterFactory
             ->attach(new Destination(EntityInterface::TYPE_TICKET, JsonReaderInterface::ENTITY_TICKET_PATH))
             ->attach(new Destination(EntityInterface::TYPE_TICKET_CUSTOM_DEF, JsonReaderInterface::ENTITY_TICKET_CUSTOM_DEF_PATH))
             ->attach(new Destination(EntityInterface::TYPE_ORGANIZATION, JsonReaderInterface::ENTITY_ORGANIZATION_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF, JsonReaderInterface::ENTITY_ORGANIZATION_CUSTOM_DEF_PATH))
         ;
 
         return new JsonWriter($mapping);

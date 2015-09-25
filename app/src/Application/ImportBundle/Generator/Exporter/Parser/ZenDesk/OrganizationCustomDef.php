@@ -25,17 +25,17 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 
 /**
- * People custom def csv file parser
+ * ZenDesk organization custom def parser
  *
- * Class PeopleCustomDef
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class OrganizationCustomDef
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class PeopleCustomDef extends AbstractParser
+final class OrganizationCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}

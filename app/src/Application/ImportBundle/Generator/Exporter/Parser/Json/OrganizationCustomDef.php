@@ -25,24 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
- * People custom def csv file parser
- *
- * Class PeopleCustomDef
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class OrganizationCustomDef
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-final class PeopleCustomDef extends AbstractParser
+final class OrganizationCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF;
+        return Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF;
     }
 
     /**
@@ -50,7 +49,7 @@ final class PeopleCustomDef extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_ORGANIZATION_CUSTOM_DEF_PATH, $this->getBatchNum());
     }
 
     /**

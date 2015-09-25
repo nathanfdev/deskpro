@@ -28,21 +28,22 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
- * People custom def csv file parser
+ * Organization custom def csv file parser
  *
- * Class PeopleCustomDef
+ * Class OrganizationCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-final class PeopleCustomDef extends AbstractParser
+final class OrganizationCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF;
+        return Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF;
     }
 
     /**
@@ -50,7 +51,7 @@ final class PeopleCustomDef extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->getReaderCount(CsvReaderInterface::FILE_ORGANIZATION_CUSTOM_DEF);
     }
 
     /**

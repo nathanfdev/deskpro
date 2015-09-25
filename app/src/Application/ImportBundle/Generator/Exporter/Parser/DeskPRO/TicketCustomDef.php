@@ -25,24 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
- * People custom def csv file parser
+ * Class TicketCustomDef
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO
  *
- * Class PeopleCustomDef
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * todo implement
  */
-final class PeopleCustomDef extends AbstractParser
+final class TicketCustomDef extends AbstractParser implements NotSupportedInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF;
+        return Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF;
     }
 
     /**
