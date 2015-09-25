@@ -64,6 +64,7 @@ class OsTicketFactory extends AbstractExporterFactory
             ->attach(new Parser\OsTicket\Tickets($reader, $formatter, $ticket_people))
             ->attach(new Parser\OsTicket\TicketCustomDef($reader, $formatter))
             ->attach(new Parser\OsTicket\Organizations($reader, $formatter))
+            ->attach(new Parser\OsTicket\OrganizationCustomDef($reader, $formatter))
         ;
 
         return new OsTicket($parsers, $reader);

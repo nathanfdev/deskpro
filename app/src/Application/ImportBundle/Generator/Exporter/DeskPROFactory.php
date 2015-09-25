@@ -57,13 +57,16 @@ class DeskPROFactory extends AbstractExporterFactory
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\DeskPRO\People($reader, $people_storage))
+            ->attach(new Parser\DeskPRO\PeopleCustomDef($reader))
             ->attach(new Parser\DeskPRO\Tickets($reader, $ticket_people, $config->getStartTicketId()))
+            ->attach(new Parser\DeskPRO\TicketCustomDef($reader))
             ->attach(new Parser\DeskPRO\Articles($reader))
             ->attach(new Parser\DeskPRO\ArticleCategories($reader))
             ->attach(new Parser\DeskPRO\Downloads($reader))
             ->attach(new Parser\DeskPRO\Feedback($reader))
             ->attach(new Parser\DeskPRO\News($reader))
             ->attach(new Parser\DeskPRO\Organizations($reader))
+            ->attach(new Parser\DeskPRO\OrganizationCustomDef($reader))
         ;
 
         return new DeskPRO($parsers, $reader);

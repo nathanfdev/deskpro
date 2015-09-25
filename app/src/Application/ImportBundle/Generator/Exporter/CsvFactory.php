@@ -72,6 +72,7 @@ class CsvFactory extends AbstractExporterFactory
             ->attach(new Parser\Csv\Tickets($reader, $formatter, $helpers))
             ->attach(new Parser\Csv\TicketCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\Csv\Organizations($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\OrganizationCustomDef($reader, $formatter, $helpers))
         ;
 
         return new Csv($parsers, $reader);
