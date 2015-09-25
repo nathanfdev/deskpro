@@ -85,29 +85,30 @@ final class TicketCustomDef extends AbstractParser
     protected function exportCustomDef(array $data)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'                   => TransformerInterface::TYPE_STRING,
-            'destination'          => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'                    => TransformerInterface::TYPE_STRING,
+            'destination'           => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => 'ticket_custom_def_',
                 'ref'    => 'id',
             )),
-            'type'                 => TransformerInterface::TYPE_STRING,
-            'title'                => TransformerInterface::TYPE_STRING,
-            'raw_title'            => TransformerInterface::TYPE_STRING,
-            'description'          => TransformerInterface::TYPE_STRING,
-            'raw_description'      => TransformerInterface::TYPE_STRING,
-            'title_in_portal'      => TransformerInterface::TYPE_STRING,
-            'raw_title_in_portal'  => TransformerInterface::TYPE_STRING,
-            'tag'                  => TransformerInterface::TYPE_STRING,
-            'position'             => TransformerInterface::TYPE_INT,
-            'required'             => TransformerInterface::TYPE_BOOLEAN,
-            'active'               => TransformerInterface::TYPE_BOOLEAN,
-            'visible_in_portal'    => TransformerInterface::TYPE_BOOLEAN,
-            'editable_in_portal'   => TransformerInterface::TYPE_BOOLEAN,
-            'required_in_portal'   => TransformerInterface::TYPE_BOOLEAN,
-            'system_field_options' => TransformerInterface::TYPE_ARRAY,
-            'custom_field_options' => TransformerInterface::TYPE_ARRAY,
-            'created_at'           => TransformerInterface::TYPE_DATE,
-            'updated_at'           => TransformerInterface::TYPE_DATE,
+            'type'                  => TransformerInterface::TYPE_STRING,
+            'title'                 => TransformerInterface::TYPE_STRING,
+            'raw_title'             => TransformerInterface::TYPE_STRING,
+            'description'           => TransformerInterface::TYPE_STRING,
+            'raw_description'       => TransformerInterface::TYPE_STRING,
+            'title_in_portal'       => TransformerInterface::TYPE_STRING,
+            'raw_title_in_portal'   => TransformerInterface::TYPE_STRING,
+            'tag'                   => TransformerInterface::TYPE_STRING,
+            'regexp_for_validation' => TransformerInterface::TYPE_STRING,
+            'position'              => TransformerInterface::TYPE_INT,
+            'required'              => TransformerInterface::TYPE_BOOLEAN,
+            'active'                => TransformerInterface::TYPE_BOOLEAN,
+            'visible_in_portal'     => TransformerInterface::TYPE_BOOLEAN,
+            'editable_in_portal'    => TransformerInterface::TYPE_BOOLEAN,
+            'required_in_portal'    => TransformerInterface::TYPE_BOOLEAN,
+            'system_field_options'  => TransformerInterface::TYPE_ARRAY,
+            'custom_field_options'  => TransformerInterface::TYPE_ARRAY,
+            'created_at'            => TransformerInterface::TYPE_DATE,
+            'updated_at'            => TransformerInterface::TYPE_DATE,
         ));
 
         $not_supported_types = array(
@@ -116,6 +117,17 @@ final class TicketCustomDef extends AbstractParser
 
         if (in_array($formatted['type'], $not_supported_types)) {
             throw new SkippingException(sprintf('Not supported type `%s`', $formatted['type']), $data);
+        }
+
+        $options = array(
+            'required' => $formatted['required_in_portal'],
+        );
+
+        if ($formatted['type'] === ZenDeskReaderInterface::FIELD_TYPE_REGEXP) {
+            $options = array_merge($options, array(
+                'validation_type' => 'regex',
+                'regex'           => $formatted['regexp_for_validation'],
+            ));
         }
 
         $entity = new Entity\TicketCustomDef();
@@ -128,9 +140,7 @@ final class TicketCustomDef extends AbstractParser
             ->setDescription($formatted['description'])
             ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
             ->setAsEnabled($formatted['active'])
-            ->setOptions(array(
-                'required' => $formatted['required_in_portal'],
-            ))
+            ->setOptions($options)
         ;
 
         foreach (array($formatted['custom_field_options'], $formatted['system_field_options']) as $options) {
