@@ -27,7 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\ZenDesk\FieldsHandlerClassMapper;
 
 /**
  * ZenDesk organization custom def parser
@@ -50,7 +55,8 @@ final class OrganizationCustomDef extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        // We can read data from ZD reader twice because of ZD reader cache support
+        return count($this->reader->getOrganizationFields());
     }
 
     /**
@@ -58,6 +64,68 @@ final class OrganizationCustomDef extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getOrganizationFields())
+            ->setPrefix('ZDOrganizationCustomDef')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\PersonCustomDef
+     */
+    protected function exportCustomDef(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'id'                   => TransformerInterface::TYPE_STRING,
+            'destination'          => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'organization_custom_def_',
+                'ref'    => 'id',
+            )),
+            'key'                  => TransformerInterface::TYPE_STRING,
+            'title'                => TransformerInterface::TYPE_STRING,
+            'description'          => TransformerInterface::TYPE_STRING,
+            'active'               => TransformerInterface::TYPE_BOOLEAN,
+            'custom_field_options' => TransformerInterface::TYPE_ARRAY,
+            'created_at'           => TransformerInterface::TYPE_DATE,
+            'updated_at'           => TransformerInterface::TYPE_DATE,
+            'tag'                  => TransformerInterface::TYPE_STRING,
+        ));
+
+        $entity = new Entity\OrganizationCustomDef();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+            ->setDestination($formatted['destination'])
+            ->setImportMapKey(ImportMap::TYPE_ZENDESK_ORGANIZATION_FIELD)
+            ->setTitle($formatted['title'])
+            ->setDescription($formatted['description'])
+            ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
+            ->setAsEnabled($formatted['active'])
+        ;
+
+        foreach ($formatted['custom_field_options'] as $option) {
+            $option_formatted = $this->formatter->format($option, array(
+                'name'  => TransformerInterface::TYPE_STRING,
+                'value' => TransformerInterface::TYPE_STRING,
+            ));
+
+            $child_entity = new Entity\OrganizationCustomDef();
+            $child_entity
+                ->setTitle($option_formatted['value'])
+                ->setDescription($option_formatted['name'])
+                ->setAsEnabled($formatted['active'])
+            ;
+
+            $entity->addCustomDef($child_entity);
+        }
+
+        return $entity;
     }
 }

@@ -191,6 +191,23 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getOrganizationFields()
+    {
+        $fields = array();
+        $result = $this->adapter->doRequest(Request::createCoreAPI('OrganizationField', 'findAll'));
+
+        if ($result) {
+            foreach ($result->organization_fields as $field) {
+                $fields[] = $this->toArray($field);
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTicketsCount(DateTime $start_time = null)
     {
         $result = $this->adapter->doRequest(Request::createCoreAPI('Ticket', 'incrementalExport', array(

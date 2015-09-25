@@ -133,6 +133,13 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getOrganizationById($id);
 
     /**
+     * Returns organization fields collection
+     *
+     * @return mixed
+     */
+    public function getOrganizationFields();
+
+    /**
      * Returns a batch count of users tickets
      *
      * @param DateTime $start_time
