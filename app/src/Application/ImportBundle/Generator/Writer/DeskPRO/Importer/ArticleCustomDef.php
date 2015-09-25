@@ -33,7 +33,7 @@ use Application\ImportBundle\Entity;
  * Class ArticleCustomDef
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-final class ArticleCustomDef extends AbstractImporter
+final class ArticleCustomDef extends AbstractCustomDefImporter
 {
     /**
      * {@inheritdoc}

@@ -33,7 +33,7 @@ use Application\ImportBundle\Entity;
  * Class FeedbackCustomDef
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-final class FeedbackCustomDef extends AbstractImporter
+final class FeedbackCustomDef extends AbstractCustomDefImporter
 {
     /**
      * {@inheritdoc}

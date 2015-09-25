@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 
 /**
  * DeskPRO person custom def importer
@@ -35,7 +36,7 @@ use Application\ImportBundle\Entity;
  * Class PersonCustomDef
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-final class PersonCustomDef extends AbstractImporter
+final class PersonCustomDef extends AbstractCustomDefImporter
 {
     /**
      * {@inheritdoc}
@@ -53,5 +54,10 @@ final class PersonCustomDef extends AbstractImporter
         if ( ! $entity instanceof Entity\PersonCustomDef) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
+
+        $custom_def = new DeskPROEntity\CustomDefPerson();
+        $this->setCustomDef($custom_def, $entity);
+
+        $this->records->setPrimaryEntity($custom_def);
     }
 }

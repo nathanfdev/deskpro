@@ -27,31 +27,34 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity\AbstractCustomDef;
 
 /**
- * DeskPRO ticket custom def importer
- *
- * Class TicketCustomDef
+ * Class AbstractCustomDefImporter
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
-final class TicketCustomDef extends AbstractCustomDefImporter
+abstract class AbstractCustomDefImporter extends AbstractImporter
 {
     /**
-     * {@inheritdoc}
+     * @param DeskPROEntity\CustomDefAbstract $custom_def
+     * @param AbstractCustomDef               $entity
      */
-    public function getEntityType()
+    protected function setCustomDef(DeskPROEntity\CustomDefAbstract $custom_def, AbstractCustomDef $entity)
     {
-        return Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF;
-    }
+        $custom_def
+            ->setTitle($entity->getTitle())
+            ->setDescription($entity->getDescription())
+            ->setHandlerClass($entity->getHandlerClass())
+            ->setOptions($entity->getOptions())
+            ->setIsEnabled($entity->isEnabled())
+            ->setIsUserEnabled($entity->isUserEnabled())
+            ->setIsAgentField($entity->isAgentField())
+            ->setDefaultValue($entity->getDefaultValue())
+        ;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
-    {
-        if ( ! $entity instanceof Entity\TicketCustomDef) {
-            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        foreach ($entity->getChildren() as $child_entity) {
+
         }
     }
 }

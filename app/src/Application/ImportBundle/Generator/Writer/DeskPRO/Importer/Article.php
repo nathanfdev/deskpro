@@ -214,16 +214,11 @@ final class Article extends AbstractImporter
      * Returns custom def article entity
      *
      * @param Entity\CustomField $entity
-     *
      * @return DeskPROEntity\CustomDataArticle
-     * @throws ImporterException
      */
     private function createArticleCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefArticle $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ARTICLE);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataArticle());
+        return $this->createCustomData($this->getArticleCustomDefMapper(), $entity, new DeskPROEntity\CustomDataArticle());
     }
 
     /**

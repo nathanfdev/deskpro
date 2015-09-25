@@ -186,23 +186,17 @@ final class Person extends AbstractImporter
      * Returns person custom data entity
      *
      * @param Entity\CustomField $entity
-     *
      * @return DeskPROEntity\CustomDataPerson
-     * @throws ImporterException
      */
     private function createPersonCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefPerson $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());
+        return $this->createCustomData($this->getPersonCustomDefMapper(), $entity, new DeskPROEntity\CustomDataPerson());
     }
 
     /**
      * Returns the email account mapper
      *
      * @return Mapper\EmailAccount
-     * @throws \Exception
      */
     private function getEmailAccountMapper()
     {

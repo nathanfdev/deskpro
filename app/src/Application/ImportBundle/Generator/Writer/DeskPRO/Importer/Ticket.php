@@ -377,10 +377,7 @@ final class Ticket extends AbstractImporter
      */
     private function createTicketCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefTicket $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataTicket());
+        return $this->createCustomData($this->getTicketCustomDefMapper(), $entity, new DeskPROEntity\CustomDataTicket());
     }
 
     /**

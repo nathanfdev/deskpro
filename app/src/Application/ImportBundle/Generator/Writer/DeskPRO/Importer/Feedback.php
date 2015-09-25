@@ -178,26 +178,10 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * Returns custom def feedback entity
      *
      * @param Entity\CustomField $entity
-     *
      * @return DeskPROEntity\CustomDataFeedback
-     * @throws ImporterException
      */
     private function createFeedbackCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefFeedback $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_FEEDBACK);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataFeedback());
-    }
-
-    /**
-     * Returns the feedback category mapper
-     *
-     * @return Mapper\FeedbackCategory
-     * @throws \Exception
-     */
-    private function getFeedbackCategoryMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK_CATEGORY);
+        return $this->createCustomData($this->getFeedbackCustomDefMapper(), $entity, new DeskPROEntity\CustomDataFeedback());
     }
 }
