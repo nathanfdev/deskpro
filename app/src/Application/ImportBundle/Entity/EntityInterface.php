@@ -49,7 +49,9 @@ interface EntityInterface
     const TYPE_ARTICLE                 = 'article';
     const TYPE_ARTICLE_CATEGORY        = 'article_category';
     const TYPE_ARTICLE_COMMENT         = 'article_comment';
+    const TYPE_ARTICLE_CUSTOM_DEF      = 'article_custom_def';
     const TYPE_FEEDBACK                = 'feedback';
+    const TYPE_FEEDBACK_CUSTOM_DEF     = 'feedback_custom_def';
     const TYPE_ORGANIZATION            = 'organization';
     const TYPE_ORGANIZATION_CUSTOM_DEF = 'organization_custom_def';
     const TYPE_CONTACT_DATA            = 'contact_data';
