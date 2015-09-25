@@ -40,6 +40,6 @@ final class UnexpectedException extends \RuntimeException
      */
     public static function throwUnexpectedEntityTypeException(EntityInterface $entity)
     {
-        throw new self(sprintf('Unexpected entity type `%s`', $entity));
+        throw new self(sprintf('Unexpected entity type `%s`', get_class($entity)));
     }
 }
