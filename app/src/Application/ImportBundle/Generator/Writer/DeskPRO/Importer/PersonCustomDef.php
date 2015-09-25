@@ -55,9 +55,6 @@ final class PersonCustomDef extends AbstractCustomDefImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $custom_def = new DeskPROEntity\CustomDefPerson();
-        $this->setCustomDef($custom_def, $entity);
-
-        $this->records->setPrimaryEntity($custom_def);
+        $this->records->setPrimaryEntity($this->setCustomDef(new DeskPROEntity\CustomDefPerson(), $entity));
     }
 }

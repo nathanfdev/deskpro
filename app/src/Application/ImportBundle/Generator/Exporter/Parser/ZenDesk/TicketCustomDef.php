@@ -42,7 +42,7 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
  * Class TicketFields
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class TicketCustomDef extends AbstractParser
+final class TicketCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}
@@ -80,7 +80,7 @@ final class TicketCustomDef extends AbstractParser
 
     /**
      * @param array $data
-     * @return Entity\PersonCustomDef
+     * @return Entity\TicketCustomDef
      */
     protected function exportCustomDef(array $data)
     {
@@ -143,21 +143,12 @@ final class TicketCustomDef extends AbstractParser
             ->setOptions($options)
         ;
 
-        foreach (array($formatted['custom_field_options'], $formatted['system_field_options']) as $options) {
-            foreach ($options as $option) {
-                $option_formatted = $this->formatter->format($option, array(
-                    'name'  => TransformerInterface::TYPE_STRING,
-                    'value' => TransformerInterface::TYPE_STRING,
-                ));
+        $custom_options = $this->exportCustomFieldOptions($formatted['custom_field_options']);
+        $system_options = $this->exportCustomFieldOptions($formatted['system_field_options']);
 
-                $child_entity = new Entity\TicketCustomDef();
-                $child_entity
-                    ->setTitle($option_formatted['value'])
-                    ->setDescription($option_formatted['name'])
-                    ->setAsEnabled($formatted['active'])
-                ;
-
-                $entity->addCustomDef($child_entity);
+        foreach (array($custom_options, $system_options) as $options) {
+            foreach ($options as $num => $option) {
+                $entity->addCustomDef($option);
             }
         }
 

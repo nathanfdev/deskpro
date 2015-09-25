@@ -27,50 +27,30 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\DeskPRO\Entity\ImportMap;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Reader\ZenDesk\FieldsHandlerClassMapper;
 
 /**
- * ZenDesk organization custom def parser
- *
- * Class OrganizationCustomDef
+ * Class AbstractCustomDefParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class OrganizationCustomDef extends AbstractCustomDefParser
+abstract class AbstractCustomDefParser extends AbstractParser
 {
     /**
-     * {@inheritdoc}
+     * @param array $options
+     * @return Entity\Collection|Entity\AbstractCustomDef[]
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        // We can read data from ZD reader twice because of ZD reader cache support
-        return count($this->reader->getOrganizationFields());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
+    protected function exportCustomFieldOptions(array $options)
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->getOrganizationFields())
-            ->setPrefix('ZDOrganizationCustomDef')
+            ->setData($options)
+            ->setPrefix('ZDTicketCustomDefSystemOption')
             ->setRefColumn('id')
-            ->setMethod('exportCustomDef')
-            ->setAdvanceProgressbar(true)
+            ->setMethod('exportCustomFieldOption')
         ;
 
         return $this->exportCollection($config);
@@ -78,42 +58,34 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
 
     /**
      * @param array $data
-     * @return Entity\PersonCustomDef
+     * @param int   $num
+     *
+     * @return Entity\AbstractCustomDef
      */
-    protected function exportCustomDef(array $data)
+    protected function exportCustomFieldOption(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'                   => TransformerInterface::TYPE_STRING,
-            'destination'          => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'organization_custom_def_',
+            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_' . $num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'ticket_custom_def_',
                 'ref'    => 'id',
             )),
-            'key'                  => TransformerInterface::TYPE_STRING,
-            'title'                => TransformerInterface::TYPE_STRING,
-            'description'          => TransformerInterface::TYPE_STRING,
-            'active'               => TransformerInterface::TYPE_BOOLEAN,
-            'custom_field_options' => TransformerInterface::TYPE_ARRAY,
-            'created_at'           => TransformerInterface::TYPE_DATE,
-            'updated_at'           => TransformerInterface::TYPE_DATE,
-            'tag'                  => TransformerInterface::TYPE_STRING,
+            'name'        => TransformerInterface::TYPE_STRING,
+            'value'       => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = new Entity\OrganizationCustomDef();
+        $entity = new Entity\TicketCustomDef();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
-            ->setImportMapKey(ImportMap::TYPE_ZENDESK_ORGANIZATION_FIELD)
-            ->setTitle($formatted['title'])
-            ->setDescription($formatted['description'])
-            ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
-            ->setAsEnabled($formatted['active'])
+            ->setTitle($formatted['value'])
+            ->setDescription($formatted['name'])
+            ->setHandlerClass(CustomDefAbstract::HANDLER_CLASS_CHOICE)
+            ->setAsEnabled(true)
         ;
-
-        $custom_options = $this->exportCustomFieldOptions($formatted['custom_field_options']);
-        foreach ($custom_options as $num => $option) {
-            $entity->addCustomDef($option);
-        }
 
         return $entity;
     }

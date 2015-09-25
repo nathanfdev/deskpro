@@ -39,6 +39,8 @@ abstract class AbstractCustomDefImporter extends AbstractImporter
     /**
      * @param DeskPROEntity\CustomDefAbstract $custom_def
      * @param AbstractCustomDef               $entity
+     *
+     * @return DeskPROEntity\CustomDefAbstract
      */
     protected function setCustomDef(DeskPROEntity\CustomDefAbstract $custom_def, AbstractCustomDef $entity)
     {
@@ -54,7 +56,10 @@ abstract class AbstractCustomDefImporter extends AbstractImporter
         ;
 
         foreach ($entity->getChildren() as $child_entity) {
-
+            $custom_def_class = get_class($custom_def);
+            $custom_def->addChild($this->setCustomDef(new $custom_def_class(), $child_entity));
         }
+
+        return $custom_def;
     }
 }

@@ -40,7 +40,7 @@ use Application\ImportBundle\Reader\ZenDesk\FieldsHandlerClassMapper;
  * Class PeopleCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class PeopleCustomDef extends AbstractParser
+final class PeopleCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}
@@ -110,20 +110,9 @@ final class PeopleCustomDef extends AbstractParser
             ->setAsEnabled($formatted['active'])
         ;
 
-        foreach ($formatted['custom_field_options'] as $option) {
-            $option_formatted = $this->formatter->format($option, array(
-                'name'  => TransformerInterface::TYPE_STRING,
-                'value' => TransformerInterface::TYPE_STRING,
-            ));
-
-            $child_entity = new Entity\PersonCustomDef();
-            $child_entity
-                ->setTitle($option_formatted['value'])
-                ->setDescription($option_formatted['name'])
-                ->setAsEnabled($formatted['active'])
-            ;
-
-            $entity->addCustomDef($child_entity);
+        $custom_options = $this->exportCustomFieldOptions($formatted['custom_field_options']);
+        foreach ($custom_options as $num => $option) {
+            $entity->addCustomDef($option);
         }
 
         return $entity;

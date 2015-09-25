@@ -259,7 +259,7 @@ abstract class AbstractCustomDef extends AbstractEntity
     /**
      * Returns a collection of child custom def
      *
-     * @return ArticleCategory[]|Collection
+     * @return AbstractCustomDef[]|Collection
      */
     public function getChildren()
     {
@@ -318,9 +318,7 @@ abstract class AbstractCustomDef extends AbstractEntity
         AbstractEntity::loadValidatorMetadata($metadata);
 
         $metadata
-            ->addPropertyConstraint('sys_name', new Constraints\NotBlank())
             ->addPropertyConstraint('title', new Constraints\NotBlank())
-            ->addPropertyConstraint('description', new Constraints\NotBlank())
             ->addPropertyConstraint('handler_class', new Constraints\NotBlank())
             ->addPropertyConstraint('custom_def', new Constraints\Valid())
         ;

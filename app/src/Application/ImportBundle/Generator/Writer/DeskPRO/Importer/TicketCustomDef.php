@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 
 /**
  * DeskPRO ticket custom def importer
@@ -53,5 +54,7 @@ final class TicketCustomDef extends AbstractCustomDefImporter
         if ( ! $entity instanceof Entity\TicketCustomDef) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
+
+        $this->records->setPrimaryEntity($this->setCustomDef(new DeskPROEntity\CustomDefTicket(), $entity));
     }
 }
