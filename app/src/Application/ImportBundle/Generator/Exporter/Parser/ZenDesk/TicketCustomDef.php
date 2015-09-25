@@ -124,12 +124,12 @@ final class TicketCustomDef extends AbstractParser
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
             ->setImportMapKey(ImportMap::TYPE_ZENDESK_TICKET_FIELD)
-            ->setTitle($formatted['title'])
+            ->setTitle($formatted['title_in_portal'] ? : $formatted['title'])
             ->setDescription($formatted['description'])
             ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
             ->setAsEnabled($formatted['active'])
             ->setOptions(array(
-                'required' => $formatted['required'],
+                'required' => $formatted['required_in_portal'],
             ))
         ;
 
