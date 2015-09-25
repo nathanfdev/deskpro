@@ -104,7 +104,7 @@ $border-color: #d4d4d4;
       border-top-right-radius: 2px;
     }
 
-    > li:first-child > a:hover { border-top: 1px solid $hover-color; }
+    // > li:first-child > a:hover { border-top: 1px solid $hover-color; }
 
     > li:last-child > a {
       border-bottom-left-radius: 2px;
@@ -132,7 +132,6 @@ $border-color: #d4d4d4;
     border-bottom: 1px solid $border-color;
     border-left: 1px solid $border-color;
     border-right: 1px solid $border-color;
-    margin-top: -1px;
     position: relative;
     z-index: 997;
   }
@@ -217,7 +216,8 @@ $border-color: #d4d4d4;
 
     &:hover {
       background: #fff;
-      i { color: #62ad8c; }
+      color: #62ad8c;
+      i { color: #62ad8c !important; }
     }
   }
 }

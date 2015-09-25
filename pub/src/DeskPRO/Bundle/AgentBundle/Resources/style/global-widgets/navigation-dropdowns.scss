@@ -31,6 +31,7 @@
     height: 32px;
     background: #eaeaea;
     padding-top: 8px;
+    margin-top: -1px;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
     &:hover {
@@ -108,13 +109,13 @@ $border-color: #d4d4d4;
 
   > ul {
     > li:first-child a {
-      border-top: 1px solid $border-color;
+      // border-top: 1px solid $border-color;
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
     }
 
     > li:first-child a:hover {
-      border-top: 1px solid $hover-color;
+      // border-top: 1px solid $hover-color;
     }
 
     > li:last-child a {
@@ -132,7 +133,6 @@ $border-color: #d4d4d4;
     border-bottom: 1px solid $border-color;
     border-left: 1px solid $border-color;
     border-right: 1px solid $border-color;
-    margin-top: -1px;
     position: relative;
     z-index: 997;
   }
@@ -216,12 +216,50 @@ $border-color: #d4d4d4;
         background: #ff5460;
       }
     }
+
+    &.dpw-navigation-dropdown-item-condensed {
+      padding: 10px;
+      padding-top: 5px;
+      padding-left: 30px;
+      height: 26px;
+    }
+
+    &.dpw-navigation-dropdown-item-disabled {
+      color: #d4d4d4;
+
+      &:hover {
+        color: #d4d4d4;
+        background-color: inherit;
+        border-left: 1px solid #d4d4d4;
+        border-right: 1px solid #d4d4d4;
+        border-bottom: 1px solid #d4d4d4;
+      }
+    }
+
+    &.active {
+      background: $hover-color;
+      border: 1px solid $hover-color;
+      border-left: 1px solid $hover-color;
+      border-right: 1px solid $hover-color;
+      border-bottom: 1px solid $hover-color;
+      border-top: 0px;
+      color: #fff;
+      position: relative;
+      z-index: 998;
+      i {
+        color: #fff;
+      }
+    }
   }
 
   ul.navigation-item-group {
     .dpw-navigation-dropdown-item {
       border-bottom: none;
     }
+  }
+
+  .menu-submenu-caret {
+    padding-left: 10px;
   }
 }
 

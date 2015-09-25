@@ -7,7 +7,10 @@ export default class ItemFormat extends React.Component {
     widgetClass: React.PropTypes.string,
     checked: React.PropTypes.bool,
     children: React.PropTypes.any,
-    listItem: React.PropTypes.bool
+    listItem: React.PropTypes.bool,
+    hasMenu: React.PropTypes.bool,
+    hasItemList: React.PropTypes.bool,
+    toggleInnerList: React.PropTypes.func
   }
 
   render() {
@@ -49,13 +52,26 @@ export default class ItemFormat extends React.Component {
             </span>
           </span>
         : '' }
-   
+
         <span className="dpw-navigation-dropdown-item-title">
           {this.props.children}
         </span>
+
+        {this.props.hasMenu ?
+          <span className="dpw-navigation-dropdown-item-status">
+            <i className="fa fa-caret-right menu-submenu-caret" />
+          </span>
+        : ''}
+
         {this.props.checked ?
           <span className="dpw-navigation-dropdown-item-status">
             <i className="fa fa-check" />
+          </span>
+        : ''}
+
+        {this.props.hasItemList ?
+          <span className="dpw-navigation-dropdown-item-expand" onClick={this.props.toggleInnerList}>
+            <i className="fa fa-caret-down" />
           </span>
         : ''}
       </div>

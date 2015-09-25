@@ -24,22 +24,23 @@ import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 
 import Positioned from 'DeskPRO/Component/Positioned';
 import Menu from 'DeskPRO/Component/Menu/Menu';
-import BaseItem from 'DeskPRO/Component/Menu/BaseItem';
 import Item from 'DeskPRO/Component/Menu/Item';
 import ItemList from 'DeskPRO/Component/Menu/ItemList';
 import ItemGroup from 'DeskPRO/Component/Menu/ItemGroup';
 import MenuFooter from 'DeskPRO/Component/Menu/MenuFooter';
+import MenuFooterLink from 'DeskPRO/Component/Menu/MenuFooterLink';
+import MenuFooterOptions from 'DeskPRO/Component/Menu/MenuFooterOptions';
 
 @connect(state => ({
-    taskFrameList: state.taskFrameList,
-    taskListList: state.taskListList,
-    projectList: state.projectList,
-    taskFilter: state.taskFilter,
-    labelList: state.labelList,
-    agentList: state.agentList,
-    teamList: state.teamList,
-    departmentList: state.departmentList,
-    dp_window: state.dp_window
+  taskFrameList: state.taskFrameList,
+  taskListList: state.taskListList,
+  projectList: state.projectList,
+  taskFilter: state.taskFilter,
+  labelList: state.labelList,
+  agentList: state.agentList,
+  teamList: state.teamList,
+  departmentList: state.departmentList,
+  dp_window: state.dp_window
 }))
 export default class TasksListFrame extends React.Component {
   constructor(props) {
@@ -413,7 +414,7 @@ export default class TasksListFrame extends React.Component {
           <Positioned isOpen={true}
                       positionTarget={this.refs.ticketControlBar}>
             <Menu>
-              <Item>
+              <Item keepOpen>
                 Hello!
                 <Menu>
                   <ItemGroup>
@@ -424,7 +425,7 @@ export default class TasksListFrame extends React.Component {
                       Test 2
                     </Item>
                   </ItemGroup>
-                  <Item>
+                  <Item icon="book" itemType="danger" checked>
                     Test 3
                     <Menu>
                       <Item>Sub-menu</Item>
@@ -433,10 +434,30 @@ export default class TasksListFrame extends React.Component {
                   </Item>
                   <Item icon="bolt" itemType="locked">
                     Test 4
+                    <Menu>
+                      <Item>Sub-menu 2</Item>
+                      <Item>Subterranean</Item>
+                    </Menu>
                   </Item>
-                  <Item itemType="danger">
+                  <Item itemType="danger" keepOpen>
                     Test 5
                   </Item>
+                  <Item condensed>
+                    Test 6
+                  </Item>
+                  <Item condensed icon="book" itemType="danger" keepOpen>
+                    Test 7
+                  </Item>
+                  <Item disabled>
+                    Test 8
+                  </Item>
+                  <MenuFooter>
+                    <MenuFooterOptions options={[{id: 'asc', onClick: () => {}, label: 'Asc'},
+                                                 {id: 'desc', onClick: () => {}, label: 'Desc'}
+                                                ]} active="asc">
+                      Sort
+                    </MenuFooterOptions>
+                  </MenuFooter>
                 </Menu>
                 <ItemList>
                   <Item>Test A</Item>
@@ -444,9 +465,9 @@ export default class TasksListFrame extends React.Component {
                 </ItemList>
               </Item>
               <MenuFooter>
-                <div className="dpw-navigation-dropdown-options-link">
-                  <a href="#">Thing</a>
-                </div>
+                <MenuFooterLink icon="cog">
+                  Thing
+                </MenuFooterLink>
               </MenuFooter>
             </Menu>
           </Positioned>

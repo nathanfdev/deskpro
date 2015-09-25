@@ -2,6 +2,8 @@ import React from 'react';
 import Menu from 'DeskPRO/Component/Menu/Menu';
 import ItemFormat from 'DeskPRO/Component/Menu/ItemFormat';
 import Positioned from 'DeskPRO/Component/Positioned';
+import classNames from 'classnames';
+import $ from 'jquery';
 
 const BaseItem = React.createClass({
 
@@ -20,7 +22,12 @@ const BaseItem = React.createClass({
     subMenuMode: React.PropTypes.string,
     parentMenuLevel: React.PropTypes.number,
     disabled: React.PropTypes.bool,
-    format: React.PropTypes.string
+    condensed: React.PropTypes.bool,
+    format: React.PropTypes.string,
+    keepOpen: React.PropTypes.bool,
+    activeItem: React.PropTypes.object,
+    setActiveItem: React.PropTypes.func,
+    closeMenu: React.PropTypes.func
   },
 
   /**
@@ -38,8 +45,23 @@ const BaseItem = React.createClass({
    */
   getInitialState: function() {
     return {
-      openMenu: false
+      openMenu: false,
+      openInnerList: false
     };
+  },
+
+  /**
+   * Execute an action on click
+   * @return {void}
+   */
+  onClickAction: function() {
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+
+    if (!this.props.keepOpen) {
+      this.props.closeMenu();
+    }
   },
 
   /**
@@ -47,9 +69,9 @@ const BaseItem = React.createClass({
    * @return {void}
    */
   openMenu: function() {
-    this.setState({
-      openMenu: true
-    });
+    if (this.props.setActiveItem) {
+      this.props.setActiveItem(this);
+    }
   },
 
   /**
@@ -57,20 +79,27 @@ const BaseItem = React.createClass({
    * @return {void}
    */
   closeMenu: function() {
-    this.setState({
-      openMenu: false
-    });
+    if (this.props.setActiveItem) {
+      this.props.setActiveItem(false);
+    }
   },
 
   /**
    * Handle clicks outside the item
+   * @param {Event} e Click event
    * @return {void}
    */
-  handleClickOutside: function() {
-    this.closeMenu();
+  handleClickOutside: function(e) {
+    // Don't handle clicks for menu items - they deal with that themselves
+    const closest = $(e.target).closest('.dropdown-nav-item');
+
+    if (!closest) {
+      this.closeMenu();
+    }
   },
 
   /**
+   * @TODO
    * Toggle the menu open/closed
    * @return {void}
    */
@@ -81,13 +110,35 @@ const BaseItem = React.createClass({
   },
 
   /**
+   * Toggle the inner list
+   * @return {[type]} [description]
+   */
+  toggleInnerList: function() {
+    this.setState({
+      openInnerList: !this.state.openInnerList
+    });
+  },
+
+  /**
+   * Format the output according to the format prop
+   * @param  {mixed} output The output
+   * @return {mixed}        The formatted output
+   */
+  formatOutput: function(output, hasMenu = false, hasItemList = false) {
+    if (this.props.format && this.props.format === 'item') {
+      return (<ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList} toggleInnerList={this.toggleInnerList}>{output}</ItemFormat>);
+    }
+
+    return output;
+  },
+
+  /**
    * Render the menu
    * @return {React.Element} The menu container
    */
   render: function() {
-    const baseClass = 'dpw-navigation-dropdown-item';
+    const baseClass = 'dpw-navigation-dropdown-item dropdown-nav-item';
 
-    const onClickAction = this.props.onClick ? this.props.onClick : () => {};
     const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {};
     const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {};
 
@@ -106,58 +157,67 @@ const BaseItem = React.createClass({
         }
       });
 
+      let hasMenu = false;
+      let hasItemList = false;
+
       // Calculate the menu
       const menu = React.Children.map(children, (child) => {
         if (child.type && child.type.displayName === 'Menu') {
           keepMenuState = true;
+          hasMenu = true;
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;
           childProps.menuLevel = parentLevel + 1;
 
-          return (<Positioned isOpen={this.state && this.state.openMenu}
+          return (<Positioned isOpen
                               positionMy="left top"
                               positionAt="right top"
                               collision="none"
                               positionTarget={this}
                               key={child}>
               <Menu {...childProps}
-                    isOpen={this.state && this.state.openMenu} />
+                    isOpen={this.props.activeItem === this} closeMenu={this.closeMenu} />
           </Positioned>);
         }
       });
 
-      const divClasses = [baseClass];
+      const itemList = React.Children.map(children, (child) => {
+        if (child.type && child.type.displayName === 'ItemList') {
+          hasItemList = true;
+          if (this.state.openInnerList) {
+            return child;
+          }
+        }
+      });
+
+      let divClasses = [baseClass];
 
       if (this.props.widgetClass) {
-        divClasses.push(this.getWidgetClass(this.props.widgetClass));
+        divClasses.push(this.props.widgetClass);
       }
 
       if (this.props.disabled) {
-        divClasses.push('disabled');
+        divClasses.push('dpw-navigation-dropdown-item-disabled');
       }
 
       // Only add an active state if the menu is open and exists
-      if (this.state && this.state.openMenu && keepMenuState) {
+      if (this.props.activeItem === this && keepMenuState) {
         divClasses.push('active');
       }
 
-      let divClass = divClasses.join(' ');
+      if (this.props.condensed) {
+        divClasses.push('dpw-navigation-dropdown-item-condensed');
+      }
 
       if (this.props.overrideWidgetClass) {
-        divClass = this.getWidgetClass(this.props.widgetClass);
+        divClasses = this.props.widgetClass;
       }
 
       if (contents) {
-        output.push(<a className={divClass} href="#" onClick={onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
-          {this.formatOutput(contents)}
+        output.push(<a className={classNames(divClasses)} href="#" onClick={this.onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
+          {this.formatOutput(contents, hasMenu, hasItemList)}
         </a>);
       }
-
-      const itemList = React.Children.map(children, (child) => {
-        if (child.type && child.type.displayName === 'ItemList') {
-          return child;
-        }
-      });
 
       if (itemList) {
         output = output.concat(itemList);
@@ -177,18 +237,6 @@ const BaseItem = React.createClass({
     return (<li onMouseOver={this.openMenu}>
       {output}
     </li>);
-  },
-
-  getWidgetClass: function(divClass) {
-    return divClass;
-  },
-
-  formatOutput: function(output) {
-    if (this.props.format && this.props.format === 'item') {
-      return (<ItemFormat {...this.props}>{output}</ItemFormat>);
-    }
-
-    return output;
   }
 });
 

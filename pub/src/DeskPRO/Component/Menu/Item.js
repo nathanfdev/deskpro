@@ -8,7 +8,8 @@ export default class Item extends React.Component {
     widgetClass: React.PropTypes.string,
     checked: React.PropTypes.bool,
     children: React.PropTypes.any,
-    listItem: React.PropTypes.bool
+    listItem: React.PropTypes.bool,
+    closeMenu: React.PropTypes.func,
   }
 
   render() {

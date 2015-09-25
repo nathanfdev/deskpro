@@ -52,11 +52,6 @@ class TaskCardDragLayer {
   renderItem(type, item) {
     switch (item.subtype) {
       case 'list':
-
-        let cardClass = item.details.is_done ? 'card task-card task-card-completed moving' : 'card task-card moving';
-
-        let doneButton = item.details.is_done ? <span>Done <i className="fa fa-check" /></span> : 'Mark Done';
-
         let ticketLink = undefined;
         let ticketTitle = 'Linked ticket';
 
@@ -223,6 +218,8 @@ class TaskCardDragLayer {
               </div>
             </div>
           </div>);
+        default:
+          return;
     }
   }
 
