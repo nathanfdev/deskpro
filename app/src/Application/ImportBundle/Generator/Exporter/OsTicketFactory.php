@@ -50,7 +50,7 @@ class OsTicketFactory extends AbstractExporterFactory
         $formatter = $this->container->get('deskpro.import.formatter');
 
         $people_storage = new Parser\PeopleStorage();
-        $ticket_people  = new Parser\OsTicket\TicketPeopleStorage($reader, $people_storage);
+        $ticket_people  = new Parser\OsTicket\Storage\TicketPeopleStorage($reader, $people_storage);
 
         $parsers = new Parser\Collection();
         $parsers

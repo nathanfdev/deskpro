@@ -25,68 +25,43 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
-
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket\Storage;
 
 /**
- * Class AbstractParserPeopleStorage
- * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
+ * OsTicket tickets people storage
  *
- * @property OsTicketReaderInterface $reader
+ * Class TicketPeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket\Storage
  */
-abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
     /**
      * {@inheritdoc}
      */
-    public function getPersonEmail($id)
+    protected function getPeopleIds($data)
     {
-        $person = $this->storage->getPerson($id);
-        return isset($person['email']) ? $person['email'] : null;
-    }
+        $people_ids = array();
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function loadByIds($ids)
-    {
-        $request_ids = $this->storage->getNotContainsIds(array_keys($ids));
-        if (empty($request_ids)) {
-            return;
-        }
+        foreach ($data as $ticket) {
+            if (isset($ticket['user_id']) && $ticket['user_id'] > 0) {
+                $people_ids['user_' . $ticket['user_id']] = $ticket['user_id'];
+            }
+            if (isset($ticket['staff_id']) && $ticket['staff_id'] > 0) {
+                $people_ids['staff_' . $ticket['staff_id']] = $ticket['staff_id'];
+            }
 
-        $this->storage->addIgnoreIds($request_ids);
-
-        $user_ids  = array();
-        $staff_ids = array();
-
-        foreach ($request_ids as $key) {
-            if (strpos($key, 'user_') === 0) {
-                $user_ids[]  = (int)$ids[$key];
-            } elseif (strpos($key, 'staff_') === 0) {
-                $staff_ids[] = (int)$ids[$key];
+            if ( ! empty($ticket['messages'])) {
+                foreach ($ticket['messages'] as $message) {
+                    if (isset($message['user_id']) && $message['user_id'] > 0) {
+                        $people_ids['user_' . $message['user_id']] = $message['user_id'];
+                    }
+                    if (isset($message['staff_id']) && $message['staff_id'] > 0) {
+                        $people_ids['staff_' . $message['staff_id']] = $message['staff_id'];
+                    }
+                }
             }
         }
 
-        $people = array();
-
-        if ( ! empty($user_ids)) {
-            $result = $this->reader->findUsersByIds($user_ids);
-            foreach ($result as $person) {
-                $person['id'] = 'user_' . $person['user_id'];
-                $people[] = $person;
-            }
-        }
-
-        if ( ! empty($staff_ids)) {
-            $result = $this->reader->findStaffByIds($staff_ids);
-            foreach ($result as $person) {
-                $person['id'] = 'staff_' . $person['staff_id'];
-                $people[] = $person;
-            }
-        }
-
-        $this->storage->addPeople($people);
+        return array_unique($people_ids);
     }
 }
