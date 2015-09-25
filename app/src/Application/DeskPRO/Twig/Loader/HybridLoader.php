@@ -100,6 +100,19 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
         return false;
     }
 
+    public function exists($name)
+    {
+        if (parent::exists($name)) {
+            return true;
+        }
+
+        if ($this->dbHasTemplate($name)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function isFresh($name, $time)
     {
         $this->_initStyle();
