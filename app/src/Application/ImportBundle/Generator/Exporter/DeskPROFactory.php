@@ -52,7 +52,7 @@ class DeskPROFactory extends AbstractExporterFactory
         $config = $reader->getConfig();
 
         $people_storage = new Parser\PeopleStorage();
-        $ticket_people  = new Parser\DeskPRO\TicketPeopleStorage($reader, $people_storage);
+        $ticket_people  = new Parser\DeskPRO\Storage\TicketPeopleStorage($reader, $people_storage);
 
         $parsers = new Parser\Collection();
         $parsers

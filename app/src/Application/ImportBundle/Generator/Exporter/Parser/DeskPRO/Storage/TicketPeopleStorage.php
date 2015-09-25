@@ -25,48 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
-
-use Application\DeskPRO\Entity;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
-use Doctrine\Common\Collections\Criteria;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO\Storage;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Class AbstractParserPeopleStorage
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
- *
- * @property DeskPROReaderInterface $reader
+ * Class TicketPeopleStorage
+ * @package Application\ImportBundle\Generator\Exporter\Parser\DeskPRO\Storage
  */
-abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParserPeopleStorage
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
     /**
      * {@inheritdoc}
      */
-    public function getPersonEmail($id)
+    protected function getPeopleIds($data)
     {
-        $person = $this->storage->getPerson($id);
-        return isset($person['email']) ? $person['email'] : null;
-    }
+        $people_ids = array();
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function loadByIds($ids)
-    {
-        $request_ids = $this->storage ? $this->storage->getNotContainsIds($ids) : $ids;
+        foreach ($data as $ticket) {
+            /** @var Ticket $ticket */
+            $people_ids[] = $ticket->person->getId();
 
-        $criteria = new Criteria();
-        $criteria->andWhere($criteria->expr()->in('id', $ids));
+            if ($ticket->agent) {
+                $people_ids[] = $ticket->agent->getId();
+            }
 
-        /** @var Entity\Person[] $result */
-        $result = $this->reader->findUsersByCriteria($criteria);
-        $people = array();
-
-        foreach ($result as $person) {
-            $people[$person->getId()] = $person;
+            foreach ($ticket->messages as $message) {
+                $people_ids[] = $message->person->getId();
+            }
+            foreach ($ticket->participants as $participant) {
+                $people_ids[] = $participant->getPerson()->getId();
+            }
         }
 
-        $this->storage->addIgnoreIds($request_ids);
-        $this->storage->addPeople($people);
+        return array_unique($people_ids);
     }
 }
