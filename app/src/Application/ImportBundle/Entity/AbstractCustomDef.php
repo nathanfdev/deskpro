@@ -59,7 +59,22 @@ abstract class AbstractCustomDef extends AbstractEntity
     /**
      * @var bool
      */
-    protected $is_enabled;
+    protected $is_enabled = false;
+
+    /**
+     * @var bool
+     */
+    protected $is_user_enabled = false;
+
+    /**
+     * @var bool
+     */
+    protected $is_agent_field = false;
+
+    /**
+     * @var mixed
+     */
+    protected $default_value;
 
     /**
      * @var array
@@ -134,6 +149,24 @@ abstract class AbstractCustomDef extends AbstractEntity
     }
 
     /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
+     * @param string $sys_name
+     * @return $this
+     */
+    public function setSysName($sys_name)
+    {
+        $this->sys_name = $sys_name;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -152,20 +185,56 @@ abstract class AbstractCustomDef extends AbstractEntity
     }
 
     /**
-     * @return string
+     * @return boolean
      */
-    public function getSysName()
+    public function isUserEnabled()
     {
-        return $this->sys_name;
+        return $this->is_user_enabled;
     }
 
     /**
-     * @param string $sys_name
+     * @param boolean $is_user_enabled
      * @return $this
      */
-    public function setSysName($sys_name)
+    public function setAsUserEnabled($is_user_enabled)
     {
-        $this->sys_name = $sys_name;
+        $this->is_user_enabled = (bool)$is_user_enabled;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAgentField()
+    {
+        return $this->is_agent_field;
+    }
+
+    /**
+     * @param boolean $is_agent_field
+     * @return $this
+     */
+    public function setAsAgentField($is_agent_field)
+    {
+        $this->is_agent_field = (bool)$is_agent_field;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
+    }
+
+    /**
+     * @param mixed $default_value
+     * @return $this
+     */
+    public function setDefaultValue($default_value)
+    {
+        $this->default_value = $default_value;
         return $this;
     }
 
@@ -227,14 +296,17 @@ abstract class AbstractCustomDef extends AbstractEntity
     public function toArray()
     {
         return array(
-            'oid'           => $this->oid,
-            'sys_name'      => $this->sys_name,
-            'title'         => $this->title,
-            'description'   => $this->description,
-            'handler_class' => $this->handler_class,
-            'is_enabled'    => $this->is_enabled,
-            'options'       => $this->options,
-            'custom_def'    => $this->custom_def->entitiesToArray(),
+            'oid'             => $this->oid,
+            'sys_name'        => $this->sys_name,
+            'title'           => $this->title,
+            'description'     => $this->description,
+            'handler_class'   => $this->handler_class,
+            'is_enabled'      => $this->is_enabled,
+            'is_user_enabled' => $this->is_user_enabled,
+            'is_agent_field'  => $this->is_agent_field,
+            'default_value'   => $this->default_value,
+            'options'         => $this->options,
+            'custom_def'      => $this->custom_def->entitiesToArray(),
         );
     }
 
