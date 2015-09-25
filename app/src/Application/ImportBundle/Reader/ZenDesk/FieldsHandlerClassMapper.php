@@ -76,7 +76,7 @@ class FieldsHandlerClassMapper
             ZenDeskReaderInterface::FIELD_TYPE_DECIMAL        => CustomDefAbstract::HANDLER_CLASS_TEXT,
             ZenDeskReaderInterface::FIELD_TYPE_DROPDOWN       => CustomDefAbstract::HANDLER_CLASS_CHOICE,
             ZenDeskReaderInterface::FIELD_TYPE_INTEGER        => CustomDefAbstract::HANDLER_CLASS_TEXT,
-            ZenDeskReaderInterface::FIELD_TYPE_REGEXP         => '',
+            ZenDeskReaderInterface::FIELD_TYPE_REGEXP         => CustomDefAbstract::HANDLER_CLASS_TEXT,
             ZenDeskReaderInterface::FIELD_TYPE_TEXT           => CustomDefAbstract::HANDLER_CLASS_TEXT,
             ZenDeskReaderInterface::FIELD_TYPE_TEXTAREA       => CustomDefAbstract::HANDLER_CLASS_TEXTAREA,
         );

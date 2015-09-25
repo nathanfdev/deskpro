@@ -112,7 +112,6 @@ final class TicketCustomDef extends AbstractParser
 
         $not_supported_types = array(
             ZenDeskReaderInterface::FIELD_TYPE_ASSIGNEE,
-            ZenDeskReaderInterface::FIELD_TYPE_REGEXP,
         );
 
         if (in_array($formatted['type'], $not_supported_types)) {
