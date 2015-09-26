@@ -4,7 +4,7 @@ var path = require("path");
 
 console.info("Setting up git hooks...");
 
-var source_script = path.resolve(__dirname, 'pre-commit.sh');
+var source_script = path.resolve(__dirname, 'pre-commit');
 var dest_script = path.resolve(__dirname, '../../../.git/hooks/pre-commit');
 
 copyFile(source_script, dest_script, function(err) {
