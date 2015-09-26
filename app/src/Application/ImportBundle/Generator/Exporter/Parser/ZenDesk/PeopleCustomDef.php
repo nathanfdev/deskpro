@@ -84,19 +84,20 @@ final class PeopleCustomDef extends AbstractCustomDefParser
     {
         $entity    = $this->getDefaultCustomDefEntity();
         $formatted = $this->formatter->format($data, array(
-            'id'                   => TransformerInterface::TYPE_STRING,
-            'destination'          => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'id'                    => TransformerInterface::TYPE_STRING,
+            'destination'           => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'id',
             )),
-            'key'                  => TransformerInterface::TYPE_STRING,
-            'title'                => TransformerInterface::TYPE_STRING,
-            'description'          => TransformerInterface::TYPE_STRING,
-            'active'               => TransformerInterface::TYPE_BOOLEAN,
-            'custom_field_options' => TransformerInterface::TYPE_ARRAY,
-            'created_at'           => TransformerInterface::TYPE_DATE,
-            'updated_at'           => TransformerInterface::TYPE_DATE,
-            'tag'                  => TransformerInterface::TYPE_STRING,
+            'key'                   => TransformerInterface::TYPE_STRING,
+            'title'                 => TransformerInterface::TYPE_STRING,
+            'description'           => TransformerInterface::TYPE_STRING,
+            'active'                => TransformerInterface::TYPE_BOOLEAN,
+            'custom_field_options'  => TransformerInterface::TYPE_ARRAY,
+            'created_at'            => TransformerInterface::TYPE_DATE,
+            'updated_at'            => TransformerInterface::TYPE_DATE,
+            'regexp_for_validation' => TransformerInterface::TYPE_STRING,
+            'tag'                   => TransformerInterface::TYPE_STRING,
         ));
 
         $entity
@@ -108,6 +109,7 @@ final class PeopleCustomDef extends AbstractCustomDefParser
             ->setDescription($formatted['description'])
             ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
             ->setAsEnabled($formatted['active'])
+            ->setOptions($this->configureOptions($formatted))
         ;
 
         $custom_options = $this->exportCustomFieldOptions($formatted['custom_field_options']);

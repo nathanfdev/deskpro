@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
  * Abstract ZenDesk custom def parser
@@ -92,6 +93,26 @@ abstract class AbstractCustomDefParser extends AbstractParser
         ;
 
         return $entity;
+    }
+
+    /**
+     * Creates custom def options
+     *
+     * @param array $formatted
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function configureOptions(array $formatted, array $options = array())
+    {
+        if ($formatted['type'] === ZenDeskReaderInterface::FIELD_TYPE_REGEXP) {
+            $options = array_merge($options, array(
+                'validation_type' => 'regex',
+                'regex'           => $formatted['regexp_for_validation'],
+            ));
+        }
+
+        return $options;
     }
 
     /**

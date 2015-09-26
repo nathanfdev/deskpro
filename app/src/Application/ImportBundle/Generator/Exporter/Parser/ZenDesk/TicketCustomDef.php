@@ -120,16 +120,9 @@ final class TicketCustomDef extends AbstractCustomDefParser
             throw new SkippingException(sprintf('Not supported type `%s`', $formatted['type']), $data);
         }
 
-        $options = array(
+        $options = $this->configureOptions($formatted, array(
             'required' => $formatted['required_in_portal'],
-        );
-
-        if ($formatted['type'] === ZenDeskReaderInterface::FIELD_TYPE_REGEXP) {
-            $options = array_merge($options, array(
-                'validation_type' => 'regex',
-                'regex'           => $formatted['regexp_for_validation'],
-            ));
-        }
+        ));
 
         $entity
             ->setRawData($data)
