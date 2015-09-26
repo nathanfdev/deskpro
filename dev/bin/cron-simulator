@@ -1,4 +1,6 @@
-// simulates a cron job on a real server executing cron.php once per minute
+#!/usr/bin/env node
+// simulates a cron job on a real server by executing cron.php once per minute
+// it is much better to use a real cronjob (or plist on mac), but this is a fallback option
 var child_process = require('child_process');
 
 var cron_script = __dirname + '/../../cron.php';
@@ -15,7 +17,7 @@ process.argv.forEach(function (val, index, array) {
 
 console.log('using ENV', env);
 if (!"XDEBUG_CONFIG" in env) {
-  console.log('you can use xdebug by passing in the session name as an argument');
+  console.log('you can use xdebug by passing in the session name as an argument (e.g. node cron.js PHPSTORM)');
 }
 
 var curr_time = function() {
