@@ -84,10 +84,11 @@ final class TicketCustomDef extends AbstractCustomDefParser
      */
     protected function exportCustomDef(array $data)
     {
+        $entity    = $this->getDefaultCustomDefEntity();
         $formatted = $this->formatter->format($data, array(
             'id'                    => TransformerInterface::TYPE_STRING,
             'destination'           => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'ticket_custom_def_',
+                'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'id',
             )),
             'type'                  => TransformerInterface::TYPE_STRING,
@@ -130,7 +131,6 @@ final class TicketCustomDef extends AbstractCustomDefParser
             ));
         }
 
-        $entity = $this->getDefaultCustomDefEntity();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])

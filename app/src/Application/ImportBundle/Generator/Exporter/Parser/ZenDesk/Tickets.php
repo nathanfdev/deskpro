@@ -129,10 +129,11 @@ final class Tickets extends AbstractParser
      */
     protected function exportTicket(array $data)
     {
+        $entity    = new Entity\Ticket();
         $formatted = $this->formatter->format($data, array(
             'id'               => TransformerInterface::TYPE_STRING,
             'destination'      => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'ticket_',
+                'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'id',
             )),
             'requester_id'     => TransformerInterface::TYPE_STRING,
@@ -156,7 +157,6 @@ final class Tickets extends AbstractParser
             throw new SkippingException(sprintf('Unable to get submitter email by id #%s', $formatted['requester_id']), $formatted);
         }
 
-        $entity = new Entity\Ticket();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
@@ -265,10 +265,11 @@ final class Tickets extends AbstractParser
      */
     protected function exportMessage(array $data)
     {
+        $entity    = new Entity\TicketMessage();
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_STRING,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'message_',
+                'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'id',
             )),
             'author_id'   => TransformerInterface::TYPE_STRING,
@@ -287,7 +288,6 @@ final class Tickets extends AbstractParser
             throw new SkippingException('Unable to get comment author, skipping', $formatted);
         }
 
-        $entity = new Entity\TicketMessage();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])

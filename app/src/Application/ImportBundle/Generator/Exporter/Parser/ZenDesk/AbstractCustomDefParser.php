@@ -69,19 +69,19 @@ abstract class AbstractCustomDefParser extends AbstractParser
      */
     protected function exportCustomFieldOption(array $data, $num)
     {
+        $entity    = $this->getDefaultCustomDefEntity();
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
                 'default' => 'num_' . $num,
             )),
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'ticket_custom_def_',
+                'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'id',
             )),
             'name'        => TransformerInterface::TYPE_STRING,
             'value'       => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = $this->getDefaultCustomDefEntity();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])

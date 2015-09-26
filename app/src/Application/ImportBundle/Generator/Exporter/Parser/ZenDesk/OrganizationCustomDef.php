@@ -82,10 +82,11 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
      */
     protected function exportCustomDef(array $data)
     {
+        $entity    = $this->getDefaultCustomDefEntity();
         $formatted = $this->formatter->format($data, array(
             'id'                   => TransformerInterface::TYPE_STRING,
             'destination'          => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'organization_custom_def_',
+                'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'id',
             )),
             'key'                  => TransformerInterface::TYPE_STRING,
@@ -98,7 +99,6 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
             'tag'                  => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = $this->getDefaultCustomDefEntity();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])

@@ -121,10 +121,11 @@ final class People extends AbstractParser
      */
     protected function exportPerson(array $data)
     {
+        $entity    = new Entity\Person();
         $formatted = $this->formatter->format($data, array(
             'id'              => TransformerInterface::TYPE_STRING,
             'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'person_',
+                'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'id',
             )),
             'name'            => TransformerInterface::TYPE_STRING,
@@ -148,7 +149,6 @@ final class People extends AbstractParser
             $time_zone = $formatted['time_zone'];
         }
 
-        $entity = new Entity\Person();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
