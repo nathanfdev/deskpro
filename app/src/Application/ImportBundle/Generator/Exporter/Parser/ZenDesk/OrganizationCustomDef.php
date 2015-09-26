@@ -98,7 +98,7 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
             'tag'                  => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = new Entity\OrganizationCustomDef();
+        $entity = $this->getDefaultCustomDefEntity();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
@@ -116,5 +116,13 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
         }
 
         return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\OrganizationCustomDef();
     }
 }

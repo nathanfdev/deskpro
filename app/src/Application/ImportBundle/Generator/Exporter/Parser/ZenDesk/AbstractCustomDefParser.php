@@ -33,12 +33,16 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
+ * Abstract ZenDesk custom def parser
+ *
  * Class AbstractCustomDefParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 abstract class AbstractCustomDefParser extends AbstractParser
 {
     /**
+     * Return a collection of choice options
+     *
      * @param array $options
      * @return Entity\Collection|Entity\AbstractCustomDef[]
      */
@@ -47,7 +51,7 @@ abstract class AbstractCustomDefParser extends AbstractParser
         $config = new ExportCollectionConfig();
         $config
             ->setData($options)
-            ->setPrefix('ZDTicketCustomDefSystemOption')
+            ->setPrefix('ZDCustomDefOption')
             ->setRefColumn('id')
             ->setMethod('exportCustomFieldOption')
         ;
@@ -56,6 +60,8 @@ abstract class AbstractCustomDefParser extends AbstractParser
     }
 
     /**
+     * Returns choice option
+     *
      * @param array $data
      * @param int   $num
      *
@@ -75,7 +81,7 @@ abstract class AbstractCustomDefParser extends AbstractParser
             'value'       => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = new Entity\TicketCustomDef();
+        $entity = $this->getDefaultCustomDefEntity();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
@@ -87,4 +93,11 @@ abstract class AbstractCustomDefParser extends AbstractParser
 
         return $entity;
     }
+
+    /**
+     * Returns empty custom def entity
+     *
+     * @return Entity\AbstractCustomDef
+     */
+    protected abstract function getDefaultCustomDefEntity();
 }

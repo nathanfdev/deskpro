@@ -130,7 +130,7 @@ final class TicketCustomDef extends AbstractCustomDefParser
             ));
         }
 
-        $entity = new Entity\TicketCustomDef();
+        $entity = $this->getDefaultCustomDefEntity();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
@@ -153,5 +153,13 @@ final class TicketCustomDef extends AbstractCustomDefParser
         }
 
         return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\TicketCustomDef();
     }
 }

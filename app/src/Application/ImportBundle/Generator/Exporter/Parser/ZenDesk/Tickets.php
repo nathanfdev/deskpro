@@ -377,7 +377,7 @@ final class Tickets extends AbstractParser
      * @param string $status
      *
      * @return string
-     * @throws Exception
+     * @throws \RuntimeException
      */
     private function getStatus($status)
     {
@@ -395,6 +395,6 @@ final class Tickets extends AbstractParser
             return $map[$status];
         }
 
-        throw new Exception(sprintf('Ticket status `%s` not found', $status));
+        throw new \RuntimeException(sprintf('Ticket status `%s` not found', $status));
     }
 }

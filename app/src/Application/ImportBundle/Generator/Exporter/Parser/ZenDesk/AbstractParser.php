@@ -35,7 +35,7 @@ use Exception;
 use DateTime;
 
 /**
- * Abstract zenDesk parser
+ * Abstract ZenDesk parser
  *
  * Class AbstractParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk

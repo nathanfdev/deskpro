@@ -98,7 +98,7 @@ final class PeopleCustomDef extends AbstractCustomDefParser
             'tag'                  => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = new Entity\PersonCustomDef();
+        $entity = $this->getDefaultCustomDefEntity();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])
@@ -116,5 +116,13 @@ final class PeopleCustomDef extends AbstractCustomDefParser
         }
 
         return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\PersonCustomDef();
     }
 }
