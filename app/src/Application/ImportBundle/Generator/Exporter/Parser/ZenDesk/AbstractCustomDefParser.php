@@ -87,8 +87,8 @@ abstract class AbstractCustomDefParser extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['id'])
             ->setDestination($formatted['destination'])
-            ->setTitle($formatted['value'])
-            ->setDescription($formatted['name'])
+            ->setTitle($formatted['name'])
+            ->setDescription('')
             ->setAsEnabled(true)
         ;
 
