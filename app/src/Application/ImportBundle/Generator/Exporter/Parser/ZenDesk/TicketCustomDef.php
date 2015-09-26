@@ -114,6 +114,8 @@ final class TicketCustomDef extends AbstractCustomDefParser
 
         $not_supported_types = array(
             ZenDeskReaderInterface::FIELD_TYPE_ASSIGNEE,
+            ZenDeskReaderInterface::FIELD_TYPE_SUBJECT,
+            ZenDeskReaderInterface::FIELD_TYPE_DESCRIPTION,
         );
 
         if (in_array($formatted['type'], $not_supported_types)) {
@@ -133,6 +135,7 @@ final class TicketCustomDef extends AbstractCustomDefParser
             ->setDescription($formatted['description'])
             ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
             ->setAsEnabled($formatted['active'])
+            ->setAsUserEnabled($formatted['active'])
             ->setOptions($options)
         ;
 

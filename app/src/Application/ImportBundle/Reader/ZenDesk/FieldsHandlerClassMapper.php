@@ -26,6 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Reader\ZenDesk;
+
 use Application\DeskPRO\Entity\CustomDefAbstract;
 
 /**
@@ -63,7 +64,7 @@ class FieldsHandlerClassMapper
     {
         return array(
             ZenDeskReaderInterface::FIELD_TYPE_SUBJECT        => CustomDefAbstract::HANDLER_CLASS_TEXT,
-            ZenDeskReaderInterface::FIELD_TYPE_DESCRIPTION    => CustomDefAbstract::HANDLER_CLASS_TEXT,
+            ZenDeskReaderInterface::FIELD_TYPE_DESCRIPTION    => CustomDefAbstract::HANDLER_CLASS_TEXTAREA,
             ZenDeskReaderInterface::FIELD_TYPE_STATUS         => CustomDefAbstract::HANDLER_CLASS_CHOICE,
             ZenDeskReaderInterface::FIELD_TYPE_TICKET_TYPE    => CustomDefAbstract::HANDLER_CLASS_CHOICE,
             ZenDeskReaderInterface::FIELD_TYPE_BASIC_PRIORITY => CustomDefAbstract::HANDLER_CLASS_CHOICE,
