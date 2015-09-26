@@ -93,7 +93,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setDateCreated(DateTime $date_created)
+    public function setDateCreated(DateTime $date_created = null)
     {
         $this->date_created = $date_created;
         return $this;
@@ -110,7 +110,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setDateModified(DateTime $date_modified)
+    public function setDateModified(DateTime $date_modified = null)
     {
         $this->date_modified = $date_modified;
         return $this;

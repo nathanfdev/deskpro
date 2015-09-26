@@ -55,22 +55,20 @@ final class Batch
     /**
      * Parse array config to specific object
      *
-     * @param array $config
+     * @param array $data
      *
      * @return Parser\BatchConfigInterface
      * @throws Exception
      */
-    public function parse(array $config)
+    public function parse(array $data)
     {
-        if ( ! isset($config['type'])) {
+        if ( ! isset($data['type'])) {
             throw new Exception('Invalid batch config file');
         }
 
-        $parser = $this->parsers->getByType($config['type']);
-        if ($parser->validate($config)) {
-            return $parser->parse($config);
-        }
+        $parser = $this->parsers->getByType($data['type']);
+        $config = $parser->parse($data);
 
-        return null;
+        return $config;
     }
 }
