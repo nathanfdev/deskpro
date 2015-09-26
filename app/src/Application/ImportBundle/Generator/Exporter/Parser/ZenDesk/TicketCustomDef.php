@@ -32,9 +32,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\FieldsHandlerClassMapper;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
  * ZenDesk ticket custom def parser
@@ -111,16 +109,6 @@ final class TicketCustomDef extends AbstractCustomDefParser
             'created_at'            => TransformerInterface::TYPE_DATE,
             'updated_at'            => TransformerInterface::TYPE_DATE,
         ));
-
-        $not_supported_types = array(
-            ZenDeskReaderInterface::FIELD_TYPE_ASSIGNEE,
-            ZenDeskReaderInterface::FIELD_TYPE_SUBJECT,
-            ZenDeskReaderInterface::FIELD_TYPE_DESCRIPTION,
-        );
-
-        if (in_array($formatted['type'], $not_supported_types)) {
-            throw new SkippingException(sprintf('Not supported type `%s`', $formatted['type']), $data);
-        }
 
         $options = $this->configureOptions($formatted, array(
             'required' => $formatted['required_in_portal'],
