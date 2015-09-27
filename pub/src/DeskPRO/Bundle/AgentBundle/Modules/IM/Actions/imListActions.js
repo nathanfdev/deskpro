@@ -4,6 +4,7 @@ import * as Teams from 'DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams';
 import * as Departments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Departments';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
 import _ from 'lodash';
+import $ from 'jquery';
 
 export const loadAgents = createAction(
     'IM_LIST_LOAD_AGENTS',
@@ -32,12 +33,13 @@ export const loadRecentAgents = createAction(
       let agents = [];
       let teams = [];
       let departments = [];
+      let recent = [];
       return IM.loadLatest().then(
         promise => {
           const chats = promise.getData().data;
           chats.map(chat => {
             agents = _.union(agents, chat.agents);
-            teams = _.union(teams, chat.teams);
+            teams = _.union(teams, chat.agent_teams);
             departments = _.union(departments, chat.departments);
           });
           return new Promise(resolve => resolve(agents));
@@ -45,7 +47,28 @@ export const loadRecentAgents = createAction(
       ).then(agents => {
         return Agents.loadAgents({ids: agents.join(',')});
       }).then(promise => {
-        return promise.getData().data;
-      });
+        promise.getData().data.map(datum => recent.push(datum));
+        return teams
+        // reduce teams, and everytime return promise, so we can loop it and at last return promise with proper data
+        .reduce( (previous, team) => {
+          return Teams.loadAgentTeamAgents(team).then(
+            promise => {
+              promise.getData().data.map(datum => recent.push(datum));
+              return new Promise(resolve => resolve(team));
+            }
+          );
+        }, true)
+        .then(
+          () => {
+            return new Promise(resolve => resolve(recent));
+          }
+        );
+      }).then(
+          (afterTeams) => {
+            return _.uniq(afterTeams, (agent) => {
+              return agent.id;
+            });
+          }
+      );
     }
 );
