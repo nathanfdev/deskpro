@@ -1,6 +1,10 @@
-import DpApi from "../DpApi";
+import DpApi from '../DpApi';
 
-/** Load all departments. */
+/**
+ * Load all departments.
+ * @param {Object} options - to modify query
+ * @return {object} promise
+ */
 export function loadDepartments(options = {}) {
   return DpApi.sendGet('DP_API/departments?' + compileParams(options));
 }
@@ -15,8 +19,8 @@ export function load(ids) {
 
 /**
  * Compile parameters into a URL string
- * @param params
- * @returns {string}
+ * @param {Object} params - to compile
+ * @returns {string} - compiled string
  */
 function compileParams(params) {
   let compiled = [];
