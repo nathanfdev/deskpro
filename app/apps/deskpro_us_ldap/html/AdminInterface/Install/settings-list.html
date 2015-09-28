@@ -56,6 +56,16 @@
 
 <div class="form-group">
 	<div class="col-lg-4">
+		<h3>Account Filter Format</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.account_filter" />
+		<span class="help-block">You can specify an account filter format here. You can leave this field blank to use the default account filter format, which is: (|(dn=%s)(mail=%s)(uid=%s))</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
 		<h3>Service Account</h3>
 	</div>
 	<div class="col-lg-8">
