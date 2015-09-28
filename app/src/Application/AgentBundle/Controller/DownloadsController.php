@@ -447,7 +447,7 @@ class DownloadsController extends AbstractController
 
     public function newDownloadAction()
     {
-        $download_categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getFlatHierarchy();
+        $download_categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
         return $this->render('AgentBundle:Downloads:newdownload.html.twig', array(
