@@ -123,6 +123,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
      */
     protected function authenticateInitialize(StateHandlerInterface $state)
     {
+        return new Result(Result::FAILURE);
         $openid = $this->getLightOpenId();
         $redirect_url = $openid->authUrl();
 
@@ -151,6 +152,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
      */
     protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
     {
+        return new Result(Result::FAILURE);
         $openid = $this->getLightOpenId();
 
         if (!$openid->mode || $openid->mode == 'cancel') {
