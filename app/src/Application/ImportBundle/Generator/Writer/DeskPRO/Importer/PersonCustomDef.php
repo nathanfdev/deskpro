@@ -70,7 +70,7 @@ final class PersonCustomDef extends AbstractCustomDefImporter
     private function findOrCreateCustomDef($entity_id)
     {
         if ($entity_id) {
-            $custom_def = $this->getPersonCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+            $custom_def = $this->getCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
 
             if ($custom_def) {
                 $this->logDebug(sprintf('Found existing person custom def, id=%s', $entity_id));
@@ -80,5 +80,13 @@ final class PersonCustomDef extends AbstractCustomDefImporter
 
         $this->logDebug('Creating a new person custom def');
         return new DeskPROEntity\CustomDefPerson();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCustomDefMapper()
+    {
+        return $this->getPersonCustomDefMapper();
     }
 }

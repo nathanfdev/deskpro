@@ -69,7 +69,7 @@ final class ArticleCustomDef extends AbstractCustomDefImporter
     private function findOrCreateCustomDef($entity_id)
     {
         if ($entity_id) {
-            $custom_def = $this->getArticleCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+            $custom_def = $this->getCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
 
             if ($custom_def) {
                 $this->logDebug(sprintf('Found existing article custom def, id=%s', $entity_id));
@@ -79,5 +79,13 @@ final class ArticleCustomDef extends AbstractCustomDefImporter
 
         $this->logDebug('Creating a new article custom def');
         return new DeskPROEntity\CustomDefArticle();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCustomDefMapper()
+    {
+        return $this->getArticleCustomDefMapper();
     }
 }

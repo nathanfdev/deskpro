@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity\AbstractCustomDef;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 /**
  * Class AbstractCustomDefImporter
@@ -64,9 +65,21 @@ abstract class AbstractCustomDefImporter extends AbstractImporter
             }
 
         } else {
+            foreach ($entity->getChildren() as $child_entity) {
+                $exist_child = $this->getCustomDefMapper()->findOneBy(array('entity' => $child_entity), false);
+                if ($exist_child) {
+
+                }
+            }
+
             // todo update and remove fields
         }
 
         return $custom_def;
     }
+
+    /**
+     * @return Mapper\AbstractCustomDefMapper
+     */
+    protected abstract function getCustomDefMapper();
 }

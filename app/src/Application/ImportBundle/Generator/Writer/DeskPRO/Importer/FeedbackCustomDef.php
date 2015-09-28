@@ -68,7 +68,7 @@ final class FeedbackCustomDef extends AbstractCustomDefImporter
     private function findOrCreateCustomDef($entity_id)
     {
         if ($entity_id) {
-            $custom_def = $this->getFeedbackCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+            $custom_def = $this->getCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
 
             if ($custom_def) {
                 $this->logDebug(sprintf('Found existing feedback custom def, id=%s', $entity_id));
@@ -78,5 +78,13 @@ final class FeedbackCustomDef extends AbstractCustomDefImporter
 
         $this->logDebug('Creating a new feedback custom def');
         return new DeskPROEntity\CustomDefFeedback();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCustomDefMapper()
+    {
+        return $this->getFeedbackCustomDefMapper();
     }
 }

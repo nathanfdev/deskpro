@@ -47,9 +47,11 @@ final class CustomDefPerson extends AbstractCustomDefMapper
      * Constructor
      *
      * @param EntityRepository\CustomDefPerson $repository
+     * @param EntityRepository\ImportMap       $import_map_repository
      */
-    public function __construct(EntityRepository\CustomDefPerson $repository)
+    public function __construct(EntityRepository\CustomDefPerson $repository, EntityRepository\ImportMap $import_map_repository)
     {
+        parent::__construct($import_map_repository);
         $this->repository = $repository;
     }
 
@@ -66,8 +68,14 @@ final class CustomDefPerson extends AbstractCustomDefMapper
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
+        $id = $this->findImportMapNewId($criteria);
+        if ($id) {
+            $record = $this->repository->find($id);
+        } else {
+            $record = $this->repository->findOneBy($criteria);
+        }
+
         /** @var Entity\CustomDefPerson $record */
-        $record = $this->repository->findOneBy($criteria);
         if ( ! $record && $throw_exception) {
             throw new MapperException('Custom def people not found', $criteria);
         }

@@ -47,9 +47,11 @@ final class CustomDefTicket extends AbstractCustomDefMapper
      * Constructor
      *
      * @param EntityRepository\CustomDefTicket $repository
+     * @param EntityRepository\ImportMap       $import_map_repository
      */
-    public function __construct(EntityRepository\CustomDefTicket $repository)
+    public function __construct(EntityRepository\CustomDefTicket $repository, EntityRepository\ImportMap $import_map_repository)
     {
+        parent::__construct($import_map_repository);
         $this->repository = $repository;
     }
 
@@ -66,9 +68,15 @@ final class CustomDefTicket extends AbstractCustomDefMapper
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
+        $id = $this->findImportMapNewId($criteria);
+        if ($id) {
+            $record = $this->repository->find($id);
+        } else {
+            $record = $this->repository->findOneBy($criteria);
+        }
+
         /** @var Entity\CustomDefTicket $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Custom def ticket not found', $criteria);
         }
 

@@ -70,7 +70,7 @@ final class OrganizationCustomDef extends AbstractCustomDefImporter
     private function findOrCreateCustomDef($entity_id)
     {
         if ($entity_id) {
-            $custom_def = $this->getOrganizationCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+            $custom_def = $this->getCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
 
             if ($custom_def) {
                 $this->logDebug(sprintf('Found existing organization custom def, id=%s', $entity_id));
@@ -80,5 +80,13 @@ final class OrganizationCustomDef extends AbstractCustomDefImporter
 
         $this->logDebug('Creating a new organization custom def');
         return new DeskPROEntity\CustomDefOrganization();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCustomDefMapper()
+    {
+        return $this->getOrganizationCustomDefMapper();
     }
 }

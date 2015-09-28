@@ -27,6 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\EntityRepository;
+use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 
 /**
@@ -35,6 +38,21 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
  */
 abstract class AbstractCustomDefMapper implements MapperInterface
 {
+    /**
+     * @var EntityRepository\ImportMap
+     */
+    protected $import_map_repository;
+
+    /**
+     * Constructor
+     *
+     * @param EntityRepository\ImportMap $import_map_repository
+     */
+    public function __construct(EntityRepository\ImportMap $import_map_repository)
+    {
+        $this->import_map_repository = $import_map_repository;
+    }
+
     /**
      * Find a choice custom def entity
      * We store value for choice custom fields like "A > A1"
@@ -65,5 +83,47 @@ abstract class AbstractCustomDefMapper implements MapperInterface
         ));
 
         return empty($choice_chain) ? $custom_field_def : $this->findChoiceCustomDef($choice_chain, $custom_field_def);
+    }
+
+    /**
+     * Returns new id by import map
+     *
+     * @param array $criteria
+     *
+     * @return null|string
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    protected function findImportMapNewId(array $criteria)
+    {
+        $record = null;
+        if (isset($criteria['entity'])) {
+            $entity = $criteria['entity'];
+            unset($criteria['entity']);
+
+            if ( ! $entity instanceof Entity\EntityInterface) {
+                throw new \RuntimeException('Criteria `entity` should be instance of Entity\EntityInterface');
+            }
+
+            if ($entity->getImportMapKey()) {
+                $qb = $this->import_map_repository->createQueryBuilder('i');
+                $qb
+                    ->select('i')
+                    ->andWhere($qb->expr()->eq('i.typename', '?0'))
+                    ->andWhere($qb->expr()->eq('i.old_id', '?1'))
+                    ->setParameters(array(
+                        $entity->getImportMapKey(),
+                        $entity->getOid()
+                    ))
+                ;
+
+                /** @var DeskPROEntity\ImportMap $import_map */
+                $import_map = $qb->getQuery()->getOneOrNullResult();
+                if ($import_map) {
+                    return $import_map->getNewId();
+                }
+            }
+        }
+
+        return null;
     }
 }

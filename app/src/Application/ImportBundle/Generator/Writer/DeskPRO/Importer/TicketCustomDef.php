@@ -70,7 +70,7 @@ final class TicketCustomDef extends AbstractCustomDefImporter
     private function findOrCreateCustomDef($entity_id)
     {
         if ($entity_id) {
-            $custom_def = $this->getTicketCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+            $custom_def = $this->getCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
 
             if ($custom_def) {
                 $this->logDebug(sprintf('Found existing ticket custom def, id=%s', $entity_id));
@@ -80,5 +80,13 @@ final class TicketCustomDef extends AbstractCustomDefImporter
 
         $this->logDebug('Creating a new ticket custom def');
         return new DeskPROEntity\CustomDefTicket();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCustomDefMapper()
+    {
+        return $this->getTicketCustomDefMapper();
     }
 }

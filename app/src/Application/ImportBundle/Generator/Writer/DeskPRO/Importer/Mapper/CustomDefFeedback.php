@@ -47,9 +47,11 @@ final class CustomDefFeedback extends AbstractCustomDefMapper
      * Constructor
      *
      * @param EntityRepository\CustomDefFeedback $repository
+     * @param EntityRepository\ImportMap         $import_map_repository
      */
-    public function __construct(EntityRepository\CustomDefFeedback $repository)
+    public function __construct(EntityRepository\CustomDefFeedback $repository, EntityRepository\ImportMap $import_map_repository)
     {
+        parent::__construct($import_map_repository);
         $this->repository = $repository;
     }
 
@@ -66,9 +68,15 @@ final class CustomDefFeedback extends AbstractCustomDefMapper
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
+        $id = $this->findImportMapNewId($criteria);
+        if ($id) {
+            $record = $this->repository->find($id);
+        } else {
+            $record = $this->repository->findOneBy($criteria);
+        }
+
         /** @var Entity\CustomDefFeedback $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Custom def feedback not found', $criteria);
         }
 
