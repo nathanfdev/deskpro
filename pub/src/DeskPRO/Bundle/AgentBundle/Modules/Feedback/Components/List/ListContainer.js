@@ -1,10 +1,7 @@
 import React from 'react';
 import { List } from './List';
 import { connect } from 'react-redux';
-import { viewDataSelector, peopleSelector } from '../../Selectors/list';
-import { createPeopleRequestSelectors }  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
-
-const feedbackAppUserSel = createPeopleRequestSelectors('feedback');
+import { viewDataSelector, peopleSelector, feedbackTypesSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
@@ -12,13 +9,14 @@ const feedbackAppUserSel = createPeopleRequestSelectors('feedback');
     comments: state.Feedback.list.get('comments'),
     currentContent: state.Feedback.list.get('currentContent'),
     currentViewMode: viewDataSelector(state),
-    people: peopleSelector(state)
+    people: peopleSelector(state),
+    feedbackTypes: feedbackTypesSelector(state)
   });
 })
 
 export class ListContainer extends React.Component {
   render() {
-    const {feedback, comments, currentContent, currentViewMode, people} = this.props;
+    const {feedback, comments, currentContent, currentViewMode, people, feedbackTypes} = this.props;
     return (
       <List
         feedback={feedback}
@@ -26,6 +24,7 @@ export class ListContainer extends React.Component {
         currentContent={currentContent}
         currentViewMode={currentViewMode}
         people={people}
+        feedbackTypes={feedbackTypes}
         />
     );
   }

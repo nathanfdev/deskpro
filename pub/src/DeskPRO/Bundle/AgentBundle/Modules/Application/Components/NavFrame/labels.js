@@ -36,7 +36,7 @@ export class LabelsDictionary extends React.Component {
   groupByFirstLetter(labels) {
     const dictionary = {};
 
-    for (let i = 0, label, letter; i < labels.length; i++) {
+    for (let i = 0, label, letter; i < labels.size; i++) {
       label  = labels[i];
       letter = label[0].toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
@@ -48,7 +48,7 @@ export class LabelsDictionary extends React.Component {
 
     const letters = Object.keys(dictionary);
     const grouped = [];
-    for (let i = 0; i < letters.length; i++) {
+    for (let i = 0; i < letters.size; i++) {
       grouped.push({letter: letters[i], labels: dictionary[letters[i]]});
     }
 

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../Actions/FeedbackListActions'
+import * as actions from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
-import { sortingDataSelector, filterDataSelector } from '../../Selectors/list';
+import { filterDataSelector } from '../../Selectors/list';
 import { groupDataSelector } from '../../Selectors/nav';
+// import { feedbackTypesSelector } from '../../RecordStores/Selectors/feedbackTypesSelectors';
 
 @connect(state => {
   return ({
@@ -15,10 +16,24 @@ import { groupDataSelector } from '../../Selectors/nav';
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
     currentFilterMode: filterDataSelector(state),
     currentGroup: groupDataSelector(state)
+    // feedbackTypes: feedbackTypesSelector(state)
   });
 })
 
-export class NavContainer extends React.Component {
+export class NavContainer extends Component {
+
+  static propTypes = {
+    groupChoice: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    currentFilterMode: PropTypes.object.isRequired,
+    toValidateCount: PropTypes.string.isRequired,
+    commentsToReviewCount: PropTypes.string.isRequired,
+    statuses: PropTypes.array.isRequired,
+    labels: PropTypes.array.isRequired,
+    types: PropTypes.array.isRequired,
+    customCategories: PropTypes.array.isRequired,
+    currentGroup: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -38,6 +53,14 @@ export class NavContainer extends React.Component {
     dispatch(actions.loadFeedbackList());
   }
 
+
+  groupChoice(group, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {dispatch } = this.props;
+    dispatch(actions.changeGroupState(group));
+  }
+
   render() {
     const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
 
@@ -54,12 +77,5 @@ export class NavContainer extends React.Component {
         groupChoice={this.groupChoice.bind(this)}
         />
     );
-  }
-
-  groupChoice(group, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {dispatch } = this.props;
-    dispatch(actions.changeGroupState(group));
   }
 }

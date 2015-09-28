@@ -3,6 +3,7 @@ import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
 import { loadPeople } from "DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions";
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
 import { groupDataSelector } from '../Selectors/nav';
+import { loadFeedbackTypes } from '../RecordStores/Actions/feedbackTypesActions';
 
 /**
  * Used to identify requests within record stores
@@ -10,8 +11,23 @@ import { groupDataSelector } from '../Selectors/nav';
  */
 const recordStoresId = 'feedback';
 
+export const getAuthors = createAction(
+  'FEEDBACK_GET_AUTHORS',
+    feedback => dispatch => {
+    let ids    = [],
+        unique = {};
+    for (var i in feedback.data) {
+      if (typeof(unique[feedback.data[i].person_id]) === 'undefined') {
+        ids.push(feedback.data[i].person_id);
+      }
+      unique[feedback.data[i].person_id] = 0;
+    }
+    return dispatch(loadPeople(recordStoresId, ids));
+  }
+);
+
 export const loadFeedbackList = createAction(
-  "FEEDBACK_LIST",
+  'FEEDBACK_LIST',
   (overwriteParams = {}) => (dispatch, getState)=> {
     const state             = getState();
     const feedbackListState = state.Feedback.list.toJS();
@@ -25,25 +41,12 @@ export const loadFeedbackList = createAction(
     return dispatch =>Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       dispatch(getAuthors(feedback));
+      dispatch(loadFeedbackTypes());
       return feedback;
     });
   }
 );
 
-export const getAuthors = createAction(
-  "FEEDBACK_GET_AUTHORS",
-    feedback => dispatch => {
-    let ids    = [],
-        unique = {};
-    for (var i in feedback.data) {
-      if (typeof(unique[feedback.data[i].person_id]) == "undefined") {
-        ids.push(feedback.data[i].person_id);
-      }
-      unique[feedback.data[i].person_id] = 0;
-    }
-    return dispatch(loadPeople(recordStoresId, ids));
-  }
-);
 
 export const getFeedbackTypes = createAction(
   "FEEDBACK_GET_AUTHORS",
