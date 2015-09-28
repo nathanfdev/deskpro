@@ -91,9 +91,9 @@ const BaseItem = React.createClass({
    */
   handleClickOutside: function(e) {
     // Don't handle clicks for menu items - they deal with that themselves
-    const closest = $(e.target).closest('.dropdown-nav-item');
+    const closest = $(e.target).parents('.dropdown-nav-item');
 
-    if (!closest) {
+    if (closest.length === 0) {
       this.closeMenu();
     }
   },
