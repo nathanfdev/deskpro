@@ -41,6 +41,7 @@
     "node-uuid": "1.4.3",
     "react": "0.14.0-rc1",
     "react-dnd": "1.1.5",
+    "react-dom": "^0.14.0-rc1",
     "react-hot-loader": "1.2.8",
     "react-intl": "2.0.0-pr-2",
     "react-onclickoutside": "0.3.1",

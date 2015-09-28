@@ -1,7 +1,7 @@
 import React from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import classNames from 'classnames';
-import { intlShape, injectIntl, FormattedDate } from 'react-intl';
+import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
 export class TableView extends React.Component {
 
@@ -151,15 +151,11 @@ export class Td extends React.Component {
       )
     } else if (field.name === 'date_created') {
       return (
-        <div>
-          <FormattedDate value={element.date_created} />
-        </div>
+        <FormattedRelative value={element.date_created} />
       );
     } else if (field.name === 'date_published') {
       return (
-        <div>
-          <FormattedDate value={element.date_published} />
-        </div>
+        <FormattedRelative value={element.date_published} />
       );
     }
 
