@@ -278,7 +278,7 @@ class PersonController extends AbstractController
             }
 
             foreach ($person->phone_numbers as $phone) {
-                $vcard->addTelephone($phone->getPhoneNumber()->__toString());
+                $vcard->addTelephone($phone->getFormattedForVCard());
             }
 
             $response->setContent($vcard->fetch());
