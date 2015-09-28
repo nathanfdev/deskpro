@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 export class TabsPane extends React.Component {
   constructor(props) {
@@ -19,9 +20,9 @@ export class TabsPane extends React.Component {
         </ul>
 
         {tabs.map(tab => {
-          const className = tab.index === this.state.active ? '' : 'hidden';
+          const classes = classNames('sidebar-list', {'hidden': tab.index !== this.state.active});
 
-          return (<div key={tab.index} className={className}>{tab.content}</div>);
+          return (<div key={tab.index} className={classes}>{tab.content}</div>);
         })}
       </div>
     );

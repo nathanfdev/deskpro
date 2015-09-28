@@ -4,7 +4,7 @@ import * as actions from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
 import { filterDataSelector } from '../../Selectors/list';
 import { groupDataSelector } from '../../Selectors/nav';
-// import { feedbackTypesSelector } from '../../RecordStores/Selectors/feedbackTypesSelectors';
+import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
 
 @connect(state => {
   return ({
@@ -16,7 +16,6 @@ import { groupDataSelector } from '../../Selectors/nav';
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
     currentFilterMode: filterDataSelector(state),
     currentGroup: groupDataSelector(state)
-    // feedbackTypes: feedbackTypesSelector(state)
   });
 })
 
@@ -39,6 +38,7 @@ export class NavContainer extends Component {
     super(props);
     const { dispatch, currentFilterMode } = this.props;
 
+    dispatch(loadFeedbackTypes());
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());

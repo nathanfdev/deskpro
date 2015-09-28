@@ -13,7 +13,7 @@ export class SectionsPane extends React.Component {
 export class Section extends React.Component {
   render() {
     return (
-      <section className="sidebar-list tasks-nav-groups">
+      <section className="sidebar-list">
         {this.props.children}
       </section>
     );

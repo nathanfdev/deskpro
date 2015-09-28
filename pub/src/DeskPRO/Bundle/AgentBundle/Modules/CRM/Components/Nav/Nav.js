@@ -11,8 +11,6 @@ export class Nav extends React.Component {
     return (
       <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
         <NavFrameHeader icon="fa-users" dispatch={dispatch.bind(this)}>CRM</NavFrameHeader>
-        <SectionsPane>
-          <Section>
             <SectionHeader>People</SectionHeader>
             <TabsPane>
               <Tab title="Groups">
@@ -27,9 +25,6 @@ export class Nav extends React.Component {
                 <LabelsDictionary labels={labels.person} />
               </Tab>
             </TabsPane>
-          </Section>
-
-          <Section>
             <SectionHeader>Organizations</SectionHeader>
             <TabsPane>
               <Tab title="All">
@@ -41,17 +36,13 @@ export class Nav extends React.Component {
                 <LabelsDictionary labels={labels.organization} />
               </Tab>
             </TabsPane>
-          </Section>
 
-          <Section>
             <SectionHeader>Agents</SectionHeader>
             <ul>
               <ListItem count={agents.total} label="All Agents" />
               {agents.teams.map(item =>
                   <ListItem key={itemKey++} count={item.count} label={teamNames[item.group]} />)}
             </ul>
-          </Section>
-        </SectionsPane>
       </NavFrame>
     );
   }
