@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 
 /**
  * Class ArticleCustomDef
@@ -51,5 +52,32 @@ final class ArticleCustomDef extends AbstractCustomDefImporter
         if ( ! $entity instanceof Entity\ArticleCustomDef) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
+
+        $custom_def = $this->findOrCreateCustomDef($entity_id);
+        $this->records->setPrimaryEntity($this->setCustomDef($custom_def, $entity));
+    }
+
+
+    /**
+     * Find or create new custom def
+     *
+     * @param int $entity_id
+     *
+     * @return DeskPROEntity\CustomDefArticle
+     * @throws Mapper\MapperException
+     */
+    private function findOrCreateCustomDef($entity_id)
+    {
+        if ($entity_id) {
+            $custom_def = $this->getArticleCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+
+            if ($custom_def) {
+                $this->logDebug(sprintf('Found existing article custom def, id=%s', $entity_id));
+                return $custom_def;
+            }
+        }
+
+        $this->logDebug('Creating a new article custom def');
+        return new DeskPROEntity\CustomDefArticle();
     }
 }

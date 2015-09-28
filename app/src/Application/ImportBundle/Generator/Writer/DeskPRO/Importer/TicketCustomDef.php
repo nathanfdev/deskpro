@@ -55,6 +55,30 @@ final class TicketCustomDef extends AbstractCustomDefImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records->setPrimaryEntity($this->setCustomDef(new DeskPROEntity\CustomDefTicket(), $entity));
+        $custom_def = $this->findOrCreateCustomDef($entity_id);
+        $this->records->setPrimaryEntity($this->setCustomDef($custom_def, $entity));
+    }
+
+    /**
+     * Find or create new custom def
+     *
+     * @param int $entity_id
+     *
+     * @return DeskPROEntity\CustomDefTicket
+     * @throws Mapper\MapperException
+     */
+    private function findOrCreateCustomDef($entity_id)
+    {
+        if ($entity_id) {
+            $custom_def = $this->getTicketCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+
+            if ($custom_def) {
+                $this->logDebug(sprintf('Found existing ticket custom def, id=%s', $entity_id));
+                return $custom_def;
+            }
+        }
+
+        $this->logDebug('Creating a new ticket custom def');
+        return new DeskPROEntity\CustomDefTicket();
     }
 }

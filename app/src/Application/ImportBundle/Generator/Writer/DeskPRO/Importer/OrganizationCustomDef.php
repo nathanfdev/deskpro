@@ -55,6 +55,30 @@ final class OrganizationCustomDef extends AbstractCustomDefImporter
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
-        $this->records->setPrimaryEntity($this->setCustomDef(new DeskPROEntity\CustomDefOrganization(), $entity));
+        $custom_def = $this->findOrCreateCustomDef($entity_id);
+        $this->records->setPrimaryEntity($this->setCustomDef($custom_def, $entity));
+    }
+
+    /**
+     * Find or create new custom def
+     *
+     * @param int $entity_id
+     *
+     * @return DeskPROEntity\CustomDefOrganization
+     * @throws Mapper\MapperException
+     */
+    private function findOrCreateCustomDef($entity_id)
+    {
+        if ($entity_id) {
+            $custom_def = $this->getOrganizationCustomDefMapper()->findOneBy(array('id' => $entity_id), false);
+
+            if ($custom_def) {
+                $this->logDebug(sprintf('Found existing organization custom def, id=%s', $entity_id));
+                return $custom_def;
+            }
+        }
+
+        $this->logDebug('Creating a new organization custom def');
+        return new DeskPROEntity\CustomDefOrganization();
     }
 }
