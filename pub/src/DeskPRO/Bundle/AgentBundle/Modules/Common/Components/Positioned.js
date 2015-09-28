@@ -1,5 +1,5 @@
 import React from 'react';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import position from 'jquery-ui/position';
 
 export default class Positioned extends React.Component {
@@ -39,8 +39,8 @@ export default class Positioned extends React.Component {
    */
   componentDidMount() {
     this.node = React.findDOMNode(this);
-    $(this.node).detach();
-    $('body').prepend(this.node);
+    jQuery(this.node).detach();
+    jQuery('body').prepend(this.node);
 
     // Manipulate the DOM here
     this.renderContent();
@@ -64,7 +64,7 @@ export default class Positioned extends React.Component {
   componentWillUnmount() {
     // Clean up the DOM when the component is umounted
     React.unmountComponentAtNode(this.node);
-    $(this.node).remove();
+    jQuery(this.node).remove();
   }
 
   /**
@@ -75,7 +75,7 @@ export default class Positioned extends React.Component {
   updatePosition() {
     if (this.props.positionCalc) {
       const positionResult = this.props.positionCalc();
-      $(this.node).css('position', absolute)
+      jQuery(this.node).css('position', absolute)
                   .css('top', positionResult.top)
                   .css('left', positionResult.left);
     } else {
@@ -91,7 +91,7 @@ export default class Positioned extends React.Component {
 
       if (this.props.positionTarget) {
         placement.of = this.props.positionTarget;
-        if (React.findDOMNode(this.props.positionTarget) !== null) {
+        if (!(this.props.positionTarget instanceof jQuery) && React.findDOMNode(this.props.positionTarget) !== null) {
           placement.of = React.findDOMNode(this.props.positionTarget);
         }
 
@@ -102,7 +102,7 @@ export default class Positioned extends React.Component {
           console.error('No position target specified');
         }
 
-        $(this.node).css('position', 'absolute').position(placement);
+        jQuery(this.node).css('position', 'absolute').position(placement);
       }
     }
   }

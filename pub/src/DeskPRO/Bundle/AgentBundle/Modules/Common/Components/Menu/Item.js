@@ -1,5 +1,5 @@
 import React from 'react';
-import BaseItem from 'DeskPRO/Component/Menu/BaseItem';
+import BaseItem from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
 export default class Item extends React.Component {
   static propTypes = {
@@ -10,6 +10,8 @@ export default class Item extends React.Component {
     children: React.PropTypes.any,
     listItem: React.PropTypes.bool,
     closeMenu: React.PropTypes.func,
+    activeItem: React.PropTypes.object,
+    isActive: React.PropTypes.bool
   }
 
   render() {
@@ -33,7 +35,7 @@ export default class Item extends React.Component {
     }
 
     return (<BaseItem {...this.props} widgetClass={typeClass} format="item">
-          {this.props.children}
+      {this.props.children}
     </BaseItem>);
   }
 }
