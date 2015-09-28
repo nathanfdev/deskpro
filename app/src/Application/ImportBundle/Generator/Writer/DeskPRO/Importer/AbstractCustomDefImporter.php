@@ -55,9 +55,16 @@ abstract class AbstractCustomDefImporter extends AbstractImporter
             ->setDefaultValue($entity->getDefaultValue())
         ;
 
-        foreach ($entity->getChildren() as $child_entity) {
-            $custom_def_class = get_class($custom_def);
-            $custom_def->addChild($this->setCustomDef(new $custom_def_class(), $child_entity));
+        if ( ! $entity->getChildren()->hasImportMapKey()) {
+            $custom_def->resetChildren();
+
+            foreach ($entity->getChildren() as $child_entity) {
+                $custom_def_class = get_class($custom_def);
+                $custom_def->addChild($this->setCustomDef(new $custom_def_class(), $child_entity));
+            }
+
+        } else {
+            // todo update and remove fields
         }
 
         return $custom_def;

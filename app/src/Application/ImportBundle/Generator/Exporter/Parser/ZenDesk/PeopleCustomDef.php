@@ -114,6 +114,7 @@ final class PeopleCustomDef extends AbstractCustomDefParser
 
         $custom_options = $this->exportCustomFieldOptions($formatted['custom_field_options']);
         foreach ($custom_options as $num => $option) {
+            $option->setImportMapKey(ImportMap::TYPE_ZENDESK_USER_FIELD);
             $entity->addCustomDef($option);
         }
 

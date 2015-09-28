@@ -131,7 +131,9 @@ final class TicketCustomDef extends AbstractCustomDefParser
         $system_options = $this->exportCustomFieldOptions($formatted['system_field_options']);
 
         foreach (array($custom_options, $system_options) as $options) {
+            /** @var Entity\TicketCustomDef $option */
             foreach ($options as $num => $option) {
+                $option->setImportMapKey(ImportMap::TYPE_ZENDESK_TICKET_FIELD);
                 $entity->addCustomDef($option);
             }
         }
