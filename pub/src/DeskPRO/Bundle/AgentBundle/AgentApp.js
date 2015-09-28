@@ -59,14 +59,12 @@ export default class AgentApp {
 
     const hist = new BrowserHistory();
 
-    let els = [
-      <Provider store={store}>
-        <DpAppContainer {...intlData} history={hist} />
-      </Provider>
-    ];
-
     React.render(
-      <div>{els}</div>,
+      <div>
+        <Provider store={store}>
+          <DpAppContainer {...intlData} history={hist} />
+        </Provider>
+      </div>,
       document.getElementById('deskpro_app_window')
     );
   }
