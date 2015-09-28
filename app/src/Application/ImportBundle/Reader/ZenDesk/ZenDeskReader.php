@@ -276,16 +276,19 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
         $result = $this->adapter->doRequest(Request::createCoreAPI('TicketField', 'findAll'));
 
         $skip_types = array(
-            self::FIELD_TYPE_ASSIGNEE,
-            self::FIELD_TYPE_SUBJECT,
-            self::FIELD_TYPE_DESCRIPTION,
+            self::FIELD_TYPE_SYSTEM_ASSIGNEE,
+            self::FIELD_TYPE_SYSTEM_SUBJECT,
+            self::FIELD_TYPE_SYSTEM_DESCRIPTION,
+            self::FIELD_TYPE_SYSTEM_STATUS,
         );
 
         if ($result) {
             foreach ($result->ticket_fields as $field) {
-                if ( ! in_array($field->type, $skip_types)) {
-                    $fields[] = $this->toArray($field);
+                if (in_array($field->type, $skip_types)) {
+                    continue;
                 }
+
+                $fields[] = $this->toArray($field);
             }
         }
 
