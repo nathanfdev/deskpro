@@ -146,10 +146,11 @@ export class CardDate extends Component {
 export class CardUser extends Component {
 
   render() {
+    const {user} = this.props;
     return (
       <div className="dpwd--card-assigned">
               <span className="dpw--avatar-face"
-                    style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>Sender</span>
+                    style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>{user.first_name} {user.last_name}</span>
       </div>
     );
   }

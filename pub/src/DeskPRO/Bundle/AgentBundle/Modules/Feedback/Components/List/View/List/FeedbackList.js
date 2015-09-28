@@ -8,11 +8,13 @@ export class FeedbackList extends Component {
   };
 
   render() {
-    const {elements} = this.props;
+    const {elements, people, feedbackTypes} = this.props;
 
     return (
       <div>
-        {elements.map((element, index) => <FeedbackCard key={index} feedback={element}/>)}
+        {elements.map((element, index) => <FeedbackCard key={index} feedback={element}
+                                                        author={people[element.person_id]}
+                                                        type={feedbackTypes[element.category_id]}/>)}
       </div>
     );
   }
