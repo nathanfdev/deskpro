@@ -309,6 +309,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $this->_onPropertyChanged('children', $this->children, $this->children);
     }
 
+    /**
+     * @return $this
+     */
+    public function resetChildren()
+    {
+        $this->children->clear();
+        return $this;
+    }
+
 
     /**
      * @param  int               $def_id
