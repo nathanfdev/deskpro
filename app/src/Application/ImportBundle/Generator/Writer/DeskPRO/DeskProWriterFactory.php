@@ -165,6 +165,7 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\Mapper\BlobData())
             ->attach(new Importer\Mapper\EmailAccount($email_account_manager))
             ->attach(new Importer\Mapper\ObjectLang($object_lang_repository, $entity_manager))
+            ->attach(new Importer\Mapper\ImportMap($import_map_repository))
         ;
 
         $blob_storage = $this->container->getBlobStorage();

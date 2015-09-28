@@ -80,7 +80,18 @@ abstract class AbstractCustomDefImporter extends AbstractImporter
             }
 
             // Remove deleted children
-            // todo
+            $new_titles = array_map(
+                function(AbstractCustomDef $entity) {
+                    return $entity->getTitle();
+                },
+                $entity->getChildren()->toArray()
+            );
+
+            foreach ($custom_def->getAllChildren() as $child_custom_def) {
+                if ( ! in_array($child_custom_def->getTitle(), $new_titles)) {
+                    $custom_def->removeChild($child_custom_def);
+                }
+            }
         }
 
         return $custom_def;

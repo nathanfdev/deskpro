@@ -101,12 +101,14 @@ abstract class AbstractCustomDefMapper implements MapperInterface
 
         if ($id) {
             $record = $this->custom_def_repository->find($id);
-        } elseif ( ! empty($criteria)) {
+        } else {
             if (isset($criteria['entity'])) {
                 unset($criteria['entity']);
             }
 
-            $record = $this->custom_def_repository->findOneBy($criteria);
+            if ( ! empty($criteria)) {
+                $record = $this->custom_def_repository->findOneBy($criteria);
+            }
         }
 
         /** @var DeskPROEntity\CustomDefAbstract $record */

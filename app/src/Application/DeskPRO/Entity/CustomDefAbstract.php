@@ -373,7 +373,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|CustomDefAbstract[]
      */
     public function getAllChildren()
     {
