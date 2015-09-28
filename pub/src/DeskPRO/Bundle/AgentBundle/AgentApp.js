@@ -1,19 +1,13 @@
-import "babel/polyfill";
-import $ from "jquery";
+import 'babel/polyfill';
+import $ from 'jquery';
 import React from 'react';
-
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
-
-import { combineReducerHierarchy } from "Ampliflux";
-import * as ampMiddleware from "Ampliflux/middleware";
-
+import { combineReducerHierarchy } from 'Ampliflux';
+import * as ampMiddleware from 'Ampliflux/middleware';
 import BrowserHistory from 'react-router/lib/BrowserHistory';
-
-import AppReducers from "./AgentApp_Reducers.js";
-
-import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
-
+import AppReducers from './AgentApp_Reducers.js';
+import DpAppContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer';
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 
 import Immutable from 'immutable';
@@ -25,7 +19,6 @@ export default class AgentApp {
   }
 
   start() {
-    
     window.DP_ENABLE_ACTION_LOGGER = true;
     window.DP_DEV_MODE = true;
 
@@ -57,10 +50,10 @@ export default class AgentApp {
     )(createStore);
     const store      = makeStore(reducer);
 
-    var intlData = {
-      "locales": "en-US",
-      "messages": {
-        "foobar": "Tickets"
+    const intlData = {
+      'locales': 'en-US',
+      'messages': {
+        'foobar': 'Tickets'
       }
     };
 
@@ -68,7 +61,7 @@ export default class AgentApp {
 
     let els = [
       <Provider store={store}>
-        {() => <DpAppContainer {...intlData} history={hist} />}
+        <DpAppContainer {...intlData} history={hist} />
       </Provider>
     ];
 
