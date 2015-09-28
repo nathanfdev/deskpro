@@ -231,6 +231,7 @@ class PrefsTable
 
         $sys_table_rows = array();
         foreach ($sys_filters as $f) {
+            if (0 === strpos($f->sys_name, 'problem_')) continue;
             if ($f->sys_name == 'all') {
                 $pref_opts = array(
                     array('created'),
