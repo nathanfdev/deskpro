@@ -38,6 +38,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 abstract class AbstractCustomDef extends AbstractEntity
 {
     /**
+     * @var AbstractCustomDef
+     */
+    protected $parent;
+
+    /**
      * @var string
      */
     protected $title;
@@ -80,14 +85,40 @@ abstract class AbstractCustomDef extends AbstractEntity
     /**
      * @var Collection|AbstractCustomDef[]
      */
-    protected $custom_def;
+    protected $children;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->custom_def = new Collection();
+        $this->children = new Collection();
+    }
+
+    /**
+     * @return AbstractCustomDef
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param AbstractCustomDef $parent
+     * @return $this
+     */
+    public function setParent(AbstractCustomDef $parent = null)
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOid()
+    {
+        return ($this->parent ? $this->parent->getOid() . '-' : '') . parent::getOid();
     }
 
     /**
@@ -241,7 +272,7 @@ abstract class AbstractCustomDef extends AbstractEntity
      */
     public function getChildren()
     {
-        return $this->custom_def;
+        return $this->children;
     }
 
     /**
@@ -252,19 +283,9 @@ abstract class AbstractCustomDef extends AbstractEntity
      */
     public function addCustomDef(AbstractCustomDef $custom_def)
     {
-        $this->custom_def->attach($custom_def);
-        return $this;
-    }
+        $this->children->attach($custom_def);
+        $custom_def->setParent($this);
 
-    /**
-     * Set a collection of custom def
-     *
-     * @param Collection|AbstractCustomDef[] $custom_def
-     * @return $this
-     */
-    public function setCustomDef(Collection $custom_def)
-    {
-        $this->custom_def = $custom_def;
         return $this;
     }
 
@@ -283,7 +304,7 @@ abstract class AbstractCustomDef extends AbstractEntity
             'is_agent_field'  => $this->is_agent_field,
             'default_value'   => $this->default_value,
             'options'         => $this->options,
-            'custom_def'      => $this->custom_def->entitiesToArray(),
+            'children'        => $this->children->entitiesToArray(),
         );
     }
 
@@ -309,7 +330,7 @@ abstract class AbstractCustomDef extends AbstractEntity
                     CustomDefAbstract::HANDLER_CLASS_TEXTAREA,
                 ),
             )))
-            ->addPropertyConstraint('custom_def', new Constraints\Valid())
+            ->addPropertyConstraint('children', new Constraints\Valid())
         ;
     }
 }
