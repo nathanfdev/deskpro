@@ -96,10 +96,16 @@ abstract class AbstractCustomDefMapper implements MapperInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        $id = $this->findImportMapNewId($criteria);
+        $record = null;
+        $id     = $this->findImportMapNewId($criteria);
+
         if ($id) {
             $record = $this->custom_def_repository->find($id);
-        } else {
+        } elseif ( ! empty($criteria)) {
+            if (isset($criteria['entity'])) {
+                unset($criteria['entity']);
+            }
+
             $record = $this->custom_def_repository->findOneBy($criteria);
         }
 
@@ -119,13 +125,10 @@ abstract class AbstractCustomDefMapper implements MapperInterface
      * @return null|string
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    protected function findImportMapNewId(array &$criteria)
+    protected function findImportMapNewId(array $criteria)
     {
-        $record = null;
         if (isset($criteria['entity'])) {
             $entity = $criteria['entity'];
-            unset($criteria['entity']);
-
             if ( ! $entity instanceof Entity\EntityInterface) {
                 throw new \RuntimeException('Criteria `entity` should be instance of Entity\EntityInterface');
             }
