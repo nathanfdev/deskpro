@@ -28,6 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
@@ -57,6 +60,50 @@ final class OrganizationCustomDef extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_ORGANIZATION_CUSTOM_DEF_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONOrganizationCustomDef')
+            ->setRefColumn('oid')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * @param array $data
+     * @return Entity\TicketCustomDef
+     */
+    protected function exportCustomDef(array $data)
+    {
+        $formatted = $this->formatter->format($data, array(
+            'oid'           => TransformerInterface::TYPE_STRING,
+            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => 'organization_custom_def_',
+                'ref'    => 'oid',
+            )),
+            'parent_id'     => TransformerInterface::TYPE_STRING,
+            'title'         => TransformerInterface::TYPE_STRING,
+            'description'   => TransformerInterface::TYPE_STRING,
+            'handler_class' => TransformerInterface::TYPE_STRING,
+            'is_enabled'    => TransformerInterface::TYPE_BOOLEAN,
+            'options'       => TransformerInterface::TYPE_ARRAY,
+        ));
+
+        $entity = new Entity\PersonCustomDef();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setTitle($formatted['title'])
+            ->setDestination($formatted['description'])
+            ->setHandlerClass($formatted['handler_class'])
+            ->setAsEnabled($formatted['is_enabled'])
+            ->setOptions($formatted['options'])
+        ;
+
+        return $entity;
     }
 }

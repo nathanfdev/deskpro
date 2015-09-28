@@ -36,10 +36,43 @@ namespace Application\ImportBundle\Entity;
 final class FeedbackCustomDef extends AbstractCustomDef
 {
     /**
+     * @var string
+     */
+    protected $sys_name;
+
+    /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_FEEDBACK_CUSTOM_DEF;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
+     * @param string $sys_name
+     * @return $this
+     */
+    public function setSysName($sys_name)
+    {
+        $this->sys_name = $sys_name;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), array(
+            'sys_name' => $this->sys_name,
+        ));
     }
 }

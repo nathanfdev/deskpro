@@ -86,7 +86,6 @@ final class PeopleCustomDef extends AbstractParser
                 'prefix' => 'person_custom_def_',
                 'ref'    => 'oid',
             )),
-            'sys_name'      => TransformerInterface::TYPE_STRING,
             'parent_id'     => TransformerInterface::TYPE_STRING,
             'title'         => TransformerInterface::TYPE_STRING,
             'description'   => TransformerInterface::TYPE_STRING,
@@ -100,7 +99,6 @@ final class PeopleCustomDef extends AbstractParser
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
-            ->setSysName($formatted['sys_name'])
             ->setTitle($formatted['title'])
             ->setDestination($formatted['description'])
             ->setHandlerClass($formatted['handler_class'])

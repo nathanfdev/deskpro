@@ -86,7 +86,6 @@ final class TicketCustomDef extends AbstractParser
                 'prefix' => 'ticket_custom_def_',
                 'ref'    => 'oid',
             )),
-            'sys_name'      => TransformerInterface::TYPE_STRING,
             'parent_id'     => TransformerInterface::TYPE_STRING,
             'title'         => TransformerInterface::TYPE_STRING,
             'description'   => TransformerInterface::TYPE_STRING,
@@ -95,12 +94,11 @@ final class TicketCustomDef extends AbstractParser
             'options'       => TransformerInterface::TYPE_ARRAY,
         ));
 
-        $entity = new Entity\PersonCustomDef();
+        $entity = new Entity\TicketCustomDef();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
-            ->setSysName($formatted['sys_name'])
             ->setTitle($formatted['title'])
             ->setDestination($formatted['description'])
             ->setHandlerClass($formatted['handler_class'])

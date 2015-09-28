@@ -81,7 +81,7 @@ final class FeedbackCustomDef extends AbstractParser
         $formatted = $this->formatter->format($data, array(
             'oid'           => TransformerInterface::TYPE_STRING,
             'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'person_custom_def_',
+                'prefix' => 'feedback_custom_def_',
                 'ref'    => 'oid',
             )),
             'sys_name'      => TransformerInterface::TYPE_STRING,
@@ -93,7 +93,7 @@ final class FeedbackCustomDef extends AbstractParser
             'options'       => TransformerInterface::TYPE_ARRAY,
         ));
 
-        $entity = new Entity\PersonCustomDef();
+        $entity = new Entity\FeedbackCustomDef();
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])

@@ -40,11 +40,6 @@ abstract class AbstractCustomDef extends AbstractEntity
     /**
      * @var string
      */
-    protected $sys_name;
-
-    /**
-     * @var string
-     */
     protected $title;
 
     /**
@@ -146,24 +141,6 @@ abstract class AbstractCustomDef extends AbstractEntity
     public function setHandlerClass($handler_class)
     {
         $this->handler_class = $handler_class;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSysName()
-    {
-        return $this->sys_name;
-    }
-
-    /**
-     * @param string $sys_name
-     * @return $this
-     */
-    public function setSysName($sys_name)
-    {
-        $this->sys_name = $sys_name;
         return $this;
     }
 
@@ -298,7 +275,6 @@ abstract class AbstractCustomDef extends AbstractEntity
     {
         return array(
             'oid'             => $this->oid,
-            'sys_name'        => $this->sys_name,
             'title'           => $this->title,
             'description'     => $this->description,
             'handler_class'   => $this->handler_class,
