@@ -108,24 +108,32 @@ abstract class AbstractCustomDefParser extends AbstractParser
         switch ($formatted['type']) {
             case ZenDeskReaderInterface::FIELD_TYPE_REGEXP:
                 $options = array_merge($options, array(
-                    'validation_type' => 'regex',
-                    'regex'           => $formatted['regexp_for_validation'],
+                    'validation_type'       => 'regex',
+                    'regex'                 => $formatted['regexp_for_validation'],
+                    'agent_validation_type' => 'regex',
+                    'agent_regex'           => $formatted['regexp_for_validation'],
                 ));
 
                 break;
 
             case ZenDeskReaderInterface::FIELD_TYPE_DECIMAL:
+                $decimal_regex = '^\d+(\.\d+)?$';
                 $options = array_merge($options, array(
-                    'validation_type' => 'regex',
-                    'regex'           => '^\d+(\.\d+)?$',
+                    'validation_type'       => 'regex',
+                    'regex'                 => $decimal_regex,
+                    'agent_validation_type' => 'regex',
+                    'agent_regex'           => $decimal_regex,
                 ));
 
                 break;
 
             case ZenDeskReaderInterface::FIELD_TYPE_INTEGER:
+                $numeric_regex = '^\d+$';
                 $options = array_merge($options, array(
-                    'validation_type' => 'regex',
-                    'regex'           => '^\d+$',
+                    'validation_type'       => 'regex',
+                    'regex'                 => $numeric_regex,
+                    'agent_validation_type' => 'regex',
+                    'agent_regex'           => $numeric_regex,
                 ));
 
                 break;
