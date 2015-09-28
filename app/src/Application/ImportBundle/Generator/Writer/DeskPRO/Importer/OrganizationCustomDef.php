@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 
 /**
  * DeskPRO organization custom def importer
@@ -53,5 +54,7 @@ final class OrganizationCustomDef extends AbstractCustomDefImporter
         if ( ! $entity instanceof Entity\OrganizationCustomDef) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
+
+        $this->records->setPrimaryEntity($this->setCustomDef(new DeskPROEntity\CustomDefOrganization(), $entity));
     }
 }
