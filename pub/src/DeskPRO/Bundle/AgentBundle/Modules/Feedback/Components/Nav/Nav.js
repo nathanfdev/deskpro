@@ -22,6 +22,7 @@ export class Nav extends Component {
 
   render() {
     const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;
+
     return (
       <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
         <NavFrameHeader icon="fa-thumbs-up" dispatch={dispatch.bind(this)}>Feedback</NavFrameHeader>
@@ -38,7 +39,7 @@ export class Nav extends Component {
               <Tab title="Type">
                 <TypeTab currentGroup={currentGroup} types={types} onClick={groupChoice.bind(this)}/>
               </Tab>
-              <Tab title="Categories">
+              <Tab title="Category">
                 <CategoryTab currentGroup={currentGroup} customCategories={customCategories} onClick={groupChoice.bind(this)}/>
               </Tab>
             </TabsPane>
