@@ -388,7 +388,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Returns the ticket custom def mapper
      *
-     * Mapper\CustomDefTicket
+     * @return Mapper\CustomDefTicket
      */
     protected function getTicketCustomDefMapper()
     {
