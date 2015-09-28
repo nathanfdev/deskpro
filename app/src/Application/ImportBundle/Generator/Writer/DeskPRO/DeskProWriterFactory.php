@@ -70,8 +70,8 @@ class DeskProWriterFactory extends AbstractWriterFactory
         $custom_def_organization_repository = $entity_manager->getRepository('DeskPRO:CustomDefOrganization');
         /** @var EntityRepository\CustomDefArticle $custom_def_article_repository */
         $custom_def_article_repository = $entity_manager->getRepository('DeskPRO:CustomDefArticle');
-        /** @var EntityRepository\Department $departmentRepository */
-        $departmentRepository = $entity_manager->getRepository('DeskPRO:Department');
+        /** @var EntityRepository\Department $department_repository */
+        $department_repository = $entity_manager->getRepository('DeskPRO:Department');
         /** @var EntityRepository\Download $download_repository */
         $download_repository = $entity_manager->getRepository('DeskPRO:Download');
         /** @var EntityRepository\DownloadCategory $download_category_repository */
@@ -136,7 +136,7 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository))
             ->attach(new Importer\Mapper\CustomDefOrganization($custom_def_organization_repository))
             ->attach(new Importer\Mapper\CustomDefArticle($custom_def_article_repository))
-            ->attach(new Importer\Mapper\Department($departmentRepository))
+            ->attach(new Importer\Mapper\Department($department_repository))
             ->attach(new Importer\Mapper\Download($download_repository))
             ->attach(new Importer\Mapper\DownloadCategory($download_category_repository))
             ->attach(new Importer\Mapper\DownloadLabel($download_label_repository))
@@ -159,7 +159,7 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
             ->attach(new Importer\Mapper\TicketLabel($ticket_label_repository))
             ->attach(new Importer\Mapper\TicketLayout($ticket_layout_repository))
-            ->attach(new Importer\Mapper\TicketDepartment($departmentRepository))
+            ->attach(new Importer\Mapper\TicketDepartment($department_repository))
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))
             ->attach(new Importer\Mapper\UserGroup($user_group_repository))
             ->attach(new Importer\Mapper\BlobData())
