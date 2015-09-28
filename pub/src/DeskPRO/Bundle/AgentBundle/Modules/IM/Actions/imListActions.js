@@ -4,7 +4,6 @@ import * as Teams from 'DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams';
 import * as Departments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Departments';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
 import _ from 'lodash';
-import $ from 'jquery';
 
 export const loadAgents = createAction(
     'IM_LIST_LOAD_AGENTS',

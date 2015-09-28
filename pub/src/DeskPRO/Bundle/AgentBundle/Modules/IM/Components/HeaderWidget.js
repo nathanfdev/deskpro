@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Overlay from './Overlay';
+import { Overlay } from './Overlay';
 import Chat from './ChatWindow/Chat';
 import Recent from './Recent';
 import * as actions from '../Actions/imListActions';
@@ -22,19 +22,19 @@ export class HeaderWidget extends React.Component {
       messages: [
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         },
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         },
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         }
@@ -49,19 +49,19 @@ export class HeaderWidget extends React.Component {
       messages: [
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         },
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         },
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         }
@@ -77,19 +77,19 @@ export class HeaderWidget extends React.Component {
       messages: [
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         },
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         },
         {
           author: {
-            gravatar_url: "http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm"
+            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
           },
           text: 'test'
         }
