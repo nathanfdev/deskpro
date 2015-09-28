@@ -10,7 +10,7 @@ export class NestedList extends React.Component {
       'active': active
     });
     return (
-      <li onClick={onClick.bind(this, {name:'status', value:status})}>
+      <li className="counter-display" onClick={onClick.bind(this, {name:'status', value:status})}>
         <RenderCount count={node.count} active={active}/>
         <a href="#" className={classes}>{label}</a>
         {this.renderChildren(node.nested)}

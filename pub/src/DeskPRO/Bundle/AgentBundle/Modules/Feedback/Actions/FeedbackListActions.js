@@ -3,7 +3,6 @@ import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
 import { loadPeople } from "DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions";
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
 import { groupDataSelector } from '../Selectors/nav';
-import { loadFeedbackTypes } from '../RecordStores/Actions/feedbackTypesActions';
 
 /**
  * Used to identify requests within record stores
@@ -41,7 +40,6 @@ export const loadFeedbackList = createAction(
     return dispatch =>Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       dispatch(getAuthors(feedback));
-      dispatch(loadFeedbackTypes());
       return feedback;
     });
   }

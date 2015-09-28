@@ -396,7 +396,7 @@
   line-height: 14px;
   font-size: 12px;
 
-  ul {
+  ul.with-connectors {
     @extend %flat-list;
     margin-left: 15px;
     margin-bottom: 10px;
@@ -409,11 +409,12 @@
   }
 
   ul {
-    margin-left: 0px;
+    margin-left: 0;
+    padding-left: 0;
 
     .sidebar-item {
       border-bottom: 1px solid $sidebar-divider;
-      margin-left: 0px;
+      margin-left: 0;
       > .item { padding-left: 12px; }
     }
   }

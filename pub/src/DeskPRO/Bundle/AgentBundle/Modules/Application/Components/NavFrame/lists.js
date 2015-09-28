@@ -33,7 +33,7 @@ export class ListItem extends BaseList {
     var classes = classNames('item', {'active': active});
 
     return (
-      <li>
+      <li className="counter-display">
         {this.renderCount(count, active)}
         <a href="#" className={classes} onClick={onClick}>{label}</a>
 

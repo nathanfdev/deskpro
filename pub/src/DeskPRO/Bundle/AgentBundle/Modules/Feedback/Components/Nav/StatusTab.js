@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { ListItem }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
-import { NestedList } from './NestedList'
+import { NestedList } from './NestedList';
 
 export class StatusTab extends Component {
 
@@ -14,7 +14,7 @@ export class StatusTab extends Component {
     const { statuses, onClick, currentGroup } = this.props;
     return (
       <ul>
-        <div onClick={onClick.bind(this, {name:'status', value:'new'})}>
+        <div onClick={onClick.bind(this, {name: 'status', value: 'new'})}>
           <ListItem count={statuses.new} label="New"
                     active={currentGroup.name === 'status' && currentGroup.value === 'new'}
             />
