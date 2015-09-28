@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Entity;
-use Application\DeskPRO\Entity\CustomDefAbstract;
 
 /**
  * Class AbstractCustomDefMapper
@@ -39,6 +38,11 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 abstract class AbstractCustomDefMapper implements MapperInterface
 {
     /**
+     * @var EntityRepository\CustomDefAbstract
+     */
+    protected $custom_def_repository;
+
+    /**
      * @var EntityRepository\ImportMap
      */
     protected $import_map_repository;
@@ -46,10 +50,12 @@ abstract class AbstractCustomDefMapper implements MapperInterface
     /**
      * Constructor
      *
-     * @param EntityRepository\ImportMap $import_map_repository
+     * @param EntityRepository\CustomDefAbstract $custom_def_repository
+     * @param EntityRepository\ImportMap         $import_map_repository
      */
-    public function __construct(EntityRepository\ImportMap $import_map_repository)
+    public function __construct(EntityRepository\CustomDefAbstract $custom_def_repository, EntityRepository\ImportMap $import_map_repository)
     {
+        $this->custom_def_repository = $custom_def_repository;
         $this->import_map_repository = $import_map_repository;
     }
 
@@ -65,12 +71,12 @@ abstract class AbstractCustomDefMapper implements MapperInterface
      *     |- Option B1
      *     |- Option B2
      *
-     * @param array|string      $choice_chain
-     * @param CustomDefAbstract $parent
+     * @param array|string                    $choice_chain
+     * @param DeskPROEntity\CustomDefAbstract $parent
      *
-     * @return CustomDefAbstract
+     * @return DeskPROEntity\CustomDefAbstract
      */
-    public function findChoiceCustomDef($choice_chain, CustomDefAbstract $parent)
+    public function findChoiceCustomDef($choice_chain, DeskPROEntity\CustomDefAbstract $parent)
     {
         if (is_string($choice_chain)) {
             $choice_chain = explode('>', $choice_chain);
@@ -86,6 +92,26 @@ abstract class AbstractCustomDefMapper implements MapperInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        $id = $this->findImportMapNewId($criteria);
+        if ($id) {
+            $record = $this->custom_def_repository->find($id);
+        } else {
+            $record = $this->custom_def_repository->findOneBy($criteria);
+        }
+
+        /** @var DeskPROEntity\CustomDefAbstract $record */
+        if ( ! $record && $throw_exception) {
+            throw new MapperException(sprintf('Custom def `%s` not found', $this->getType()), $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
      * Returns new id by import map
      *
      * @param array $criteria
@@ -93,7 +119,7 @@ abstract class AbstractCustomDefMapper implements MapperInterface
      * @return null|string
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    protected function findImportMapNewId(array $criteria)
+    protected function findImportMapNewId(array &$criteria)
     {
         $record = null;
         if (isset($criteria['entity'])) {

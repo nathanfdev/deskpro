@@ -65,14 +65,19 @@ abstract class AbstractCustomDefImporter extends AbstractImporter
             }
 
         } else {
+            // Create and update children
             foreach ($entity->getChildren() as $child_entity) {
                 $exist_child = $this->getCustomDefMapper()->findOneBy(array('entity' => $child_entity), false);
                 if ($exist_child) {
-
+                    $custom_def->addChild($this->setCustomDef($exist_child, $child_entity));
+                } else {
+                    $custom_def_class = get_class($custom_def);
+                    $custom_def->addChild($this->setCustomDef(new $custom_def_class(), $child_entity));
                 }
             }
 
-            // todo update and remove fields
+            // Remove deleted children
+            // todo
         }
 
         return $custom_def;

@@ -39,47 +39,10 @@ use Application\DeskPRO\EntityRepository;
 final class CustomDefTicket extends AbstractCustomDefMapper
 {
     /**
-     * @var EntityRepository\CustomDefTicket
-     */
-    private $repository;
-
-    /**
-     * Constructor
-     *
-     * @param EntityRepository\CustomDefTicket $repository
-     * @param EntityRepository\ImportMap       $import_map_repository
-     */
-    public function __construct(EntityRepository\CustomDefTicket $repository, EntityRepository\ImportMap $import_map_repository)
-    {
-        parent::__construct($import_map_repository);
-        $this->repository = $repository;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_CUSTOM_DEF_TICKET;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        $id = $this->findImportMapNewId($criteria);
-        if ($id) {
-            $record = $this->repository->find($id);
-        } else {
-            $record = $this->repository->findOneBy($criteria);
-        }
-
-        /** @var Entity\CustomDefTicket $record */
-        if ( ! $record && $throw_exception) {
-            throw new MapperException('Custom def ticket not found', $criteria);
-        }
-
-        return $record;
     }
 }
