@@ -353,7 +353,7 @@ class PortalSupportExtension extends \Twig_Extension
         $x = 0;
         foreach ($args as $v) {
             if ($v) {
-                $x++;
+                ++$x;
             }
         }
 

@@ -108,8 +108,8 @@ class DeskPRO extends AbstractExporter implements ExporterBatchInterface
      * Returns batch config.
      *
      * @throws Exception
-     * @return Parser\OsTicket\BatchConfig
      *
+     * @return Parser\OsTicket\BatchConfig
      */
     protected function getBatchConfig()
     {

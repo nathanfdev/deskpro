@@ -138,8 +138,8 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
      * Returns batch config.
      *
      * @throws Exception
-     * @return Parser\ZenDesk\BatchConfig
      *
+     * @return Parser\ZenDesk\BatchConfig
      */
     protected function getBatchConfig()
     {

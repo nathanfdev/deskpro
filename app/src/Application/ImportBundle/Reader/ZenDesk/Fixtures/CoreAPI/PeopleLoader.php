@@ -60,8 +60,8 @@ class PeopleLoader extends AbstractFixtureLoader
      * Returns a random person id.
      *
      * @throws \RuntimeException
-     * @return int
      *
+     * @return int
      */
     public function getRandomPersonId()
     {

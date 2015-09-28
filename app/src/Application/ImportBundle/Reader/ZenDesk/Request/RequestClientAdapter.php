@@ -103,8 +103,8 @@ final class RequestClientAdapter implements RequestAdapterInterface
      *
      * @throws RetryAfterException
      * @throws API\ResponseException
-     * @return \stdClass
      *
+     * @return \stdClass
      */
     private function doApiRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
@@ -182,8 +182,8 @@ final class RequestClientAdapter implements RequestAdapterInterface
      *
      * @throws Exception
      * @throws RetryAfterException
-     * @return \stdClass
      *
+     * @return \stdClass
      */
     private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
     {

@@ -49,8 +49,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param DateTime $start_time
      *
      * @throws RetryAfterException
-     * @return int
      *
+     * @return int
      */
     public function getPeopleCount(DateTime $start_time = null);
 
@@ -60,8 +60,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param DateTime $start_time
      *
      * @throws RetryAfterException
-     * @return array
      *
+     * @return array
      */
     public function getPeople(DateTime $start_time = null);
 
@@ -71,8 +71,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param DateTime $start_time
      *
      * @throws RetryAfterException
-     * @return DateTime
      *
+     * @return DateTime
      */
     public function getPeopleEndTime(DateTime $start_time = null);
 
@@ -91,8 +91,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param array $ids
      *
      * @throws RetryAfterException
-     * @return array
      *
+     * @return array
      */
     public function getPeopleByIds(array $ids);
 
@@ -111,8 +111,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param DateTime $start_time
      *
      * @throws RetryAfterException
-     * @return int
      *
+     * @return int
      */
     public function getTicketsCount(DateTime $start_time = null);
 
@@ -122,8 +122,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param DateTime $start_time
      *
      * @throws RetryAfterException
-     * @return array
      *
+     * @return array
      */
     public function getTickets(DateTime $start_time = null);
 
@@ -142,8 +142,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param DateTime $start_time
      *
      * @throws RetryAfterException
-     * @return DateTime
      *
+     * @return DateTime
      */
     public function getTicketsEndTime(DateTime $start_time = null);
 
@@ -171,8 +171,8 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @param DateTime $start_time
      *
      * @throws RetryAfterException
-     * @return DateTime
      *
+     * @return DateTime
      */
     public function getArticlesEndTime(DateTime $start_time = null);
 

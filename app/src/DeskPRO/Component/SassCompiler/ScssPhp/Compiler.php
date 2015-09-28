@@ -145,8 +145,8 @@ class Compiler extends BaseCompiler
      * @param string $path
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     protected function loadFile($path)
     {

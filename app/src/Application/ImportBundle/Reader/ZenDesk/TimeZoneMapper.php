@@ -41,8 +41,8 @@ class TimeZoneMapper
      * @param string $friendly_name
      *
      * @throws \RuntimeException
-     * @return string
      *
+     * @return string
      */
     public static function getTimeZoneName($friendly_name)
     {

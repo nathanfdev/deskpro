@@ -124,8 +124,8 @@ class Import
      * @param string $id
      *
      * @throws \RuntimeException
-     * @return DataStore
      *
+     * @return DataStore
      */
     public function getImporter($id)
     {
@@ -180,8 +180,8 @@ class Import
      * @param $id
      *
      * @throws \Exception
-     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
      *
+     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
      */
     public function getReaderConfig($id)
     {
@@ -217,8 +217,8 @@ class Import
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return DataStore
      *
+     * @return DataStore
      */
     public function initReader($id)
     {
@@ -311,8 +311,8 @@ class Import
      * @param DataStore $importer
      *
      * @throws \Exception
-     * @return GeneratorConfig
      *
+     * @return GeneratorConfig
      */
     public function createGeneratorConfig(DataStore $importer)
     {

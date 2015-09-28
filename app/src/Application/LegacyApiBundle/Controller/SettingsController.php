@@ -615,8 +615,8 @@ class SettingsController extends AbstractController implements ProtectedControll
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function setLogoBlobAction(Request $request)
     {
@@ -646,8 +646,8 @@ class SettingsController extends AbstractController implements ProtectedControll
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getLogoBlobAction()
     {

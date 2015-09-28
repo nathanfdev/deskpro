@@ -52,8 +52,8 @@ class DeskPROReaderFactory
 
     /**
      * @throws \Exception
-     * @return DeskPROConfig
      *
+     * @return DeskPROConfig
      */
     public static function getDefaultConfig()
     {

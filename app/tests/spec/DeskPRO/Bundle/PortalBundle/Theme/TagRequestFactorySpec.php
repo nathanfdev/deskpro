@@ -136,7 +136,7 @@ class TagRequestFactorySpec extends ObjectBehavior
                 'c'         => 'c',
                 '_tag_name' => 'tag_name',
             ),
-            'lang_url_code' => 'en'
+            'lang_url_code' => 'en',
         ));
     }
 
@@ -165,7 +165,7 @@ class TagRequestFactorySpec extends ObjectBehavior
                 'c'         => 'c',
                 '_tag_name' => 'tag_name',
             ),
-            'lang_url_code' => 'en'
+            'lang_url_code' => 'en',
         ));
     }
 

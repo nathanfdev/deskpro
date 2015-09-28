@@ -82,8 +82,8 @@ final class NewsLabel implements MapperInterface
      * @param bool $throw_exception
      *
      * @throws MapperException
-     * @return Entity\LabelNews[]
      *
+     * @return Entity\LabelNews[]
      */
     public function findByNewsId($id, $throw_exception = true)
     {

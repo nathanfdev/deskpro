@@ -145,7 +145,7 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getCategoryChildren($category, Person $person)
     {
-        $that = $this;
+        $that                = $this;
         $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(

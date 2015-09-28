@@ -49,8 +49,8 @@ abstract class AbstractLdapBasedAdapter extends PluginAdapter implements Loggabl
      * Return all user/person records.
      *
      * @throws \Zend\Ldap\Exception\LdapException
-     * @return \Zend\Ldap\Collection
      *
+     * @return \Zend\Ldap\Collection
      */
     public function findAllRecords($size_limit = 1000, $paging = true, $objectClass = 'inetOrgPerson')
     {

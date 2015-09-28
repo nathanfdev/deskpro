@@ -31,8 +31,6 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
-
-
 class ExceptionErrorCodeFactory
 {
     public static $exceptions_to_error_codes_map = array(

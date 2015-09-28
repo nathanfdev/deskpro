@@ -138,8 +138,8 @@ final class Organization extends AbstractImporter
      * @param Entity\CustomField $entity
      *
      * @throws ImporterException
-     * @return DeskPROEntity\CustomDataOrganization
      *
+     * @return DeskPROEntity\CustomDataOrganization
      */
     private function createOrganizationCustomData(Entity\CustomField $entity)
     {

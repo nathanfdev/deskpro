@@ -119,8 +119,8 @@ class EmailAccountManager
      * @param int $id
      *
      * @throws \OutOfBoundsException
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
      *
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function getAccount($id)
     {
@@ -136,8 +136,8 @@ class EmailAccountManager
      * @param $id
      *
      * @throws \OutOfBoundsException
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
      *
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function getActiveAccount($id)
     {
@@ -485,8 +485,8 @@ class EmailAccountManager
      * @param int|EmailAccount $acc
      *
      * @throws \OutOfBoundsException
-     * @return \Swift_Transport
      *
+     * @return \Swift_Transport
      */
     public function getTransportForAccount($acc)
     {
@@ -581,8 +581,8 @@ class EmailAccountManager
      * @param int|EmailAccount $acc
      *
      * @throws \OutOfBoundsException
-     * @return \Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface
      *
+     * @return \Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface
      */
     public function getFetcherStorageForAccount($acc)
     {
@@ -677,8 +677,8 @@ class EmailAccountManager
      * @param $acc
      *
      * @throws \InvalidArgumentException
-     * @return EmailAccount|null
      *
+     * @return EmailAccount|null
      */
     private function verifyAccountParam($acc)
     {

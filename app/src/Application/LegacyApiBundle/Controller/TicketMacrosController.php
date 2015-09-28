@@ -123,8 +123,8 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function getAction($id)
     {
@@ -150,6 +150,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *
@@ -252,8 +253,8 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function removeAction($id)
     {

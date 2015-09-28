@@ -125,8 +125,8 @@ final class Tickets extends AbstractParser
      * @param array $data
      *
      * @throws SkippingException
-     * @return Entity\Ticket
      *
+     * @return Entity\Ticket
      */
     protected function exportTicket(array $data)
     {
@@ -317,8 +317,8 @@ final class Tickets extends AbstractParser
      * @param bool $count_only
      *
      * @throws Exception
-     * @return array
      *
+     * @return array
      */
     private function getTickets($count_only = false)
     {
@@ -379,8 +379,8 @@ final class Tickets extends AbstractParser
      * @param string $status
      *
      * @throws Exception
-     * @return string
      *
+     * @return string
      */
     private function getStatus($status)
     {

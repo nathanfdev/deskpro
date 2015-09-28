@@ -67,8 +67,8 @@ class TermTypeCodes
      * @param $term_type_code
      *
      * @throws TermTypeDoesNotExistException
-     * @return string
      *
+     * @return string
      */
     public static function getTermClassForTypeCode($term_type_code)
     {

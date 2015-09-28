@@ -27,8 +27,8 @@
  */
 
 /**
-  * DeskPRO.
-  */
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration;
 
 abstract class ObjectRouteAnnotation extends ObjectLinkAnnotation

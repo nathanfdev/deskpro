@@ -43,8 +43,8 @@ class OsTicketReaderFactory
      * @param OsTicketConfig $config
      *
      * @throws Exception
-     * @return OsTicketReader
      *
+     * @return OsTicketReader
      */
     public static function createReader(OsTicketConfig $config)
     {
@@ -55,8 +55,8 @@ class OsTicketReaderFactory
 
     /**
      * @throws Exception
-     * @return \Application\ImportBundle\Reader\OsTicket\OsTicketConfig
      *
+     * @return \Application\ImportBundle\Reader\OsTicket\OsTicketConfig
      */
     public static function getDefaultConfig()
     {

@@ -27,23 +27,23 @@
  */
 
 /**
-  * DeskPRO.
-  */
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkConfigAnnotationRepo;
 
- abstract class ObjectLinkAnnotation
- {
-     /**
+abstract class ObjectLinkAnnotation
+{
+    /**
       * @var string
       */
      public $type;
 
-     public function __construct(array $values = array())
-     {
-         $this->setType(isset($values['type']) ? $values['type'] : null);
-     }
+    public function __construct(array $values = array())
+    {
+        $this->setType(isset($values['type']) ? $values['type'] : null);
+    }
 
      /**
       * @return string
@@ -60,4 +60,4 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkConfigAnnotationRepo;
      {
          $this->type = $type;
      }
- }
+}

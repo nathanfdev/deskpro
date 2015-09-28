@@ -56,8 +56,8 @@ final class Collection extends AbstractCollection
      * @param string $type
      *
      * @throws Exception
-     * @return FixtureInterface
      *
+     * @return FixtureInterface
      */
     public function getByType($type)
     {

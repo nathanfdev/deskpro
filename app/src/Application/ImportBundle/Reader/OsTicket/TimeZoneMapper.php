@@ -77,8 +77,8 @@ class TimeZoneMapper
      * @param string $osticket_name
      *
      * @throws Exception
-     * @return string
      *
+     * @return string
      */
     public static function getTimeZoneName($offset, $osticket_name = null)
     {

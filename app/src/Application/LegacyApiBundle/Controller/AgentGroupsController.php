@@ -136,8 +136,8 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function getGroupAction($id)
     {
@@ -274,8 +274,8 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function saveGroupAction($id)
     {
@@ -432,8 +432,8 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function deleteGroupAction($id)
     {

@@ -47,8 +47,8 @@ class TwitterUserController extends AbstractController
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\TwitterAccount
      *
+     * @return \Application\DeskPRO\Entity\TwitterAccount
      */
     protected function getAccountOr404($id)
     {
@@ -70,8 +70,8 @@ class TwitterUserController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\TwitterUser
      *
+     * @return \Application\DeskPRO\Entity\TwitterUser
      */
     protected function getUserOr404($id)
     {

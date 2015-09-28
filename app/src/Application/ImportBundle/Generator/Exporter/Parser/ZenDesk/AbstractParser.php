@@ -75,8 +75,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * Returns batch config.
      *
      * @throws Exception
-     * @return BatchConfig
      *
+     * @return BatchConfig
      */
     protected function getBatchConfig()
     {

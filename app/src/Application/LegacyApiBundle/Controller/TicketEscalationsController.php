@@ -393,8 +393,8 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function toggleEscalationAction($id, $is_enabled)
     {

@@ -2560,8 +2560,8 @@ class TicketController extends AbstractController implements ProtectedController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Ticket
      *
+     * @return \Application\DeskPRO\Entity\Ticket
      */
     protected function _getTicketOr404($id, $check_perm = null)
     {

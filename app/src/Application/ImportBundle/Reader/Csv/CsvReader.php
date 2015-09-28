@@ -125,8 +125,8 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      * @param CsvConfig $config
      *
      * @throws \Exception
-     * @return LimitIterator
      *
+     * @return LimitIterator
      */
     private function getIterator(CsvConfig $config)
     {

@@ -749,7 +749,6 @@ $definition->setArguments(array(new Reference('dp_enc')));
 $definition->addTag('form.type', array('alias' => 'dp_enc_password'));
 $container->setDefinition('dp_enc.form.type.dp_enc_password', $definition);
 
-
 ############################################################################
 # DeskPRO Configuration
 ############################################################################

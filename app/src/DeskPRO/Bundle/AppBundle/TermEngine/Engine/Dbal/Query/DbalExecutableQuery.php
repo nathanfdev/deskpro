@@ -253,8 +253,8 @@ class DbalExecutableQuery
      * @param DbalQuery $query
      *
      * @throws \Doctrine\DBAL\DBALException
-     * @return \Doctrine\DBAL\Driver\Statement
      *
+     * @return \Doctrine\DBAL\Driver\Statement
      */
     protected function execute(DbalQuery $query)
     {

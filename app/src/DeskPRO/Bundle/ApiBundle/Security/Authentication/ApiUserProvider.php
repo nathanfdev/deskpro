@@ -58,10 +58,10 @@ class ApiUserProvider implements UserProviderInterface
      * @param string $username The username
      *
      * @throws UsernameNotFoundException if the user is not found
+     *
      * @return UserInterface
      *
      * @see UsernameNotFoundException
-     *
      */
     public function loadUserByUsername($username)
     {
@@ -83,8 +83,8 @@ class ApiUserProvider implements UserProviderInterface
      * @param UserInterface $user
      *
      * @throws UnsupportedUserException if the account is not supported
-     * @return UserInterface
      *
+     * @return UserInterface
      */
     public function refreshUser(UserInterface $user)
     {

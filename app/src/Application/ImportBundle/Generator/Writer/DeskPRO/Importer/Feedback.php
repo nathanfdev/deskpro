@@ -129,8 +129,8 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\FeedbackCategory|null
      *
+     * @return DeskPROEntity\FeedbackCategory|null
      */
     private function findOrCreateFeedbackCategory($title)
     {
@@ -182,8 +182,8 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * @param Entity\CustomField $entity
      *
      * @throws ImporterException
-     * @return DeskPROEntity\CustomDataFeedback
      *
+     * @return DeskPROEntity\CustomDataFeedback
      */
     private function createFeedbackCustomData(Entity\CustomField $entity)
     {
@@ -197,8 +197,8 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * Returns the feedback category mapper.
      *
      * @throws \Exception
-     * @return Mapper\FeedbackCategory
      *
+     * @return Mapper\FeedbackCategory
      */
     private function getFeedbackCategoryMapper()
     {

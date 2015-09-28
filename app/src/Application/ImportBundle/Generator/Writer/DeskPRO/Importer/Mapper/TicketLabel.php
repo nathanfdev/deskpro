@@ -82,8 +82,8 @@ final class TicketLabel implements MapperInterface
      * @param bool $throw_exception
      *
      * @throws MapperException
-     * @return Entity\LabelTicket[]
      *
+     * @return Entity\LabelTicket[]
      */
     public function findByTicketId($id, $throw_exception = true)
     {

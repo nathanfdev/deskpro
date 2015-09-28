@@ -158,8 +158,8 @@ final class Ticket extends AbstractImporter
      * @param int           $entity_id
      *
      * @throws \Exception
-     * @return DeskPROEntity\Ticket
      *
+     * @return DeskPROEntity\Ticket
      */
     private function findOrCreateTicket(Entity\Ticket $entity, $entity_id)
     {

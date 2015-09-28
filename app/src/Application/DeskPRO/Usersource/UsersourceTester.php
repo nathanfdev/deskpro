@@ -135,8 +135,8 @@ class UsersourceTester
      * @param string $password
      *
      * @throws \RuntimeException
-     * @return bool
      *
+     * @return bool
      */
     private function doTest($username, $password)
     {

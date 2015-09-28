@@ -117,8 +117,8 @@ class DpEnc
      * @param string $string
      *
      * @throws \CannotPerformOperationException
-     * @return string
      *
+     * @return string
      */
     public function encrypt($string)
     {
@@ -134,8 +134,8 @@ class DpEnc
      *
      * @throws \CannotPerformOperationException
      * @throws \InvalidCiphertextException
-     * @return string
      *
+     * @return string
      */
     public function decrypt($string)
     {
@@ -182,8 +182,8 @@ class DpEnc
      *
      * @throws \CannotPerformOperationException
      * @throws \InvalidCiphertextException
-     * @return string
      *
+     * @return string
      */
     public function dpDecrypt($string)
     {

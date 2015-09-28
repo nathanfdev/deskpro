@@ -80,8 +80,8 @@ final class PersonEmail implements MapperInterface
      * @param bool   $throw_exception
      *
      * @throws MapperException
-     * @return \Application\DeskPRO\Entity\PersonEmail
      *
+     * @return \Application\DeskPRO\Entity\PersonEmail
      */
     public function findOneByEmail($email, $throw_exception = true)
     {

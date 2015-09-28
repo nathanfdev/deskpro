@@ -116,8 +116,8 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\DownloadCategory|null
      *
+     * @return DeskPROEntity\DownloadCategory|null
      */
     private function findOrCreateDownloadCategory($title)
     {
@@ -142,8 +142,8 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
      * Returns the download category mapper.
      *
      * @throws \Exception
-     * @return Mapper\DownloadCategory
      *
+     * @return Mapper\DownloadCategory
      */
     private function getDownloadCategoryMapper()
     {
